@@ -40,7 +40,7 @@ struct PearcleanerApp: App {
 #if !DEBUG
                         
                         // Make sure App Support folder exists in the future if needed for storage
-//                        ensureApplicationSupportFolderExists(appState: appState)
+                        ensureApplicationSupportFolderExists(appState: appState)
                         
                         // Check for updates
                         if diskP && diskE {

@@ -13,7 +13,15 @@ struct SimpleButtonStyle: ButtonStyle {
     let icon: String
     let help: String
     let color: Color
-
+    let shield: Bool?
+    
+    init(icon: String, help: String, color: Color, shield: Bool? = nil) {
+        self.icon = icon
+        self.help = help
+        self.color = color
+        self.shield = shield
+    }
+    
     func makeBody(configuration: Self.Configuration) -> some View {
         HStack {
             Image(systemName: icon)
@@ -24,7 +32,7 @@ struct SimpleButtonStyle: ButtonStyle {
         }
         .padding(8)
         .background {
-            if hovered {
+            if hovered && !(shield ?? false) {
 //                Circle()
 //                    .strokeBorder(Color("AccentColor"), lineWidth: 1)
                 RoundedRectangle(cornerRadius: 8)
@@ -250,7 +258,71 @@ struct WindowActionButton: ButtonStyle {
 
 
 
+struct SentinelToggleStyle: ToggleStyle {
+    
+    func makeBody(configuration: Configuration) -> some View {
+        
+        HStack {
+            
+            ZStack{
+                RoundedRectangle(cornerRadius: 50)
+                    .fill(configuration.isOn ? greenBG : redBG)
+                    .frame(width: 70, height: 40)
+                HStack{
+                    Image(systemName: "lock.shield")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 26, height: 26)
+                        .padding(.leading, 10)
+                        .foregroundColor(.white)
+                    Spacer()
+                    Image(systemName: "shield")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 26, height: 26)
+                        .padding(.trailing, 10)
+                        .foregroundColor(.white)
+                }
+                
+            }
+            .frame(width: 70, height: 40, alignment: .center)
+            .overlay(
+                Circle()
+                    .foregroundColor(.white)
+                    .shadow(color: .black.opacity(0.5), radius: 3, x: 0, y: 0)
+                    .padding(.all, 4)
+                    .offset(x: configuration.isOn ? 15 : -15, y: 0)
+            )
+            .overlay(
+                Image(systemName: "power")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 20, height: 20)
+                    .foregroundColor(.black.opacity(0.3))
+                    .offset(x: configuration.isOn ? 15 : -15, y: 0)
+            )
+            .onTapGesture {
+                withAnimation(.easeInOut(duration: 0.5)) {
+                    configuration.isOn.toggle()
+                }
+            }
+            .animation(.default, value: configuration.isOn)
+        }
+        
+        
+    }
+    
+}
 
+
+
+private let greenBG: AnyShapeStyle = AnyShapeStyle(
+    .green.shadow(.inner(radius: 2, x: 0, y: 1))
+)
+
+private let redBG: AnyShapeStyle = AnyShapeStyle(
+    .red.shadow(.inner(radius: 2, x: 0, y: 1))
+)
 
 
 

@@ -13,6 +13,7 @@ struct TopBar: View {
     @Binding var reload: Bool
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @AppStorage("settings.general.glass") private var glass: Bool = false
+    @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @EnvironmentObject var appState: AppState
 
     var body: some View {
@@ -75,6 +76,15 @@ struct TopBar: View {
             Spacer()
             
             HStack(alignment: .center, spacing: 5) {
+                
+                if sentinel {
+                    Button("") {
+                        //
+                    }
+                    .buttonStyle(SimpleButtonStyle(icon: "lock.shield", help: "Sentinel enabled", color: .green, shield: true))
+                }
+                
+
                 Button("") {
                     withAnimation(.easeInOut(duration: 0.5)) {
                         glass.toggle()

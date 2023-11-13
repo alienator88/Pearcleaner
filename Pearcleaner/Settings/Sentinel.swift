@@ -25,7 +25,7 @@ struct SentinelSettingsTab: View {
                         Spacer()
                         Toggle(isOn: $sentinel, label: {
                         })
-                        .toggleStyle(.switch)
+                        .toggleStyle(SentinelToggleStyle())
                         .onChange(of: sentinel) { newValue in
                             if newValue {
                                 launchctl(load: true)
@@ -45,7 +45,7 @@ struct SentinelSettingsTab: View {
             
         }
         .padding(20)
-        .frame(width: 400, height: 100)
+        .frame(width: 450, height: 100)
         
     }
     
