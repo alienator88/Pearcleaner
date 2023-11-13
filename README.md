@@ -1,6 +1,6 @@
 # Pearcleaner
 
-<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/6f22c4fa-fb3a-43aa-82ad-70f043b8fc88" width="100" height="100" />
+<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/6f22c4fa-fb3a-43aa-82ad-70f043b8fc88" width="128" height="128" />
 
 An open-source mac app cleaner inspired by Freemacsoft's AppCleaner and Sun Knudsen's Privacy Guides post on his app-cleaner script.
 This project was born out of wanting to learn more. There's probaby parts of the code that could be done better as I'm fairly new to Swift, if you have suggestions I'm open to hearing them!
