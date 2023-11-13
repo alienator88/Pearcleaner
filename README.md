@@ -21,7 +21,7 @@ This project was born out of wanting to learn more. There's probaby parts of the
 - Sentinel monitor is extremely small (210KB) and uses <=5mb of ram to run in the background and file watch. Communicates to app via custom url scheme instead of xpc to keep things even lighter
 - Requires Full Disk permission to search for files and also Accessibility to delete/restore files
 
-## Getting Sentinel
+## Getting Pearcleaner
 
 Pre-compiled, always up-to-date versions are available from my releases page.
 You might need to open this with right click-open since I don't have a paid developer account.
