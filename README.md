@@ -21,6 +21,11 @@ This project was born out of wanting to learn more. There's probaby parts of the
 - Sentinel monitor is extremely small (210KB) and uses <=5mb of ram to run in the background and file watch. Communicates to app via custom url scheme instead of xpc to keep things even lighter
 - Requires Full Disk permission to search for files and also Accessibility to delete/restore files
 
+## Requirements
+- MacOS 13.0+
+- At the moment, using some newer SwiftUI code which requires 13.0+
+- Will try to re-work some of that to support older versions.
+
 ## Getting Pearcleaner
 
 Pre-compiled, always up-to-date versions are available from my releases page.
