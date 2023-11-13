@@ -23,8 +23,7 @@ This project was born out of wanting to learn more. There's probably parts of th
 
 ## Requirements
 - MacOS 13.0+
-- At the moment, using some newer SwiftUI code which requires 13.0+
-- Will try to re-work some of that to support older versions.
+- Using some newer SwiftUI code which requires 13.0+
 
 ## Getting Pearcleaner
 
