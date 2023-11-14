@@ -11,6 +11,7 @@ import UniformTypeIdentifiers
 
 struct DropTarget: View, DropDelegate {
     @AppStorage("settings.general.ants") private var ants: Bool = false
+    @AppStorage("settings.general.mini") private var mini: Bool = false
     @ObservedObject var appState: AppState
     @State private var shouldFlash = false
     private var types: [UTType] = [.fileURL]
@@ -34,14 +35,15 @@ struct DropTarget: View, DropDelegate {
                     
                     ZStack {
                         LinearGradient(gradient: Gradient(colors: [.pink, .orange]), startPoint: .leading, endPoint: .trailing)
-                            .mask(Image("logo")
+                            .mask(
+                                Image(mini ? "pear" : "logo")
                                 .resizable()
-                                .scaledToFit())
+                                .scaledToFit()
+                                .frame(width: mini ? 104 : 500)
+                            )
                     }
-                    .frame(width: 500, height: 200)
                     
                     Spacer()
-                    
                     
                 }
                 
@@ -71,6 +73,8 @@ struct DropTarget: View, DropDelegate {
         }
         .onDrop(of: types, delegate: self)
         .padding(20)
+        .frame(maxWidth: mini ? 200 : .infinity)
+        .frame(maxHeight: mini ? 200 : .infinity)
         
     }
     

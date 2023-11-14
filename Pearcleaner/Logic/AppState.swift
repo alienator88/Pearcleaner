@@ -19,6 +19,7 @@ class AppState: ObservableObject
     @Published var selectedItems = Set<URL>()
     @Published var alertType = AlertType.off
     @Published var currentView = CurrentDetailsView.empty
+//    @Published var currentMode = CurrentMode.regular
     @Published var showAlert: Bool = false
     @Published var sidebar: Bool = true
     @Published var isReminderVisible: Bool = false
@@ -74,7 +75,14 @@ enum CurrentDetailsView:Int
 {
     case empty
     case files
+    case apps
 }
+
+//enum CurrentMode:Int
+//{
+//    case regular
+//    case mini
+//}
 
 enum AlertType:Int
 {

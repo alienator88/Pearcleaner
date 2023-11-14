@@ -53,7 +53,24 @@ struct AppListView: View {
                             VStack(alignment: .center) {
                                 
                                 VStack(alignment: .center, spacing: 20) {
-                                    SearchBar(search: $search)
+                                    HStack {
+                                        SearchBar(search: $search)
+
+                                        Button("") {
+                                            withAnimation(.easeInOut(duration: 0.5)) {
+                                                // Refresh Apps list
+                                                reload.toggle()
+                                                let sortedApps = getSortedApps()
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                                    appState.sortedApps.userApps = sortedApps.userApps
+                                                    appState.sortedApps.systemApps = sortedApps.systemApps
+                                                    reload.toggle()
+                                                }
+                                                
+                                            }
+                                        }
+                                        .buttonStyle(SimpleButtonStyle(icon: "arrow.triangle.2.circlepath", help: "Refresh app list", color: Color("mode")))
+                                    }
                                 }
                                 .padding(.horizontal)
                                 .padding(.top, 20)
@@ -157,20 +174,20 @@ struct AppDetailsEmptyView: View {
                         
             Spacer()
             
-            if appState.isReminderVisible {
-                Text("􀆔 + Z to undo")
-                    .font(.title2)
-                    .foregroundStyle(Color("AccentColor").opacity(0.5))
-                    .fontWeight(.medium)
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                            withAnimation {
-                                appState.isReminderVisible = false
-                            }
-                        }
-                    }
-                Spacer()
-            }
+//            if appState.isReminderVisible {
+//                Text("􀆔 + Z to undo")
+//                    .font(.title2)
+//                    .foregroundStyle(Color("AccentColor").opacity(0.5))
+//                    .fontWeight(.medium)
+//                    .onAppear {
+//                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+//                            withAnimation {
+//                                appState.isReminderVisible = false
+//                            }
+//                        }
+//                    }
+//                Spacer()
+//            }
             
             Text("Drop an app above or select one from the list to begin")
                 .font(.title3)

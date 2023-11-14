@@ -14,6 +14,7 @@ struct FilesView: View {
     @State private var showDetails: Bool = false
     @State private var showPop: Bool = false
     @State private var itemDetails: [(size: String, icon: Image?)] = []
+    @AppStorage("settings.general.mini") private var mini: Bool = false
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
@@ -34,8 +35,9 @@ struct FilesView: View {
                         if let appIcon = appState.appInfo.appIcon {
                             Image(nsImage: appIcon)
                                 .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 100, height: 100)
+                                .scaledToFit()
+//                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 50, height: 50)
                                 .padding(.leading)
                         }
                         //app title, size and items
@@ -43,19 +45,19 @@ struct FilesView: View {
                             HStack(alignment: .center) {
                                 VStack(alignment: .leading, spacing: 5){
                                     HStack {
-                                        Text("\(appState.appInfo.appName)").font(.title).fontWeight(.bold)
+                                        Text("\(appState.appInfo.appName)").font(mini ? .title2 :.title).fontWeight(.bold)
 //                                            .foregroundStyle(Color("AccentColor"))
                                         Text("•").foregroundStyle(Color("AccentColor"))
                                         Text("\(appState.appInfo.appVersion)").font(.title3)
 //                                            .foregroundStyle(.gray.opacity(0.8))
                                     }
-                                    Text("\(appState.appInfo.bundleIdentifier)").font(.title3)
+                                    Text("\(appState.appInfo.bundleIdentifier)").font(mini ? .footnote :.title3)
                                         .foregroundStyle((.gray.opacity(0.8)))
                                 }
                                 
                                 Spacer()
                                 
-                                Text("\(appSize)").font(.title).fontWeight(.bold)
+                                Text("\(appSize)").font(mini ? .title2 :.title).fontWeight(.bold)
 //                                    .foregroundStyle(Color("AccentColor"))
                             }
                             
@@ -180,7 +182,7 @@ struct FilesView: View {
             }
             
         }
-        .frame(minWidth: 700)
+//        .frame(minWidth: 700)
         .onAppear {
             Task {
                 calculateFileDetails()
@@ -291,7 +293,7 @@ struct FileDetailsItem: View {
             Button("") {
                 NSWorkspace.shared.selectFile(path.path, inFileViewerRootedAtPath: path.deletingLastPathComponent().path)
             }
-            .buttonStyle(SimpleButtonStyle(icon: "folder.fill", help: "Show in Finder", color: Color("AccentColor")))
+            .buttonStyle(SimpleButtonStyle(icon: "folder.fill", help: "Show in Finder", color: Color("mode")))
 
         }
         .background(

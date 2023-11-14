@@ -124,6 +124,11 @@ func checkForUpdate(appState: AppState, manual: Bool = false) {
     }
 }
 
+func launchUpdate() {
+    NSWorkspace.shared.open(URL(string: "https://github.com/alienator88/Pearcleaner/releases")!)
+
+}
+
 func downloadUpdate(appState: AppState) {
     guard let latestRelease = appState.releases.first else { return }
     guard let asset = latestRelease.assets.first else { return }
@@ -140,7 +145,7 @@ func downloadUpdate(appState: AppState) {
 
         do {
             if fileManager.fileExists(atPath: destinationURL.path) {
-                try fileManager.removeItem(at: destinationURL)
+                try? fileManager.removeItem(at: destinationURL)
             }
             try fileManager.moveItem(at: localURL, to: destinationURL)
             

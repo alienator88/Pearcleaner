@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C7045A282B03E71D00376976 /* MiniMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7045A272B03E71D00376976 /* MiniMode.swift */; };
+		C7045A2A2B03FAF000376976 /* TopBarMini.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7045A292B03FAF000376976 /* TopBarMini.swift */; };
 		C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72893042AFD42E600C8C1CD /* DeepLink.swift */; };
 		C72893122AFD51EA00C8C1CD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72893112AFD51EA00C8C1CD /* main.swift */; };
 		C7575D382B0181FC006A600A /* FileWatcher in Frameworks */ = {isa = PBXBuildFile; productRef = C7575D372B0181FC006A600A /* FileWatcher */; };
@@ -59,6 +61,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C7045A272B03E71D00376976 /* MiniMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniMode.swift; sourceTree = "<group>"; };
+		C7045A292B03FAF000376976 /* TopBarMini.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBarMini.swift; sourceTree = "<group>"; };
 		C72893042AFD42E600C8C1CD /* DeepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLink.swift; sourceTree = "<group>"; };
 		C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PearcleanerSentinel; sourceTree = BUILT_PRODUCTS_DIR; };
 		C72893112AFD51EA00C8C1CD /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
@@ -206,9 +210,11 @@
 				C77B90222AF2D616009CC655 /* FilesView.swift */,
 				C76D08542AF89CDE00D07867 /* AppListView.swift */,
 				C7D31D472AFEB23700C7ED9E /* TopBar.swift */,
+				C7045A292B03FAF000376976 /* TopBarMini.swift */,
 				C7D31D492AFEB26700C7ED9E /* AppListItems.swift */,
 				C7D31D522B0048BE00C7ED9E /* TrashView.swift */,
 				C7D31D582B00A49300C7ED9E /* DropTarget.swift */,
+				C7045A272B03E71D00376976 /* MiniMode.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -336,7 +342,9 @@
 				C7D31D462AFDA90C00C7ED9E /* Sentinel.swift in Sources */,
 				C7D31D592B00A49300C7ED9E /* DropTarget.swift in Sources */,
 				C77B90062AF18E2E009CC655 /* ContentView.swift in Sources */,
+				C7045A2A2B03FAF000376976 /* TopBarMini.swift in Sources */,
 				C77B901C2AF193A3009CC655 /* Styles.swift in Sources */,
+				C7045A282B03E71D00376976 /* MiniMode.swift in Sources */,
 				C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */,
 				C76D084C2AF83C9D00D07867 /* Permissions.swift in Sources */,
 				C76D084A2AF83C6E00D07867 /* General.swift in Sources */,
@@ -517,7 +525,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = BK8443AXLU;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -534,7 +542,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.Pearcleaner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -551,7 +559,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = BK8443AXLU;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -568,7 +576,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.Pearcleaner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

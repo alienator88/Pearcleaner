@@ -24,6 +24,15 @@ func updateOnBackground(_ updates: @escaping () -> Void) {
 }
 
 
+// Resize window
+func resizeWindow() {
+    if let window = NSApplication.shared.windows.first {
+        let newSize = NSSize(width: 500, height: 450)
+        window.setContentSize(newSize)
+    }
+}
+
+
 // Check for access to Full Disk access
 func checkAndRequestFullDiskAccess(appState: AppState, skipAlert: Bool = false) -> Bool {
     @AppStorage("settings.permissions.disk") var diskP: Bool = false
@@ -268,8 +277,9 @@ func presentAlert(appState: AppState) -> Alert {
 
     switch appState.alertType {
     case .update:
-        return Alert(title: Text("Update Available 🥳"), message: Text("You may choose to install the update now, otherwise you may start the update later from Settings"), primaryButton: .default(Text("Install")) {
-            downloadUpdate(appState: appState)
+        return Alert(title: Text("Update Available 🥳"), message: Text("You may choose to install the update now, otherwise you may check again later from Settings"), primaryButton: .default(Text("Open")) {
+//            downloadUpdate(appState: appState)
+            launchUpdate()
             appState.alertType = .off
         }, secondaryButton: .cancel())
     case .no_update:
@@ -278,7 +288,7 @@ func presentAlert(appState: AppState) -> Alert {
             appState.alertType = .off
         })
     case .diskAccess:
-        return Alert(title: Text("Permissions"), message: Text("This application requires Full Disk and Accessibility permissions. Once you grant full disk, don't restart the app yet. Wait a second for a second prompt for accessibility and then restart"), primaryButton: .default(Text("Allow in Settings")) {
+        return Alert(title: Text("Permissions"), message: Text("This application requires Full Disk and Accessibility permissions. Drag the app into the Full Disk pane if not visible."), primaryButton: .default(Text("Allow in Settings")) {
             if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles") {
                 NSWorkspace.shared.open(url)
             }

@@ -28,18 +28,18 @@ struct SimpleButtonStyle: ButtonStyle {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 20)
-                .foregroundColor(color)
+                .foregroundColor(hovered ? color : color.opacity(0.5))
         }
         .padding(8)
-        .background {
-            if hovered && !(shield ?? false) {
-//                Circle()
+//        .background {
+//            if hovered && !(shield ?? false) {
+////                Circle()
+////                    .strokeBorder(Color("AccentColor"), lineWidth: 1)
+//                RoundedRectangle(cornerRadius: 8)
 //                    .strokeBorder(Color("AccentColor"), lineWidth: 1)
-                RoundedRectangle(cornerRadius: 8)
-                    .strokeBorder(Color("AccentColor"), lineWidth: 1)
-            }
-            
-        }
+//            }
+//            
+//        }
         .onHover { hovering in
             withAnimation() {
                 hovered = hovering

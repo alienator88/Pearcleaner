@@ -29,7 +29,7 @@ struct AboutSettingsTab: View {
                         .buttonStyle(SimpleButtonStyle(icon: "cloud", help: "Update application", color: Color("AccentColor")))
                         
                         Button("") {
-                            NSWorkspace.shared.open(URL(string: "https://github.com/ghosted-labs/Pearcleaner")!)
+                            NSWorkspace.shared.open(URL(string: "https://github.com/alienator88/Pearcleaner")!)
                         }
                         .buttonStyle(SimpleButtonStyle(icon: "paperplane", help: "View repository", color: Color("AccentColor")))
                     }
