@@ -5,6 +5,8 @@
 An open-source mac app cleaner inspired by Freemacsoft's AppCleaner and Sun Knudsen's Privacy Guides post on his app-cleaner script.
 This project was born out of wanting to learn more. There's probably parts of the code that could be done better as I'm fairly new to Swift, if you have suggestions I'm open to hearing them!
 
+> NOTE: Auto updater will notify of updates, but the installer seems to fail sometimes so I wouldn't depend on the Install button in v1.0 or v1.1. Replaced Install with Open in v1.2 so it will redirect to the releases page for now. Will continue working on fixing that, maybe implement Sparkleframework for updates.
+
 ## Screenshots
 
 ![](https://github.com/alienator88/Pearcleaner/assets/6263626/aa48fd55-df2f-450c-a0c0-bf9507d7a465)
