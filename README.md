@@ -11,6 +11,10 @@ This project was born out of wanting to learn more. There's probably parts of th
 ![](https://github.com/alienator88/Pearcleaner/assets/6263626/036eae34-a9f0-4126-943a-376074e95067)
 ![](https://github.com/alienator88/Pearcleaner/assets/6263626/230674bf-9f16-4b84-9b7f-e0113b4a8358)
 ![](https://github.com/alienator88/Pearcleaner/assets/6263626/fc2b9568-cbb1-4a94-991c-0491252d7c02)
+![dark-drop](https://github.com/alienator88/Pearcleaner/assets/6263626/42ba2555-be33-4161-8d08-b22519a7a353)
+![dark-apps](https://github.com/alienator88/Pearcleaner/assets/6263626/a01357bf-75e8-4d2b-95b4-c6f306ed1dc4)
+![light-drop](https://github.com/alienator88/Pearcleaner/assets/6263626/afc61501-15e9-4db7-9f39-c8f46e27e01a)
+![light-apps](https://github.com/alienator88/Pearcleaner/assets/6263626/d2fa920f-474b-4007-b54d-04ad31b994e4)
 
 
 ## Features
@@ -19,6 +23,8 @@ This project was born out of wanting to learn more. There's probably parts of th
 - Quick file search
 - Optional Sentinel monitor helper that can be enabled to watch Trash folder for deleted apps
 - Sentinel monitor is extremely small (210KB) and uses <=5mb of ram to run in the background and file watch. Communicates to app via custom url scheme instead of xpc to keep things even lighter
+- Mini mode
+- Can drop apps to uninstall directly on the App Icon itself
 - Requires Full Disk permission to search for files and also Accessibility to delete/restore files
 
 ## Requirements
