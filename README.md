@@ -5,7 +5,7 @@
 <p align="center">
    <strong>Status: </strong>Maintained
    <br />
-   <strong>Version: </strong>v1.2
+   <strong>Version: </strong>1.2
    <br />
    <a href="https://github.com/alienator88/Pearcleaner/releases"><strong>Download</strong></a>
     · 
@@ -14,7 +14,7 @@
 </p>
 </br>
 
-An open-source mac app cleaner inspired by Freemacsoft's AppCleaner and Sun Knudsen's Privacy Guides post on his app-cleaner script.
+An open-source mac app cleaner inspired by [Freemacsoft's AppCleaner](https://freemacsoft.net/appcleaner/) and [Sun Knudsen's Privacy Guides](https://sunknudsen.com/privacy-guides/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative) post on his app-cleaner script.
 This project was born out of wanting to learn more. There's probably parts of the code that could be done better as I'm fairly new to Swift, if you have suggestions I'm open to hearing them!
 
 ## Note
@@ -57,4 +57,4 @@ You might need to open this with right click-open since I don't have a paid deve
 
 ## Thanks
 
-Much appreciation to Freemacsoft's AppCleaner and Sun Knudsen's app-cleaner script
+Much appreciation to [Freemacsoft's AppCleaner](https://freemacsoft.net/appcleaner/) and [Sun Knudsen's app-cleaner script](https://sunknudsen.com/privacy-guides/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative)
