@@ -8,7 +8,7 @@
             <sparkle:version>1</sparkle:version>
             <sparkle:shortVersionString>0.5</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/alienator88/Pearcleaner/releases/download/0.5/Pearcleaner.zip" length="1615874" type="application/octet-stream" sparkle:edSignature="4f2kL5WnENzY/jbeA9uZhN1GmIUiCjvFePf3Xlk9L/R5OX3jonZsy+u/v1oTDW1wX5fcd5U2Q7lcZFJlENJGDg=="/>
+            <enclosure url="https://github.com/alienator88/Pearcleaner/releases/latest/download/Pearcleaner.zip" length="1615874" type="application/octet-stream" sparkle:edSignature="4f2kL5WnENzY/jbeA9uZhN1GmIUiCjvFePf3Xlk9L/R5OX3jonZsy+u/v1oTDW1wX5fcd5U2Q7lcZFJlENJGDg=="/>
         </item>
     </channel>
 </rss>
