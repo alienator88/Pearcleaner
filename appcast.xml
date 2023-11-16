@@ -3,12 +3,12 @@
     <channel>
         <title>Pearcleaner</title>
         <item>
-            <title>0.5</title>
-            <pubDate>Wed, 15 Nov 2023 17:01:36 -0700</pubDate>
-            <sparkle:version>1</sparkle:version>
-            <sparkle:shortVersionString>0.5</sparkle:shortVersionString>
+            <title>1.3</title>
+            <pubDate>Wed, 15 Nov 2023 17:22:56 -0700</pubDate>
+            <sparkle:version>4</sparkle:version>
+            <sparkle:shortVersionString>1.3</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/alienator88/Pearcleaner/releases/latest/download/Pearcleaner.zip" length="1615874" type="application/octet-stream" sparkle:edSignature="4f2kL5WnENzY/jbeA9uZhN1GmIUiCjvFePf3Xlk9L/R5OX3jonZsy+u/v1oTDW1wX5fcd5U2Q7lcZFJlENJGDg=="/>
+            <enclosure url="https://github.com/alienator88/Pearcleaner/releases/latest/download/Pearcleaner.zip" length="1596006" type="application/octet-stream" sparkle:edSignature="mygTCOdL9Ikw73v+NzWIrRuEnZzIQInvKujdxBkRE2F74qXv9lDzwCt15YkavvnqVjYhni4Gx+2KSF/heCmKDg=="/>
         </item>
     </channel>
 </rss>
