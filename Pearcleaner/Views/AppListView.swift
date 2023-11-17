@@ -47,14 +47,14 @@ struct AppListView: View {
                                 ProgressView("Refreshing applications")
                                 Spacer()
                             }
-                            .frame(width: 300)
+                            .frame(width: 250)
                             .padding(.vertical)
                         } else {
                             VStack(alignment: .center) {
                                 
                                 VStack(alignment: .center, spacing: 20) {
                                     HStack {
-                                        SearchBar(search: $search)
+                                        SearchBar(search: $search, reload: $reload)
 
                                         Button("") {
                                             withAnimation(.easeInOut(duration: 0.5)) {
@@ -89,7 +89,7 @@ struct AppListView: View {
                                                         Divider().padding(.horizontal, 5)
                                                     }
                                                 }
-                                                .padding(.bottom)
+//                                                .padding(.bottom)
                                             }
                                             
                                         }
@@ -113,7 +113,7 @@ struct AppListView: View {
                                 .scrollIndicators(.never)
                                 
                             }
-                            .frame(width: 300)
+                            .frame(width: 250)
                             .padding(.vertical)
                         }
                         
@@ -200,11 +200,12 @@ struct AppDetailsEmptyView: View {
 
 struct SearchBar: View {
     @Binding var search: String
+    @Binding var reload: Bool
     
     var body: some View {
         HStack {
             TextField("Search", text: $search)
-                .textFieldStyle(SimpleSearchStyle(icon: Image(systemName: "magnifyingglass"),trash: true, text: $search))
+                .textFieldStyle(SimpleSearchStyle(icon: Image(systemName: "magnifyingglass"),trash: true, reload: $reload, text: $search))
         }
         .frame(height: 30)
     }
@@ -220,11 +221,13 @@ struct Header: View {
             Text(title).opacity(0.5)
             Spacer()
             Text("\(count)")
-                .frame(minWidth: 30, minHeight: 15)
+                .font(.system(size: 10))
+                .frame(minWidth: count > 99 ? 30 : 20, minHeight: 15)
                 .padding(2)
                 .background(Color("mode").opacity(0.1))
                 .clipShape(.capsule)
             //                .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
         }
+        .padding(4)
     }
 }

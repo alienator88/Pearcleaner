@@ -143,7 +143,10 @@ struct SimpleSearchStyle: TextFieldStyle {
     @State private var isHovered = false
     @State var icon: Image?
     @State var trash: Bool = false
+    @Binding var reload: Bool
     @Binding var text: String
+    @EnvironmentObject var appState: AppState
+    @AppStorage("settings.general.mini") private var mini: Bool = false
 
     func _body(configuration: TextField<Self._Label>) -> some View {
         
@@ -156,21 +159,40 @@ struct SimpleSearchStyle: TextFieldStyle {
                 }
                 
                 configuration
-                    .frame(maxWidth: 300)
+//                    .frame(minWidth: mini ? 80 : 300)
+//                    .frame(maxWidth: mini ? 150 : 300)
                     .font(.title3)
                     .textFieldStyle(PlainTextFieldStyle())
-                if trash {
-                    Image(systemName: "xmark")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 10, height: 10)
-                        .padding(.trailing, 5)
-                        .foregroundStyle(isHovered ? Color("mode").opacity(0.8) : Color("mode").opacity(0.5))
-                        .onTapGesture {
-                            text = ""
+                
+                Image(systemName: "arrow.triangle.2.circlepath")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 15, height: 15)
+                    .padding(.trailing, 5)
+                    .foregroundStyle(isHovered ? Color("mode").opacity(0.8) : Color("mode").opacity(0.5))
+                    .onTapGesture {
+                        // Refresh Apps list
+                        reload.toggle()
+                        let sortedApps = getSortedApps()
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            appState.sortedApps.userApps = sortedApps.userApps
+                            appState.sortedApps.systemApps = sortedApps.systemApps
+                            reload.toggle()
                         }
-                        .opacity(text.isEmpty ? 0 : 1)
-                }
+                    }
+                
+//                if trash {
+//                    Image(systemName: "xmark")
+//                        .resizable()
+//                        .aspectRatio(contentMode: .fit)
+//                        .frame(width: 10, height: 10)
+//                        .padding(.trailing, 5)
+//                        .foregroundStyle(isHovered ? Color("mode").opacity(0.8) : Color("mode").opacity(0.5))
+//                        .onTapGesture {
+//                            text = ""
+//                        }
+//                        .opacity(text.isEmpty ? 0 : 1)
+//                }
             }
             
         }
@@ -242,9 +264,9 @@ struct WindowActionButton: ButtonStyle {
             .background(
                 !configuration.isPressed ?
                 !hovered ?
-                action == .accept ? Color("AccentColor") : Color.red :
-                    action == .accept ? Color("AccentColor").opacity(0.8) : Color.red.opacity(0.8) :
-                    action == .accept ? Color("AccentColor").opacity(0.5) : Color.red.opacity(0.5)
+                action == .accept ? Color("button") : Color.red :
+                    action == .accept ? Color("button").opacity(0.8) : Color.red.opacity(0.8) :
+                    action == .accept ? Color("button").opacity(0.5) : Color.red.opacity(0.5)
             )
             .foregroundColor(.white)
             .cornerRadius(8)

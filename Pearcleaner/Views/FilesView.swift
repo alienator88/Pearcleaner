@@ -25,6 +25,7 @@ struct FilesView: View {
                     ProgressView("Finding application files..")
                     Spacer()
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .transition(.opacity)
             } else {
                 VStack() {
@@ -45,19 +46,19 @@ struct FilesView: View {
                             HStack(alignment: .center) {
                                 VStack(alignment: .leading, spacing: 5){
                                     HStack {
-                                        Text("\(appState.appInfo.appName)").font(mini ? .title2 :.title).fontWeight(.bold)
+                                        Text("\(appState.appInfo.appName)").font(.title).fontWeight(.bold)
 //                                            .foregroundStyle(Color("AccentColor"))
                                         Text("•").foregroundStyle(Color("AccentColor"))
                                         Text("\(appState.appInfo.appVersion)").font(.title3)
 //                                            .foregroundStyle(.gray.opacity(0.8))
                                     }
-                                    Text("\(appState.appInfo.bundleIdentifier)").font(mini ? .footnote :.title3)
+                                    Text("\(appState.appInfo.bundleIdentifier)").font(.title3)
                                         .foregroundStyle((.gray.opacity(0.8)))
                                 }
                                 
                                 Spacer()
                                 
-                                Text("\(appSize)").font(mini ? .title2 :.title).fontWeight(.bold)
+                                Text("\(appSize)").font(.title).fontWeight(.bold)
 //                                    .foregroundStyle(Color("AccentColor"))
                             }
                             
@@ -73,6 +74,19 @@ struct FilesView: View {
                                 Text("\(appState.paths.count > 1 ? "\(appState.paths.count) items" : "\(appState.paths.count) item")").font(.callout)
 //                                    .foregroundStyle(Color("AccentColor").opacity(0.7))
                                     .underline()
+                            }
+                            if appState.appInfo.webApp {
+                                HStack {
+                                    Text("web")
+                                        .font(.footnote)
+                                        .foregroundStyle(Color("mode").opacity(0.5))
+                                        .frame(minWidth: 30, minHeight: 15)
+                                        .padding(2)
+                                        .background(Color("mode").opacity(0.1))
+                                        .clipShape(.capsule)
+                                    Spacer()
+                                }
+                                
                             }
                             if appState.appInfo.appName.count < 5 {
                                 HStack(alignment: .center) {
@@ -103,7 +117,7 @@ struct FilesView: View {
                         }
                         .padding(20)
                     }
-                    .padding([.horizontal, .bottom])
+//                    .padding(.horizontal)
                     .background(
                         RoundedRectangle(cornerRadius: 8)
 //                            .strokeBorder(Color("AccentColor"), lineWidth: 0.5)
@@ -141,17 +155,7 @@ struct FilesView: View {
                     
                     HStack() {
                         Spacer()
-                        
-//                        if appState.trashLaunch {
-//                            Button("Close") {
-//                                Task {
-//                                    NSApp.terminate(nil)
-//                                    exit(0)
-//                                }
-//                            }
-//                            .buttonStyle(WindowActionButton(action: .cancel))
-//                        }
-                        
+                                               
                         
                         Button("Uninstall") {
                             Task {
@@ -182,7 +186,7 @@ struct FilesView: View {
             }
             
         }
-//        .frame(minWidth: 700)
+//        .frame(minWidth: 500, minHeight: 500)
         .onAppear {
             Task {
                 calculateFileDetails()
@@ -302,144 +306,3 @@ struct FileDetailsItem: View {
         )
     }
 }
-
-
-func writeLog(string: String) {
-    let fileManager = FileManager.default
-    let home = fileManager.homeDirectoryForCurrentUser.path
-    let logFilePath = "\(home)/Downloads/log.txt"
-    
-    // Check if the log file exists, and create it if it doesn't
-    if !fileManager.fileExists(atPath: logFilePath) {
-        if !fileManager.createFile(atPath: logFilePath, contents: nil, attributes: nil) {
-            print("Failed to create the log file.")
-            return
-        }
-    }
-    
-    do {
-        if let fileHandle = FileHandle(forWritingAtPath: logFilePath) {
-            let ns = "\(string)\n"
-            fileHandle.seekToEndOfFile()
-            fileHandle.write(ns.data(using: .utf8)!)
-            fileHandle.closeFile()
-        } else {
-            print("Error opening file for appending")
-        }
-    }
-}
-
-//struct FilesView: View {
-//    @EnvironmentObject var appState: AppState
-//    @State private var appSize: String = ""
-//    @State private var showDetails: Bool = false
-//    @State private var itemDetails: [(size: String, icon: Image?)] = []
-//    
-//    var body: some View {
-//        VStack(alignment: .center) {
-//            if !self.showDetails {
-//                ProgressView("Finding application files..")
-//            } else {
-//                VStack() {
-//                    HStack() {
-//                        Text("\(appState.paths.count > 1 ? "\(appState.paths.count) files found" : "\(appState.paths.count) file found")")
-//                        Text("•")
-//                        Text("\(appSize)")
-//                    }
-//                    .padding()
-//                    
-//                    if appState.appInfo.appName.count < 5 {
-//                        Text("Short or common word app name, there might be unrelated files found")
-//                            .font(.footnote)
-//                            .foregroundStyle(.red)
-//                    }
-//                    
-//                    ScrollView {
-//                        ForEach(Array(zip(appState.paths, itemDetails)), id: \.0) { path, details in
-//                            FileDetailsItem(size: details.size, icon: details.icon, path: path)
-//                        }
-//                    }
-//                    .frame(width: 500)
-//                    
-//                    Button("Remove") {
-//                        Task {
-//                            updateOnMain {
-//                                appState.appInfo = AppInfo.empty
-//                            }
-//                            let selectedItemsArray = Array(appState.selectedItems)
-//                            killApp(appId: appState.appInfo.bundleIdentifier) {
-//                                moveFilesToTrash(at: selectedItemsArray) {
-//                                    refreshAppList(appState.appInfo)
-//                                }
-//                            }
-//                        }
-//                    }
-//                    .disabled(appState.selectedItems.isEmpty)
-//                }
-//                .padding()
-//                
-//            }
-//            
-//        }
-//        .frame(minWidth: 500)
-//        .onAppear {
-//            Task {
-//                //                appState.appInfo = appInfo
-//                //                findPathsForApp(appState: appState, appInfo: appState.appInfo)
-//                calculateFileDetails()
-//            }
-//        }
-//    }
-//    
-//    
-//    func calculateFileDetails() {
-//        if appState.paths.count != 0 {
-//            itemDetails = Array(repeating: (size: "", icon: nil), count: appState.paths.count)
-//            
-//            Task {
-//                for (index, path) in appState.paths.enumerated() {
-//                    var size = ""
-//                    var icon: Image? = nil
-//                    
-//                    if let appSize = totalSizeOnDisk(for: path) {
-//                        size = "\(appSize)"
-//                    } else {
-//                        print("Error calculating the total size on disk for item \(index).")
-//                    }
-//                    
-//                    if let folderIcon = getIconForFileOrFolder(atPath: path) {
-//                        icon = folderIcon
-//                    }
-//                    
-//                    itemDetails[index] = (size: size, icon: icon)
-//                    
-//                    
-//                    
-//                }
-//                
-//                if let appSize = totalSizeOnDisk(for: appState.paths) {
-//                    self.appSize = "\(appSize)"
-//                    //                    updateOnMain {
-//                    //                        appState.doneLoading = true
-//                    //                    }
-//                    self.showDetails = true
-//                    //                    appState.doneLoading = true
-//                } else {
-//                    print("Error calculating the total size on disk.")
-//                }
-//            }
-//        } else {
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-//                calculateFileDetails()
-//            }
-//        }
-//    }
-//    
-//    func refreshAppList(_ appInfo: AppInfo) {
-//        let sortedApps = getSortedApps()
-//        appState.sortedApps.userApps = []
-//        appState.sortedApps.systemApps = []
-//        appState.sortedApps.userApps = sortedApps.userApps
-//        appState.sortedApps.systemApps = sortedApps.systemApps
-//    }
-//}

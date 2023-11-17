@@ -15,7 +15,8 @@ struct MiniMode: View {
     @State private var showSys: Bool = true
     @State private var showUsr: Bool = true
     @State private var reload: Bool = false
-    
+    @AppStorage("settings.general.glass") private var glass: Bool = false
+
     
     
     var body: some View {
@@ -26,7 +27,7 @@ struct MiniMode: View {
             VStack(spacing: 0) {
                 if appState.currentView == .empty {
                     TopBarMini(reload: $reload, search: $search)
-                    AppDetailsEmptyView()
+                    MiniEmptyView()
                 } else if appState.currentView == .files {
                     TopBarMini(reload: $reload, search: $search)
                     FilesView()
@@ -39,8 +40,11 @@ struct MiniMode: View {
             //            .padding(.leading, appState.sidebar ? 0 : 10)
             .transition(.move(edge: .leading))
             
+            
         }
+        .frame(minWidth: 300, minHeight: 300)
         .edgesIgnoringSafeArea(.all)
+        .background(glass ? GlassEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all) : nil)
         .onOpenURL(perform: { url in
             let deeplinkManager = DeeplinkManager()
             deeplinkManager.manage(url: url, appState: appState)
@@ -70,6 +74,11 @@ struct MiniEmptyView: View {
             DropTarget(appState: appState)
                 .frame(maxWidth: mini ? 300 : 500)
             
+            Text("Drop an app to begin")
+                .font(.title3)
+                .padding(.bottom, 25)
+                .opacity(0.5)
+            
             Spacer()
             
             if appState.isReminderVisible {
@@ -87,11 +96,9 @@ struct MiniEmptyView: View {
                 Spacer()
             }
             
-            Text("Drop an app above or select one from the list to begin")
-                .font(.title3)
-                .padding(.bottom, 25)
-                .opacity(0.5)
+            
         }
+//        .padding()
     }
 }
 
@@ -140,14 +147,6 @@ struct MiniAppView: View {
                 } else {
                     VStack(alignment: .center) {
                         
-//                        VStack(alignment: .center, spacing: 20) {
-//                            HStack {
-//                                SearchBar(search: $search)
-//                            }
-//                        }
-//                        .padding(.horizontal, 5)
-//                        .padding(.bottom)
-                        
                         ScrollView {
                             
                             VStack(alignment: .leading) {
@@ -161,7 +160,6 @@ struct MiniAppView: View {
                                                 Divider().padding(.horizontal, 5)
                                             }
                                         }
-                                        .padding(.bottom)
                                     }
                                     
                                 }
@@ -183,15 +181,29 @@ struct MiniAppView: View {
                             
                         }
                         .scrollIndicators(.never)
-                        
+   
                     }
-                    .padding(.vertical)
+//                    .padding(.vertical)
                 }
                 
                 
             }
         }
         .transition(.move(edge: .leading))
+        .popover(isPresented: $appState.showPopover, arrowEdge: .trailing) {
+            VStack {
+                FilesView()
+                    .id(appState.appInfo.id)
+            }
+            .background(
+                Rectangle()
+                    .fill(Color("pop"))
+//                    .background(Color("pop"))
+                    .padding(-80)
+            )
+            .frame(minWidth: 600, minHeight: 500)
+            
+        }
     }
 }
 

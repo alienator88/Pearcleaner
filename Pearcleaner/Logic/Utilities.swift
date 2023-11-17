@@ -25,35 +25,98 @@ func updateOnBackground(_ updates: @escaping () -> Void) {
 
 
 // Resize window
-func resizeWindow() {
+func resizeWindow(width: CGFloat, height: CGFloat) {
     if let window = NSApplication.shared.windows.first {
-        let newSize = NSSize(width: 500, height: 450)
+        let newSize = NSSize(width: width, height: height)
         window.setContentSize(newSize)
     }
 }
 
 
+// Check FDA
+func checkFullDiskAccessForApp() -> Bool {
+    let process = Process()
+    process.launchPath = "/usr/bin/sqlite3"
+    process.arguments = ["/Library/Application Support/com.apple.TCC/TCC.db", "select client from access where auth_value and service = \"kTCCServiceSystemPolicyAllFiles\" and client = \"com.alienator88.Pearcleaner\""]
+    
+    let pipe = Pipe()
+    let pipeErr = Pipe()
+    process.standardOutput = pipe
+    process.standardError = pipeErr
+    process.launch()
+    
+//    let data = pipe.fileHandleForReading.readDataToEndOfFile()
+    let dataErr = pipeErr.fileHandleForReading.readDataToEndOfFile()
+
+    let output = String(data: dataErr, encoding: .utf8)
+    
+    // Check if the app is in the results
+    if let result = output, result.isEmpty {
+        return true
+    } else {
+        return false
+    }
+}
+
+
+
+
+
+
 // Check for access to Full Disk access
 func checkAndRequestFullDiskAccess(appState: AppState, skipAlert: Bool = false) -> Bool {
     @AppStorage("settings.permissions.disk") var diskP: Bool = false
+
+    let process = Process()
+    process.launchPath = "/usr/bin/sqlite3"
+    process.arguments = ["/Library/Application Support/com.apple.TCC/TCC.db", "select client from access where auth_value and service = \"kTCCServiceSystemPolicyAllFiles\" and client = \"com.alienator88.Pearcleaner\""]
     
-    let fileURL = URL(fileURLWithPath: "\(home)/Library/Application Support/com.apple.TCC/TCC.db")
+    let pipe = Pipe()
+    let pipeErr = Pipe()
+    process.standardOutput = pipe
+    process.standardError = pipeErr
+    process.launch()
     
-    let accessStatus = FileManager.default.isWritableFile(atPath: fileURL.path)
-    if accessStatus {
+    //    let data = pipe.fileHandleForReading.readDataToEndOfFile()
+    let dataErr = pipeErr.fileHandleForReading.readDataToEndOfFile()
+    
+    let output = String(data: dataErr, encoding: .utf8)
+    
+    // Check if the app is in the results
+    if let result = output, result.isEmpty {
         diskP = true
         _ = checkAndRequestAccessibilityAccess(appState: appState)
-        
         return true
     } else {
         diskP = false
         if !skipAlert {
-            appState.alertType = .diskAccess
-            appState.showAlert = true
+            NewWin.show(appState: appState, width: 500, height: 350, newWin: .perm)
+//            appState.alertType = .diskAccess
+//            appState.showAlert = true
         }
         
         return false
     }
+    
+    
+//    let fileURL = URL(fileURLWithPath: "/Library/Application Support/com.apple.TCC/TCC.db")
+//    
+//    let accessStatus = FileManager.default.isReadableFile(atPath: fileURL.path)
+//    print(accessStatus)
+//    if accessStatus {
+//        diskP = true
+//        _ = checkAndRequestAccessibilityAccess(appState: appState)
+//        
+//        return true
+//    } else {
+//        diskP = false
+//        if !skipAlert {
+//            appState.alertType = .diskAccess
+//            appState.showAlert = true
+//        }
+//        
+//        return false
+//    }
 }
 
 
@@ -74,6 +137,22 @@ func checkAndRequestAccessibilityAccess(appState: AppState) -> Bool {
 }
 
 
+// Check if appearance is dark mode
+func isDarkModeEnabled() -> Bool {
+    let process = Process()
+    process.executableURL = URL(fileURLWithPath: "/bin/zsh")
+    process.arguments = ["-c", "defaults read -g AppleInterfaceStyle"]
+    let pipe = Pipe()
+    process.standardOutput = pipe
+    process.standardError = pipe
+    try? process.run()
+    let data = pipe.fileHandleForReading.readDataToEndOfFile()
+    if !data.isEmpty{
+        return true
+    } else {
+        return false
+    }
+}
 
 
 // Check if symlink
@@ -277,35 +356,28 @@ func presentAlert(appState: AppState) -> Alert {
 
     switch appState.alertType {
     case .update:
-        return Alert(title: Text("Update Available 🥳"), message: Text("You may choose to install the update now, otherwise you may check again later from Settings"), primaryButton: .default(Text("Open")) {
-//            downloadUpdate(appState: appState)
-            launchUpdate()
+        return Alert(title: Text("Update Available 🥳"), message: Text("You may choose to install the update now, otherwise you may check again later from Settings"), primaryButton: .default(Text("Install")) {
+            downloadUpdate(appState: appState)
+//            launchUpdate()
             appState.alertType = .off
         }, secondaryButton: .cancel())
     case .no_update:
-        return Alert(title: Text("No Updates 😌"), message: Text("The application is on the latest release available"), primaryButton: .cancel(Text("Okay")), secondaryButton: .default(Text("Force Update")) {
+        return Alert(title: Text("No Updates 😌"), message: Text("Pearcleaner is on the latest release available"), primaryButton: .cancel(Text("Okay")), secondaryButton: .default(Text("Force Update")) {
             downloadUpdate(appState: appState)
             appState.alertType = .off
         })
     case .diskAccess:
-        return Alert(title: Text("Permissions"), message: Text("This application requires Full Disk and Accessibility permissions. Drag the app into the Full Disk pane if not visible."), primaryButton: .default(Text("Allow in Settings")) {
+        return Alert(title: Text("Permissions"), message: Text("Pearcleaner requires Full Disk and Accessibility permissions. Drag the app into the Full Disk and Accessibility pane to enable or toggle On if already present."), primaryButton: .default(Text("Allow in Settings")) {
             if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles") {
                 NSWorkspace.shared.open(url)
             }
             appState.alertType = .off
         }, secondaryButton: .cancel(Text("Later")))
-//    case .eventsAccess:
-//        return Alert(title: Text("Accessibility Permission"), message: Text("This application requires Accessibility permission"), primaryButton: .default(Text("Allow in Settings")) {
-//            if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
-//                NSWorkspace.shared.open(url)
-//            }
-//            appState.alertType = .off
-//        }, secondaryButton: .cancel(Text("Later")))
     case .restartApp:
-        return Alert(title: Text("Update Completed!"), message: Text("The application has been updated to the latest version, would you like to restart now?"), primaryButton: .default(Text("Restart")), secondaryButton: .cancel(Text("Later")) {
+        return Alert(title: Text("Update Completed!"), message: Text("The application has been updated to the latest version, would you like to restart now?"), primaryButton: .default(Text("Restart")) {
             appState.alertType = .off
-            relaunchApp(afterDelay: 1)
-        })
+            relaunchApp()
+        }, secondaryButton: .cancel(Text("Later")))
     case .off:
         return Alert(title: Text(""))
     }
@@ -326,7 +398,34 @@ func ensureApplicationSupportFolderExists(appState: AppState) {
 }
 
 
+// --- Write Log to File for troubleshooting ---
+func writeLog(string: String) {
+    let fileManager = FileManager.default
+    let home = fileManager.homeDirectoryForCurrentUser.path
+    let logFilePath = "\(home)/Downloads/log.txt"
+    
+    // Check if the log file exists, and create it if it doesn't
+    if !fileManager.fileExists(atPath: logFilePath) {
+        if !fileManager.createFile(atPath: logFilePath, contents: nil, attributes: nil) {
+            print("Failed to create the log file.")
+            return
+        }
+    }
+    
+    do {
+        if let fileHandle = FileHandle(forWritingAtPath: logFilePath) {
+            let ns = "\(string)\n"
+            fileHandle.seekToEndOfFile()
+            fileHandle.write(ns.data(using: .utf8)!)
+            fileHandle.closeFile()
+        } else {
+            print("Error opening file for appending")
+        }
+    }
+}
 
+
+// --- Load Plist file with launchctl ---
 func launchctl(load: Bool) {
     let cmd = load ? "load" : "unload"
     if let plistPath = Bundle.main.path(forResource: "com.alienator88.PearcleanerSentinel", ofType: "plist") {

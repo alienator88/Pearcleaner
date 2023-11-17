@@ -16,7 +16,7 @@ struct DropTarget: View, DropDelegate {
     @State private var shouldFlash = false
     private var types: [UTType] = [.fileURL]
     @Environment(\.colorScheme) var colorScheme
-    @State private var phase: CGFloat = 0
+    @State private var phase: CGFloat = 4
     
     public init(appState: AppState) {
         self.appState = appState
@@ -39,7 +39,9 @@ struct DropTarget: View, DropDelegate {
                                 Image(mini ? "pear" : "logo")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: mini ? 104 : 500)
+                                .frame(minWidth: mini ? 104 : 300)
+                                .frame(maxWidth: mini ? 104 : 500)
+                                .padding(mini ? 20 : 10)
                             )
                     }
                     
@@ -52,17 +54,17 @@ struct DropTarget: View, DropDelegate {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background {
                 RoundedRectangle(cornerRadius: 8)
-                    .strokeBorder(LinearGradient(gradient: Gradient(colors: [.pink, .orange]), startPoint: .leading, endPoint: .trailing), style: StrokeStyle(lineWidth: 3, dash: [10], dashPhase: phase))
+                    .strokeBorder(LinearGradient(gradient: Gradient(colors: [.pink, .orange]), startPoint: .leading, endPoint: .trailing), style: StrokeStyle(lineWidth: 3, dash: [11.0], dashPhase: phase))
                     .onAppear {
                         withAnimation(.linear.speed(0.5).repeat(while: ants, autoreverses: false)) {
                             if ants {
-                                phase -= 20
+                                phase -= 22
                             }
                         }
                     }
                     .onChange(of: ants) { newValue in
                         withAnimation(.linear.speed(0.5).repeat(while: newValue, autoreverses: false)) {
-                            phase -= 20
+                            phase -= 22
                         }
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)

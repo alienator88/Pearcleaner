@@ -13,8 +13,10 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.glass") private var glass: Bool = true
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.general.dark") var isDark: Bool = true
-    @AppStorage("displayMode") var displayMode: DisplayMode = .dark
-
+    @AppStorage("displayMode") var displayMode: DisplayMode = .system
+    @State private var selectedTheme = "Auto"
+    private let themes = ["Auto", "Dark", "Light"]
+    
     var body: some View {
         Form {
             VStack {
@@ -38,18 +40,44 @@ struct GeneralSettingsTab: View {
                 
                 HStack {
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("Dark Mode").font(.title2)
-                        Text("Toggles between dark and light mode")
+                        Text("Appearance").font(.title2)
+                        Text("Toggles color mode")
                             .font(.footnote)
                             .foregroundStyle(.gray)
                     }
+                    
                     Spacer()
-                    Toggle(isOn: $isDark, label: {
-                    })
-                    .toggleStyle(.switch)
-                    .onChange(of: isDark) { newValue in
-                        displayMode.colorScheme = newValue ? .dark : .light
+                    
+                    Picker("", selection: $selectedTheme) {
+                        ForEach(themes, id: \.self) { theme in
+                            Text(theme)
+                        }
                     }
+                    .pickerStyle(SegmentedPickerStyle())
+//                    .padding()
+                    .onChange(of: selectedTheme) { newTheme in
+                        switch newTheme {
+                        case "Auto":
+                            displayMode.colorScheme = nil
+                            if isDarkModeEnabled() {
+                                displayMode.colorScheme = .dark
+                            } else {
+                                displayMode.colorScheme = .light
+                            }
+                        case "Dark":
+                            displayMode.colorScheme = .dark
+                        case "Light":
+                            displayMode.colorScheme = .light
+                        default:
+                            break
+                        }
+                    }
+//                    Toggle(isOn: $isDark, label: {
+//                    })
+//                    .toggleStyle(.switch)
+//                    .onChange(of: isDark) { newValue in
+//                        displayMode.colorScheme = newValue ? .dark : .light
+//                    }
                 }
                 .padding()
                 .background(
@@ -69,7 +97,16 @@ struct GeneralSettingsTab: View {
                     })
                     .toggleStyle(.switch)
                     .onChange(of: mini) { newVal in
-                            resizeWindow()
+                        resizeWindow(width: 300, height: 300)
+                        if mini {
+                            appState.currentView = .apps
+                        } else {
+                            if appState.appInfo.appName.isEmpty {
+                                appState.currentView = .empty
+                            } else {
+                                appState.currentView = .files
+                            }
+                        }
                     }
                 }
                 .padding()

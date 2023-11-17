@@ -18,20 +18,45 @@ struct TopBarMini: View {
     
     var body: some View {
         HStack(alignment: .center, spacing: 5) {
+            
             Spacer()
+            
             if appState.currentView == .apps {
-                HStack(alignment: .center, spacing: 0) {
-                    Button("") {
-                        withAnimation(.easeInOut(duration: 0.5)) {
-                            appState.currentView = .empty
-                            appState.appInfo = AppInfo.empty
-                        }
-                    }
-                    .buttonStyle(SimpleButtonStyle(icon: "arrow.down.app", help: "Drop", color: Color("mode")))
-
+//                HStack {
+//                    Spacer()
                     
+                SearchBarMini(search: $search, reload: $reload)
+                    .frame(width: 180)
+//                        .padding(.top, 5)
+                    
+//                    Spacer()
+                    
+//                    Button("") {
+//                        withAnimation(.easeInOut(duration: 0.5)) {
+//                            // Refresh Apps list
+//                            reload.toggle()
+//                            let sortedApps = getSortedApps()
+//                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+//                                appState.sortedApps.userApps = sortedApps.userApps
+//                                appState.sortedApps.systemApps = sortedApps.systemApps
+//                                reload.toggle()
+//                            }
+//                            
+//                        }
+//                    }
+//                    .buttonStyle(SimpleButtonStyle(icon: "arrow.triangle.2.circlepath", help: "Refresh app list", color: Color("mode")))
+//                    .padding(.leading, 5)
+//                }
+            }
+            
+            if appState.currentView == .apps {
+                Button("") {
+                    withAnimation(.easeInOut(duration: 0.5)) {
+                        appState.currentView = .empty
+                        appState.appInfo = AppInfo.empty
+                    }
                 }
-                
+                .buttonStyle(SimpleButtonStyle(icon: "arrow.down.app", help: "Drop", color: Color("mode")))
             } else if appState.currentView == .empty {
                 Button("") {
                     withAnimation(.easeInOut(duration: 0.5)) {
@@ -55,56 +80,22 @@ struct TopBarMini: View {
                 .buttonStyle(SimpleButtonStyle(icon: "list.triangle", help: "Apps", color: Color("mode")))
             }
             
-            if appState.currentView == .apps {
-                HStack {
-                    Spacer()
-                    
-                    SearchBarMini(search: $search)
-                    
-                    Spacer()
-                    
-                    Button("") {
-                        withAnimation(.easeInOut(duration: 0.5)) {
-                            // Refresh Apps list
-                            reload.toggle()
-                            let sortedApps = getSortedApps()
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                appState.sortedApps.userApps = sortedApps.userApps
-                                appState.sortedApps.systemApps = sortedApps.systemApps
-                                reload.toggle()
-                            }
-                            
-                        }
-                    }
-                    .buttonStyle(SimpleButtonStyle(icon: "arrow.triangle.2.circlepath", help: "Refresh app list", color: Color("mode")))
-                }
-            }
-            
-            
-            Spacer()
-            
-//            if sentinel {
-//                Button("") {
-//                    //
-//                }
-//                .buttonStyle(SimpleButtonStyle(icon: "lock.shield", help: "Sentinel enabled", color: .green, shield: true))
-//            }
-            
         }
-        .edgesIgnoringSafeArea(.all)
-        .padding(.horizontal)
-        .padding(.top, 30)
+        .padding(.horizontal, 10)
+        .padding(.top, 10)
+        .padding(.bottom, 15)
     }
 }
 
 
 struct SearchBarMini: View {
     @Binding var search: String
+    @Binding var reload: Bool
     
     var body: some View {
         HStack {
             TextField("Search", text: $search)
-                .textFieldStyle(SimpleSearchStyle(trash: true, text: $search))
+                .textFieldStyle(SimpleSearchStyle(trash: true, reload: $reload, text: $search))
         }
         .frame(height: 30)
     }

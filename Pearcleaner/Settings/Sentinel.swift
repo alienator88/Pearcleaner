@@ -39,13 +39,17 @@ struct SentinelSettingsTab: View {
                         RoundedRectangle(cornerRadius: 8)
                             .fill(Color("mode").opacity(0.05))
                     )
+                    Text("If you uninstall Pearcleaner, make sure to disable Sentinel first").font(.footnote)
+                        .foregroundStyle(Color.red)
+                        .padding()
+
                 }
 
                 
             
         }
         .padding(20)
-        .frame(width: 450, height: 100)
+        .frame(width: 450, height: 130)
         
     }
     

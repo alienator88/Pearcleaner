@@ -7,16 +7,18 @@
 		<dict>
 			<key>CFBundleTypeName</key>
 			<string>Application Bundle</string>
-			<key>LSHandlerRank</key>
-			<string>Default</string>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>com.apple.application-bundle</string>
 			</array>
 		</dict>
 	</array>
+	<key>CFBundleGetInfoString</key>
+	<string></string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -30,5 +32,13 @@
 			</array>
 		</dict>
 	</array>
+	<key>SUPublicEDKey</key>
+	<string>cD156JWtfwtgFJH2RApyj9Bgc0fCqLBGEf9C9IRMCWE=</string>
+	<key>SUFeedURL</key>
+	<string>https://raw.githubusercontent.com/alienator88/Pearcleaner/main/appcast.xml</string>
+	<key>SUEnableInstallerLauncherService</key>
+	<true/>
+	<key>SUEnableDownloaderService</key>
+	<true/>
 </dict>
 </plist>

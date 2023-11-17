@@ -77,6 +77,7 @@ func getAppInfo(atPath path: URL) -> AppInfo? {
            var appIconFileName = bundle.infoDictionary?["CFBundleIconFile"] as? String {
             var appIcon: NSImage?
             var appName: String?
+            var webApp: Bool?
             if let localizedName = bundle.localizedInfoDictionary?[kCFBundleNameKey as String] as? String {
                 appName = localizedName
             } else if let bundleName = bundle.infoDictionary?["CFBundleName"] as? String {
@@ -111,7 +112,13 @@ func getAppInfo(atPath path: URL) -> AppInfo? {
                 print("App Icon not found for app at path: \(path)")
             }
 
-            return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName ?? "", appVersion: appVersion, appIcon: appIcon)
+            if bundle.infoDictionary?["LSTemplateApplication"] is Bool {
+                webApp = true
+            } else {
+                webApp = false
+            }
+            
+            return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName ?? "", appVersion: appVersion, appIcon: appIcon, webApp: webApp ?? false)
             
         } else {
             print("One or more variables missing for app at path: \(path)")
@@ -178,6 +185,9 @@ func findPathsForApp(appState: AppState, appInfo: AppInfo) {
             //        appState.paths.insert(url, at: 0)
             collection.insert(url, at: 0)
         }
+        
+        // Only search for extra files if not a webapp
+        //        if !appInfo.webApp {
         let fileManager = FileManager.default
         let dispatchGroup = DispatchGroup()
         let bundleComponents = appInfo.bundleIdentifier.components(separatedBy: ".")
@@ -203,29 +213,43 @@ func findPathsForApp(appState: AppState, appInfo: AppInfo) {
                     if collection.contains(itemURL) {
                         return
                     }
-                    
-                    if itemL.contains("comapple")  {
-                        if itemL.contains(bundle) || itemL.contains(bundleIdentifierL) || (nameL.count > 4 && itemL.contains(nameL)) {
-                            collection.append(itemURL)
-                        }
-                    }
-                    else if itemL.contains("xcode") {
-                        if itemL.contains(bundle) || itemL.contains(bundleIdentifierL) || (nameL.count > 4 && itemL.contains(nameL)) {
-                            collection.append(itemURL)
-                        }
-                    } else if itemL.contains("logi") && !itemL.contains("login") {
-                        if itemL.contains(bundleComponents[1]) || itemL.contains(bundle) || itemL.contains(bundleIdentifierL) || (nameL.count > 3 && itemL.contains(nameL)) {
-                            collection.append(itemURL)
-                        }
-                    } else if itemL.contains("office") || itemL.contains("oneauth") || itemL.suffix(2).contains("ms") || itemL.contains("onenote") {
-                        if itemL.contains(bundle) || itemL.contains(bundleIdentifierL) || (nameL.count > 4 && itemL.contains(nameL)) {
+                    // Catch web app plist files
+                    if appInfo.webApp {
+                        if itemL.contains(bundleIdentifierL) {
+                            if collection.contains(itemURL) {
+                                return
+                            }
                             collection.append(itemURL)
                         }
                     } else {
-                        if itemL.contains(bundleIdentifierL) || itemL.contains(bundle) || (nameL.count > 3 && itemL.contains(nameL)) {
-                            collection.append(itemURL)
+                        // Catch all the com.apple folders in the OS since there's a ton and probably unrelated
+                        if itemL.contains("comapple")  {
+                            if itemL.contains(bundle) || itemL.contains(bundleIdentifierL) || (nameL.count > 4 && itemL.contains(nameL)) {
+                                collection.append(itemURL)
+                            }
+                        }
+                        // Catch Xcode files
+                        else if itemL.contains("xcode") {
+                            if itemL.contains(bundle) || itemL.contains(bundleIdentifierL) || (nameL.count > 4 && itemL.contains(nameL)) {
+                                collection.append(itemURL)
+                            }
+                            // Catch Logitech files since Logi is part of word login and can return random files
+                        } else if itemL.contains("logi") && !itemL.contains("login") {
+                            if itemL.contains(bundleComponents[1]) || itemL.contains(bundle) || itemL.contains(bundleIdentifierL) || (nameL.count > 3 && itemL.contains(nameL)) {
+                                collection.append(itemURL)
+                            }
+                            // Catch MS Office files since they have many random folder names and very short names
+                        } else if itemL.contains("office") || itemL.contains("oneauth") || itemL.suffix(2).contains("ms") || itemL.contains("onenote") {
+                            if itemL.contains(bundle) || itemL.contains(bundleIdentifierL) || (nameL.count > 4 && itemL.contains(nameL)) {
+                                collection.append(itemURL)
+                            }
+                        } else {
+                            if itemL.contains(bundleIdentifierL) || itemL.contains(bundle) || (nameL.count > 3 && itemL.contains(nameL)) {
+                                collection.append(itemURL)
+                            }
                         }
                     }
+                    
                 }
             } catch {
                 continue
@@ -241,6 +265,14 @@ func findPathsForApp(appState: AppState, appInfo: AppInfo) {
             }
             
         }
+        //        }
+        
+        //        if appInfo.webApp {
+        //            updateOnMain {
+        //                appState.paths = collection
+        //                appState.selectedItems = Set(collection)
+        //            }
+        //        }
     }
 }
 

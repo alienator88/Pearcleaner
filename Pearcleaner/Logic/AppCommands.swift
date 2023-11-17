@@ -23,7 +23,7 @@ struct AppCommands: Commands {
             Button {
                 loadGithubReleases(appState: appState, manual: true)
             } label: {
-                Text("Updates")
+                Text("Check for Updates")
             }
             .keyboardShortcut("u", modifiers: .command)
             

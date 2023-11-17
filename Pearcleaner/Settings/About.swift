@@ -139,7 +139,7 @@ struct AboutSettingsTab: View {
             
             Spacer()
             
-            Text("Made with ❤️ by Alin Lupascu").font(.footnote).padding(.bottom)
+            Text("Made with ❤️ by Alin Lupascu (dev@itsalin.com)").font(.footnote).padding(.bottom)
         }
         .padding(20)
         .frame(width: 750, height: 325)

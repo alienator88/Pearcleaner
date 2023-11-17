@@ -10,8 +10,12 @@ import SwiftUI
 
 struct AppListItems: View {
     @EnvironmentObject var appState: AppState
+//    @Binding var reload: Bool
+//    @Binding var search: String
     @State private var isHovered = false
     @Environment(\.colorScheme) var colorScheme
+    @AppStorage("settings.general.mini") private var mini: Bool = false
+    
     let appInfo: AppInfo
     var isSelected: Bool {
         appState.appInfo == appInfo
@@ -39,6 +43,16 @@ struct AppListItems: View {
                         .truncationMode(.tail)
                         .padding(.horizontal, 5)
                 }
+                if appInfo.webApp {
+                    Text("web")
+                        .font(.footnote)
+                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .frame(minWidth: 30, minHeight: 15)
+                        .padding(2)
+                        .background(Color("mode").opacity(0.1))
+                        .clipShape(.capsule)
+                }
+                
                 
                 Spacer()
                 Text(appInfo.appVersion)
@@ -82,9 +96,26 @@ struct AppListItems: View {
                 appState.appInfo = appInfo
                 findPathsForApp(appState: appState, appInfo: appState.appInfo)
                 withAnimation(Animation.easeIn(duration: 0.4)) {
-                    appState.currentView = .files
+                    if mini {
+                        appState.showPopover.toggle()
+                    } else {
+                        appState.currentView = .files
+                    }
                 }
             }
         }
+//        .popover(isPresented: $appState.showPopover, arrowEdge: .trailing) {
+//            VStack {
+//                FilesView()
+//                    .id(appState.appInfo.id)
+//            }
+//            .background(
+//                Rectangle()
+//                    .background(colorScheme == .dark ? .black.opacity(0.8) : .white)
+//                    .padding(-80)
+//            )
+//            .frame(minWidth: 500, minHeight: 500)
+//
+//        }
     }
 }

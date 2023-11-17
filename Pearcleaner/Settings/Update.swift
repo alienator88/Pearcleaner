@@ -93,7 +93,8 @@ struct UpdateSettingsTab: View {
 func loadGithubReleases(appState: AppState, manual: Bool = false) {
     let url = URL(string: "https://api.github.com/repos/alienator88/Pearcleaner/releases")!
     let request = URLRequest(url: url)
-//    request.setValue("token \(ghToken)", forHTTPHeaderField: "Authorization")
+    // Set the token for a private repo
+    // request.setValue("token \(ghToken)", forHTTPHeaderField: "Authorization")
     URLSession.shared.dataTask(with: request) { data, response, error in
         if let data = data {
             if let decodedResponse = try? JSONDecoder().decode([Release].self, from: data) {
@@ -114,22 +115,25 @@ func checkForUpdate(appState: AppState, manual: Bool = false) {
     guard let latestRelease = appState.releases.first else { return }
     let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
     if latestRelease.tag_name > currentVersion ?? "" {
-        appState.alertType = .update
-        appState.showAlert = true
+        NewWin.show(appState: appState, width: 500, height: 400, newWin: .update)
+//        appState.alertType = .update
+//        appState.showAlert = true
     } else {
         if manual {
-            appState.alertType = .no_update
-            appState.showAlert = true
+            NewWin.show(appState: appState, width: 500, height: 300, newWin: .no_update)
+//            appState.alertType = .no_update
+//            appState.showAlert = true
         }
     }
 }
 
-func launchUpdate() {
-    NSWorkspace.shared.open(URL(string: "https://github.com/alienator88/Pearcleaner/releases")!)
-
-}
 
 func downloadUpdate(appState: AppState) {
+    updateOnMain {
+        appState.progressBar.0 = "Getting update file links ready"
+        appState.progressBar.1 = 0.1
+    }
+    
     guard let latestRelease = appState.releases.first else { return }
     guard let asset = latestRelease.assets.first else { return }
     guard let url = URL(string: asset.url) else { return }
@@ -138,6 +142,11 @@ func downloadUpdate(appState: AppState) {
     request.setValue("application/octet-stream", forHTTPHeaderField: "Accept")
     
     let downloadTask = URLSession.shared.downloadTask(with: request) { localURL, urlResponse, error in
+        updateOnMain {
+            appState.progressBar.0 = "Downloading update file"
+            appState.progressBar.1 = 0.2
+        }
+        
         guard let localURL = localURL else { return }
         
         let fileManager = FileManager.default
@@ -147,14 +156,20 @@ func downloadUpdate(appState: AppState) {
             if fileManager.fileExists(atPath: destinationURL.path) {
                 try? fileManager.removeItem(at: destinationURL)
             }
+            updateOnMain {
+                appState.progressBar.0 = "Moving update file to Application Support"
+                appState.progressBar.1 = 0.4
+            }
+            
             try fileManager.moveItem(at: localURL, to: destinationURL)
             
-            UnzipAndReplace(DownloadedFileURL: destinationURL.path, appState: appState) {
-                updateOnMain {
-                    // Restart App
-                    relaunchApp(afterDelay: 1)
-                }
+            UnzipAndReplace(DownloadedFileURL: destinationURL.path, appState: appState)
+            
+            updateOnMain {
+                appState.progressBar.0 = "Done, please restart!"
+                appState.progressBar.1 = 1.0
             }
+            
             
         } catch {
             print("Error moving downloaded file: \(error.localizedDescription)")
@@ -164,28 +179,61 @@ func downloadUpdate(appState: AppState) {
     downloadTask.resume()
 }
 
-func UnzipAndReplace(DownloadedFileURL fileURL: String, appState: AppState, completion: @escaping () -> Void = {}) {
+func UnzipAndReplace(DownloadedFileURL fileURL: String, appState: AppState) {
     let appDirectory = Bundle.main.bundleURL.deletingLastPathComponent().path
     let appBundle = Bundle.main.bundleURL.path
     let fileManager = FileManager.default
     
     do {
+        updateOnMain {
+            appState.progressBar.0 = "Deleting existing application"
+            appState.progressBar.1 = 0.5
+        }
+        
         // Remove the old version of your app
         try fileManager.removeItem(atPath: appBundle)
         
+        updateOnMain {
+            appState.progressBar.0 = "Unziping new update file to original Pearcleaner location"
+            appState.progressBar.1 = 0.6
+        }
+        
+
         // Unzip the downloaded update file to your app's bundle path
         let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/unzip")
-        process.arguments = [fileURL, "-d", appDirectory]
+//        process.executableURL = URL(fileURLWithPath: "/usr/bin/unzip")
+//        process.arguments = [fileURL, "-d", appDirectory]
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/ditto")
+        process.arguments = ["-xk", fileURL, appDirectory]
+//        let pipe = Pipe()
+        process.standardOutput = FileHandle.nullDevice
+        process.standardError = FileHandle.nullDevice
+        
         try process.run()
         process.waitUntilExit()
         
+//        let outputData = pipe.fileHandleForReading.readDataToEndOfFile()
+//        let output = String(decoding: outputData, as: UTF8.self)
+//        
+//        writeLog(string: output)
+        
+        updateOnMain {
+            appState.progressBar.0 = "Deleting update file"
+            appState.progressBar.1 = 0.8
+        }
+        
         // After unzipping, remove the update file
         try fileManager.removeItem(atPath: fileURL)
+        
+        // Show Restart dialog
+//        updateOnMain {
+//            appState.alertType = .restartApp
+//            appState.showAlert = true
+//        }
+        
         
     } catch {
         print("Error updating the app: \(error)")
     }
     
-    completion()
 }

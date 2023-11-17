@@ -22,8 +22,11 @@ class AppState: ObservableObject
 //    @Published var currentMode = CurrentMode.regular
     @Published var showAlert: Bool = false
     @Published var sidebar: Bool = true
+    @Published var showPopover: Bool = false
     @Published var isReminderVisible: Bool = false
     @Published var releases = [Release]()
+    @Published var progressBar: (String, Double) = ("Ready", 0.0)
+
     
     //Window
 //    @Published var winWidth: CGFloat = 1020
@@ -35,7 +38,8 @@ class AppState: ObservableObject
             bundleIdentifier: "",
             appName: "",
             appVersion: "",
-            appIcon: nil
+            appIcon: nil,
+            webApp: false
         )
     }
 }
@@ -47,8 +51,9 @@ struct AppInfo: Identifiable, Hashable {
     let appName: String
     let appVersion: String
     let appIcon: NSImage?
+    let webApp: Bool
     
-    static let empty = AppInfo(id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "", appVersion: "", appIcon: nil)
+    static let empty = AppInfo(id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "", appVersion: "", appIcon: nil, webApp: false)
 }
 
 
@@ -78,11 +83,13 @@ enum CurrentDetailsView:Int
     case apps
 }
 
-//enum CurrentMode:Int
-//{
-//    case regular
-//    case mini
-//}
+enum NewWindow:Int
+{
+    case update
+    case no_update
+    case perm
+}
+
 
 enum AlertType:Int
 {
