@@ -26,10 +26,12 @@ struct TopBarMini: View {
 //                    Spacer()
                     
                 SearchBarMini(search: $search, reload: $reload)
-                    .frame(width: 180)
+//                    .frame(width: 150)
+                    .offset(x: 20)
+                    .padding(.horizontal, 30)
 //                        .padding(.top, 5)
                     
-//                    Spacer()
+                Spacer()
                     
 //                    Button("") {
 //                        withAnimation(.easeInOut(duration: 0.5)) {
@@ -80,6 +82,7 @@ struct TopBarMini: View {
                 .buttonStyle(SimpleButtonStyle(icon: "list.triangle", help: "Apps", color: Color("mode")))
             }
             
+            
         }
         .padding(.horizontal, 10)
         .padding(.top, 10)
@@ -97,6 +100,6 @@ struct SearchBarMini: View {
             TextField("Search", text: $search)
                 .textFieldStyle(SimpleSearchStyle(trash: true, reload: $reload, text: $search))
         }
-        .frame(height: 30)
+        .frame(height: 20)
     }
 }
