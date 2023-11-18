@@ -19,7 +19,7 @@ This project was born out of wanting to learn more. There's probably parts of th
 
 ## Features
 - 100% Swift/SwiftUI
-- Super small app size (Under 2MB currently)
+- Super small app size (~2MB)
 - Quick file search
 - Optional Sentinel monitor helper that can be enabled to watch Trash folder for deleted apps
 - Sentinel monitor is extremely small (210KB) and uses ~2mb of ram to run in the background and file watch. Communicates to app via custom url scheme instead of xpc to keep things even lighter
