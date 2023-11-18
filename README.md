@@ -27,7 +27,7 @@ This project was born out of wanting to learn more. There's probably parts of th
 - Can drop apps to uninstall directly on the App Icon itself or the drop target in the app window
 - Will differentiate between regular apps and Safari web-apps with a "web" label next to each item in the list
 - Requires Full Disk permission to search for files and also Accessibility to delete/restore files
-- Built-in auto-updater that pulls latest release notes and binaries from GitHub Releases
+- Built-in auto-updater that pulls latest release notes and binaries from GitHub Releases (Might not work well if app is not in /Applications folder because of permissions)
 
 ## Screenshots
 <img src="https://github.com/alienator88/Pearcleaner/assets/6263626/aa48fd55-df2f-450c-a0c0-bf9507d7a465" align="left" width="400" />
