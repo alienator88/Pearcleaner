@@ -1,6 +1,6 @@
 # Pearcleaner
 
-<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/6f22c4fa-fb3a-43aa-82ad-70f043b8fc88" align="left" width="128" height="128" />
+<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/e6829883-894e-49a1-bc75-2c4550593b98" align="left" width="128" height="128" />
 </br>
 <p align="center">
    <strong>Status: </strong>Maintained
