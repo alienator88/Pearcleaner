@@ -12,7 +12,7 @@ let home = FileManager.default.homeDirectoryForCurrentUser.path
 
 class AppState: ObservableObject
 {
-    @Published var showFiles: Bool = false
+//    @Published var showFiles: Bool = false
     @Published var appInfo: AppInfo
     @Published var paths: [URL] = []
     @Published var sortedApps: (userApps: [AppInfo], systemApps: [AppInfo]) = ([], [])
@@ -22,7 +22,7 @@ class AppState: ObservableObject
 //    @Published var currentMode = CurrentMode.regular
     @Published var showAlert: Bool = false
     @Published var sidebar: Bool = true
-    @Published var showPopover: Bool = false
+//    @Published var showPopover: Bool = false
     @Published var isReminderVisible: Bool = false
     @Published var releases = [Release]()
     @Published var progressBar: (String, Double) = ("Ready", 0.0)

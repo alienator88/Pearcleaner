@@ -18,17 +18,18 @@ struct PearcleanerApp: App {
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @State private var search = ""
-
+    @State private var showPopover: Bool = false
+    
     var body: some Scene {
 
         WindowGroup {
             Group {
                 
                 if !mini {
-                    AppListView(search: $search)
+                    AppListView(search: $search, showPopover: $showPopover)
                         .frame(minWidth: 800, minHeight: 500)
                 } else {
-                    MiniMode(search: $search)
+                    MiniMode(search: $search, showPopover: $showPopover)
                         .frame(minWidth: 300, minHeight: 300)
                 }
                 
@@ -44,7 +45,7 @@ struct PearcleanerApp: App {
                 let sortedApps = getSortedApps()
                 appState.sortedApps.userApps = sortedApps.userApps
                 appState.sortedApps.systemApps = sortedApps.systemApps
-                
+                                
                 Task {
                     
 #if !DEBUG
@@ -78,7 +79,6 @@ struct PearcleanerApp: App {
             
         }
         .windowStyle(.hiddenTitleBar)
-        .windowToolbarStyle(.unified)
         .windowResizability(.contentMinSize)
         .commands {
             AppCommands(appState: appState)

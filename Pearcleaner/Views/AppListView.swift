@@ -16,6 +16,7 @@ struct AppListView: View {
     @State private var showUsr: Bool = true
 //    @State private var sidebar: Bool = true
     @State private var reload: Bool = false
+    @Binding var showPopover: Bool
     
     var filteredUserApps: [AppInfo] {
         if search.isEmpty {
@@ -56,20 +57,20 @@ struct AppListView: View {
                                     HStack {
                                         SearchBar(search: $search, reload: $reload)
 
-                                        Button("") {
-                                            withAnimation(.easeInOut(duration: 0.5)) {
-                                                // Refresh Apps list
-                                                reload.toggle()
-                                                let sortedApps = getSortedApps()
-                                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                                    appState.sortedApps.userApps = sortedApps.userApps
-                                                    appState.sortedApps.systemApps = sortedApps.systemApps
-                                                    reload.toggle()
-                                                }
-                                                
-                                            }
-                                        }
-                                        .buttonStyle(SimpleButtonStyle(icon: "arrow.triangle.2.circlepath", help: "Refresh app list", color: Color("mode")))
+//                                        Button("") {
+//                                            withAnimation(.easeInOut(duration: 0.5)) {
+//                                                // Refresh Apps list
+//                                                reload.toggle()
+//                                                let sortedApps = getSortedApps()
+//                                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+//                                                    appState.sortedApps.userApps = sortedApps.userApps
+//                                                    appState.sortedApps.systemApps = sortedApps.systemApps
+//                                                    reload.toggle()
+//                                                }
+//                                                
+//                                            }
+//                                        }
+//                                        .buttonStyle(SimpleButtonStyle(icon: "arrow.triangle.2.circlepath", help: "Refresh app list", color: Color("mode")))
                                     }
                                 }
                                 .padding(.horizontal)
@@ -84,7 +85,7 @@ struct AppListView: View {
                                             VStack {
                                                 Header(title: "User", count: filteredUserApps.count)
                                                 ForEach(filteredUserApps, id: \.self) { appInfo in
-                                                    AppListItems(appInfo: appInfo)
+                                                    AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
                                                     if appInfo != filteredUserApps.last {
                                                         Divider().padding(.horizontal, 5)
                                                     }
@@ -98,7 +99,7 @@ struct AppListView: View {
                                             VStack {
                                                 Header(title: "System", count: filteredSystemApps.count)
                                                 ForEach(filteredSystemApps, id: \.self) { appInfo in
-                                                    AppListItems(appInfo: appInfo)
+                                                    AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
                                                     if appInfo != filteredSystemApps.last {
                                                         Divider().padding(.horizontal, 5)
                                                     }
@@ -135,7 +136,7 @@ struct AppListView: View {
                     AppDetailsEmptyView()
                 } else if appState.currentView == .files {
                     TopBar(reload: $reload)
-                    FilesView()
+                    FilesView(showPopover: $showPopover)
                         .id(appState.appInfo.id)
                 }
             }

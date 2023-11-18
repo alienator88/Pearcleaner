@@ -22,20 +22,10 @@ struct TopBar: View {
             
             Spacer()
             
-            if appState.currentView != .empty {
-                Button("") {
-                    withAnimation(.easeInOut(duration: 0.5)) {
-                        appState.currentView = .empty
-                        appState.appInfo = AppInfo.empty
-                    }
-                }
-                .buttonStyle(SimpleButtonStyle(icon: "arrow.down.app", help: "Drop", color: Color("mode")))
-            }
-            
             if appState.isReminderVisible {
                 Text("CMD + Z to undo")
                     .font(.title2)
-                    .foregroundStyle(Color("AccentColor").opacity(0.5))
+                    .foregroundStyle(Color("mode").opacity(0.5))
                     .fontWeight(.medium)
                     .onAppear {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
@@ -47,6 +37,20 @@ struct TopBar: View {
             }
             
             Spacer()
+            
+            if appState.currentView != .empty {
+                Button("") {
+                    withAnimation(.easeInOut(duration: 0.5)) {
+                        appState.currentView = .empty
+                        appState.appInfo = AppInfo.empty
+                    }
+                }
+                .buttonStyle(SimpleButtonStyle(icon: "arrow.down.app", help: "Drop", color: Color("mode")))
+            }
+            
+            
+            
+//            Spacer()
             
             
             
@@ -60,7 +64,7 @@ struct TopBar: View {
             
             
         }
-        .padding(.horizontal, 20)
-        .padding(.top, 20)
+        .padding(.horizontal, 5)
+        .padding(.top, 10)
     }
 }

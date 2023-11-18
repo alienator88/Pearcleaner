@@ -11,10 +11,11 @@ import SwiftUI
 struct AppListItems: View {
     @EnvironmentObject var appState: AppState
 //    @Binding var reload: Bool
-//    @Binding var search: String
+    @Binding var search: String
     @State private var isHovered = false
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.general.mini") private var mini: Bool = false
+    @Binding var showPopover: Bool
     
     let appInfo: AppInfo
     var isSelected: Bool {
@@ -93,11 +94,12 @@ struct AppListItems: View {
         }
         .onTapGesture {
             updateOnMain {
+                appState.appInfo = .empty
                 appState.appInfo = appInfo
                 findPathsForApp(appState: appState, appInfo: appState.appInfo)
                 withAnimation(Animation.easeIn(duration: 0.4)) {
                     if mini {
-                        appState.showPopover.toggle()
+                        showPopover.toggle()
                     } else {
                         appState.currentView = .files
                     }

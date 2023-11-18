@@ -16,7 +16,8 @@ struct FilesView: View {
     @State private var itemDetails: [(size: String, icon: Image?)] = []
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @Environment(\.colorScheme) var colorScheme
-
+    @Binding var showPopover: Bool
+    
     var body: some View {
         VStack(alignment: .center) {
             if !self.showDetails {
@@ -161,18 +162,28 @@ struct FilesView: View {
                             Task {
                                 updateOnMain {
                                     appState.appInfo = AppInfo.empty
-                                    appState.currentView = .empty
+                                    if mini {
+                                        appState.currentView = .apps
+                                        showPopover = false
+                                    } else {
+                                        appState.currentView = .empty
+                                    }
                                 }
+                                
                                 let selectedItemsArray = Array(appState.selectedItems).filter { !$0.path.contains(".Trash") }
                                 killApp(appId: appState.appInfo.bundleIdentifier) {
                                     moveFilesToTrash(at: selectedItemsArray) {
                                         withAnimation {
-                                            appState.isReminderVisible.toggle()
+                                            updateOnMain {
+                                                appState.isReminderVisible.toggle()
+                                            }
                                         }
                                         refreshAppList(appState.appInfo)
                                     }
                                 }
+                                
                             }
+                            
                         }
                         .disabled(appState.selectedItems.isEmpty)
                         .buttonStyle(WindowActionButton(action: .accept))
@@ -230,10 +241,13 @@ struct FilesView: View {
     
     func refreshAppList(_ appInfo: AppInfo) {
         let sortedApps = getSortedApps()
-        appState.sortedApps.userApps = []
-        appState.sortedApps.systemApps = []
-        appState.sortedApps.userApps = sortedApps.userApps
-        appState.sortedApps.systemApps = sortedApps.systemApps
+        updateOnMain {
+            appState.sortedApps.userApps = []
+            appState.sortedApps.systemApps = []
+            appState.sortedApps.userApps = sortedApps.userApps
+            appState.sortedApps.systemApps = sortedApps.systemApps
+        }
+        
     }
 }
 

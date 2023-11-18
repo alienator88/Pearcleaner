@@ -16,7 +16,7 @@ struct MiniMode: View {
     @State private var showUsr: Bool = true
     @State private var reload: Bool = false
     @AppStorage("settings.general.glass") private var glass: Bool = false
-
+    @Binding var showPopover: Bool
     
     
     var body: some View {
@@ -30,11 +30,11 @@ struct MiniMode: View {
                     MiniEmptyView()
                 } else if appState.currentView == .files {
                     TopBarMini(reload: $reload, search: $search)
-                    FilesView()
+                    FilesView(showPopover: $showPopover)
                         .id(appState.appInfo.id)
                 } else if appState.currentView == .apps {
                     TopBarMini(reload: $reload, search: $search)
-                    MiniAppView(search: $search, reload: $reload)
+                    MiniAppView(search: $search, reload: $reload, showPopover: $showPopover)
                 }
             }
             //            .padding(.leading, appState.sidebar ? 0 : 10)
@@ -84,12 +84,14 @@ struct MiniEmptyView: View {
             if appState.isReminderVisible {
                 Text("CMD + Z to undo")
                     .font(.title2)
-                    .foregroundStyle(Color("AccentColor").opacity(0.5))
+                    .foregroundStyle(Color("mode").opacity(0.5))
                     .fontWeight(.medium)
                     .onAppear {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                             withAnimation {
-                                appState.isReminderVisible = false
+                                updateOnMain {
+                                    appState.isReminderVisible = false
+                                }
                             }
                         }
                     }
@@ -115,6 +117,7 @@ struct MiniAppView: View {
     @State private var showUsr: Bool = true
     @Binding var reload: Bool
     @AppStorage("settings.general.mini") private var mini: Bool = false
+    @Binding var showPopover: Bool
     
     var body: some View {
         
@@ -155,7 +158,7 @@ struct MiniAppView: View {
                                     VStack {
                                         Header(title: "User", count: filteredUserApps.count)
                                         ForEach(filteredUserApps, id: \.self) { appInfo in
-                                            AppListItems(appInfo: appInfo)
+                                            AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
                                             if appInfo != filteredUserApps.last {
                                                 Divider().padding(.horizontal, 5)
                                             }
@@ -168,7 +171,7 @@ struct MiniAppView: View {
                                     VStack {
                                         Header(title: "System", count: filteredSystemApps.count)
                                         ForEach(filteredSystemApps, id: \.self) { appInfo in
-                                            AppListItems(appInfo: appInfo)
+                                            AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
                                             if appInfo != filteredSystemApps.last {
                                                 Divider().padding(.horizontal, 5)
                                             }
@@ -190,9 +193,9 @@ struct MiniAppView: View {
             }
         }
         .transition(.move(edge: .leading))
-        .popover(isPresented: $appState.showPopover, arrowEdge: .trailing) {
+        .popover(isPresented: $showPopover, arrowEdge: .trailing) {
             VStack {
-                FilesView()
+                FilesView(showPopover: $showPopover)
                     .id(appState.appInfo.id)
             }
             .background(

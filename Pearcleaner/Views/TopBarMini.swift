@@ -27,11 +27,11 @@ struct TopBarMini: View {
                     
                 SearchBarMini(search: $search, reload: $reload)
 //                    .frame(width: 150)
-                    .offset(x: 20)
-                    .padding(.horizontal, 30)
+//                    .offset(x: 20)
+//                    .padding(.horizontal, 30)
 //                        .padding(.top, 5)
                     
-                Spacer()
+//                Spacer() //////////////
                     
 //                    Button("") {
 //                        withAnimation(.easeInOut(duration: 0.5)) {
@@ -54,29 +54,38 @@ struct TopBarMini: View {
             if appState.currentView == .apps {
                 Button("") {
                     withAnimation(.easeInOut(duration: 0.5)) {
-                        appState.currentView = .empty
-                        appState.appInfo = AppInfo.empty
+                        updateOnMain {
+                            appState.currentView = .empty
+                            appState.appInfo = AppInfo.empty
+                        }
                     }
                 }
                 .buttonStyle(SimpleButtonStyle(icon: "arrow.down.app", help: "Drop", color: Color("mode")))
             } else if appState.currentView == .empty {
                 Button("") {
                     withAnimation(.easeInOut(duration: 0.5)) {
-                        appState.currentView = .apps
+                        updateOnMain {
+                            appState.currentView = .apps
+                        }
                     }
                 }
                 .buttonStyle(SimpleButtonStyle(icon: "list.triangle", help: "Apps", color: Color("mode")))
             } else if appState.currentView == .files {
                 Button("") {
                     withAnimation(.easeInOut(duration: 0.5)) {
-                        appState.currentView = .empty
-                        appState.appInfo = AppInfo.empty
+                        updateOnMain {
+                            appState.currentView = .empty
+                            appState.appInfo = AppInfo.empty
+                        }
+                        
                     }
                 }
                 .buttonStyle(SimpleButtonStyle(icon: "arrow.down.app", help: "Drop", color: Color("mode")))
                 Button("") {
                     withAnimation(.easeInOut(duration: 0.5)) {
-                        appState.currentView = .apps
+                        updateOnMain {
+                            appState.currentView = .apps
+                        }
                     }
                 }
                 .buttonStyle(SimpleButtonStyle(icon: "list.triangle", help: "Apps", color: Color("mode")))
@@ -84,9 +93,9 @@ struct TopBarMini: View {
             
             
         }
-        .padding(.horizontal, 10)
-        .padding(.top, 10)
-        .padding(.bottom, 15)
+        .padding(.horizontal, 5)
+        .padding(.top, 5)
+        .padding(.bottom, 10)
     }
 }
 
@@ -98,8 +107,9 @@ struct SearchBarMini: View {
     var body: some View {
         HStack {
             TextField("Search", text: $search)
-                .textFieldStyle(SimpleSearchStyle(trash: true, reload: $reload, text: $search))
+                .textFieldStyle(AnimatedSearchStyle(text: $search))
+//                .textFieldStyle(SimpleSearchStyle(trash: true, reload: $reload, text: $search))
         }
-        .frame(height: 20)
+//        .frame(height: 20)
     }
 }

@@ -78,8 +78,6 @@ struct LabeledDivider: View {
 
 struct AnimatedSearchStyle: TextFieldStyle {
     @State private var isHovered = false
-    @State var icon: Image?
-    @State var trash: Bool = false
     @Binding var text: String
     
     func _body(configuration: TextField<Self._Label>) -> some View {
@@ -87,56 +85,39 @@ struct AnimatedSearchStyle: TextFieldStyle {
         HStack(spacing: 5) {
             
             if isHovered || !text.isEmpty {
-                HStack(spacing: 5) {
-                    if icon != nil {
-                        icon
-                            .foregroundColor(Color("AccentColor").opacity(0.5))
-                        Image(systemName: "chevron.right")
-                            .foregroundColor(Color("AccentColor").opacity(0.3))
-                            .controlSize(.small)
-                        
-                    }
-                    
-                    configuration
-                        .frame(maxWidth: 300)
-                        .font(.title3)
-                        .textFieldStyle(PlainTextFieldStyle())
-                    if trash {
-                        Image(systemName: "xmark")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 10, height: 10)
-                            .padding(.trailing, 5)
-                            .foregroundStyle(text.isEmpty ? Color.clear : (isHovered ? Color("AccentColor").opacity(0.8) : Color("AccentColor").opacity(0.5)))
-                            .onTapGesture {
-                                text = ""
-                            }
-                    }
-                }
+                configuration
+                    .frame(width: 160)
+                    .frame(height: 15)
+                    .font(.title3)
+                    .textFieldStyle(PlainTextFieldStyle())
+                
             } else {
                 Image(systemName: "magnifyingglass")
-                    .foregroundColor(Color("AccentColor").opacity(0.5))
-                    .padding(.trailing, 150)
-                
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 18, height: 18)
+                    .foregroundColor(isHovered ? Color("mode") : Color("mode").opacity(0.5))
             }
         }
-        .padding(6)
+        .padding(8)
         .overlay(
             Group {
                 if isHovered || !text.isEmpty {
                     RoundedRectangle(cornerRadius: 6)
-                        .strokeBorder(Color("AccentColor").opacity(0.4), lineWidth: 1)
+                        .strokeBorder(Color("mode").opacity(0.4), lineWidth: 1)
                         .allowsHitTesting(false)
                 }
             }
         )
         .onHover { hovering in
-            withAnimation(Animation.easeIn(duration: 0.15)) {
+            withAnimation(Animation.easeInOut(duration: 0.4)) {
                 self.isHovered = hovering
             }
         }
     }
 }
+
+
 
 
 struct SimpleSearchStyle: TextFieldStyle {

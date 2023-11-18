@@ -186,8 +186,6 @@ func findPathsForApp(appState: AppState, appInfo: AppInfo) {
             collection.insert(url, at: 0)
         }
         
-        // Only search for extra files if not a webapp
-        //        if !appInfo.webApp {
         let fileManager = FileManager.default
         let dispatchGroup = DispatchGroup()
         let bundleComponents = appInfo.bundleIdentifier.components(separatedBy: ".")
@@ -200,6 +198,11 @@ func findPathsForApp(appState: AppState, appInfo: AppInfo) {
         let locations = Locations()
         
         for location in locations.apps.paths {
+            if !fileManager.fileExists(atPath: location) {
+//                print("Directory does not exist: \(location)")
+                continue
+            }
+            
             dispatchGroup.enter() // Enter the dispatch group
             
             do {
@@ -217,7 +220,7 @@ func findPathsForApp(appState: AppState, appInfo: AppInfo) {
                     if appInfo.webApp {
                         if itemL.contains(bundleIdentifierL) {
                             if collection.contains(itemURL) {
-                                return
+                                continue
                             }
                             collection.append(itemURL)
                         }
@@ -265,16 +268,9 @@ func findPathsForApp(appState: AppState, appInfo: AppInfo) {
             }
             
         }
-        //        }
-        
-        //        if appInfo.webApp {
-        //            updateOnMain {
-        //                appState.paths = collection
-        //                appState.selectedItems = Set(collection)
-        //            }
-        //        }
     }
 }
+
 
 
 
