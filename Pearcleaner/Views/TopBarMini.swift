@@ -54,38 +54,38 @@ struct TopBarMini: View {
             if appState.currentView == .apps {
                 Button("") {
                     withAnimation(.easeInOut(duration: 0.5)) {
-                        updateOnMain {
+//                        updateOnMain {
                             appState.currentView = .empty
                             appState.appInfo = AppInfo.empty
-                        }
+//                        }
                     }
                 }
                 .buttonStyle(SimpleButtonStyle(icon: "arrow.down.app", help: "Drop", color: Color("mode")))
             } else if appState.currentView == .empty {
                 Button("") {
                     withAnimation(.easeInOut(duration: 0.5)) {
-                        updateOnMain {
+//                        updateOnMain {
                             appState.currentView = .apps
-                        }
+//                        }
                     }
                 }
                 .buttonStyle(SimpleButtonStyle(icon: "list.triangle", help: "Apps", color: Color("mode")))
             } else if appState.currentView == .files {
                 Button("") {
                     withAnimation(.easeInOut(duration: 0.5)) {
-                        updateOnMain {
+//                        updateOnMain {
                             appState.currentView = .empty
                             appState.appInfo = AppInfo.empty
-                        }
+//                        }
                         
                     }
                 }
                 .buttonStyle(SimpleButtonStyle(icon: "arrow.down.app", help: "Drop", color: Color("mode")))
                 Button("") {
                     withAnimation(.easeInOut(duration: 0.5)) {
-                        updateOnMain {
+//                        updateOnMain {
                             appState.currentView = .apps
-                        }
+//                        }
                     }
                 }
                 .buttonStyle(SimpleButtonStyle(icon: "list.triangle", help: "Apps", color: Color("mode")))
@@ -107,7 +107,7 @@ struct SearchBarMini: View {
     var body: some View {
         HStack {
             TextField("Search", text: $search)
-                .textFieldStyle(AnimatedSearchStyle(text: $search))
+                .textFieldStyle(AnimatedSearchStyle(text: $search, reload: $reload))
 //                .textFieldStyle(SimpleSearchStyle(trash: true, reload: $reload, text: $search))
         }
 //        .frame(height: 20)

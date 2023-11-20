@@ -79,17 +79,42 @@ struct LabeledDivider: View {
 struct AnimatedSearchStyle: TextFieldStyle {
     @State private var isHovered = false
     @Binding var text: String
-    
+    @Binding var reload: Bool
+    @EnvironmentObject var appState: AppState
+
     func _body(configuration: TextField<Self._Label>) -> some View {
         
         HStack(spacing: 5) {
             
             if isHovered || !text.isEmpty {
+                
                 configuration
-                    .frame(width: 160)
+//                    .frame(minWidth: 130)
                     .frame(height: 15)
                     .font(.title3)
                     .textFieldStyle(PlainTextFieldStyle())
+                    .padding(.leading, 50)
+
+                
+                Image(systemName: "arrow.triangle.2.circlepath")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 15, height: 15)
+                    .padding(.trailing, 5)
+                    .foregroundStyle(isHovered ? Color("mode").opacity(0.8) : Color("mode").opacity(0.5))
+                    .onTapGesture {
+                        withAnimation {
+                            // Refresh Apps list
+                            reload.toggle()
+                            let sortedApps = getSortedApps()
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                appState.sortedApps.userApps = sortedApps.userApps
+                                appState.sortedApps.systemApps = sortedApps.systemApps
+                                reload.toggle()
+                            }
+                        }
+                        
+                    }
                 
             } else {
                 Image(systemName: "magnifyingglass")
@@ -106,6 +131,7 @@ struct AnimatedSearchStyle: TextFieldStyle {
                     RoundedRectangle(cornerRadius: 6)
                         .strokeBorder(Color("mode").opacity(0.4), lineWidth: 1)
                         .allowsHitTesting(false)
+                        .padding(.leading, 50)
                 }
             }
         )
@@ -152,14 +178,17 @@ struct SimpleSearchStyle: TextFieldStyle {
                     .padding(.trailing, 5)
                     .foregroundStyle(isHovered ? Color("mode").opacity(0.8) : Color("mode").opacity(0.5))
                     .onTapGesture {
-                        // Refresh Apps list
-                        reload.toggle()
-                        let sortedApps = getSortedApps()
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                            appState.sortedApps.userApps = sortedApps.userApps
-                            appState.sortedApps.systemApps = sortedApps.systemApps
+                        withAnimation {
+                            // Refresh Apps list
                             reload.toggle()
+                            let sortedApps = getSortedApps()
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                appState.sortedApps.userApps = sortedApps.userApps
+                                appState.sortedApps.systemApps = sortedApps.systemApps
+                                reload.toggle()
+                            }
                         }
+                        
                     }
                 
 //                if trash {

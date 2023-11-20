@@ -91,24 +91,24 @@ struct FilesView: View {
                             }
                             if appState.appInfo.appName.count < 5 {
                                 HStack(alignment: .center) {
-                                    Button(""){
-                                        showPop = true
-                                    }
-                                    .buttonStyle(SimpleButtonStyle(icon: "exclamationmark.triangle.fill", help: "Warning", color: .red))
-                                    .popover(isPresented: $showPop, arrowEdge: .top) {
-                                        VStack() {
-                                            Text("Pearcleaner searches for files with a combination of bundle id and app name.\n**\(appState.appInfo.appName)** has a common or short app name so there might be unrelated files found.\nPlease check the list thoroughly before uninstalling.")
-                                                .padding(20)
-                                                .font(.title2)
+                                    Image(systemName: "exclamationmark.triangle.fill")
+                                        .foregroundStyle(.red)
+                                        .popover(isPresented: $showPop, arrowEdge: .top) {
+                                            VStack() {
+                                                Text("Pearcleaner searches for files via a combination of bundle id and app name.\n**\(appState.appInfo.appName)** has a common or short app name so there might be unrelated files found.\nPlease check the list thoroughly before uninstalling.")
+                                                    .padding()
+                                                    .font(.title2)
+                                            }
+                                            
                                         }
-                                        
-                                    }
-                                    Text("Read caution message")
+                                    
+                                    Text("Warning")
                                         .foregroundStyle(Color.red)
 
                                     Spacer()
                                 }
                                 .padding(.top)
+                                
                                 .onTapGesture {
                                     showPop = true
                                 }

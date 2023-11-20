@@ -115,7 +115,7 @@ func checkForUpdate(appState: AppState, manual: Bool = false) {
     guard let latestRelease = appState.releases.first else { return }
     let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
     if latestRelease.tag_name > currentVersion ?? "" {
-        NewWin.show(appState: appState, width: 500, height: 400, newWin: .update)
+        NewWin.show(appState: appState, width: 500, height: 440, newWin: .update)
 //        appState.alertType = .update
 //        appState.showAlert = true
     } else {

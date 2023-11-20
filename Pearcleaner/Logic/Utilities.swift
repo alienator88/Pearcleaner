@@ -66,6 +66,7 @@ func checkFullDiskAccessForApp() -> Bool {
 // Check for access to Full Disk access
 func checkAndRequestFullDiskAccess(appState: AppState, skipAlert: Bool = false) -> Bool {
     @AppStorage("settings.permissions.disk") var diskP: Bool = false
+    @AppStorage("settings.permissions.hasLaunched") var hasLaunched: Bool = false
 
     let process = Process()
     process.launchPath = "/usr/bin/sqlite3"
@@ -136,6 +137,14 @@ func checkAndRequestAccessibilityAccess(appState: AppState) -> Bool {
     }
 }
 
+
+// Check if app is installed in /Applications directory
+func isAppInApplicationsDir() -> Bool {
+    if let bundlePath = Bundle.main.bundlePath as NSString? {
+        return bundlePath.deletingLastPathComponent == "/Applications"
+    }
+    return false
+}
 
 // Check if appearance is dark mode
 func isDarkModeEnabled() -> Bool {

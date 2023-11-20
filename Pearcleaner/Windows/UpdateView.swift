@@ -10,6 +10,7 @@ import SwiftUI
 
 struct UpdateView: View {
     @EnvironmentObject var appState: AppState
+    let isAppInAppsDir = isAppInApplicationsDir()
     
     var body: some View {
         VStack {
@@ -47,6 +48,18 @@ struct UpdateView: View {
             
             Spacer()
             
+            if !isAppInAppsDir {
+                HStack {
+                    Text("Pearcleaner not in /Applications directory. Updater could have permission issues updating files.")
+                        .font(.footnote)
+                        .foregroundStyle(.red)
+                        .padding()
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                
+
+            }
             
             VStack() {
                 ProgressView("\(appState.progressBar.0)", value: appState.progressBar.1, total: 1.0)
