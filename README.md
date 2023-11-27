@@ -29,18 +29,20 @@ This project was born out of wanting to learn more. There's probably parts of th
 - Requires Full Disk permission to search for files and also Accessibility to delete/restore files
 - Built-in auto-updater that pulls latest release notes and binaries from GitHub Releases (Might not work well if app is not in /Applications folder because of permissions)
 
-## Screenshots
-<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/aa48fd55-df2f-450c-a0c0-bf9507d7a465" align="left" width="400" />
-<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/036eae34-a9f0-4126-943a-376074e95067" align="center" width="400" />
+## Regular Mode
+<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/db6aae06-be0d-42af-bcab-cdb8e5bda42a" align="left" width="400" />
+<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/70066a2a-fb33-40e5-b328-8fc2253e25ff" align="center" width="400" />
 <p></p>
-<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/230674bf-9f16-4b84-9b7f-e0113b4a8358" align="left" width="400" />
-<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/fc2b9568-cbb1-4a94-991c-0491252d7c02" align="center" width="400" />
+<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/a9cec1e2-1a13-42aa-a3e5-3cb8c448dd3e" align="left" width="400" />
+<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/5249d735-f87b-41c7-83da-b84a21ac9552" align="center" width="400" />
 <p></p>
-<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/42ba2555-be33-4161-8d08-b22519a7a353" align="left" width="400" />
-<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/afc61501-15e9-4db7-9f39-c8f46e27e01a" align="center" width="400" />
+
+## Mini Mode
+<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/62f72204-5f13-49a8-8956-cd56ef52acdf" align="center" width="400" />
+<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/9cf8e848-1efe-4475-8f4b-cd89a51ec10e" align="left" width="400" />
 <p></p>
-<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/a01357bf-75e8-4d2b-95b4-c6f306ed1dc4" align="left" width="400" />
-<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/d2fa920f-474b-4007-b54d-04ad31b994e4" align="center" width="400" />
+<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/238dfeb7-2841-4ada-bbbf-35cdda46fde1" align="center" width="400" />
+<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/b593564b-8c7e-42a2-a25b-124a0efb6a24" align="left" width="400" />
 
 ## Requirements
 - MacOS 13.0+
