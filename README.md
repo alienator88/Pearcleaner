@@ -5,7 +5,7 @@
 <p align="center">
    <strong>Status: </strong>Maintained
    <br />
-   <strong>Version: </strong>1.6
+   <strong>Version: </strong>1.7
    <br />
    <a href="https://github.com/alienator88/Pearcleaner/releases"><strong>Download</strong></a>
     · 
@@ -24,7 +24,7 @@ This project was born out of wanting to learn more. There's probably parts of th
 - Optional Sentinel monitor helper that can be enabled to watch Trash folder for deleted apps
 - Sentinel monitor is extremely small (210KB) and uses ~2mb of ram to run in the background and file watch. Communicates to app via custom url scheme instead of xpc to keep things even lighter
 - Mini mode which can be enabled from Settings
-- Can drop apps to uninstall directly on the App Icon itself or the drop target in the app window
+- Can drop apps to uninstall directly on the Pearcleaner Dock icon itself or the drop target in the app window
 - Will differentiate between regular apps and Safari web-apps with a "web" label next to each item in the list
 - Requires Full Disk permission to search for files and also Accessibility to delete/restore files
 - Built-in auto-updater that pulls latest release notes and binaries from GitHub Releases (Might not work well if app is not in /Applications folder because of permissions)
