@@ -82,6 +82,8 @@ func getAppInfo(atPath path: URL) -> AppInfo? {
                 appName = localizedName
             } else if let bundleName = bundle.infoDictionary?["CFBundleName"] as? String {
                 appName = bundleName
+            } else {
+                appName = path.deletingPathExtension().lastPathComponent
             }
             // Check if the icon file name has an .icns extension, if not, add it
             if !appIconFileName.hasSuffix(".icns") {

@@ -146,10 +146,29 @@ struct AppListView: View {
             Spacer()
         }
         .edgesIgnoringSafeArea(.all)
-        .onOpenURL(perform: { url in
-            let deeplinkManager = DeeplinkManager()
-            deeplinkManager.manage(url: url, appState: appState)
-        })
+//        .onOpenURL(perform: { url in
+//            let deeplinkManager = DeeplinkManager()
+//            deeplinkManager.manage(url: url, appState: appState)
+//        })
+//        .onDrop(of: ["public.file-url"], isTargeted: nil) { providers, _ in
+//            for provider in providers {
+//                provider.loadItem(forTypeIdentifier: "public.file-url") { data, error in
+//                    if let data = data as? Data, let url = URL(dataRepresentation: data, relativeTo: nil) {
+//                        let deeplinkManager = DeeplinkManager()
+//                        deeplinkManager.manage(url: url, appState: appState)
+//                        //                        // Check if the file URL has a ".app" extension
+//                        //                        if url.pathExtension.lowercased() == "app" {
+//                        //                            // Handle the dropped file URL here
+//                        //                            print("Dropped .app file URL: \(url)")
+//                        //                        } else {
+//                        //                            // Print a message for non-.app files
+//                        //                            print("Unsupported file type. Only .app files are accepted.")
+//                        //                        }
+//                    }
+//                }
+//            }
+//            return true
+//        }
         // MARK: Background for whole app
         //        .background(Color("bg").opacity(1))
         //        .background(VisualEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all))

@@ -25,12 +25,7 @@ struct AppListItems: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
             HStack(alignment: .center) {
-//                if isHovered || isSelected {
-//                    Circle()
-//                        .fill(Color("AccentColor"))
-//                        .frame(width: 10)
-//                        .padding(5)
-//                }
+
                 if let appIcon = appInfo.appIcon {
                     Image(nsImage: appIcon)
                         .resizable()
@@ -106,18 +101,5 @@ struct AppListItems: View {
                 }
             }
         }
-//        .popover(isPresented: $appState.showPopover, arrowEdge: .trailing) {
-//            VStack {
-//                FilesView()
-//                    .id(appState.appInfo.id)
-//            }
-//            .background(
-//                Rectangle()
-//                    .background(colorScheme == .dark ? .black.opacity(0.8) : .white)
-//                    .padding(-80)
-//            )
-//            .frame(minWidth: 500, minHeight: 500)
-//
-//        }
     }
 }

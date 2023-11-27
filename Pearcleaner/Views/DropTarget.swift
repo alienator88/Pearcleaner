@@ -34,6 +34,15 @@ struct DropTarget: View, DropDelegate {
                     Spacer()
                     
                     ZStack {
+//                        Color("mode")
+//                            .mask(
+//                                Image(mini ? "pear" : "logo")
+//                                    .resizable()
+//                                    .scaledToFit()
+//                                    .frame(minWidth: mini ? 104 : 300)
+//                                    .frame(maxWidth: mini ? 104 : 500)
+//                                    .padding(mini ? 20 : 10)
+//                            )
                         LinearGradient(gradient: Gradient(colors: [.pink, .orange]), startPoint: .leading, endPoint: .trailing)
                             .mask(
                                 Image(mini ? "pear" : "logo")
@@ -54,6 +63,7 @@ struct DropTarget: View, DropDelegate {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background {
                 RoundedRectangle(cornerRadius: 8)
+//                    .fill(LinearGradient(gradient: Gradient(colors: [.pink, .orange]), startPoint: .leading, endPoint: .trailing))
                     .strokeBorder(LinearGradient(gradient: Gradient(colors: [.pink, .orange]), startPoint: .leading, endPoint: .trailing), style: StrokeStyle(lineWidth: 3, dash: [11.0], dashPhase: phase))
                     .onAppear {
                         withAnimation(.linear.speed(0.5).repeat(while: ants, autoreverses: false)) {

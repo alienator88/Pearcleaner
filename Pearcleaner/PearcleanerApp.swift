@@ -39,6 +39,29 @@ struct PearcleanerApp: App {
             .preferredColorScheme(displayMode.colorScheme)
             .alert(isPresented: $appState.showAlert) { presentAlert(appState: appState) }
             .handlesExternalEvents(preferring: Set(arrayLiteral: "pear"), allowing: Set(arrayLiteral: "*"))
+            .onOpenURL(perform: { url in
+                let deeplinkManager = DeeplinkManager()
+                deeplinkManager.manage(url: url, appState: appState)
+            })
+            .onDrop(of: ["public.file-url"], isTargeted: nil) { providers, _ in
+                for provider in providers {
+                    provider.loadItem(forTypeIdentifier: "public.file-url") { data, error in
+                        if let data = data as? Data, let url = URL(dataRepresentation: data, relativeTo: nil) {
+                            let deeplinkManager = DeeplinkManager()
+                            deeplinkManager.manage(url: url, appState: appState)
+                            //                        // Check if the file URL has a ".app" extension
+                            //                        if url.pathExtension.lowercased() == "app" {
+                            //                            // Handle the dropped file URL here
+                            //                            print("Dropped .app file URL: \(url)")
+                            //                        } else {
+                            //                            // Print a message for non-.app files
+                            //                            print("Unsupported file type. Only .app files are accepted.")
+                            //                        }
+                        }
+                    }
+                }
+                return true
+            }
             .onAppear {
                 NSWindow.allowsAutomaticWindowTabbing = false
                 
@@ -110,9 +133,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //    func application(_ sender: NSApplication, open urls: [URL]) {
 //        for url in urls {
 //            if url.pathExtension == "app" {
+//                writeLog(string: url.path)
 //                print("Dropped app path:", url.path)
 //            }
 //        }
 //    }
+
 }
 
