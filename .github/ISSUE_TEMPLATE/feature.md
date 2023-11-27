@@ -1,5 +1,5 @@
 ---
-name: Feature Template
+name: Feature
 about: For submitting feature requests
 title: "[FR] "
 labels: ''
