@@ -71,9 +71,9 @@ struct PearcleanerApp: App {
                 appState.sortedApps.systemApps = sortedApps.systemApps
                                 
                 Task {
-                    
+
 #if !DEBUG
-                    
+
                     // Make sure App Support folder exists in the future if needed for storage
                     ensureApplicationSupportFolderExists(appState: appState)
                     

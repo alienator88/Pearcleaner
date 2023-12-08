@@ -17,9 +17,11 @@ struct DropTarget: View, DropDelegate {
     private var types: [UTType] = [.fileURL]
     @Environment(\.colorScheme) var colorScheme
     @State private var phase: CGFloat = 4
-    
-    public init(appState: AppState) {
+    @Binding var showPopover: Bool
+
+    public init(appState: AppState, showPopover: Binding<Bool>) {
         self.appState = appState
+        _showPopover = showPopover
     }
     
     var body: some View {
@@ -126,7 +128,11 @@ struct DropTarget: View, DropDelegate {
                         self.ants = false
                         appState.appInfo = appInfo!
                         findPathsForApp(appState: appState, appInfo: appState.appInfo)
-                        appState.currentView = .files
+                        if mini {
+                            showPopover = true
+                        } else {
+                            appState.currentView = .files
+                        }
                     }
                 } else {
                     print("Error: Dropped file is not an application bundle")

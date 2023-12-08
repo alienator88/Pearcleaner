@@ -48,7 +48,16 @@ struct AppListItems: View {
                         .background(Color("mode").opacity(0.1))
                         .clipShape(.capsule)
                 }
-                
+                if appInfo.wrapped {
+                    Text("iOS")
+                        .font(.footnote)
+                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .frame(minWidth: 30, minHeight: 15)
+                        .padding(2)
+                        .background(Color("mode").opacity(0.1))
+                        .clipShape(.capsule)
+                }
+
                 
                 Spacer()
                 Text(appInfo.appVersion)

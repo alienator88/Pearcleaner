@@ -27,7 +27,7 @@ struct MiniMode: View {
             VStack(spacing: 0) {
                 if appState.currentView == .empty {
                     TopBarMini(reload: $reload, search: $search)
-                    MiniEmptyView()
+                    MiniEmptyView(showPopover: $showPopover)
                 } else if appState.currentView == .files {
                     TopBarMini(reload: $reload, search: $search)
                     FilesView(showPopover: $showPopover)
@@ -98,13 +98,14 @@ struct MiniEmptyView: View {
     @EnvironmentObject var appState: AppState
     @State private var animateGradient: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
-    
+    @Binding var showPopover: Bool
+
     var body: some View {
         VStack() {
             
             Spacer()
             
-            DropTarget(appState: appState)
+            DropTarget(appState: appState, showPopover: $showPopover)
                 .frame(maxWidth: mini ? 300 : 500)
             
             Text("Drop an app to begin")

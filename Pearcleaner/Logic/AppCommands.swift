@@ -38,7 +38,17 @@ struct AppCommands: Commands {
                 Text("Refresh Apps")
             }
             .keyboardShortcut("r", modifiers: .command)
-            
+
+            Button {
+                uninstallPearcleaner(appState: appState)
+            } label: {
+                Text("Uninstall Pearcleaner")
+            }
+//            .keyboardShortcut("C", modifiers: .command)
+
+
+
+
         }
         
         

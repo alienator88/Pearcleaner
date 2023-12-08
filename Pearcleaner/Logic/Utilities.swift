@@ -394,6 +394,38 @@ func presentAlert(appState: AppState) -> Alert {
 
 
 
+// --- Pearcleaner Uninstall --
+func uninstallPearcleaner(appState: AppState) {
+    
+    // Unload Sentinel Monitor if running
+    launchctl(load: false)
+
+    // Get app info for Pearcleaner
+    let appInfo = getAppInfo(atPath: Bundle.main.bundleURL)
+
+    // Find application files for Pearcleaner
+    findPathsForApp(appState: appState, appInfo: appInfo!)
+
+    // Kill Pearcleaner and tell Finder to trash the files
+    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        let selectedItemsArray = Array(appState.selectedItems).filter { !$0.path.contains(".Trash") }
+        let posixFiles = selectedItemsArray.map { "POSIX file \"\($0.path)\", " }.joined().dropLast(3)
+        let scriptSource = """
+        tell application \"Finder\" to delete { \(posixFiles)" }
+        """
+        let task = Process()
+        task.launchPath = "/bin/sh"
+        task.arguments = ["-c", "sleep 1; osascript -e '\(scriptSource)'"]
+        task.launch()
+
+        NSApp.terminate(nil)
+        exit(0)
+    }
+
+}
+
+
+
 // --- Create Application Support folder if it doesn't exist ---
 func ensureApplicationSupportFolderExists(appState: AppState) {
     let fileManager = FileManager.default

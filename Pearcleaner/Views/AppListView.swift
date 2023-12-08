@@ -133,7 +133,7 @@ struct AppListView: View {
             VStack(spacing: 0) {
                 if appState.currentView == .empty {
                     TopBar(reload: $reload)
-                    AppDetailsEmptyView()
+                    AppDetailsEmptyView(showPopover: $showPopover)
                 } else if appState.currentView == .files {
                     TopBar(reload: $reload)
                     FilesView(showPopover: $showPopover)
@@ -184,14 +184,15 @@ struct AppDetailsEmptyView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var appState: AppState
     @State private var animateGradient: Bool = false
+    @Binding var showPopover: Bool
 
     var body: some View {
         VStack() {
             
             Spacer()
             
-            DropTarget(appState: appState)
-                        
+            DropTarget(appState: appState, showPopover: $showPopover)
+
             Spacer()
             
 //            if appState.isReminderVisible {

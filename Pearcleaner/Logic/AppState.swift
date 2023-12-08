@@ -39,7 +39,8 @@ class AppState: ObservableObject
             appName: "",
             appVersion: "",
             appIcon: nil,
-            webApp: false
+            webApp: false,
+            wrapped: false
         )
     }
 }
@@ -52,8 +53,9 @@ struct AppInfo: Identifiable, Hashable {
     let appVersion: String
     let appIcon: NSImage?
     let webApp: Bool
-    
-    static let empty = AppInfo(id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "", appVersion: "", appIcon: nil, webApp: false)
+    let wrapped: Bool
+
+    static let empty = AppInfo(id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "", appVersion: "", appIcon: nil, webApp: false, wrapped: false)
 }
 
 

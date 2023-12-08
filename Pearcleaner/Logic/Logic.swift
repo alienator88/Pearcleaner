@@ -18,7 +18,7 @@ func getSortedApps() -> (systemApps: [AppInfo], userApps: [AppInfo]) {
     let sortedUserApps = apps.userApps
         .compactMap { getAppInfo(atPath: $0) }
         .sorted { $0.appName.replacingOccurrences(of: ".", with: "").lowercased() < $1.appName.replacingOccurrences(of: ".", with: "").lowercased() }
-    
+
     return (systemApps: sortedSystemApps, userApps: sortedUserApps)
 }
 
@@ -78,6 +78,7 @@ func getAppInfo(atPath path: URL) -> AppInfo? {
             var appIcon: NSImage?
             var appName: String?
             var webApp: Bool?
+
             if let localizedName = bundle.localizedInfoDictionary?[kCFBundleNameKey as String] as? String {
                 appName = localizedName
             } else if let bundleName = bundle.infoDictionary?["CFBundleName"] as? String {
@@ -119,9 +120,86 @@ func getAppInfo(atPath path: URL) -> AppInfo? {
             } else {
                 webApp = false
             }
-            
-            return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName ?? "", appVersion: appVersion, appIcon: appIcon, webApp: webApp ?? false)
-            
+
+
+            return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName ?? "", appVersion: appVersion, appIcon: appIcon, webApp: webApp ?? false, wrapped: false)
+
+        } else {
+//            print("One or more variables missing for app at path: \(path)")
+            let wrapperURL = path.appendingPathComponent("Wrapper").appendingPathComponent(path.lastPathComponent)
+            if let wrappedAppInfo = getWrappedAppInfo(atPath: wrapperURL) {
+                return wrappedAppInfo
+            }
+        }
+    } else {
+        print("Bundle not found at path: \(path)")
+    }
+    return nil
+}
+
+
+func getWrappedAppInfo(atPath path: URL) -> AppInfo? {
+    if let bundle = Bundle(url: path) {
+        if let bundleIdentifier = bundle.bundleIdentifier,
+           let appVersion = bundle.infoDictionary?["CFBundleShortVersionString"] as? String {
+            var appIconFileName = bundle.infoDictionary?["CFBundleIconFile"] as? String
+            var appIcon: NSImage?
+            var appName: String?
+            var webApp: Bool?
+
+            if let localizedName = bundle.localizedInfoDictionary?[kCFBundleNameKey as String] as? String {
+                appName = localizedName
+            } else if let bundleName = bundle.infoDictionary?["CFBundleName"] as? String {
+                appName = bundleName
+            } else {
+                appName = path.deletingPathExtension().lastPathComponent
+            }
+
+            if appIconFileName == nil {
+                if let iconsDict = bundle.infoDictionary?["CFBundleIcons"] as? [String: Any] {
+                    if let primaryIconDict = iconsDict["CFBundlePrimaryIcon"] as? [String: Any],
+                       let iconFiles = primaryIconDict["CFBundleIconFiles"] as? [String],
+                       let primaryIconFile = iconFiles.first {
+                        // Now, you can use the primaryIconFile to construct the path to the icon file
+                        let iconPath = path.appendingPathComponent(primaryIconFile)
+                        appIconFileName = iconPath.path
+
+                        if let contents = try? FileManager.default.contentsOfDirectory(at: path, includingPropertiesForKeys: nil) {
+                            // Find the first file that matches the specified prefix
+                            if let foundURL = contents.first(where: { $0.lastPathComponent.hasPrefix(primaryIconFile) }),
+                               let image = NSImage(contentsOfFile: foundURL.path) {
+                                appIcon = image
+
+
+                            } else {
+                                print("No matching image found for \(primaryIconFile).")
+                            }
+                        } else {
+                            print("Unable to access the directory at \(primaryIconFile).")
+                        }
+
+                    }
+                }
+            }
+
+            // Convert the icon to a 100x100 PNG image
+            if let pngIcon = appIcon.flatMap({ convertICNSToPNG(icon: $0, size: NSSize(width: 100, height: 100)) }) {
+                appIcon = pngIcon
+            }
+
+            if appIcon == nil {
+                print("App Icon not found for app at path: \(path)")
+            }
+
+            if bundle.infoDictionary?["LSTemplateApplication"] is Bool {
+                webApp = true
+            } else {
+                webApp = false
+            }
+
+
+            return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName ?? "", appVersion: appVersion, appIcon: appIcon, webApp: webApp ?? false, wrapped: true)
+
         } else {
             print("One or more variables missing for app at path: \(path)")
         }

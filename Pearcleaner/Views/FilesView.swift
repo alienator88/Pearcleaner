@@ -170,7 +170,12 @@ struct FilesView: View {
                                     }
                                 }
                                 
-                                let selectedItemsArray = Array(appState.selectedItems).filter { !$0.path.contains(".Trash") }
+                                let selectedItemsArray = Array(appState.selectedItems)
+                                    .filter { !$0.path.contains(".Trash") }
+                                    .map { path in
+                                        return path.path.contains("Wrapper") ? path.deletingLastPathComponent().deletingLastPathComponent() : path
+                                    }
+
                                 killApp(appId: appState.appInfo.bundleIdentifier) {
                                     moveFilesToTrash(at: selectedItemsArray) {
                                         withAnimation {
@@ -259,7 +264,14 @@ struct FileDetailsItem: View {
     let icon: Image?
     let path: URL
 
+//    init(size: String, icon: Image?, path: URL) {
+//        self.size = size
+//        self.icon = icon
+//        self.path = path.path.contains("Wrapper") ? path.deletingLastPathComponent().deletingLastPathComponent() : path
+//    }
+
     var body: some View {
+
         HStack(alignment: .center, spacing: 20) {
             Toggle("", isOn: Binding(
                 get: { self.appState.selectedItems.contains(self.path) },
