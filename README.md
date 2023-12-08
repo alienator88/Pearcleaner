@@ -26,6 +26,8 @@ This project was born out of wanting to learn more. There's probably parts of th
 - Mini mode which can be enabled from Settings
 - Can drop apps to uninstall directly on the Pearcleaner Dock icon itself or the drop target in the app window
 - Will differentiate between regular apps and Safari web-apps with a "web" label next to each item in the list
+- Will differentiate between regular apps and wrapped iOS apps with an "iOS" label next to each item in the list
+- Has clean uninstall menu option for the Pearcleaner app itself if you want to stop using it and get rid of all files and launch items
 - Requires Full Disk permission to search for files and also Accessibility to delete/restore files
 - Built-in auto-updater that pulls latest release notes and binaries from GitHub Releases (Might not work well if app is not in /Applications folder because of permissions)
 
