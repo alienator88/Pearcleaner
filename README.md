@@ -3,7 +3,9 @@
 <img src="https://github.com/alienator88/Pearcleaner/assets/6263626/e6829883-894e-49a1-bc75-2c4550593b98" align="left" width="128" height="128" />
 </br>
 <p align="center">
-   <strong>Status: </strong>Maintained <b>(Responses will be slow over holidays)</b>
+   <strong>Status: </strong>Maintained 
+   <br />
+   <b>(Responses might be slow over holidays)</b>
    <br />
    <strong>Version: </strong>1.9
    <br />
