@@ -5,7 +5,7 @@
 <p align="center">
    <strong>Status: </strong>Maintained <b>(Responses will be slow over holidays)</b>
    <br />
-   <strong>Version: </strong>1.8
+   <strong>Version: </strong>1.9
    <br />
    <a href="https://github.com/alienator88/Pearcleaner/releases"><strong>Download</strong></a>
     · 
