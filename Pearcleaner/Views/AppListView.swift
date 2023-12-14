@@ -136,7 +136,7 @@ struct AppListView: View {
                     AppDetailsEmptyView(showPopover: $showPopover)
                 } else if appState.currentView == .files {
                     TopBar(reload: $reload)
-                    FilesView(showPopover: $showPopover)
+                    FilesView(showPopover: $showPopover, search: $search)
                         .id(appState.appInfo.id)
                 }
             }

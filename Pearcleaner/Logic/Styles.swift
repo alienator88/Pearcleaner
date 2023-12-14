@@ -115,7 +115,25 @@ struct AnimatedSearchStyle: TextFieldStyle {
                         }
                         
                     }
-                
+                    .help("Refresh app list")
+
+
+                if text != "" {
+                    Image(systemName: "xmark")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 10, height: 10)
+                        .padding(.trailing, 5)
+                        .foregroundStyle(isHovered ? Color("mode").opacity(0.8) : Color("mode").opacity(0.5))
+                        .onTapGesture {
+                            withAnimation {
+                                text = ""
+                            }
+                        }
+                        .help("Clear search")
+                }
+
+
             } else {
                 Image(systemName: "magnifyingglass")
                     .resizable()
@@ -191,18 +209,18 @@ struct SimpleSearchStyle: TextFieldStyle {
                         
                     }
                 
-//                if trash {
-//                    Image(systemName: "xmark")
-//                        .resizable()
-//                        .aspectRatio(contentMode: .fit)
-//                        .frame(width: 10, height: 10)
-//                        .padding(.trailing, 5)
-//                        .foregroundStyle(isHovered ? Color("mode").opacity(0.8) : Color("mode").opacity(0.5))
-//                        .onTapGesture {
-//                            text = ""
-//                        }
-//                        .opacity(text.isEmpty ? 0 : 1)
-//                }
+                if trash && text != "" {
+                    Image(systemName: "xmark")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 10, height: 10)
+                        .padding(.trailing, 5)
+                        .foregroundStyle(isHovered ? Color("mode").opacity(0.8) : Color("mode").opacity(0.5))
+                        .onTapGesture {
+                            text = ""
+                        }
+                        .help("Clear search")
+                }
             }
             
         }
@@ -280,6 +298,42 @@ struct WindowActionButton: ButtonStyle {
             )
             .foregroundColor(.white)
             .cornerRadius(8)
+            .onHover { hovering in
+                withAnimation(Animation.easeIn(duration: 0.15)) {
+                    hovered = hovering
+                }
+            }
+    }
+}
+
+
+
+struct FilesViewActionButton: ButtonStyle {
+    enum UserAction {
+        case uninstall
+        case close
+    }
+    @State private var hovered = false
+    let action: UserAction
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .frame(width: 70)
+            .padding(6)
+            .background(
+                RoundedRectangle(cornerRadius: 6)
+                    .strokeBorder(
+                        configuration.isPressed ?
+                        Color("AccentColor").opacity(0.7) :
+                            hovered ? Color("AccentColor").opacity(0.8) : Color("AccentColor").opacity(0.9), lineWidth: 2
+                    )
+
+
+            )
+            .foregroundColor(
+                action == .uninstall ? Color("AccentColor") : Color("mode")
+            )
+            .cornerRadius(6)
             .onHover { hovering in
                 withAnimation(Animation.easeIn(duration: 0.15)) {
                     hovered = hovering

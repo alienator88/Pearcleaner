@@ -45,7 +45,7 @@ struct TopBar: View {
                         appState.appInfo = AppInfo.empty
                     }
                 }
-                .buttonStyle(SimpleButtonStyle(icon: "arrow.down.app", help: "Drop", color: Color("mode")))
+                .buttonStyle(SimpleButtonStyle(icon: "house", help: "Home", color: Color("mode")))
             }
             
             

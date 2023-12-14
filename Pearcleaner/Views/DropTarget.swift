@@ -86,6 +86,11 @@ struct DropTarget: View, DropDelegate {
             
         }
         .onDrop(of: types, delegate: self)
+        .onTapGesture {
+            withAnimation(.easeInOut(duration: 0.5)) {
+                appState.currentView = .apps
+            }
+        }
         .padding(20)
         .frame(maxWidth: mini ? 200 : .infinity)
         .frame(maxHeight: mini ? 200 : .infinity)

@@ -60,7 +60,7 @@ struct TopBarMini: View {
 //                        }
                     }
                 }
-                .buttonStyle(SimpleButtonStyle(icon: "arrow.down.app", help: "Drop", color: Color("mode")))
+                .buttonStyle(SimpleButtonStyle(icon: "arrow.down.app", help: "Back to Drop Zone", color: Color("mode")))
             } else if appState.currentView == .empty {
                 Button("") {
                     withAnimation(.easeInOut(duration: 0.5)) {
@@ -69,7 +69,7 @@ struct TopBarMini: View {
 //                        }
                     }
                 }
-                .buttonStyle(SimpleButtonStyle(icon: "list.triangle", help: "Apps", color: Color("mode")))
+                .buttonStyle(SimpleButtonStyle(icon: "list.triangle", help: "Apps List", color: Color("mode")))
             } else if appState.currentView == .files {
                 Button("") {
                     withAnimation(.easeInOut(duration: 0.5)) {
@@ -80,7 +80,7 @@ struct TopBarMini: View {
                         
                     }
                 }
-                .buttonStyle(SimpleButtonStyle(icon: "arrow.down.app", help: "Drop", color: Color("mode")))
+                .buttonStyle(SimpleButtonStyle(icon: "arrow.down.app", help: "Back to Drop Zone", color: Color("mode")))
                 Button("") {
                     withAnimation(.easeInOut(duration: 0.5)) {
 //                        updateOnMain {
@@ -88,7 +88,7 @@ struct TopBarMini: View {
 //                        }
                     }
                 }
-                .buttonStyle(SimpleButtonStyle(icon: "list.triangle", help: "Apps", color: Color("mode")))
+                .buttonStyle(SimpleButtonStyle(icon: "list.triangle", help: "Apps List", color: Color("mode")))
             }
             
             

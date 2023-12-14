@@ -262,7 +262,6 @@ func findPathsForApp(appState: AppState, appInfo: AppInfo) {
         }
         var collection: [URL] = []
         if let url = URL(string: appInfo.path.absoluteString) {
-            //        appState.paths.insert(url, at: 0)
             collection.insert(url, at: 0)
         }
         
@@ -270,16 +269,19 @@ func findPathsForApp(appState: AppState, appInfo: AppInfo) {
         let dispatchGroup = DispatchGroup()
         let bundleComponents = appInfo.bundleIdentifier.components(separatedBy: ".")
         var bundle: String = ""
+        var weirdFormatBundle: Bool = false
         if bundleComponents.count >= 3 { // get last 2 or middle 2 components
             bundle = bundleComponents[1...2].joined(separator: "").lowercased()
+        }
+        if bundleComponents[0] != "com" {
+            weirdFormatBundle = true
         }
         let nameL = appInfo.appName.pearFormat()
         let bundleIdentifierL = appInfo.bundleIdentifier.pearFormat()
         let locations = Locations()
-        
+
         for location in locations.apps.paths {
             if !fileManager.fileExists(atPath: location) {
-//                print("Directory does not exist: \(location)")
                 continue
             }
             
@@ -292,7 +294,8 @@ func findPathsForApp(appState: AppState, appInfo: AppInfo) {
                     
                     let itemURL = URL(fileURLWithPath: location).appendingPathComponent(item)
                     let itemL = ("\(item)").replacingOccurrences(of: ".", with: "").replacingOccurrences(of: " ", with: "").lowercased()
-                    
+
+
                     if collection.contains(itemURL) {
                         return
                     }
@@ -318,7 +321,7 @@ func findPathsForApp(appState: AppState, appInfo: AppInfo) {
                             }
                             // Catch Logitech files since Logi is part of word login and can return random files
                         } else if itemL.contains("logi") && !itemL.contains("login") {
-                            if itemL.contains(bundleComponents[1]) || itemL.contains(bundle) || itemL.contains(bundleIdentifierL) || (nameL.count > 3 && itemL.contains(nameL)) {
+                            if itemL.contains(bundleComponents[weirdFormatBundle ? 0 : 1]) || itemL.contains(bundle) || itemL.contains(bundleIdentifierL) || (nameL.count > 3 && itemL.contains(nameL)) {
                                 collection.append(itemURL)
                             }
                             // Catch MS Office files since they have many random folder names and very short names

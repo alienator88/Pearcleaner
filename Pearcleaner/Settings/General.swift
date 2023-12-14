@@ -23,7 +23,7 @@ struct GeneralSettingsTab: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 5) {
                         Text("Transparency").font(.title2)
-                        Text("Toggles the sidebar material on the app list drawer")
+                        Text("Toggles the transparent sidebar material")
                             .font(.footnote)
                             .foregroundStyle(.gray)
                     }

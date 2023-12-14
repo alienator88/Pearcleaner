@@ -30,7 +30,7 @@ struct MiniMode: View {
                     MiniEmptyView(showPopover: $showPopover)
                 } else if appState.currentView == .files {
                     TopBarMini(reload: $reload, search: $search)
-                    FilesView(showPopover: $showPopover)
+                    FilesView(showPopover: $showPopover, search: $search)
                         .id(appState.appInfo.id)
                 } else if appState.currentView == .apps {
                     TopBarMini(reload: $reload, search: $search)
@@ -41,7 +41,7 @@ struct MiniMode: View {
             .transition(.move(edge: .leading))
             .popover(isPresented: $showPopover, arrowEdge: .trailing) {
                 VStack {
-                    FilesView(showPopover: $showPopover)
+                    FilesView(showPopover: $showPopover, search: $search)
                         .id(appState.appInfo.id)
                 }
                 .background(

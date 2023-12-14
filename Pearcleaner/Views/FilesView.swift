@@ -17,7 +17,8 @@ struct FilesView: View {
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
-    
+    @Binding var search: String
+
     var body: some View {
         VStack(alignment: .center) {
             if !self.showDetails {
@@ -156,13 +157,26 @@ struct FilesView: View {
                     
                     HStack() {
                         Spacer()
-                                               
-                        
+                                    
+                        if mini {
+                            Button("Close") {
+                                updateOnMain {
+                                    appState.appInfo = AppInfo.empty
+                                    search = ""
+                                    appState.currentView = .apps
+                                    showPopover = false
+                                }
+                            }
+//                            .buttonStyle(FilesViewActionButton(action: .close))
+                        }
+
+
                         Button("Uninstall") {
                             Task {
                                 updateOnMain {
                                     appState.appInfo = AppInfo.empty
                                     if mini {
+                                        search = ""
                                         appState.currentView = .apps
                                         showPopover = false
                                     } else {
@@ -191,7 +205,7 @@ struct FilesView: View {
                             
                         }
                         .disabled(appState.selectedItems.isEmpty)
-                        .buttonStyle(WindowActionButton(action: .accept))
+//                        .buttonStyle(FilesViewActionButton(action: .uninstall))
                     }
 //                    .padding(.top)
                     
