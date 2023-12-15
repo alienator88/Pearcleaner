@@ -10,7 +10,6 @@ import SwiftUI
 
 struct TopBar: View {
     //    @Binding var sidebar: Bool
-    @Binding var reload: Bool
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false

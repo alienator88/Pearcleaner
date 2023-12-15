@@ -14,7 +14,6 @@ struct MiniMode: View {
     @Binding var search: String
     @State private var showSys: Bool = true
     @State private var showUsr: Bool = true
-    @State private var reload: Bool = false
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @Binding var showPopover: Bool
     
@@ -26,15 +25,15 @@ struct MiniMode: View {
             // Main Mini View
             VStack(spacing: 0) {
                 if appState.currentView == .empty {
-                    TopBarMini(reload: $reload, search: $search)
+                    TopBarMini(search: $search)
                     MiniEmptyView(showPopover: $showPopover)
                 } else if appState.currentView == .files {
-                    TopBarMini(reload: $reload, search: $search)
+                    TopBarMini(search: $search)
                     FilesView(showPopover: $showPopover, search: $search)
                         .id(appState.appInfo.id)
                 } else if appState.currentView == .apps {
-                    TopBarMini(reload: $reload, search: $search)
-                    MiniAppView(search: $search, reload: $reload, showPopover: $showPopover)
+                    TopBarMini(search: $search)
+                    MiniAppView(search: $search, showPopover: $showPopover)
                 }
             }
             //            .padding(.leading, appState.sidebar ? 0 : 10)
@@ -149,7 +148,6 @@ struct MiniAppView: View {
     @Binding var search: String
     @State private var showSys: Bool = true
     @State private var showUsr: Bool = true
-    @Binding var reload: Bool
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @Binding var showPopover: Bool
     
@@ -174,7 +172,7 @@ struct MiniAppView: View {
         ZStack {
             HStack(spacing: 0){
                 
-                if reload {
+                if appState.reload {
                     VStack {
                         Spacer()
                         ProgressView("Refreshing applications")

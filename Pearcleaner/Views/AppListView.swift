@@ -15,7 +15,6 @@ struct AppListView: View {
     @State private var showSys: Bool = true
     @State private var showUsr: Bool = true
 //    @State private var sidebar: Bool = true
-    @State private var reload: Bool = false
     @Binding var showPopover: Bool
     
     var filteredUserApps: [AppInfo] {
@@ -42,7 +41,7 @@ struct AppListView: View {
                 ZStack {
                     HStack(spacing: 0){
                         
-                        if reload {
+                        if appState.reload {
                             VStack {
                                 Spacer()
                                 ProgressView("Refreshing applications")
@@ -55,7 +54,7 @@ struct AppListView: View {
                                 
                                 VStack(alignment: .center, spacing: 20) {
                                     HStack {
-                                        SearchBar(search: $search, reload: $reload)
+                                        SearchBar(search: $search)
 
 //                                        Button("") {
 //                                            withAnimation(.easeInOut(duration: 0.5)) {
@@ -132,10 +131,10 @@ struct AppListView: View {
             // Details View
             VStack(spacing: 0) {
                 if appState.currentView == .empty {
-                    TopBar(reload: $reload)
+                    TopBar()
                     AppDetailsEmptyView(showPopover: $showPopover)
                 } else if appState.currentView == .files {
-                    TopBar(reload: $reload)
+                    TopBar()
                     FilesView(showPopover: $showPopover, search: $search)
                         .id(appState.appInfo.id)
                 }
@@ -221,12 +220,11 @@ struct AppDetailsEmptyView: View {
 
 struct SearchBar: View {
     @Binding var search: String
-    @Binding var reload: Bool
     
     var body: some View {
         HStack {
             TextField("Search", text: $search)
-                .textFieldStyle(SimpleSearchStyle(icon: Image(systemName: "magnifyingglass"),trash: true, reload: $reload, text: $search))
+                .textFieldStyle(SimpleSearchStyle(icon: Image(systemName: "magnifyingglass"),trash: true, text: $search))
         }
         .frame(height: 30)
     }

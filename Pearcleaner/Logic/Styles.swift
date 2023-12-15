@@ -78,8 +78,8 @@ struct LabeledDivider: View {
 
 struct AnimatedSearchStyle: TextFieldStyle {
     @State private var isHovered = false
+    @FocusState private var isFocused: Bool
     @Binding var text: String
-    @Binding var reload: Bool
     @EnvironmentObject var appState: AppState
 
     func _body(configuration: TextField<Self._Label>) -> some View {
@@ -105,12 +105,12 @@ struct AnimatedSearchStyle: TextFieldStyle {
                     .onTapGesture {
                         withAnimation {
                             // Refresh Apps list
-                            reload.toggle()
+                            appState.reload.toggle()
                             let sortedApps = getSortedApps()
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                 appState.sortedApps.userApps = sortedApps.userApps
                                 appState.sortedApps.systemApps = sortedApps.systemApps
-                                reload.toggle()
+                                appState.reload.toggle()
                             }
                         }
                         
@@ -135,11 +135,16 @@ struct AnimatedSearchStyle: TextFieldStyle {
 
 
             } else {
-                Image(systemName: "magnifyingglass")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 18, height: 18)
-                    .foregroundColor(isHovered ? Color("mode") : Color("mode").opacity(0.5))
+                HStack {
+                    Spacer()
+                    Image(systemName: "magnifyingglass")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 18, height: 18)
+                        .foregroundColor(isHovered ? Color("mode") : Color("mode").opacity(0.5))
+                }
+                .frame(width: 150)
+
             }
         }
         .padding(8)
@@ -156,8 +161,10 @@ struct AnimatedSearchStyle: TextFieldStyle {
         .onHover { hovering in
             withAnimation(Animation.easeInOut(duration: 0.4)) {
                 self.isHovered = hovering
+                self.isFocused = hovering
             }
         }
+        .focused($isFocused)
     }
 }
 
@@ -168,7 +175,6 @@ struct SimpleSearchStyle: TextFieldStyle {
     @State private var isHovered = false
     @State var icon: Image?
     @State var trash: Bool = false
-    @Binding var reload: Bool
     @Binding var text: String
     @EnvironmentObject var appState: AppState
     @AppStorage("settings.general.mini") private var mini: Bool = false
@@ -198,12 +204,12 @@ struct SimpleSearchStyle: TextFieldStyle {
                     .onTapGesture {
                         withAnimation {
                             // Refresh Apps list
-                            reload.toggle()
+                            appState.reload.toggle()
                             let sortedApps = getSortedApps()
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                 appState.sortedApps.userApps = sortedApps.userApps
                                 appState.sortedApps.systemApps = sortedApps.systemApps
-                                reload.toggle()
+                                appState.reload.toggle()
                             }
                         }
                         

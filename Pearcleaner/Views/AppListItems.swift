@@ -10,7 +10,6 @@ import SwiftUI
 
 struct AppListItems: View {
     @EnvironmentObject var appState: AppState
-//    @Binding var reload: Bool
     @Binding var search: String
     @State private var isHovered = false
     @Environment(\.colorScheme) var colorScheme
@@ -67,7 +66,7 @@ struct AppListItems: View {
                 if isHovered || isSelected {
                     RoundedRectangle(cornerRadius: 50)
                         .fill(isSelected ? Color("AccentColor") : Color("mode").opacity(0.5))
-                        .frame(width: isSelected ? 4 : 2, height: 35)
+                        .frame(width: isSelected ? 4 : 2, height: 30)
                         .padding(.leading, 5)
                         .offset(x: 20)
                 }

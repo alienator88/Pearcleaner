@@ -26,6 +26,7 @@ class AppState: ObservableObject
     @Published var isReminderVisible: Bool = false
     @Published var releases = [Release]()
     @Published var progressBar: (String, Double) = ("Ready", 0.0)
+    @Published var reload: Bool = false
 
     
     //Window

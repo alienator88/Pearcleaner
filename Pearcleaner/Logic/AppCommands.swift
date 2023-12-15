@@ -10,11 +10,11 @@ import SwiftUI
 struct AppCommands: Commands {
     
     let appState: AppState
-    
+
     init(appState: AppState) {
         self.appState = appState
     }
-    
+
     var body: some Commands {
         
         // Pearcleaner Menu
@@ -30,9 +30,13 @@ struct AppCommands: Commands {
             Button {
                 withAnimation(.easeInOut(duration: 0.5)) {
                     // Refresh Apps list
+                    appState.reload.toggle()
                     let sortedApps = getSortedApps()
-                    appState.sortedApps.userApps = sortedApps.userApps
-                    appState.sortedApps.systemApps = sortedApps.systemApps
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        appState.sortedApps.userApps = sortedApps.userApps
+                        appState.sortedApps.systemApps = sortedApps.systemApps
+                        appState.reload.toggle()
+                    }
                 }
             } label: {
                 Text("Refresh Apps")

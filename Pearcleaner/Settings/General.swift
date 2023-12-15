@@ -99,7 +99,7 @@ struct GeneralSettingsTab: View {
                     .onChange(of: mini) { newVal in
                         resizeWindow(width: 300, height: 300)
                         if mini {
-                            appState.currentView = .apps
+                            appState.currentView = .empty
                         } else {
                             if appState.appInfo.appName.isEmpty {
                                 appState.currentView = .empty

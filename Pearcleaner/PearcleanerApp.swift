@@ -20,7 +20,7 @@ struct PearcleanerApp: App {
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @State private var search = ""
     @State private var showPopover: Bool = false
-    
+
     var body: some Scene {
 
         WindowGroup {

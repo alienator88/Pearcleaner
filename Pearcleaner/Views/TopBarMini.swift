@@ -9,7 +9,6 @@ import Foundation
 import SwiftUI
 
 struct TopBarMini: View {
-    @Binding var reload: Bool
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
@@ -25,7 +24,7 @@ struct TopBarMini: View {
 //                HStack {
 //                    Spacer()
                     
-                SearchBarMini(search: $search, reload: $reload)
+                SearchBarMini(search: $search)
 //                    .frame(width: 150)
 //                    .offset(x: 20)
 //                    .padding(.horizontal, 30)
@@ -102,12 +101,11 @@ struct TopBarMini: View {
 
 struct SearchBarMini: View {
     @Binding var search: String
-    @Binding var reload: Bool
-    
+
     var body: some View {
         HStack {
             TextField("Search", text: $search)
-                .textFieldStyle(AnimatedSearchStyle(text: $search, reload: $reload))
+                .textFieldStyle(AnimatedSearchStyle(text: $search))
 //                .textFieldStyle(SimpleSearchStyle(trash: true, reload: $reload, text: $search))
         }
 //        .frame(height: 20)

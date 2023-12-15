@@ -269,13 +269,13 @@ func findPathsForApp(appState: AppState, appInfo: AppInfo) {
         let dispatchGroup = DispatchGroup()
         let bundleComponents = appInfo.bundleIdentifier.components(separatedBy: ".")
         var bundle: String = ""
-        var weirdFormatBundle: Bool = false
+//        var weirdFormatBundle: Bool = false
         if bundleComponents.count >= 3 { // get last 2 or middle 2 components
             bundle = bundleComponents[1...2].joined(separator: "").lowercased()
         }
-        if bundleComponents[0] != "com" {
-            weirdFormatBundle = true
-        }
+//        if bundleComponents[0] != "com" {
+//            weirdFormatBundle = true
+//        }
         let nameL = appInfo.appName.pearFormat()
         let bundleIdentifierL = appInfo.bundleIdentifier.pearFormat()
         let locations = Locations()
@@ -319,11 +319,12 @@ func findPathsForApp(appState: AppState, appInfo: AppInfo) {
                             if itemL.contains(bundle) || itemL.contains(bundleIdentifierL) || (nameL.count > 4 && itemL.contains(nameL)) {
                                 collection.append(itemURL)
                             }
+                            // This causes too many issues, disabling this filter for now /////////////////////////////////
                             // Catch Logitech files since Logi is part of word login and can return random files
-                        } else if itemL.contains("logi") && !itemL.contains("login") {
-                            if itemL.contains(bundleComponents[weirdFormatBundle ? 0 : 1]) || itemL.contains(bundle) || itemL.contains(bundleIdentifierL) || (nameL.count > 3 && itemL.contains(nameL)) {
-                                collection.append(itemURL)
-                            }
+//                        } else if itemL.contains("logi") && !itemL.contains("login") {
+//                            if itemL.contains(bundleComponents[weirdFormatBundle ? 0 : 1]) || itemL.contains(bundle) || itemL.contains(bundleIdentifierL) || (nameL.count > 3 && itemL.contains(nameL)) {
+//                                collection.append(itemURL)
+//                            }
                             // Catch MS Office files since they have many random folder names and very short names
                         } else if itemL.contains("office") || itemL.contains("oneauth") || itemL.suffix(2).contains("ms") || itemL.contains("onenote") {
                             if itemL.contains(bundle) || itemL.contains(bundleIdentifierL) || (nameL.count > 4 && itemL.contains(nameL)) {
