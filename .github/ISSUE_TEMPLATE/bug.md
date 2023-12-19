@@ -19,6 +19,7 @@ Steps to reproduce the behavior:
 4. See error
 
 **Expected behavior**
+
 A clear and concise description of what you expected to happen.
 
 **Desktop (please complete the following information):**
@@ -27,7 +28,9 @@ A clear and concise description of what you expected to happen.
  - Pearcleaner Version: [e.g. 2.0]
 
 **Screenshots**
+
 If applicable, add screenshots to help explain your problem.
 
 **Additional context**
+
 Add any other context about the problem here.
