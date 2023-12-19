@@ -23,7 +23,9 @@ A clear and concise description of what the affected app issue is.
  - Pearcleaner Version: [e.g. 2.0]
 
 **Screenshots**
+
 If applicable, add screenshots to help explain your problem.
 
 **Additional context**
+
 Add any other context about the problem here.
