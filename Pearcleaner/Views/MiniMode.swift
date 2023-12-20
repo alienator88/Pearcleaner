@@ -218,7 +218,7 @@ struct MiniAppView: View {
                         .scrollIndicators(.never)
    
                     }
-//                    .padding(.vertical)
+                    .padding(.bottom)
                 }
                 
                 

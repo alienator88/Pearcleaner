@@ -23,15 +23,15 @@ struct PearcleanerApp: App {
 
     var body: some Scene {
 
+
+
         WindowGroup {
             Group {
                 
                 if !mini {
                     AppListView(search: $search, showPopover: $showPopover)
-                        .frame(minWidth: 800, minHeight: 500)
                 } else {
                     MiniMode(search: $search, showPopover: $showPopover)
-                        .frame(minWidth: 300, minHeight: 300)
                 }
                 
             }
@@ -49,22 +49,15 @@ struct PearcleanerApp: App {
                         if let data = data as? Data, let url = URL(dataRepresentation: data, relativeTo: nil) {
                             let deeplinkManager = DeeplinkManager()
                             deeplinkManager.manage(url: url, appState: appState)
-                            //                        // Check if the file URL has a ".app" extension
-                            //                        if url.pathExtension.lowercased() == "app" {
-                            //                            // Handle the dropped file URL here
-                            //                            print("Dropped .app file URL: \(url)")
-                            //                        } else {
-                            //                            // Print a message for non-.app files
-                            //                            print("Unsupported file type. Only .app files are accepted.")
-                            //                        }
                         }
                     }
                 }
                 return true
             }
             .onAppear {
+                // Disable tabbing
                 NSWindow.allowsAutomaticWindowTabbing = false
-                
+
                 // Get Apps
                 let sortedApps = getSortedApps()
                 appState.sortedApps.userApps = sortedApps.userApps
@@ -112,7 +105,7 @@ struct PearcleanerApp: App {
             CommandGroup(replacing: .newItem, addition: { })
             
         }
-        
+
         
         Settings {
             SettingsView()
@@ -128,7 +121,11 @@ struct PearcleanerApp: App {
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        #if DEBUG
         return true
+        #else
+        return false
+        #endif
     }
 //    func application(_ sender: NSApplication, open urls: [URL]) {
 //        for url in urls {

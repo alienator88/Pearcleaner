@@ -97,10 +97,11 @@ struct GeneralSettingsTab: View {
                     })
                     .toggleStyle(.switch)
                     .onChange(of: mini) { newVal in
-                        resizeWindow(width: 300, height: 300)
                         if mini {
+                            resizeWindow(width: 300, height: 300)
                             appState.currentView = .empty
                         } else {
+                            resizeWindow(width: 700, height: 500)
                             if appState.appInfo.appName.isEmpty {
                                 appState.currentView = .empty
                             } else {

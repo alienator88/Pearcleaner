@@ -125,11 +125,23 @@ func getAppInfo(atPath path: URL) -> AppInfo? {
             return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName ?? "", appVersion: appVersion, appIcon: appIcon, webApp: webApp ?? false, wrapped: false)
 
         } else {
-//            print("One or more variables missing for app at path: \(path)")
-            let wrapperURL = path.appendingPathComponent("Wrapper").appendingPathComponent(path.lastPathComponent)
-            if let wrappedAppInfo = getWrappedAppInfo(atPath: wrapperURL) {
-                return wrappedAppInfo
+            let wrapperURL = path.appendingPathComponent("Wrapper")//.appendingPathComponent(path.lastPathComponent)
+            do {
+                let contents = try FileManager.default.contentsOfDirectory(at: wrapperURL, includingPropertiesForKeys: nil, options: [])
+                let appFiles = contents.filter { $0.pathExtension == "app" }
+
+                if let firstAppFile = appFiles.first {
+                    let fullPath = wrapperURL.appendingPathComponent(firstAppFile.lastPathComponent)
+                    if let wrappedAppInfo = getWrappedAppInfo(atPath: fullPath) {
+                        return wrappedAppInfo
+                    }
+                } else {
+                    print("No .app files found in the 'Wrapper' directory.")
+                }
+            } catch {
+                print("Error reading contents of 'Wrapper' directory: \(error.localizedDescription)")
             }
+
         }
     } else {
         print("Bundle not found at path: \(path)")

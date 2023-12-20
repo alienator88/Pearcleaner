@@ -144,6 +144,7 @@ struct AppListView: View {
             
             Spacer()
         }
+        .frame(minWidth: 700, minHeight: 500)
         .edgesIgnoringSafeArea(.all)
 //        .onOpenURL(perform: { url in
 //            let deeplinkManager = DeeplinkManager()

@@ -30,6 +30,7 @@ struct AppListItems: View {
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 30, height: 30)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
                 }
                 VStack(alignment: .leading, spacing: 5) {
                     Text(appInfo.appName)

@@ -41,6 +41,7 @@ struct FilesView: View {
                                 .scaledToFit()
 //                                .aspectRatio(contentMode: .fit)
                                 .frame(width: 50, height: 50)
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
                                 .padding(.leading)
                         }
                         //app title, size and items
@@ -310,6 +311,8 @@ struct FileDetailsItem: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 30, height: 30)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+
             }
             VStack(alignment: .leading, spacing: 5) {
                 Text(path.lastPathComponent)
