@@ -12,6 +12,7 @@ import AppKit
 struct PearcleanerApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject var appState = AppState()
+    @State private var windowSettings = WindowSettings()
     @AppStorage("settings.updater.updateTimeframe") private var updateTimeframe: Int = 1
     @AppStorage("settings.permissions.disk") private var diskP: Bool = false
     @AppStorage("settings.permissions.events") private var diskE: Bool = false
@@ -54,9 +55,19 @@ struct PearcleanerApp: App {
                 }
                 return true
             }
+            // Save window size on window dimension change
+            .onChange(of: NSApplication.shared.windows.first?.frame) { newFrame in
+                if let newFrame = newFrame {
+                    windowSettings.saveWindowSettings(frame: newFrame)
+                }
+            }
             .onAppear {
                 // Disable tabbing
                 NSWindow.allowsAutomaticWindowTabbing = false
+
+                // Set window size on load
+                let frame = windowSettings.loadWindowSettings()
+                NSApplication.shared.windows.first?.setFrame(frame, display: true)
 
                 // Get Apps
                 let sortedApps = getSortedApps()
@@ -121,20 +132,7 @@ struct PearcleanerApp: App {
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        #if DEBUG
         return true
-        #else
-        return false
-        #endif
     }
-//    func application(_ sender: NSApplication, open urls: [URL]) {
-//        for url in urls {
-//            if url.pathExtension == "app" {
-//                writeLog(string: url.path)
-//                print("Dropped app path:", url.path)
-//            }
-//        }
-//    }
-
 }
 

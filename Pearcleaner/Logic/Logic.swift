@@ -279,15 +279,17 @@ func findPathsForApp(appState: AppState, appInfo: AppInfo) {
         
         let fileManager = FileManager.default
         let dispatchGroup = DispatchGroup()
-        let bundleComponents = appInfo.bundleIdentifier.components(separatedBy: ".")
+        var bundleComponents = appInfo.bundleIdentifier.components(separatedBy: ".")
+        if let lastComponent = bundleComponents.last, let rangeOfDash = lastComponent.range(of: "-") {
+            // Remove the dash and everything after it
+            let updatedLastComponent = String(lastComponent[..<rangeOfDash.lowerBound])
+            bundleComponents[bundleComponents.count - 1] = updatedLastComponent
+        }
         var bundle: String = ""
-//        var weirdFormatBundle: Bool = false
         if bundleComponents.count >= 3 { // get last 2 or middle 2 components
             bundle = bundleComponents[1...2].joined(separator: "").lowercased()
         }
-//        if bundleComponents[0] != "com" {
-//            weirdFormatBundle = true
-//        }
+
         let nameL = appInfo.appName.pearFormat()
         let bundleIdentifierL = appInfo.bundleIdentifier.pearFormat()
         let locations = Locations()
