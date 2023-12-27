@@ -5,9 +5,7 @@
 <p align="center">
    <strong>Status: </strong>Maintained 
    <br />
-   <b>(Responses might be slow over holidays)</b>
-   <br />
-   <strong>Version: </strong>2.1
+   <strong>Version: </strong>2.2
    <br />
    <a href="https://github.com/alienator88/Pearcleaner/releases"><strong>Download</strong></a>
     · 
