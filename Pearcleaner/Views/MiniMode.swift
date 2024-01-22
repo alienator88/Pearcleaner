@@ -43,6 +43,7 @@ struct MiniMode: View {
                     FilesView(showPopover: $showPopover, search: $search)
                         .id(appState.appInfo.id)
                 }
+                .interactiveDismissDisabled()
                 .background(
                     Rectangle()
                         .fill(Color("pop"))

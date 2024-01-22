@@ -56,7 +56,7 @@ func getApplications() -> (systemApps: [URL], userApps: [URL]) {
             print("Error: \(error)")
         }
     }
-    
+
     // Collect system applications
     collectAppPaths(at: systemAppsPath, isSystem: true)
     
@@ -300,8 +300,9 @@ func findPathsForApp(appState: AppState, appInfo: AppInfo) {
             }
             
             dispatchGroup.enter() // Enter the dispatch group
-            
+
             do {
+                
                 let contents = try fileManager.contentsOfDirectory(atPath: location)
                 
                 for item in contents {
@@ -340,11 +341,14 @@ func findPathsForApp(appState: AppState, appInfo: AppInfo) {
 //                                collection.append(itemURL)
 //                            }
                             // Catch MS Office files since they have many random folder names and very short names
-                        } else if itemL.contains("office") || itemL.contains("oneauth") || itemL.suffix(2).contains("ms") || itemL.contains("onenote") {
-                            if itemL.contains(bundle) || itemL.contains(bundleIdentifierL) || (nameL.count > 4 && itemL.contains(nameL)) {
-                                collection.append(itemURL)
-                            }
-                        } else {
+                        } 
+                        // This is now covered by the group container logic, not needed anymore
+//                        else if itemL.contains("office") || itemL.contains("oneauth") || itemL.suffix(2).contains("ms") || itemL.contains("onenote") {
+//                            if itemL.contains(bundle) || itemL.contains(bundleIdentifierL) || (nameL.count > 4 && itemL.contains(nameL)) {
+//                                collection.append(itemURL)
+//                            }
+//                        } 
+                        else {
                             if itemL.contains(bundleIdentifierL) || itemL.contains(bundle) || (nameL.count > 3 && itemL.contains(nameL)) {
                                 collection.append(itemURL)
                             }
@@ -357,20 +361,54 @@ func findPathsForApp(appState: AppState, appInfo: AppInfo) {
             }
             
             dispatchGroup.leave() // Leave the dispatch group
-            
-            dispatchGroup.notify(queue: .main) {
-                updateOnMain {
-                    appState.paths = collection
-                    appState.selectedItems = Set(collection)
-                }
-            }
-            
+
         }
+
+        // Append group containers
+        let groupContainers = getGroupContainers(bundleURL: appState.appInfo.path)
+        collection.append(contentsOf: groupContainers)
+        let sortedCollection = collection.sorted(by: { $0.absoluteString < $1.absoluteString })
+
+        // Save to appState
+        dispatchGroup.notify(queue: .main) {
+            updateOnMain {
+                appState.paths = sortedCollection
+                appState.selectedItems = Set(sortedCollection)
+            }
+        }
+
     }
 }
 
 
+func getGroupContainers(bundleURL: URL) -> [URL] {
 
+    var staticCode: SecStaticCode?
+
+    guard SecStaticCodeCreateWithPath(bundleURL as CFURL, [], &staticCode) == errSecSuccess else {
+        return []
+    }
+
+    var signingInformation: CFDictionary?
+
+    let status = SecCodeCopySigningInformation(staticCode!, SecCSFlags(), &signingInformation)
+
+    if status != errSecSuccess {
+        print("Failed to copy signing information. Status: \(status)")
+        return []
+    }
+
+    guard let topDict = signingInformation as? [String: Any],
+          let entitlementsDict = topDict["entitlements-dict"] as? [String: Any],
+          let appGroups = entitlementsDict["com.apple.security.application-groups"] as? [String] else {
+//        print("No application groups to extract from entitlements for this app.")
+        return []
+    }
+
+    let groupContainersPath = appGroups.map { URL(fileURLWithPath: "\(home)/Library/Group Containers/" + $0) }
+
+    return groupContainersPath
+}
 
 
 // Move files to trash using applescript/Finder so it asks for user password if needed

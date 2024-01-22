@@ -35,10 +35,9 @@ struct Locations {
             "\(home)/Library/Application Support/CrashReporter",
             "\(home)/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.ApplicationRecentDocuments",
             "\(home)/Library/Containers",
-            "\(home)/Library/Group Containers",
+//            "\(home)/Library/Group Containers", // This is now handled by the function getGroupContainers()
             "\(home)/Library/Caches",
             "\(home)/Library/HTTPStorages",
-            "\(home)/Library/Group Containers",
             "\(home)/Library/Internet Plug-Ins",
             "\(home)/Library/LaunchAgents",
             "\(home)/Library/Logs",
