@@ -60,10 +60,9 @@ You might need to open this with right click-open since I don't have a paid deve
 - Homebrew
 
 Since I don't have a paid developer account, I can't submit to the main Homebrew cask repo.
-You can still add the app via Homebrew by tapping my repo:
+You can still add the app via Homebrew by tapping my homebrew repo:
 ```
-brew tap alienator88/homebrew-cask
-brew install --cask pearcleaner
+brew install alienator88/homebrew-cask/pearcleaner
 ```
 
 ## Thanks
