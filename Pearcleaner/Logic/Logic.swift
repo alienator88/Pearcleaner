@@ -382,6 +382,7 @@ func findPathsForApp(appState: AppState, appInfo: AppInfo) {
 
 
 func getGroupContainers(bundleURL: URL) -> [URL] {
+    let fileManager = FileManager.default
 
     var staticCode: SecStaticCode?
 
@@ -406,13 +407,18 @@ func getGroupContainers(bundleURL: URL) -> [URL] {
     }
 
     let groupContainersPath = appGroups.map { URL(fileURLWithPath: "\(home)/Library/Group Containers/" + $0) }
+    let existingGroupContainers = groupContainersPath.filter { fileManager.fileExists(atPath: $0.path) }
 
-    return groupContainersPath
+    return existingGroupContainers
 }
 
 
 // Move files to trash using applescript/Finder so it asks for user password if needed
 func moveFilesToTrash(at fileURLs: [URL], completion: @escaping () -> Void = {}) {
+    @AppStorage("settings.sentinel.enable") var sentinel: Bool = false
+    if sentinel {
+        launchctl(load: false)
+    }
     updateOnBackground {
         let posixFiles = fileURLs.map { "POSIX file \"\($0.path)\", " }.joined().dropLast(3)
         let scriptSource = """

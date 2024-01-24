@@ -283,7 +283,8 @@ func totalSizeOnDisk(for paths: [URL]) -> String? {
     }
     let pipe = Pipe()
     process.standardOutput = pipe
-    
+    process.standardError =  FileHandle.nullDevice
+
     try? process.run()
     process.waitUntilExit()
     

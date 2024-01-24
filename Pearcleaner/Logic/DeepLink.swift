@@ -9,7 +9,13 @@ import Foundation
 import SwiftUI
 
 class DeeplinkManager {
-    
+    @Binding var showPopover: Bool
+    @AppStorage("settings.general.mini") private var mini: Bool = false
+
+    init(showPopover: Binding<Bool>) {
+        _showPopover = showPopover
+    }
+
     class DeepLinkConstants {
         static let scheme = "pear"
         static let host = "com.alienator88.Pearcleaner"
@@ -29,7 +35,11 @@ class DeeplinkManager {
                 updateOnMain {
                     appState.appInfo = appInfo!
                     findPathsForApp(appState: appState, appInfo: appState.appInfo)
-                    appState.currentView = .files
+                    if self.mini {
+                        self.showPopover = true
+                    } else {
+                        appState.currentView = .files
+                    }
                 }
             } else {
                 print("No path query parameter found in the URL")
@@ -67,7 +77,11 @@ class DeeplinkManager {
         updateOnMain {
             appState.appInfo = appInfo!
             findPathsForApp(appState: appState, appInfo: appState.appInfo)
-            appState.currentView = .files
+            if self.mini {
+                self.showPopover = true
+            } else {
+                appState.currentView = .files
+            }
         }
     }
     

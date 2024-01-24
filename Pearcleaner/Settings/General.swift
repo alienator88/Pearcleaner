@@ -13,6 +13,7 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.glass") private var glass: Bool = true
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.general.dark") var isDark: Bool = true
+    @AppStorage("settings.general.popover") private var popoverStay: Bool = true
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @State private var selectedTheme = "Auto"
     private let themes = ["Auto", "Dark", "Light"]
@@ -23,7 +24,7 @@ struct GeneralSettingsTab: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 5) {
                         Text("Transparency").font(.title2)
-                        Text("Toggles the transparent sidebar material")
+                        Text("Toggles transparent material")
                             .font(.footnote)
                             .foregroundStyle(.gray)
                     }
@@ -115,14 +116,37 @@ struct GeneralSettingsTab: View {
                     RoundedRectangle(cornerRadius: 8)
                         .fill(Color("mode").opacity(0.05))
                 )
-                
+
+
+
+                HStack {
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("Mini - Files View").font(.title2)
+                        Text("Keeps file search view on top in mini mode")
+                            .font(.footnote)
+                            .foregroundStyle(.gray)
+                    }
+                    Spacer()
+                    Toggle(isOn: $popoverStay, label: {
+                    })
+                    .toggleStyle(.switch)
+                }
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Color("mode").opacity(0.05))
+                )
+
+
+
+
                 Spacer()
             }
 
         }
         .padding(20)
-        .frame(width: 400, height: 250)
-        
+        .frame(width: 400, height: 350)
+
     }
     
 }

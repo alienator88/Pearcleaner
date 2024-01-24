@@ -15,6 +15,7 @@ struct MiniMode: View {
     @State private var showSys: Bool = true
     @State private var showUsr: Bool = true
     @AppStorage("settings.general.glass") private var glass: Bool = false
+    @AppStorage("settings.general.popover") private var popoverStay: Bool = true
     @Binding var showPopover: Bool
     
     
@@ -25,14 +26,14 @@ struct MiniMode: View {
             // Main Mini View
             VStack(spacing: 0) {
                 if appState.currentView == .empty {
-                    TopBarMini(search: $search)
+                    TopBarMini(search: $search, showPopover: $showPopover)
                     MiniEmptyView(showPopover: $showPopover)
                 } else if appState.currentView == .files {
-                    TopBarMini(search: $search)
+                    TopBarMini(search: $search, showPopover: $showPopover)
                     FilesView(showPopover: $showPopover, search: $search)
                         .id(appState.appInfo.id)
                 } else if appState.currentView == .apps {
-                    TopBarMini(search: $search)
+                    TopBarMini(search: $search, showPopover: $showPopover)
                     MiniAppView(search: $search, showPopover: $showPopover)
                 }
             }
@@ -43,7 +44,7 @@ struct MiniMode: View {
                     FilesView(showPopover: $showPopover, search: $search)
                         .id(appState.appInfo.id)
                 }
-                .interactiveDismissDisabled()
+                .interactiveDismissDisabled(popoverStay)
                 .background(
                     Rectangle()
                         .fill(Color("pop"))

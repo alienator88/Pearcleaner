@@ -15,6 +15,7 @@ struct FilesView: View {
     @State private var showPop: Bool = false
     @State private var itemDetails: [(size: String, icon: Image?)] = []
     @AppStorage("settings.general.mini") private var mini: Bool = false
+    @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
     @Binding var search: String
@@ -196,6 +197,9 @@ struct FilesView: View {
                                         withAnimation {
                                             updateOnMain {
                                                 appState.isReminderVisible.toggle()
+                                                if sentinel {
+                                                    launchctl(load: true)
+                                                }
                                             }
                                         }
                                         refreshAppList(appState.appInfo)

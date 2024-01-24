@@ -41,14 +41,14 @@ struct PearcleanerApp: App {
             .alert(isPresented: $appState.showAlert) { presentAlert(appState: appState) }
             .handlesExternalEvents(preferring: Set(arrayLiteral: "pear"), allowing: Set(arrayLiteral: "*"))
             .onOpenURL(perform: { url in
-                let deeplinkManager = DeeplinkManager()
+                let deeplinkManager = DeeplinkManager(showPopover: $showPopover)
                 deeplinkManager.manage(url: url, appState: appState)
             })
             .onDrop(of: ["public.file-url"], isTargeted: nil) { providers, _ in
                 for provider in providers {
                     provider.loadItem(forTypeIdentifier: "public.file-url") { data, error in
                         if let data = data as? Data, let url = URL(dataRepresentation: data, relativeTo: nil) {
-                            let deeplinkManager = DeeplinkManager()
+                            let deeplinkManager = DeeplinkManager(showPopover: $showPopover)
                             deeplinkManager.manage(url: url, appState: appState)
                         }
                     }

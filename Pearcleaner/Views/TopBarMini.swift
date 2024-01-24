@@ -13,6 +13,7 @@ struct TopBarMini: View {
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @Binding var search: String
+    @Binding var showPopover: Bool
     @EnvironmentObject var appState: AppState
     
     var body: some View {
@@ -56,6 +57,7 @@ struct TopBarMini: View {
 //                        updateOnMain {
                             appState.currentView = .empty
                             appState.appInfo = AppInfo.empty
+                            showPopover = false
 //                        }
                     }
                 }
