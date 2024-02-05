@@ -73,11 +73,22 @@ func getApplications() -> (systemApps: [URL], userApps: [URL]) {
 func getAppInfo(atPath path: URL) -> AppInfo? {
     if let bundle = Bundle(url: path) {
         if let bundleIdentifier = bundle.bundleIdentifier,
-           let appVersion = bundle.infoDictionary?["CFBundleShortVersionString"] as? String,
            var appIconFileName = bundle.infoDictionary?["CFBundleIconFile"] as? String {
+            var appVersion = "0.0.0"
             var appIcon: NSImage?
             var appName: String?
             var webApp: Bool?
+
+
+            if let shortVersion = bundle.infoDictionary?["CFBundleShortVersionString"] as? String {
+                appVersion = shortVersion
+            } else {
+                if let bundleVersion = bundle.infoDictionary?["CFBundleVersion"] as? String {
+                    appVersion = bundleVersion
+                } else {
+                    print("Failed to retrieve bundle version")
+                }
+            }
 
             if let localizedName = bundle.localizedInfoDictionary?[kCFBundleNameKey as String] as? String {
                 appName = localizedName
@@ -125,21 +136,27 @@ func getAppInfo(atPath path: URL) -> AppInfo? {
             return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName ?? "", appVersion: appVersion, appIcon: appIcon, webApp: webApp ?? false, wrapped: false)
 
         } else {
-            let wrapperURL = path.appendingPathComponent("Wrapper")//.appendingPathComponent(path.lastPathComponent)
-            do {
-                let contents = try FileManager.default.contentsOfDirectory(at: wrapperURL, includingPropertiesForKeys: nil, options: [])
-                let appFiles = contents.filter { $0.pathExtension == "app" }
+            let wrapperURL = path.appendingPathComponent("Wrapper")
 
-                if let firstAppFile = appFiles.first {
-                    let fullPath = wrapperURL.appendingPathComponent(firstAppFile.lastPathComponent)
-                    if let wrappedAppInfo = getWrappedAppInfo(atPath: fullPath) {
-                        return wrappedAppInfo
+            // Check that file path exists, exit if not
+            if FileManager.default.fileExists(atPath: wrapperURL.path) {
+                do {
+                    let contents = try FileManager.default.contentsOfDirectory(at: wrapperURL, includingPropertiesForKeys: nil, options: [])
+                    let appFiles = contents.filter { $0.pathExtension == "app" }
+
+                    if let firstAppFile = appFiles.first {
+                        let fullPath = wrapperURL.appendingPathComponent(firstAppFile.lastPathComponent)
+                        if let wrappedAppInfo = getWrappedAppInfo(atPath: fullPath) {
+                            return wrappedAppInfo
+                        }
+                    } else {
+                        print("No .app files found in the 'Wrapper' directory.")
                     }
-                } else {
-                    print("No .app files found in the 'Wrapper' directory.")
+                } catch {
+                    print("Error reading contents of 'Wrapper' directory: \(error.localizedDescription)")
                 }
-            } catch {
-                print("Error reading contents of 'Wrapper' directory: \(error.localizedDescription)")
+            } else {
+                print("Error: 'Wrapper' directory not found at path: \(wrapperURL.path)")
             }
 
         }
@@ -291,6 +308,7 @@ func findPathsForApp(appState: AppState, appInfo: AppInfo) {
         }
 
         let nameL = appInfo.appName.pearFormat()
+        let nameP = appInfo.path.lastPathComponent.replacingOccurrences(of: ".app", with: "")
         let bundleIdentifierL = appInfo.bundleIdentifier.pearFormat()
         let locations = Locations()
 
@@ -334,22 +352,8 @@ func findPathsForApp(appState: AppState, appInfo: AppInfo) {
                             if itemL.contains(bundle) || itemL.contains(bundleIdentifierL) || (nameL.count > 4 && itemL.contains(nameL)) {
                                 collection.append(itemURL)
                             }
-                            // This causes too many issues, disabling this filter for now /////////////////////////////////
-                            // Catch Logitech files since Logi is part of word login and can return random files
-//                        } else if itemL.contains("logi") && !itemL.contains("login") {
-//                            if itemL.contains(bundleComponents[weirdFormatBundle ? 0 : 1]) || itemL.contains(bundle) || itemL.contains(bundleIdentifierL) || (nameL.count > 3 && itemL.contains(nameL)) {
-//                                collection.append(itemURL)
-//                            }
-                            // Catch MS Office files since they have many random folder names and very short names
-                        } 
-                        // This is now covered by the group container logic, not needed anymore
-//                        else if itemL.contains("office") || itemL.contains("oneauth") || itemL.suffix(2).contains("ms") || itemL.contains("onenote") {
-//                            if itemL.contains(bundle) || itemL.contains(bundleIdentifierL) || (nameL.count > 4 && itemL.contains(nameL)) {
-//                                collection.append(itemURL)
-//                            }
-//                        } 
-                        else {
-                            if itemL.contains(bundleIdentifierL) || itemL.contains(bundle) || (nameL.count > 3 && itemL.contains(nameL)) {
+                        } else {
+                            if itemL.contains(bundleIdentifierL) || itemL.contains(bundle) || (nameL.count > 3 && itemL.contains(nameL) || (nameP.count > 3 && itemL.contains(nameP))) {
                                 collection.append(itemURL)
                             }
                         }
