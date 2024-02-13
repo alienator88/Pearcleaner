@@ -396,16 +396,17 @@ func presentAlert(appState: AppState) -> Alert {
 
 
 // --- Pearcleaner Uninstall --
-func uninstallPearcleaner(appState: AppState) {
+func uninstallPearcleaner(appState: AppState, locations: Locations) {
     
     // Unload Sentinel Monitor if running
     launchctl(load: false)
 
     // Get app info for Pearcleaner
     let appInfo = getAppInfo(atPath: Bundle.main.bundleURL)
+    appState.appInfo = appInfo!
 
     // Find application files for Pearcleaner
-    findPathsForApp(appState: appState, appInfo: appInfo!)
+    findPathsForApp(appState: appState, locations: locations)
 
     // Kill Pearcleaner and tell Finder to trash the files
     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {

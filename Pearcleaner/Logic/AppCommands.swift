@@ -10,9 +10,11 @@ import SwiftUI
 struct AppCommands: Commands {
     
     let appState: AppState
+    let locations: Locations
 
-    init(appState: AppState) {
+    init(appState: AppState, locations: Locations) {
         self.appState = appState
+        self.locations = locations
     }
 
     var body: some Commands {
@@ -44,7 +46,7 @@ struct AppCommands: Commands {
             .keyboardShortcut("r", modifiers: .command)
 
             Button {
-                uninstallPearcleaner(appState: appState)
+                uninstallPearcleaner(appState: appState, locations: locations)
             } label: {
                 Text("Uninstall Pearcleaner")
             }

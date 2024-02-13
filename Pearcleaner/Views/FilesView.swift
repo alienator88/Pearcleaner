@@ -10,6 +10,7 @@ import SwiftUI
 
 struct FilesView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var locations: Locations
     @State private var appSize: String = ""
     @State private var showDetails: Bool = false
     @State private var showPop: Bool = false
@@ -25,7 +26,28 @@ struct FilesView: View {
             if !self.showDetails {
                 VStack {
                     Spacer()
-                    ProgressView("Finding application files..")
+//                    ProgressView("Finding application files..")
+//                        .progressViewStyle(.linear)
+//                    Spacer()
+                    Text("Finding application files..").font(.title3)
+                        .foregroundStyle((.gray.opacity(0.8)))
+                    ProgressView()
+                        .progressViewStyle(.linear)
+                        .frame(width: 400, height: 10)
+//                    ProgressView("\(appState.progressManager.status)", value: appState.progressManager.progress, total: Double(appState.progressManager.total))
+//                        .progressViewStyle(LinearProgressViewStyle(tint: .blue))
+//                        .frame(width: 400, height: 10)
+//                        .padding(.top)
+//                        .onReceive(appState.progressManager.$progress) { newProgress in
+//                            DispatchQueue.main.async {
+//                                appState.objectWillChange.send()
+//                            }
+//                        }
+//                        .onReceive(appState.progressManager.$status) { newStatus in
+//                            DispatchQueue.main.async {
+//                                appState.objectWillChange.send()
+//                            }
+//                        }
                     Spacer()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -134,7 +156,7 @@ struct FilesView: View {
                     
                     
                     
-                    ScrollView {
+                    ScrollView() {
                         VStack {
                             ForEach(Array(zip(appState.paths, itemDetails)), id: \.0) { path, details in
                                 if let firstPath = appState.paths.first, path == firstPath {
@@ -250,10 +272,10 @@ struct FilesView: View {
                 }
                 if let appSize = totalSizeOnDisk(for: appState.paths) {
                     self.appSize = "\(appSize)"
-                    self.showDetails = true
                 } else {
                     print("Error calculating the total size on disk.")
                 }
+                self.showDetails = true
             }
         } else {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -326,7 +348,7 @@ struct FileDetailsItem: View {
                     .help(path.lastPathComponent)
                 Text(path.path)
                     .font(.footnote)
-                    .lineLimit(1)
+                    .lineLimit(2)
                     .truncationMode(.tail)
                     .opacity(0.5)
 //                    .foregroundStyle(Color("AccentColor"))

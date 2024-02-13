@@ -12,6 +12,7 @@ import AppKit
 struct PearcleanerApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject var appState = AppState()
+    @StateObject var locations = Locations()
     @State private var windowSettings = WindowSettings()
     @AppStorage("settings.updater.updateTimeframe") private var updateTimeframe: Int = 1
     @AppStorage("settings.permissions.disk") private var diskP: Bool = false
@@ -31,8 +32,10 @@ struct PearcleanerApp: App {
                 
                 if !mini {
                     AppListView(search: $search, showPopover: $showPopover)
+                        .environmentObject(locations)
                 } else {
                     MiniMode(search: $search, showPopover: $showPopover)
+                        .environmentObject(locations)
                 }
                 
             }
@@ -42,14 +45,14 @@ struct PearcleanerApp: App {
             .handlesExternalEvents(preferring: Set(arrayLiteral: "pear"), allowing: Set(arrayLiteral: "*"))
             .onOpenURL(perform: { url in
                 let deeplinkManager = DeeplinkManager(showPopover: $showPopover)
-                deeplinkManager.manage(url: url, appState: appState)
+                deeplinkManager.manage(url: url, appState: appState, locations: locations)
             })
             .onDrop(of: ["public.file-url"], isTargeted: nil) { providers, _ in
                 for provider in providers {
                     provider.loadItem(forTypeIdentifier: "public.file-url") { data, error in
                         if let data = data as? Data, let url = URL(dataRepresentation: data, relativeTo: nil) {
                             let deeplinkManager = DeeplinkManager(showPopover: $showPopover)
-                            deeplinkManager.manage(url: url, appState: appState)
+                            deeplinkManager.manage(url: url, appState: appState, locations: locations)
                         }
                     }
                 }
@@ -73,7 +76,10 @@ struct PearcleanerApp: App {
                 let sortedApps = getSortedApps()
                 appState.sortedApps.userApps = sortedApps.userApps
                 appState.sortedApps.systemApps = sortedApps.systemApps
-                                
+
+                // Load progressbar total
+//                appState.progressManager.total = Double(locations.apps.paths.count)
+
                 Task {
 
 #if !DEBUG
@@ -112,7 +118,7 @@ struct PearcleanerApp: App {
         .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentMinSize)
         .commands {
-            AppCommands(appState: appState)
+            AppCommands(appState: appState, locations: locations)
             CommandGroup(replacing: .newItem, addition: { })
             
         }

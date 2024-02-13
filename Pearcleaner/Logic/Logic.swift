@@ -268,6 +268,24 @@ func darwinCT() -> (String, String) {
 }
 
 
+// Add subfolders of ~/Library/Application Support/ to locations for deeper search
+func appSupSubfolders() throws -> [String] {
+    let fileManager = FileManager.default
+    let appSup = "\(home)/Library/Application Support/"
+    let subfolders = try fileManager.contentsOfDirectory(atPath: appSup)
+    let exclusionRegex = try NSRegularExpression(pattern: "\\bcom\\.apple\\b", options: [])
+    let exclusions = ["MobileSync", ".DS_Store", "Xcode", "SyncServices", "networkserviceproxy", "DiskImages", "CallHistoryTransactions", "App Store", "CloudDocs", "icdd", "iCloud", "Instruments", "AddressBook", "FaceTime", "AskPermission", "CallHistoryDB"]
+
+    let allowedFolders = subfolders.filter { folder in
+        let range = NSRange(location: 0, length: folder.utf16.count)
+        return exclusionRegex.firstMatch(in: folder, options: [], range: range) == nil && !exclusions.contains(folder)
+    }
+
+    return allowedFolders
+}
+
+
+
 
 // Check if app is running before deleting app files
 func killApp(appId: String, completion: @escaping () -> Void = {}) {
@@ -284,17 +302,19 @@ func killApp(appId: String, completion: @escaping () -> Void = {}) {
 
 
 // Find all possible paths for an app based on name/bundle id
-func findPathsForApp(appState: AppState, appInfo: AppInfo) {
+func findPathsForApp(appState: AppState, locations: Locations) {
     Task(priority: .high) {
         updateOnMain {
             appState.paths = []
         }
+        let appInfo = appState.appInfo
         var collection: [URL] = []
         if let url = URL(string: appInfo.path.absoluteString) {
             collection.insert(url, at: 0)
         }
         
         let fileManager = FileManager.default
+//        let progressManager = appState.progressManager
         let dispatchGroup = DispatchGroup()
         var bundleComponents = appInfo.bundleIdentifier.components(separatedBy: ".")
         if let lastComponent = bundleComponents.last, let rangeOfDash = lastComponent.range(of: "-") {
@@ -310,27 +330,37 @@ func findPathsForApp(appState: AppState, appInfo: AppInfo) {
         let nameL = appInfo.appName.pearFormat()
         let nameP = appInfo.path.lastPathComponent.replacingOccurrences(of: ".app", with: "")
         let bundleIdentifierL = appInfo.bundleIdentifier.pearFormat()
-        let locations = Locations()
 
         for location in locations.apps.paths {
             if !fileManager.fileExists(atPath: location) {
                 continue
             }
-            
+
+
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+//                withAnimation {
+//                    progressManager.updateStatus(status: location)
+//                    progressManager.updateProgress()
+//                    progressManager.objectWillChange.send()
+//                }
+//            }
+
+
             dispatchGroup.enter() // Enter the dispatch group
+
+
 
             do {
                 
                 let contents = try fileManager.contentsOfDirectory(atPath: location)
                 
                 for item in contents {
-                    
                     let itemURL = URL(fileURLWithPath: location).appendingPathComponent(item)
                     let itemL = ("\(item)").replacingOccurrences(of: ".", with: "").replacingOccurrences(of: " ", with: "").lowercased()
 
 
                     if collection.contains(itemURL) {
-                        return
+                        break
                     }
                     // Catch web app plist files
                     if appInfo.webApp {
@@ -348,7 +378,7 @@ func findPathsForApp(appState: AppState, appInfo: AppInfo) {
                             }
                         }
                         // Catch Xcode files
-                        else if itemL.contains("xcode") {
+                         else if itemL.contains("xcode") {
                             if itemL.contains(bundle) || itemL.contains(bundleIdentifierL) || (nameL.count > 4 && itemL.contains(nameL)) {
                                 collection.append(itemURL)
                             }
@@ -361,9 +391,12 @@ func findPathsForApp(appState: AppState, appInfo: AppInfo) {
                     
                 }
             } catch {
+                print("Error processing location:", location, error)
                 continue
             }
-            
+
+//            try await Task.sleep(nanoseconds: 50_000_000)
+
             dispatchGroup.leave() // Leave the dispatch group
 
         }

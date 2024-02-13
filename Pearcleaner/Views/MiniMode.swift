@@ -39,20 +39,20 @@ struct MiniMode: View {
             }
             //            .padding(.leading, appState.sidebar ? 0 : 10)
             .transition(.move(edge: .leading))
-            .popover(isPresented: $showPopover, arrowEdge: .trailing) {
-                VStack {
-                    FilesView(showPopover: $showPopover, search: $search)
-                        .id(appState.appInfo.id)
-                }
-                .interactiveDismissDisabled(popoverStay)
-                .background(
-                    Rectangle()
-                        .fill(Color("pop"))
-                        .padding(-80)
-                )
-                .frame(minWidth: 600, minHeight: 500)
-
-            }
+//            .popover(isPresented: $showPopover, arrowEdge: .trailing) {
+//                VStack {
+//                    FilesView(showPopover: $showPopover, search: $search)
+//                        .id(appState.appInfo.id)
+//                }
+//                .interactiveDismissDisabled(popoverStay)
+//                .background(
+//                    Rectangle()
+//                        .fill(Color("pop"))
+//                        .padding(-80)
+//                )
+//                .frame(minWidth: 600, minHeight: 500)
+//
+//            }
 
             
         }
@@ -97,6 +97,7 @@ struct MiniMode: View {
 struct MiniEmptyView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var locations: Locations
     @State private var animateGradient: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @Binding var showPopover: Bool
@@ -106,7 +107,7 @@ struct MiniEmptyView: View {
             
             Spacer()
             
-            DropTarget(appState: appState, showPopover: $showPopover)
+            DropTarget(appState: appState, locations: locations, showPopover: $showPopover)
                 .frame(maxWidth: mini ? 300 : 500)
             
             Text("Drop an app to begin")

@@ -22,9 +22,9 @@ class DeeplinkManager {
         static let query = "path"
     }
     
-    func manage(url: URL, appState: AppState) {
+    func manage(url: URL, appState: AppState, locations: Locations) {
         if url.pathExtension == "app" {
-            handleAppBundle(url: url, appState: appState)
+            handleAppBundle(url: url, appState: appState, locations: locations)
         } else if url.scheme == DeepLinkConstants.scheme,
                   url.host == DeepLinkConstants.host,
                   let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
@@ -34,7 +34,7 @@ class DeeplinkManager {
                 let appInfo = getAppInfo(atPath: pathURL)
                 updateOnMain {
                     appState.appInfo = appInfo!
-                    findPathsForApp(appState: appState, appInfo: appState.appInfo)
+                    findPathsForApp(appState: appState, locations: locations)
                     if self.mini {
                         self.showPopover = true
                     } else {
@@ -72,11 +72,11 @@ class DeeplinkManager {
 //        }
 //    }
     
-    func handleAppBundle(url: URL, appState: AppState) {
+    func handleAppBundle(url: URL, appState: AppState, locations: Locations) {
         let appInfo = getAppInfo(atPath: url)
         updateOnMain {
             appState.appInfo = appInfo!
-            findPathsForApp(appState: appState, appInfo: appState.appInfo)
+            findPathsForApp(appState: appState, locations: locations)
             if self.mini {
                 self.showPopover = true
             } else {

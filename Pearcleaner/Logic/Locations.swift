@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct Locations {
+class Locations: ObservableObject {
     struct Category {
         let name: String
         var paths: [String]
@@ -19,8 +19,8 @@ struct Locations {
     let tempDir: String
     
     var apps: Category
-    var widgets: Category
-    var plugins: Category
+//    var widgets: Category
+//    var plugins: Category
     
     init() {
         self.home = FileManager.default.homeDirectoryForCurrentUser.path
@@ -32,7 +32,7 @@ struct Locations {
             "\(home)/Library",
             "\(home)/Library/Application Scripts",
             "\(home)/Library/Application Support",
-            "\(home)/Library/Application Support/CrashReporter",
+//            "\(home)/Library/Application Support/CrashReporter",
             "\(home)/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.ApplicationRecentDocuments",
             "\(home)/Library/Containers",
 //            "\(home)/Library/Group Containers", // This is now handled by the function getGroupContainers()
@@ -70,35 +70,45 @@ struct Locations {
             cacheDir,
             tempDir
         ])
-        
-        self.widgets = Category(name: "Widgets", paths: [
-            // User
-            "~/Library/Widgets",
-            // System
-            "/Library/Widgets"
-        ])
-        
-        self.plugins = Category(name: "Plugins", paths: [
-            // User
-            "~/Library/Contextual Menu Items",
-            "~/Library/InputManagers",
-            "~/Library/Internet Plug-Ins",
-            "~/Library/Mail/Bundles",
-            "~/Library/PreferencePanes",
-            "~/Library/QuickLook",
-            "~/Library/QuickTime",
-            "~/Library/Screen Savers",
-            "~/Library/Spotlight",
-            // System
-            "/Library/Contextual Menu Items",
-            "/Library/InputManagers",
-            "/Library/Internet Plug-Ins",
-            "/Library/Mail/Bundles",
-            "/Library/PreferencePanes",
-            "/Library/QuickLook",
-            "/Library/QuickTime",
-            "/Library/Screen Savers",
-            "/Library/Spotlight",
-        ])
+
+        // Append Application Support subfolders for deeper search
+        do {
+            let subfolders = try appSupSubfolders()
+            for folder in subfolders {
+                self.apps.paths.append("\(home)/Library/Application Support/\(folder)")
+            }
+        } catch {
+            print("Error getting subfolders: \(error)")
+        }
+
+//        self.widgets = Category(name: "Widgets", paths: [
+//            // User
+//            "~/Library/Widgets",
+//            // System
+//            "/Library/Widgets"
+//        ])
+//        
+//        self.plugins = Category(name: "Plugins", paths: [
+//            // User
+//            "~/Library/Contextual Menu Items",
+//            "~/Library/InputManagers",
+//            "~/Library/Internet Plug-Ins",
+//            "~/Library/Mail/Bundles",
+//            "~/Library/PreferencePanes",
+//            "~/Library/QuickLook",
+//            "~/Library/QuickTime",
+//            "~/Library/Screen Savers",
+//            "~/Library/Spotlight",
+//            // System
+//            "/Library/Contextual Menu Items",
+//            "/Library/InputManagers",
+//            "/Library/Internet Plug-Ins",
+//            "/Library/Mail/Bundles",
+//            "/Library/PreferencePanes",
+//            "/Library/QuickLook",
+//            "/Library/QuickTime",
+//            "/Library/Screen Savers",
+//            "/Library/Spotlight",
+//        ])
     }
 }

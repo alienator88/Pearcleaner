@@ -183,6 +183,7 @@ struct AppListView: View {
 struct AppDetailsEmptyView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var locations: Locations
     @State private var animateGradient: Bool = false
     @Binding var showPopover: Bool
 
@@ -191,7 +192,7 @@ struct AppDetailsEmptyView: View {
             
             Spacer()
             
-            DropTarget(appState: appState, showPopover: $showPopover)
+            DropTarget(appState: appState, locations: locations, showPopover: $showPopover)
 
             Spacer()
             

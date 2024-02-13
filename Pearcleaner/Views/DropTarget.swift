@@ -13,14 +13,16 @@ struct DropTarget: View, DropDelegate {
     @AppStorage("settings.general.ants") private var ants: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @ObservedObject var appState: AppState
+    @ObservedObject var locations: Locations
     @State private var shouldFlash = false
     private var types: [UTType] = [.fileURL]
     @Environment(\.colorScheme) var colorScheme
     @State private var phase: CGFloat = 4
     @Binding var showPopover: Bool
 
-    public init(appState: AppState, showPopover: Binding<Bool>) {
+    public init(appState: AppState, locations: Locations, showPopover: Binding<Bool>) {
         self.appState = appState
+        self.locations = locations
         _showPopover = showPopover
     }
     
@@ -132,7 +134,7 @@ struct DropTarget: View, DropDelegate {
                     DispatchQueue.main.async {
                         self.ants = false
                         appState.appInfo = appInfo!
-                        findPathsForApp(appState: appState, appInfo: appState.appInfo)
+                        findPathsForApp(appState: appState, locations: locations)
                         if mini {
                             showPopover = true
                         } else {
