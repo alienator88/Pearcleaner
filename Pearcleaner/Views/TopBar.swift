@@ -37,7 +37,7 @@ struct TopBar: View {
             
             Spacer()
             
-            if appState.currentView != .empty {
+            if appState.currentView != .empty || appState.currentView != .apps {
                 Button("") {
                     withAnimation(.easeInOut(duration: 0.5)) {
                         appState.currentView = .empty

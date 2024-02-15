@@ -72,13 +72,10 @@ class Locations: ObservableObject {
         ])
 
         // Append Application Support subfolders for deeper search
-        do {
-            let subfolders = try appSupSubfolders()
-            for folder in subfolders {
-                self.apps.paths.append("\(home)/Library/Application Support/\(folder)")
-            }
-        } catch {
-            print("Error getting subfolders: \(error)")
+        let subfolders = listAppSupportDirectories()
+        for folder in subfolders {
+            self.apps.paths.append("\(home)/Library/Application Support/\(folder)")
+//            writeLog(string: "Adding subfolder: \(home)/Library/Application Support/\(folder)")
         }
 
 //        self.widgets = Category(name: "Widgets", paths: [

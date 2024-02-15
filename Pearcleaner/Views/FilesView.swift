@@ -34,20 +34,7 @@ struct FilesView: View {
                     ProgressView()
                         .progressViewStyle(.linear)
                         .frame(width: 400, height: 10)
-//                    ProgressView("\(appState.progressManager.status)", value: appState.progressManager.progress, total: Double(appState.progressManager.total))
-//                        .progressViewStyle(LinearProgressViewStyle(tint: .blue))
-//                        .frame(width: 400, height: 10)
-//                        .padding(.top)
-//                        .onReceive(appState.progressManager.$progress) { newProgress in
-//                            DispatchQueue.main.async {
-//                                appState.objectWillChange.send()
-//                            }
-//                        }
-//                        .onReceive(appState.progressManager.$status) { newStatus in
-//                            DispatchQueue.main.async {
-//                                appState.objectWillChange.send()
-//                            }
-//                        }
+
                     Spacer()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -272,10 +259,10 @@ struct FilesView: View {
                 }
                 if let appSize = totalSizeOnDisk(for: appState.paths) {
                     self.appSize = "\(appSize)"
+                    self.showDetails = true
                 } else {
                     print("Error calculating the total size on disk.")
                 }
-                self.showDetails = true
             }
         } else {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {

@@ -39,24 +39,24 @@ struct MiniMode: View {
             }
             //            .padding(.leading, appState.sidebar ? 0 : 10)
             .transition(.move(edge: .leading))
-//            .popover(isPresented: $showPopover, arrowEdge: .trailing) {
-//                VStack {
-//                    FilesView(showPopover: $showPopover, search: $search)
-//                        .id(appState.appInfo.id)
-//                }
-//                .interactiveDismissDisabled(popoverStay)
-//                .background(
-//                    Rectangle()
-//                        .fill(Color("pop"))
-//                        .padding(-80)
-//                )
-//                .frame(minWidth: 600, minHeight: 500)
-//
-//            }
+            .popover(isPresented: $showPopover, arrowEdge: .trailing) {
+                VStack {
+                    FilesView(showPopover: $showPopover, search: $search)
+                        .id(appState.appInfo.id)
+                }
+                .interactiveDismissDisabled(popoverStay)
+                .background(
+                    Rectangle()
+                        .fill(Color("pop"))
+                        .padding(-80)
+                )
+                .frame(minWidth: 650, minHeight: 500)
+
+            }
 
             
         }
-        .frame(minWidth: 300, minHeight: 300)
+        .frame(minWidth: 300, minHeight: 335)
         .edgesIgnoringSafeArea(.all)
         .background(glass ? GlassEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all) : nil)
 
@@ -184,12 +184,37 @@ struct MiniAppView: View {
                     .padding(.vertical)
                 } else {
                     VStack(alignment: .center) {
-                        
+
+//                        if appState.currentView == .apps {
+//                            HStack(alignment: .center, spacing: 0) {
+//                                Spacer()
+//
+//                                Button("") {
+//                                    withAnimation(.easeInOut(duration: 0.5)) {
+//                                        //                        updateOnMain {
+//                                        appState.currentView = .empty
+//                                        appState.appInfo = AppInfo.empty
+//                                        showPopover = false
+//                                        //                        }
+//                                    }
+//                                }
+//                                .buttonStyle(SimpleButtonStyle(icon: "arrow.backward.square", help: "Back to Drop Zone", color: Color("mode")))
+//                                .padding(.leading, 10)
+//                                .padding(.trailing, 0)
+//
+//                                SearchBarMiniBottom(search: $search)
+//
+//                                Spacer()
+//                            }
+//                            .padding(.top, 30)
+//                        }
+
                         ScrollView {
                             
-                            VStack(alignment: .leading) {
-                                
+                            LazyVStack(alignment: .leading, pinnedViews: [.sectionHeaders]) {
+
                                 if filteredUserApps.count > 0 {
+
                                     VStack {
                                         Header(title: "User", count: filteredUserApps.count)
                                         ForEach(filteredUserApps, id: \.self) { appInfo in
@@ -203,6 +228,7 @@ struct MiniAppView: View {
                                 }
                                 
                                 if filteredSystemApps.count > 0 {
+
                                     VStack {
                                         Header(title: "System", count: filteredSystemApps.count)
                                         ForEach(filteredSystemApps, id: \.self) { appInfo in
@@ -219,7 +245,10 @@ struct MiniAppView: View {
                             
                         }
                         .scrollIndicators(.never)
-   
+
+                        if appState.currentView == .apps {
+                            SearchBarMiniBottom(search: $search)
+                        }
                     }
                     .padding(.bottom)
                 }

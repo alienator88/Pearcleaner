@@ -269,21 +269,53 @@ func darwinCT() -> (String, String) {
 
 
 // Add subfolders of ~/Library/Application Support/ to locations for deeper search
-func appSupSubfolders() throws -> [String] {
-    let fileManager = FileManager.default
-    let appSup = "\(home)/Library/Application Support/"
-    let subfolders = try fileManager.contentsOfDirectory(atPath: appSup)
-    let exclusionRegex = try NSRegularExpression(pattern: "\\bcom\\.apple\\b", options: [])
+//func appSupSubfolders2() throws -> [String] {
+//    let fileManager = FileManager.default
+//    let appSup = "\(home)/Library/Application Support/"
+//    let subfolders = try fileManager.contentsOfDirectory(atPath: appSup)
+//    let exclusionRegex = try NSRegularExpression(pattern: "\\bcom\\.apple\\b", options: [])
+//    let exclusions = ["MobileSync", ".DS_Store", "Xcode", "SyncServices", "networkserviceproxy", "DiskImages", "CallHistoryTransactions", "App Store", "CloudDocs", "icdd", "iCloud", "Instruments", "AddressBook", "FaceTime", "AskPermission", "CallHistoryDB"]
+//
+//    let allowedFolders = subfolders.filter { folder in
+//        let range = NSRange(location: 0, length: folder.utf16.count)
+//        return exclusionRegex.firstMatch(in: folder, options: [], range: range) == nil && !exclusions.contains(folder)
+//    }
+//
+//    return allowedFolders
+//}
+
+
+func listAppSupportDirectories() -> [String] {
+    let home = FileManager.default.homeDirectoryForCurrentUser
+    let appSupportLocation = home.appendingPathComponent("Library/Application Support/")
     let exclusions = ["MobileSync", ".DS_Store", "Xcode", "SyncServices", "networkserviceproxy", "DiskImages", "CallHistoryTransactions", "App Store", "CloudDocs", "icdd", "iCloud", "Instruments", "AddressBook", "FaceTime", "AskPermission", "CallHistoryDB"]
+    let exclusionRegex = try! NSRegularExpression(pattern: "\\bcom\\.apple\\b", options: [])
 
-    let allowedFolders = subfolders.filter { folder in
-        let range = NSRange(location: 0, length: folder.utf16.count)
-        return exclusionRegex.firstMatch(in: folder, options: [], range: range) == nil && !exclusions.contains(folder)
+    do {
+        let fileManager = FileManager.default
+        let directoryContents = try fileManager.contentsOfDirectory(at: appSupportLocation, includingPropertiesForKeys: [.isDirectoryKey], options: .skipsHiddenFiles)
+
+        let filteredDirectories: [String] = directoryContents.compactMap { url in
+            var isDirectory: ObjCBool = false
+            guard fileManager.fileExists(atPath: url.path, isDirectory: &isDirectory) else {
+                return nil
+            }
+
+            let directoryName = url.lastPathComponent
+
+            // Check for exclusions using regex and provided list
+            let excludeByRegex = exclusionRegex.firstMatch(in: directoryName, options: [], range: NSRange(location: 0, length: directoryName.utf16.count)) != nil
+            let excludeByList = exclusions.contains(directoryName)
+
+            return isDirectory.boolValue && !excludeByRegex && !excludeByList ? directoryName : nil
+        }
+
+        return filteredDirectories
+    } catch {
+        print("Error listing AppSupport directories: \(error.localizedDescription)")
+        return []
     }
-
-    return allowedFolders
 }
-
 
 
 
@@ -360,7 +392,7 @@ func findPathsForApp(appState: AppState, locations: Locations) {
 
 
                     if collection.contains(itemURL) {
-                        break
+                        continue
                     }
                     // Catch web app plist files
                     if appInfo.webApp {
@@ -391,6 +423,7 @@ func findPathsForApp(appState: AppState, locations: Locations) {
                     
                 }
             } catch {
+//                writeLog(string: "Error processing location: \(location)\n\(error)")
                 print("Error processing location:", location, error)
                 continue
             }
@@ -406,11 +439,16 @@ func findPathsForApp(appState: AppState, locations: Locations) {
         collection.append(contentsOf: groupContainers)
         let sortedCollection = collection.sorted(by: { $0.absoluteString < $1.absoluteString })
 
+//        writeLog(string: "\n\nsortedCollection: \(sortedCollection)")
+
         // Save to appState
         dispatchGroup.notify(queue: .main) {
             updateOnMain {
                 appState.paths = sortedCollection
                 appState.selectedItems = Set(sortedCollection)
+//                writeLog(string: "\n\nappStatePaths: \(appState.paths)")
+//                writeLog(string: "\n\nappStateSelected: \(appState.selectedItems)")
+
             }
         }
 

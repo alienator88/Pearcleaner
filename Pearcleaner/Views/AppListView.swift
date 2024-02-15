@@ -11,6 +11,7 @@ import SwiftUI
 struct AppListView: View {
     @EnvironmentObject var appState: AppState
     @AppStorage("settings.general.glass") private var glass: Bool = false
+    @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 280
     @Binding var search: String
     @State private var showSys: Bool = true
     @State private var showUsr: Bool = true
@@ -47,14 +48,15 @@ struct AppListView: View {
                                 ProgressView("Refreshing applications")
                                 Spacer()
                             }
-                            .frame(width: 250)
+                            .frame(width: sidebarWidth)
                             .padding(.vertical)
                         } else {
                             VStack(alignment: .center) {
                                 
                                 VStack(alignment: .center, spacing: 20) {
                                     HStack {
-                                        SearchBar(search: $search)
+                                        SearchBarMiniBottom(search: $search)
+//                                        SearchBar(search: $search)
 
 //                                        Button("") {
 //                                            withAnimation(.easeInOut(duration: 0.5)) {
@@ -72,14 +74,14 @@ struct AppListView: View {
 //                                        .buttonStyle(SimpleButtonStyle(icon: "arrow.triangle.2.circlepath", help: "Refresh app list", color: Color("mode")))
                                     }
                                 }
-                                .padding(.horizontal)
+//                                .padding(.horizontal)
                                 .padding(.top, 20)
                                 .padding(.bottom)
                                 
                                 ScrollView {
                                     
-                                    VStack(alignment: .leading) {
-                                        
+                                    LazyVStack(alignment: .leading, pinnedViews: [.sectionHeaders]) {
+
                                         if filteredUserApps.count > 0 {
                                             VStack {
                                                 Header(title: "User", count: filteredUserApps.count)
@@ -91,7 +93,7 @@ struct AppListView: View {
                                                 }
 //                                                .padding(.bottom)
                                             }
-                                            
+
                                         }
                                         
                                         if filteredSystemApps.count > 0 {
@@ -113,7 +115,7 @@ struct AppListView: View {
                                 .scrollIndicators(.never)
                                 
                             }
-                            .frame(width: 250)
+                            .frame(width: sidebarWidth)
                             .padding(.vertical)
                         }
                         
@@ -130,7 +132,7 @@ struct AppListView: View {
             
             // Details View
             VStack(spacing: 0) {
-                if appState.currentView == .empty {
+                if appState.currentView == .empty || appState.currentView == .apps {
                     TopBar()
                     AppDetailsEmptyView(showPopover: $showPopover)
                 } else if appState.currentView == .files {
@@ -236,18 +238,55 @@ struct SearchBar: View {
 struct Header: View {
     let title: String
     let count: Int
-    
+    @State private var hovered = false
+    @EnvironmentObject var appState: AppState
+
+
     var body: some View {
         HStack {
             Text(title).opacity(0.5)
+
+//            Spacer()
+
+            HStack {
+                if hovered {
+                    withAnimation() {
+                        Image(systemName: "arrow.circlepath")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 19, height: 19)
+                            .onTapGesture {
+                                withAnimation {
+                                    // Refresh Apps list
+                                    appState.reload.toggle()
+                                    let sortedApps = getSortedApps()
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                        appState.sortedApps.userApps = sortedApps.userApps
+                                        appState.sortedApps.systemApps = sortedApps.systemApps
+                                        appState.reload.toggle()
+                                    }
+                                }
+                            }
+                            .help("Refresh apps")
+                    }
+                } else {
+                    Text("\(count)")
+                        .font(.system(size: 10))
+                        .frame(minWidth: count > 99 ? 30 : 20, minHeight: 15)
+                        .padding(2)
+                        .background(Color("mode").opacity(0.1))
+                        .clipShape(.capsule)
+                    //                .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+                }
+            }
+            .onHover { hovering in
+                withAnimation() {
+                    hovered = hovering
+                }
+            }
+
             Spacer()
-            Text("\(count)")
-                .font(.system(size: 10))
-                .frame(minWidth: count > 99 ? 30 : 20, minHeight: 15)
-                .padding(2)
-                .background(Color("mode").opacity(0.1))
-                .clipShape(.capsule)
-            //                .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+
         }
         .padding(4)
     }

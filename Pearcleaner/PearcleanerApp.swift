@@ -20,6 +20,7 @@ struct PearcleanerApp: App {
     @AppStorage("settings.permissions.hasLaunched") private var hasLaunched: Bool = false
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @AppStorage("settings.general.mini") private var mini: Bool = false
+    @AppStorage("settings.general.miniview") private var miniView: Bool = true
     @State private var search = ""
     @State private var showPopover: Bool = false
 
@@ -65,6 +66,13 @@ struct PearcleanerApp: App {
                 }
             }
             .onAppear {
+
+                if miniView {
+                    appState.currentView = .apps
+                } else {
+                    appState.currentView = .empty
+                }
+                
                 // Disable tabbing
                 NSWindow.allowsAutomaticWindowTabbing = false
 
@@ -79,6 +87,8 @@ struct PearcleanerApp: App {
 
                 // Load progressbar total
 //                appState.progressManager.total = Double(locations.apps.paths.count)
+                
+
 
                 Task {
 
@@ -140,5 +150,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         return true
     }
+
+//    func applicationDidFinishLaunching(_ notification: Notification, win: WindowSettings) {
+//        let frame = win.loadWindowSettings()
+//        NSApplication.shared.windows.first?.setFrame(frame, display: true)
+//    }
+
 }
 

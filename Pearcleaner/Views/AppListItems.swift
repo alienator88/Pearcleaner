@@ -42,27 +42,36 @@ struct AppListItems: View {
                         .truncationMode(.tail)
                         .padding(.horizontal, 5)
                 }
+
+
+                
+                Spacer()
+
                 if appInfo.webApp {
                     Text("web")
                         .font(.footnote)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(Color("mode").opacity(0.3))
                         .frame(minWidth: 30, minHeight: 15)
                         .padding(2)
-                        .background(Color("mode").opacity(0.1))
-                        .clipShape(.capsule)
+                        .background(
+                            Capsule().strokeBorder(Color("mode").opacity(0.3), lineWidth: 1)
+                        )
+//                        .background(Color("mode").opacity(0.1))
+//                        .clipShape(.capsule)
                 }
                 if appInfo.wrapped {
                     Text("iOS")
                         .font(.footnote)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(Color("mode").opacity(0.3))
                         .frame(minWidth: 30, minHeight: 15)
                         .padding(2)
-                        .background(Color("mode").opacity(0.1))
-                        .clipShape(.capsule)
+                        .background(
+                            Capsule().strokeBorder(Color("mode").opacity(0.3), lineWidth: 1)
+                        )
+//                        .background(Color("mode").opacity(0.1))
+//                        .clipShape(.capsule)
                 }
-
                 
-                Spacer()
                 Text(appInfo.appVersion)
                     .font(.footnote)
                     .foregroundStyle(Color("mode").opacity(0.5))
@@ -105,24 +114,24 @@ struct AppListItems: View {
             }
 
         }
-        .popover(isPresented: Binding(
-            get: { showPopover && appState.appInfo.id == appInfo.id},
-            set: { _ in showPopover = false}
-        ), attachmentAnchor: .rect(.rect(CGRect(x: windowSettings.loadWindowSettings().width - 17, y: 15, width: 0, height: 0))), arrowEdge: .trailing) {
+//        .popover(isPresented: Binding(
+//            get: { showPopover && appState.appInfo.id == appInfo.id},
+//            set: { _ in showPopover = false}
+//        ), attachmentAnchor: .rect(.rect(CGRect(x: windowSettings.loadWindowSettings().width - 17, y: 15, width: 0, height: 0))), arrowEdge: .trailing) {
 
 //        .popover(isPresented: $showPopover, arrowEdge: .trailing) {
-            VStack {
-                FilesView(showPopover: $showPopover, search: $search)
-                    .id(appState.appInfo.id)
-            }
-            .interactiveDismissDisabled(popoverStay)
-            .background(
-                Rectangle()
-                    .fill(Color("pop"))
-                    .padding(-80)
-            )
-            .frame(minWidth: 650, minHeight: 500)
-
-        }
+//            VStack {
+//                FilesView(showPopover: $showPopover, search: $search)
+//                    .id(appState.appInfo.id)
+//            }
+//            .interactiveDismissDisabled(popoverStay)
+//            .background(
+//                Rectangle()
+//                    .fill(Color("pop"))
+//                    .padding(-80)
+//            )
+//            .frame(minWidth: 650, minHeight: 500)
+//
+//        }
     }
 }

@@ -45,35 +45,35 @@ class AppState: ObservableObject
 }
 
 
-class ProgressManager: ObservableObject {
-    @Published var progress: Double = 0.0
-    @Published var total: Double = 0.0
-    @Published var status: String = "Ready"
-
-    func setTotal(_ total: Double) {
-        DispatchQueue.main.async {
-            self.total = total
-        }
-    }
-
-    func updateProgress() {
-        DispatchQueue.main.async {
-            self.progress = min(max(0.0, self.progress + 1.0), Double(self.total))
-        }
-    }
-
-    func updateStatus(status: String) {
-        DispatchQueue.main.async {
-            self.status = status
-        }
-    }
-
-    func resetProgress() {
-        DispatchQueue.main.async {
-            self.progress = 0.0
-        }
-    }
-}
+//class ProgressManager: ObservableObject {
+//    @Published var progress: Double = 0.0
+//    @Published var total: Double = 0.0
+//    @Published var status: String = "Ready"
+//
+//    func setTotal(_ total: Double) {
+//        DispatchQueue.main.async {
+//            self.total = total
+//        }
+//    }
+//
+//    func updateProgress() {
+//        DispatchQueue.main.async {
+//            self.progress = min(max(0.0, self.progress + 1.0), Double(self.total))
+//        }
+//    }
+//
+//    func updateStatus(status: String) {
+//        DispatchQueue.main.async {
+//            self.status = status
+//        }
+//    }
+//
+//    func resetProgress() {
+//        DispatchQueue.main.async {
+//            self.progress = 0.0
+//        }
+//    }
+//}
 
 
 

@@ -32,6 +32,13 @@ func resizeWindow(width: CGFloat, height: CGFloat) {
     }
 }
 
+func resizeWindowAuto(windowSettings: WindowSettings) {
+    if let window = NSApplication.shared.windows.first {
+        let newSize = NSSize(width: windowSettings.loadWindowSettings().width, height: windowSettings.loadWindowSettings().height)
+        window.setContentSize(newSize)
+    }
+}
+
 
 // Check FDA
 func checkFullDiskAccessForApp() -> Bool {

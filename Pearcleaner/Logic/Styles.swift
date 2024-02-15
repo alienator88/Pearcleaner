@@ -30,7 +30,7 @@ struct SimpleButtonStyle: ButtonStyle {
                 .frame(width: 20)
                 .foregroundColor(hovered ? color : color.opacity(0.5))
         }
-        .padding(8)
+        .padding(5)
 //        .background {
 //            if hovered && !(shield ?? false) {
 ////                Circle()
@@ -173,6 +173,7 @@ struct AnimatedSearchStyle: TextFieldStyle {
 
 struct SimpleSearchStyle: TextFieldStyle {
     @State private var isHovered = false
+    @FocusState private var isFocused: Bool
     @State var icon: Image?
     @State var trash: Bool = false
     @Binding var text: String
@@ -195,25 +196,25 @@ struct SimpleSearchStyle: TextFieldStyle {
                     .font(.title3)
                     .textFieldStyle(PlainTextFieldStyle())
                 
-                Image(systemName: "arrow.triangle.2.circlepath")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 15, height: 15)
-                    .padding(.trailing, 5)
-                    .foregroundStyle(isHovered ? Color("mode").opacity(0.8) : Color("mode").opacity(0.5))
-                    .onTapGesture {
-                        withAnimation {
-                            // Refresh Apps list
-                            appState.reload.toggle()
-                            let sortedApps = getSortedApps()
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                appState.sortedApps.userApps = sortedApps.userApps
-                                appState.sortedApps.systemApps = sortedApps.systemApps
-                                appState.reload.toggle()
-                            }
-                        }
-                        
-                    }
+//                Image(systemName: "arrow.triangle.2.circlepath")
+//                    .resizable()
+//                    .aspectRatio(contentMode: .fit)
+//                    .frame(width: 15, height: 15)
+//                    .padding(.trailing, 5)
+//                    .foregroundStyle(isHovered ? Color("mode").opacity(0.8) : Color("mode").opacity(0.5))
+//                    .onTapGesture {
+//                        withAnimation {
+//                            // Refresh Apps list
+//                            appState.reload.toggle()
+//                            let sortedApps = getSortedApps()
+//                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+//                                appState.sortedApps.userApps = sortedApps.userApps
+//                                appState.sortedApps.systemApps = sortedApps.systemApps
+//                                appState.reload.toggle()
+//                            }
+//                        }
+//                        
+//                    }
                 
                 if trash && text != "" {
                     Image(systemName: "xmark")
@@ -240,10 +241,12 @@ struct SimpleSearchStyle: TextFieldStyle {
             }
         )
         .onHover { hovering in
-            withAnimation(Animation.easeIn(duration: 0.15)) {
+            withAnimation(Animation.easeInOut(duration: 0.15)) {
                 self.isHovered = hovering
+                self.isFocused = hovering
             }
         }
+        .focused($isFocused)
     }
 }
 

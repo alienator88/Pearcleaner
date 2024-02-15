@@ -10,10 +10,13 @@ import SwiftUI
 
 struct GeneralSettingsTab: View {
     @EnvironmentObject var appState: AppState
+    @State private var windowSettings = WindowSettings()
     @AppStorage("settings.general.glass") private var glass: Bool = true
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.general.dark") var isDark: Bool = true
     @AppStorage("settings.general.popover") private var popoverStay: Bool = true
+    @AppStorage("settings.general.miniview") private var miniView: Bool = true
+    @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 280
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @State private var selectedTheme = "Auto"
     private let themes = ["Auto", "Dark", "Light"]
@@ -38,7 +41,26 @@ struct GeneralSettingsTab: View {
                     RoundedRectangle(cornerRadius: 8)
                         .fill(Color("mode").opacity(0.05))
                 )
-                
+
+                HStack {
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("Sidebar").font(.title2)
+                        Text("Adjust sidebar width")
+                            .font(.footnote)
+                            .foregroundStyle(.gray)
+                    }
+                    Spacer()
+                    Slider(value: $sidebarWidth, in: 200...400) {
+                        Text("\(Int(sidebarWidth))")
+                    }
+                    .padding(.horizontal)
+                }
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Color("mode").opacity(0.05))
+                )
+
                 HStack {
                     VStack(alignment: .leading, spacing: 5) {
                         Text("Appearance").font(.title2)
@@ -73,12 +95,7 @@ struct GeneralSettingsTab: View {
                             break
                         }
                     }
-//                    Toggle(isOn: $isDark, label: {
-//                    })
-//                    .toggleStyle(.switch)
-//                    .onChange(of: isDark) { newValue in
-//                        displayMode.colorScheme = newValue ? .dark : .light
-//                    }
+
                 }
                 .padding()
                 .background(
@@ -99,10 +116,12 @@ struct GeneralSettingsTab: View {
                     .toggleStyle(.switch)
                     .onChange(of: mini) { newVal in
                         if mini {
-                            resizeWindow(width: 300, height: 300)
-                            appState.currentView = .empty
+                            resizeWindowAuto(windowSettings: windowSettings)
+//                            resizeWindow(width: 300, height: 300)
+                            appState.currentView = miniView ? .apps : .empty
                         } else {
-                            resizeWindow(width: 700, height: 500)
+                            resizeWindowAuto(windowSettings: windowSettings)
+//                            resizeWindow(width: 700, height: 500)
                             if appState.appInfo.appName.isEmpty {
                                 appState.currentView = .empty
                             } else {
@@ -118,11 +137,31 @@ struct GeneralSettingsTab: View {
                 )
 
 
+                HStack {
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("Mini - Default View").font(.title2)
+                        Text("Toggles drop target or apps list view on launch")
+                            .font(.footnote)
+                            .foregroundStyle(.gray)
+                    }
+                    Spacer()
+                    Toggle(isOn: $miniView, label: {
+                    })
+                    .toggleStyle(.switch)
+                    .onChange(of: miniView) { newVal in
+                        appState.currentView = newVal ? .apps : .empty
+                    }
+                }
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Color("mode").opacity(0.05))
+                )
 
                 HStack {
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("Mini - Files View").font(.title2)
-                        Text("Keeps file search view on top in mini mode")
+                        Text("Mini - Popover").font(.title2)
+                        Text("Keeps file search popover on top in mini mode")
                             .font(.footnote)
                             .foregroundStyle(.gray)
                     }
@@ -145,7 +184,7 @@ struct GeneralSettingsTab: View {
 
         }
         .padding(20)
-        .frame(width: 400, height: 350)
+        .frame(width: 400, height: 500)
 
     }
     
