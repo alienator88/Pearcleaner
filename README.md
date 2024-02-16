@@ -50,8 +50,7 @@ This project was born out of wanting to learn more. There's probably parts of th
 <img src="https://github.com/alienator88/Pearcleaner/assets/6263626/b593564b-8c7e-42a2-a25b-124a0efb6a24" align="left" width="400" />
 
 ## Requirements
-- MacOS 13.0+
-- Using some newer SwiftUI code which requires 13.0+
+- MacOS 13.0+ (App uses a lot of newer SwiftUI functions/modifiers which don't work on any OS lower than 13.0)
 
 ## Getting Pearcleaner
 
