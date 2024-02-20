@@ -1,7 +1,7 @@
 ---
 name: Feature
 about: For submitting feature requests
-title: "[FR] "
+title: "[FR] ENTER ISSUE TITLE HERE"
 labels: ''
 assignees: ''
 
