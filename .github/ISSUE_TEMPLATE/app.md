@@ -16,6 +16,7 @@ A clear and concise description of what the affected app issue is.
 2. Version
 3. Source (AppStore Download, Website Download)
 4. Type (Regular, Web, iOS)
+5. If file/folder deletion issue, enter PATH/S to the files/folders not being deleted
 
 **Desktop (please complete the following information):**
  - OS: [e.g. 13.0]
