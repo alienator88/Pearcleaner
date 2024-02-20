@@ -1,7 +1,7 @@
 ---
 name: App
 about: Use this to submit bugs for specific apps either crashing when deleting, not showing up in the app list or files/folders not being deleted
-title: "[APP] "
+title: "[APP] ENTER ISSUE TITLE HERE"
 labels: ''
 assignees: ''
 
