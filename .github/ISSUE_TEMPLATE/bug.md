@@ -1,7 +1,7 @@
 ---
 name: Bug
 about: For submitting bugs related to the application functionality, not specific 3rd party app issues. Use APP bug report for that
-title: "[BUG] "
+title: "[BUG] ENTER ISSUE TITLE HERE"
 labels: ''
 assignees: ''
 
