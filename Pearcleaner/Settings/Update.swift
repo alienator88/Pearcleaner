@@ -22,6 +22,12 @@ struct Asset: Codable {
     let browser_download_url: String
 }
 
+extension Release {
+    var modifiedBody: String {
+        return body.replacingOccurrences(of: "- [x]", with: "􀆊").replacingOccurrences(of: "###", with: "")
+    }
+}
+
 
 struct UpdateSettingsTab: View {
     @EnvironmentObject var appState: AppState
@@ -46,7 +52,7 @@ struct UpdateSettingsTab: View {
                     ForEach(appState.releases, id: \.id) { release in
                         VStack(alignment: .leading) {
                             LabeledDivider(label: "\(release.tag_name)")
-                            Text(release.body)
+                            Text(release.modifiedBody)
                         }
                         
                     }
@@ -99,15 +105,16 @@ func loadGithubReleases(appState: AppState, manual: Bool = false) {
         if let data = data {
             if let decodedResponse = try? JSONDecoder().decode([Release].self, from: data) {
                 DispatchQueue.main.async {
-                    let lastFiveReleases = Array(decodedResponse.prefix(3)) // Get only the last 3 recent releases
-                    appState.releases = lastFiveReleases
+                    let lastFewReleases = Array(decodedResponse.prefix(3)) // Get only the last 3 recent releases
+                    appState.releases = lastFewReleases
+
                     checkForUpdate(appState: appState, manual: manual)
                     
                 }
                 return
             }
         }
-        print("Fetch failed: \(error?.localizedDescription ?? "Unknown error")")
+        printOS("Fetch failed: \(error?.localizedDescription ?? "Unknown error")")
     }.resume()
 }
 
@@ -172,7 +179,7 @@ func downloadUpdate(appState: AppState) {
             
             
         } catch {
-            print("Error moving downloaded file: \(error.localizedDescription)")
+            printOS("Error moving downloaded file: \(error.localizedDescription)")
         }
     }
     
@@ -233,7 +240,7 @@ func UnzipAndReplace(DownloadedFileURL fileURL: String, appState: AppState) {
         
         
     } catch {
-        print("Error updating the app: \(error)")
+        printOS("Error updating the app: \(error)")
     }
     
 }

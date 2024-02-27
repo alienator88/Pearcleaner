@@ -45,7 +45,7 @@ struct AppListView: View {
                         if appState.reload {
                             VStack {
                                 Spacer()
-                                ProgressView("Refreshing applications")
+                                ProgressView("Loading apps and files")
                                 Spacer()
                             }
                             .frame(width: sidebarWidth)
@@ -84,7 +84,7 @@ struct AppListView: View {
 
                                         if filteredUserApps.count > 0 {
                                             VStack {
-                                                Header(title: "User", count: filteredUserApps.count)
+                                                Header(title: "User", count: filteredUserApps.count, showPopover: $showPopover)
                                                 ForEach(filteredUserApps, id: \.self) { appInfo in
                                                     AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
                                                     if appInfo != filteredUserApps.last {
@@ -98,7 +98,7 @@ struct AppListView: View {
                                         
                                         if filteredSystemApps.count > 0 {
                                             VStack {
-                                                Header(title: "System", count: filteredSystemApps.count)
+                                                Header(title: "System", count: filteredSystemApps.count, showPopover: $showPopover)
                                                 ForEach(filteredSystemApps, id: \.self) { appInfo in
                                                     AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
                                                     if appInfo != filteredSystemApps.last {
@@ -133,11 +133,15 @@ struct AppListView: View {
             // Details View
             VStack(spacing: 0) {
                 if appState.currentView == .empty || appState.currentView == .apps {
-                    TopBar()
+                    TopBar(showPopover: $showPopover)
                     AppDetailsEmptyView(showPopover: $showPopover)
                 } else if appState.currentView == .files {
-                    TopBar()
+                    TopBar(showPopover: $showPopover)
                     FilesView(showPopover: $showPopover, search: $search)
+                        .id(appState.appInfo.id)
+                } else if appState.currentView == .zombie {
+                    TopBar(showPopover: $showPopover)
+                    ZombieView(showPopover: $showPopover, search: $search)
                         .id(appState.appInfo.id)
                 }
             }
@@ -161,10 +165,10 @@ struct AppListView: View {
 //                        //                        // Check if the file URL has a ".app" extension
 //                        //                        if url.pathExtension.lowercased() == "app" {
 //                        //                            // Handle the dropped file URL here
-//                        //                            print("Dropped .app file URL: \(url)")
+//                        //                            printOS("Dropped .app file URL: \(url)")
 //                        //                        } else {
 //                        //                            // Print a message for non-.app files
-//                        //                            print("Unsupported file type. Only .app files are accepted.")
+//                        //                            printOS("Unsupported file type. Only .app files are accepted.")
 //                        //                        }
 //                    }
 //                }
@@ -240,7 +244,8 @@ struct Header: View {
     let count: Int
     @State private var hovered = false
     @EnvironmentObject var appState: AppState
-
+    @EnvironmentObject var locations: Locations
+    @Binding var showPopover: Bool
 
     var body: some View {
         HStack {
@@ -259,10 +264,12 @@ struct Header: View {
                                 withAnimation {
                                     // Refresh Apps list
                                     appState.reload.toggle()
+                                    showPopover = false
                                     let sortedApps = getSortedApps()
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                         appState.sortedApps.userApps = sortedApps.userApps
                                         appState.sortedApps.systemApps = sortedApps.systemApps
+                                        loadAllPaths(allApps: sortedApps.userApps + sortedApps.systemApps, appState: appState, locations: locations)
                                         appState.reload.toggle()
                                     }
                                 }

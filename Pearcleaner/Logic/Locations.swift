@@ -19,6 +19,7 @@ class Locations: ObservableObject {
     let tempDir: String
     
     var apps: Category
+    var reverse: Category
 //    var widgets: Category
 //    var plugins: Category
     
@@ -32,10 +33,8 @@ class Locations: ObservableObject {
             "\(home)/Library",
             "\(home)/Library/Application Scripts",
             "\(home)/Library/Application Support",
-//            "\(home)/Library/Application Support/CrashReporter",
             "\(home)/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.ApplicationRecentDocuments",
             "\(home)/Library/Containers",
-//            "\(home)/Library/Group Containers", // This is now handled by the function getGroupContainers()
             "\(home)/Library/Caches",
             "\(home)/Library/HTTPStorages",
             "\(home)/Library/Internet Plug-Ins",
@@ -75,8 +74,35 @@ class Locations: ObservableObject {
         let subfolders = listAppSupportDirectories()
         for folder in subfolders {
             self.apps.paths.append("\(home)/Library/Application Support/\(folder)")
-//            writeLog(string: "Adding subfolder: \(home)/Library/Application Support/\(folder)")
         }
+
+
+
+
+        self.reverse = Category(name: "Reverse", paths: [
+            "\(home)/Library/Application Scripts",
+            "\(home)/Library/Application Support",
+            "\(home)/Library/Application Support/Caches",
+            "\(home)/Library/Containers",
+            "\(home)/Library/Caches",
+            "\(home)/Library/HTTPStorages",
+            "\(home)/Library/Internet Plug-Ins",
+            "\(home)/Library/LaunchAgents",
+            "\(home)/Library/Logs",
+            "\(home)/Library/Preferences",
+            "\(home)/Library/Preferences/ByHost",
+            "\(home)/Library/Saved Application State",
+            "\(home)/Library/WebKit",
+            "/Library/Application Support",
+            "/Library/Application Support/CrashReporter",
+            "/Library/Internet Plug-Ins",
+            "/Library/LaunchAgents",
+            "/Library/LaunchDaemons",
+            "/Library/PrivilegedHelperTools",
+            "/private/var/db/receipts",
+            cacheDir,
+            tempDir
+        ])
 
 //        self.widgets = Category(name: "Widgets", paths: [
 //            // User

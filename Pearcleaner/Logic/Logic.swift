@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+//import AudioToolbox
 
 
 // Get list of apps and sort it
@@ -53,7 +54,7 @@ func getApplications() -> (systemApps: [URL], userApps: [URL]) {
             }
         } catch {
             // Handle any potential errors here
-            print("Error: \(error)")
+            printOS("Error: \(error)")
         }
     }
 
@@ -86,7 +87,7 @@ func getAppInfo(atPath path: URL) -> AppInfo? {
                 if let bundleVersion = bundle.infoDictionary?["CFBundleVersion"] as? String {
                     appVersion = bundleVersion
                 } else {
-                    print("Failed to retrieve bundle version")
+                    printOS("Failed to retrieve bundle version")
                 }
             }
 
@@ -123,7 +124,7 @@ func getAppInfo(atPath path: URL) -> AppInfo? {
             }
             
             if appIcon == nil {
-                print("App Icon not found for app at path: \(path)")
+                printOS("App Icon not found for app at path: \(path)")
             }
 
             if bundle.infoDictionary?["LSTemplateApplication"] is Bool {
@@ -133,7 +134,7 @@ func getAppInfo(atPath path: URL) -> AppInfo? {
             }
 
 
-            return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName ?? "", appVersion: appVersion, appIcon: appIcon, webApp: webApp ?? false, wrapped: false)
+            return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName ?? "", appVersion: appVersion, appIcon: appIcon, webApp: webApp ?? false, wrapped: false, files: [], fileSize: [:], fileIcon: [:])
 
         } else {
             let wrapperURL = path.appendingPathComponent("Wrapper")
@@ -150,18 +151,18 @@ func getAppInfo(atPath path: URL) -> AppInfo? {
                             return wrappedAppInfo
                         }
                     } else {
-                        print("No .app files found in the 'Wrapper' directory.")
+                        printOS("No .app files found in the 'Wrapper' directory.")
                     }
                 } catch {
-                    print("Error reading contents of 'Wrapper' directory: \(error.localizedDescription)")
+                    printOS("Error reading contents of 'Wrapper' directory: \(error.localizedDescription)")
                 }
             } else {
-                print("Error: 'Wrapper' directory not found at path: \(wrapperURL.path)")
+                printOS("Error: 'Wrapper' directory not found at path: \(wrapperURL.path)")
             }
 
         }
     } else {
-        print("Bundle not found at path: \(path)")
+        printOS("Bundle not found at path: \(path)")
     }
     return nil
 }
@@ -201,10 +202,10 @@ func getWrappedAppInfo(atPath path: URL) -> AppInfo? {
 
 
                             } else {
-                                print("No matching image found for \(primaryIconFile).")
+                                printOS("No matching image found for \(primaryIconFile).")
                             }
                         } else {
-                            print("Unable to access the directory at \(primaryIconFile).")
+                            printOS("Unable to access the directory at \(primaryIconFile).")
                         }
 
                     }
@@ -217,7 +218,7 @@ func getWrappedAppInfo(atPath path: URL) -> AppInfo? {
             }
 
             if appIcon == nil {
-                print("App Icon not found for app at path: \(path)")
+                printOS("App Icon not found for app at path: \(path)")
             }
 
             if bundle.infoDictionary?["LSTemplateApplication"] is Bool {
@@ -227,13 +228,13 @@ func getWrappedAppInfo(atPath path: URL) -> AppInfo? {
             }
 
 
-            return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName ?? "", appVersion: appVersion, appIcon: appIcon, webApp: webApp ?? false, wrapped: true)
+            return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName ?? "", appVersion: appVersion, appIcon: appIcon, webApp: webApp ?? false, wrapped: true, files: [], fileSize: [:], fileIcon: [:])
 
         } else {
-            print("One or more variables missing for app at path: \(path)")
+            printOS("One or more variables missing for app at path: \(path)")
         }
     } else {
-        print("Bundle not found at path: \(path)")
+        printOS("Bundle not found at path: \(path)")
     }
     return nil
 }
@@ -263,26 +264,9 @@ func darwinCT() -> (String, String) {
             return (cacheDir, tempDir)
         }
     }
-    print("Could not get DARWIN_USER_CACHE_DIR or DARWIN_USER_TEMP_DIR")
+    printOS("Could not get DARWIN_USER_CACHE_DIR or DARWIN_USER_TEMP_DIR")
     return ("", "")
 }
-
-
-// Add subfolders of ~/Library/Application Support/ to locations for deeper search
-//func appSupSubfolders2() throws -> [String] {
-//    let fileManager = FileManager.default
-//    let appSup = "\(home)/Library/Application Support/"
-//    let subfolders = try fileManager.contentsOfDirectory(atPath: appSup)
-//    let exclusionRegex = try NSRegularExpression(pattern: "\\bcom\\.apple\\b", options: [])
-//    let exclusions = ["MobileSync", ".DS_Store", "Xcode", "SyncServices", "networkserviceproxy", "DiskImages", "CallHistoryTransactions", "App Store", "CloudDocs", "icdd", "iCloud", "Instruments", "AddressBook", "FaceTime", "AskPermission", "CallHistoryDB"]
-//
-//    let allowedFolders = subfolders.filter { folder in
-//        let range = NSRange(location: 0, length: folder.utf16.count)
-//        return exclusionRegex.firstMatch(in: folder, options: [], range: range) == nil && !exclusions.contains(folder)
-//    }
-//
-//    return allowedFolders
-//}
 
 
 func listAppSupportDirectories() -> [String] {
@@ -312,7 +296,7 @@ func listAppSupportDirectories() -> [String] {
 
         return filteredDirectories
     } catch {
-        print("Error listing AppSupport directories: \(error.localizedDescription)")
+        printOS("Error listing AppSupport directories: \(error.localizedDescription)")
         return []
     }
 }
@@ -334,19 +318,16 @@ func killApp(appId: String, completion: @escaping () -> Void = {}) {
 
 
 // Find all possible paths for an app based on name/bundle id
-func findPathsForApp(appState: AppState, locations: Locations) {
+func findPathsForApp(appInfo: AppInfo = .empty, appState: AppState, locations: Locations, backgroundRun: Bool = false, completion: @escaping () -> Void = {}) {
     Task(priority: .high) {
-        updateOnMain {
-            appState.paths = []
-        }
-        let appInfo = appState.appInfo
+        
         var collection: [URL] = []
         if let url = URL(string: appInfo.path.absoluteString) {
             collection.insert(url, at: 0)
         }
-        
+
+
         let fileManager = FileManager.default
-//        let progressManager = appState.progressManager
         let dispatchGroup = DispatchGroup()
         var bundleComponents = appInfo.bundleIdentifier.components(separatedBy: ".")
         if let lastComponent = bundleComponents.last, let rangeOfDash = lastComponent.range(of: "-") {
@@ -368,16 +349,6 @@ func findPathsForApp(appState: AppState, locations: Locations) {
                 continue
             }
 
-
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-//                withAnimation {
-//                    progressManager.updateStatus(status: location)
-//                    progressManager.updateProgress()
-//                    progressManager.objectWillChange.send()
-//                }
-//            }
-
-
             dispatchGroup.enter() // Enter the dispatch group
 
 
@@ -385,12 +356,19 @@ func findPathsForApp(appState: AppState, locations: Locations) {
             do {
                 
                 let contents = try fileManager.contentsOfDirectory(atPath: location)
-                
+
                 for item in contents {
+
                     let itemURL = URL(fileURLWithPath: location).appendingPathComponent(item)
                     let itemL = ("\(item)").replacingOccurrences(of: ".", with: "").replacingOccurrences(of: " ", with: "").lowercased()
+                    let filterItem = "\(location)/\(itemL)"
 
+                    // Skip directories that start with com.apple. except for a few
+                    if itemL.hasPrefix("comapple") && !itemL.hasPrefix("comappleconfigurator") && !itemL.hasPrefix("comappledt") && !itemL.hasPrefix("comappleiwork") {
+                        continue
+                    }
 
+                    // Skip adding item if the collection already has it to prevent duplicates
                     if collection.contains(itemURL) {
                         continue
                     }
@@ -403,18 +381,23 @@ func findPathsForApp(appState: AppState, locations: Locations) {
                             collection.append(itemURL)
                         }
                     } else {
-                        // Catch all the com.apple folders in the OS since there's a ton and probably unrelated
-                        if itemL.contains("comapple")  {
+                        // Catch Xcode files for Xcodes app
+                        if itemL.contains("xcode") && bundleIdentifierL.contains("comappledt") {
+                            if filterItem.contains("comrobotsandpencilsxcodesapp") || filterItem.contains("comoneminutegamesxcodecleaner") || filterItem.contains("iohyperappxcodecleaner") || filterItem.contains("xcodesjson") {
+                                continue
+                            }
+                            if itemL.contains(bundle) || itemL.contains(bundleIdentifierL) || (nameL.count < 6 && itemL.contains(nameL)) {
+                                collection.append(itemURL)
+                            }
+                        } else if itemL.contains("xcodes") && bundleIdentifierL.contains("comrobotsandpencilsxcodesapp") {
+                            if filterItem.contains("comappledt") {
+                                continue
+                            }
                             if itemL.contains(bundle) || itemL.contains(bundleIdentifierL) || (nameL.count > 4 && itemL.contains(nameL)) {
                                 collection.append(itemURL)
                             }
                         }
-                        // Catch Xcode files
-                         else if itemL.contains("xcode") {
-                            if itemL.contains(bundle) || itemL.contains(bundleIdentifierL) || (nameL.count > 4 && itemL.contains(nameL)) {
-                                collection.append(itemURL)
-                            }
-                        } else {
+                        else {
                             if itemL.contains(bundleIdentifierL) || itemL.contains(bundle) || (nameL.count > 3 && itemL.contains(nameL) || (nameP.count > 3 && itemL.contains(nameP))) {
                                 collection.append(itemURL)
                             }
@@ -423,12 +406,9 @@ func findPathsForApp(appState: AppState, locations: Locations) {
                     
                 }
             } catch {
-//                writeLog(string: "Error processing location: \(location)\n\(error)")
-                print("Error processing location:", location, error)
+                printOS("Error processing location:", location, error)
                 continue
             }
-
-//            try await Task.sleep(nanoseconds: 50_000_000)
 
             dispatchGroup.leave() // Leave the dispatch group
 
@@ -439,15 +419,95 @@ func findPathsForApp(appState: AppState, locations: Locations) {
         collection.append(contentsOf: groupContainers)
         let sortedCollection = collection.sorted(by: { $0.absoluteString < $1.absoluteString })
 
-//        writeLog(string: "\n\nsortedCollection: \(sortedCollection)")
+
+        // Calculate file details (sizes and icons)
+        var fileSize: [URL: Int64] = [:]
+        var fileIcon: [URL: NSImage?] = [:]
+        var updatedAppInfo = appInfo
+
+        for path in collection {
+            var size: Int64
+            var icon: NSImage? = nil
+            size = totalSizeOnDisk(for: path)
+            icon = getIconForFileOrFolderNS(atPath: path)
+
+            fileSize[path] = size
+            fileIcon[path] = icon
+        }
 
         // Save to appState
         dispatchGroup.notify(queue: .main) {
+
             updateOnMain {
-                appState.paths = sortedCollection
-                appState.selectedItems = Set(sortedCollection)
-//                writeLog(string: "\n\nappStatePaths: \(appState.paths)")
-//                writeLog(string: "\n\nappStateSelected: \(appState.selectedItems)")
+                updatedAppInfo.files = sortedCollection
+                updatedAppInfo.fileSize = fileSize
+                updatedAppInfo.fileIcon = fileIcon
+                if !backgroundRun {
+                    appState.appInfo = updatedAppInfo
+                    appState.selectedItems = Set(sortedCollection)
+                }
+                appState.appInfoStore.append(updatedAppInfo)
+            }
+        }
+
+        completion()
+
+    }
+}
+
+
+// Load app paths on launch
+func loadAllPaths(allApps: [AppInfo], appState: AppState, locations: Locations) {
+    updateOnMain {
+        appState.appInfoStore.removeAll()
+    }
+    for app in allApps {
+        findPathsForApp(appInfo: app, appState: appState, locations: locations, backgroundRun: true) {
+        }
+    }
+}
+
+
+// Load item in Files view
+func showAppInFiles(appInfo: AppInfo, mini: Bool, appState: AppState, locations: Locations, showPopover: Binding<Bool>) {
+    showPopover.wrappedValue = false
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.0) {
+        updateOnMain {
+            appState.appInfo = .empty
+            if let storedAppInfo = appState.appInfoStore.first(where: { $0.path == appInfo.path }) {
+                appState.appInfo = storedAppInfo
+                appState.selectedItems = Set(storedAppInfo.files)
+//                withAnimation(Animation.easeIn(duration: 0.3)) {
+                    if mini {
+                        appState.currentView = .files
+                        showPopover.wrappedValue.toggle()
+                    } else {
+                        appState.currentView = .files
+                    }
+//                }
+            } else {
+                updateOnMain {
+                    appState.showProgress = true
+                }
+                // Handle the case where the appInfo is not found in the store
+//                withAnimation(Animation.easeIn(duration: 0.4)) {
+                    if mini {
+                        appState.currentView = .files
+                        showPopover.wrappedValue.toggle()
+                    } else {
+                        appState.currentView = .files
+                    }
+//                }
+                printOS("AppInfo not found in the cached store, searching again")
+                appState.appInfo = .empty
+                appState.appInfo = appInfo
+                findPathsForApp(appInfo: appInfo, appState: appState, locations: locations) {
+                    updateOnMain {
+                        appState.selectedItems = Set(appInfo.files)
+                        appState.showProgress = false
+
+                    }
+                }
 
             }
         }
@@ -456,6 +516,7 @@ func findPathsForApp(appState: AppState, locations: Locations) {
 }
 
 
+// Get group containers
 func getGroupContainers(bundleURL: URL) -> [URL] {
     let fileManager = FileManager.default
 
@@ -470,14 +531,14 @@ func getGroupContainers(bundleURL: URL) -> [URL] {
     let status = SecCodeCopySigningInformation(staticCode!, SecCSFlags(), &signingInformation)
 
     if status != errSecSuccess {
-        print("Failed to copy signing information. Status: \(status)")
+        printOS("Failed to copy signing information. Status: \(status)")
         return []
     }
 
     guard let topDict = signingInformation as? [String: Any],
           let entitlementsDict = topDict["entitlements-dict"] as? [String: Any],
           let appGroups = entitlementsDict["com.apple.security.application-groups"] as? [String] else {
-//        print("No application groups to extract from entitlements for this app.")
+//        printOS("No application groups to extract from entitlements for this app.")
         return []
     }
 
@@ -488,14 +549,135 @@ func getGroupContainers(bundleURL: URL) -> [URL] {
 }
 
 
+
+
+// Reverse search for leftover zombie files
+func reversePathsSearch(appState: AppState, locations: Locations, completion: @escaping () -> Void = {}) {
+    Task(priority: .high) {
+
+        var collection: [URL] = []
+        let fileManager = FileManager.default
+        let dispatchGroup = DispatchGroup()
+        let allPaths = appState.appInfoStore.flatMap { $0.files.map { $0.path.pearFormat() } }
+        let allNames = appState.appInfoStore.map { $0.appName.pearFormat() }
+        let skipped = ["apple", "comapple", "temporary", "btserver", "proapps", "scripteditor", "ilife", "livefsd", "siritoday", "addressbook", "animoji", "appstore", "askpermission", "callhistory", "clouddocs", "diskimages", "dock", "facetime", "fileprovider", "instruments", "knowledge", "mobilesync", "syncservices", "homeenergyd", "icloud", "icdd", "networkserviceproxy", "familycircle", "geoservices", "installation", "passkit", "sharedimagecache", "desktop", "mbuseragent", "swiftpm", "baseband", "coresimulator", "photoslegacyupgrade", "photosupgrade", "siritts", "ipod", "globalpreferences", "apmanalytics", "apmexperiment", "avatarcache", "byhost", "contextstoreagent", "mobilemeaccounts", "intentbuilderc", "loginwindow", "momc", "replayd", "sharedfilelistd", "clang", "audiocomponent", "csexattrcryptoservice", "livetranscriptionagent", "sandobxhelper", "statuskitagent", "betaenrollmentd", "contentlinkingd", "diagnosticextensionsd", "gamed", "heard", "homed", "itunescloudd", "lldb", "mds", "mediaanalysisd", "metrickitd", "mobiletimerd", "proactived", "ptpcamerad", "studentd", "talagent", "watchlistd", "apptranslocation", "xcrun", "ds_store", "caches", "crashreporter"] // Skip system folders
+
+        // Skip locations that might not exist
+        for location in locations.reverse.paths {
+            if !fileManager.fileExists(atPath: location) {
+                continue
+            }
+
+            dispatchGroup.enter()
+
+            do {
+
+                let contents = try fileManager.contentsOfDirectory(atPath: location)
+
+                for item in contents {
+
+                    let itemURL = URL(fileURLWithPath: location).appendingPathComponent(item)
+                    let itemName = ("\(item)").pearFormat()
+                    let itemPath = "\(location)/\(itemName)".pearFormat()
+
+                    if skipped.contains(where: { itemName.contains($0) }) {
+                        continue
+                    }
+
+                    if allPaths.contains(where: { $0 == itemPath }) || allNames.contains(where: { $0 == itemName }) {
+                        continue
+                    }
+
+                    collection.append(itemURL)
+
+                }
+            } catch {
+                printOS("Error processing location:", location, error)
+                continue
+            }
+
+            dispatchGroup.leave() // Leave the dispatch group
+
+        }
+
+        let sortedCollection = collection.sorted(by: { $0.absoluteString < $1.absoluteString })
+        
+        // Calculate file details (sizes and icons)
+        var fileSize: [URL: Int64] = [:]
+        var fileIcon: [URL: NSImage?] = [:]
+        var updatedZombieFile = ZombieFile.empty
+
+        for path in collection {
+            var size: Int64
+            var icon: NSImage? = nil
+//            size = 0
+            size = totalSizeOnDisk(for: path)
+            icon = getIconForFileOrFolderNS(atPath: path)
+//            icon = nil
+            fileSize[path] = size
+            fileIcon[path] = icon
+        }
+
+        // Save to appState
+        dispatchGroup.notify(queue: .main) {
+
+            updateOnMain {
+//                updatedZombieFile.files = sortedCollection
+                updatedZombieFile.fileSize = fileSize
+                updatedZombieFile.fileIcon = fileIcon
+                appState.selectedZombieItems = Set(sortedCollection)
+                appState.zombieFile = updatedZombieFile
+
+//                print(updatedZombieFile.fileSize.keys.count)
+//                print(updatedZombieFile)
+
+                appState.showProgress = false
+            }
+
+        }
+
+        completion()
+
+    }
+}
+
+
+
+
 // Move files to trash using applescript/Finder so it asks for user password if needed
 func moveFilesToTrash(at fileURLs: [URL], completion: @escaping () -> Void = {}) {
     @AppStorage("settings.sentinel.enable") var sentinel: Bool = false
     if sentinel {
         launchctl(load: false)
     }
+
+    var filesFinder = fileURLs
+    var filesSudo: [URL] = []
+
+    for file in fileURLs {
+        if isSocketFile(at: file) {
+            if let index = filesFinder.firstIndex(of: file) {
+                filesFinder.remove(at: index)
+                filesSudo.insert(file, at: 0)
+            }
+        }
+    }
+    
+    if !filesSudo.isEmpty {
+        // Remove socket files with rm
+        let filesSudoPaths = filesSudo.map { $0.path }
+        do {
+            let fileHandler = try Authorization.executeWithPrivileges("/bin/rm -f \(filesSudoPaths.joined(separator: " "))").get()
+            printOS(String(bytes: fileHandler.readDataToEndOfFile(), encoding: .utf8)!)
+        } catch {
+            printOS("Failed to remove socket file/s with privileges: \(error)")
+        }
+    }
+
+
+
     updateOnBackground {
-        let posixFiles = fileURLs.map { "POSIX file \"\($0.path)\", " }.joined().dropLast(3)
+        let posixFiles = filesFinder.map { "POSIX file \"\($0.path)\", " }.joined().dropLast(3)
         let scriptSource = """
         tell application \"Finder\" to delete { \(posixFiles)" }
         """
@@ -503,9 +685,9 @@ func moveFilesToTrash(at fileURLs: [URL], completion: @escaping () -> Void = {})
         if let scriptObject = NSAppleScript(source: scriptSource) {
             let output: NSAppleEventDescriptor = scriptObject.executeAndReturnError(&error)
             if let error = error {
-                print("Error: \(error)")
+                printOS("Error: \(error)")
             } else if let outputString = output.stringValue {
-                print(outputString)
+                printOS(outputString)
             }
         }
         DispatchQueue.main.async {
@@ -513,6 +695,122 @@ func moveFilesToTrash(at fileURLs: [URL], completion: @escaping () -> Void = {})
         }
     }
 }
+
+//func moveFilesToTrash(at fileURLs: [URL] = [], appState: AppState, undo: Bool = false, completion: @escaping () -> Void = {}) {
+//    @AppStorage("settings.sentinel.enable") var sentinel: Bool = false
+//    if sentinel {
+//        launchctl(load: false)
+//    }
+//
+//    let home = FileManager.default.homeDirectoryForCurrentUser.path
+//
+//    if undo {
+//        for url in appState.trashedFiles {
+//            let file = url.lastPathComponent
+//            let destinationURL = url.deletingLastPathComponent()
+//
+//            let destinationPath = destinationURL.path
+//            let trashPath = "\(home)/.Trash/\(file)"
+//
+//            if !destinationPath.starts(with: home) {
+//                executePrivilegedCommand(launchPath: "/bin/cp", arguments: ["-R"] + [trashPath, destinationPath])
+//            } else {
+//                let task = Process()
+//                task.launchPath = "/bin/cp"
+//                task.arguments = ["-R"] + [trashPath, destinationPath]
+//
+//                let pipe = Pipe()
+//                task.standardOutput = pipe
+//                task.launch()
+//
+//                task.waitUntilExit()
+//            }
+//        }
+//
+//        AudioServicesPlaySystemSound(0xf);
+//
+//        updateOnMain {
+//            appState.trashedFiles.removeAll()
+//        }
+//
+//    } else {
+//        let privilegedURLs = fileURLs.filter { !$0.path.starts(with: home) }
+//
+//        if !privilegedURLs.isEmpty {
+//            let filePaths = fileURLs.map { $0.path }
+//            executePrivilegedCommand(launchPath: "/bin/mv", arguments: ["-f"] + filePaths + ["\(home)/.Trash"])
+//        } else {
+//            let filePaths = fileURLs.map { $0.path }
+//            let task = Process()
+//            task.launchPath = "/bin/mv"
+//            task.arguments = ["-f"] + filePaths + ["\(home)/.Trash"]
+//
+//            let pipe = Pipe()
+//            task.standardOutput = pipe
+//            task.launch()
+//
+//            task.waitUntilExit()
+//        }
+//
+//        AudioServicesPlaySystemSound(0x10);
+//
+//    }
+//
+//    completion()
+//}
+
+// Audio
+//drag to trash.aif
+//AudioServicesPlaySystemSound(0x10);
+
+//poof item of dock.aif
+//AudioServicesPlaySystemSound(0xf);
+
+//func moveFilesToTrash(at fileURLs: [URL], completion: @escaping () -> Void = {}) {
+//    @AppStorage("settings.sentinel.enable") var sentinel: Bool = false
+//    if sentinel {
+//        launchctl(load: false)
+//    }
+//
+//    let privilegedURLs = fileURLs.filter { !$0.path.starts(with: home) }
+//
+//    if !privilegedURLs.isEmpty {
+//        print("Found system files")
+//        // Use privileged sudo mv function
+//        let filePaths = privilegedURLs.map { $0.path }
+//        executePrivilegedCommand(launchPath: "/bin/mv", arguments: filePaths + ["\(home)/.Trash"])
+//        completion()
+//    } else {
+//        // Use regular shell process for files within the user's home directory
+//        let filePaths = fileURLs.map { $0.path }
+//        let task = Process()
+//        task.launchPath = "/bin/mv"
+//        task.arguments = filePaths + ["\(home)/.Trash"]
+//
+//        let pipe = Pipe()
+//        task.standardOutput = pipe
+//        task.launch()
+//
+//        task.waitUntilExit()
+//
+//        completion()
+//    }
+//}
+
+
+func isSocketFile(at url: URL) -> Bool {
+    do {
+        let attributes = try FileManager.default.attributesOfItem(atPath: url.path)
+        if let fileType = attributes[FileAttributeKey.type] as? FileAttributeType {
+            return fileType == .typeSocket
+        }
+    } catch {
+        print("Error: \(error)")
+    }
+    return false
+}
+
+
 
 
 // Undo trash action
@@ -541,9 +839,9 @@ func undoTrash(appState: AppState, completion: @escaping () -> Void = {}) {
                         _ = checkAndRequestAccessibilityAccess(appState: appState)
                     }
                 }
-                print("Error: \(error)")
+                printOS("Error: \(error)")
             } else if let outputString = output.stringValue {
-                print(outputString)
+                printOS(outputString)
             }
         }
         DispatchQueue.main.async {
@@ -574,7 +872,7 @@ func undoTrash(appState: AppState, completion: @escaping () -> Void = {}) {
 //    do {
 //        try task.run()
 //    } catch {
-//        print("Failed to run task: \(error)")
+//        printOS("Failed to run task: \(error)")
 //        return false
 //    }
 //    
@@ -598,7 +896,7 @@ func undoTrash(appState: AppState, completion: @escaping () -> Void = {}) {
 //        do {
 //            try task.run()
 //        } catch {
-//            print("Failed to run task: \(error)")
+//            printOS("Failed to run task: \(error)")
 //            return
 //        }
 //        

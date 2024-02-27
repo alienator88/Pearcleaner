@@ -125,24 +125,58 @@ struct DropTarget: View, DropDelegate {
                     return
                 }
                 guard let url = URL(dataRepresentation: data, relativeTo: nil) else {
-                    print("Error: Not a valid URL.")
+                    printOS("Error: Not a valid URL.")
                     return
                 }
                 if url.pathExtension == "app" {
                     let appInfo = getAppInfo(atPath: url)
-                    
-                    DispatchQueue.main.async {
-                        self.ants = false
-                        appState.appInfo = appInfo!
-                        findPathsForApp(appState: appState, locations: locations)
-                        if mini {
-                            showPopover = true
-                        } else {
-                            appState.currentView = .files
-                        }
-                    }
+//                    showPopover = false
+                    self.ants = false
+                    showAppInFiles(appInfo: appInfo!, mini: mini, appState: appState, locations: locations, showPopover: $showPopover)
+
+//                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+//                        updateOnMain {
+//                            appState.appInfo = .empty
+//                            if let storedAppInfo = appState.appInfoStore.first(where: { $0.path == appInfo!.path }) {
+//                                appState.appInfo = storedAppInfo
+//                                //                        appState.paths = storedAppInfo.fileSize.keys.map { $0 }//storedAppInfo.files
+//                                appState.selectedItems = Set(storedAppInfo.files)
+//                                withAnimation(Animation.easeIn(duration: 0.4)) {
+//                                    if mini {
+//                                        showPopover.toggle()
+//                                    } else {
+//                                        appState.currentView = .files
+//                                    }
+//                                }
+//                            } else {
+//                                // Handle the case where the appInfo is not found in the store
+//                                printOS("AppInfo not found in the cached store, searching again")
+//                                appState.appInfo = .empty
+//                                appState.appInfo = appInfo!
+//                                findPathsForApp(appInfo: appInfo!, appState: appState, locations: locations)
+//                                withAnimation(Animation.easeIn(duration: 0.4)) {
+//                                    if mini {
+//                                        showPopover.toggle()
+//                                    } else {
+//                                        appState.currentView = .files
+//                                    }
+//                                }
+//                            }
+//                        }
+//
+//                    }
+//                    DispatchQueue.main.async {
+//                        self.ants = false
+//                        appState.appInfo = appInfo!
+//                        findPathsForApp(appState: appState, locations: locations)
+//                        if mini {
+//                            showPopover = true
+//                        } else {
+//                            appState.currentView = .files
+//                        }
+//                    }
                 } else {
-                    print("Error: Dropped file is not an application bundle")
+                    printOS("Error: Dropped file is not an application bundle")
                     DispatchQueue.main.async {
                         self.shouldFlash = true
                     }

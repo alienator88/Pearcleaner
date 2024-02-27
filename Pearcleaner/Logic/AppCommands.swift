@@ -34,11 +34,24 @@ struct AppCommands: Commands {
                     // Refresh Apps list
                     appState.reload.toggle()
                     let sortedApps = getSortedApps()
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    updateOnMain {
+                        appState.sortedApps.userApps = []
+                        appState.sortedApps.systemApps = []
                         appState.sortedApps.userApps = sortedApps.userApps
                         appState.sortedApps.systemApps = sortedApps.systemApps
+                    }
+                    Task(priority: .high){
+                        loadAllPaths(allApps: sortedApps.userApps + sortedApps.systemApps, appState: appState, locations: locations)
+                    }
+                    updateOnMain {
                         appState.reload.toggle()
                     }
+//                    let sortedApps = getSortedApps()
+//                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+//                        appState.sortedApps.userApps = sortedApps.userApps
+//                        appState.sortedApps.systemApps = sortedApps.systemApps
+//                        appState.reload.toggle()
+//                    }
                 }
             } label: {
                 Text("Refresh Apps")
@@ -50,10 +63,6 @@ struct AppCommands: Commands {
             } label: {
                 Text("Uninstall Pearcleaner")
             }
-//            .keyboardShortcut("C", modifiers: .command)
-
-
-
 
         }
         
@@ -65,10 +74,13 @@ struct AppCommands: Commands {
             {
                 undoTrash(appState: appState) {
                     let sortedApps = getSortedApps()
-                    appState.sortedApps.userApps = []
-                    appState.sortedApps.systemApps = []
-                    appState.sortedApps.userApps = sortedApps.userApps
-                    appState.sortedApps.systemApps = sortedApps.systemApps
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        appState.sortedApps.userApps = []
+                        appState.sortedApps.systemApps = []
+                        appState.sortedApps.userApps = sortedApps.userApps
+                        appState.sortedApps.systemApps = sortedApps.systemApps
+                        loadAllPaths(allApps: sortedApps.userApps + sortedApps.systemApps, appState: appState, locations: locations)
+                    }
                 }
             } label: {
                 Label("Undo Removal", systemImage: "clear")

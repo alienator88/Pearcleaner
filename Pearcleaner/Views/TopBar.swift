@@ -15,12 +15,14 @@ struct TopBar: View {
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @EnvironmentObject var appState: AppState
-    
+    @Binding var showPopover: Bool
+    @EnvironmentObject var locations: Locations
+
     var body: some View {
-        HStack(alignment: .center, spacing: 20) {
-            
+        HStack(alignment: .center, spacing: 10) {
+
             Spacer()
-            
+
             if appState.isReminderVisible {
                 Text("CMD + Z to undo")
                     .font(.title2)
@@ -34,10 +36,10 @@ struct TopBar: View {
                         }
                     }
             }
-            
+
             Spacer()
-            
-            if appState.currentView != .empty || appState.currentView != .apps {
+
+            if appState.currentView != .empty {//|| appState.currentView != .apps {
                 Button("") {
                     withAnimation(.easeInOut(duration: 0.5)) {
                         appState.currentView = .empty
@@ -45,8 +47,30 @@ struct TopBar: View {
                     }
                 }
                 .buttonStyle(SimpleButtonStyle(icon: "house", help: "Home", color: Color("mode")))
+                
             }
-            
+
+            if appState.currentView != .zombie {
+                Button("") {
+                    withAnimation(.easeInOut(duration: 0.5)) {
+                        updateOnMain {
+                            if appState.zombieFile.fileSize.keys.count == 0 {
+                                appState.currentView = .zombie
+                                appState.showProgress.toggle()
+                                showPopover.toggle()
+                                reversePathsSearch(appState: appState, locations: locations)
+                            } else {
+                                appState.currentView = .zombie
+                                showPopover.toggle()
+                            }
+                        }
+
+                    }
+                }
+                .buttonStyle(SimpleButtonStyle(icon: "clock.arrow.circlepath", help: "Leftover Files", color: Color("mode")))
+            }
+
+
             
             
 //            Spacer()

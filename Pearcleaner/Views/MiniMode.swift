@@ -30,19 +30,28 @@ struct MiniMode: View {
                     MiniEmptyView(showPopover: $showPopover)
                 } else if appState.currentView == .files {
                     TopBarMini(search: $search, showPopover: $showPopover)
-                    FilesView(showPopover: $showPopover, search: $search)
-                        .id(appState.appInfo.id)
+                    MiniAppView(search: $search, showPopover: $showPopover)
+                } else if appState.currentView == .zombie {
+                    TopBarMini(search: $search, showPopover: $showPopover)
+                    MiniAppView(search: $search, showPopover: $showPopover)
                 } else if appState.currentView == .apps {
                     TopBarMini(search: $search, showPopover: $showPopover)
                     MiniAppView(search: $search, showPopover: $showPopover)
                 }
+
             }
             //            .padding(.leading, appState.sidebar ? 0 : 10)
             .transition(.move(edge: .leading))
             .popover(isPresented: $showPopover, arrowEdge: .trailing) {
                 VStack {
-                    FilesView(showPopover: $showPopover, search: $search)
-                        .id(appState.appInfo.id)
+                    if appState.currentView == .files {
+                        FilesView(showPopover: $showPopover, search: $search)
+                            .id(appState.appInfo.id)
+                    } else if appState.currentView == .zombie {
+                        ZombieView(showPopover: $showPopover, search: $search)
+                            .id(appState.appInfo.id)
+                    }
+
                 }
                 .interactiveDismissDisabled(popoverStay)
                 .background(
@@ -50,7 +59,7 @@ struct MiniMode: View {
                         .fill(Color("pop"))
                         .padding(-80)
                 )
-                .frame(minWidth: 650, minHeight: 500)
+                .frame(width: 650, height: 500)
 
             }
 
@@ -73,10 +82,10 @@ struct MiniMode: View {
 ////                        // Check if the file URL has a ".app" extension
 ////                        if url.pathExtension.lowercased() == "app" {
 ////                            // Handle the dropped file URL here
-////                            print("Dropped .app file URL: \(url)")
+////                            printOS("Dropped .app file URL: \(url)")
 ////                        } else {
 ////                            // Print a message for non-.app files
-////                            print("Unsupported file type. Only .app files are accepted.")
+////                            printOS("Unsupported file type. Only .app files are accepted.")
 ////                        }
 //                    }
 //                }
@@ -178,7 +187,7 @@ struct MiniAppView: View {
                 if appState.reload {
                     VStack {
                         Spacer()
-                        ProgressView("Refreshing applications")
+                        ProgressView("Loadings apps and files")
                         Spacer()
                     }
                     .padding(.vertical)
@@ -216,7 +225,7 @@ struct MiniAppView: View {
                                 if filteredUserApps.count > 0 {
 
                                     VStack {
-                                        Header(title: "User", count: filteredUserApps.count)
+                                        Header(title: "User", count: filteredUserApps.count, showPopover: $showPopover)
                                         ForEach(filteredUserApps, id: \.self) { appInfo in
                                             AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
                                             if appInfo != filteredUserApps.last {
@@ -230,7 +239,7 @@ struct MiniAppView: View {
                                 if filteredSystemApps.count > 0 {
 
                                     VStack {
-                                        Header(title: "System", count: filteredSystemApps.count)
+                                        Header(title: "System", count: filteredSystemApps.count, showPopover: $showPopover)
                                         ForEach(filteredSystemApps, id: \.self) { appInfo in
                                             AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
                                             if appInfo != filteredSystemApps.last {
@@ -246,7 +255,7 @@ struct MiniAppView: View {
                         }
                         .scrollIndicators(.never)
 
-                        if appState.currentView == .apps {
+                        if appState.currentView != .empty {
                             SearchBarMiniBottom(search: $search)
                         }
                     }

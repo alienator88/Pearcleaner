@@ -13,9 +13,12 @@ let home = FileManager.default.homeDirectoryForCurrentUser.path
 class AppState: ObservableObject
 {
     @Published var appInfo: AppInfo
-    @Published var paths: [URL] = []
+    @Published var appInfoStore: [AppInfo] = []
+    @Published var zombieFile: ZombieFile
     @Published var sortedApps: (userApps: [AppInfo], systemApps: [AppInfo]) = ([], [])
     @Published var selectedItems = Set<URL>()
+    @Published var selectedZombieItems = Set<URL>()
+    @Published var trashedFiles: [URL] = []
     @Published var alertType = AlertType.off
     @Published var currentView = CurrentDetailsView.empty
     @Published var showAlert: Bool = false
@@ -23,12 +26,11 @@ class AppState: ObservableObject
     @Published var isReminderVisible: Bool = false
     @Published var releases = [Release]()
     @Published var progressBar: (String, Double) = ("Ready", 0.0)
-//    @Published var progressManager = ProgressManager()
     @Published var reload: Bool = false
+    @Published var showProgress: Bool = false
+    @Published var popCount: Int = 0
 
-    
-    //Window
-//    @Published var winWidth: CGFloat = 1020
+
     
     init() {
         self.appInfo = AppInfo(
@@ -39,45 +41,27 @@ class AppState: ObservableObject
             appVersion: "",
             appIcon: nil,
             webApp: false,
-            wrapped: false
+            wrapped: false,
+            files: [],
+            fileSize: [:],
+            fileIcon: [:]
+        )
+
+        self.zombieFile = ZombieFile(
+            id: UUID(),
+//            files: [],
+            fileSize: [:],
+            fileIcon: [:]
         )
     }
 }
 
 
-//class ProgressManager: ObservableObject {
-//    @Published var progress: Double = 0.0
-//    @Published var total: Double = 0.0
-//    @Published var status: String = "Ready"
-//
-//    func setTotal(_ total: Double) {
-//        DispatchQueue.main.async {
-//            self.total = total
-//        }
-//    }
-//
-//    func updateProgress() {
-//        DispatchQueue.main.async {
-//            self.progress = min(max(0.0, self.progress + 1.0), Double(self.total))
-//        }
-//    }
-//
-//    func updateStatus(status: String) {
-//        DispatchQueue.main.async {
-//            self.status = status
-//        }
-//    }
-//
-//    func resetProgress() {
-//        DispatchQueue.main.async {
-//            self.progress = 0.0
-//        }
-//    }
-//}
 
 
 
-struct AppInfo: Identifiable, Hashable {
+
+struct AppInfo: Identifiable, Equatable, Hashable {
     let id: UUID
     let path: URL
     let bundleIdentifier: String
@@ -86,9 +70,38 @@ struct AppInfo: Identifiable, Hashable {
     let appIcon: NSImage?
     let webApp: Bool
     let wrapped: Bool
+    var files: [URL]
+    var fileSize: [URL:Int64]
+    var fileIcon: [URL:NSImage?]
+    var totalSize: Int64 
+    {
+        return fileSize.values.reduce(0, +)
+    }
 
-    static let empty = AppInfo(id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "", appVersion: "", appIcon: nil, webApp: false, wrapped: false)
+
+    static let empty = AppInfo(id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "", appVersion: "", appIcon: nil, webApp: false, wrapped: false, files: [], fileSize: [:], fileIcon: [:])
+
 }
+
+
+
+struct ZombieFile: Identifiable, Equatable, Hashable {
+    let id: UUID
+//    var files: [URL]
+    var fileSize: [URL:Int64]
+    var fileIcon: [URL:NSImage?]
+    var totalSize: Int64
+    {
+        return fileSize.values.reduce(0, +)
+    }
+
+
+    static let empty = ZombieFile(id: UUID(), fileSize: [:], fileIcon: [:])
+
+}
+
+
+
 
 
 enum CurrentTabView:Int
@@ -115,6 +128,7 @@ enum CurrentDetailsView:Int
     case empty
     case files
     case apps
+    case zombie
 }
 
 enum NewWindow:Int
@@ -170,6 +184,36 @@ enum DisplayMode: Int, CaseIterable {
     }
 }
 
+
+//class ProgressManager: ObservableObject {
+//    @Published var progress: Double = 0.0
+//    @Published var total: Double = 0.0
+//    @Published var status: String = "Ready"
+//
+//    func setTotal(_ total: Double) {
+//        DispatchQueue.main.async {
+//            self.total = total
+//        }
+//    }
+//
+//    func updateProgress() {
+//        DispatchQueue.main.async {
+//            self.progress = min(max(0.0, self.progress + 1.0), Double(self.total))
+//        }
+//    }
+//
+//    func updateStatus(status: String) {
+//        DispatchQueue.main.async {
+//            self.status = status
+//        }
+//    }
+//
+//    func resetProgress() {
+//        DispatchQueue.main.async {
+//            self.progress = 0.0
+//        }
+//    }
+//}
 
 
 //let (cacheDir, tempDir) = darwinCT()

@@ -102,7 +102,8 @@ struct GeneralSettingsTab: View {
                     RoundedRectangle(cornerRadius: 8)
                         .fill(Color("mode").opacity(0.05))
                 )
-                
+
+
                 HStack {
                     VStack(alignment: .leading, spacing: 5) {
                         Text("Mini").font(.title2)
@@ -117,11 +118,10 @@ struct GeneralSettingsTab: View {
                     .onChange(of: mini) { newVal in
                         if mini {
                             resizeWindowAuto(windowSettings: windowSettings)
-//                            resizeWindow(width: 300, height: 300)
-                            appState.currentView = miniView ? .apps : .empty
+//                            showPopover = false
+//                            appState.currentView = miniView ? .apps : .empty
                         } else {
                             resizeWindowAuto(windowSettings: windowSettings)
-//                            resizeWindow(width: 700, height: 500)
                             if appState.appInfo.appName.isEmpty {
                                 appState.currentView = .empty
                             } else {
@@ -139,7 +139,7 @@ struct GeneralSettingsTab: View {
 
                 HStack {
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("Mini - Default View").font(.title2)
+                        Text("Mini - \(miniView ? "Apps List" : "Drop Target")").font(.title2)
                         Text("Toggles drop target or apps list view on launch")
                             .font(.footnote)
                             .foregroundStyle(.gray)
@@ -160,7 +160,7 @@ struct GeneralSettingsTab: View {
 
                 HStack {
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("Mini - Popover").font(.title2)
+                        Text("Mini - \(popoverStay ? "Popover on Top" : "Popover not on Top")").font(.title2)
                         Text("Keeps file search popover on top in mini mode")
                             .font(.footnote)
                             .foregroundStyle(.gray)

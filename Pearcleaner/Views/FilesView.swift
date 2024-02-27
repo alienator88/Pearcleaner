@@ -11,25 +11,24 @@ import SwiftUI
 struct FilesView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
-    @State private var appSize: String = ""
-    @State private var showDetails: Bool = false
     @State private var showPop: Bool = false
-    @State private var itemDetails: [(size: String, icon: Image?)] = []
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
     @Binding var search: String
+    @State private var selectedOption = "Default"
+    @State private var toggles: Bool = true
 
     var body: some View {
         VStack(alignment: .center) {
-            if !self.showDetails {
+            if appState.showProgress { //!self.showDetails {
                 VStack {
                     Spacer()
 //                    ProgressView("Finding application files..")
 //                        .progressViewStyle(.linear)
 //                    Spacer()
-                    Text("Finding application files..").font(.title3)
+                    Text("Almost there, still gathering files..").font(.title3)
                         .foregroundStyle((.gray.opacity(0.8)))
                     ProgressView()
                         .progressViewStyle(.linear)
@@ -71,8 +70,9 @@ struct FilesView: View {
                                 
                                 Spacer()
                                 
-                                Text("\(appSize)").font(.title).fontWeight(.bold)
-//                                    .foregroundStyle(Color("AccentColor"))
+                                Text("\(formatByte(size: appState.appInfo.totalSize))").font(.title).fontWeight(.bold)
+
+
                             }
                             
                             
@@ -84,7 +84,7 @@ struct FilesView: View {
 //                                    .foregroundStyle(Color("AccentColor"))
                                     .opacity(0.8)
                                 Spacer()
-                                Text("\(appState.paths.count > 1 ? "\(appState.paths.count) items" : "\(appState.paths.count) item")").font(.callout)
+                                Text("\(appState.appInfo.fileSize.count > 1 ? "\(appState.appInfo.fileSize.count) items" : "\(appState.appInfo.fileSize.count) item")").font(.callout)
 //                                    .foregroundStyle(Color("AccentColor").opacity(0.7))
                                     .underline()
                             }
@@ -142,31 +142,70 @@ struct FilesView: View {
                     )
                     
                     
-                    
+                    HStack(alignment: .center) {
+                        Spacer()
+
+                        Text("\(toggles ? "Selected: All" : "Selected: None")").font(.subheadline)
+                        Toggle("", isOn: $toggles)
+                            .onChange(of: toggles) { value in
+                                if value {
+                                    updateOnMain {
+                                        appState.selectedItems = Set(appState.appInfo.files)
+                                    }
+                                } else {
+                                    updateOnMain {
+                                        appState.selectedItems.removeAll()
+                                    }
+                                }
+                            }
+                    }
+                    .padding(.top)
+
                     ScrollView() {
                         VStack {
-                            ForEach(Array(zip(appState.paths, itemDetails)), id: \.0) { path, details in
-                                if let firstPath = appState.paths.first, path == firstPath {
-                                    FileDetailsItem(size: details.size, icon: details.icon, path: path)
-                                        .padding(.trailing)
-                                    Divider().padding(.leading, 40).padding(.trailing)
-                                } else {
+                            let sortedFilesSize = appState.appInfo.files.sorted(by: { appState.appInfo.fileSize[$0, default: 0] > appState.appInfo.fileSize[$1, default: 0] })
+
+//                            let sortedFilesAlpha = appState.appInfo.files.sorted(by: { $0.lastPathComponent < $1.lastPathComponent })
+
+                            let sort = selectedOption == "Default" ? appState.appInfo.files : sortedFilesSize
+
+                            ForEach(sort, id: \.self) { path in
+                                if let fileSize = appState.appInfo.fileSize[path], let fileIcon = appState.appInfo.fileIcon[path] {
+                                    let iconImage = fileIcon.map(Image.init(nsImage:))
                                     VStack {
-                                        FileDetailsItem(size: details.size, icon: details.icon, path: path)
-                                        if path != appState.paths.last {
+                                        FileDetailsItem(size: fileSize, icon: iconImage, path: path)
+                                        if path != appState.appInfo.files.last {
                                             Divider().padding(.leading, 40)
                                         }
                                     }
-                                    .padding(.leading, 47).padding(.trailing)
-
-                                    
+//                                    .padding(.leading, 47).padding(.trailing)
+//                                    if let firstPath = appState.appInfo.files.first, path == firstPath {
+//                                        FileDetailsItem(size: fileSize, icon: iconImage, path: path)
+//                                            .padding(.trailing)
+//                                        Divider().padding(.leading, 40).padding(.trailing)
+//                                    } else {
+//                                        VStack {
+//                                            FileDetailsItem(size: fileSize, icon: iconImage, path: path)
+//                                            if path != appState.appInfo.files.last {
+//                                                Divider().padding(.leading, 40)
+//                                            }
+//                                        }
+//                                        .padding(.leading, 47).padding(.trailing)
+//                                    }
                                 }
                             }
                         }
                     }
-                    .padding()
+                    .padding([.bottom])
                     
                     HStack() {
+                        Picker(selection: $selectedOption, label: Text("Sort")) {
+                            Text("Default").tag("Default")
+                            Text("Size").tag("Size")
+                        }
+                        .pickerStyle(SegmentedPickerStyle())
+                        .frame(width: 150)
+
                         Spacer()
                                     
                         if mini {
@@ -186,8 +225,8 @@ struct FilesView: View {
                             Task {
                                 updateOnMain {
                                     appState.appInfo = AppInfo.empty
+                                    search = ""
                                     if mini {
-                                        search = ""
                                         appState.currentView = .apps
                                         showPopover = false
                                     } else {
@@ -195,15 +234,32 @@ struct FilesView: View {
                                     }
                                 }
                                 
-                                let selectedItemsArray = Array(appState.selectedItems)
+                                var selectedItemsArray = Array(appState.selectedItems)
                                     .filter { !$0.path.contains(".Trash") }
                                     .map { path in
                                         return path.path.contains("Wrapper") ? path.deletingLastPathComponent().deletingLastPathComponent() : path
                                     }
 
+                                if let url = URL(string: appState.appInfo.path.absoluteString) {
+                                    let appFolderURL = url.deletingLastPathComponent() // Get the immediate parent directory
+
+                                    if appFolderURL.path == "/Applications" || appFolderURL.path == "\(home)/Applications" {
+                                        // Do nothing, skip insertion
+                                    } else if appFolderURL.pathComponents.count > 2 {
+                                        // Insert into selectedItemsArray only if there is an intermediary folder
+                                        selectedItemsArray.insert(appFolderURL, at: 0)
+                                    }
+                                }
+
+                                // Save trashed files for undo operation
+//                                updateOnMain {
+//                                    appState.trashedFiles = selectedItemsArray
+//                                }
+
                                 killApp(appId: appState.appInfo.bundleIdentifier) {
                                     moveFilesToTrash(at: selectedItemsArray) {
                                         withAnimation {
+                                            showPopover = false
                                             updateOnMain {
                                                 appState.isReminderVisible.toggle()
                                                 if sentinel {
@@ -230,49 +286,10 @@ struct FilesView: View {
             }
             
         }
-//        .frame(minWidth: 500, minHeight: 500)
-        .onAppear {
-            Task {
-                calculateFileDetails()
-            }
-        }
     }
-    
-    
-    func calculateFileDetails() {
-        if appState.paths.count != 0 {
-            itemDetails = Array(repeating: (size: "", icon: nil), count: appState.paths.count)
-            Task {
-                for (index, path) in appState.paths.enumerated() {
-                    var size = ""
-                    var icon: Image? = nil
-                    
-                    if let appSize = totalSizeOnDisk(for: path) {
-                        size = "\(appSize)"
-                    } else {
-                        print("Error calculating the total size on disk for item \(index).")
-                    }
-                    if let folderIcon = getIconForFileOrFolder(atPath: path) {
-                        icon = folderIcon
-                    }
-                    itemDetails[index] = (size: size, icon: icon)
-                }
-                if let appSize = totalSizeOnDisk(for: appState.paths) {
-                    self.appSize = "\(appSize)"
-                    self.showDetails = true
-                } else {
-                    print("Error calculating the total size on disk.")
-                }
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                calculateFileDetails()
-            }
-        }
-    }
-    
     
     func refreshAppList(_ appInfo: AppInfo) {
+        showPopover = false
         let sortedApps = getSortedApps()
         updateOnMain {
             appState.sortedApps.userApps = []
@@ -280,7 +297,9 @@ struct FilesView: View {
             appState.sortedApps.userApps = sortedApps.userApps
             appState.sortedApps.systemApps = sortedApps.systemApps
         }
-        
+        Task(priority: .high){
+            loadAllPaths(allApps: sortedApps.userApps + sortedApps.systemApps, appState: appState, locations: locations)
+        }
     }
 }
 
@@ -288,15 +307,9 @@ struct FilesView: View {
 
 struct FileDetailsItem: View {
     @EnvironmentObject var appState: AppState
-    let size: String
+    let size: Int64?
     let icon: Image?
     let path: URL
-
-//    init(size: String, icon: Image?, path: URL) {
-//        self.size = size
-//        self.icon = icon
-//        self.path = path.path.contains("Wrapper") ? path.deletingLastPathComponent().deletingLastPathComponent() : path
-//    }
 
     var body: some View {
 
@@ -306,19 +319,31 @@ struct FileDetailsItem: View {
                 set: { isChecked in
                     if isChecked {
                         self.appState.selectedItems.insert(self.path)
-                        if self.path == appState.appInfo.path {
-                            self.appState.paths.forEach { self.appState.selectedItems.insert($0) }
-                        }
                     } else {
                         self.appState.selectedItems.remove(self.path)
-                        if self.path == appState.appInfo.path {
-                            self.appState.selectedItems.forEach { self.appState.selectedItems.remove($0) }
-                        }
                     }
                 }
+//                get: { self.appState.selectedItems.contains(self.path) },
+//                set: { isChecked in
+//                    if isChecked {
+//                        self.appState.selectedItems.insert(self.path)
+//                        if self.path == appState.appInfo.path {
+//                            self.appState.appInfo.fileSize.keys.forEach {
+//                                self.appState.selectedItems.insert($0)
+//                            }
+//                        }
+//                    } else {
+//                        self.appState.selectedItems.remove(self.path)
+//                        if self.path == appState.appInfo.path {
+//                            self.appState.selectedItems.forEach {
+//                                self.appState.selectedItems.remove($0)
+//                            }
+//                        }
+//                    }
+//                }
             ))
             .disabled(self.path.path.contains(".Trash"))
-            
+
             if let appIcon = icon {
                 appIcon
                     .resizable()
@@ -343,12 +368,10 @@ struct FileDetailsItem: View {
             }
             
             Spacer()
-            if size.isEmpty {
-                ProgressView().controlSize(.small)
-            } else {
-                Text(size)
-            }
-            
+
+            Text(formatByte(size:size!))
+
+
             
             Button("") {
                 NSWorkspace.shared.selectFile(path.path, inFileViewerRootedAtPath: path.deletingLastPathComponent().path)

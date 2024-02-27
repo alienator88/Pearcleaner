@@ -12,6 +12,7 @@
 		C7045A322B068AD700376976 /* NewWin.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7045A312B068AD700376976 /* NewWin.swift */; };
 		C7045A342B068B2900376976 /* UpdateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7045A332B068B2900376976 /* UpdateView.swift */; };
 		C7045A362B068DD700376976 /* PermView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7045A352B068DD700376976 /* PermView.swift */; };
+		C71848442B8D2D600046CB13 /* ZombieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71848432B8D2D600046CB13 /* ZombieView.swift */; };
 		C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72893042AFD42E600C8C1CD /* DeepLink.swift */; };
 		C72893122AFD51EA00C8C1CD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72893112AFD51EA00C8C1CD /* main.swift */; };
 		C7575D382B0181FC006A600A /* FileWatcher in Frameworks */ = {isa = PBXBuildFile; productRef = C7575D372B0181FC006A600A /* FileWatcher */; };
@@ -30,6 +31,7 @@
 		C77B901E2AF1A9DB009CC655 /* SettingsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B901D2AF1A9DB009CC655 /* SettingsWindow.swift */; };
 		C77B90232AF2D616009CC655 /* FilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90222AF2D616009CC655 /* FilesView.swift */; };
 		C7A27E812AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist in Resources */ = {isa = PBXBuildFile; fileRef = C7A27E802AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist */; };
+		C7A9CE472B89164700EB6E78 /* Authorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A9CE462B89164700EB6E78 /* Authorization.swift */; };
 		C7CF47242B3B3F1700979C5F /* WindowSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7CF47232B3B3F1700979C5F /* WindowSettings.swift */; };
 		C7D31D462AFDA90C00C7ED9E /* Sentinel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D452AFDA90C00C7ED9E /* Sentinel.swift */; };
 		C7D31D482AFEB23700C7ED9E /* TopBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D472AFEB23700C7ED9E /* TopBar.swift */; };
@@ -68,6 +70,7 @@
 		C7045A312B068AD700376976 /* NewWin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewWin.swift; sourceTree = "<group>"; };
 		C7045A332B068B2900376976 /* UpdateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateView.swift; sourceTree = "<group>"; };
 		C7045A352B068DD700376976 /* PermView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermView.swift; sourceTree = "<group>"; };
+		C71848432B8D2D600046CB13 /* ZombieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZombieView.swift; sourceTree = "<group>"; };
 		C72893042AFD42E600C8C1CD /* DeepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLink.swift; sourceTree = "<group>"; };
 		C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PearcleanerSentinel; sourceTree = BUILT_PRODUCTS_DIR; };
 		C72893112AFD51EA00C8C1CD /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
@@ -89,6 +92,7 @@
 		C77B90242AF2D796009CC655 /* Pearcleaner.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = Pearcleaner.entitlements; sourceTree = "<group>"; };
 		C7A27E7F2AFD70DD00166168 /* PearcleanerSentinel.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PearcleanerSentinel.entitlements; sourceTree = "<group>"; };
 		C7A27E802AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = com.alienator88.PearcleanerSentinel.plist; sourceTree = "<group>"; };
+		C7A9CE462B89164700EB6E78 /* Authorization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authorization.swift; sourceTree = "<group>"; };
 		C7CF47232B3B3F1700979C5F /* WindowSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowSettings.swift; sourceTree = "<group>"; };
 		C7D31D452AFDA90C00C7ED9E /* Sentinel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sentinel.swift; sourceTree = "<group>"; };
 		C7D31D472AFEB23700C7ED9E /* TopBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBar.swift; sourceTree = "<group>"; };
@@ -140,6 +144,7 @@
 				C7D31D502AFF00F300C7ED9E /* Locations.swift */,
 				C7D31D542B008CB900C7ED9E /* Shapes.swift */,
 				C7CF47232B3B3F1700979C5F /* WindowSettings.swift */,
+				C7A9CE462B89164700EB6E78 /* Authorization.swift */,
 			);
 			path = Logic;
 			sourceTree = "<group>";
@@ -227,6 +232,7 @@
 				C7D31D492AFEB26700C7ED9E /* AppListItems.swift */,
 				C7D31D582B00A49300C7ED9E /* DropTarget.swift */,
 				C7045A272B03E71D00376976 /* MiniMode.swift */,
+				C71848432B8D2D600046CB13 /* ZombieView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -358,6 +364,7 @@
 				C77B901C2AF193A3009CC655 /* Styles.swift in Sources */,
 				C7045A282B03E71D00376976 /* MiniMode.swift in Sources */,
 				C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */,
+				C71848442B8D2D600046CB13 /* ZombieView.swift in Sources */,
 				C76D084C2AF83C9D00D07867 /* Permissions.swift in Sources */,
 				C76D084A2AF83C6E00D07867 /* General.swift in Sources */,
 				C77B90042AF18E2E009CC655 /* PearcleanerApp.swift in Sources */,
@@ -370,6 +377,7 @@
 				C7D31D482AFEB23700C7ED9E /* TopBar.swift in Sources */,
 				C7F539382AF60865007DF1B2 /* Utilities.swift in Sources */,
 				C76D08552AF89CDE00D07867 /* AppListView.swift in Sources */,
+				C7A9CE472B89164700EB6E78 /* Authorization.swift in Sources */,
 				C7CF47242B3B3F1700979C5F /* WindowSettings.swift in Sources */,
 				C77B90232AF2D616009CC655 /* FilesView.swift in Sources */,
 			);

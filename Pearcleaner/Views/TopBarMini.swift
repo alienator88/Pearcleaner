@@ -15,6 +15,7 @@ struct TopBarMini: View {
     @Binding var search: String
     @Binding var showPopover: Bool
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var locations: Locations
 
     var body: some View {
         HStack(alignment: .center, spacing: 5) {
@@ -42,28 +43,29 @@ struct TopBarMini: View {
                     }
                 }
                 .buttonStyle(SimpleButtonStyle(icon: "list.dash", help: "Apps List", color: Color("mode")))
-            } else if appState.currentView == .files {
-                Button("") {
-                    withAnimation(.easeInOut(duration: 0.5)) {
-                        //                        updateOnMain {
-                        appState.currentView = .empty
-                        appState.appInfo = AppInfo.empty
-                        //                        }
+            } 
+//            else if appState.currentView == .files {
+//                Button("") {
+//                    withAnimation(.easeInOut(duration: 0.5)) {
+//                        //                        updateOnMain {
+//                        appState.currentView = .empty
+//                        appState.appInfo = AppInfo.empty
+//                        //                        }
+//
+//                    }
+//                }
+//                .buttonStyle(SimpleButtonStyle(icon: "plus.square.dashed", help: "Drop Target", color: Color("mode")))
+//                Button("") {
+//                    withAnimation(.easeInOut(duration: 0.5)) {
+//                        //                        updateOnMain {
+//                        appState.currentView = .apps
+//                        //                        }
+//                    }
+//                }
+//                .buttonStyle(SimpleButtonStyle(icon: "list.dash", help: "Apps List", color: Color("mode")))
+//            }
 
-                    }
-                }
-                .buttonStyle(SimpleButtonStyle(icon: "plus.square.dashed", help: "Drop Target", color: Color("mode")))
-                Button("") {
-                    withAnimation(.easeInOut(duration: 0.5)) {
-                        //                        updateOnMain {
-                        appState.currentView = .apps
-                        //                        }
-                    }
-                }
-                .buttonStyle(SimpleButtonStyle(icon: "list.dash", help: "Apps List", color: Color("mode")))
-            }
-
-            if appState.currentView == .apps {
+            if appState.currentView != .empty {
                 HStack {
                     Spacer()
 
@@ -84,22 +86,24 @@ struct TopBarMini: View {
                     }
                     .buttonStyle(SimpleButtonStyle(icon: "plus.square.dashed", help: "Drop Target", color: Color("mode")))
 
-//                    Spacer()
+                    Button("") {
+                        withAnimation(.easeInOut(duration: 0.5)) {
+                            updateOnMain {
+                                if appState.zombieFile.fileSize.keys.count == 0 {
+                                    appState.currentView = .zombie
+                                    appState.showProgress.toggle()
+                                    showPopover.toggle()
+                                    reversePathsSearch(appState: appState, locations: locations)
+                                } else {
+                                    appState.currentView = .zombie
+                                    showPopover.toggle()
+                                }
+                            }
 
-//                    Button("") {
-//                        withAnimation {
-//                            // Refresh Apps list
-//                            appState.reload.toggle()
-//                            let sortedApps = getSortedApps()
-//                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-//                                appState.sortedApps.userApps = sortedApps.userApps
-//                                appState.sortedApps.systemApps = sortedApps.systemApps
-//                                appState.reload.toggle()
-//                            }
-//                        }
-//                    }
-//                    .buttonStyle(SimpleButtonStyle(icon: "arrow.circlepath", help: "Refresh app list", color: Color("mode")))
-//                    .padding(.leading, 5)
+                        }
+                    }
+                    .buttonStyle(SimpleButtonStyle(icon: "clock.arrow.circlepath", help: "Leftover Files", color: Color("mode")))
+
                 }
             }
 
@@ -127,10 +131,11 @@ struct SearchBarMini: View {
 
 struct SearchBarMiniBottom: View {
     @Binding var search: String
+    @EnvironmentObject var appState: AppState
 
     var body: some View {
         HStack {
-            TextField("Search", text: $search)
+            TextField(" Search", text: $search)
                 .textFieldStyle(SimpleSearchStyle(trash: true, text: $search))
         }
         .padding(.horizontal)

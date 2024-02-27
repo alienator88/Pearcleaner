@@ -72,7 +72,7 @@ struct PearcleanerApp: App {
                 } else {
                     appState.currentView = .empty
                 }
-                
+
                 // Disable tabbing
                 NSWindow.allowsAutomaticWindowTabbing = false
 
@@ -85,12 +85,10 @@ struct PearcleanerApp: App {
                 appState.sortedApps.userApps = sortedApps.userApps
                 appState.sortedApps.systemApps = sortedApps.systemApps
 
-                // Load progressbar total
-//                appState.progressManager.total = Double(locations.apps.paths.count)
-                
-
-
                 Task {
+
+                    // Find all app paths on load
+                    loadAllPaths(allApps: sortedApps.userApps + sortedApps.systemApps, appState: appState, locations: locations)
 
 #if !DEBUG
 

@@ -21,7 +21,7 @@ struct AppListItems: View {
     let itemId = UUID()
     let appInfo: AppInfo
     var isSelected: Bool {
-        appState.appInfo == appInfo
+        appState.appInfo.path == appInfo.path
     }
     
     var body: some View {
@@ -71,7 +71,7 @@ struct AppListItems: View {
 //                        .background(Color("mode").opacity(0.1))
 //                        .clipShape(.capsule)
                 }
-                
+
                 Text(appInfo.appVersion)
                     .font(.footnote)
                     .foregroundStyle(Color("mode").opacity(0.5))
@@ -95,25 +95,9 @@ struct AppListItems: View {
             }
         }
         .onTapGesture {
-            showPopover = false
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                updateOnMain {
-                    appState.appInfo = .empty
-                    appState.appInfo = appInfo
-//                    appState.progressManager.resetProgress()
-                    findPathsForApp(appState: appState, locations: locations)
-                    withAnimation(Animation.easeIn(duration: 0.4)) {
-                        if mini {
-                            showPopover.toggle()
-                        } else {
-                            appState.currentView = .files
-                        }
-                    }
-                }
-
-            }
-
+            showAppInFiles(appInfo: appInfo, mini: mini, appState: appState, locations: locations, showPopover: $showPopover)
         }
+
 //        .popover(isPresented: Binding(
 //            get: { showPopover && appState.appInfo.id == appInfo.id},
 //            set: { _ in showPopover = false}

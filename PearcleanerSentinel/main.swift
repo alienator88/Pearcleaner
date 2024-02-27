@@ -108,7 +108,7 @@ func writeLog(string: String) {
 //
 //        return appFiles.map { $0.path }
 //    } catch {
-//        print("Failed to get contents of trash directory: \(error)")
+//        printOS("Failed to get contents of trash directory: \(error)")
 //        return []
 //    }
 //}
@@ -126,13 +126,13 @@ func writeLog(string: String) {
 
 //if hasAccessToTrashFolder() {
 //    writeLog(string: "Your tool has access to the Trash folder.")
-//    print("Your tool has access to the Trash folder.")
+//    printOS("Your tool has access to the Trash folder.")
 //} else {
 //    if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles") {
 //        NSWorkspace.shared.open(url)
 //    }
 //    writeLog(string: "Your tool does not have access to the Trash folder.")
-//    print("Your tool does not have access to the Trash folder.")
+//    printOS("Your tool does not have access to the Trash folder.")
 //}
 
 
@@ -280,6 +280,6 @@ func writeLog(string: String) {
 //        let fileManager = FileManager.default
 //        let trashURLs = fileManager.urls(for: .trashDirectory, in: .userDomainMask)
 //        let trashContents = try? fileManager.contentsOfDirectory(at: trashURLs.first!, includingPropertiesForKeys: nil, options: [])
-//        print(trashContents as Any)
+//        printOS(trashContents as Any)
 //    }
 //}

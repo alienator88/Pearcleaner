@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import OSLog
 
 // Make updates on main thread
 func updateOnMain(_ updates: @escaping () -> Void) {
@@ -110,7 +111,7 @@ func checkAndRequestFullDiskAccess(appState: AppState, skipAlert: Bool = false) 
 //    let fileURL = URL(fileURLWithPath: "/Library/Application Support/com.apple.TCC/TCC.db")
 //    
 //    let accessStatus = FileManager.default.isReadableFile(atPath: fileURL.path)
-//    print(accessStatus)
+//    printOS(accessStatus)
 //    if accessStatus {
 //        diskP = true
 //        _ = checkAndRequestAccessibilityAccess(appState: appState)
@@ -225,6 +226,12 @@ func getIconForFileOrFolder(atPath path: URL) -> Image? {
     return Image(nsImage: nsImage)
 }
 
+func getIconForFileOrFolderNS(atPath path: URL) -> NSImage? {
+    let icon = NSWorkspace.shared.icon(forFile: path.path)
+    let nsImage = icon
+    return nsImage
+}
+
 
 // Relaunch app
 func relaunchApp(afterDelay seconds: TimeInterval = 0.5) -> Never {
@@ -263,6 +270,14 @@ extension FileManager {
     }
 }
 
+// --- Extend print command to also output to the Console ---
+func printOS(_ items: Any..., separator: String = " ", terminator: String = "\n") {
+    let message = items.map { "\($0)" }.joined(separator: separator)
+    let log = OSLog(subsystem: "com.alienator88.Pearcleaner", category: "Application")
+    os_log("%@", log: log, type: .debug, message)
+
+}
+
 
 // --- Gradient ---
 func schemeGradient(for colorScheme: ColorScheme) -> LinearGradient {
@@ -279,8 +294,9 @@ func schemeGradient(for colorScheme: ColorScheme) -> LinearGradient {
 
 
 
+
 // Get total size of folders and files using DU cli command
-func totalSizeOnDisk(for paths: [URL]) -> String? {
+func totalSizeOnDisk(for paths: [URL]) -> Int64 {
     var totalSize = 0
     
     let process = Process()
@@ -290,7 +306,7 @@ func totalSizeOnDisk(for paths: [URL]) -> String? {
     }
     let pipe = Pipe()
     process.standardOutput = pipe
-    process.standardError =  FileHandle.nullDevice
+    process.standardError =  pipe//FileHandle.nullDevice
 
     try? process.run()
     process.waitUntilExit()
@@ -301,19 +317,24 @@ func totalSizeOnDisk(for paths: [URL]) -> String? {
         for line in lines {
             let components = line.components(separatedBy: "\t")
             if let sizeString = components.first, let size = Int(sizeString) {
-                totalSize += size * 1024  // Convert the size from kilobytes to bytes
+                totalSize += size
             }
         }
     }
-    
+
+    return Int64(totalSize) * 1024 // Convert the size from kilobytes to bytes
+}
+
+func totalSizeOnDisk(for path: URL) -> Int64 {
+    return totalSizeOnDisk(for: [path])
+}
+
+// ByteFormatter
+func formatByte(size: Int64) -> String {
     let byteCountFormatter = ByteCountFormatter()
     byteCountFormatter.countStyle = .file
     byteCountFormatter.allowedUnits = [.useAll]
-    return byteCountFormatter.string(fromByteCount: Int64(totalSize))
-}
-
-func totalSizeOnDisk(for path: URL) -> String? {
-    return totalSizeOnDisk(for: [path])
+    return byteCountFormatter.string(fromByteCount: size)
 }
 
 
@@ -410,10 +431,10 @@ func uninstallPearcleaner(appState: AppState, locations: Locations) {
 
     // Get app info for Pearcleaner
     let appInfo = getAppInfo(atPath: Bundle.main.bundleURL)
-    appState.appInfo = appInfo!
+//    appState.appInfo = appInfo!
 
     // Find application files for Pearcleaner
-    findPathsForApp(appState: appState, locations: locations)
+    findPathsForApp(appInfo: appInfo!,appState: appState, locations: locations)
 
     // Kill Pearcleaner and tell Finder to trash the files
     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
@@ -443,7 +464,7 @@ func ensureApplicationSupportFolderExists(appState: AppState) {
     // Check to make sure Application Support/Support Admin folder exists
     if !fileManager.fileExists(atPath: supportURL.path) {
         try! fileManager.createDirectory(at: supportURL, withIntermediateDirectories: true)
-        print("Created Application Support/Pearcleaner folder")
+        printOS("Created Application Support/Pearcleaner folder")
     }
 }
 
@@ -457,7 +478,7 @@ func writeLog(string: String) {
     // Check if the log file exists, and create it if it doesn't
     if !fileManager.fileExists(atPath: logFilePath) {
         if !fileManager.createFile(atPath: logFilePath, contents: nil, attributes: nil) {
-            print("Failed to create the log file.")
+            printOS("Failed to create the log file.")
             return
         }
     }
@@ -469,7 +490,7 @@ func writeLog(string: String) {
             fileHandle.write(ns.data(using: .utf8)!)
             fileHandle.closeFile()
         } else {
-            print("Error opening file for appending")
+            printOS("Error opening file for appending")
         }
     }
 }
@@ -491,7 +512,7 @@ func launchctl(load: Bool) {
         do {
             try plistContent.write(to: temporaryPlistURL, atomically: false, encoding: .utf8)
         } catch {
-            print("Error writing the temporary plist file: \(error)")
+            printOS("Error writing the temporary plist file: \(error)")
             return
         }
         let task = Process()
@@ -506,163 +527,56 @@ func launchctl(load: Bool) {
         
 //        let data = pipe.fileHandleForReading.readDataToEndOfFile()
 //        if let output = String(data: data, encoding: .utf8) {
-//            print("Output: \(output)")
+//            printOS("Output: \(output)")
 //        }
     }
 }
 
-//func unloadAgent() {
-//    if let plistPath = Bundle.main.path(forResource: "com.alienator88.PearcleanerMonitor", ofType: "plist") {
-//        var plistContent = try! String(contentsOfFile: plistPath)
-//        let executableURL = Bundle.main.bundleURL.appendingPathComponent("Contents/MacOS/PearcleanerMonitor")
-//        
-//        // Replace the placeholder with the actual executable path
-//        plistContent = plistContent.replacingOccurrences(of: "__EXECUTABLE_PATH__", with: executableURL.path)
-//        
-//        // Create a temporary plist file with the updated content
-//        let temporaryPlistURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("com.alienator88.PearcleanerMonitor.plist")
-//        
-//        do {
-//            try plistContent.write(to: temporaryPlistURL, atomically: false, encoding: .utf8)
-//        } catch {
-//            print("Error writing the temporary plist file: \(error)")
-//            return
-//        }
-//        let task = Process()
-//        task.launchPath = "/bin/launchctl"
-//        task.arguments = ["unload", "-w", temporaryPlistURL.path]
-//        
-//        let pipe = Pipe()
-//        task.standardOutput = pipe
-//        task.standardError = pipe
-//        
-//        task.launch()
-//        
-////        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-////        if let output = String(data: data, encoding: .utf8) {
-////            print("Output: \(output)")
-////        }
-//    }
-//}
 
 
 
 
+func getCurrentTimestamp() -> String {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
+    return dateFormatter.string(from: Date())
+}
 
 
-
-
-
-
-
-
-
-//import FileWatcher
+// Execute sudo command
+//func executePrivilegedCommand(launchPath: String, arguments: [String]) {
+//    let task = Process()
+//    task.launchPath = launchPath
+//    task.arguments = arguments
 //
-//// MARK: https://github.com/eonist/FileWatcher
+//    var authorization: AuthorizationRef? = nil
+//    let status = AuthorizationCreate(nil, nil, AuthorizationFlags(), &authorization)
 //
-//func fileW() {
-//    let filewatcher = FileWatcher([NSString(string: "~/.Trash").expandingTildeInPath])
-//    filewatcher.queue = DispatchQueue.global()
-//    filewatcher.callback = { event in
-//        print("Something happened here: " + event.path)
-//    }
+//    if status == errAuthorizationSuccess {
+//        if let rightName = (kAuthorizationRightExecute as NSString).utf8String {
+//            let item = AuthorizationItem(name: rightName, valueLength: 0, value: nil, flags: 0)
+//            var items = [item]
+//            items.withUnsafeMutableBufferPointer { bufferPointer in
+//                var rights = AuthorizationRights(count: UInt32(bufferPointer.count), items: bufferPointer.baseAddress)
 //
-//    filewatcher.start()
-//}
-
-
-
-//extension Array where Element == URL {
-//    // DU shell way of getting sizes
-//    func totalAllocatedSize2(includingSubfolders: Bool = false) throws -> Int? {
-//        var totalSize = 0
-//        
-//        for path in self {
-//            let process = Process()
-//            process.launchPath = "/usr/bin/du"
-//            process.arguments = ["-sk", path.path]
-//            
-//            let pipe = Pipe()
-//            process.standardOutput = pipe
-//            
-//            try process.run()
-//            process.waitUntilExit()
-//            
-//            let data = pipe.fileHandleForReading.readDataToEndOfFile()
-//            if let output = String(data: data, encoding: .utf8) {
-//                let sizeString = output.components(separatedBy: "\t").first ?? ""
-//                if let size = Int(sizeString) {
-//                    totalSize += size * 1024
-//                }
-//            }
-//        }
-//        return totalSize
-//    }
-//    
-//        func totalAllocatedSize(includingSubfolders: Bool = false) throws -> Int? {
-//            var totalSize = 0
-//    
-//            for path in self {
-//                if includingSubfolders {
-//                    guard
-//                        let urls = FileManager.default.enumerator(at: path, includingPropertiesForKeys: nil)?.allObjects as? [URL] else { return nil }
-//                    let pathSize = try urls.lazy.reduce(0) {
-//                        (try $1.resourceValues(forKeys: [.totalFileAllocatedSizeKey]).totalFileAllocatedSize ?? 0) + $0
-//                    }
-//                    totalSize += pathSize
+//                let status = AuthorizationCopyRights(authorization!, &rights, nil, AuthorizationFlags([.extendRights, .interactionAllowed]), nil)
+//
+//                if status == errAuthorizationSuccess {
+//                    task.launch()
 //                } else {
-//                    let pathSize = try FileManager.default.contentsOfDirectory(at: path, includingPropertiesForKeys: nil).lazy.reduce(0) {
-//                        (try $1.resourceValues(forKeys: [.totalFileAllocatedSizeKey])
-//                            .totalFileAllocatedSize ?? 0) + $0
-//                    }
-//                    totalSize += pathSize
+//                    printOS("Authorization failed.")
 //                }
 //            }
-//    
-//            return totalSize
+//        } else {
+//            printOS("Failed to convert rightName to C-string.")
 //        }
-//    
-//    func totalSizeOnDisk(includingSubfolders: Bool = false) throws -> String? {
-//        if let totalSize = try self.totalAllocatedSize(includingSubfolders: includingSubfolders) {
-//            let byteCountFormatter = ByteCountFormatter()
-//            byteCountFormatter.countStyle = .file
-//            byteCountFormatter.allowedUnits = [.useBytes, .useKB, .useMB, .useTB]
-//            return byteCountFormatter.string(fromByteCount: Int64(totalSize))
-//        }
-//        return nil
+//    } else {
+//        printOS("Authorization creation failed.")
 //    }
 //}
 
+//        executePrivilegedCommand(launchPath: "/bin/mv", arguments: ["-f"] + filesSudoPaths + ["\(home)/.Trash"])
 
 
 
 
-
-
-//func isSymbolicLink(atPath path: URL) -> Bool {
-////    let fileManager = FileManager.default
-//
-//    do {
-////        let path = "/Applications/Safari.app"
-////        let url = URL(fileURLWithPath: path)
-//        let destinationPath = path.resolvingSymlinksInPath().path
-//        print("The symlink at \(path) points to \(destinationPath)")
-//        return true
-//    } catch {
-//        print("An error occurred: \(error)")
-//        return false
-//    }
-//    return false
-////    var isDirectory = false
-////    let exists = FileManager.default.fileExists(atPath: path, isDirectory: isDirectory)
-////    if exists && isDirectory {
-////        do {
-////            let _ = try FileManager.default.destinationOfSymbolicLink(atPath: path)
-////            return true
-////        } catch {
-////            return false
-////        }
-////    }
-////    return false
-//}
