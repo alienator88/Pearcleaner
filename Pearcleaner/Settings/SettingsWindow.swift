@@ -9,11 +9,12 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var appState: AppState
-
+    @Binding var showPopover: Bool
+    
     var body: some View {
         
         TabView() {
-            GeneralSettingsTab()
+            GeneralSettingsTab(showPopover: $showPopover)
                 .tabItem {
                     Label(CurrentTabView.general.title, systemImage: "gear")
                 }

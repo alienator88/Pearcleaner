@@ -600,7 +600,7 @@ func reversePathsSearch(appState: AppState, locations: Locations, completion: @e
 
         }
 
-        let sortedCollection = collection.sorted(by: { $0.absoluteString < $1.absoluteString })
+//        let sortedCollection = collection.sorted(by: { $0.absoluteString < $1.absoluteString })
         
         // Calculate file details (sizes and icons)
         var fileSize: [URL: Int64] = [:]
@@ -610,10 +610,8 @@ func reversePathsSearch(appState: AppState, locations: Locations, completion: @e
         for path in collection {
             var size: Int64
             var icon: NSImage? = nil
-//            size = 0
             size = totalSizeOnDisk(for: path)
             icon = getIconForFileOrFolderNS(atPath: path)
-//            icon = nil
             fileSize[path] = size
             fileIcon[path] = icon
         }
@@ -622,15 +620,10 @@ func reversePathsSearch(appState: AppState, locations: Locations, completion: @e
         dispatchGroup.notify(queue: .main) {
 
             updateOnMain {
-//                updatedZombieFile.files = sortedCollection
                 updatedZombieFile.fileSize = fileSize
                 updatedZombieFile.fileIcon = fileIcon
-                appState.selectedZombieItems = Set(sortedCollection)
+//                appState.selectedZombieItems = Set(sortedCollection)
                 appState.zombieFile = updatedZombieFile
-
-//                print(updatedZombieFile.fileSize.keys.count)
-//                print(updatedZombieFile)
-
                 appState.showProgress = false
             }
 

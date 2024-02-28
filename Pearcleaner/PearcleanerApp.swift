@@ -133,7 +133,7 @@ struct PearcleanerApp: App {
 
         
         Settings {
-            SettingsView()
+            SettingsView(showPopover: $showPopover)
                 .environmentObject(appState)
                 .toolbarBackground(.clear)
                 .preferredColorScheme(displayMode.colorScheme)

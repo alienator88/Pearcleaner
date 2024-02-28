@@ -59,7 +59,7 @@ struct MiniMode: View {
                         .fill(Color("pop"))
                         .padding(-80)
                 )
-                .frame(width: 650, height: 500)
+                .frame(width: 650, height: 550)
 
             }
 

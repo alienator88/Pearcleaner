@@ -50,6 +50,65 @@ struct SimpleButtonStyle: ButtonStyle {
 }
 
 
+struct NavButtonBottomBarStyle: ButtonStyle {
+    @State private var isHovered = false
+    var image: String
+    var help: String
+
+    func makeBody(configuration: Configuration) -> some View {
+        ZStack {
+            Image(systemName: image)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 20, height: 20)
+                .foregroundStyle(isHovered ? Color("mode").opacity(0.8) : Color("mode").opacity(0.5))
+            Rectangle()
+                .foregroundColor(.clear)
+                .frame(width: 36, height: 36)
+                .cornerRadius(6)
+                .contentShape(Rectangle())
+        }
+        .scaleEffect(configuration.isPressed ? 0.95 : 1)
+        .buttonStyle(.plain)
+        .onHover { inside in
+            isHovered = inside
+        }
+        .help(help)
+    }
+}
+
+
+struct WarningPopoverView: View {
+    var label: String
+    var bodyText: String
+
+    @Binding var isPresented: Bool
+
+    var body: some View {
+        HStack {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .foregroundStyle(.red)
+                .popover(isPresented: $isPresented, arrowEdge: .top) {
+                    VStack {
+                        Text(bodyText)
+                            .padding()
+                            .font(.title2)
+                    }
+                }
+
+            Text(label)
+                .foregroundStyle(Color.red)
+
+            Spacer()
+        }
+        .onTapGesture {
+            isPresented.toggle()
+        }
+    }
+}
+
+
+
 struct LabeledDivider: View {
     let label: String
     @EnvironmentObject var appState: AppState

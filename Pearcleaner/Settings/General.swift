@@ -20,7 +20,8 @@ struct GeneralSettingsTab: View {
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @State private var selectedTheme = "Auto"
     private let themes = ["Auto", "Dark", "Light"]
-    
+    @Binding var showPopover: Bool
+
     var body: some View {
         Form {
             VStack {
@@ -117,9 +118,9 @@ struct GeneralSettingsTab: View {
                     .toggleStyle(.switch)
                     .onChange(of: mini) { newVal in
                         if mini {
+                            appState.currentView = miniView ? .apps : .empty
+                            showPopover = false
                             resizeWindowAuto(windowSettings: windowSettings)
-//                            showPopover = false
-//                            appState.currentView = miniView ? .apps : .empty
                         } else {
                             resizeWindowAuto(windowSettings: windowSettings)
                             if appState.appInfo.appName.isEmpty {

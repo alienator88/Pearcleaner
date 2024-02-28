@@ -17,7 +17,7 @@ struct ZombieView: View {
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
     @Binding var search: String
-    @State private var toggles: Bool = true
+    @State private var selectedOption = "Default"
 
     var body: some View {
         VStack(alignment: .center) {
@@ -87,43 +87,11 @@ struct ZombieView: View {
 //                                                                    .foregroundStyle(Color("AccentColor").opacity(0.7))
                                     .underline()
                             }
-                            HStack() {
-                                Image(systemName: "exclamationmark.triangle.fill")
-                                    .foregroundStyle(.red)
-                                    .popover(isPresented: $showPop, arrowEdge: .top) {
-                                        VStack() {
-                                            Text("Leftover file search is not 100% accurate as it doesn't have any app bundles to check against.\nThis searches for files/folders and excludes the ones that have overlap with your currently installed apps. \nMake sure to confirm files marked for removal are correct.")
-                                                .padding()
-                                                .font(.title2)
-                                        }
 
-                                    }
-
-                                Text("Warning")
-                                    .foregroundStyle(Color.red)
-
-                                Spacer()
-                                Toggle("\(toggles ? "Selected: All" : "Selected: None")", isOn: $toggles)
-                                    .controlSize(.small)
-//                                    .toggleStyle(.switch)
-                                    .onChange(of: toggles) { value in
-                                        if value {
-                                            updateOnMain {
-                                                appState.selectedZombieItems = Set(appState.zombieFile.fileSize.keys)
-                                            }
-                                        } else {
-                                            updateOnMain {
-                                                appState.selectedZombieItems.removeAll()
-                                            }
-                                        }
-                                    }
-                            }
-                            .padding(.top)
-                            .onTapGesture {
-                                showPop = true
-                            }
-
-                            
+                            WarningPopoverView(label: "Caution - Read",
+                                               bodyText: "Leftover file search is not 100% accurate as it doesn't have any app bundles to check against.\nThis searches for files/folders and excludes the ones that have overlap with your currently installed apps. \nMake sure to confirm files marked for removal are correct.",
+                                               isPresented: $showPop)
+                            .padding(.vertical, 5)
 
 
                         }
@@ -144,7 +112,14 @@ struct ZombieView: View {
 
                     ScrollView() {
                         LazyVStack {
-                            ForEach(appState.zombieFile.fileSize.keys.sorted(by: { $0.lastPathComponent < $1.lastPathComponent }), id: \.self) { file in
+                            let sortedFilesSize = appState.zombieFile.fileSize.keys.sorted(by: { appState.zombieFile.fileSize[$0, default: 0] > appState.zombieFile.fileSize[$1, default: 0] })
+
+
+                            let sortedFilesAlpha = appState.zombieFile.fileSize.keys.sorted(by: { $0.lastPathComponent < $1.lastPathComponent })
+
+                            let sort = selectedOption == "Default" ? sortedFilesAlpha : sortedFilesSize
+
+                            ForEach(sort, id: \.self) { file in
                                 if let fileSize = appState.zombieFile.fileSize[file], let fileIcon = appState.zombieFile.fileIcon[file] {
                                     let iconImage = fileIcon.map(Image.init(nsImage:))
 
@@ -162,6 +137,23 @@ struct ZombieView: View {
                     .padding()
 
                     HStack() {
+
+                        Picker("", selection: Binding(
+                            get: { appState.selectedZombieItems.count == appState.zombieFile.fileSize.count ? true : false },
+                            set: { newValue in
+                                updateOnMain {
+                                    appState.selectedZombieItems = newValue ? Set(appState.zombieFile.fileSize.keys) : []
+                                }
+                            }
+                        )) {
+                            Text("􀃲").tag(true)
+                            Text("􀂒").tag(false)
+                        }
+                        .pickerStyle(SegmentedPickerStyle())
+                        .frame(width: 100)
+                        .offset(x: -8)
+                        .help("Item Selection")
+                        
                         Spacer()
 
                         if mini {
@@ -173,6 +165,8 @@ struct ZombieView: View {
                                     showPopover = false
                                 }
                             }
+                            .buttonStyle(NavButtonBottomBarStyle(image: "x.circle.fill", help: "Close"))
+
                         }
 
 
@@ -183,6 +177,8 @@ struct ZombieView: View {
                                 reversePathsSearch(appState: appState, locations: locations)
                             }
                         }
+                        .buttonStyle(NavButtonBottomBarStyle(image: "arrow.counterclockwise.circle.fill", help: "Rescan files"))
+
 
                         Button("Remove") {
                             Task {
@@ -217,7 +213,18 @@ struct ZombieView: View {
                             }
 
                         }
+                        .buttonStyle(NavButtonBottomBarStyle(image: "trash.fill", help: "Remove"))
                         .disabled(appState.selectedZombieItems.isEmpty)
+
+                        Spacer()
+
+                        Picker("", selection: $selectedOption) {
+                            Text("􀅐").tag("Default")
+                            Text("􀆃").tag("Size")
+                        }
+                        .pickerStyle(SegmentedPickerStyle())
+                        .frame(width: 100)
+                        .help("Sorting Selection")
                     }
 
                 }

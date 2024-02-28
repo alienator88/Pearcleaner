@@ -88,6 +88,7 @@ struct TopBarMini: View {
 
                     Button("") {
                         withAnimation(.easeInOut(duration: 0.5)) {
+                            showPopover = false
                             updateOnMain {
                                 if appState.zombieFile.fileSize.keys.count == 0 {
                                     appState.currentView = .zombie

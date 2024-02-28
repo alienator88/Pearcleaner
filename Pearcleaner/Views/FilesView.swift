@@ -18,7 +18,6 @@ struct FilesView: View {
     @Binding var showPopover: Bool
     @Binding var search: String
     @State private var selectedOption = "Default"
-    @State private var toggles: Bool = true
 
     var body: some View {
         VStack(alignment: .center) {
@@ -88,49 +87,35 @@ struct FilesView: View {
 //                                    .foregroundStyle(Color("AccentColor").opacity(0.7))
                                     .underline()
                             }
-                            if appState.appInfo.webApp {
-                                HStack {
-                                    Text("web")
-                                        .font(.footnote)
-                                        .foregroundStyle(Color("mode").opacity(0.5))
-                                        .frame(minWidth: 30, minHeight: 15)
-                                        .padding(2)
-                                        .background(Color("mode").opacity(0.1))
-                                        .clipShape(.capsule)
-                                    Spacer()
-                                }
-                                
-                            }
-                            if appState.appInfo.appName.count < 5 {
-                                HStack(alignment: .center) {
-                                    Image(systemName: "exclamationmark.triangle.fill")
-                                        .foregroundStyle(.red)
-                                        .popover(isPresented: $showPop, arrowEdge: .top) {
-                                            VStack() {
-                                                Text("Pearcleaner searches for files via a combination of bundle id and app name.\n**\(appState.appInfo.appName)** has a common or short app name so there might be unrelated files found.\nPlease check the list thoroughly before uninstalling.")
-                                                    .padding()
-                                                    .font(.title2)
-                                            }
-                                            
-                                        }
-                                    
-                                    Text("Warning")
-                                        .foregroundStyle(Color.red)
 
-                                    Spacer()
+                            HStack() {
+                                if appState.appInfo.webApp {
+                                    HStack {
+                                        Text("web")
+                                            .font(.footnote)
+                                            .foregroundStyle(Color("mode").opacity(0.5))
+                                            .frame(minWidth: 30, minHeight: 15)
+                                            .padding(2)
+                                            .background(Color("mode").opacity(0.1))
+                                            .clipShape(.capsule)
+                                        Spacer()
+                                    }
+
                                 }
-                                .padding(.top)
-                                
-                                .onTapGesture {
-                                    showPop = true
+                                if appState.appInfo.appName.count < 5 {
+                                    WarningPopoverView(label: "Caution",
+                                                       bodyText: "Pearcleaner searches for files via a combination of bundle id and app name.\n\(appState.appInfo.appName) has a common or short app name so there might be unrelated files found.\nPlease check the list thoroughly before uninstalling.",
+                                                       isPresented: $showPop)
                                 }
                             }
+                            .padding(.vertical, 5)
+
                             
                             
                         }
                         .padding(20)
                     }
-//                    .padding(.horizontal)
+//                    .padding(.bottom)
                     .background(
                         RoundedRectangle(cornerRadius: 8)
 //                            .strokeBorder(Color("AccentColor"), lineWidth: 0.5)
@@ -140,34 +125,15 @@ struct FilesView: View {
 //                                    .strokeBorder(Color("AccentColor").opacity(colorScheme == .dark ? 0.1 : 0.1), lineWidth: 1)
 //                            )
                     )
-                    
-                    
-                    HStack(alignment: .center) {
-                        Spacer()
-
-                        Text("\(toggles ? "Selected: All" : "Selected: None")").font(.subheadline)
-                        Toggle("", isOn: $toggles)
-                            .onChange(of: toggles) { value in
-                                if value {
-                                    updateOnMain {
-                                        appState.selectedItems = Set(appState.appInfo.files)
-                                    }
-                                } else {
-                                    updateOnMain {
-                                        appState.selectedItems.removeAll()
-                                    }
-                                }
-                            }
-                    }
-                    .padding(.top)
+                    .padding(.bottom)
 
                     ScrollView() {
                         VStack {
                             let sortedFilesSize = appState.appInfo.files.sorted(by: { appState.appInfo.fileSize[$0, default: 0] > appState.appInfo.fileSize[$1, default: 0] })
 
-//                            let sortedFilesAlpha = appState.appInfo.files.sorted(by: { $0.lastPathComponent < $1.lastPathComponent })
+                            let sortedFilesAlpha = appState.appInfo.files
 
-                            let sort = selectedOption == "Default" ? appState.appInfo.files : sortedFilesSize
+                            let sort = selectedOption == "Default" ? sortedFilesAlpha : sortedFilesSize
 
                             ForEach(sort, id: \.self) { path in
                                 if let fileSize = appState.appInfo.fileSize[path], let fileIcon = appState.appInfo.fileIcon[path] {
@@ -195,20 +161,35 @@ struct FilesView: View {
                                 }
                             }
                         }
+                        .padding()
                     }
-                    .padding([.bottom])
-                    
+//                    .background(
+//                        RoundedRectangle(cornerRadius: 8)
+//                            .fill(Color("mode").opacity(colorScheme == .dark ? 0.05 : 0.05))
+//                    )
+
                     HStack() {
-                        Picker(selection: $selectedOption, label: Text("Sort")) {
-                            Text("Default").tag("Default")
-                            Text("Size").tag("Size")
+
+                        Picker("", selection: Binding(
+                            get: { appState.selectedItems.count == appState.appInfo.files.count ? true : false },
+                            set: { newValue in
+                                updateOnMain {
+                                    appState.selectedItems = newValue ? Set(appState.appInfo.files) : []
+                                }
+                            }
+                        )) {
+                            Text("􀃲").tag(true)
+                            Text("􀂒").tag(false)
                         }
                         .pickerStyle(SegmentedPickerStyle())
-                        .frame(width: 150)
+                        .frame(width: 100)
+                        .offset(x: -8)
+                        .help("Item Selection")
 
                         Spacer()
                                     
                         if mini {
+
                             Button("Close") {
                                 updateOnMain {
                                     appState.appInfo = AppInfo.empty
@@ -217,7 +198,8 @@ struct FilesView: View {
                                     showPopover = false
                                 }
                             }
-//                            .buttonStyle(FilesViewActionButton(action: .close))
+                            .buttonStyle(NavButtonBottomBarStyle(image: "x.circle.fill", help: "Close"))
+
                         }
 
 
@@ -274,15 +256,25 @@ struct FilesView: View {
                             }
                             
                         }
+                        .buttonStyle(NavButtonBottomBarStyle(image: "trash.fill", help: "Uninstall"))
                         .disabled(appState.selectedItems.isEmpty)
-//                        .buttonStyle(FilesViewActionButton(action: .uninstall))
+
+                        Spacer()
+
+                        Picker("", selection: $selectedOption) {
+                            Text("􀅐").tag("Default")
+                            Text("􀆃").tag("Size")
+                        }
+                        .pickerStyle(SegmentedPickerStyle())
+                        .frame(width: 100)
+                        .help("Sorting Selection")
                     }
-//                    .padding(.top)
+                    .padding(.top)
                     
                 }
                 .transition(.opacity)
                 .padding(20)
-                
+
             }
             
         }
@@ -323,25 +315,8 @@ struct FileDetailsItem: View {
                         self.appState.selectedItems.remove(self.path)
                     }
                 }
-//                get: { self.appState.selectedItems.contains(self.path) },
-//                set: { isChecked in
-//                    if isChecked {
-//                        self.appState.selectedItems.insert(self.path)
-//                        if self.path == appState.appInfo.path {
-//                            self.appState.appInfo.fileSize.keys.forEach {
-//                                self.appState.selectedItems.insert($0)
-//                            }
-//                        }
-//                    } else {
-//                        self.appState.selectedItems.remove(self.path)
-//                        if self.path == appState.appInfo.path {
-//                            self.appState.selectedItems.forEach {
-//                                self.appState.selectedItems.remove($0)
-//                            }
-//                        }
-//                    }
-//                }
             ))
+
             .disabled(self.path.path.contains(".Trash"))
 
             if let appIcon = icon {
