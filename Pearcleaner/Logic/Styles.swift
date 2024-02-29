@@ -31,20 +31,12 @@ struct SimpleButtonStyle: ButtonStyle {
                 .foregroundColor(hovered ? color : color.opacity(0.5))
         }
         .padding(5)
-//        .background {
-//            if hovered && !(shield ?? false) {
-////                Circle()
-////                    .strokeBorder(Color("AccentColor"), lineWidth: 1)
-//                RoundedRectangle(cornerRadius: 8)
-//                    .strokeBorder(Color("AccentColor"), lineWidth: 1)
-//            }
-//            
-//        }
         .onHover { hovering in
             withAnimation() {
                 hovered = hovering
             }
         }
+        .scaleEffect(configuration.isPressed ? 0.95 : 1)
         .help(help)
     }
 }
@@ -117,18 +109,18 @@ struct LabeledDivider: View {
         HStack(spacing: 0) {
             Rectangle()
                 .frame(height: 1)
-                .foregroundColor(Color("AccentColor").opacity(0.2))
-            
+                .foregroundColor(.gray.opacity(0.2))
+
             Text(label)
                 .textCase(.uppercase)
                 .font(.title2)
-                .foregroundColor(Color("AccentColor").opacity(0.6))
+                .foregroundColor(.gray.opacity(0.6))
                 .padding(.horizontal, 10)
                 .frame(minWidth: 80)
             
             Rectangle()
                 .frame(height: 1)
-                .foregroundColor(Color("AccentColor").opacity(0.2))
+                .foregroundColor(.gray.opacity(0.2))
         }
         .frame(minHeight: 35)
     }
@@ -577,8 +569,49 @@ struct PillPicker: View {
 
 
 
-        
-        
+struct PearDropView: View {
+
+    var body: some View {
+        VStack(alignment: .center, spacing: 0) {
+            HStack(spacing: 0) {
+                LinearGradient(gradient: Gradient(colors: [.pink, .orange]), startPoint: .leading, endPoint: .trailing)
+                    .frame(width: 195)
+                LinearGradient(gradient: Gradient(colors: [.orange, .gray]), startPoint: .leading, endPoint: .trailing)
+                    .frame(width: 10)
+                LinearGradient(gradient: Gradient(colors: [.gray, .gray]), startPoint: .leading, endPoint: .trailing)
+                    .frame(width: 300)
+            }
+            .mask(
+                Image("logo_text_small")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 500, height: 120)
+                    .padding()
+            )
+//            LinearGradient(gradient: Gradient(colors: [.gray, .gray]), startPoint: .leading, endPoint: .trailing)
+//                .mask(
+//                    Image("logo_text_small")
+//                        .resizable()
+//                        .scaledToFit()
+//                        .frame(minWidth: 300, maxWidth: 350)
+//                        .frame(height: 100)
+//                        .padding()
+//                )
+
+//            LinearGradient(gradient: Gradient(colors: [.pink, .orange]), startPoint: .leading, endPoint: .trailing)
+//                .mask(
+//                    Image(systemName: "plus.square.dashed")
+//                        .resizable()
+//                        .scaledToFit()
+//                        .frame(width: 50, height: 50)
+//                        .padding()
+//                )
+        }
+        .frame(height: 120)
+
+    }
+}
+
         
         
         

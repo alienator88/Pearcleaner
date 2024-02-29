@@ -85,16 +85,18 @@ struct PearcleanerApp: App {
                 appState.sortedApps.userApps = sortedApps.userApps
                 appState.sortedApps.systemApps = sortedApps.systemApps
 
+                
+
+
+#if !DEBUG
                 Task {
 
                     // Find all app paths on load
                     loadAllPaths(allApps: sortedApps.userApps + sortedApps.systemApps, appState: appState, locations: locations)
 
-#if !DEBUG
-
                     // Make sure App Support folder exists in the future if needed for storage
                     ensureApplicationSupportFolderExists(appState: appState)
-                    
+
                     // Check for updates 1 minute after app launch
                     if diskP {
                         loadGithubReleases(appState: appState)
@@ -105,10 +107,10 @@ struct PearcleanerApp: App {
                         _ = checkAndRequestFullDiskAccess(appState: appState)
                         hasLaunched = true
                     }
-                    
-                    
+
+
                     // TIMERS ////////////////////////////////////////////////////////////////////////////////////
-                    
+
                     // Check for app updates every 8 hours or whatever user saved setting. Also refresh autosuggestion list
                     let updateSeconds = updateTimeframe.daysToSeconds
                     _ = Timer.scheduledTimer(withTimeInterval: updateSeconds, repeats: true) { _ in
@@ -116,12 +118,10 @@ struct PearcleanerApp: App {
                             loadGithubReleases(appState: appState)
                         }
                     }
-                    
-#endif
                 }
+
+#endif
             }
-            
-            
         }
         .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentMinSize)

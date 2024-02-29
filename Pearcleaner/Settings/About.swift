@@ -9,148 +9,157 @@ import SwiftUI
 
 struct AboutSettingsTab: View {
     @EnvironmentObject var appState: AppState
-    
+
     var body: some View {
-        
-        VStack {
-            
-            HStack(alignment: .center) {
-                VStack(alignment: .center, spacing: 10){
-                    Spacer()
-                    
-                    Image(nsImage: NSApp.applicationIconImage)
-                        .padding()
-//                        .padding(.bottom, 5)
-                    
-                    HStack(alignment: .center, spacing: 20) {
-                        Button("") {
-                            loadGithubReleases(appState: appState, manual: true)
-                        }
-                        .buttonStyle(SimpleButtonStyle(icon: "cloud", help: "Update application", color: Color("AccentColor")))
-                        
-                        Button("") {
-                            NSWorkspace.shared.open(URL(string: "https://github.com/alienator88/Pearcleaner")!)
-                        }
-                        .buttonStyle(SimpleButtonStyle(icon: "paperplane", help: "View repository", color: Color("AccentColor")))
-                    }
-                    
-                    Spacer()
-                    
-                    
-                }
-//                .padding()
-                //                .padding(.top, 10)
-                .frame(width: 250)
-                
-                VStack(alignment: .center, spacing: 20) {
-                    HStack(alignment: .firstTextBaseline) {
-                        Text(Bundle.main.name)
-                            .font(.title)
-                            .bold()
-                        Spacer()
-                        HStack {
-                            Text("v\(Bundle.main.version)")
-                            Text(" (build \(Bundle.main.buildVersion))")
-                        }
-                        
-                    }
-                    Divider()
-                        .padding(.top, -8)
-                    
-                    VStack(alignment: .leading) {
-                        
-                        HStack{
-                            Image(systemName: "applescript.fill")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 16, height: 16)
-                            
-                            VStack(alignment: .leading){
-                                Text("Privacy Guides")
-                                Text("Inspired by open-source appcleaner script from Sun Knudsen").font(.footnote).foregroundStyle(.gray)
-                                
-                            }
-                            Spacer()
-                            
-                            Button("") {
-                                NSWorkspace.shared.open(URL(string: "https://sunknudsen.com/privacy-guides/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative")!)
-                            }
-                            .buttonStyle(SimpleButtonStyle(icon: "paperplane", help: "View", color: Color("AccentColor")))
 
-                        }
-                        .padding()
-                        .background(Color("mode").opacity(0.05))
-                        .cornerRadius(8)
-                        
-                        
-                        HStack{
-                            Image(systemName: "trash.fill")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 16, height: 16)
-                            
-                            VStack(alignment: .leading){
-                                Text("AppCleaner")
-                                Text("Inspired by AppCleaner from Freemacsoft").font(.footnote).foregroundStyle(.gray)
-                                
-                            }
-                            Spacer()
-                            Button(""){
-                                NSWorkspace.shared.open(URL(string: "https://freemacsoft.net/appcleaner/")!)
-                            }
-                            .buttonStyle(SimpleButtonStyle(icon: "paperplane", help: "View", color: Color("AccentColor")))
+        VStack(alignment: .center) {
 
-                        }
-                        .padding()
-                        .background(Color("mode").opacity(0.05))
-                        .cornerRadius(8)
-                        
-                        
-//                        HStack{
-//                            Image(systemName: "paintbrush.fill")
-//                                .resizable()
-//                                .aspectRatio(contentMode: .fit)
-//                                .frame(width: 16, height: 16)
-//                            VStack(alignment: .leading){
-//                                Text("Icon")
-//                                Text("Created by Oviotti on DeviantArt").font(.footnote).foregroundStyle(.gray)
-//                            }
-//                            Spacer()
-//                            
-//                            Button("") {
-//                                NSWorkspace.shared.open(URL(string: "https://www.deviantart.com/oviotti/art/AppCleaner-for-macOS-632260251")!)
-//                            }
-//                            .buttonStyle(SimpleButtonStyle(icon: "paperplane", help: "View", color: Color("AccentColor")))
-//                            
-//                        }
-//                        .padding()
-//                        .background(Color("mode").opacity(0.05))
-//                        .cornerRadius(8)
-                        
-                    }
-                    
-                    Spacer()
-                    
+
+
+            VStack(alignment: .center, spacing: 10) {
+                Image(nsImage: NSApp.applicationIconImage)
+                    .padding(.top, 30)
+                Text(Bundle.main.name)
+                    .font(.title)
+                    .bold()
+                HStack {
+                    Text("Version \(Bundle.main.version)")
+                    Text("(Build \(Bundle.main.buildVersion))").font(.footnote)
                 }
-                .padding(.trailing)
-//                .padding()
-//                .padding(.top, 30)
+
+
+                Divider()
+                    .padding()
+
             }
-            
+
+            VStack(alignment: .leading) {
+
+                HStack() {
+                    Text("Credits and Inspiration").font(.title2)
+                    Spacer()
+                }
+                .padding(.leading)
+
+                HStack{
+                    Image(systemName: "paintbrush.pointed")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .padding(.trailing)
+
+                    VStack(alignment: .leading){
+                        Text("Microsoft Designer")
+                        Text("Application icon resource")
+                            .font(.callout)
+                            .foregroundStyle(.gray)
+
+                    }
+                    Spacer()
+                    Button(""){
+                        NSWorkspace.shared.open(URL(string: "https://designer.microsoft.com/image-creator")!)
+                    }
+                    .buttonStyle(SimpleButtonStyle(icon: "link", help: "View", color: Color("mode")))
+
+                }
+                .padding(5)
+                .padding(.leading)
+
+
+                HStack{
+                    Image(systemName: "n.circle")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .padding(.trailing)
+
+                    VStack(alignment: .leading){
+                        Text("Namelix")
+                        Text("Logo and branding generation")
+                            .font(.callout)
+                            .foregroundStyle(.gray)
+
+                    }
+                    Spacer()
+                    Button(""){
+                        NSWorkspace.shared.open(URL(string: "https://namelix.com/")!)
+                    }
+                    .buttonStyle(SimpleButtonStyle(icon: "link", help: "View", color: Color("mode")))
+
+                }
+                .padding(5)
+                .padding(.leading)
+
+
+                HStack{
+                    Image(systemName: "applescript")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .padding(.trailing)
+
+                    VStack(alignment: .leading){
+                        Text("Privacy Guides")
+                        Text("Inspired by open-source appcleaner script from Sun Knudsen")
+                            .font(.callout)
+                            .foregroundStyle(.gray)
+                            .lineLimit(2)
+
+                    }
+                    Spacer()
+
+                    Button("") {
+                        NSWorkspace.shared.open(URL(string: "https://sunknudsen.com/privacy-guides/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative")!)
+                    }
+                    .buttonStyle(SimpleButtonStyle(icon: "link", help: "View", color: Color("mode")))
+
+                }
+                .padding(5)
+                .padding(.leading)
+
+
+                HStack{
+                    Image(systemName: "trash")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .padding(.trailing)
+
+                    VStack(alignment: .leading){
+                        Text("AppCleaner")
+                        Text("Inspired by AppCleaner from Freemacsoft")
+                            .font(.callout)
+                            .foregroundStyle(.gray)
+
+                    }
+                    Spacer()
+                    Button(""){
+                        NSWorkspace.shared.open(URL(string: "https://freemacsoft.net/appcleaner/")!)
+                    }
+                    .buttonStyle(SimpleButtonStyle(icon: "link", help: "View", color: Color("mode")))
+
+                }
+                .padding(5)
+                .padding(.leading)
+
+                Spacer()
+
+            }
+
             Spacer()
-            
+
             Text("Made with ❤️ by Alin Lupascu (dev@itsalin.com)").font(.footnote).padding(.bottom)
         }
         .padding(20)
-        .frame(width: 750, height: 325)
-        
+        .frame(width: 500, height: 650)
+
     }
 }
 
 
 
 extension Bundle {
-    
+
     var name: String {
         func string(for key: String) -> String? {
             object(forInfoDictionaryKey: key) as? String
@@ -159,14 +168,14 @@ extension Bundle {
         ?? string(for: "CFBundleName")
         ?? "N/A"
     }
-    
+
     var version: String {
         infoDictionary?["CFBundleShortVersionString"] as? String ?? "N/A"
     }
-    
+
     var buildVersion: String {
         infoDictionary?["CFBundleVersion"] as? String ?? "N/A"
     }
-    
+
 }
 

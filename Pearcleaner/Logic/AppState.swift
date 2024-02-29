@@ -18,7 +18,6 @@ class AppState: ObservableObject
     @Published var sortedApps: (userApps: [AppInfo], systemApps: [AppInfo]) = ([], [])
     @Published var selectedItems = Set<URL>()
     @Published var selectedZombieItems = Set<URL>()
-    @Published var trashedFiles: [URL] = []
     @Published var alertType = AlertType.off
     @Published var currentView = CurrentDetailsView.empty
     @Published var showAlert: Bool = false
@@ -107,16 +106,16 @@ struct ZombieFile: Identifiable, Equatable, Hashable {
 enum CurrentTabView:Int
 {
     case general
-    case permissions
-    case sentinel
+//    case permissions
+//    case sentinel
     case update
     case about
     
     var title: String {
         switch self {
         case .general: return "General"
-        case .permissions: return "Permissions"
-        case .sentinel: return "Sentinel"
+//        case .permissions: return "Permissions"
+//        case .sentinel: return "Sentinel"
         case .update: return "Update"
         case .about: return "About"
         }

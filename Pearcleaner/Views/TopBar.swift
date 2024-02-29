@@ -19,7 +19,7 @@ struct TopBar: View {
     @EnvironmentObject var locations: Locations
 
     var body: some View {
-        HStack(alignment: .center, spacing: 10) {
+        HStack(alignment: .center, spacing: 0) {
 
             Spacer()
 
@@ -39,55 +39,49 @@ struct TopBar: View {
 
             Spacer()
 
-            if appState.currentView != .empty {//|| appState.currentView != .apps {
-                Button("") {
-                    withAnimation(.easeInOut(duration: 0.5)) {
-                        appState.currentView = .empty
-                        appState.appInfo = AppInfo.empty
-                    }
-                }
-                .buttonStyle(SimpleButtonStyle(icon: "plus.square.dashed", help: "Drop Target", color: Color("mode")))
-                
-            }
+            HStack() {
+                Spacer()
 
-            if appState.currentView != .zombie {
-                Button("") {
-                    withAnimation(.easeInOut(duration: 0.5)) {
-                        updateOnMain {
-                            if appState.zombieFile.fileSize.keys.count == 0 {
-                                appState.currentView = .zombie
-                                appState.showProgress.toggle()
-                                showPopover.toggle()
-                                reversePathsSearch(appState: appState, locations: locations)
-                            } else {
-                                appState.currentView = .zombie
-                                showPopover.toggle()
+                if appState.currentView != .zombie {
+                    Button("") {
+                        withAnimation(.easeInOut(duration: 0.5)) {
+                            updateOnMain {
+                                if appState.zombieFile.fileSize.keys.count == 0 {
+                                    appState.currentView = .zombie
+                                    appState.showProgress.toggle()
+                                    showPopover.toggle()
+                                    reversePathsSearch(appState: appState, locations: locations)
+                                } else {
+                                    appState.currentView = .zombie
+                                    showPopover.toggle()
+                                }
                             }
-                        }
 
+                        }
                     }
+                    .buttonStyle(SimpleButtonStyle(icon: "clock.arrow.circlepath", help: "Leftover Files", color: Color("mode")))
                 }
-                .buttonStyle(SimpleButtonStyle(icon: "clock.arrow.circlepath", help: "Leftover Files", color: Color("mode")))
+                
+
+                //            if appState.currentView != .empty || appState.currentView != .apps {
+                if appState.currentView == .files || appState.currentView == .zombie {
+                    Button("") {
+                        withAnimation(.easeInOut(duration: 0.5)) {
+                            appState.currentView = .empty
+                            appState.appInfo = AppInfo.empty
+                        }
+                    }
+                    .buttonStyle(SimpleButtonStyle(icon: "plus.square.dashed", help: "Drop Target", color: Color("mode")))
+
+                }
+
+
             }
 
 
-            
-            
-//            Spacer()
-            
-            
-            
-//            if sentinel {
-//                Button("") {
-//                    //
-//                }
-//                .buttonStyle(SimpleButtonStyle(icon: "lock.shield", help: "Sentinel enabled", color: .green, shield: true))
-//            }
-            
-            
-            
+ 
         }
-        .padding(.horizontal, 5)
-        .padding(.top, 10)
+        .padding(.horizontal, 10)
+        .padding(.top, 15)
     }
 }

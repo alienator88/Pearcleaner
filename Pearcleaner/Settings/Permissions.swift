@@ -18,63 +18,109 @@ struct PermissionsSettingsTab: View {
     var body: some View {
         Form {
             VStack(alignment: .leading, spacing: 10) {
-                
-                HStack(spacing: 15) {
-                    Image(systemName: "internaldrive")
+
+                HStack(spacing: 0) {
+                    Image(systemName: diskStatus ? "externaldrive" : "externaldrive")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 20)
-                    
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text("Full Disk")
-                        Text(diskStatus ? "Permission granted" : "Permission not granted")
-                            .font(.footnote)
-                            .foregroundStyle(diskStatus ? .green : .red)
-                    }
-                    
+                        .frame(width: 20, height: 20)
+                        .padding(.trailing)
+                        .foregroundStyle(diskStatus ? .green : .red)
+                    Text(diskStatus ? "Full Disk permission granted" : "Full Disk permission not granted")
+                        .font(.callout)
+                        .foregroundStyle(.gray)
                     Spacer()
-                    
+
                     Button("") {
                         if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles") {
                             NSWorkspace.shared.open(url)
                         }
                     }
-                    .buttonStyle(SimpleButtonStyle(icon: "paperplane", help: "View disk permission pane", color: Color("AccentColor")))
+                    .buttonStyle(SimpleButtonStyle(icon: "gear", help: "View disk permissions pane", color: Color("mode")))
+
                 }
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color("mode").opacity(0.05))
-                )
-                
-                
-                HStack(spacing: 15) {
-                    Image(systemName: "accessibility")
+                .padding(5)
+
+
+                HStack(spacing: 0) {
+                    Image(systemName: accessStatus ? "accessibility" : "accessibility")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 20)
-                    
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text("Accessibility")
-                        Text(accessStatus ? "Permission granted" : "Permission not granted")
-                            .font(.footnote)
-                            .foregroundStyle(accessStatus ? .green : .red)
-                    }
-                    
+                        .frame(width: 20, height: 20)
+                        .padding(.trailing)
+                        .foregroundStyle(accessStatus ? .green : .red)
+                    Text(accessStatus ? "Accessibility permission granted" : "Accessibility permission not granted")
+                        .font(.callout)
+                        .foregroundStyle(.gray)
                     Spacer()
-                    
+
                     Button("") {
                         if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
                             NSWorkspace.shared.open(url)
                         }
                     }
-                    .buttonStyle(SimpleButtonStyle(icon: "paperplane", help: "View accessibility pane", color: Color("AccentColor")))
+                    .buttonStyle(SimpleButtonStyle(icon: "gear", help: "View accessibility permissions pane", color: Color("mode")))
+
                 }
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color("mode").opacity(0.05))
-                )
+                .padding(5)
+
+
+//                HStack(spacing: 15) {
+//                    Image(systemName: "internaldrive")
+//                        .resizable()
+//                        .scaledToFit()
+//                        .frame(width: 20)
+//                    
+//                    VStack(alignment: .leading, spacing: 5) {
+//                        Text("Full Disk")
+//                        Text(diskStatus ? "Permission granted" : "Permission not granted")
+//                            .font(.footnote)
+//                            .foregroundStyle(diskStatus ? .green : .red)
+//                    }
+//                    
+//                    Spacer()
+//                    
+//                    Button("") {
+//                        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles") {
+//                            NSWorkspace.shared.open(url)
+//                        }
+//                    }
+//                    .buttonStyle(SimpleButtonStyle(icon: "paperplane", help: "View disk permission pane", color: Color("AccentColor")))
+//                }
+//                .padding()
+//                .background(
+//                    RoundedRectangle(cornerRadius: 8)
+//                        .fill(Color("mode").opacity(0.05))
+//                )
+                
+                
+//                HStack(spacing: 15) {
+//                    Image(systemName: "accessibility")
+//                        .resizable()
+//                        .scaledToFit()
+//                        .frame(width: 20)
+//                    
+//                    VStack(alignment: .leading, spacing: 5) {
+//                        Text("Accessibility")
+//                        Text(accessStatus ? "Permission granted" : "Permission not granted")
+//                            .font(.footnote)
+//                            .foregroundStyle(accessStatus ? .green : .red)
+//                    }
+//                    
+//                    Spacer()
+//                    
+//                    Button("") {
+//                        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
+//                            NSWorkspace.shared.open(url)
+//                        }
+//                    }
+//                    .buttonStyle(SimpleButtonStyle(icon: "paperplane", help: "View accessibility pane", color: Color("AccentColor")))
+//                }
+//                .padding()
+//                .background(
+//                    RoundedRectangle(cornerRadius: 8)
+//                        .fill(Color("mode").opacity(0.05))
+//                )
                 
                 
 

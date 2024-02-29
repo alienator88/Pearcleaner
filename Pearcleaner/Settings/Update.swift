@@ -63,24 +63,31 @@ struct UpdateSettingsTab: View {
             .frame(minWidth: 0, maxWidth: .infinity)
             .padding()
             
-            Text("Showing last 3").opacity(0.5).font(.footnote)
+            Text("Showing last 3 releases")
+                .font(.callout)
+                .foregroundStyle(.gray)
+
             
             
-            
-            HStack(alignment: .center, spacing: 5) {
+            HStack(alignment: .center, spacing: 20) {
                 Spacer()
-                Button("Check"){
+                Button("Update Notes"){
                     loadGithubReleases(appState: appState)
-                }.buttonStyle(BorderedButtonStyle())
-                
+                }
+                .buttonStyle(SimpleButtonStyle(icon: "list.bullet", help: "Check release notes", color: Color("mode")))
+
+
                 Button("Force Update"){
                     loadGithubReleases(appState: appState, manual: true)
-                }.buttonStyle(BorderedButtonStyle())
-                
+                }
+                .buttonStyle(SimpleButtonStyle(icon: "arrow.down.square", help: "Check for updates", color: Color("mode")))
+
+
                 Button("GitHub"){
                     NSWorkspace.shared.open(URL(string: "https://github.com/alienator88/Pearcleaner/releases")!)
-                }.buttonStyle(BorderedButtonStyle())
-                
+                }
+                .buttonStyle(SimpleButtonStyle(icon: "link", help: "View releases on GitHub", color: Color("mode")))
+
                 
                 Spacer()
             }
@@ -90,7 +97,7 @@ struct UpdateSettingsTab: View {
             
         }
         .padding(20)
-        .frame(width: 500, height: 400)
+        .frame(width: 500, height: 650)
     }
     
 }

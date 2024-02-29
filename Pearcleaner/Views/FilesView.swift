@@ -227,16 +227,12 @@ struct FilesView: View {
 
                                     if appFolderURL.path == "/Applications" || appFolderURL.path == "\(home)/Applications" {
                                         // Do nothing, skip insertion
-                                    } else if appFolderURL.pathComponents.count > 2 {
+                                    } else if appFolderURL.pathComponents.count > 2 && appFolderURL.path.contains("Applications") {
                                         // Insert into selectedItemsArray only if there is an intermediary folder
                                         selectedItemsArray.insert(appFolderURL, at: 0)
                                     }
                                 }
 
-                                // Save trashed files for undo operation
-//                                updateOnMain {
-//                                    appState.trashedFiles = selectedItemsArray
-//                                }
 
                                 killApp(appId: appState.appInfo.bundleIdentifier) {
                                     moveFilesToTrash(at: selectedItemsArray) {

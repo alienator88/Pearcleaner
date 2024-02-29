@@ -18,6 +18,9 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.miniview") private var miniView: Bool = true
     @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 280
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
+    @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
+    @State private var diskStatus: Bool = false
+    @State private var accessStatus: Bool = false
     @State private var selectedTheme = "Auto"
     private let themes = ["Auto", "Dark", "Light"]
     @Binding var showPopover: Bool
@@ -25,11 +28,23 @@ struct GeneralSettingsTab: View {
     var body: some View {
         Form {
             VStack {
-                HStack {
+
+                HStack() {
+                    Text("Appearance").font(.title2)
+                    Spacer()
+                }
+                .padding(.leading)
+
+                HStack(spacing: 0) {
+                    Image(systemName: glass ? "cube.transparent" : "cube.transparent.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .padding(.trailing)
+                        .foregroundStyle(.gray)
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("Transparency").font(.title2)
-                        Text("Toggles transparent material")
-                            .font(.footnote)
+                        Text("\(glass ? "Transparent material enabled" : "Transparent material disabled")")
+                            .font(.callout)
                             .foregroundStyle(.gray)
                     }
                     Spacer()
@@ -37,48 +52,55 @@ struct GeneralSettingsTab: View {
                     })
                     .toggleStyle(.switch)
                 }
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color("mode").opacity(0.05))
-                )
+                .padding(5)
+                .padding(.leading)
 
-                HStack {
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text("Sidebar").font(.title2)
-                        Text("Adjust sidebar width")
-                            .font(.footnote)
-                            .foregroundStyle(.gray)
-                    }
+
+                HStack(spacing: 0) {
+                    Image(systemName: "sidebar.left")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .padding(.trailing)
+                        .foregroundStyle(.gray)
+                    Text("Adjust sidebar width")
+                        .font(.callout)
+                        .foregroundStyle(.gray)
                     Spacer()
-                    Slider(value: $sidebarWidth, in: 200...400) {
-                        Text("\(Int(sidebarWidth))")
+                    Slider(value: $sidebarWidth, in: 200...360) {
+//                        Text("\(Int(sidebarWidth))")
                     }
                     .padding(.horizontal)
+                    .frame(width: 185)
+                    Button("") {
+                        sidebarWidth = 280
+                    }
+                    .buttonStyle(SimpleButtonStyle(icon: "arrow.uturn.left.circle", help: "Reset to default size", color: Color("mode")))
                 }
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color("mode").opacity(0.05))
-                )
+                .padding(5)
+                .padding(.leading)
 
-                HStack {
+
+                HStack(spacing: 0) {
+                    Image(systemName: displayMode.colorScheme == .dark ? "moon.fill" : "sun.max.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .padding(.trailing)
+                        .foregroundStyle(.gray)
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("Appearance").font(.title2)
-                        Text("Toggles color mode")
-                            .font(.footnote)
+                        Text("Set color mode")
+                            .font(.callout)
                             .foregroundStyle(.gray)
                     }
-                    
                     Spacer()
-                    
                     Picker("", selection: $selectedTheme) {
                         ForEach(themes, id: \.self) { theme in
                             Text(theme)
                         }
                     }
                     .pickerStyle(SegmentedPickerStyle())
-//                    .padding()
+                    .frame(width: 200)
                     .onChange(of: selectedTheme) { newTheme in
                         switch newTheme {
                         case "Auto":
@@ -96,20 +118,33 @@ struct GeneralSettingsTab: View {
                             break
                         }
                     }
-
                 }
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color("mode").opacity(0.05))
-                )
+                .padding(5)
+                .padding(.leading)
+
+                // =========================================================================================================
+
+                Divider()
+                    .padding()
 
 
-                HStack {
+
+                HStack() {
+                    Text("Mini Configuration").font(.title2)
+                    Spacer()
+                }
+                .padding(.leading)
+
+                HStack(spacing: 0) {
+                    Image(systemName: mini ? "square.resize.up" : "square.resize.down")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .padding(.trailing)
+                        .foregroundStyle(.gray)
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("Mini").font(.title2)
-                        Text("Toggles a smaller, unified view with hidden app list")
-                            .font(.footnote)
+                        Text("\(mini ? "Mini window mode" : "Full size window mode")")
+                            .font(.callout)
                             .foregroundStyle(.gray)
                     }
                     Spacer()
@@ -131,18 +166,20 @@ struct GeneralSettingsTab: View {
                         }
                     }
                 }
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color("mode").opacity(0.05))
-                )
+                .padding(5)
+                .padding(.leading)
 
 
-                HStack {
+                HStack(spacing: 0) {
+                    Image(systemName: miniView ? "square.grid.3x3.square" : "plus.square.dashed")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .padding(.trailing)
+                        .foregroundStyle(.gray)
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("Mini - \(miniView ? "Apps List" : "Drop Target")").font(.title2)
-                        Text("Toggles drop target or apps list view on launch")
-                            .font(.footnote)
+                        Text("\(miniView ? "Show apps list on startup" : "Show drop target on startup")")
+                            .font(.callout)
                             .foregroundStyle(.gray)
                     }
                     Spacer()
@@ -153,17 +190,20 @@ struct GeneralSettingsTab: View {
                         appState.currentView = newVal ? .apps : .empty
                     }
                 }
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color("mode").opacity(0.05))
-                )
+                .padding(5)
+                .padding(.leading)
 
-                HStack {
+
+                HStack(spacing: 0) {
+                    Image(systemName: popoverStay ? "pin" : "pin.slash")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .padding(.trailing)
+                        .foregroundStyle(.gray)
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("Mini - \(popoverStay ? "Popover on Top" : "Popover not on Top")").font(.title2)
-                        Text("Keeps file search popover on top in mini mode")
-                            .font(.footnote)
+                        Text("\(popoverStay ? "Popover window doesn't hide on outside click" : "Popover window hides on outside click")")
+                            .font(.callout)
                             .foregroundStyle(.gray)
                     }
                     Spacer()
@@ -171,21 +211,130 @@ struct GeneralSettingsTab: View {
                     })
                     .toggleStyle(.switch)
                 }
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color("mode").opacity(0.05))
-                )
+                .padding(5)
+                .padding(.leading)
+
+
+                // =========================================================================================================
+
+
+                Divider()
+                    .padding()
+
+
+
+
+                HStack() {
+                    Text("Permissions").font(.title2)
+                    Spacer()
+                }
+                .padding(.leading)
+
+                HStack(spacing: 0) {
+                    Image(systemName: diskStatus ? "externaldrive" : "externaldrive")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .padding(.trailing)
+                        .foregroundStyle(diskStatus ? .green : .red)
+                        .saturation(displayMode.colorScheme == .dark ? 0.5 : 1)
+                    Text(diskStatus ? "Full Disk permission granted" : "Full Disk permission **NOT** granted")
+                        .font(.callout)
+                        .foregroundStyle(.gray)
+                    Spacer()
+
+                    Button("") {
+                        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles") {
+                            NSWorkspace.shared.open(url)
+                        }
+                    }
+                    .buttonStyle(SimpleButtonStyle(icon: "folder", help: "View disk permissions pane", color: Color("mode")))
+
+                }
+                .padding(5)
+                .padding(.leading)
+
+
+                HStack(spacing: 0) {
+                    Image(systemName: accessStatus ? "accessibility" : "accessibility")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .padding(.trailing)
+                        .foregroundStyle(accessStatus ? .green : .red)
+                        .saturation(displayMode.colorScheme == .dark ? 0.5 : 1)
+                    Text(accessStatus ? "Accessibility permission granted" : "Accessibility permission **NOT** granted")
+                        .font(.callout)
+                        .foregroundStyle(.gray)
+                    Spacer()
+
+                    Button("") {
+                        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
+                            NSWorkspace.shared.open(url)
+                        }
+                    }
+                    .buttonStyle(SimpleButtonStyle(icon: "folder", help: "View accessibility permissions pane", color: Color("mode")))
+
+                }
+                .padding(5)
+                .padding(.leading)
+
+
+                // =========================================================================================================
+
+                Divider()
+                    .padding()
+
+                HStack() {
+                    Text("Sentinel Monitor").font(.title2)
+                    Spacer()
+                }
+                .padding(.leading)
+
+                HStack(spacing: 0) {
+                    Image(systemName: sentinel ? "eye.circle" : "eye.slash.circle")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .padding(.trailing)
+                        .foregroundStyle(sentinel ? .green : .red)
+                        .saturation(displayMode.colorScheme == .dark ? 0.5 : 1)
+                    Text(sentinel ? "Detecting when apps are moved to Trash" : "**NOT** detecting when apps are moved to Trash")
+                        .font(.callout)
+                        .foregroundStyle(.gray)
+                    Spacer()
+
+                    Toggle(isOn: $sentinel, label: {
+                    })
+                    .toggleStyle(.switch)
+                    .onChange(of: sentinel) { newValue in
+                        if newValue {
+                            launchctl(load: true)
+                        } else {
+                            launchctl(load: false)
+                        }
+                    }
+
+                }
+                .padding(5)
+                .padding(.leading)
+
+
+
 
 
 
 
                 Spacer()
             }
+            .onAppear {
+                diskStatus = checkAndRequestFullDiskAccess(appState: appState, skipAlert: true)
+                accessStatus = checkAndRequestAccessibilityAccess(appState: appState)
+            }
 
         }
         .padding(20)
-        .frame(width: 400, height: 500)
+        .frame(width: 500, height: 650)
 
     }
     

@@ -56,25 +56,9 @@ struct AppListView: View {
                                 VStack(alignment: .center, spacing: 20) {
                                     HStack {
                                         SearchBarMiniBottom(search: $search)
-//                                        SearchBar(search: $search)
 
-//                                        Button("") {
-//                                            withAnimation(.easeInOut(duration: 0.5)) {
-//                                                // Refresh Apps list
-//                                                reload.toggle()
-//                                                let sortedApps = getSortedApps()
-//                                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-//                                                    appState.sortedApps.userApps = sortedApps.userApps
-//                                                    appState.sortedApps.systemApps = sortedApps.systemApps
-//                                                    reload.toggle()
-//                                                }
-//                                                
-//                                            }
-//                                        }
-//                                        .buttonStyle(SimpleButtonStyle(icon: "arrow.triangle.2.circlepath", help: "Refresh app list", color: Color("mode")))
                                     }
                                 }
-//                                .padding(.horizontal)
                                 .padding(.top, 20)
                                 .padding(.bottom)
                                 
@@ -120,7 +104,7 @@ struct AppListView: View {
                         }
                         
                         
-                        Divider()
+                        Divider().foregroundStyle(.red)
                     }
                 }
                 .background(glass ? GlassEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all) : nil)
@@ -145,36 +129,12 @@ struct AppListView: View {
                         .id(appState.appInfo.id)
                 }
             }
-//            .padding(.leading, appState.sidebar ? 0 : 10)
             .transition(.move(edge: .leading))
             
             Spacer()
         }
-        .frame(minWidth: 700, minHeight: 500)
+        .frame(minWidth: 900, minHeight: 600)
         .edgesIgnoringSafeArea(.all)
-//        .onOpenURL(perform: { url in
-//            let deeplinkManager = DeeplinkManager()
-//            deeplinkManager.manage(url: url, appState: appState)
-//        })
-//        .onDrop(of: ["public.file-url"], isTargeted: nil) { providers, _ in
-//            for provider in providers {
-//                provider.loadItem(forTypeIdentifier: "public.file-url") { data, error in
-//                    if let data = data as? Data, let url = URL(dataRepresentation: data, relativeTo: nil) {
-//                        let deeplinkManager = DeeplinkManager()
-//                        deeplinkManager.manage(url: url, appState: appState)
-//                        //                        // Check if the file URL has a ".app" extension
-//                        //                        if url.pathExtension.lowercased() == "app" {
-//                        //                            // Handle the dropped file URL here
-//                        //                            printOS("Dropped .app file URL: \(url)")
-//                        //                        } else {
-//                        //                            // Print a message for non-.app files
-//                        //                            printOS("Unsupported file type. Only .app files are accepted.")
-//                        //                        }
-//                    }
-//                }
-//            }
-//            return true
-//        }
         // MARK: Background for whole app
         //        .background(Color("bg").opacity(1))
         //        .background(VisualEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all))
@@ -194,30 +154,15 @@ struct AppDetailsEmptyView: View {
     @Binding var showPopover: Bool
 
     var body: some View {
-        VStack() {
-            
-            Spacer()
-            
-            DropTarget(appState: appState, locations: locations, showPopover: $showPopover)
+        VStack(alignment: .center) {
 
             Spacer()
             
-//            if appState.isReminderVisible {
-//                Text("􀆔 + Z to undo")
-//                    .font(.title2)
-//                    .foregroundStyle(Color("AccentColor").opacity(0.5))
-//                    .fontWeight(.medium)
-//                    .onAppear {
-//                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-//                            withAnimation {
-//                                appState.isReminderVisible = false
-//                            }
-//                        }
-//                    }
-//                Spacer()
-//            }
-            
-            Text("Drop an app above or select one from the list to begin")
+            PearDropView()
+
+            Spacer()
+
+            Text("Drop your app here or select one from the list")
                 .font(.title3)
                 .padding(.bottom, 25)
                 .opacity(0.5)

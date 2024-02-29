@@ -477,27 +477,27 @@ func showAppInFiles(appInfo: AppInfo, mini: Bool, appState: AppState, locations:
             if let storedAppInfo = appState.appInfoStore.first(where: { $0.path == appInfo.path }) {
                 appState.appInfo = storedAppInfo
                 appState.selectedItems = Set(storedAppInfo.files)
-//                withAnimation(Animation.easeIn(duration: 0.3)) {
+                withAnimation(Animation.easeIn(duration: 0.3)) {
                     if mini {
                         appState.currentView = .files
                         showPopover.wrappedValue.toggle()
                     } else {
                         appState.currentView = .files
                     }
-//                }
+                }
             } else {
                 updateOnMain {
                     appState.showProgress = true
                 }
                 // Handle the case where the appInfo is not found in the store
-//                withAnimation(Animation.easeIn(duration: 0.4)) {
+                withAnimation(Animation.easeIn(duration: 0.4)) {
                     if mini {
                         appState.currentView = .files
                         showPopover.wrappedValue.toggle()
                     } else {
                         appState.currentView = .files
                     }
-//                }
+                }
                 printOS("AppInfo not found in the cached store, searching again")
                 appState.appInfo = .empty
                 appState.appInfo = appInfo

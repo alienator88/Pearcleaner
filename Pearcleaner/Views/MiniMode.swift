@@ -28,13 +28,7 @@ struct MiniMode: View {
                 if appState.currentView == .empty {
                     TopBarMini(search: $search, showPopover: $showPopover)
                     MiniEmptyView(showPopover: $showPopover)
-                } else if appState.currentView == .files {
-                    TopBarMini(search: $search, showPopover: $showPopover)
-                    MiniAppView(search: $search, showPopover: $showPopover)
-                } else if appState.currentView == .zombie {
-                    TopBarMini(search: $search, showPopover: $showPopover)
-                    MiniAppView(search: $search, showPopover: $showPopover)
-                } else if appState.currentView == .apps {
+                } else {
                     TopBarMini(search: $search, showPopover: $showPopover)
                     MiniAppView(search: $search, showPopover: $showPopover)
                 }
@@ -68,30 +62,6 @@ struct MiniMode: View {
         .frame(minWidth: 300, minHeight: 335)
         .edgesIgnoringSafeArea(.all)
         .background(glass ? GlassEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all) : nil)
-
-//        .onOpenURL(perform: { url in
-//            let deeplinkManager = DeeplinkManager()
-//            deeplinkManager.manage(url: url, appState: appState)
-//        })
-//        .onDrop(of: ["public.file-url"], isTargeted: nil) { providers, _ in
-//            for provider in providers {
-//                provider.loadItem(forTypeIdentifier: "public.file-url") { data, error in
-//                    if let data = data as? Data, let url = URL(dataRepresentation: data, relativeTo: nil) {
-//                        let deeplinkManager = DeeplinkManager()
-//                        deeplinkManager.manage(url: url, appState: appState)
-////                        // Check if the file URL has a ".app" extension
-////                        if url.pathExtension.lowercased() == "app" {
-////                            // Handle the dropped file URL here
-////                            printOS("Dropped .app file URL: \(url)")
-////                        } else {
-////                            // Print a message for non-.app files
-////                            printOS("Unsupported file type. Only .app files are accepted.")
-////                        }
-//                    }
-//                }
-//            }
-//            return true
-//        }
         // MARK: Background for whole app
         //        .background(Color("bg").opacity(1))
         //        .background(VisualEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all))
@@ -116,16 +86,31 @@ struct MiniEmptyView: View {
             
             Spacer()
             
-            DropTarget(appState: appState, locations: locations, showPopover: $showPopover)
-                .frame(maxWidth: mini ? 300 : 500)
+            ZStack {
+                LinearGradient(gradient: Gradient(colors: [.pink, .orange]), startPoint: .leading, endPoint: .trailing)
+                    .mask(
+                        Image(systemName: "plus.square.dashed")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 150, height: 150)
+                            .padding()
+                    )
+            }
+
+
             
-            Text("Drop an app to begin")
+//            DropTarget(appState: appState, locations: locations, showPopover: $showPopover)
+//                .frame(maxWidth: mini ? 300 : 500)
+            
+            Text("Drop your app here")
                 .font(.title3)
                 .padding(.bottom, 25)
                 .opacity(0.5)
             
+
             Spacer()
             
+
             if appState.isReminderVisible {
                 Text("CMD + Z to undo")
                     .font(.title2)
@@ -142,7 +127,9 @@ struct MiniEmptyView: View {
                     }
                 Spacer()
             }
-            
+
+            Spacer()
+
             
         }
 //        .padding()
