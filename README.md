@@ -38,26 +38,40 @@ This project was born out of wanting to learn more. There's probably parts of th
 
 ## Regular Mode
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/64f581a6-47b7-4ad1-acd3-24d585407aa7" align="left" width="400" />
+
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/22786ddf-00c6-43d7-8fd2-d11b1237e56b" align="center" width="400" />
 <p></p>
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/327388d9-e043-40ba-b473-4a7c255b1cdf" align="left" width="400" />
+
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/6f4b247b-4bee-4db8-a758-fa55673dfe9a" align="center" width="400" />
 <p></p>
 
+
+
 ## Mini Mode
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/0bcfbbee-7d43-4f14-9657-d3d62da72d88" align="left" width="400" />
+
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/3724094f-f160-4e07-8162-ff8e5e850596" align="center" width="400" />
 <p></p>
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/9f713923-2eca-41c0-95da-3d35ce546f93" align="left" width="400" />
+
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/52cec03b-9b5c-40c0-865d-669466713c18" align="center" width="400" />
+
+
 
 ## Leftover File Search
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/7f0bb69c-67ef-488b-b7ea-43e9215b3065" align="left" width="400" />
+
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/a1d815cd-7118-4817-80f7-e568c6357d19" align="center" width="400" />
+
+
 
 ## Settings
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/684374f0-a342-420b-b251-5e35d07e4d72" align="left" width="400" />
+
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/c0d0541a-c13f-47b2-a0d7-59bf6e722499" align="center" width="400" />
+
+
 
 
 ## Requirements
