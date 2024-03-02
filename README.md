@@ -74,6 +74,10 @@ This project was born out of wanting to learn more. There's probably parts of th
 
 
 
+
+
+
+
 ## Requirements
 - MacOS 13.0+ (App uses a lot of newer SwiftUI functions/modifiers which don't work on any OS lower than 13.0)
 
