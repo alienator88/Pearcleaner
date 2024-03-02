@@ -36,10 +36,11 @@ struct AboutSettingsTab: View {
             VStack(alignment: .leading) {
 
                 HStack() {
-                    Text("Credits and Inspiration").font(.title2)
+                    Text("Credits").font(.title2)
                     Spacer()
                 }
                 .padding(.leading)
+                .padding(.bottom)
 
                 HStack{
                     Image(systemName: "paintbrush.pointed")

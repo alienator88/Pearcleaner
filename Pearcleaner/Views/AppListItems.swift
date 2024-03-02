@@ -26,7 +26,17 @@ struct AppListItems: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
+
+
+
             HStack(alignment: .center) {
+
+                if isHovered || isSelected {
+                    RoundedRectangle(cornerRadius: 50)
+                        .fill(isSelected ? Color("pear") : Color("mode").opacity(0.5))
+                        .frame(width: isSelected ? 4 : 2, height: 25)
+                        .padding(.trailing, 5)
+                }
 
                 if let appIcon = appInfo.appIcon {
                     Image(nsImage: appIcon)
@@ -35,6 +45,7 @@ struct AppListItems: View {
                         .frame(width: 30, height: 30)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                 }
+                
                 VStack(alignment: .leading, spacing: 5) {
                     Text(appInfo.appName)
                         .font(.system(size: 12))
@@ -56,8 +67,6 @@ struct AppListItems: View {
                         .background(
                             Capsule().strokeBorder(Color("mode").opacity(0.3), lineWidth: 1)
                         )
-//                        .background(Color("mode").opacity(0.1))
-//                        .clipShape(.capsule)
                 }
                 if appInfo.wrapped {
                     Text("iOS")
@@ -68,24 +77,14 @@ struct AppListItems: View {
                         .background(
                             Capsule().strokeBorder(Color("mode").opacity(0.3), lineWidth: 1)
                         )
-//                        .background(Color("mode").opacity(0.1))
-//                        .clipShape(.capsule)
                 }
 
                 Text(appInfo.appVersion)
                     .font(.footnote)
                     .foregroundStyle(Color("mode").opacity(0.5))
-                
-                if isHovered || isSelected {
-                    RoundedRectangle(cornerRadius: 50)
-                        .fill(isSelected ? Color("AccentColor") : Color("mode").opacity(0.5))
-                        .frame(width: isSelected ? 4 : 2, height: 30)
-                        .padding(.leading, 5)
-                        .offset(x: 20)
-                }
 
             }
-            
+
         }
         .padding(.horizontal, 5)
         .help(appInfo.appName)
@@ -97,25 +96,5 @@ struct AppListItems: View {
         .onTapGesture {
             showAppInFiles(appInfo: appInfo, mini: mini, appState: appState, locations: locations, showPopover: $showPopover)
         }
-
-//        .popover(isPresented: Binding(
-//            get: { showPopover && appState.appInfo.id == appInfo.id},
-//            set: { _ in showPopover = false}
-//        ), attachmentAnchor: .rect(.rect(CGRect(x: windowSettings.loadWindowSettings().width - 17, y: 15, width: 0, height: 0))), arrowEdge: .trailing) {
-
-//        .popover(isPresented: $showPopover, arrowEdge: .trailing) {
-//            VStack {
-//                FilesView(showPopover: $showPopover, search: $search)
-//                    .id(appState.appInfo.id)
-//            }
-//            .interactiveDismissDisabled(popoverStay)
-//            .background(
-//                Rectangle()
-//                    .fill(Color("pop"))
-//                    .padding(-80)
-//            )
-//            .frame(minWidth: 650, minHeight: 500)
-//
-//        }
     }
 }

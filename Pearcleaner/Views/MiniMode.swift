@@ -34,7 +34,6 @@ struct MiniMode: View {
                 }
 
             }
-            //            .padding(.leading, appState.sidebar ? 0 : 10)
             .transition(.move(edge: .leading))
             .popover(isPresented: $showPopover, arrowEdge: .trailing) {
                 VStack {
@@ -59,7 +58,7 @@ struct MiniMode: View {
 
             
         }
-        .frame(minWidth: 300, minHeight: 335)
+        .frame(minWidth: 300, minHeight: 345)
         .edgesIgnoringSafeArea(.all)
         .background(glass ? GlassEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all) : nil)
         // MARK: Background for whole app
@@ -87,26 +86,21 @@ struct MiniEmptyView: View {
             Spacer()
             
             ZStack {
-                LinearGradient(gradient: Gradient(colors: [.pink, .orange]), startPoint: .leading, endPoint: .trailing)
+                LinearGradient(gradient: Gradient(colors: [.green, .orange]), startPoint: .leading, endPoint: .trailing)
                     .mask(
                         Image(systemName: "plus.square.dashed")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 150, height: 150)
+                            .frame(width: 100, height: 100)
                             .padding()
                     )
             }
 
-
-            
-//            DropTarget(appState: appState, locations: locations, showPopover: $showPopover)
-//                .frame(maxWidth: mini ? 300 : 500)
-            
             Text("Drop your app here")
                 .font(.title3)
                 .padding(.bottom, 25)
                 .opacity(0.5)
-            
+
 
             Spacer()
             
@@ -132,7 +126,6 @@ struct MiniEmptyView: View {
 
             
         }
-//        .padding()
     }
 }
 
@@ -148,6 +141,7 @@ struct MiniAppView: View {
     @State private var showSys: Bool = true
     @State private var showUsr: Bool = true
     @AppStorage("settings.general.mini") private var mini: Bool = false
+    @AppStorage("settings.general.instant") private var instantSearch: Bool = true
     @Binding var showPopover: Bool
     
     var body: some View {
@@ -174,36 +168,20 @@ struct MiniAppView: View {
                 if appState.reload {
                     VStack {
                         Spacer()
-                        ProgressView("Loadings apps and files")
+                        ProgressView(instantSearch ? "Refreshing app list and caching files" : "Refreshing app list")
+                        if instantSearch {
+                            Image(systemName: "bolt.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .foregroundStyle(Color("mode").opacity(0.5))
+                                .frame(width: 30, height: 30)
+                                .padding()
+                        }
                         Spacer()
                     }
                     .padding(.vertical)
                 } else {
                     VStack(alignment: .center) {
-
-//                        if appState.currentView == .apps {
-//                            HStack(alignment: .center, spacing: 0) {
-//                                Spacer()
-//
-//                                Button("") {
-//                                    withAnimation(.easeInOut(duration: 0.5)) {
-//                                        //                        updateOnMain {
-//                                        appState.currentView = .empty
-//                                        appState.appInfo = AppInfo.empty
-//                                        showPopover = false
-//                                        //                        }
-//                                    }
-//                                }
-//                                .buttonStyle(SimpleButtonStyle(icon: "arrow.backward.square", help: "Back to Drop Zone", color: Color("mode")))
-//                                .padding(.leading, 10)
-//                                .padding(.trailing, 0)
-//
-//                                SearchBarMiniBottom(search: $search)
-//
-//                                Spacer()
-//                            }
-//                            .padding(.top, 30)
-//                        }
 
                         ScrollView {
                             
@@ -253,20 +231,6 @@ struct MiniAppView: View {
             }
         }
         .transition(.move(edge: .leading))
-//        .popover(isPresented: $showPopover, arrowEdge: .trailing) {
-//            VStack {
-//                FilesView(showPopover: $showPopover)
-//                    .id(appState.appInfo.id)
-//            }
-//            .background(
-//                Rectangle()
-//                    .fill(Color("pop"))
-////                    .background(Color("pop"))
-//                    .padding(-80)
-//            )
-//            .frame(minWidth: 600, minHeight: 500)
-//            
-//        }
     }
 }
 

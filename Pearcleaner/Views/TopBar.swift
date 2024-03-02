@@ -9,11 +9,11 @@ import Foundation
 import SwiftUI
 
 struct TopBar: View {
-    //    @Binding var sidebar: Bool
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
+    @AppStorage("settings.general.instant") private var instantSearch: Bool = true
     @EnvironmentObject var appState: AppState
     @Binding var showPopover: Bool
     @EnvironmentObject var locations: Locations
@@ -50,7 +50,11 @@ struct TopBar: View {
                                     appState.currentView = .zombie
                                     appState.showProgress.toggle()
                                     showPopover.toggle()
-                                    reversePathsSearch(appState: appState, locations: locations)
+                                    if instantSearch {
+                                        reversePathsSearch(appState: appState, locations: locations)
+                                    } else {
+                                        loadAllPaths(allApps: appState.sortedApps.userApps + appState.sortedApps.systemApps, appState: appState, locations: locations, reverseAddon: true)
+                                    }
                                 } else {
                                     appState.currentView = .zombie
                                     showPopover.toggle()
@@ -63,7 +67,6 @@ struct TopBar: View {
                 }
                 
 
-                //            if appState.currentView != .empty || appState.currentView != .apps {
                 if appState.currentView == .files || appState.currentView == .zombie {
                     Button("") {
                         withAnimation(.easeInOut(duration: 0.5)) {

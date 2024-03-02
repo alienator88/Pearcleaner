@@ -20,18 +20,6 @@ struct SettingsView: View {
                 }
                 .tag(CurrentTabView.general)
             
-//            PermissionsSettingsTab()
-//                .tabItem {
-//                    Label(CurrentTabView.permissions.title, systemImage: "lock")
-//                }
-//                .tag(CurrentTabView.permissions)
-            
-//            SentinelSettingsTab()
-//                .tabItem {
-//                    Label(CurrentTabView.sentinel.title, systemImage: "eye.circle")
-//                }
-//                .tag(CurrentTabView.sentinel)
-            
             UpdateSettingsTab()
                 .tabItem {
                     Label(CurrentTabView.update.title, systemImage: "cloud")
@@ -45,10 +33,12 @@ struct SettingsView: View {
                 .tag(CurrentTabView.about)
              
         }
-        
+
     }
     
 }
+
+
 
 
 

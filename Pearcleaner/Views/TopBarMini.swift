@@ -12,6 +12,7 @@ struct TopBarMini: View {
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
+    @AppStorage("settings.general.instant") private var instantSearch: Bool = true
     @Binding var search: String
     @Binding var showPopover: Bool
     @EnvironmentObject var appState: AppState
@@ -35,7 +36,11 @@ struct TopBarMini: View {
                                     appState.currentView = .zombie
                                     appState.showProgress.toggle()
                                     showPopover.toggle()
-                                    reversePathsSearch(appState: appState, locations: locations)
+                                    if instantSearch {
+                                        reversePathsSearch(appState: appState, locations: locations)
+                                    } else {
+                                        loadAllPaths(allApps: appState.sortedApps.userApps + appState.sortedApps.systemApps, appState: appState, locations: locations, reverseAddon: true)
+                                    }
                                 } else {
                                     appState.currentView = .zombie
                                     showPopover.toggle()
@@ -70,7 +75,11 @@ struct TopBarMini: View {
                                     appState.currentView = .zombie
                                     appState.showProgress.toggle()
                                     showPopover.toggle()
-                                    reversePathsSearch(appState: appState, locations: locations)
+                                    if instantSearch {
+                                        reversePathsSearch(appState: appState, locations: locations)
+                                    } else {
+                                        loadAllPaths(allApps: appState.sortedApps.userApps + appState.sortedApps.systemApps, appState: appState, locations: locations, reverseAddon: true)
+                                    }
                                 } else {
                                     appState.currentView = .zombie
                                     showPopover.toggle()
@@ -108,9 +117,8 @@ struct SearchBarMini: View {
         HStack {
             TextField("Search", text: $search)
                 .textFieldStyle(AnimatedSearchStyle(text: $search))
-            //                .textFieldStyle(SimpleSearchStyle(trash: true, reload: $reload, text: $search))
         }
-                .frame(height: 20)
+        .frame(height: 20)
     }
 }
 

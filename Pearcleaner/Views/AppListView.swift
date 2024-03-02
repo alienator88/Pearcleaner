@@ -12,12 +12,12 @@ struct AppListView: View {
     @EnvironmentObject var appState: AppState
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 280
+    @AppStorage("settings.general.instant") private var instantSearch: Bool = true
     @Binding var search: String
     @State private var showSys: Bool = true
     @State private var showUsr: Bool = true
-//    @State private var sidebar: Bool = true
     @Binding var showPopover: Bool
-    
+
     var filteredUserApps: [AppInfo] {
         if search.isEmpty {
             return appState.sortedApps.userApps
@@ -25,7 +25,7 @@ struct AppListView: View {
             return appState.sortedApps.userApps.filter { $0.appName.localizedCaseInsensitiveContains(search) }
         }
     }
-    
+
     var filteredSystemApps: [AppInfo] {
         if search.isEmpty {
             return appState.sortedApps.systemApps
@@ -33,87 +33,87 @@ struct AppListView: View {
             return appState.sortedApps.systemApps.filter { $0.appName.localizedCaseInsensitiveContains(search) }
         }
     }
-    
+
     var body: some View {
-        
+
         HStack(alignment: .center, spacing: 0) {
             // App List
-            if appState.sidebar {
-                ZStack {
-                    HStack(spacing: 0){
-                        
-                        if appState.reload {
-                            VStack {
-                                Spacer()
-                                ProgressView("Loading apps and files")
-                                Spacer()
-                            }
-                            .frame(width: sidebarWidth)
-                            .padding(.vertical)
-                        } else {
-                            VStack(alignment: .center) {
-                                
-                                VStack(alignment: .center, spacing: 20) {
-                                    HStack {
-                                        SearchBarMiniBottom(search: $search)
+            HStack(spacing: 0){
 
-                                    }
-                                }
-                                .padding(.top, 20)
-                                .padding(.bottom)
-                                
-                                ScrollView {
-                                    
-                                    LazyVStack(alignment: .leading, pinnedViews: [.sectionHeaders]) {
-
-                                        if filteredUserApps.count > 0 {
-                                            VStack {
-                                                Header(title: "User", count: filteredUserApps.count, showPopover: $showPopover)
-                                                ForEach(filteredUserApps, id: \.self) { appInfo in
-                                                    AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
-                                                    if appInfo != filteredUserApps.last {
-                                                        Divider().padding(.horizontal, 5)
-                                                    }
-                                                }
-//                                                .padding(.bottom)
-                                            }
-
-                                        }
-                                        
-                                        if filteredSystemApps.count > 0 {
-                                            VStack {
-                                                Header(title: "System", count: filteredSystemApps.count, showPopover: $showPopover)
-                                                ForEach(filteredSystemApps, id: \.self) { appInfo in
-                                                    AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
-                                                    if appInfo != filteredSystemApps.last {
-                                                        Divider().padding(.horizontal, 5)
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        
-                                    }
-                                    .padding(.horizontal)
-                                    
-                                }
-                                .scrollIndicators(.never)
-                                
-                            }
-                            .frame(width: sidebarWidth)
-                            .padding(.vertical)
+                if appState.reload {
+                    VStack {
+                        Spacer()
+                        ProgressView(instantSearch ? "Refreshing app list and caching files" : "Refreshing app list")
+                        if instantSearch {
+                            Image(systemName: "bolt")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 30, height: 30)
                         }
-                        
-                        
-                        Divider().foregroundStyle(.red)
+                        Spacer()
                     }
+                    .frame(width: sidebarWidth)
+                    .padding(.vertical)
+                } else {
+                    VStack(alignment: .center) {
+
+                        VStack(alignment: .center, spacing: 20) {
+                            HStack {
+                                SearchBarMiniBottom(search: $search)
+
+                            }
+                        }
+                        .padding(.top, 20)
+                        .padding(.bottom)
+
+                        ScrollView {
+
+                            LazyVStack(alignment: .leading, pinnedViews: [.sectionHeaders]) {
+
+                                if filteredUserApps.count > 0 {
+                                    VStack {
+                                        Header(title: "User", count: filteredUserApps.count, showPopover: $showPopover)
+                                        ForEach(filteredUserApps, id: \.self) { appInfo in
+                                            AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
+                                            if appInfo != filteredUserApps.last {
+                                                Divider().padding(.horizontal, 5)
+                                            }
+                                        }
+                                    }
+
+                                }
+
+                                if filteredSystemApps.count > 0 {
+                                    VStack {
+                                        Header(title: "System", count: filteredSystemApps.count, showPopover: $showPopover)
+                                        ForEach(filteredSystemApps, id: \.self) { appInfo in
+                                            AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
+                                            if appInfo != filteredSystemApps.last {
+                                                Divider().padding(.horizontal, 5)
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+                            .padding(.horizontal)
+
+                        }
+                        .scrollIndicators(.never)
+
+                    }
+                    .frame(width: sidebarWidth)
+                    .padding(.vertical)
                 }
-                .background(glass ? GlassEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all) : nil)
-                .transition(.move(edge: .leading))
-                
-                Spacer()
+
+
             }
-            
-            
+            .background(glass ? GlassEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all) : nil)
+            .transition(.move(edge: .leading))
+
+            SlideableDivider(dimension: $sidebarWidth)
+
+
             // Details View
             VStack(spacing: 0) {
                 if appState.currentView == .empty || appState.currentView == .apps {
@@ -130,12 +130,19 @@ struct AppListView: View {
                 }
             }
             .transition(.move(edge: .leading))
-            
-            Spacer()
         }
         .frame(minWidth: 900, minHeight: 600)
         .edgesIgnoringSafeArea(.all)
+
         // MARK: Background for whole app
+//        .background{
+//            Image("peakpx")
+//                .resizable()
+//                .scaledToFill()
+//                .edgesIgnoringSafeArea(.all)
+//            GlassEffect(material: .sidebar, blendingMode: .withinWindow)
+//                .edgesIgnoringSafeArea(.all)
+//        }
         //        .background(Color("bg").opacity(1))
         //        .background(VisualEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all))
     }
@@ -157,7 +164,7 @@ struct AppDetailsEmptyView: View {
         VStack(alignment: .center) {
 
             Spacer()
-            
+
             PearDropView()
 
             Spacer()
@@ -173,7 +180,7 @@ struct AppDetailsEmptyView: View {
 
 struct SearchBar: View {
     @Binding var search: String
-    
+
     var body: some View {
         HStack {
             TextField("Search", text: $search)
@@ -191,12 +198,12 @@ struct Header: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
     @Binding var showPopover: Bool
+    @AppStorage("settings.general.instant") private var instantSearch: Bool = true
+
 
     var body: some View {
         HStack {
-            Text(title).opacity(0.5)
-
-//            Spacer()
+            Text(title).foregroundStyle(Color("mode")).opacity(0.5)
 
             HStack {
                 if hovered {
@@ -214,8 +221,15 @@ struct Header: View {
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                         appState.sortedApps.userApps = sortedApps.userApps
                                         appState.sortedApps.systemApps = sortedApps.systemApps
-                                        loadAllPaths(allApps: sortedApps.userApps + sortedApps.systemApps, appState: appState, locations: locations)
-                                        appState.reload.toggle()
+                                        if instantSearch {
+                                            loadAllPaths(allApps: sortedApps.userApps + sortedApps.systemApps, appState: appState, locations: locations) {
+                                                appState.reload.toggle()
+
+                                            }
+                                        } else {
+                                            appState.reload.toggle()
+                                        }
+
                                     }
                                 }
                             }
@@ -228,7 +242,6 @@ struct Header: View {
                         .padding(2)
                         .background(Color("mode").opacity(0.1))
                         .clipShape(.capsule)
-                    //                .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
                 }
             }
             .onHover { hovering in
@@ -240,6 +253,7 @@ struct Header: View {
             Spacer()
 
         }
-        .padding(4)
+        .padding(.vertical, 8)
+        .padding(.leading, 6)
     }
 }

@@ -70,6 +70,46 @@ struct NavButtonBottomBarStyle: ButtonStyle {
 }
 
 
+
+struct InfoButton: View {
+    @State private var isPopoverPresented: Bool = false
+    let text: String
+    let color: Color?
+
+    var body: some View {
+        Button(action: {
+            self.isPopoverPresented.toggle()
+        }) {
+            Image(systemName: "info.circle.fill")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 14, height: 14)
+                .foregroundColor(color?.opacity(0.7) ?? Color("mode").opacity(0.7))
+        }
+        .buttonStyle(PlainButtonStyle())
+        .onHover { isHovered in
+            if isHovered {
+                NSCursor.pointingHand.push()
+            } else {
+                NSCursor.pop()
+            }
+        }
+        .popover(isPresented: $isPopoverPresented, arrowEdge: .bottom) {
+            VStack {
+                Spacer()
+                Text(text)
+                    .font(.callout)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                Spacer()
+            }
+            .frame(width: 300)
+        }
+        .padding(.horizontal, 5)
+    }
+}
+
+
 struct WarningPopoverView: View {
     var label: String
     var bodyText: String
@@ -82,10 +122,14 @@ struct WarningPopoverView: View {
                 .foregroundStyle(.red)
                 .popover(isPresented: $isPresented, arrowEdge: .top) {
                     VStack {
+                        Spacer()
                         Text(bodyText)
+                            .font(.callout)
+                            .frame(maxWidth: .infinity)
                             .padding()
-                            .font(.title2)
+                        Spacer()
                     }
+                    .frame(width: 300)
                 }
 
             Text(label)
@@ -99,6 +143,121 @@ struct WarningPopoverView: View {
     }
 }
 
+
+public struct NewFeatureView: View {
+    var text: String
+    var mini: Bool
+    @Binding var showFeature: Bool
+
+    public var body: some View {
+        VStack {
+            HStack {
+                Text("New features for v\((Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String)!)!")
+                    .font(.headline).bold()
+                Spacer()
+                Button("") {
+                    withAnimation(Animation.easeInOut(duration: 0.5)) {
+                        showFeature = false
+                    }
+                }
+                .buttonStyle(SimpleButtonStyle(icon: "x.circle.fill", help: "Close", color: .gray))
+                .onHover { isHovered in
+                    if isHovered {
+                        NSCursor.pointingHand.push()
+                    } else {
+                        NSCursor.pop()
+                    }
+                }
+            }
+            .padding()
+
+            ScrollView() {
+                Text(text)
+                    .font(.callout)
+                    .multilineTextAlignment(.leading)
+                    .padding(.trailing)
+            }
+            .padding(.horizontal)
+            .padding(.bottom)
+
+        }
+        .frame(maxWidth: mini ? 200 : 400, maxHeight: mini ? 300 : 250)
+        .background(.ultraThinMaterial)
+        .cornerRadius(10)
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .strokeBorder(Color("mode").opacity(0.2), lineWidth: 0.6)
+        )
+        .padding()
+    }
+}
+
+
+public struct SlideableDivider: View {
+    @Binding var dimension: Double
+    @State private var dimensionStart: Double?
+    @State private var handleWidth: Double = 2
+    @State private var handleHeight: Double = 30
+    public init(dimension: Binding<Double>) {
+        self._dimension = dimension
+    }
+
+    public var body: some View {
+        Rectangle()
+            .foregroundStyle(Color.gray.opacity(0.3))
+            .frame(width: 1)
+            .overlay(
+                VStack(spacing: 0) {
+                    Spacer()
+                    RoundedRectangle(cornerRadius: 50)
+                        .fill(Color("mode").opacity(0.3))
+                        .frame(width: handleWidth, height: handleHeight)
+                        .onHover { inside in
+                            if inside {
+                                NSCursor.resizeLeftRight.push()
+
+                            } else {
+                                NSCursor.pop()
+
+                            }
+                        }
+                        .contextMenu {
+                            Button("Reset Size") {
+                                dimension = 280
+                            }
+                        }
+                        .gesture(drag)
+                    Spacer()
+                }
+                    .offset(x: 5)
+            )
+    }
+
+    var drag: some Gesture {
+        DragGesture(minimumDistance: 5, coordinateSpace: CoordinateSpace.global)
+            .onChanged { val in
+                if dimensionStart == nil {
+                    dimensionStart = dimension
+                }
+                let delta = val.location.x - val.startLocation.x
+                let newDimension = dimensionStart! + Double(delta)
+
+                // Set minimum and maximum width
+                let minWidth: Double = 250
+                let maxWidth: Double = 350
+                dimension = max(minWidth, min(maxWidth, newDimension))
+                NSCursor.closedHand.set()
+                handleWidth = 4
+                handleHeight = 40
+            }
+            .onEnded { val in
+                dimensionStart = nil
+                NSCursor.arrow.set()
+                handleWidth = 2
+                handleHeight = 30
+            }
+    }
+}
 
 
 struct LabeledDivider: View {
@@ -140,7 +299,6 @@ struct AnimatedSearchStyle: TextFieldStyle {
             if isHovered || !text.isEmpty {
                 
                 configuration
-//                    .frame(minWidth: 130)
                     .frame(height: 15)
                     .font(.title3)
                     .textFieldStyle(PlainTextFieldStyle())
@@ -242,30 +400,9 @@ struct SimpleSearchStyle: TextFieldStyle {
                 }
                 
                 configuration
-//                    .frame(minWidth: mini ? 80 : 300)
-//                    .frame(maxWidth: mini ? 150 : 300)
                     .font(.title3)
                     .textFieldStyle(PlainTextFieldStyle())
-                
-//                Image(systemName: "arrow.triangle.2.circlepath")
-//                    .resizable()
-//                    .aspectRatio(contentMode: .fit)
-//                    .frame(width: 15, height: 15)
-//                    .padding(.trailing, 5)
-//                    .foregroundStyle(isHovered ? Color("mode").opacity(0.8) : Color("mode").opacity(0.5))
-//                    .onTapGesture {
-//                        withAnimation {
-//                            // Refresh Apps list
-//                            appState.reload.toggle()
-//                            let sortedApps = getSortedApps()
-//                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-//                                appState.sortedApps.userApps = sortedApps.userApps
-//                                appState.sortedApps.systemApps = sortedApps.systemApps
-//                                appState.reload.toggle()
-//                            }
-//                        }
-//                        
-//                    }
+
                 
                 if trash && text != "" {
                     Image(systemName: "xmark")
@@ -472,42 +609,6 @@ private let redBG: AnyShapeStyle = AnyShapeStyle(
 
 
 
-// Picker
-//struct PillPicker: View {
-//    @Binding var index: Int
-//    var onTapAction: () -> Void
-//    
-//    var body: some View {
-//        
-//        HStack(alignment: .center, spacing: 20) {
-//            ForEach(0..<3) { i in
-//                HStack(spacing: 4) {
-//                    Image(systemName: i == 0 ? "appclip" : "ellipsis.circle")
-//                        .resizable()
-//                        .scaledToFit()
-//                        .frame(width: 16)
-//                        .foregroundColor(index == i ? .black : .gray)
-//                    
-//                    Text(i == 0 ? "Apps" : (i == 1 ? "Widgets" : "Plugins"))
-//                        .font(.system(size: 12))
-//                        .foregroundColor(index == i ? .black : .gray)
-//                }
-//                .padding(8)
-//                .background((Color.white).opacity(index == i ? 1 : 0))
-//                .clipShape(Capsule())
-//                .onTapGesture {
-//                    withAnimation {
-//                        index = i
-//                        onTapAction()
-//                    }
-//                }
-//            }
-//        }
-//        .background(Color.black.opacity(0.06))
-//        .clipShape(Capsule())
-//    }
-//}
-
 struct PillPicker: View {
     @Binding var index: Int
     var onTapAction: () -> Void
@@ -526,12 +627,6 @@ struct PillPicker: View {
                         .shadow(color: Color.black.opacity(0.2), radius: 2, x: 0, y: 2)
 
                     HStack(spacing: 0) {
-                        // Uncomment below for icon next to labels
-//                        Image(systemName: i == 0 ? "appclip" : (i == 1 ? "macwindow" : "cube.box.fill"))
-//                            .resizable()
-//                            .scaledToFit()
-//                            .frame(width: 16)
-//                            .foregroundColor(index == i ? .black : .gray)
                         
                         Text(i == 0 ? "Apps" : (i == 1 ? "Widgets" : "Plugins"))
                             .font(.system(size: 12))
@@ -561,7 +656,6 @@ struct PillPicker: View {
                         .offset(y: 1)
                 )
         )
-//        .background(Color.black.opacity(0.06))
         .clipShape(Capsule())
     }
 }
@@ -574,11 +668,11 @@ struct PearDropView: View {
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
             HStack(spacing: 0) {
-                LinearGradient(gradient: Gradient(colors: [.pink, .orange]), startPoint: .leading, endPoint: .trailing)
+                LinearGradient(gradient: Gradient(colors: [.green, .orange]), startPoint: .leading, endPoint: .trailing)
                     .frame(width: 195)
-                LinearGradient(gradient: Gradient(colors: [.orange, .gray]), startPoint: .leading, endPoint: .trailing)
+                LinearGradient(gradient: Gradient(colors: [.orange, Color("mode").opacity(0.5)]), startPoint: .leading, endPoint: .trailing)
                     .frame(width: 10)
-                LinearGradient(gradient: Gradient(colors: [.gray, .gray]), startPoint: .leading, endPoint: .trailing)
+                LinearGradient(gradient: Gradient(colors: [Color("mode").opacity(0.5), Color("mode").opacity(0.5)]), startPoint: .leading, endPoint: .trailing)
                     .frame(width: 300)
             }
             .mask(
@@ -588,90 +682,10 @@ struct PearDropView: View {
                     .frame(width: 500, height: 120)
                     .padding()
             )
-//            LinearGradient(gradient: Gradient(colors: [.gray, .gray]), startPoint: .leading, endPoint: .trailing)
-//                .mask(
-//                    Image("logo_text_small")
-//                        .resizable()
-//                        .scaledToFit()
-//                        .frame(minWidth: 300, maxWidth: 350)
-//                        .frame(height: 100)
-//                        .padding()
-//                )
 
-//            LinearGradient(gradient: Gradient(colors: [.pink, .orange]), startPoint: .leading, endPoint: .trailing)
-//                .mask(
-//                    Image(systemName: "plus.square.dashed")
-//                        .resizable()
-//                        .scaledToFit()
-//                        .frame(width: 50, height: 50)
-//                        .padding()
-//                )
         }
         .frame(height: 120)
 
     }
 }
 
-        
-        
-        
-        
-//            .frame(height: 50)
-        
-//        HStack(spacing: 10) {
-//            HStack(spacing: 2) {
-//                Image(systemName: "appclip")
-//                    .foregroundColor(index == 0 ? .black : .gray)
-//                Text("Apps")
-//                    .font(.footnote)
-//                    .foregroundColor(index == 0 ? .black : .gray)
-//            }
-//            .padding(8)
-//            .background((Color.white).opacity(index == 0 ? 1 : 0))
-//            .clipShape(Capsule())
-//            .onTapGesture {
-//                withAnimation {
-//                    index = 0
-//                    onTapAction()
-//                }
-//            }
-//            
-//            HStack(spacing: 2) {
-//                Image(systemName: "ellipsis.circle")
-//                    .foregroundColor(index == 1 ? .black : .gray)
-//                Text("Widgets")
-//                    .foregroundColor(index == 1 ? .black : .gray)
-//                
-//                
-//            }
-//            .padding(8)
-//            .background((Color.white).opacity(index == 1 ? 1 : 0))
-//            .clipShape(Capsule())
-//            .onTapGesture {
-//                withAnimation {
-//                    index = 1
-//                    onTapAction()
-//                }
-//            }
-//            
-//            HStack(spacing: 2) {
-//                Image(systemName: "ellipsis.circle")
-//                    .foregroundColor(index == 2 ? .black : .gray)
-//                Text("Plugins")
-//                    .foregroundColor(index == 2 ? .black : .gray)
-//                
-//                
-//            }
-//            .padding(8)
-//            .background((Color.white).opacity(index == 2 ? 2 : 0))
-//            .clipShape(Capsule())
-//            .onTapGesture {
-//                withAnimation {
-//                    index = 2
-//                    onTapAction()
-//                }
-//            }
-//        }
-//        .background(Color.black.opacity(0.06))
-//        .clipShape(Capsule())
-//        .frame(height: 50)

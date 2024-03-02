@@ -46,12 +46,6 @@ struct AppCommands: Commands {
                     updateOnMain {
                         appState.reload.toggle()
                     }
-//                    let sortedApps = getSortedApps()
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-//                        appState.sortedApps.userApps = sortedApps.userApps
-//                        appState.sortedApps.systemApps = sortedApps.systemApps
-//                        appState.reload.toggle()
-//                    }
                 }
             } label: {
                 Text("Refresh Apps")
@@ -86,6 +80,8 @@ struct AppCommands: Commands {
                 Label("Undo Removal", systemImage: "clear")
             }
             .keyboardShortcut("z", modifiers: .command)
+
+
         }
         
         

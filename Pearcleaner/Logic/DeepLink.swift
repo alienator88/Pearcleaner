@@ -35,36 +35,6 @@ class DeeplinkManager {
                 let pathURL = URL(fileURLWithPath: path)
                 let appInfo = getAppInfo(atPath: pathURL)
                 showAppInFiles(appInfo: appInfo!, mini: mini, appState: appState, locations: locations, showPopover: $showPopover)
-
-//                showPopover = false
-//                updateOnMain {
-//                    appState.appInfo = .empty
-//                    if let storedAppInfo = appState.appInfoStore.first(where: { $0.path == appInfo?.path }) {
-//                        appState.appInfo = storedAppInfo
-////                        appState.paths = storedAppInfo.fileSize.keys.map { $0 }//storedAppInfo.files
-//                        appState.selectedItems = Set(storedAppInfo.files)
-//                        withAnimation(Animation.easeIn(duration: 0.4)) {
-//                            if self.mini {
-//                                self.showPopover.toggle()
-//                            } else {
-//                                appState.currentView = .files
-//                            }
-//                        }
-//                    } else {
-//                        // Handle the case where the appInfo is not found in the store
-//                        printOS("AppInfo not found in the cached store, searching again")
-//                        appState.appInfo = .empty
-//                        appState.appInfo = appInfo!
-//                        findPathsForApp(appInfo: appInfo!, appState: appState, locations: locations)
-//                        withAnimation(Animation.easeIn(duration: 0.4)) {
-//                            if self.mini {
-//                                self.showPopover.toggle()
-//                            } else {
-//                                appState.currentView = .files
-//                            }
-//                        }
-//                    }
-//                }
             } else {
                 printOS("No path query parameter found in the URL")
             }
@@ -77,45 +47,6 @@ class DeeplinkManager {
     func handleAppBundle(url: URL, appState: AppState, locations: Locations) {
         let appInfo = getAppInfo(atPath: url)
         showAppInFiles(appInfo: appInfo!, mini: mini, appState: appState, locations: locations, showPopover: $showPopover)
-
-//        showPopover = false
-//        updateOnMain {
-//            appState.appInfo = .empty
-//            if let storedAppInfo = appState.appInfoStore.first(where: { $0.path == appInfo?.path }) {
-//                appState.appInfo = storedAppInfo
-////                appState.paths = storedAppInfo.fileSize.keys.map { $0 }//storedAppInfo.files
-//                appState.selectedItems = Set(storedAppInfo.files)
-//                withAnimation(Animation.easeIn(duration: 0.4)) {
-//                    if self.mini {
-//                        self.showPopover.toggle()
-//                    } else {
-//                        appState.currentView = .files
-//                    }
-//                }
-//            } else {
-//                // Handle the case where the appInfo is not found in the store
-//                printOS("AppInfo not found in the cached store, searching again")
-//                appState.appInfo = .empty
-//                appState.appInfo = appInfo!
-//                findPathsForApp(appInfo: appInfo!, appState: appState, locations: locations)
-//                withAnimation(Animation.easeIn(duration: 0.4)) {
-//                    if self.mini {
-//                        self.showPopover.toggle()
-//                    } else {
-//                        appState.currentView = .files
-//                    }
-//                }
-//            }
-//        }
-//        updateOnMain {
-//            appState.appInfo = appInfo!
-//            findPathsForApp(appState: appState, locations: locations)
-//            if self.mini {
-//                self.showPopover = true
-//            } else {
-//                appState.currentView = .files
-//            }
-//        }
     }
     
 }

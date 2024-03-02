@@ -21,13 +21,10 @@ struct FilesView: View {
 
     var body: some View {
         VStack(alignment: .center) {
-            if appState.showProgress { //!self.showDetails {
+            if appState.showProgress {
                 VStack {
                     Spacer()
-//                    ProgressView("Finding application files..")
-//                        .progressViewStyle(.linear)
-//                    Spacer()
-                    Text("Almost there, still gathering files..").font(.title3)
+                    Text("Searching the file system").font(.title3)
                         .foregroundStyle((.gray.opacity(0.8)))
                     ProgressView()
                         .progressViewStyle(.linear)
@@ -41,56 +38,51 @@ struct FilesView: View {
                 VStack() {
 
                     // Main Group
-                    HStack() {
-                        //icon
-                        if let appIcon = appState.appInfo.appIcon {
-                            Image(nsImage: appIcon)
-                                .resizable()
-                                .scaledToFit()
-//                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 50, height: 50)
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                                .padding(.leading)
-                        }
-                        //app title, size and items
+                    HStack(alignment: .center) {
+
+                        //app icon, title, size and items
                         VStack(alignment: .center) {
                             HStack(alignment: .center) {
+                                if let appIcon = appState.appInfo.appIcon {
+                                    Image(nsImage: appIcon)
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 50, height: 50)
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                                        .padding(.trailing)
+                                }
+
                                 VStack(alignment: .leading, spacing: 5){
                                     HStack {
                                         Text("\(appState.appInfo.appName)").font(.title).fontWeight(.bold)
-//                                            .foregroundStyle(Color("AccentColor"))
                                         Text("•").foregroundStyle(Color("AccentColor"))
                                         Text("\(appState.appInfo.appVersion)").font(.title3)
-//                                            .foregroundStyle(.gray.opacity(0.8))
+                                        if appState.appInfo.appName.count < 5 {
+                                            InfoButton(text: "Pearcleaner searches for files via a combination of bundle id and app name. \(appState.appInfo.appName) has a common or short app name so there might be unrelated files found. Please check the list thoroughly before uninstalling.", color: nil)
+                                        }
+
                                     }
                                     Text("\(appState.appInfo.bundleIdentifier)").font(.title3)
                                         .foregroundStyle((.gray.opacity(0.8)))
                                 }
-                                
+
                                 Spacer()
-                                
-                                Text("\(formatByte(size: appState.appInfo.totalSize))").font(.title).fontWeight(.bold)
+
+                                VStack(alignment: .trailing, spacing: 5) {
+                                    Text("\(formatByte(size: appState.appInfo.totalSize))").font(.title).fontWeight(.bold)
+                                    Text("\(appState.appInfo.fileSize.count > 1 ? "\(appState.appInfo.fileSize.count) items" : "\(appState.appInfo.fileSize.count) item")").font(.callout).underline().foregroundStyle((.gray.opacity(0.8)))
+                                }
 
 
                             }
-                            
-                            
-                            Divider().padding(.bottom, 7)
-                            
-                            HStack{
-                                Text("Application files and folders")
-                                    .font(.callout)
-//                                    .foregroundStyle(Color("AccentColor"))
-                                    .opacity(0.8)
-                                Spacer()
-                                Text("\(appState.appInfo.fileSize.count > 1 ? "\(appState.appInfo.fileSize.count) items" : "\(appState.appInfo.fileSize.count) item")").font(.callout)
-//                                    .foregroundStyle(Color("AccentColor").opacity(0.7))
-                                    .underline()
-                            }
 
-                            HStack() {
-                                if appState.appInfo.webApp {
-                                    HStack {
+
+                            if appState.appInfo.webApp || appState.appInfo.wrapped {
+                                HStack(alignment: .center, spacing: 10) {
+
+                                    Spacer()
+
+                                    if appState.appInfo.webApp {
                                         Text("web")
                                             .font(.footnote)
                                             .foregroundStyle(Color("mode").opacity(0.5))
@@ -98,34 +90,33 @@ struct FilesView: View {
                                             .padding(2)
                                             .background(Color("mode").opacity(0.1))
                                             .clipShape(.capsule)
-                                        Spacer()
+
+                                    }
+
+                                    if appState.appInfo.wrapped {
+                                        Text("iOS")
+                                            .font(.footnote)
+                                            .foregroundStyle(Color("mode").opacity(0.5))
+                                            .frame(minWidth: 30, minHeight: 15)
+                                            .padding(2)
+                                            .background(Color("mode").opacity(0.1))
+                                            .clipShape(.capsule)
+
                                     }
 
                                 }
-                                if appState.appInfo.appName.count < 5 {
-                                    WarningPopoverView(label: "Caution",
-                                                       bodyText: "Pearcleaner searches for files via a combination of bundle id and app name.\n\(appState.appInfo.appName) has a common or short app name so there might be unrelated files found.\nPlease check the list thoroughly before uninstalling.",
-                                                       isPresented: $showPop)
-                                }
                             }
-                            .padding(.vertical, 5)
 
-                            
-                            
+
+
+
                         }
-                        .padding(20)
+                        .padding(.horizontal, 20)
+                        .padding(.top, 10)
                     }
-//                    .padding(.bottom)
-                    .background(
-                        RoundedRectangle(cornerRadius: 8)
-//                            .strokeBorder(Color("AccentColor"), lineWidth: 0.5)
-                            .fill(Color("mode").opacity(colorScheme == .dark ? 0.05 : 0.05))
-//                            .background(
-//                                RoundedRectangle(cornerRadius: 8)
-//                                    .strokeBorder(Color("AccentColor").opacity(colorScheme == .dark ? 0.1 : 0.1), lineWidth: 1)
-//                            )
-                    )
-                    .padding(.bottom)
+
+                    Divider()
+                        .padding()
 
                     ScrollView() {
                         VStack {
@@ -144,29 +135,13 @@ struct FilesView: View {
                                             Divider().padding(.leading, 40)
                                         }
                                     }
-//                                    .padding(.leading, 47).padding(.trailing)
-//                                    if let firstPath = appState.appInfo.files.first, path == firstPath {
-//                                        FileDetailsItem(size: fileSize, icon: iconImage, path: path)
-//                                            .padding(.trailing)
-//                                        Divider().padding(.leading, 40).padding(.trailing)
-//                                    } else {
-//                                        VStack {
-//                                            FileDetailsItem(size: fileSize, icon: iconImage, path: path)
-//                                            if path != appState.appInfo.files.last {
-//                                                Divider().padding(.leading, 40)
-//                                            }
-//                                        }
-//                                        .padding(.leading, 47).padding(.trailing)
-//                                    }
                                 }
                             }
                         }
                         .padding()
                     }
-//                    .background(
-//                        RoundedRectangle(cornerRadius: 8)
-//                            .fill(Color("mode").opacity(colorScheme == .dark ? 0.05 : 0.05))
-//                    )
+
+                    Spacer()
 
                     HStack() {
 
@@ -187,7 +162,7 @@ struct FilesView: View {
                         .help("Item Selection")
 
                         Spacer()
-                                    
+
                         if mini {
 
                             Button("Close") {
@@ -202,58 +177,59 @@ struct FilesView: View {
 
                         }
 
-
-                        Button("Uninstall") {
-                            Task {
-                                updateOnMain {
-                                    appState.appInfo = AppInfo.empty
-                                    search = ""
-                                    if mini {
-                                        appState.currentView = .apps
-                                        showPopover = false
-                                    } else {
-                                        appState.currentView = .empty
-                                    }
-                                }
-                                
-                                var selectedItemsArray = Array(appState.selectedItems)
-                                    .filter { !$0.path.contains(".Trash") }
-                                    .map { path in
-                                        return path.path.contains("Wrapper") ? path.deletingLastPathComponent().deletingLastPathComponent() : path
-                                    }
-
-                                if let url = URL(string: appState.appInfo.path.absoluteString) {
-                                    let appFolderURL = url.deletingLastPathComponent() // Get the immediate parent directory
-
-                                    if appFolderURL.path == "/Applications" || appFolderURL.path == "\(home)/Applications" {
-                                        // Do nothing, skip insertion
-                                    } else if appFolderURL.pathComponents.count > 2 && appFolderURL.path.contains("Applications") {
-                                        // Insert into selectedItemsArray only if there is an intermediary folder
-                                        selectedItemsArray.insert(appFolderURL, at: 0)
-                                    }
-                                }
-
-
-                                killApp(appId: appState.appInfo.bundleIdentifier) {
-                                    moveFilesToTrash(at: selectedItemsArray) {
-                                        withAnimation {
+                        if !appState.selectedItems.isEmpty {
+                            Button("Uninstall") {
+                                Task {
+                                    updateOnMain {
+                                        appState.appInfo = AppInfo.empty
+                                        search = ""
+                                        if mini {
+                                            appState.currentView = .apps
                                             showPopover = false
-                                            updateOnMain {
-                                                appState.isReminderVisible.toggle()
-                                                if sentinel {
-                                                    launchctl(load: true)
+                                        } else {
+                                            appState.currentView = .empty
+                                        }
+                                    }
+                                    var selectedItemsArray = Array(appState.selectedItems)
+                                        .filter { !$0.path.contains(".Trash") }
+                                        .map { path in
+                                            return path.path.contains("Wrapper") ? path.deletingLastPathComponent().deletingLastPathComponent() : path
+                                        }
+
+                                    if let url = URL(string: appState.appInfo.path.absoluteString) {
+                                        let appFolderURL = url.deletingLastPathComponent() // Get the immediate parent directory
+
+                                        if appFolderURL.path == "/Applications" || appFolderURL.path == "\(home)/Applications" {
+                                            // Do nothing, skip insertion
+                                        } else if appFolderURL.pathComponents.count > 2 && appFolderURL.path.contains("Applications") {
+                                            // Insert into selectedItemsArray only if there is an intermediary folder
+                                            selectedItemsArray.insert(appFolderURL, at: 0)
+                                        }
+                                    }
+
+
+                                    killApp(appId: appState.appInfo.bundleIdentifier) {
+                                        moveFilesToTrash(at: selectedItemsArray) {
+                                            withAnimation {
+                                                showPopover = false
+                                                updateOnMain {
+                                                    appState.isReminderVisible.toggle()
                                                 }
                                             }
+                                            refreshAppList(appState.appInfo)
                                         }
-                                        refreshAppList(appState.appInfo)
                                     }
+
                                 }
-                                
+
                             }
-                            
+                            .buttonStyle(NavButtonBottomBarStyle(image: "trash.fill", help: "Uninstall"))
+
+                        } else {
+                            Text("No files selected to clean").font(.title).foregroundStyle(Color("mode")).opacity(0.2)
+                                .padding(5)
                         }
-                        .buttonStyle(NavButtonBottomBarStyle(image: "trash.fill", help: "Uninstall"))
-                        .disabled(appState.selectedItems.isEmpty)
+
 
                         Spacer()
 
@@ -265,17 +241,16 @@ struct FilesView: View {
                         .frame(width: 100)
                         .help("Sorting Selection")
                     }
-                    .padding(.top)
-                    
+
                 }
                 .transition(.opacity)
                 .padding(20)
 
             }
-            
+
         }
     }
-    
+
     func refreshAppList(_ appInfo: AppInfo) {
         showPopover = false
         let sortedApps = getSortedApps()
@@ -334,16 +309,15 @@ struct FileDetailsItem: View {
                     .lineLimit(2)
                     .truncationMode(.tail)
                     .opacity(0.5)
-//                    .foregroundStyle(Color("AccentColor"))
                     .help(path.path)
             }
-            
+
             Spacer()
 
             Text(formatByte(size:size!))
 
 
-            
+
             Button("") {
                 NSWorkspace.shared.selectFile(path.path, inFileViewerRootedAtPath: path.deletingLastPathComponent().path)
             }

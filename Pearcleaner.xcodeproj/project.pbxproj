@@ -19,7 +19,6 @@
 		C7575D392B0182DE006A600A /* PearcleanerSentinel in CopyFiles */ = {isa = PBXBuildFile; fileRef = C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C76D08482AF83C3F00D07867 /* Update.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08472AF83C3F00D07867 /* Update.swift */; };
 		C76D084A2AF83C6E00D07867 /* General.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08492AF83C6E00D07867 /* General.swift */; };
-		C76D084C2AF83C9D00D07867 /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D084B2AF83C9D00D07867 /* Permissions.swift */; };
 		C76D08512AF850F300D07867 /* About.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08502AF850F300D07867 /* About.swift */; };
 		C76D08552AF89CDE00D07867 /* AppListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08542AF89CDE00D07867 /* AppListView.swift */; };
 		C77B90042AF18E2E009CC655 /* PearcleanerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90032AF18E2E009CC655 /* PearcleanerApp.swift */; };
@@ -32,13 +31,11 @@
 		C77B90232AF2D616009CC655 /* FilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90222AF2D616009CC655 /* FilesView.swift */; };
 		C7A27E812AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist in Resources */ = {isa = PBXBuildFile; fileRef = C7A27E802AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist */; };
 		C7A9CE472B89164700EB6E78 /* Authorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A9CE462B89164700EB6E78 /* Authorization.swift */; };
+		C7ACADE62B92A737000B5845 /* Features.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7ACADE52B92A737000B5845 /* Features.swift */; };
 		C7CF47242B3B3F1700979C5F /* WindowSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7CF47232B3B3F1700979C5F /* WindowSettings.swift */; };
-		C7D31D462AFDA90C00C7ED9E /* Sentinel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D452AFDA90C00C7ED9E /* Sentinel.swift */; };
 		C7D31D482AFEB23700C7ED9E /* TopBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D472AFEB23700C7ED9E /* TopBar.swift */; };
 		C7D31D4A2AFEB26700C7ED9E /* AppListItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D492AFEB26700C7ED9E /* AppListItems.swift */; };
 		C7D31D512AFF00F300C7ED9E /* Locations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D502AFF00F300C7ED9E /* Locations.swift */; };
-		C7D31D552B008CB900C7ED9E /* Shapes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D542B008CB900C7ED9E /* Shapes.swift */; };
-		C7D31D592B00A49300C7ED9E /* DropTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D582B00A49300C7ED9E /* DropTarget.swift */; };
 		C7F539382AF60865007DF1B2 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F539372AF60865007DF1B2 /* Utilities.swift */; };
 /* End PBXBuildFile section */
 
@@ -76,7 +73,6 @@
 		C72893112AFD51EA00C8C1CD /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		C76D08472AF83C3F00D07867 /* Update.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Update.swift; sourceTree = "<group>"; };
 		C76D08492AF83C6E00D07867 /* General.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = General.swift; sourceTree = "<group>"; };
-		C76D084B2AF83C9D00D07867 /* Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Permissions.swift; sourceTree = "<group>"; };
 		C76D08502AF850F300D07867 /* About.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = About.swift; sourceTree = "<group>"; };
 		C76D08542AF89CDE00D07867 /* AppListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppListView.swift; sourceTree = "<group>"; };
 		C77B90002AF18E2E009CC655 /* Pearcleaner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pearcleaner.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -93,13 +89,11 @@
 		C7A27E7F2AFD70DD00166168 /* PearcleanerSentinel.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PearcleanerSentinel.entitlements; sourceTree = "<group>"; };
 		C7A27E802AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = com.alienator88.PearcleanerSentinel.plist; sourceTree = "<group>"; };
 		C7A9CE462B89164700EB6E78 /* Authorization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authorization.swift; sourceTree = "<group>"; };
+		C7ACADE52B92A737000B5845 /* Features.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features.swift; sourceTree = "<group>"; };
 		C7CF47232B3B3F1700979C5F /* WindowSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowSettings.swift; sourceTree = "<group>"; };
-		C7D31D452AFDA90C00C7ED9E /* Sentinel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sentinel.swift; sourceTree = "<group>"; };
 		C7D31D472AFEB23700C7ED9E /* TopBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBar.swift; sourceTree = "<group>"; };
 		C7D31D492AFEB26700C7ED9E /* AppListItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppListItems.swift; sourceTree = "<group>"; };
 		C7D31D502AFF00F300C7ED9E /* Locations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locations.swift; sourceTree = "<group>"; };
-		C7D31D542B008CB900C7ED9E /* Shapes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shapes.swift; sourceTree = "<group>"; };
-		C7D31D582B00A49300C7ED9E /* DropTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropTarget.swift; sourceTree = "<group>"; };
 		C7F539372AF60865007DF1B2 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -142,9 +136,9 @@
 				C72893042AFD42E600C8C1CD /* DeepLink.swift */,
 				C77B901B2AF193A3009CC655 /* Styles.swift */,
 				C7D31D502AFF00F300C7ED9E /* Locations.swift */,
-				C7D31D542B008CB900C7ED9E /* Shapes.swift */,
 				C7CF47232B3B3F1700979C5F /* WindowSettings.swift */,
 				C7A9CE462B89164700EB6E78 /* Authorization.swift */,
+				C7ACADE52B92A737000B5845 /* Features.swift */,
 			);
 			path = Logic;
 			sourceTree = "<group>";
@@ -171,8 +165,6 @@
 			children = (
 				C77B901D2AF1A9DB009CC655 /* SettingsWindow.swift */,
 				C76D08492AF83C6E00D07867 /* General.swift */,
-				C76D084B2AF83C9D00D07867 /* Permissions.swift */,
-				C7D31D452AFDA90C00C7ED9E /* Sentinel.swift */,
 				C76D08472AF83C3F00D07867 /* Update.swift */,
 				C76D08502AF850F300D07867 /* About.swift */,
 			);
@@ -230,7 +222,6 @@
 				C7D31D472AFEB23700C7ED9E /* TopBar.swift */,
 				C7045A292B03FAF000376976 /* TopBarMini.swift */,
 				C7D31D492AFEB26700C7ED9E /* AppListItems.swift */,
-				C7D31D582B00A49300C7ED9E /* DropTarget.swift */,
 				C7045A272B03E71D00376976 /* MiniMode.swift */,
 				C71848432B8D2D600046CB13 /* ZombieView.swift */,
 			);
@@ -358,23 +349,20 @@
 				C7045A322B068AD700376976 /* NewWin.swift in Sources */,
 				C7D31D512AFF00F300C7ED9E /* Locations.swift in Sources */,
 				C77B901A2AF1938F009CC655 /* Logic.swift in Sources */,
-				C7D31D462AFDA90C00C7ED9E /* Sentinel.swift in Sources */,
-				C7D31D592B00A49300C7ED9E /* DropTarget.swift in Sources */,
 				C7045A2A2B03FAF000376976 /* TopBarMini.swift in Sources */,
 				C77B901C2AF193A3009CC655 /* Styles.swift in Sources */,
 				C7045A282B03E71D00376976 /* MiniMode.swift in Sources */,
 				C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */,
 				C71848442B8D2D600046CB13 /* ZombieView.swift in Sources */,
-				C76D084C2AF83C9D00D07867 /* Permissions.swift in Sources */,
 				C76D084A2AF83C6E00D07867 /* General.swift in Sources */,
 				C77B90042AF18E2E009CC655 /* PearcleanerApp.swift in Sources */,
-				C7D31D552B008CB900C7ED9E /* Shapes.swift in Sources */,
 				C7045A362B068DD700376976 /* PermView.swift in Sources */,
 				C76D08512AF850F300D07867 /* About.swift in Sources */,
 				C77B90182AF19382009CC655 /* AppCommands.swift in Sources */,
 				C7D31D4A2AFEB26700C7ED9E /* AppListItems.swift in Sources */,
 				C77B901E2AF1A9DB009CC655 /* SettingsWindow.swift in Sources */,
 				C7D31D482AFEB23700C7ED9E /* TopBar.swift in Sources */,
+				C7ACADE62B92A737000B5845 /* Features.swift in Sources */,
 				C7F539382AF60865007DF1B2 /* Utilities.swift in Sources */,
 				C76D08552AF89CDE00D07867 /* AppListView.swift in Sources */,
 				C7A9CE472B89164700EB6E78 /* Authorization.swift in Sources */,
@@ -551,7 +539,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 19;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = BK8443AXLU;
@@ -569,7 +557,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 2.7;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.Pearcleaner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -586,7 +574,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 19;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = BK8443AXLU;
@@ -604,7 +592,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 2.7;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.Pearcleaner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

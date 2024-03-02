@@ -78,10 +78,6 @@ class NewWin: NSWindowController {
             return AnyView(PermView()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .environmentObject(appState))
-            //        case .restart:
-            //            return AnyView(RestartView()
-            //                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            //                .environmentObject(appState))
         }
     }
 }

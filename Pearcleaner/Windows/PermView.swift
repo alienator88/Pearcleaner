@@ -30,11 +30,8 @@ struct PermView: View {
             Text("Pearcleaner requires the following permissions:")
                 .font(.title3)
                 .fontWeight(.semibold)
-            //                .padding(.horizontal, 20)
                 .padding(.vertical)
-            //                .padding(.bottom)
-            
-            
+
             ScrollView {
                 Text(" - Full Disk Access permission to find and delete files in non-user locations.\n - Accessibility permission to delete files via Finder which allows for the Undo function.\n\nAdd Pearcleaner in both Privacy panes via the + or by dragging the app over the pane. If the app is already pre-populated in the list, just toggle On. Restart app when both permissions are granted.")
                     .font(.body)
@@ -69,7 +66,6 @@ struct PermView: View {
                 .padding()
                 
                 Button(action: {
-//                    NewWin.close
                     relaunchApp(afterDelay: 1)
                 }) {
                     Text("Restart")

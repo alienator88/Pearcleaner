@@ -48,7 +48,6 @@ class AppState: ObservableObject
 
         self.zombieFile = ZombieFile(
             id: UUID(),
-//            files: [],
             fileSize: [:],
             fileIcon: [:]
         )
@@ -86,7 +85,6 @@ struct AppInfo: Identifiable, Equatable, Hashable {
 
 struct ZombieFile: Identifiable, Equatable, Hashable {
     let id: UUID
-//    var files: [URL]
     var fileSize: [URL:Int64]
     var fileIcon: [URL:NSImage?]
     var totalSize: Int64
@@ -184,78 +182,4 @@ enum DisplayMode: Int, CaseIterable {
 }
 
 
-//class ProgressManager: ObservableObject {
-//    @Published var progress: Double = 0.0
-//    @Published var total: Double = 0.0
-//    @Published var status: String = "Ready"
-//
-//    func setTotal(_ total: Double) {
-//        DispatchQueue.main.async {
-//            self.total = total
-//        }
-//    }
-//
-//    func updateProgress() {
-//        DispatchQueue.main.async {
-//            self.progress = min(max(0.0, self.progress + 1.0), Double(self.total))
-//        }
-//    }
-//
-//    func updateStatus(status: String) {
-//        DispatchQueue.main.async {
-//            self.status = status
-//        }
-//    }
-//
-//    func resetProgress() {
-//        DispatchQueue.main.async {
-//            self.progress = 0.0
-//        }
-//    }
-//}
 
-
-//let (cacheDir, tempDir) = darwinCT()
-//let locations: [String] = [
-//    "\(home)/Library",
-//    "\(home)/Library/Application Scripts",
-//    "\(home)/Library/Application Support",
-//    "\(home)/Library/Application Support/CrashReporter",
-//    "\(home)/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.ApplicationRecentDocuments",
-//    "\(home)/Library/Containers",
-//    "\(home)/Library/Group Containers",
-//    "\(home)/Library/Caches",
-//    "\(home)/Library/HTTPStorages",
-//    "\(home)/Library/Group Containers",
-//    "\(home)/Library/Internet Plug-Ins",
-//    "\(home)/Library/LaunchAgents",
-//    "\(home)/Library/Logs",
-//    "\(home)/Library/Preferences",
-//    "\(home)/Library/Preferences/ByHost",
-//    "\(home)/Library/Saved Application State",
-//    "\(home)/Library/WebKit",
-//    "/Users/Shared",
-//    "/Users/Library",
-//    "/Library",
-//    "/Library/Application Support",
-//    "/Library/Application Support/CrashReporter",
-//    "/Library/Caches",
-//    "/Library/Extensions",
-//    "/Library/Internet Plug-Ins",
-//    "/Library/LaunchAgents",
-//    "/Library/LaunchDaemons",
-//    "/Library/Logs",
-//    "/Library/Logs/DiagnosticReports",
-//    "/Library/Preferences",
-//    "/Library/PrivilegedHelperTools",
-//    "/private/var/db/receipts",
-//    "/private/tmp",
-//    "/usr/local/bin",
-//    "/usr/local/etc",
-//    "/usr/local/opt",
-//    "/usr/local/sbin",
-//    "/usr/local/share",
-//    "/usr/local/var",
-//    cacheDir,
-//    tempDir
-//]

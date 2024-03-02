@@ -53,7 +53,6 @@ func checkFullDiskAccessForApp() -> Bool {
     process.standardError = pipeErr
     process.launch()
     
-//    let data = pipe.fileHandleForReading.readDataToEndOfFile()
     let dataErr = pipeErr.fileHandleForReading.readDataToEndOfFile()
 
     let output = String(data: dataErr, encoding: .utf8)
@@ -86,7 +85,6 @@ func checkAndRequestFullDiskAccess(appState: AppState, skipAlert: Bool = false) 
     process.standardError = pipeErr
     process.launch()
     
-    //    let data = pipe.fileHandleForReading.readDataToEndOfFile()
     let dataErr = pipeErr.fileHandleForReading.readDataToEndOfFile()
     
     let output = String(data: dataErr, encoding: .utf8)
@@ -100,32 +98,11 @@ func checkAndRequestFullDiskAccess(appState: AppState, skipAlert: Bool = false) 
         diskP = false
         if !skipAlert {
             NewWin.show(appState: appState, width: 500, height: 350, newWin: .perm)
-//            appState.alertType = .diskAccess
-//            appState.showAlert = true
         }
         
         return false
     }
-    
-    
-//    let fileURL = URL(fileURLWithPath: "/Library/Application Support/com.apple.TCC/TCC.db")
-//    
-//    let accessStatus = FileManager.default.isReadableFile(atPath: fileURL.path)
-//    printOS(accessStatus)
-//    if accessStatus {
-//        diskP = true
-//        _ = checkAndRequestAccessibilityAccess(appState: appState)
-//        
-//        return true
-//    } else {
-//        diskP = false
-//        if !skipAlert {
-//            appState.alertType = .diskAccess
-//            appState.showAlert = true
-//        }
-//        
-//        return false
-//    }
+
 }
 
 
@@ -260,6 +237,13 @@ extension String {
     }
 }
 
+// --- Extend string to replace - and | with custom characters
+extension String {
+    func featureFormat() -> String {
+        return self.replacingOccurrences(of: "- ", with: "• ").replacingOccurrences(of: "|", with: "\n\n")
+    }
+}
+
 
 // --- Trash Relationship ---
 extension FileManager {
@@ -277,21 +261,6 @@ func printOS(_ items: Any..., separator: String = " ", terminator: String = "\n"
     os_log("%@", log: log, type: .debug, message)
 
 }
-
-
-// --- Gradient ---
-func schemeGradient(for colorScheme: ColorScheme) -> LinearGradient {
-    return LinearGradient(gradient: Gradient(colors: [.pink, .orange]), startPoint: .leading, endPoint: .trailing)
-//    switch colorScheme {
-//    case .light:
-//        return LinearGradient(gradient: Gradient(colors: [Color("AccentColor")]), startPoint: .leading, endPoint: .trailing)
-//    case .dark:
-//        return LinearGradient(gradient: Gradient(colors: [.pink, .orange]), startPoint: .leading, endPoint: .trailing)
-//    @unknown default:
-//        return LinearGradient(gradient: Gradient(colors: [Color("AccentColor")]), startPoint: .leading, endPoint: .trailing)
-//    }
-}
-
 
 
 
@@ -354,7 +323,6 @@ extension Array where Element == URL {
         var totalSize = 0
         
         for path in self {
-//            if path.absoluteString.contains(".app") {
                 let resourceValues = try path.resourceValues(forKeys: [.isDirectoryKey, .isPackageKey, .totalFileAllocatedSizeKey])
 
             if resourceValues.isDirectory == true || path.pathExtension == "app" {
@@ -370,8 +338,7 @@ extension Array where Element == URL {
                 } else {
                     totalSize += resourceValues.totalFileAllocatedSize ?? 0
                 }
-//            }
-            
+
         }
         
         return totalSize
@@ -396,7 +363,6 @@ func presentAlert(appState: AppState) -> Alert {
     case .update:
         return Alert(title: Text("Update Available 🥳"), message: Text("You may choose to install the update now, otherwise you may check again later from Settings"), primaryButton: .default(Text("Install")) {
             downloadUpdate(appState: appState)
-//            launchUpdate()
             appState.alertType = .off
         }, secondaryButton: .cancel())
     case .no_update:
@@ -524,11 +490,7 @@ func launchctl(load: Bool) {
         task.standardError = pipe
         
         task.launch()
-        
-//        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-//        if let output = String(data: data, encoding: .utf8) {
-//            printOS("Output: \(output)")
-//        }
+
     }
 }
 
@@ -541,41 +503,6 @@ func getCurrentTimestamp() -> String {
     dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
     return dateFormatter.string(from: Date())
 }
-
-
-// Execute sudo command
-//func executePrivilegedCommand(launchPath: String, arguments: [String]) {
-//    let task = Process()
-//    task.launchPath = launchPath
-//    task.arguments = arguments
-//
-//    var authorization: AuthorizationRef? = nil
-//    let status = AuthorizationCreate(nil, nil, AuthorizationFlags(), &authorization)
-//
-//    if status == errAuthorizationSuccess {
-//        if let rightName = (kAuthorizationRightExecute as NSString).utf8String {
-//            let item = AuthorizationItem(name: rightName, valueLength: 0, value: nil, flags: 0)
-//            var items = [item]
-//            items.withUnsafeMutableBufferPointer { bufferPointer in
-//                var rights = AuthorizationRights(count: UInt32(bufferPointer.count), items: bufferPointer.baseAddress)
-//
-//                let status = AuthorizationCopyRights(authorization!, &rights, nil, AuthorizationFlags([.extendRights, .interactionAllowed]), nil)
-//
-//                if status == errAuthorizationSuccess {
-//                    task.launch()
-//                } else {
-//                    printOS("Authorization failed.")
-//                }
-//            }
-//        } else {
-//            printOS("Failed to convert rightName to C-string.")
-//        }
-//    } else {
-//        printOS("Authorization creation failed.")
-//    }
-//}
-
-//        executePrivilegedCommand(launchPath: "/bin/mv", arguments: ["-f"] + filesSudoPaths + ["\(home)/.Trash"])
 
 
 

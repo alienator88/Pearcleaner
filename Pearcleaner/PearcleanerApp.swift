@@ -21,8 +21,11 @@ struct PearcleanerApp: App {
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.general.miniview") private var miniView: Bool = true
+    @AppStorage("settings.general.instant") private var instantSearch: Bool = true
+    @AppStorage("settings.general.features") private var features: String = ""
     @State private var search = ""
     @State private var showPopover: Bool = false
+    @State private var showFeature: Bool = false
 
     var body: some Scene {
 
@@ -30,15 +33,23 @@ struct PearcleanerApp: App {
 
         WindowGroup {
             Group {
-                
-                if !mini {
-                    AppListView(search: $search, showPopover: $showPopover)
-                        .environmentObject(locations)
-                } else {
-                    MiniMode(search: $search, showPopover: $showPopover)
-                        .environmentObject(locations)
+                ZStack() {
+                    if !mini {
+                        AppListView(search: $search, showPopover: $showPopover)
+                            .environmentObject(locations)
+                    } else {
+                        MiniMode(search: $search, showPopover: $showPopover)
+                            .environmentObject(locations)
+                    }
+                    
+                    if showFeature {
+                        NewFeatureView(text: features, mini: mini, showFeature: $showFeature)
+                            .transition(.opacity)
+                    }
+
                 }
-                
+
+
             }
             .environmentObject(appState)
             .preferredColorScheme(displayMode.colorScheme)
@@ -85,19 +96,22 @@ struct PearcleanerApp: App {
                 appState.sortedApps.userApps = sortedApps.userApps
                 appState.sortedApps.systemApps = sortedApps.systemApps
 
-                
 
+                // Find all app paths on load
+                if instantSearch {
+                    loadAllPaths(allApps: sortedApps.userApps + sortedApps.systemApps, appState: appState, locations: locations)
+                }
+
+                getFeatures(appState: appState, show: $showFeature, features: $features)
 
 #if !DEBUG
                 Task {
 
-                    // Find all app paths on load
-                    loadAllPaths(allApps: sortedApps.userApps + sortedApps.systemApps, appState: appState, locations: locations)
 
                     // Make sure App Support folder exists in the future if needed for storage
                     ensureApplicationSupportFolderExists(appState: appState)
 
-                    // Check for updates 1 minute after app launch
+                    // Check for updates after app launch
                     if diskP {
                         loadGithubReleases(appState: appState)
                     }
@@ -111,7 +125,7 @@ struct PearcleanerApp: App {
 
                     // TIMERS ////////////////////////////////////////////////////////////////////////////////////
 
-                    // Check for app updates every 8 hours or whatever user saved setting. Also refresh autosuggestion list
+                    // Check for app updates every 8 hours or whatever user saved setting.
                     let updateSeconds = updateTimeframe.daysToSeconds
                     _ = Timer.scheduledTimer(withTimeInterval: updateSeconds, repeats: true) { _ in
                         DispatchQueue.main.async {

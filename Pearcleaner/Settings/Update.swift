@@ -71,23 +71,25 @@ struct UpdateSettingsTab: View {
             
             HStack(alignment: .center, spacing: 20) {
                 Spacer()
+                
                 Button("Update Notes"){
                     loadGithubReleases(appState: appState)
                 }
                 .buttonStyle(SimpleButtonStyle(icon: "list.bullet", help: "Check release notes", color: Color("mode")))
 
+                Spacer()
 
                 Button("Force Update"){
                     loadGithubReleases(appState: appState, manual: true)
                 }
                 .buttonStyle(SimpleButtonStyle(icon: "arrow.down.square", help: "Check for updates", color: Color("mode")))
 
+                Spacer()
 
                 Button("GitHub"){
                     NSWorkspace.shared.open(URL(string: "https://github.com/alienator88/Pearcleaner/releases")!)
                 }
                 .buttonStyle(SimpleButtonStyle(icon: "link", help: "View releases on GitHub", color: Color("mode")))
-
                 
                 Spacer()
             }
@@ -130,13 +132,9 @@ func checkForUpdate(appState: AppState, manual: Bool = false) {
     let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
     if latestRelease.tag_name > currentVersion ?? "" {
         NewWin.show(appState: appState, width: 500, height: 440, newWin: .update)
-//        appState.alertType = .update
-//        appState.showAlert = true
     } else {
         if manual {
             NewWin.show(appState: appState, width: 500, height: 300, newWin: .no_update)
-//            appState.alertType = .no_update
-//            appState.showAlert = true
         }
     }
 }
@@ -215,22 +213,14 @@ func UnzipAndReplace(DownloadedFileURL fileURL: String, appState: AppState) {
 
         // Unzip the downloaded update file to your app's bundle path
         let process = Process()
-//        process.executableURL = URL(fileURLWithPath: "/usr/bin/unzip")
-//        process.arguments = [fileURL, "-d", appDirectory]
         process.executableURL = URL(fileURLWithPath: "/usr/bin/ditto")
         process.arguments = ["-xk", fileURL, appDirectory]
-//        let pipe = Pipe()
         process.standardOutput = FileHandle.nullDevice
         process.standardError = FileHandle.nullDevice
         
         try process.run()
         process.waitUntilExit()
-        
-//        let outputData = pipe.fileHandleForReading.readDataToEndOfFile()
-//        let output = String(decoding: outputData, as: UTF8.self)
-//        
-//        writeLog(string: output)
-        
+
         updateOnMain {
             appState.progressBar.0 = "Deleting update file"
             appState.progressBar.1 = 0.8
@@ -238,12 +228,6 @@ func UnzipAndReplace(DownloadedFileURL fileURL: String, appState: AppState) {
         
         // After unzipping, remove the update file
         try fileManager.removeItem(atPath: fileURL)
-        
-        // Show Restart dialog
-//        updateOnMain {
-//            appState.alertType = .restartApp
-//            appState.showAlert = true
-//        }
         
         
     } catch {

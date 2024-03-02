@@ -19,9 +19,10 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 280
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
+    @AppStorage("settings.general.instant") private var instantSearch: Bool = true
+    @AppStorage("settings.general.selectedTheme") var selectedTheme: String = "Auto"
     @State private var diskStatus: Bool = false
     @State private var accessStatus: Bool = false
-    @State private var selectedTheme = "Auto"
     private let themes = ["Auto", "Dark", "Light"]
     @Binding var showPopover: Bool
 
@@ -57,25 +58,24 @@ struct GeneralSettingsTab: View {
 
 
                 HStack(spacing: 0) {
-                    Image(systemName: "sidebar.left")
+                    Image(systemName: instantSearch ? "bolt" : "bolt.slash")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 20, height: 20)
                         .padding(.trailing)
                         .foregroundStyle(.gray)
-                    Text("Adjust sidebar width")
-                        .font(.callout)
-                        .foregroundStyle(.gray)
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("\(instantSearch ? "Instant search is enabled" : "Instant search is disabled")")
+                            .font(.callout)
+                            .foregroundStyle(.gray)
+                    }
+
+                    InfoButton(text: "When instant search is enabled, all application files are gathered and cached for later use on startup instead of on each app click. There might be a slight delay of a few seconds when launching Pearcleaner depending on the amount of apps you have installed.", color: nil)
+
                     Spacer()
-                    Slider(value: $sidebarWidth, in: 200...360) {
-//                        Text("\(Int(sidebarWidth))")
-                    }
-                    .padding(.horizontal)
-                    .frame(width: 185)
-                    Button("") {
-                        sidebarWidth = 280
-                    }
-                    .buttonStyle(SimpleButtonStyle(icon: "arrow.uturn.left.circle", help: "Reset to default size", color: Color("mode")))
+                    Toggle(isOn: $instantSearch, label: {
+                    })
+                    .toggleStyle(.switch)
                 }
                 .padding(5)
                 .padding(.leading)
@@ -89,7 +89,7 @@ struct GeneralSettingsTab: View {
                         .padding(.trailing)
                         .foregroundStyle(.gray)
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("Set color mode")
+                        Text("Set application color mode")
                             .font(.callout)
                             .foregroundStyle(.gray)
                     }
@@ -143,7 +143,7 @@ struct GeneralSettingsTab: View {
                         .padding(.trailing)
                         .foregroundStyle(.gray)
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("\(mini ? "Mini window mode" : "Full size window mode")")
+                        Text("\(mini ? "Mini window mode selected" : "Full size window mode selected")")
                             .font(.callout)
                             .foregroundStyle(.gray)
                     }
@@ -182,6 +182,9 @@ struct GeneralSettingsTab: View {
                             .font(.callout)
                             .foregroundStyle(.gray)
                     }
+
+                    InfoButton(text: "In mini window mode, you can have Pearcleaner startup to the Apps List view or the Drop Target view.", color: nil)
+
                     Spacer()
                     Toggle(isOn: $miniView, label: {
                     })
@@ -202,10 +205,13 @@ struct GeneralSettingsTab: View {
                         .padding(.trailing)
                         .foregroundStyle(.gray)
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("\(popoverStay ? "Popover window doesn't hide on outside click" : "Popover window hides on outside click")")
+                        Text("\(popoverStay ? "Popover window will stay on top" : "Popover window will not stay on top")")
                             .font(.callout)
                             .foregroundStyle(.gray)
                     }
+
+                    InfoButton(text: "In mini window mode, if you pin the Files popover on top, clicking away from the window will not dismiss it. Otherwise, it will dismiss by clicking anywhere outside the popover.", color: nil)
+
                     Spacer()
                     Toggle(isOn: $popoverStay, label: {
                     })
@@ -330,6 +336,11 @@ struct GeneralSettingsTab: View {
             .onAppear {
                 diskStatus = checkAndRequestFullDiskAccess(appState: appState, skipAlert: true)
                 accessStatus = checkAndRequestAccessibilityAccess(appState: appState)
+//                if displayMode.colorScheme == .dark {
+//                    selectedTheme = "Dark"
+//                } else if displayMode.colorScheme == .light {
+//                    selectedTheme = "Light"
+//                }
             }
 
         }

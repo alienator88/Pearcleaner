@@ -14,6 +14,7 @@ struct ZombieView: View {
     @State private var showPop: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
+    @AppStorage("settings.general.instant") private var instantSearch: Bool = true
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
     @Binding var search: String
@@ -21,13 +22,11 @@ struct ZombieView: View {
 
     var body: some View {
         VStack(alignment: .center) {
-            if appState.showProgress { //!self.showDetails {
+            if appState.showProgress {
                 VStack {
                     Spacer()
-                    //                    ProgressView("Finding application files..")
-                    //                        .progressViewStyle(.linear)
-                    //                    Spacer()
-                    Text("Gathering leftover files, this might take a while..").font(.title3)
+
+                    Text("Searching the file system").font(.title3)
                         .foregroundStyle((.gray.opacity(0.8)))
                     ProgressView()
                         .progressViewStyle(.linear)
@@ -42,73 +41,44 @@ struct ZombieView: View {
 
                     // Main Group
                     HStack() {
-                        //icon
-//                        if let appIcon = appState.appInfo.appIcon {
-//                            Image(nsImage: appIcon)
-//                                .resizable()
-//                                .scaledToFit()
-//                            //                                .aspectRatio(contentMode: .fit)
-//                                .frame(width: 50, height: 50)
-//                                .clipShape(RoundedRectangle(cornerRadius: 8))
-//                                .padding(.leading)
-//                        }
-                        //app title, size and items
+
                         VStack(alignment: .center) {
+
                             HStack(alignment: .center) {
-                                VStack(alignment: .leading, spacing: 5){
-                                    HStack(alignment: .center) {
+                                Image(systemName: "clock.arrow.circlepath")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 50, height: 50)
+                                    .symbolRenderingMode(.hierarchical)
+                                    .padding(.trailing)
+
+                                VStack(alignment: .leading, spacing: 10){
+                                    HStack {
                                         Text("Leftover Files").font(.title).fontWeight(.bold)
-                                        //                                            .foregroundStyle(Color("AccentColor"))
-//                                        Text("•").foregroundStyle(Color("AccentColor"))
-//                                        Text("\(appState.appInfo.appVersion)").font(.title3)
-                                        //                                            .foregroundStyle(.gray.opacity(0.8))
+                                        InfoButton(text: "Leftover file search is not 100% accurate as it doesn't have any app bundles to check against. This searches for files/folders and excludes the ones that have overlap with your currently installed apps. Make sure to confirm files marked for removal are correct.", color: .red)
+                                        Spacer()
+                                        
                                     }
-//                                    Text("\(appState.appInfo.bundleIdentifier)").font(.title3)
-//                                        .foregroundStyle((.gray.opacity(0.8)))
+                                    Text("Files and folders remaining from previously installed applications")
+                                        .font(.callout).foregroundStyle((.gray.opacity(0.8)))
                                 }
 
                                 Spacer()
 
-                                Text("\(formatByte(size: appState.zombieFile.totalSize))").font(.title).fontWeight(.bold)
-
+                                VStack(alignment: .trailing, spacing: 5) {
+                                    Text("\(formatByte(size: appState.zombieFile.totalSize))").font(.title).fontWeight(.bold)
+                                    Text("\(appState.zombieFile.fileSize.count == 1 ? "\(appState.zombieFile.fileSize.count) item" : "\(appState.zombieFile.fileSize.count) items")").font(.callout).underline().foregroundStyle((.gray.opacity(0.8)))
+                                }
 
                             }
-
-
-                            Divider().padding(.bottom, 7)
-
-                            HStack{
-                                Text("Files and folders remaining from previously installed applications")
-                                    .font(.callout)
-                                //                                    .foregroundStyle(Color("AccentColor"))
-                                    .opacity(0.8)
-                                Spacer()
-                                Text("\(appState.zombieFile.fileSize.count > 1 ? "\(appState.zombieFile.fileSize.count) items" : "\(appState.zombieFile.fileSize.count) item")").font(.callout)
-//                                                                    .foregroundStyle(Color("AccentColor").opacity(0.7))
-                                    .underline()
-                            }
-
-                            WarningPopoverView(label: "Caution - Read",
-                                               bodyText: "Leftover file search is not 100% accurate as it doesn't have any app bundles to check against.\nThis searches for files/folders and excludes the ones that have overlap with your currently installed apps. \nMake sure to confirm files marked for removal are correct.",
-                                               isPresented: $showPop)
-                            .padding(.vertical, 5)
-
 
                         }
-                        .padding(20)
+                        .padding(.horizontal, 20)
+                        .padding(.top, 10)
                     }
-                    //                    .padding(.horizontal)
-                    .background(
-                        RoundedRectangle(cornerRadius: 8)
-                        //                            .strokeBorder(Color("AccentColor"), lineWidth: 0.5)
-                            .fill(Color("mode").opacity(colorScheme == .dark ? 0.05 : 0.05))
-                        //                            .background(
-                        //                                RoundedRectangle(cornerRadius: 8)
-                        //                                    .strokeBorder(Color("AccentColor").opacity(colorScheme == .dark ? 0.1 : 0.1), lineWidth: 1)
-                        //                            )
-                    )
 
-
+                    Divider()
+                        .padding()
 
                     ScrollView() {
                         LazyVStack {
@@ -170,51 +140,62 @@ struct ZombieView: View {
                         }
 
 
-                        Button("Rescan") {
-                            updateOnMain {
-                                appState.zombieFile = .empty
-                                appState.showProgress.toggle()
-                                reversePathsSearch(appState: appState, locations: locations)
-                            }
-                        }
-                        .buttonStyle(NavButtonBottomBarStyle(image: "arrow.counterclockwise.circle.fill", help: "Rescan files"))
 
 
-                        Button("Remove") {
-                            Task {
-                                updateOnMain {
-                                    appState.zombieFile = .empty
-                                    search = ""
-                                    if mini {
-                                        appState.currentView = .apps
-                                        showPopover = false
-                                    } else {
-                                        appState.currentView = .empty
-                                    }
-                                }
 
-                                let selectedItemsArray = Array(appState.selectedZombieItems)
-                                    .filter { !$0.path.contains(".Trash") }
-
-                                killApp(appId: appState.appInfo.bundleIdentifier) {
-                                    moveFilesToTrash(at: selectedItemsArray) {
-                                        withAnimation {
+                        if !appState.selectedZombieItems.isEmpty {
+                            Button("Remove") {
+                                Task {
+                                    updateOnMain {
+                                        appState.zombieFile = .empty
+                                        search = ""
+                                        if mini {
+                                            appState.currentView = .apps
                                             showPopover = false
-                                            updateOnMain {
-                                                appState.isReminderVisible.toggle()
-                                                if sentinel {
-                                                    launchctl(load: true)
+                                        } else {
+                                            appState.currentView = .empty
+                                        }
+                                    }
+
+                                    let selectedItemsArray = Array(appState.selectedZombieItems)
+                                        .filter { !$0.path.contains(".Trash") }
+
+                                    killApp(appId: appState.appInfo.bundleIdentifier) {
+                                        moveFilesToTrash(at: selectedItemsArray) {
+                                            withAnimation {
+                                                showPopover = false
+                                                updateOnMain {
+                                                    appState.isReminderVisible.toggle()
+                                                    if sentinel {
+                                                        launchctl(load: true)
+                                                    }
                                                 }
                                             }
                                         }
                                     }
+
                                 }
 
                             }
-
+                            .buttonStyle(NavButtonBottomBarStyle(image: "trash.fill", help: "Remove"))
+                        } else {
+                            Text("No files selected to remove").font(.title).foregroundStyle(Color("mode")).opacity(0.2)
+                                .padding(5)
                         }
-                        .buttonStyle(NavButtonBottomBarStyle(image: "trash.fill", help: "Remove"))
-                        .disabled(appState.selectedZombieItems.isEmpty)
+
+                        Button("Rescan") {
+                            updateOnMain {
+                                appState.zombieFile = .empty
+                                appState.showProgress.toggle()
+                                if instantSearch {
+                                    reversePathsSearch(appState: appState, locations: locations)
+                                } else {
+                                    loadAllPaths(allApps: appState.sortedApps.userApps + appState.sortedApps.systemApps, appState: appState, locations: locations, reverseAddon: true)
+                                }
+                            }
+                        }
+                        .buttonStyle(NavButtonBottomBarStyle(image: "arrow.counterclockwise.circle.fill", help: "Rescan files"))
+
 
                         Spacer()
 
