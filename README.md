@@ -1,11 +1,11 @@
 # Pearcleaner
 
-<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/e6829883-894e-49a1-bc75-2c4550593b98" align="left" width="128" height="128" />
+<img src="https://github.com/alienator88/Pearcleaner/assets/91337119/165f6961-f4fc-4199-bc68-580bacff6eaf" align="left" width="256" height="256" />
 </br>
 <p align="center">
    <strong>Status: </strong>Maintained 
    <br />
-   <strong>Version: </strong>2.7
+   <strong>Version: </strong>3.0.0
    <br />
    <a href="https://github.com/alienator88/Pearcleaner/releases"><strong>Download</strong></a>
     · 
@@ -21,33 +21,44 @@ An open-source mac app cleaner inspired by [Freemacsoft's AppCleaner](https://fr
 This project was born out of wanting to learn more. There's probably parts of the code that could be done better as I'm fairly new to Swift, if you have suggestions I'm open to hearing them!
 
 ## Features
-- 100% Swift/SwiftUI
-- Super small app size (~2MB)
-- Quick file search
-- Optional Sentinel monitor helper that can be enabled to watch Trash folder for deleted apps
-- Sentinel monitor is extremely small (210KB) and uses ~2mb of ram to run in the background and file watch. Communicates to app via custom url scheme instead of xpc to keep things even lighter
+- 100% Swift
+- Small app size (~2MB)
+- Quick file search, can be made instant by enabling Instant Search in settings which caches all the apps and files on startup
+- Reverse search for finding remaining files from already uninstalled applications
+- Sentinel monitor helper that can be enabled to watch Trash folder for deleted apps
+- Sentinel monitor is extremely small (210KB) and uses ~2mb of ram to run in the background and file watch
 - Mini mode which can be enabled from Settings
 - Can drop apps to uninstall directly on the Pearcleaner Dock icon itself or the drop target in the app window
 - Will differentiate between regular apps and Safari web-apps with a "web" label next to each item in the list
 - Will differentiate between regular apps and wrapped iOS apps with an "iOS" label next to each item in the list
 - Has clean uninstall menu option for the Pearcleaner app itself if you want to stop using it and get rid of all files and launch items
 - Requires Full Disk permission to search for files and also Accessibility to delete/restore files
-- Built-in auto-updater that pulls latest release notes and binaries from GitHub Releases (Might not work well if app is not in /Applications folder because of permissions)
+- Custom auto-updater that pulls latest release notes and binaries from GitHub Releases (Pearcleaner has to run from /Applications folder for this to work because of permissions)
+- New feature alert on app startup
 
 ## Regular Mode
-<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/db6aae06-be0d-42af-bcab-cdb8e5bda42a" align="left" width="400" />
-<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/70066a2a-fb33-40e5-b328-8fc2253e25ff" align="center" width="400" />
+<img src="https://github.com/alienator88/Pearcleaner/assets/91337119/64f581a6-47b7-4ad1-acd3-24d585407aa7" align="left" width="400" />
+<img src="https://github.com/alienator88/Pearcleaner/assets/91337119/22786ddf-00c6-43d7-8fd2-d11b1237e56b" align="center" width="400" />
 <p></p>
-<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/a9cec1e2-1a13-42aa-a3e5-3cb8c448dd3e" align="left" width="400" />
-<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/5249d735-f87b-41c7-83da-b84a21ac9552" align="center" width="400" />
+<img src="https://github.com/alienator88/Pearcleaner/assets/91337119/327388d9-e043-40ba-b473-4a7c255b1cdf" align="left" width="400" />
+<img src="https://github.com/alienator88/Pearcleaner/assets/91337119/6f4b247b-4bee-4db8-a758-fa55673dfe9a" align="center" width="400" />
 <p></p>
 
 ## Mini Mode
-<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/62f72204-5f13-49a8-8956-cd56ef52acdf" align="center" width="400" />
-<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/9cf8e848-1efe-4475-8f4b-cd89a51ec10e" align="left" width="400" />
+<img src="https://github.com/alienator88/Pearcleaner/assets/91337119/0bcfbbee-7d43-4f14-9657-d3d62da72d88" align="left" width="400" />
+<img src="https://github.com/alienator88/Pearcleaner/assets/91337119/3724094f-f160-4e07-8162-ff8e5e850596" align="center" width="400" />
 <p></p>
-<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/238dfeb7-2841-4ada-bbbf-35cdda46fde1" align="center" width="400" />
-<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/b593564b-8c7e-42a2-a25b-124a0efb6a24" align="left" width="400" />
+<img src="https://github.com/alienator88/Pearcleaner/assets/91337119/9f713923-2eca-41c0-95da-3d35ce546f93" align="left" width="400" />
+<img src="https://github.com/alienator88/Pearcleaner/assets/91337119/52cec03b-9b5c-40c0-865d-669466713c18" align="center" width="400" />
+
+## Leftover File Search
+<img src="https://github.com/alienator88/Pearcleaner/assets/91337119/7f0bb69c-67ef-488b-b7ea-43e9215b3065" align="left" width="400" />
+<img src="https://github.com/alienator88/Pearcleaner/assets/91337119/a1d815cd-7118-4817-80f7-e568c6357d19" align="center" width="400" />
+
+## Settings
+<img src="https://github.com/alienator88/Pearcleaner/assets/91337119/684374f0-a342-420b-b251-5e35d07e4d72" align="left" width="400" />
+<img src="https://github.com/alienator88/Pearcleaner/assets/91337119/c0d0541a-c13f-47b2-a0d7-59bf6e722499" align="center" width="400" />
+
 
 ## Requirements
 - MacOS 13.0+ (App uses a lot of newer SwiftUI functions/modifiers which don't work on any OS lower than 13.0)
