@@ -43,6 +43,7 @@ class Locations: ObservableObject {
             "\(home)/Library/Preferences",
             "\(home)/Library/Preferences/ByHost",
             "\(home)/Library/Saved Application State",
+            "\(home)/Library/Services",
             "\(home)/Library/WebKit",
             "/Users/Shared",
             "/Users/Library",

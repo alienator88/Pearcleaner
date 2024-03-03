@@ -541,6 +541,7 @@ struct FilesViewActionButton: ButtonStyle {
 
 
 
+
 struct SentinelToggleStyle: ToggleStyle {
     
     func makeBody(configuration: Configuration) -> some View {
@@ -669,7 +670,7 @@ struct PearDropView: View {
         VStack(alignment: .center, spacing: 0) {
             HStack(spacing: 0) {
                 LinearGradient(gradient: Gradient(colors: [.green, .orange]), startPoint: .leading, endPoint: .trailing)
-                    .frame(width: 195)
+                    .frame(width: 220)
                 LinearGradient(gradient: Gradient(colors: [.orange, Color("mode").opacity(0.5)]), startPoint: .leading, endPoint: .trailing)
                     .frame(width: 10)
                 LinearGradient(gradient: Gradient(colors: [Color("mode").opacity(0.5), Color("mode").opacity(0.5)]), startPoint: .leading, endPoint: .trailing)
@@ -679,7 +680,7 @@ struct PearDropView: View {
                 Image("logo_text_small")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 500, height: 120)
+                    .frame(width: 500)
                     .padding()
             )
 

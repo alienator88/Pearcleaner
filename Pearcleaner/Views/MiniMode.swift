@@ -91,9 +91,11 @@ struct MiniEmptyView: View {
                         Image(systemName: "plus.square.dashed")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 100, height: 100)
+                            .frame(width: 120, height: 120)
                             .padding()
+                            .fontWeight(.ultraLight)
                     )
+                    .frame(width: 160)
             }
 
             Text("Drop your app here")
@@ -142,6 +144,7 @@ struct MiniAppView: View {
     @State private var showUsr: Bool = true
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.general.instant") private var instantSearch: Bool = true
+    @AppStorage("settings.general.glass") private var glass: Bool = true
     @Binding var showPopover: Bool
     
     var body: some View {
@@ -185,43 +188,50 @@ struct MiniAppView: View {
 
                         ScrollView {
                             
-                            LazyVStack(alignment: .leading, pinnedViews: [.sectionHeaders]) {
+                            LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [glass ? [] : .sectionHeaders]) {
 
                                 if filteredUserApps.count > 0 {
 
-                                    VStack {
-                                        Header(title: "User", count: filteredUserApps.count, showPopover: $showPopover)
-                                        ForEach(filteredUserApps, id: \.self) { appInfo in
-                                            AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
-                                            if appInfo != filteredUserApps.last {
-                                                Divider().padding(.horizontal, 5)
+//                                    VStack {
+//                                        Header(title: "User", count: filteredUserApps.count, showPopover: $showPopover)
+                                        Section(header: Header(title: "User", count: filteredUserApps.count, showPopover: $showPopover)) {
+
+                                            ForEach(filteredUserApps, id: \.self) { appInfo in
+                                                AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
+//                                                    .padding(.vertical,5)
+                                                if appInfo != filteredUserApps.last {
+                                                    Divider().padding(.horizontal, 5)
+                                                }
                                             }
                                         }
-                                    }
+//                                    }
                                     
                                 }
                                 
                                 if filteredSystemApps.count > 0 {
 
-                                    VStack {
-                                        Header(title: "System", count: filteredSystemApps.count, showPopover: $showPopover)
-                                        ForEach(filteredSystemApps, id: \.self) { appInfo in
-                                            AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
-                                            if appInfo != filteredSystemApps.last {
-                                                Divider().padding(.horizontal, 5)
+//                                    VStack {
+//                                        Header(title: "System", count: filteredSystemApps.count, showPopover: $showPopover)
+                                        Section(header: Header(title: "System", count: filteredSystemApps.count, showPopover: $showPopover)) {
+                                            ForEach(filteredSystemApps, id: \.self) { appInfo in
+                                                AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
+                                                    .padding(.vertical,5)
+                                                if appInfo != filteredSystemApps.last {
+                                                    Divider().padding(.horizontal, 5)
+                                                }
                                             }
                                         }
-                                    }
+//                                    }
                                 }
-                                
+
                             }
                             .padding(.horizontal)
-                            
+
                         }
                         .scrollIndicators(.never)
 
                         if appState.currentView != .empty {
-                            SearchBarMiniBottom(search: $search)
+                            SearchBarMiniBottom(search: $search).background(.ultraThinMaterial)
                         }
                     }
                     .padding(.bottom)

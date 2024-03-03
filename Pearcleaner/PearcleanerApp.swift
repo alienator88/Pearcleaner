@@ -102,7 +102,7 @@ struct PearcleanerApp: App {
                     loadAllPaths(allApps: sortedApps.userApps + sortedApps.systemApps, appState: appState, locations: locations)
                 }
 
-                getFeatures(appState: appState, show: $showFeature, features: $features)
+
 
 #if !DEBUG
                 Task {
@@ -114,6 +114,7 @@ struct PearcleanerApp: App {
                     // Check for updates after app launch
                     if diskP {
                         loadGithubReleases(appState: appState)
+                        getFeatures(appState: appState, show: $showFeature, features: $features)
                     }
 
                     // Check for disk/accessibility permissions just once on initial app launch
