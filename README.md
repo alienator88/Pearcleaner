@@ -1,11 +1,10 @@
 # Pearcleaner
-
-<img src="https://github.com/alienator88/Pearcleaner/assets/91337119/165f6961-f4fc-4199-bc68-580bacff6eaf" align="left" width="256" height="256" />
-</br>
 <p align="center">
+   <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/165f6961-f4fc-4199-bc68-580bacff6eaf" align="center" width="128" height="128" />
+   <br />
    <strong>Status: </strong>Maintained 
    <br />
-   <strong>Version: </strong>3.0.0
+   <strong>Version: </strong>3.0.1
    <br />
    <a href="https://github.com/alienator88/Pearcleaner/releases"><strong>Download</strong></a>
     · 
@@ -36,7 +35,12 @@ This project was born out of wanting to learn more. There's probably parts of th
 - Custom auto-updater that pulls latest release notes and binaries from GitHub Releases (Pearcleaner has to run from /Applications folder for this to work because of permissions)
 - New feature alert on app startup
 
-## Regular Mode
+
+## Screenshots
+
+<details>
+  <summary>Regular Mode</summary>
+
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/64f581a6-47b7-4ad1-acd3-24d585407aa7" align="left" width="400" />
 
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/22786ddf-00c6-43d7-8fd2-d11b1237e56b" align="center" width="400" />
@@ -46,9 +50,10 @@ This project was born out of wanting to learn more. There's probably parts of th
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/6f4b247b-4bee-4db8-a758-fa55673dfe9a" align="center" width="400" />
 <p></p>
 
+</details>
 
-
-## Mini Mode
+<details>
+  <summary>Mini Mode</summary>
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/0bcfbbee-7d43-4f14-9657-d3d62da72d88" align="left" width="400" />
 
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/3724094f-f160-4e07-8162-ff8e5e850596" align="center" width="400" />
@@ -57,44 +62,48 @@ This project was born out of wanting to learn more. There's probably parts of th
 
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/52cec03b-9b5c-40c0-865d-669466713c18" align="center" width="400" />
 
+</details>
 
-
-## Leftover File Search
+<details>
+  <summary>Leftover File Search</summary>
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/7f0bb69c-67ef-488b-b7ea-43e9215b3065" align="left" width="400" />
 
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/a1d815cd-7118-4817-80f7-e568c6357d19" align="center" width="400" />
 
+</details>
 
-
-## Settings
+<details>
+  <summary>Settings</summary>
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/684374f0-a342-420b-b251-5e35d07e4d72" align="left" width="400" />
 
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/c0d0541a-c13f-47b2-a0d7-59bf6e722499" align="center" width="400" />
 
-
-
-
-
+</details>
 
 
 
 ## Requirements
-- MacOS 13.0+ (App uses a lot of newer SwiftUI functions/modifiers which don't work on any OS lower than 13.0)
+MacOS 13.0+ (App uses a lot of newer SwiftUI functions/modifiers which don't work on any OS lower than 13.0)
+
 
 ## Getting Pearcleaner
 
-- Releases
+<details>
+  <summary>Releases</summary>
 
-Pre-compiled, always up-to-date versions are available from my releases page.
+> Pre-compiled, always up-to-date versions are available from my releases page.
 You might need to open this with right click-open since I don't have a paid developer account.
+</details>
 
-- Homebrew
-
-Since I don't have a paid developer account, I can't submit to the main Homebrew cask repo.
+<details>
+  <summary>Homebrew</summary>
+   
+> Since I don't have a paid developer account, I can't submit to the main Homebrew cask repo.
 You can still add the app via Homebrew by tapping my homebrew repo:
 ```
 brew install alienator88/homebrew-cask/pearcleaner
 ```
+</details>
 
 ## Thanks
 
