@@ -4,7 +4,7 @@
    <br />
    <strong>Status: </strong>Maintained 
    <br />
-   <strong>Version: </strong>3.0.1
+   <strong>Version: </strong>3.0.2
    <br />
    <a href="https://github.com/alienator88/Pearcleaner/releases"><strong>Download</strong></a>
     · 
@@ -83,7 +83,8 @@ This project was born out of wanting to learn more. There's probably parts of th
 
 
 ## Requirements
-MacOS 13.0+ (App uses a lot of newer SwiftUI functions/modifiers which don't work on any OS lower than 13.0)
+- MacOS 13.0+ (App uses a lot of newer SwiftUI functions/modifiers which don't work on any OS lower than 13.0)
+- Open Pearcleaner first time by right clicking (Control + Click) and selecting Open. This adds an exception to Gatekeeper so it doesn't complain about the app not being signed with an Apple Developer certificate
 
 
 ## Getting Pearcleaner
