@@ -427,7 +427,7 @@ func ensureApplicationSupportFolderExists(appState: AppState) {
     let fileManager = FileManager.default
     let supportURL = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!.appendingPathComponent("Pearcleaner")
     
-    // Check to make sure Application Support/Support Admin folder exists
+    // Check to make sure Application Support/Pearcleaner folder exists
     if !fileManager.fileExists(atPath: supportURL.path) {
         try! fileManager.createDirectory(at: supportURL, withIntermediateDirectories: true)
         printOS("Created Application Support/Pearcleaner folder")
@@ -463,7 +463,7 @@ func writeLog(string: String) {
 
 
 // --- Load Plist file with launchctl ---
-func launchctl(load: Bool) {
+func launchctl(load: Bool, completion: @escaping () -> Void = {}) {
     let cmd = load ? "load" : "unload"
     if let plistPath = Bundle.main.path(forResource: "com.alienator88.PearcleanerSentinel", ofType: "plist") {
         var plistContent = try! String(contentsOfFile: plistPath)
@@ -490,6 +490,8 @@ func launchctl(load: Bool) {
         task.standardError = pipe
         
         task.launch()
+
+        completion()
 
     }
 }

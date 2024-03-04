@@ -14,6 +14,7 @@ struct FilesView: View {
     @State private var showPop: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
+    @AppStorage("settings.general.instant") var instantSearch: Bool = true
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
     @Binding var search: String
@@ -35,8 +36,24 @@ struct FilesView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .transition(.opacity)
             } else {
-                VStack() {
+                // Titlebar
+                if mini {
+                    HStack() {
+                        Spacer()
 
+                        Button("Close") {
+                            updateOnMain {
+                                appState.appInfo = AppInfo.empty
+                                search = ""
+                                appState.currentView = .apps
+                                showPopover = false
+                            }
+                        }
+                        .buttonStyle(NavButtonBottomBarStyle(image: "x.circle.fill", help: "Close"))
+                    }
+                    .padding([.horizontal, .top], 5)
+                }
+                VStack(spacing: 0) {
                     // Main Group
                     HStack(alignment: .center) {
 
@@ -112,7 +129,7 @@ struct FilesView: View {
 
                         }
                         .padding(.horizontal, 20)
-                        .padding(.top, 10)
+                        .padding(.top, 0)
                     }
 
                     Divider()
@@ -153,8 +170,8 @@ struct FilesView: View {
                                 }
                             }
                         )) {
-                            Text("􀃲").tag(true)
-                            Text("􀂒").tag(false)
+                            Image(systemName: "checkmark.square").tag(true)
+                            Image(systemName: "square").tag(false)
                         }
                         .pickerStyle(SegmentedPickerStyle())
                         .frame(width: 100)
@@ -162,20 +179,6 @@ struct FilesView: View {
                         .help("Item Selection")
 
                         Spacer()
-
-                        if mini {
-
-                            Button("Close") {
-                                updateOnMain {
-                                    appState.appInfo = AppInfo.empty
-                                    search = ""
-                                    appState.currentView = .apps
-                                    showPopover = false
-                                }
-                            }
-                            .buttonStyle(NavButtonBottomBarStyle(image: "x.circle.fill", help: "Close"))
-
-                        }
 
                         if !appState.selectedItems.isEmpty {
                             Button("Uninstall") {
@@ -191,13 +194,9 @@ struct FilesView: View {
                                         }
                                     }
                                     var selectedItemsArray = Array(appState.selectedItems)
-                                        .filter { !$0.path.contains(".Trash") }
-                                        .map { path in
-                                            return path.path.contains("Wrapper") ? path.deletingLastPathComponent().deletingLastPathComponent() : path
-                                        }
 
                                     if let url = URL(string: appState.appInfo.path.absoluteString) {
-                                        let appFolderURL = url.deletingLastPathComponent() // Get the immediate parent directory
+                                        let appFolderURL = appState.appInfo.path.absoluteString.contains("Wrapper") ? url.deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent() : url.deletingLastPathComponent() // Get the immediate parent directory of regular and wrapped apps
 
                                         if appFolderURL.path == "/Applications" || appFolderURL.path == "\(home)/Applications" {
                                             // Do nothing, skip insertion
@@ -206,7 +205,6 @@ struct FilesView: View {
                                             selectedItemsArray.insert(appFolderURL, at: 0)
                                         }
                                     }
-
 
                                     killApp(appId: appState.appInfo.bundleIdentifier) {
                                         moveFilesToTrash(at: selectedItemsArray) {
@@ -226,7 +224,7 @@ struct FilesView: View {
                             .buttonStyle(NavButtonBottomBarStyle(image: "trash.fill", help: "Uninstall"))
 
                         } else {
-                            Text("No files selected to clean").font(.title).foregroundStyle(Color("mode")).opacity(0.2)
+                            Text("No files selected to remove").font(.title).foregroundStyle(Color("mode")).opacity(0.2)
                                 .padding(5)
                         }
 
@@ -234,17 +232,17 @@ struct FilesView: View {
                         Spacer()
 
                         Picker("", selection: $selectedOption) {
-                            Text("􀅐").tag("Default")
-                            Text("􀆃").tag("Size")
+                            Image(systemName: "textformat.abc").tag("Default")
+                            Image(systemName: "number").tag("Size")
                         }
                         .pickerStyle(SegmentedPickerStyle())
                         .frame(width: 100)
-                        .help("Sorting Selection")
+                        .help("Sorting alphabetically or by size")
                     }
 
                 }
                 .transition(.opacity)
-                .padding(20)
+                .padding([.horizontal, .bottom], 20)
 
             }
 
@@ -254,14 +252,12 @@ struct FilesView: View {
     func refreshAppList(_ appInfo: AppInfo) {
         showPopover = false
         let sortedApps = getSortedApps()
-        updateOnMain {
-            appState.sortedApps.userApps = []
-            appState.sortedApps.systemApps = []
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             appState.sortedApps.userApps = sortedApps.userApps
             appState.sortedApps.systemApps = sortedApps.systemApps
-        }
-        Task(priority: .high){
-            loadAllPaths(allApps: sortedApps.userApps + sortedApps.systemApps, appState: appState, locations: locations)
+//            if instantSearch {
+//                loadAllPaths(allApps: sortedApps.userApps + sortedApps.systemApps, appState: appState, locations: locations)
+//            }
         }
     }
 }

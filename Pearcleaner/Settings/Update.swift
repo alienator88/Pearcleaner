@@ -24,7 +24,7 @@ struct Asset: Codable {
 
 extension Release {
     var modifiedBody: String {
-        return body.replacingOccurrences(of: "- [x]", with: "􀆊").replacingOccurrences(of: "###", with: "")
+        return body.replacingOccurrences(of: "- [x]", with: ">").replacingOccurrences(of: "###", with: "")
     }
 }
 

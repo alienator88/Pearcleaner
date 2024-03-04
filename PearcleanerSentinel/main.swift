@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import FileWatcher
 import AppKit
+import FileWatcher
 
 // Start Trash monitoring
 fileWatcher()
@@ -31,8 +31,16 @@ func checkApp(file: String) {
     let app = URL(fileURLWithPath: file)
     let appExt = app.pathExtension
     if appExt == "app" {
-        if FileManager.default.isInTrash(app) {
-            NSWorkspace.shared.open(URL(string: "pear://com.alienator88.Pearcleaner?path=\(file)")!)
+        if let appBundle = Bundle(url: app) {
+            if appBundle.bundleIdentifier == "com.alienator88.Pearcleaner" {
+                return
+            } else {
+                if FileManager.default.isInTrash(app) {
+                    NSWorkspace.shared.open(URL(string: "pear://com.alienator88.Pearcleaner?path=\(file)")!)
+                }
+            }
+        } else {
+            print("Error: Unable to get bundle information for \(file)")
         }
     }
 }

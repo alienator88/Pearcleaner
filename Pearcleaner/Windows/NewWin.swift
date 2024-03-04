@@ -27,7 +27,7 @@ class NewWin: NSWindowController {
         let window = Self.makeWindow(width: width, height: height)
         
         window.backgroundColor = NSColor.controlBackgroundColor
-        
+
         self.init(window: window)
         
         // Using Visual Effect to make titlebar fully transparent
@@ -47,7 +47,7 @@ class NewWin: NSWindowController {
         window.titleVisibility = .hidden
         window.titlebarAppearsTransparent = true
         window.center()
-        window.title = "Support Admin"
+        window.title = "Pearcleaner"
         
     }
     
@@ -65,10 +65,12 @@ class NewWin: NSWindowController {
     }
     
     private func makeNewView(appState: AppState, newWin: NewWindow) -> some View {
+
         switch newWin {
         case .update:
             return AnyView(UpdateView()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(.black.opacity(0.2))
                 .environmentObject(appState))
         case .no_update:
             return AnyView(NoUpdateView()
@@ -77,6 +79,8 @@ class NewWin: NSWindowController {
         case .perm:
             return AnyView(PermView()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(.black.opacity(0.2))
+
                 .environmentObject(appState))
         }
     }

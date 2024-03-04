@@ -13,7 +13,7 @@ struct UpdateView: View {
     let isAppInAppsDir = isAppInApplicationsDir()
     
     var body: some View {
-        VStack {
+        VStack(spacing: 5) {
             HStack {
                 
                 Spacer()
@@ -29,36 +29,28 @@ struct UpdateView: View {
                 Text("v\(appState.releases.first?.tag_name ?? "")")
                     .font(.title3)
                     .fontWeight(.semibold)
-                    .foregroundStyle(Color.white.opacity(0.5))
+                    .opacity(0.5)
                     .padding()
                 
             }
-            .background(.blue)
-            
-            Spacer()
-            
+
+            Divider()
+                .padding([.horizontal])
+
             ScrollView {
-                Text("\(appState.releases.first?.body ?? "No release information")")
+                Text("\(appState.releases.first?.modifiedBody ?? "No release information")")
                     .font(.body)
                     .multilineTextAlignment(.leading)
-                    .padding(.horizontal, 20)
+                    .padding(20)
             }
-            .frame(height: 160)
-            .padding()
             
             Spacer()
             
             if !isAppInAppsDir {
-                HStack {
-                    Text("Pearcleaner not in /Applications directory. Updater could have permission issues updating files.")
-                        .font(.footnote)
-                        .foregroundStyle(.red)
-                        .padding()
-                        .lineLimit(2)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                
-
+                Text("Please move Pearcleaner to the **Applications** folder before updating!")
+                    .font(.callout)
+                    .foregroundStyle(.red)
+                    .padding(.top, 0)
             }
             
             VStack() {
@@ -73,7 +65,7 @@ struct UpdateView: View {
                 Button(action: NewWin.close) {
                     Text("Cancel")
                 }
-                .buttonStyle(WindowActionButton(action: .cancel))
+                .buttonStyle(SimpleButtonBrightStyle(icon: "x.circle", help: "Close", color: .red))
                 
                 if appState.progressBar.1 != 1.0 {
                     Button(action: {
@@ -81,7 +73,7 @@ struct UpdateView: View {
                     }) {
                         Text("Update")
                     }
-                    .buttonStyle(WindowActionButton(action: .accept))
+                    .buttonStyle(SimpleButtonBrightStyle(icon: "arrow.down.circle", help: "Update", color: .accentColor))
                 } else {
                     Button(action: {
                         NewWin.close()
@@ -89,7 +81,7 @@ struct UpdateView: View {
                     }) {
                         Text("Restart")
                     }
-                    .buttonStyle(WindowActionButton(action: .accept))
+                    .buttonStyle(SimpleButtonBrightStyle(icon: "arrow.uturn.left.circle", help: "Restart", color: .accentColor))
                 }
                 
             }
@@ -99,7 +91,7 @@ struct UpdateView: View {
             
         }
         .padding(EdgeInsets(top: -25, leading: 0, bottom: 25, trailing: 0))
-        
+
         
         
     }
@@ -110,9 +102,9 @@ struct UpdateView: View {
 
 struct NoUpdateView: View {
     @EnvironmentObject var appState: AppState
-    
+
     var body: some View {
-        VStack {
+        VStack(spacing: 5) {
             HStack {
                 
                 Spacer()
@@ -128,19 +120,19 @@ struct NoUpdateView: View {
                 Text("v\(appState.releases.first?.tag_name ?? "")")
                     .font(.title3)
                     .fontWeight(.semibold)
-                    .foregroundStyle(Color.white.opacity(0.5))
+                    .opacity(0.5)
                     .padding()
                 
             }
-            .background(.blue)
-            
-            Spacer()
+
+            Divider()
+                .padding([.horizontal])
             
             Text("Pearcleaner is on the most current release available, but you may force a re-download of the same version below.")
                 .font(.body)
                 .lineLimit(3)
                 .multilineTextAlignment(.leading)
-                .padding(20)
+                .padding()
             
             
             
@@ -160,15 +152,15 @@ struct NoUpdateView: View {
                     }) {
                         Text("Force Update")
                     }
-                    .buttonStyle(WindowActionButton(action: .cancel))
-                    
+                    .buttonStyle(SimpleButtonBrightStyle(icon: "arrow.down.circle", help: "Force-Update", color: .red))
+
                     Button(action: {
                         NewWin.close()
                     }) {
                         Text("Okay")
                     }
-                    .buttonStyle(WindowActionButton(action: .accept))
-                    
+                    .buttonStyle(SimpleButtonBrightStyle(icon: "checkmark.circle", help: "Ok", color: .accentColor))
+
                 }
                 
                 
@@ -179,7 +171,7 @@ struct NoUpdateView: View {
                     }) {
                         Text("Restart")
                     }
-                    .buttonStyle(WindowActionButton(action: .accept))
+                    .buttonStyle(SimpleButtonBrightStyle(icon: "arrow.uturn.left.circle", help: "Restart", color: .accentColor))
                 }
             }
             .padding(.bottom)
@@ -188,7 +180,6 @@ struct NoUpdateView: View {
             
         }
         .padding(EdgeInsets(top: -25, leading: 0, bottom: 25, trailing: 0))
-        
         
         
     }

@@ -504,6 +504,40 @@ struct WindowActionButton: ButtonStyle {
 }
 
 
+struct SimpleButtonBrightStyle: ButtonStyle {
+    @State private var hovered = false
+    let icon: String
+    let help: String
+    let color: Color
+    let shield: Bool?
+
+    init(icon: String, help: String, color: Color, shield: Bool? = nil) {
+        self.icon = icon
+        self.help = help
+        self.color = color
+        self.shield = shield
+    }
+
+    func makeBody(configuration: Self.Configuration) -> some View {
+        HStack {
+            Image(systemName: icon)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 20)
+                .foregroundColor(hovered ? color.opacity(0.5) : color)
+        }
+        .padding(5)
+        .onHover { hovering in
+            withAnimation() {
+                hovered = hovering
+            }
+        }
+        .scaleEffect(configuration.isPressed ? 0.95 : 1)
+        .help(help)
+    }
+}
+
+
 
 struct FilesViewActionButton: ButtonStyle {
     enum UserAction {

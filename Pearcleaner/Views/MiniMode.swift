@@ -186,49 +186,7 @@ struct MiniAppView: View {
                 } else {
                     VStack(alignment: .center) {
 
-                        ScrollView {
-                            
-                            LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [glass ? [] : .sectionHeaders]) {
-
-                                if filteredUserApps.count > 0 {
-
-//                                    VStack {
-//                                        Header(title: "User", count: filteredUserApps.count, showPopover: $showPopover)
-                                        Section(header: Header(title: "User", count: filteredUserApps.count, showPopover: $showPopover)) {
-
-                                            ForEach(filteredUserApps, id: \.self) { appInfo in
-                                                AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
-//                                                    .padding(.vertical,5)
-                                                if appInfo != filteredUserApps.last {
-                                                    Divider().padding(.horizontal, 5)
-                                                }
-                                            }
-                                        }
-//                                    }
-                                    
-                                }
-                                
-                                if filteredSystemApps.count > 0 {
-
-//                                    VStack {
-//                                        Header(title: "System", count: filteredSystemApps.count, showPopover: $showPopover)
-                                        Section(header: Header(title: "System", count: filteredSystemApps.count, showPopover: $showPopover)) {
-                                            ForEach(filteredSystemApps, id: \.self) { appInfo in
-                                                AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
-                                                    .padding(.vertical,5)
-                                                if appInfo != filteredSystemApps.last {
-                                                    Divider().padding(.horizontal, 5)
-                                                }
-                                            }
-                                        }
-//                                    }
-                                }
-
-                            }
-                            .padding(.horizontal)
-
-                        }
-                        .scrollIndicators(.never)
+                        AppsListView(search: $search, showPopover: $showPopover, filteredUserApps: filteredUserApps, filteredSystemApps: filteredSystemApps)
 
                         if appState.currentView != .empty {
                             SearchBarMiniBottom(search: $search).background(.ultraThinMaterial)

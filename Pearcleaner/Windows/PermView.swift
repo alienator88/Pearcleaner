@@ -17,33 +17,68 @@ struct PermView: View {
                 
                 Spacer()
                 
-                Text("Attention")
+                Text("Pearcleaner Permissions")
                     .font(.title)
                     .bold()
                     .padding(.vertical)
-                
+                    .padding(.top, 5)
+
                 Spacer()
                 
             }
-            .background(.red)
-            
-            Text("Pearcleaner requires the following permissions:")
-                .font(.title3)
-                .fontWeight(.semibold)
-                .padding(.vertical)
 
-            ScrollView {
-                Text(" - Full Disk Access permission to find and delete files in non-user locations.\n - Accessibility permission to delete files via Finder which allows for the Undo function.\n\nAdd Pearcleaner in both Privacy panes via the + or by dragging the app over the pane. If the app is already pre-populated in the list, just toggle On. Restart app when both permissions are granted.")
-                    .font(.body)
-                    .multilineTextAlignment(.leading)
-                    .padding(.horizontal, 20)
+            Divider()
+                .padding(.bottom)
+
+            Spacer()
+
+            VStack(alignment: .leading, spacing: 20) {
+                HStack(alignment: .top, spacing: 20) {
+                    Image(systemName: "externaldrive")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .foregroundStyle(.gray)
+                    Text("Full Disk Access permission to find and delete files in system paths")
+                        .font(.callout)
+                        .foregroundStyle(.gray)
+                }
+
+                HStack(alignment: .top, spacing: 20) {
+                    Image(systemName: "accessibility")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .foregroundStyle(.gray)
+                    Text("Accessibility permission to delete files via Finder")
+                        .font(.callout)
+                        .foregroundStyle(.gray)
+                }
+
+                HStack(alignment: .top, spacing: 20) {
+                    Image(systemName: "info.circle")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .foregroundStyle(.gray)
+                    Text("Add Pearcleaner in both Privacy panes via the + or by dragging the app over the pane. If the app is already pre-populated in the list, just toggle On if neeeded. Restart app when both permissions are granted")
+                        .font(.callout)
+                        .foregroundStyle(.gray)
+                }
             }
-            .frame(height: 130)
-            .padding(.horizontal)
+            .padding(.horizontal, 20)
             
             Spacer()
             
             HStack {
+                
+                Button(action: {
+                    relaunchApp(afterDelay: 1)
+                }) {
+                    Text("Restart")
+                }
+                .buttonStyle(SimpleButtonBrightStyle(icon: "arrow.uturn.left.circle", help: "Restart", color: .red))
+                .padding()
                 
                 Button(action: {
                     if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles") {
@@ -52,7 +87,8 @@ struct PermView: View {
                 }) {
                     Text("Full Disk Access")
                 }
-                .buttonStyle(WindowActionButton(action: .accept))
+                .buttonStyle(SimpleButtonBrightStyle(icon: "externaldrive", help: "Full Disk", color: .accentColor))
+
                 .padding()
                 
                 Button(action: {
@@ -62,16 +98,10 @@ struct PermView: View {
                 }) {
                     Text("Accessibility")
                 }
-                .buttonStyle(WindowActionButton(action: .accept))
+                .buttonStyle(SimpleButtonBrightStyle(icon: "accessibility", help: "Accessibility", color: .accentColor))
                 .padding()
                 
-                Button(action: {
-                    relaunchApp(afterDelay: 1)
-                }) {
-                    Text("Restart")
-                }
-                .buttonStyle(WindowActionButton(action: .cancel))
-                .padding()
+
             }
             
             

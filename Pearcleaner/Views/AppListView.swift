@@ -64,53 +64,9 @@ struct AppListView: View {
                             }
                         }
                         .padding(.top, 20)
-//                        .padding(.bottom)
 
-                        ScrollView {
 
-                            LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [glass ? [] : .sectionHeaders]) {
-
-                                if filteredUserApps.count > 0 {
-//                                    VStack {
-//                                        Header(title: "User", count: filteredUserApps.count, showPopover: $showPopover)
-                                        ForEach(filteredUserApps, id: \.self) { appInfo in
-                                            Section(header: Header(title: "User", count: filteredUserApps.count, showPopover: $showPopover)) {
-                                                AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
-                                                    .padding(.vertical,5)
-                                                if appInfo != filteredUserApps.last {
-                                                    Divider().padding(.horizontal, 5)
-                                                }
-                                            }
-//                                            AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
-//                                            if appInfo != filteredUserApps.last {
-//                                                Divider().padding(.horizontal, 5)
-//                                            }
-                                        }
-//                                    }
-
-                                }
-
-                                if filteredSystemApps.count > 0 {
-//                                    VStack {
-//                                        Header(title: "System", count: filteredSystemApps.count, showPopover: $showPopover)
-                                    Section(header: Header(title: "System", count: filteredSystemApps.count, showPopover: $showPopover)) {
-
-                                        ForEach(filteredSystemApps, id: \.self) { appInfo in
-                                            AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
-                                                .padding(.vertical,5)
-                                            if appInfo != filteredSystemApps.last {
-                                                Divider().padding(.horizontal, 5)
-                                            }
-                                        }
-                                    }
-//                                    }
-                                }
-
-                            }
-                            .padding(.horizontal)
-
-                        }
-                        .scrollIndicators(.never)
+                        AppsListView(search: $search, showPopover: $showPopover, filteredUserApps: filteredUserApps, filteredSystemApps: filteredSystemApps)
 
                     }
                     .frame(width: sidebarWidth)
@@ -267,6 +223,6 @@ struct Header: View {
         }
         .padding(.vertical, 9)
         .padding(.leading, 6)
-        .background(!glass ? Color("windowBG") : .clear)
+//        .background(!glass ? Color("windowBG") : .clear)
     }
 }

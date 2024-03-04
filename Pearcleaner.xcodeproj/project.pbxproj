@@ -15,7 +15,6 @@
 		C71848442B8D2D600046CB13 /* ZombieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71848432B8D2D600046CB13 /* ZombieView.swift */; };
 		C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72893042AFD42E600C8C1CD /* DeepLink.swift */; };
 		C72893122AFD51EA00C8C1CD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72893112AFD51EA00C8C1CD /* main.swift */; };
-		C7575D382B0181FC006A600A /* FileWatcher in Frameworks */ = {isa = PBXBuildFile; productRef = C7575D372B0181FC006A600A /* FileWatcher */; };
 		C7575D392B0182DE006A600A /* PearcleanerSentinel in CopyFiles */ = {isa = PBXBuildFile; fileRef = C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C76D08482AF83C3F00D07867 /* Update.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08472AF83C3F00D07867 /* Update.swift */; };
 		C76D084A2AF83C6E00D07867 /* General.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08492AF83C6E00D07867 /* General.swift */; };
@@ -30,6 +29,7 @@
 		C77B901E2AF1A9DB009CC655 /* SettingsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B901D2AF1A9DB009CC655 /* SettingsWindow.swift */; };
 		C77B90232AF2D616009CC655 /* FilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90222AF2D616009CC655 /* FilesView.swift */; };
 		C7A27E812AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist in Resources */ = {isa = PBXBuildFile; fileRef = C7A27E802AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist */; };
+		C7A2AE5D2B9644F300161540 /* FileWatcher in Frameworks */ = {isa = PBXBuildFile; productRef = C7A2AE5C2B9644F300161540 /* FileWatcher */; };
 		C7A9CE472B89164700EB6E78 /* Authorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A9CE462B89164700EB6E78 /* Authorization.swift */; };
 		C7ACADE62B92A737000B5845 /* Features.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7ACADE52B92A737000B5845 /* Features.swift */; };
 		C7CF47242B3B3F1700979C5F /* WindowSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7CF47232B3B3F1700979C5F /* WindowSettings.swift */; };
@@ -37,6 +37,7 @@
 		C7D31D4A2AFEB26700C7ED9E /* AppListItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D492AFEB26700C7ED9E /* AppListItems.swift */; };
 		C7D31D512AFF00F300C7ED9E /* Locations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D502AFF00F300C7ED9E /* Locations.swift */; };
 		C7F539382AF60865007DF1B2 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F539372AF60865007DF1B2 /* Utilities.swift */; };
+		C7FB173B2B96321300B96F9A /* AppsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7FB173A2B96321300B96F9A /* AppsListView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -95,6 +96,7 @@
 		C7D31D492AFEB26700C7ED9E /* AppListItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppListItems.swift; sourceTree = "<group>"; };
 		C7D31D502AFF00F300C7ED9E /* Locations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locations.swift; sourceTree = "<group>"; };
 		C7F539372AF60865007DF1B2 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		C7FB173A2B96321300B96F9A /* AppsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsListView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,7 +104,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C7575D382B0181FC006A600A /* FileWatcher in Frameworks */,
+				C7A2AE5D2B9644F300161540 /* FileWatcher in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -146,7 +148,6 @@
 		C72893102AFD51EA00C8C1CD /* PearcleanerSentinel */ = {
 			isa = PBXGroup;
 			children = (
-				C7A27E822AFD996100166168 /* Resources */,
 				C7A27E7F2AFD70DD00166168 /* PearcleanerSentinel.entitlements */,
 				C72893112AFD51EA00C8C1CD /* main.swift */,
 			);
@@ -224,15 +225,9 @@
 				C7D31D492AFEB26700C7ED9E /* AppListItems.swift */,
 				C7045A272B03E71D00376976 /* MiniMode.swift */,
 				C71848432B8D2D600046CB13 /* ZombieView.swift */,
+				C7FB173A2B96321300B96F9A /* AppsListView.swift */,
 			);
 			path = Views;
-			sourceTree = "<group>";
-		};
-		C7A27E822AFD996100166168 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -252,7 +247,7 @@
 			);
 			name = PearcleanerSentinel;
 			packageProductDependencies = (
-				C7575D372B0181FC006A600A /* FileWatcher */,
+				C7A2AE5C2B9644F300161540 /* FileWatcher */,
 			);
 			productName = PeakPurgeMonitor;
 			productReference = C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */;
@@ -306,7 +301,7 @@
 			);
 			mainGroup = C77B8FF72AF18E2E009CC655;
 			packageReferences = (
-				C7575D362B0181F3006A600A /* XCRemoteSwiftPackageReference "FileWatcher" */,
+				C7A2AE5B2B9644DA00161540 /* XCRemoteSwiftPackageReference "FileWatcher" */,
 			);
 			productRefGroup = C77B90012AF18E2E009CC655 /* Products */;
 			projectDirPath = "";
@@ -344,6 +339,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C76D08482AF83C3F00D07867 /* Update.swift in Sources */,
+				C7FB173B2B96321300B96F9A /* AppsListView.swift in Sources */,
 				C7045A342B068B2900376976 /* UpdateView.swift in Sources */,
 				C77B90162AF19377009CC655 /* AppState.swift in Sources */,
 				C7045A322B068AD700376976 /* NewWin.swift in Sources */,
@@ -383,6 +379,7 @@
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = BK8443AXLU;
 				ENABLE_HARDENED_RUNTIME = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.PearcleanerSentinel;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -400,6 +397,7 @@
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = BK8443AXLU;
 				ENABLE_HARDENED_RUNTIME = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.PearcleanerSentinel;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -448,6 +446,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -513,6 +512,7 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -539,7 +539,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20;
+				CURRENT_PROJECT_VERSION = 21;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = BK8443AXLU;
@@ -557,7 +557,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 3.0.1;
+				MARKETING_VERSION = 3.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.Pearcleaner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -574,7 +574,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 20;
+				CURRENT_PROJECT_VERSION = 21;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = BK8443AXLU;
@@ -592,7 +592,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 3.0.1;
+				MARKETING_VERSION = 3.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.Pearcleaner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -633,7 +633,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		C7575D362B0181F3006A600A /* XCRemoteSwiftPackageReference "FileWatcher" */ = {
+		C7A2AE5B2B9644DA00161540 /* XCRemoteSwiftPackageReference "FileWatcher" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/eonist/FileWatcher.git";
 			requirement = {
@@ -644,9 +644,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		C7575D372B0181FC006A600A /* FileWatcher */ = {
+		C7A2AE5C2B9644F300161540 /* FileWatcher */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C7575D362B0181F3006A600A /* XCRemoteSwiftPackageReference "FileWatcher" */;
+			package = C7A2AE5B2B9644DA00161540 /* XCRemoteSwiftPackageReference "FileWatcher" */;
 			productName = FileWatcher;
 		};
 /* End XCSwiftPackageProductDependency section */

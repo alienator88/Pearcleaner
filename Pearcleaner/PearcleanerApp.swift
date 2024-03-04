@@ -29,8 +29,6 @@ struct PearcleanerApp: App {
 
     var body: some Scene {
 
-
-
         WindowGroup {
             Group {
                 ZStack() {
@@ -53,7 +51,7 @@ struct PearcleanerApp: App {
             }
             .environmentObject(appState)
             .preferredColorScheme(displayMode.colorScheme)
-            .alert(isPresented: $appState.showAlert) { presentAlert(appState: appState) }
+//            .alert(isPresented: $appState.showAlert) { presentAlert(appState: appState) }
             .handlesExternalEvents(preferring: Set(arrayLiteral: "pear"), allowing: Set(arrayLiteral: "*"))
             .onOpenURL(perform: { url in
                 let deeplinkManager = DeeplinkManager(showPopover: $showPopover)
@@ -101,8 +99,7 @@ struct PearcleanerApp: App {
                 if instantSearch {
                     loadAllPaths(allApps: sortedApps.userApps + sortedApps.systemApps, appState: appState, locations: locations)
                 }
-
-
+                
 
 #if !DEBUG
                 Task {

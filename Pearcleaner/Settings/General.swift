@@ -48,7 +48,7 @@ struct GeneralSettingsTab: View {
                             .font(.callout)
                             .foregroundStyle(.gray)
                     }
-                    InfoButton(text: "When transparent material is enabled, sticky section headers (User/System) in app list are disabled to keep from showing app name text overlayed under the section header text with no background to separate the two.", color: nil)
+//                    InfoButton(text: "When transparent material is enabled, sticky section headers (User/System) in app list are disabled to keep from showing app name text overlayed under the section header text with no background to separate the two.", color: nil)
                     Spacer()
                     Toggle(isOn: $glass, label: {
                     })

@@ -321,7 +321,14 @@ func findPathsForApp(appInfo: AppInfo = .empty, appState: AppState, locations: L
         
         var collection: [URL] = []
         if let url = URL(string: appInfo.path.absoluteString) {
-            collection.insert(url, at: 0)
+            if !url.path.contains(".Trash") {
+                if url.path.contains("Wrapper") {
+                    let modifiedUrl = url.deletingLastPathComponent().deletingLastPathComponent()
+                    collection.insert(modifiedUrl, at: 0)
+                } else {
+                    collection.insert(url, at: 0)
+                }
+            }
         }
 
 
@@ -329,7 +336,6 @@ func findPathsForApp(appInfo: AppInfo = .empty, appState: AppState, locations: L
         let dispatchGroup = DispatchGroup()
         var bundleComponents = appInfo.bundleIdentifier.components(separatedBy: ".")
         if let lastComponent = bundleComponents.last, let rangeOfDash = lastComponent.range(of: "-") {
-            // Remove the dash and everything after it
             let updatedLastComponent = String(lastComponent[..<rangeOfDash.lowerBound])
             bundleComponents[bundleComponents.count - 1] = updatedLastComponent
         }
@@ -370,6 +376,7 @@ func findPathsForApp(appInfo: AppInfo = .empty, appState: AppState, locations: L
                     if collection.contains(itemURL) {
                         continue
                     }
+
                     // Catch web app plist files
                     if appInfo.webApp {
                         if itemL.contains(bundleIdentifierL) {
@@ -417,7 +424,6 @@ func findPathsForApp(appInfo: AppInfo = .empty, appState: AppState, locations: L
         collection.append(contentsOf: groupContainers)
         var sortedCollection = collection.sorted(by: { $0.absoluteString < $1.absoluteString })
 
-
         // Calculate file details (sizes and icons)
         var fileSize: [URL: Int64] = [:]
         var fileIcon: [URL: NSImage?] = [:]
@@ -438,6 +444,7 @@ func findPathsForApp(appInfo: AppInfo = .empty, appState: AppState, locations: L
                 sortedCollection = []
             }
         }
+
         // Save to appState
         dispatchGroup.notify(queue: .main) {
 
@@ -593,7 +600,7 @@ func reversePathsSearch(appState: AppState, locations: Locations, completion: @e
             let dispatchGroup = DispatchGroup()
             let allPaths = appState.appInfoStore.flatMap { $0.files.map { $0.path.pearFormat() } }
             let allNames = appState.appInfoStore.map { $0.appName.pearFormat() }
-            let skipped = ["apple", "comapple", "temporary", "btserver", "proapps", "scripteditor", "ilife", "livefsd", "siritoday", "addressbook", "animoji", "appstore", "askpermission", "callhistory", "clouddocs", "diskimages", "dock", "facetime", "fileprovider", "instruments", "knowledge", "mobilesync", "syncservices", "homeenergyd", "icloud", "icdd", "networkserviceproxy", "familycircle", "geoservices", "installation", "passkit", "sharedimagecache", "desktop", "mbuseragent", "swiftpm", "baseband", "coresimulator", "photoslegacyupgrade", "photosupgrade", "siritts", "ipod", "globalpreferences", "apmanalytics", "apmexperiment", "avatarcache", "byhost", "contextstoreagent", "mobilemeaccounts", "intentbuilderc", "loginwindow", "momc", "replayd", "sharedfilelistd", "clang", "audiocomponent", "csexattrcryptoservice", "livetranscriptionagent", "sandobxhelper", "statuskitagent", "betaenrollmentd", "contentlinkingd", "diagnosticextensionsd", "gamed", "heard", "homed", "itunescloudd", "lldb", "mds", "mediaanalysisd", "metrickitd", "mobiletimerd", "proactived", "ptpcamerad", "studentd", "talagent", "watchlistd", "apptranslocation", "xcrun", "ds_store", "caches", "crashreporter"] // Skip system folders
+            let skipped = ["apple", "comapple", "temporary", "btserver", "proapps", "scripteditor", "ilife", "livefsd", "siritoday", "addressbook", "animoji", "appstore", "askpermission", "callhistory", "clouddocs", "diskimages", "dock", "facetime", "fileprovider", "instruments", "knowledge", "mobilesync", "syncservices", "homeenergyd", "icloud", "icdd", "networkserviceproxy", "familycircle", "geoservices", "installation", "passkit", "sharedimagecache", "desktop", "mbuseragent", "swiftpm", "baseband", "coresimulator", "photoslegacyupgrade", "photosupgrade", "siritts", "ipod", "globalpreferences", "apmanalytics", "apmexperiment", "avatarcache", "byhost", "contextstoreagent", "mobilemeaccounts", "intentbuilderc", "loginwindow", "momc", "replayd", "sharedfilelistd", "clang", "audiocomponent", "csexattrcryptoservice", "livetranscriptionagent", "sandobxhelper", "statuskitagent", "betaenrollmentd", "contentlinkingd", "diagnosticextensionsd", "gamed", "heard", "homed", "itunescloudd", "lldb", "mds", "mediaanalysisd", "metrickitd", "mobiletimerd", "proactived", "ptpcamerad", "studentd", "talagent", "watchlistd", "apptranslocation", "xcrun", "ds_store", "caches", "crashreporter", "trash"] // Skip system folders
 
 
             // Skip locations that might not exist
@@ -654,7 +661,6 @@ func reversePathsSearch(appState: AppState, locations: Locations, completion: @e
                 updateOnMain {
                     updatedZombieFile.fileSize = fileSize
                     updatedZombieFile.fileIcon = fileIcon
-                    //                appState.selectedZombieItems = Set(sortedCollection)
                     appState.zombieFile = updatedZombieFile
                     appState.showProgress = false
                 }
@@ -683,7 +689,7 @@ func moveFilesToTrash(at fileURLs: [URL], completion: @escaping () -> Void = {})
             }
         }
     }
-    
+
     if !filesSudo.isEmpty {
         // Remove socket files with rm
         let filesSudoPaths = filesSudo.map { $0.path }

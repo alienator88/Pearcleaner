@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct AppCommands: Commands {
-    
+    @AppStorage("settings.general.instant") private var instantSearch: Bool = true
+
     let appState: AppState
     let locations: Locations
 
@@ -32,18 +33,20 @@ struct AppCommands: Commands {
             Button {
                 withAnimation(.easeInOut(duration: 0.5)) {
                     // Refresh Apps list
-                    appState.reload.toggle()
-                    let sortedApps = getSortedApps()
                     updateOnMain {
+                        appState.reload.toggle()
+                    }
+                    let sortedApps = getSortedApps()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                         appState.sortedApps.userApps = []
                         appState.sortedApps.systemApps = []
                         appState.sortedApps.userApps = sortedApps.userApps
                         appState.sortedApps.systemApps = sortedApps.systemApps
-                    }
-                    Task(priority: .high){
-                        loadAllPaths(allApps: sortedApps.userApps + sortedApps.systemApps, appState: appState, locations: locations)
-                    }
-                    updateOnMain {
+                        if instantSearch {
+                            Task(priority: .high){
+                                loadAllPaths(allApps: sortedApps.userApps + sortedApps.systemApps, appState: appState, locations: locations)
+                            }
+                        }
                         appState.reload.toggle()
                     }
                 }
@@ -64,16 +67,18 @@ struct AppCommands: Commands {
         
         // Edit Menu
         CommandGroup(replacing: .undoRedo) {
+
             Button
             {
                 undoTrash(appState: appState) {
                     let sortedApps = getSortedApps()
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        appState.sortedApps.userApps = []
-                        appState.sortedApps.systemApps = []
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                         appState.sortedApps.userApps = sortedApps.userApps
                         appState.sortedApps.systemApps = sortedApps.systemApps
-                        loadAllPaths(allApps: sortedApps.userApps + sortedApps.systemApps, appState: appState, locations: locations)
+//                        if instantSearch {
+//                            loadAllPaths(allApps: sortedApps.userApps + sortedApps.systemApps, appState: appState, locations: locations)
+//                        }
+
                     }
                 }
             } label: {
