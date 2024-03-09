@@ -16,8 +16,14 @@ struct UpdateView: View {
         VStack(spacing: 5) {
             HStack {
                 
+                Text("App: \(Bundle.main.version)")
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .opacity(0.5)
+                    .padding()
+
                 Spacer()
-                    .frame(width: appState.progressBar.1 != 1.0 ? 150 : 180)
+//                    .frame(width: appState.progressBar.1 != 1.0 ? 150 : 180)
                 
                 Text("\(appState.progressBar.1 != 1.0 ? "Update Available 🥳" : "Completed 🚀")")
                     .font(.title)
@@ -26,7 +32,7 @@ struct UpdateView: View {
                 
                 Spacer()
                 
-                Text("v\(appState.releases.first?.tag_name ?? "")")
+                Text("GitHub: \(appState.releases.first?.tag_name ?? "")")
                     .font(.title3)
                     .fontWeight(.semibold)
                     .opacity(0.5)
@@ -107,23 +113,35 @@ struct NoUpdateView: View {
         VStack(spacing: 5) {
             HStack {
                 
+                Text("App: \(Bundle.main.version)")
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .opacity(0.5)
+                    .padding()
+
                 Spacer()
-                    .frame(width: appState.progressBar.1 != 1.0 ? 140 : 180)
+//                    .frame(width: appState.progressBar.1 != 1.0 ? 140 : 180)
                 
-                Text("\(appState.progressBar.1 != 1.0 ? "No Update Available 😌" : "Completed 🚀")")
+                Text("\(appState.progressBar.1 != 1.0 ? "No Update 😌" : "Completed 🚀")")
                     .font(.title)
                     .bold()
                     .padding(.vertical)
-                
+
                 Spacer()
                 
-                Text("v\(appState.releases.first?.tag_name ?? "")")
+                Text("GitHub: \(appState.releases.first?.tag_name ?? "")")
                     .font(.title3)
                     .fontWeight(.semibold)
                     .opacity(0.5)
                     .padding()
                 
             }
+
+//            Text("App: \(Bundle.main.version) | GitHub: \(appState.releases.first?.tag_name ?? "")")
+//                .font(.title3)
+//                .fontWeight(.semibold)
+//                .opacity(0.5)
+//                .padding(.vertical, 5)
 
             Divider()
                 .padding([.horizontal])

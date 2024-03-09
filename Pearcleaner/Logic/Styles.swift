@@ -317,8 +317,7 @@ struct AnimatedSearchStyle: TextFieldStyle {
                             appState.reload.toggle()
                             let sortedApps = getSortedApps()
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                appState.sortedApps.userApps = sortedApps.userApps
-                                appState.sortedApps.systemApps = sortedApps.systemApps
+                                appState.sortedApps = sortedApps
                                 appState.reload.toggle()
                             }
                         }
@@ -431,10 +430,15 @@ struct SimpleSearchStyle: TextFieldStyle {
         .onHover { hovering in
             withAnimation(Animation.easeInOut(duration: 0.15)) {
                 self.isHovered = hovering
-                self.isFocused = hovering
+                self.isFocused = true
             }
         }
         .focused($isFocused)
+        .onAppear {
+            updateOnMain {
+                self.isFocused = false
+            }
+        }
     }
 }
 

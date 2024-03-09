@@ -24,18 +24,21 @@ struct ZombieView: View {
         VStack(alignment: .center) {
             if appState.showProgress {
                 VStack {
-                    Spacer()
+                    Group {
+                        Spacer()
 
-                    Text("Searching the file system").font(.title3)
-                        .foregroundStyle((.gray.opacity(0.8)))
-                    ProgressView()
-                        .progressViewStyle(.linear)
-                        .frame(width: 400, height: 10)
+                        Text("Searching the file system").font(.title3)
+                            .foregroundStyle((.gray.opacity(0.8)))
+                        ProgressView()
+                            .progressViewStyle(.linear)
+                            .frame(width: 400, height: 10)
 
-                    Spacer()
+                        Spacer()
+                    }
+                    .transition(.opacity)
+
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .transition(.opacity)
             } else {
                 // Titlebar
                 if mini {
@@ -49,7 +52,7 @@ struct ZombieView: View {
                                 if instantSearch {
                                     reversePathsSearch(appState: appState, locations: locations)
                                 } else {
-                                    loadAllPaths(allApps: appState.sortedApps.userApps + appState.sortedApps.systemApps, appState: appState, locations: locations, reverseAddon: true)
+                                    loadAllPaths(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
                                 }
                             }
                         }
@@ -206,6 +209,7 @@ struct ZombieView: View {
                 }
                 .transition(.opacity)
                 .padding([.horizontal, .bottom], 20)
+                .padding(.top, !mini ? 10 : 0)
 
             }
 

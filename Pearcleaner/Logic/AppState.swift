@@ -15,7 +15,7 @@ class AppState: ObservableObject
     @Published var appInfo: AppInfo
     @Published var appInfoStore: [AppInfo] = []
     @Published var zombieFile: ZombieFile
-    @Published var sortedApps: (userApps: [AppInfo], systemApps: [AppInfo]) = ([], [])
+    @Published var sortedApps: [AppInfo] = []
     @Published var selectedItems = Set<URL>()
     @Published var selectedZombieItems = Set<URL>()
     @Published var alertType = AlertType.off
@@ -41,6 +41,7 @@ class AppState: ObservableObject
             appIcon: nil,
             webApp: false,
             wrapped: false,
+            system: false,
             files: [],
             fileSize: [:],
             fileIcon: [:]
@@ -68,6 +69,7 @@ struct AppInfo: Identifiable, Equatable, Hashable {
     let appIcon: NSImage?
     let webApp: Bool
     let wrapped: Bool
+    let system: Bool
     var files: [URL]
     var fileSize: [URL:Int64]
     var fileIcon: [URL:NSImage?]
@@ -77,7 +79,7 @@ struct AppInfo: Identifiable, Equatable, Hashable {
     }
 
 
-    static let empty = AppInfo(id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "", appVersion: "", appIcon: nil, webApp: false, wrapped: false, files: [], fileSize: [:], fileIcon: [:])
+    static let empty = AppInfo(id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "", appVersion: "", appIcon: nil, webApp: false, wrapped: false, system: false, files: [], fileSize: [:], fileIcon: [:])
 
 }
 

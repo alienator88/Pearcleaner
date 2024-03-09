@@ -33,7 +33,7 @@ struct PearcleanerApp: App {
             Group {
                 ZStack() {
                     if !mini {
-                        AppListView(search: $search, showPopover: $showPopover)
+                        RegularMode(search: $search, showPopover: $showPopover)
                             .environmentObject(locations)
                     } else {
                         MiniMode(search: $search, showPopover: $showPopover)
@@ -91,16 +91,17 @@ struct PearcleanerApp: App {
 
                 // Get Apps
                 let sortedApps = getSortedApps()
-                appState.sortedApps.userApps = sortedApps.userApps
-                appState.sortedApps.systemApps = sortedApps.systemApps
+                appState.sortedApps = sortedApps
 
 
                 // Find all app paths on load
                 if instantSearch {
-                    loadAllPaths(allApps: sortedApps.userApps + sortedApps.systemApps, appState: appState, locations: locations)
+//                    startEnd {
+                        loadAllPaths(allApps: sortedApps, appState: appState, locations: locations)
+//                    }
                 }
                 
-
+                
 #if !DEBUG
                 Task {
 

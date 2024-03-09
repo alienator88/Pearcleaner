@@ -19,7 +19,7 @@
 		C76D08482AF83C3F00D07867 /* Update.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08472AF83C3F00D07867 /* Update.swift */; };
 		C76D084A2AF83C6E00D07867 /* General.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08492AF83C6E00D07867 /* General.swift */; };
 		C76D08512AF850F300D07867 /* About.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08502AF850F300D07867 /* About.swift */; };
-		C76D08552AF89CDE00D07867 /* AppListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08542AF89CDE00D07867 /* AppListView.swift */; };
+		C76D08552AF89CDE00D07867 /* RegularMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08542AF89CDE00D07867 /* RegularMode.swift */; };
 		C77B90042AF18E2E009CC655 /* PearcleanerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90032AF18E2E009CC655 /* PearcleanerApp.swift */; };
 		C77B90082AF18E2F009CC655 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C77B90072AF18E2F009CC655 /* Assets.xcassets */; };
 		C77B90162AF19377009CC655 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90152AF19377009CC655 /* AppState.swift */; };
@@ -75,7 +75,7 @@
 		C76D08472AF83C3F00D07867 /* Update.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Update.swift; sourceTree = "<group>"; };
 		C76D08492AF83C6E00D07867 /* General.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = General.swift; sourceTree = "<group>"; };
 		C76D08502AF850F300D07867 /* About.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = About.swift; sourceTree = "<group>"; };
-		C76D08542AF89CDE00D07867 /* AppListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppListView.swift; sourceTree = "<group>"; };
+		C76D08542AF89CDE00D07867 /* RegularMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularMode.swift; sourceTree = "<group>"; };
 		C77B90002AF18E2E009CC655 /* Pearcleaner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pearcleaner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C77B90032AF18E2E009CC655 /* PearcleanerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PearcleanerApp.swift; sourceTree = "<group>"; };
 		C77B90072AF18E2F009CC655 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -219,7 +219,7 @@
 			isa = PBXGroup;
 			children = (
 				C77B90222AF2D616009CC655 /* FilesView.swift */,
-				C76D08542AF89CDE00D07867 /* AppListView.swift */,
+				C76D08542AF89CDE00D07867 /* RegularMode.swift */,
 				C7D31D472AFEB23700C7ED9E /* TopBar.swift */,
 				C7045A292B03FAF000376976 /* TopBarMini.swift */,
 				C7D31D492AFEB26700C7ED9E /* AppListItems.swift */,
@@ -360,7 +360,7 @@
 				C7D31D482AFEB23700C7ED9E /* TopBar.swift in Sources */,
 				C7ACADE62B92A737000B5845 /* Features.swift in Sources */,
 				C7F539382AF60865007DF1B2 /* Utilities.swift in Sources */,
-				C76D08552AF89CDE00D07867 /* AppListView.swift in Sources */,
+				C76D08552AF89CDE00D07867 /* RegularMode.swift in Sources */,
 				C7A9CE472B89164700EB6E78 /* Authorization.swift in Sources */,
 				C7CF47242B3B3F1700979C5F /* WindowSettings.swift in Sources */,
 				C77B90232AF2D616009CC655 /* FilesView.swift in Sources */,

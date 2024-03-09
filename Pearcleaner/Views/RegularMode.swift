@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct AppListView: View {
+struct RegularMode: View {
     @EnvironmentObject var appState: AppState
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 280
@@ -17,22 +17,18 @@ struct AppListView: View {
     @State private var showSys: Bool = true
     @State private var showUsr: Bool = true
     @Binding var showPopover: Bool
+//    @State private var isHovering = false
+//    @State private var isHovering2 = false
 
-    var filteredUserApps: [AppInfo] {
+
+    var filteredApps: [AppInfo] {
         if search.isEmpty {
-            return appState.sortedApps.userApps
+            return appState.sortedApps
         } else {
-            return appState.sortedApps.userApps.filter { $0.appName.localizedCaseInsensitiveContains(search) }
+            return appState.sortedApps.filter { $0.appName.localizedCaseInsensitiveContains(search) }
         }
     }
 
-    var filteredSystemApps: [AppInfo] {
-        if search.isEmpty {
-            return appState.sortedApps.systemApps
-        } else {
-            return appState.sortedApps.systemApps.filter { $0.appName.localizedCaseInsensitiveContains(search) }
-        }
-    }
 
     var body: some View {
 
@@ -66,37 +62,54 @@ struct AppListView: View {
                         .padding(.top, 20)
 
 
-                        AppsListView(search: $search, showPopover: $showPopover, filteredUserApps: filteredUserApps, filteredSystemApps: filteredSystemApps)
+                        AppsListView(search: $search, showPopover: $showPopover, filteredApps: filteredApps)
 
                     }
                     .frame(width: sidebarWidth)
                     .padding(.vertical)
+//                    .onHover { hovering in
+//                        withAnimation(Animation.easeInOut(duration: 0.4)) {
+//                            isHovering = hovering
+//                        }
+//                    }
+//                    .opacity(!isHovering ? 1 : 0.5)
+
                 }
 
 
             }
             .background(glass ? GlassEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all) : nil)
-            .transition(.move(edge: .leading))
+            .transition(.opacity)
 
             SlideableDivider(dimension: $sidebarWidth)
 
 
             // Details View
             VStack(spacing: 0) {
-                if appState.currentView == .empty || appState.currentView == .apps {
-                    TopBar(showPopover: $showPopover)
-                    AppDetailsEmptyView(showPopover: $showPopover)
-                } else if appState.currentView == .files {
-                    TopBar(showPopover: $showPopover)
-                    FilesView(showPopover: $showPopover, search: $search)
-                        .id(appState.appInfo.id)
-                } else if appState.currentView == .zombie {
-                    TopBar(showPopover: $showPopover)
-                    ZombieView(showPopover: $showPopover, search: $search)
-                        .id(appState.appInfo.id)
+                Group {
+                    if appState.currentView == .empty || appState.currentView == .apps {
+                        TopBar(showPopover: $showPopover)
+                        AppDetailsEmptyView(showPopover: $showPopover)
+                    } else if appState.currentView == .files {
+                        TopBar(showPopover: $showPopover)
+                        FilesView(showPopover: $showPopover, search: $search)
+                            .id(appState.appInfo.id)
+                    } else if appState.currentView == .zombie {
+                        TopBar(showPopover: $showPopover)
+                        ZombieView(showPopover: $showPopover, search: $search)
+                            .id(appState.appInfo.id)
+                    }
                 }
+                .transition(.opacity)
             }
-            .transition(.move(edge: .leading))
+//            .onHover { hovering in
+//                withAnimation(Animation.easeInOut(duration: 0.4)) {
+//                    isHovering = hovering
+//                }
+//            }
+//            .opacity((isHovering2 || (!isHovering && !isHovering2)) ? 1 : 0.5)
+
+
         }
         .frame(minWidth: 900, minHeight: 600)
         .edgesIgnoringSafeArea(.all)
@@ -187,10 +200,9 @@ struct Header: View {
                                     showPopover = false
                                     let sortedApps = getSortedApps()
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                        appState.sortedApps.userApps = sortedApps.userApps
-                                        appState.sortedApps.systemApps = sortedApps.systemApps
+                                        appState.sortedApps = sortedApps
                                         if instantSearch {
-                                            loadAllPaths(allApps: sortedApps.userApps + sortedApps.systemApps, appState: appState, locations: locations) {
+                                            loadAllPaths(allApps: sortedApps, appState: appState, locations: locations) {
                                                 appState.reload.toggle()
 
                                             }

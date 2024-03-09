@@ -8,11 +8,19 @@
 import Foundation
 import SwiftUI
 import OSLog
+import CoreImage
+import AppKit
 
 // Make updates on main thread
-func updateOnMain(_ updates: @escaping () -> Void) {
-    DispatchQueue.main.async {
-        updates()
+func updateOnMain(after delay: Double? = nil, _ updates: @escaping () -> Void) {
+    if let delay = delay {
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            updates()
+        }
+    } else {
+        DispatchQueue.main.async {
+            updates()
+        }
     }
 }
 
@@ -170,7 +178,7 @@ func openTrash() {
 
 // Check if restricted app
 func isRestricted(atPath path: URL) -> Bool {
-    if path.path.contains("Safari") || path.path.contains(Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String ?? "") {
+    if path.path.contains("Safari") || path.path.contains(Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String ?? "") || path.path.contains("/Applications/Utilities") {
         return true
     } else {
         return false
@@ -209,6 +217,48 @@ func getIconForFileOrFolderNS(atPath path: URL) -> NSImage? {
     return nsImage
 }
 
+// Get average color from image
+//extension NSImage {
+//    var averageColor2: NSColor? {
+//        guard let inputImage = CIImage(image: self) else { return nil }
+//        let extentVector = CIVector(x: inputImage.extent.origin.x, y: inputImage.extent.origin.y, z: inputImage.extent.size.width, w: inputImage.extent.size.height)
+//
+//        guard let filter = CIFilter(name: "CIAreaAverage", parameters: [kCIInputImageKey: inputImage, kCIInputExtentKey: extentVector]) else { return nil }
+//        guard let outputImage = filter.outputImage else { return nil }
+//
+//        var bitmap = [UInt8](repeating: 0, count: 4)
+//        let context = CIContext(options: [.workingColorSpace: kCFNull!])
+//        context.render(outputImage, toBitmap: &bitmap, rowBytes: 4, bounds: CGRect(x: 0, y: 0, width: 1, height: 1), format: .RGBA8, colorSpace: nil)
+//
+//        return NSColor(red: CGFloat(bitmap[0]) / 255, green: CGFloat(bitmap[1]) / 255, blue: CGFloat(bitmap[2]) / 255, alpha: CGFloat(bitmap[3]) / 255)
+//    }
+//}
+
+extension NSImage {
+    var averageColor: NSColor? {
+        guard let tiffData = self.tiffRepresentation, let bitmapImage = NSBitmapImageRep(data: tiffData), let inputImage = CIImage(bitmapImageRep: bitmapImage) else { return nil }
+
+        let extentVector = CIVector(x: inputImage.extent.origin.x, y: inputImage.extent.origin.y, z: inputImage.extent.size.width, w: inputImage.extent.size.height)
+
+        guard let filter = CIFilter(name: "CIAreaAverage", parameters: [kCIInputImageKey: inputImage, kCIInputExtentKey: extentVector]) else { return nil }
+        guard let outputImage = filter.outputImage else { return nil }
+
+        var bitmap = [UInt8](repeating: 0, count: 4)
+        let context = CIContext(options: [.workingColorSpace: NSNull()])
+        context.render(outputImage, toBitmap: &bitmap, rowBytes: 4, bounds: CGRect(x: 0, y: 0, width: 1, height: 1), format: CIFormat.RGBA8, colorSpace: nil)
+
+        return NSColor(red: CGFloat(bitmap[0]) / 255, green: CGFloat(bitmap[1]) / 255, blue: CGFloat(bitmap[2]) / 255, alpha: CGFloat(bitmap[3]) / 255)
+    }
+}
+
+func startEnd(_ function: @escaping () -> Void) {
+    let startTime = Date() // Capture start time
+    function()
+    let endTime = Date()
+    let executionTime = endTime.timeIntervalSince(startTime)
+    print("Function executed in: \n\(executionTime) seconds")
+}
+
 
 // Relaunch app
 func relaunchApp(afterDelay seconds: TimeInterval = 0.5) -> Never {
@@ -220,6 +270,25 @@ func relaunchApp(afterDelay seconds: TimeInterval = 0.5) -> Never {
     NSApp.terminate(nil)
     exit(0)
 }
+
+// Remove app from cache
+func removeApp(appState: AppState, withId id: UUID) {
+    DispatchQueue.main.async {
+        // Remove from sortedApps if found
+        if let index = appState.sortedApps.firstIndex(where: { $0.id == id }) {
+            appState.sortedApps.remove(at: index)
+            return // Exit the function if the app was found and removed
+        }
+
+        // Remove from appInfoStore if found
+        if let index = appState.appInfoStore.firstIndex(where: { $0.id == id }) {
+            appState.appInfoStore.remove(at: index)
+        }
+        // Clear out AppInfo state
+        appState.appInfo = AppInfo.empty
+    }
+}
+
 
 
 // --- Extend Int to convert hours to seconds ---

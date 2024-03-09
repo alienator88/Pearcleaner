@@ -16,6 +16,7 @@ struct AppListItems: View {
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.general.popover") private var popoverStay: Bool = true
+    @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @Binding var showPopover: Bool
     @EnvironmentObject var locations: Locations
     let itemId = UUID()
@@ -25,7 +26,7 @@ struct AppListItems: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
+//        VStack(alignment: .leading, spacing: 5) {
 
 
 
@@ -39,11 +40,27 @@ struct AppListItems: View {
                 }
 
                 if let appIcon = appInfo.appIcon {
-                    Image(nsImage: appIcon)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 30, height: 30)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                    ZStack {
+//                        RoundedRectangle(cornerRadius: 8)
+//                            .fill(Color(appIcon.averageColor!))
+//                            .frame(width: 35, height: 35)
+//                            .saturation(3)
+//                            .opacity(0.5)
+////                            .brightness(displayMode.colorScheme == .dark ? 0 : 0.5)
+////                            .shadow(color: .black, radius: 1, y: 2)
+//                        RoundedRectangle(cornerRadius: 8)
+//                            .strokeBorder(Color("mode").opacity(0.1), lineWidth: 1)
+//                            .frame(width: 35, height: 35)
+                        Image(nsImage: appIcon)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+//                            .scaledToFit()
+                            .frame(width: 30, height: 30)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                            .shadow(color: .black.opacity(0.5), radius: 2, y: 2)
+//                            .grayscale(opacityForItem())
+                    }
+
                 }
                 
                 VStack(alignment: .leading, spacing: 5) {
@@ -84,17 +101,30 @@ struct AppListItems: View {
                     .foregroundStyle(Color("mode").opacity(0.5))
 
             }
-
-        }
-        .padding(.horizontal, 5)
-        .help(appInfo.appName)
-        .onHover { hovering in
-            withAnimation(Animation.easeIn(duration: 0.2)) {
-                self.isHovered = hovering
+            .padding(.horizontal, 5)
+            .help(appInfo.appName)
+            .onHover { hovering in
+                withAnimation(Animation.easeIn(duration: 0.2)) {
+                    self.isHovered = hovering
+                }
             }
-        }
-        .onTapGesture {
-            showAppInFiles(appInfo: appInfo, mini: mini, appState: appState, locations: locations, showPopover: $showPopover)
-        }
+            .onTapGesture {
+                withAnimation(Animation.easeInOut(duration: 0.4)) {
+                    showAppInFiles(appInfo: appInfo, mini: mini, appState: appState, locations: locations, showPopover: $showPopover)
+                }
+            }
+
     }
+
+    func opacityForItem() -> Double {
+        // Check if any item is selected
+        let isAnyItemSelected = appState.sortedApps.contains(where: { $0.path == appState.appInfo.path })
+        // If this item is selected or no items are selected, keep full opacity
+        // Otherwise, reduce opacity
+        return isAnyItemSelected ? (appState.appInfo.path == appInfo.path ? 0 : 1.0) : 0
+    }
+
 }
+
+
+

@@ -38,13 +38,13 @@ struct AppCommands: Commands {
                     }
                     let sortedApps = getSortedApps()
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        appState.sortedApps.userApps = []
-                        appState.sortedApps.systemApps = []
-                        appState.sortedApps.userApps = sortedApps.userApps
-                        appState.sortedApps.systemApps = sortedApps.systemApps
+                        appState.sortedApps = []
+//                        appState.sortedApps.systemApps = []
+                        appState.sortedApps = sortedApps
+//                        appState.sortedApps.systemApps = sortedApps.systemApps
                         if instantSearch {
                             Task(priority: .high){
-                                loadAllPaths(allApps: sortedApps.userApps + sortedApps.systemApps, appState: appState, locations: locations)
+                                loadAllPaths(allApps: sortedApps, appState: appState, locations: locations)
                             }
                         }
                         appState.reload.toggle()
@@ -73,8 +73,7 @@ struct AppCommands: Commands {
                 undoTrash(appState: appState) {
                     let sortedApps = getSortedApps()
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        appState.sortedApps.userApps = sortedApps.userApps
-                        appState.sortedApps.systemApps = sortedApps.systemApps
+                        appState.sortedApps = sortedApps
 //                        if instantSearch {
 //                            loadAllPaths(allApps: sortedApps.userApps + sortedApps.systemApps, appState: appState, locations: locations)
 //                        }

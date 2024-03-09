@@ -25,16 +25,17 @@ struct MiniMode: View {
             
             // Main Mini View
             VStack(spacing: 0) {
-                if appState.currentView == .empty {
-                    TopBarMini(search: $search, showPopover: $showPopover)
-                    MiniEmptyView(showPopover: $showPopover)
-                } else {
-                    TopBarMini(search: $search, showPopover: $showPopover)
-                    MiniAppView(search: $search, showPopover: $showPopover)
+                Group {
+                    if appState.currentView == .empty {
+                        TopBarMini(search: $search, showPopover: $showPopover)
+                        MiniEmptyView(showPopover: $showPopover)
+                    } else {
+                        TopBarMini(search: $search, showPopover: $showPopover)
+                        MiniAppView(search: $search, showPopover: $showPopover)
+                    }
                 }
-
+                .transition(.opacity)
             }
-            .transition(.move(edge: .leading))
             .popover(isPresented: $showPopover, arrowEdge: .trailing) {
                 VStack {
                     if appState.currentView == .files {
@@ -149,19 +150,11 @@ struct MiniAppView: View {
     
     var body: some View {
         
-        var filteredUserApps: [AppInfo] {
+        var filteredApps: [AppInfo] {
             if search.isEmpty {
-                return appState.sortedApps.userApps
+                return appState.sortedApps
             } else {
-                return appState.sortedApps.userApps.filter { $0.appName.localizedCaseInsensitiveContains(search) }
-            }
-        }
-        
-        var filteredSystemApps: [AppInfo] {
-            if search.isEmpty {
-                return appState.sortedApps.systemApps
-            } else {
-                return appState.sortedApps.systemApps.filter { $0.appName.localizedCaseInsensitiveContains(search) }
+                return appState.sortedApps.filter { $0.appName.localizedCaseInsensitiveContains(search) }
             }
         }
         
@@ -186,7 +179,7 @@ struct MiniAppView: View {
                 } else {
                     VStack(alignment: .center) {
 
-                        AppsListView(search: $search, showPopover: $showPopover, filteredUserApps: filteredUserApps, filteredSystemApps: filteredSystemApps)
+                        AppsListView(search: $search, showPopover: $showPopover, filteredApps: filteredApps)
 
                         if appState.currentView != .empty {
                             SearchBarMiniBottom(search: $search).background(.ultraThinMaterial)
@@ -198,7 +191,7 @@ struct MiniAppView: View {
                 
             }
         }
-        .transition(.move(edge: .leading))
+        .transition(.opacity)
     }
 }
 

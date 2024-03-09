@@ -54,6 +54,7 @@ struct FilesView: View {
                     .padding([.horizontal, .top], 5)
                 }
                 VStack(spacing: 0) {
+                    
                     // Main Group
                     HStack(alignment: .center) {
 
@@ -93,8 +94,6 @@ struct FilesView: View {
 
                             }
 
-
-                            if appState.appInfo.webApp || appState.appInfo.wrapped {
                                 HStack(alignment: .center, spacing: 10) {
 
                                     Spacer()
@@ -121,15 +120,21 @@ struct FilesView: View {
 
                                     }
 
+                                    Text(appState.appInfo.system ? "system" : "user")
+                                        .font(.footnote)
+                                        .foregroundStyle(Color("mode").opacity(0.5))
+                                        .frame(minWidth: 30, minHeight: 15)
+                                        .padding(2)
+                                        .padding(.horizontal, 2)
+                                        .background(Color("mode").opacity(0.1))
+                                        .clipShape(.capsule)
+
                                 }
-                            }
-
-
-
 
                         }
                         .padding(.horizontal, 20)
                         .padding(.top, 0)
+                        
                     }
 
                     Divider()
@@ -184,7 +189,7 @@ struct FilesView: View {
                             Button("Uninstall") {
                                 Task {
                                     updateOnMain {
-                                        appState.appInfo = AppInfo.empty
+//                                        appState.appInfo = AppInfo.empty
                                         search = ""
                                         if mini {
                                             appState.currentView = .apps
@@ -214,7 +219,9 @@ struct FilesView: View {
                                                     appState.isReminderVisible.toggle()
                                                 }
                                             }
-                                            refreshAppList(appState.appInfo)
+                                            removeApp(appState: appState, withId: appState.appInfo.id)
+
+//                                            refreshAppList(appState.appInfo)
                                         }
                                     }
 
@@ -243,6 +250,7 @@ struct FilesView: View {
                 }
                 .transition(.opacity)
                 .padding([.horizontal, .bottom], 20)
+                .padding(.top, !mini ? 10 : 0)
 
             }
 
@@ -253,8 +261,8 @@ struct FilesView: View {
         showPopover = false
         let sortedApps = getSortedApps()
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            appState.sortedApps.userApps = sortedApps.userApps
-            appState.sortedApps.systemApps = sortedApps.systemApps
+            appState.sortedApps = sortedApps
+//            appState.sortedApps.systemApps = sortedApps.systemApps
 //            if instantSearch {
 //                loadAllPaths(allApps: sortedApps.userApps + sortedApps.systemApps, appState: appState, locations: locations)
 //            }

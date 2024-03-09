@@ -39,7 +39,7 @@ struct TopBarMini: View {
                                     if instantSearch {
                                         reversePathsSearch(appState: appState, locations: locations)
                                     } else {
-                                        loadAllPaths(allApps: appState.sortedApps.userApps + appState.sortedApps.systemApps, appState: appState, locations: locations, reverseAddon: true)
+                                        loadAllPaths(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
                                     }
                                 } else {
                                     appState.currentView = .zombie
@@ -78,7 +78,7 @@ struct TopBarMini: View {
                                     if instantSearch {
                                         reversePathsSearch(appState: appState, locations: locations)
                                     } else {
-                                        loadAllPaths(allApps: appState.sortedApps.userApps + appState.sortedApps.systemApps, appState: appState, locations: locations, reverseAddon: true)
+                                        loadAllPaths(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
                                     }
                                 } else {
                                     appState.currentView = .zombie

@@ -11,17 +11,19 @@ import SwiftUI
 struct AppsListView: View {
     @Binding var search: String
     @Binding var showPopover: Bool
-    var filteredUserApps: [AppInfo]
-    var filteredSystemApps: [AppInfo]
+    var filteredApps: [AppInfo]
 
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
-                if filteredUserApps.count > 0 {
+                let filteredUserApps = filteredApps.filter { !$0.system }
+                let filteredSystemApps = filteredApps.filter { $0.system }
+
+                if !filteredUserApps.isEmpty {
                     SectionView(title: "User", count: filteredUserApps.count, apps: filteredUserApps, search: $search, showPopover: $showPopover)
                 }
 
-                if filteredSystemApps.count > 0 {
+                if !filteredSystemApps.isEmpty {
                     SectionView(title: "System", count: filteredSystemApps.count, apps: filteredSystemApps, search: $search, showPopover: $showPopover)
                 }
             }
