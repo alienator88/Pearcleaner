@@ -23,6 +23,7 @@ struct PearcleanerApp: App {
     @AppStorage("settings.general.miniview") private var miniView: Bool = true
     @AppStorage("settings.general.instant") private var instantSearch: Bool = true
     @AppStorage("settings.general.features") private var features: String = ""
+    @AppStorage("settings.general.brew") private var brew: Bool = false
     @State private var search = ""
     @State private var showPopover: Bool = false
     @State private var showFeature: Bool = false
@@ -94,14 +95,11 @@ struct PearcleanerApp: App {
                 appState.sortedApps = sortedApps
 
 
-                // Find all app paths on load
+                // Find all app paths/information on load if instantSearch is enabled
                 if instantSearch {
-//                    startEnd {
-                        loadAllPaths(allApps: sortedApps, appState: appState, locations: locations)
-//                    }
+                    loadAllPaths(allApps: sortedApps, appState: appState, locations: locations)
                 }
-                
-                
+
 #if !DEBUG
                 Task {
 

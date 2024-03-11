@@ -182,7 +182,7 @@ struct MiniAppView: View {
                         AppsListView(search: $search, showPopover: $showPopover, filteredApps: filteredApps)
 
                         if appState.currentView != .empty {
-                            SearchBarMiniBottom(search: $search).background(.ultraThinMaterial)
+                            SearchBarMiniBottom(search: $search)
                         }
                     }
                     .padding(.bottom)

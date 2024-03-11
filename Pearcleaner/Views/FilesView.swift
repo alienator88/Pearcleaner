@@ -15,6 +15,7 @@ struct FilesView: View {
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.general.instant") var instantSearch: Bool = true
+    @AppStorage("settings.general.brew") private var brew: Bool = false
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
     @Binding var search: String
@@ -216,12 +217,18 @@ struct FilesView: View {
                                             withAnimation {
                                                 showPopover = false
                                                 updateOnMain {
+                                                    appState.currentView = mini ? .apps : .empty
                                                     appState.isReminderVisible.toggle()
                                                 }
                                             }
+                                            // Remove app from app list
                                             removeApp(appState: appState, withId: appState.appInfo.id)
-
-//                                            refreshAppList(appState.appInfo)
+                                            // Brew cleanup if enabled
+                                            if brew {
+                                                caskCleanup(app: appState.appInfo.appName)
+                                            }
+                                            // Clear out AppInfo state
+                                            appState.appInfo = AppInfo.empty
                                         }
                                     }
 

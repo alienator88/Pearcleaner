@@ -157,6 +157,52 @@ func isDarkModeEnabled() -> Bool {
 }
 
 
+// Check if appearance is dark mode
+//func getCasks() -> [String] {
+//    let process = Process()
+//#if arch(x86_64)
+//    let cmd = "/usr/local/bin/brew"
+//#elseif arch(arm64)
+//    let cmd = "/opt/homebrew/bin/brew"
+//#endif
+//    process.executableURL = URL(fileURLWithPath: cmd)
+//    process.arguments = ["list", "--cask"]
+//    let pipe = Pipe()
+//    process.standardOutput = pipe
+//    process.standardError = pipe
+//    try? process.run()
+//    process.waitUntilExit() // Ensure the process completes
+//    let data = pipe.fileHandleForReading.readDataToEndOfFile()
+//    if let output = String(data: data, encoding: .utf8), !output.isEmpty {
+//        return output.components(separatedBy: "\n").filter { !$0.isEmpty }.map { $0.replacingOccurrences(of: "-", with: " ") }
+//    } else {
+//        return []
+//    }
+//}
+
+// Brew cleanup
+func caskCleanup(app: String) {
+    Task(priority: .high) {
+        let process = Process()
+#if arch(x86_64)
+        let cmd = "/usr/local/bin/brew"
+#elseif arch(arm64)
+        let cmd = "/opt/homebrew/bin/brew"
+#endif
+        process.executableURL = URL(fileURLWithPath: "/bin/zsh")
+        process.arguments = ["-c", "\(cmd) uninstall --cask \(app) --force; \(cmd) cleanup"]
+//        let pipe = Pipe()
+        process.standardOutput = FileHandle.nullDevice//pipe
+        process.standardError = FileHandle.nullDevice//pipe
+        try? process.run()
+        process.waitUntilExit() // Ensure the process completes
+//        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+//        let output = (String(data: data, encoding: .utf8) ?? "") as String
+//        print(output)
+    }
+}
+
+
 // Check if symlink
 func isSymlink(atPath path: URL) -> Bool {
     do {
@@ -218,22 +264,6 @@ func getIconForFileOrFolderNS(atPath path: URL) -> NSImage? {
 }
 
 // Get average color from image
-//extension NSImage {
-//    var averageColor2: NSColor? {
-//        guard let inputImage = CIImage(image: self) else { return nil }
-//        let extentVector = CIVector(x: inputImage.extent.origin.x, y: inputImage.extent.origin.y, z: inputImage.extent.size.width, w: inputImage.extent.size.height)
-//
-//        guard let filter = CIFilter(name: "CIAreaAverage", parameters: [kCIInputImageKey: inputImage, kCIInputExtentKey: extentVector]) else { return nil }
-//        guard let outputImage = filter.outputImage else { return nil }
-//
-//        var bitmap = [UInt8](repeating: 0, count: 4)
-//        let context = CIContext(options: [.workingColorSpace: kCFNull!])
-//        context.render(outputImage, toBitmap: &bitmap, rowBytes: 4, bounds: CGRect(x: 0, y: 0, width: 1, height: 1), format: .RGBA8, colorSpace: nil)
-//
-//        return NSColor(red: CGFloat(bitmap[0]) / 255, green: CGFloat(bitmap[1]) / 255, blue: CGFloat(bitmap[2]) / 255, alpha: CGFloat(bitmap[3]) / 255)
-//    }
-//}
-
 extension NSImage {
     var averageColor: NSColor? {
         guard let tiffData = self.tiffRepresentation, let bitmapImage = NSBitmapImageRep(data: tiffData), let inputImage = CIImage(bitmapImageRep: bitmapImage) else { return nil }
@@ -279,13 +309,10 @@ func removeApp(appState: AppState, withId id: UUID) {
             appState.sortedApps.remove(at: index)
             return // Exit the function if the app was found and removed
         }
-
         // Remove from appInfoStore if found
         if let index = appState.appInfoStore.firstIndex(where: { $0.id == id }) {
             appState.appInfoStore.remove(at: index)
         }
-        // Clear out AppInfo state
-        appState.appInfo = AppInfo.empty
     }
 }
 

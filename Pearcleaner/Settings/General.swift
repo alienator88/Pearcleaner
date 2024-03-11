@@ -19,6 +19,7 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 280
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
+    @AppStorage("settings.general.brew") private var brew: Bool = false
     @AppStorage("settings.general.instant") private var instantSearch: Bool = true
     @AppStorage("settings.general.selectedTheme") var selectedTheme: String = "Auto"
     @State private var diskStatus: Bool = false
@@ -75,6 +76,30 @@ struct GeneralSettingsTab: View {
 
                     Spacer()
                     Toggle(isOn: $instantSearch, label: {
+                    })
+                    .toggleStyle(.switch)
+                }
+                .padding(5)
+                .padding(.leading)
+
+
+                HStack(spacing: 0) {
+                    Image(systemName: brew ? "mug.fill" : "mug")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .padding(.trailing)
+                        .foregroundStyle(.gray)
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("\(brew ? "Homebrew cleanup is enabled" : "Homebrew cleanup is disabled")")
+                            .font(.callout)
+                            .foregroundStyle(.gray)
+                    }
+
+                    InfoButton(text: "When homebrew cleanup is enabled, Pearcleaner will check if the app you are removing was installed via homebrew and execute a brew uninstall and brew cleanup command as well to let homebrew know that the app is removed. This way your homebrew list will be synced up correctly and caching will be removed.\n\nNOTE: If you undo the file delete with CMD+Z, the files will be put back but homebrew will not be aware of it. To get the homebrew list back in sync you'd need to run:\n brew install APPNAME --force", color: nil)
+
+                    Spacer()
+                    Toggle(isOn: $brew, label: {
                     })
                     .toggleStyle(.switch)
                 }
@@ -346,7 +371,7 @@ struct GeneralSettingsTab: View {
 
         }
         .padding(20)
-        .frame(width: 500, height: 650)
+        .frame(width: 500, height: 690)
 
     }
     

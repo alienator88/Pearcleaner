@@ -29,7 +29,6 @@ class AppState: ObservableObject
     @Published var showProgress: Bool = false
     @Published var popCount: Int = 0
 
-
     
     init() {
         self.appInfo = AppInfo(

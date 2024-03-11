@@ -36,6 +36,7 @@
 		C7D31D482AFEB23700C7ED9E /* TopBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D472AFEB23700C7ED9E /* TopBar.swift */; };
 		C7D31D4A2AFEB26700C7ED9E /* AppListItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D492AFEB26700C7ED9E /* AppListItems.swift */; };
 		C7D31D512AFF00F300C7ED9E /* Locations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D502AFF00F300C7ED9E /* Locations.swift */; };
+		C7DC1FEE2B9F7D3D009AC317 /* features.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DC1FED2B9F7D3D009AC317 /* features.json */; };
 		C7F539382AF60865007DF1B2 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F539372AF60865007DF1B2 /* Utilities.swift */; };
 		C7FB173B2B96321300B96F9A /* AppsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7FB173A2B96321300B96F9A /* AppsListView.swift */; };
 /* End PBXBuildFile section */
@@ -95,6 +96,7 @@
 		C7D31D472AFEB23700C7ED9E /* TopBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBar.swift; sourceTree = "<group>"; };
 		C7D31D492AFEB26700C7ED9E /* AppListItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppListItems.swift; sourceTree = "<group>"; };
 		C7D31D502AFF00F300C7ED9E /* Locations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locations.swift; sourceTree = "<group>"; };
+		C7DC1FED2B9F7D3D009AC317 /* features.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = features.json; sourceTree = SOURCE_ROOT; };
 		C7F539372AF60865007DF1B2 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		C7FB173A2B96321300B96F9A /* AppsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsListView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -175,6 +177,7 @@
 		C76D084F2AF84E0100D07867 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C7DC1FED2B9F7D3D009AC317 /* features.json */,
 				C7A27E802AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist */,
 				C77B90142AF18E7C009CC655 /* Info.plist */,
 				C77B90072AF18E2F009CC655 /* Assets.xcassets */,
@@ -320,6 +323,7 @@
 			files = (
 				C77B90082AF18E2F009CC655 /* Assets.xcassets in Resources */,
 				C7A27E812AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist in Resources */,
+				C7DC1FEE2B9F7D3D009AC317 /* features.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -539,7 +543,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 21;
+				CURRENT_PROJECT_VERSION = 22;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = BK8443AXLU;
@@ -557,7 +561,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 3.0.2;
+				MARKETING_VERSION = 3.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.Pearcleaner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -574,7 +578,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 21;
+				CURRENT_PROJECT_VERSION = 22;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = BK8443AXLU;
@@ -592,7 +596,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 3.0.2;
+				MARKETING_VERSION = 3.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.Pearcleaner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
