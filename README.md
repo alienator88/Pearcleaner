@@ -4,7 +4,7 @@
    <br />
    <strong>Status: </strong>Maintained 
    <br />
-   <strong>Version: </strong>3.0.2
+   <strong>Version: </strong>3.1.0
    <br />
    <a href="https://github.com/alienator88/Pearcleaner/releases"><strong>Download</strong></a>
     · 
@@ -31,15 +31,13 @@ This project was born out of wanting to learn more. There's probably parts of th
 - Will differentiate between regular apps and Safari web-apps with a "web" label next to each item in the list
 - Will differentiate between regular apps and wrapped iOS apps with an "iOS" label next to each item in the list
 - Has clean uninstall menu option for the Pearcleaner app itself if you want to stop using it and get rid of all files and launch items
-- Requires Full Disk permission to search for files and also Accessibility to delete/restore files
-- Custom auto-updater that pulls latest release notes and binaries from GitHub Releases (Pearcleaner has to run from /Applications folder for this to work because of permissions)
 - New feature alert on app startup
+- Optional Homebrew cleanup
+- Custom auto-updater that pulls latest release notes and binaries from GitHub Releases (Pearcleaner has to run from /Applications folder for this to work because of permissions)
+
 
 
 ## Screenshots
-
-<details>
-  <summary>Regular Mode</summary>
 
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/64f581a6-47b7-4ad1-acd3-24d585407aa7" align="left" width="400" />
 
@@ -50,7 +48,6 @@ This project was born out of wanting to learn more. There's probably parts of th
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/6f4b247b-4bee-4db8-a758-fa55673dfe9a" align="center" width="400" />
 <p></p>
 
-</details>
 
 <details>
   <summary>Mini Mode</summary>
@@ -61,7 +58,7 @@ This project was born out of wanting to learn more. There's probably parts of th
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/9f713923-2eca-41c0-95da-3d35ce546f93" align="left" width="400" />
 
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/52cec03b-9b5c-40c0-865d-669466713c18" align="center" width="400" />
-
+<p></p>
 </details>
 
 <details>
@@ -84,7 +81,9 @@ This project was born out of wanting to learn more. There's probably parts of th
 
 ## Requirements
 - MacOS 13.0+ (App uses a lot of newer SwiftUI functions/modifiers which don't work on any OS lower than 13.0)
-- Open Pearcleaner first time by right clicking (Control + Click) and selecting Open. This adds an exception to Gatekeeper so it doesn't complain about the app not being signed with an Apple Developer certificate
+- Open Pearcleaner first time by right clicking and selecting Open. This adds an exception to Gatekeeper so it doesn't complain about the app not being signed with an Apple Developer certificate
+- Full Disk permission to search for files and also Accessibility permission to delete/restore files
+
 
 
 ## Getting Pearcleaner
