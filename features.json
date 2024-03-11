@@ -1,4 +1,4 @@
 {
-    "3.1.0": "- Brew Cleanup: If you install apps using Homebrew, you can now enable brew cleanup in Pearcleaner settings to have it uninstall the app via brew as well to keep Homebrew synced up.",
+    "3.1.0": "- Homebrew Cleanup: If you install apps using brew, you can now enable homebrew cleanup in the settings to have Pearcleaner alert Homebrew that the app was removed externally from Homebrew and keep the brew app list synced.",
     "3.0.0": "- Instant Search: Enable in settings to load app files on startup|- Semantic Versioning: Going forward will use semver (Ex. v0.0.0)|-Feature Alert: For each version, a feature alert will popup once on startup to show details|- Leftover File Cleaning: Search your mac for files leftover by uninstalled apps|- Sidebar Drag Handle: Resize the sidebar in regular mode|- Redesign UI/Settings/Icon: Some new buttons, layout changes, new official app icon and pear color theme accents|- File Sort: Sort files alphabetically or by size|- Socket File Removal: Finds socket files that aren't even visible in Finder with show hidden files enabled|- OSLog Output: Will print errors to the Console app for easier troubleshooting"
 }
