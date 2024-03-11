@@ -152,6 +152,10 @@ public struct NewFeatureView: View {
     public var body: some View {
         VStack {
             HStack {
+                Image(systemName: "star")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 20, height: 20)
                 Text("New features for v\((Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String)!)!")
                     .font(.headline).bold()
                 Spacer()

@@ -144,7 +144,7 @@ struct PearcleanerApp: App {
 
         
         Settings {
-            SettingsView(showPopover: $showPopover)
+            SettingsView(showPopover: $showPopover, showFeature: $showFeature)
                 .environmentObject(appState)
                 .toolbarBackground(.clear)
                 .preferredColorScheme(displayMode.colorScheme)

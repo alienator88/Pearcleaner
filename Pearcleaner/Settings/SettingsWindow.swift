@@ -10,6 +10,7 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject var appState: AppState
     @Binding var showPopover: Bool
+    @Binding var showFeature: Bool
     @AppStorage("settings.general.glass") private var glass: Bool = true
 
     var body: some View {
@@ -21,7 +22,7 @@ struct SettingsView: View {
                 }
                 .tag(CurrentTabView.general)
             
-            UpdateSettingsTab()
+            UpdateSettingsTab(showFeature: $showFeature)
                 .tabItem {
                     Label(CurrentTabView.update.title, systemImage: "cloud")
                 }

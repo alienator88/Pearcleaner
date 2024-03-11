@@ -34,7 +34,8 @@ struct UpdateSettingsTab: View {
     @State private var showAlert = false
     @State private var showDone = false
     @AppStorage("settings.updater.updateTimeframe") private var updateTimeframe: Int = 1
-    
+    @Binding var showFeature: Bool
+
     var body: some View {
         VStack {
             
@@ -72,21 +73,28 @@ struct UpdateSettingsTab: View {
             HStack(alignment: .center, spacing: 20) {
                 Spacer()
                 
-                Button("Update Notes"){
+                Button(""){
                     loadGithubReleases(appState: appState)
                 }
-                .buttonStyle(SimpleButtonStyle(icon: "list.bullet", help: "Check release notes", color: Color("mode")))
+                .buttonStyle(SimpleButtonStyle(icon: "arrow.uturn.left.circle", help: "Reload release notes", color: Color("mode")))
 
                 Spacer()
 
-                Button("Force Update"){
+                Button(""){
+                    showFeature.toggle()
+                }
+                .buttonStyle(SimpleButtonStyle(icon: "star", help: "Show last feature alert", color: Color("mode")))
+
+                Spacer()
+
+                Button(""){
                     loadGithubReleases(appState: appState, manual: true)
                 }
                 .buttonStyle(SimpleButtonStyle(icon: "arrow.down.square", help: "Check for updates", color: Color("mode")))
 
                 Spacer()
 
-                Button("GitHub"){
+                Button(""){
                     NSWorkspace.shared.open(URL(string: "https://github.com/alienator88/Pearcleaner/releases")!)
                 }
                 .buttonStyle(SimpleButtonStyle(icon: "link", help: "View releases on GitHub", color: Color("mode")))
