@@ -71,6 +71,7 @@ struct TopBarMini: View {
                         withAnimation(.easeInOut(duration: 0.5)) {
                             showPopover = false
                             updateOnMain {
+                                appState.appInfo = .empty
                                 if appState.zombieFile.fileSize.keys.count == 0 {
                                     appState.currentView = .zombie
                                     appState.showProgress.toggle()

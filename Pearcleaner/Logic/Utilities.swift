@@ -329,7 +329,7 @@ extension Int {
 // --- Extend String to remove periods, spaces and lowercase the string
 extension String {
     func pearFormat() -> String {
-        return self.replacingOccurrences(of: ".", with: "").replacingOccurrences(of: " ", with: "").lowercased()
+        return self.replacingOccurrences(of: ".", with: "").replacingOccurrences(of: " ", with: "").replacingOccurrences(of: "-", with: "").lowercased()
     }
 }
 

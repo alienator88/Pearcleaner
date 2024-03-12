@@ -100,6 +100,7 @@ struct PearcleanerApp: App {
                     loadAllPaths(allApps: sortedApps, appState: appState, locations: locations)
                 }
 
+
 #if !DEBUG
                 Task {
 

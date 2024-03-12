@@ -18,9 +18,36 @@ struct ZombieView: View {
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
     @Binding var search: String
+    @State private var searchZ: String = ""
     @State private var selectedOption = "Default"
 
     var body: some View {
+        
+//        let filteredAndSortedFiles: [URL] = {
+//            let files = appState.zombieFile.fileSize.keys.filter { url in
+//                searchZ.isEmpty || url.lastPathComponent.localizedCaseInsensitiveContains(searchZ)
+//            }
+//
+//            return selectedOption == "Default" ?
+//            files.sorted(by: { $0.lastPathComponent < $1.lastPathComponent }) :
+//            files.sorted(by: { appState.zombieFile.fileSize[$0, default: 0] > appState.zombieFile.fileSize[$1, default: 0] })
+//        }()
+        let filteredAndSortedFiles: ([URL], Int64) = {
+            let filteredFiles = appState.zombieFile.fileSize.filter { (url, _) in
+                searchZ.isEmpty || url.lastPathComponent.localizedCaseInsensitiveContains(searchZ)
+            }
+
+            let sortedFilteredFiles = filteredFiles.sorted(by: {
+                selectedOption == "Default" ?
+                $0.key.lastPathComponent < $1.key.lastPathComponent :
+                $0.value > $1.value
+            }).map { $0.key }
+
+            let totalSize = filteredFiles.values.reduce(0, +)
+
+            return (sortedFilteredFiles, totalSize)
+        }()
+
         VStack(alignment: .center) {
             if appState.showProgress {
                 VStack {
@@ -88,7 +115,7 @@ struct ZombieView: View {
                                 VStack(alignment: .leading, spacing: 10){
                                     HStack {
                                         Text("Leftover Files").font(.title).fontWeight(.bold)
-                                        InfoButton(text: "Leftover file search is not 100% accurate as it doesn't have any app bundles to check against. This searches for files/folders and excludes the ones that have overlap with your currently installed apps. Make sure to confirm files marked for removal are correct.", color: .red)
+                                        InfoButton(text: "Leftover file search is not 100% accurate as it doesn't have any app bundles to check against. This searches for files/folders and excludes the ones that have overlap with your currently installed apps. Make sure to confirm files marked for removal are correct.", color: .red, label: "READ")
                                         Spacer()
                                         
                                     }
@@ -99,8 +126,8 @@ struct ZombieView: View {
                                 Spacer()
 
                                 VStack(alignment: .trailing, spacing: 5) {
-                                    Text("\(formatByte(size: appState.zombieFile.totalSize))").font(.title).fontWeight(.bold)
-                                    Text("\(appState.zombieFile.fileSize.count == 1 ? "\(appState.zombieFile.fileSize.count) item" : "\(appState.zombieFile.fileSize.count) items")").font(.callout).underline().foregroundStyle((.gray.opacity(0.8)))
+                                    Text("\(formatByte(size: filteredAndSortedFiles.1))").font(.title).fontWeight(.bold)
+                                    Text("\(filteredAndSortedFiles.0.count == 1 ? "\(filteredAndSortedFiles.0.count) item" : "\(filteredAndSortedFiles.0.count) items")").font(.callout).underline().foregroundStyle((.gray.opacity(0.8)))
                                 }
 
                             }
@@ -110,19 +137,15 @@ struct ZombieView: View {
                         .padding(.top, 0)
                     }
 
+                    SearchBarMiniBottom(search: $searchZ)
+
                     Divider()
                         .padding()
 
                     ScrollView() {
                         LazyVStack {
-                            let sortedFilesSize = appState.zombieFile.fileSize.keys.sorted(by: { appState.zombieFile.fileSize[$0, default: 0] > appState.zombieFile.fileSize[$1, default: 0] })
 
-
-                            let sortedFilesAlpha = appState.zombieFile.fileSize.keys.sorted(by: { $0.lastPathComponent < $1.lastPathComponent })
-
-                            let sort = selectedOption == "Default" ? sortedFilesAlpha : sortedFilesSize
-
-                            ForEach(sort, id: \.self) { file in
+                            ForEach(filteredAndSortedFiles.0, id: \.self) { file in
                                 if let fileSize = appState.zombieFile.fileSize[file], let fileIcon = appState.zombieFile.fileIcon[file] {
                                     let iconImage = fileIcon.map(Image.init(nsImage:))
 

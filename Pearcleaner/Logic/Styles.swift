@@ -75,16 +75,26 @@ struct InfoButton: View {
     @State private var isPopoverPresented: Bool = false
     let text: String
     let color: Color?
+    let label: String?
 
     var body: some View {
         Button(action: {
             self.isPopoverPresented.toggle()
         }) {
-            Image(systemName: "info.circle.fill")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 14, height: 14)
-                .foregroundColor(color?.opacity(0.7) ?? Color("mode").opacity(0.7))
+            HStack {
+                Image(systemName: "info.circle.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 14, height: 14)
+                    .foregroundColor(color?.opacity(0.7) ?? Color("mode").opacity(0.7))
+                if !label!.isEmpty {
+                    Text(label!)
+                        .font(.callout)
+                        .foregroundColor(color?.opacity(0.7) ?? Color("mode").opacity(0.7))
+
+                }
+            }
+
         }
         .buttonStyle(PlainButtonStyle())
         .onHover { isHovered in

@@ -46,6 +46,7 @@ struct TopBar: View {
                     Button("") {
                         withAnimation(.easeInOut(duration: 0.5)) {
                             updateOnMain {
+                                appState.appInfo = .empty
                                 if appState.zombieFile.fileSize.keys.count == 0 {
                                     appState.currentView = .zombie
                                     appState.showProgress.toggle()
