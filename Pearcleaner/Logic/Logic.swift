@@ -329,6 +329,11 @@ func findPathsForApp(appInfo: AppInfo = .empty, appState: AppState, locations: L
                         continue
                     }
 
+                    // Skip if not a regular file, directory or symlink
+                    if !isSupportedFileType(at: itemURL.path) {
+                        continue
+                    }
+
                     // Catch web app plist files
                     if appInfo.webApp {
                         if itemL.contains(bundleIdentifierL) {
@@ -553,7 +558,7 @@ func reversePathsSearch(appState: AppState, locations: Locations, completion: @e
             let dispatchGroup = DispatchGroup()
             let allPaths = appState.appInfoStore.flatMap { $0.files.map { $0.path.pearFormat() } }
             let allNames = appState.appInfoStore.map { $0.appName.pearFormat() }
-            let skipped = ["apple", "temporary", "btserver", "proapps", "scripteditor", "ilife", "livefsd", "siritoday", "addressbook", "animoji", "appstore", "askpermission", "callhistory", "clouddocs", "diskimages", "dock", "facetime", "fileprovider", "instruments", "knowledge", "mobilesync", "syncservices", "homeenergyd", "icloud", "icdd", "networkserviceproxy", "familycircle", "geoservices", "installation", "passkit", "sharedimagecache", "desktop", "mbuseragent", "swiftpm", "baseband", "coresimulator", "photoslegacyupgrade", "photosupgrade", "siritts", "ipod", "globalpreferences", "apmanalytics", "apmexperiment", "avatarcache", "byhost", "contextstoreagent", "mobilemeaccounts", "intentbuilderc", "loginwindow", "momc", "replayd", "sharedfilelistd", "clang", "audiocomponent", "csexattrcryptoservice", "livetranscriptionagent", "sandboxhelper", "statuskitagent", "betaenrollmentd", "contentlinkingd", "diagnosticextensionsd", "gamed", "heard", "homed", "itunescloudd", "lldb", "mds", "mediaanalysisd", "metrickitd", "mobiletimerd", "proactived", "ptpcamerad", "studentd", "talagent", "watchlistd", "apptranslocation", "xcrun", "ds_store", "caches", "crashreporter", "trash", "pearcleaner", "amsdatamigratortool", "arfilecache", "assistant", "chromium", "cloudkit", "webkit", "databases", "diagnostic", "cache", "gamekit", "homebrew", "logi", "microsoft", "mozilla", "sync", "google"] // Skip system folders
+            let skipped = ["apple", "temporary", "btserver", "proapps", "scripteditor", "ilife", "livefsd", "siritoday", "addressbook", "animoji", "appstore", "askpermission", "callhistory", "clouddocs", "diskimages", "dock", "facetime", "fileprovider", "instruments", "knowledge", "mobilesync", "syncservices", "homeenergyd", "icloud", "icdd", "networkserviceproxy", "familycircle", "geoservices", "installation", "passkit", "sharedimagecache", "desktop", "mbuseragent", "swiftpm", "baseband", "coresimulator", "photoslegacyupgrade", "photosupgrade", "siritts", "ipod", "globalpreferences", "apmanalytics", "apmexperiment", "avatarcache", "byhost", "contextstoreagent", "mobilemeaccounts", "intentbuilderc", "loginwindow", "momc", "replayd", "sharedfilelistd", "clang", "audiocomponent", "csexattrcryptoservice", "livetranscriptionagent", "sandboxhelper", "statuskitagent", "betaenrollmentd", "contentlinkingd", "diagnosticextensionsd", "gamed", "heard", "homed", "itunescloudd", "lldb", "mds", "mediaanalysisd", "metrickitd", "mobiletimerd", "proactived", "ptpcamerad", "studentd", "talagent", "watchlistd", "apptranslocation", "xcrun", "ds_store", "caches", "crashreporter", "trash", "pearcleaner", "amsdatamigratortool", "arfilecache", "assistant", "chromium", "cloudkit", "webkit", "databases", "diagnostic", "cache", "gamekit", "homebrew", "logi", "microsoft", "mozilla", "sync", "google", "sentinel", "hexnode", "sentry", "tvappservices"] // Skip system folders
 
 
             // Skip locations that might not exist
@@ -579,6 +584,10 @@ func reversePathsSearch(appState: AppState, locations: Locations, completion: @e
                         }
 
                         if allPaths.contains(where: { $0 == itemPath }) || allNames.contains(where: { $0 == itemName }) {
+                            continue
+                        }
+
+                        if !isSupportedFileType(at: itemURL.path) {
                             continue
                         }
 
@@ -631,36 +640,37 @@ func reversePathsSearch(appState: AppState, locations: Locations, completion: @e
 // Move files to trash using applescript/Finder so it asks for user password if needed
 func moveFilesToTrash(at fileURLs: [URL], completion: @escaping () -> Void = {}) {
     @AppStorage("settings.sentinel.enable") var sentinel: Bool = false
-    var filesFinder = fileURLs
-    var filesSudo: [URL] = []
-
-    for file in fileURLs {
-        if isSocketFile(at: file) {
-            if let index = filesFinder.firstIndex(of: file) {
-                filesFinder.remove(at: index)
-                filesSudo.insert(file, at: 0)
-            }
-        }
-    }
-
-    if !filesSudo.isEmpty {
-        // Remove socket files with rm
-        let filesSudoPaths = filesSudo.map { $0.path }
-        do {
-            let fileHandler = try Authorization.executeWithPrivileges("/bin/rm -f \(filesSudoPaths.joined(separator: " "))").get()
-            printOS(String(bytes: fileHandler.readDataToEndOfFile(), encoding: .utf8)!)
-        } catch {
-            printOS("Failed to remove socket file/s with privileges: \(error)")
-        }
-    }
+//    var filesFinder = fileURLs
+//    var filesSudo: [URL] = []
+//
+//    for file in fileURLs {
+//        if isSocketFile(at: file) {
+//            if let index = filesFinder.firstIndex(of: file) {
+//                filesFinder.remove(at: index)
+//                filesSudo.insert(file, at: 0)
+//            }
+//        }
+//    }
+//
+//    if !filesSudo.isEmpty {
+//        // Remove socket files with rm
+//        let filesSudoPaths = filesSudo.map { $0.path }
+//        do {
+//            let fileHandler = try Authorization.executeWithPrivileges("/bin/rm -f \(filesSudoPaths.joined(separator: " "))").get()
+//            printOS(String(bytes: fileHandler.readDataToEndOfFile(), encoding: .utf8)!)
+//        } catch {
+//            printOS("Failed to remove socket file/s with privileges: \(error)")
+//        }
+//    }
 
 
 
     updateOnBackground {
-        let posixFiles = filesFinder.map { "POSIX file \"\($0.path)\", " }.joined().dropLast(3)
+        let posixFiles = fileURLs.map { "POSIX file \"\($0.path)\", " }.joined().dropLast(3)
         let scriptSource = """
         tell application \"Finder\" to delete { \(posixFiles)" }
         """
+
         var error: NSDictionary?
         if let scriptObject = NSAppleScript(source: scriptSource) {
             let output: NSAppleEventDescriptor = scriptObject.executeAndReturnError(&error)
@@ -685,6 +695,26 @@ func isSocketFile(at url: URL) -> Bool {
         }
     } catch {
         print("Error: \(error)")
+    }
+    return false
+}
+
+func isSupportedFileType(at path: String) -> Bool {
+    let fileManager = FileManager.default
+    do {
+        let attributes = try fileManager.attributesOfItem(atPath: path)
+        if let fileType = attributes[FileAttributeKey.type] as? FileAttributeType {
+            switch fileType {
+            case .typeRegular, .typeDirectory, .typeSymbolicLink:
+                // The file is a regular file, directory, or symbolic link
+                return true
+            default:
+                // The file is a socket, pipe, or another type not supported
+                return false
+            }
+        }
+    } catch {
+        print("Error getting file attributes: \(error)")
     }
     return false
 }
