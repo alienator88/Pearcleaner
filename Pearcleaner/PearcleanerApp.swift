@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AppKit
+import ServiceManagement
 
 @main
 struct PearcleanerApp: App {
@@ -24,9 +25,14 @@ struct PearcleanerApp: App {
     @AppStorage("settings.general.instant") private var instantSearch: Bool = true
     @AppStorage("settings.general.features") private var features: String = ""
     @AppStorage("settings.general.brew") private var brew: Bool = false
+    @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
+    @AppStorage("settings.menubar.mainWin") private var mainWinEnabled: Bool = false
+
     @State private var search = ""
     @State private var showPopover: Bool = false
     @State private var showFeature: Bool = false
+
+
 
     var body: some Scene {
 
@@ -100,6 +106,15 @@ struct PearcleanerApp: App {
                     loadAllPaths(allApps: sortedApps, appState: appState, locations: locations)
                 }
 
+                if menubarEnabled {
+                    MenuBarExtraManager.shared.addMenuBarExtra {
+                        MenuBarMiniAppView(search: $search, showPopover: $showPopover)
+                            .environmentObject(locations)
+                            .environmentObject(appState)
+                    }
+                }
+
+
 
 #if !DEBUG
                 Task {
@@ -135,6 +150,7 @@ struct PearcleanerApp: App {
 #endif
             }
         }
+        
         .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentMinSize)
         .commands {
@@ -143,10 +159,13 @@ struct PearcleanerApp: App {
             
         }
 
+
+
         
         Settings {
-            SettingsView(showPopover: $showPopover, showFeature: $showFeature)
+            SettingsView(showPopover: $showPopover, search: $search, showFeature: $showFeature)
                 .environmentObject(appState)
+                .environmentObject(locations)
                 .toolbarBackground(.clear)
                 .preferredColorScheme(displayMode.colorScheme)
         }
@@ -157,14 +176,24 @@ struct PearcleanerApp: App {
 
 
 class AppDelegate: NSObject, NSApplicationDelegate {
+
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        return true
+        let menubarEnabled = UserDefaults.standard.bool(forKey: "settings.menubar.enabled")
+        return !menubarEnabled
     }
 
-//    func applicationDidFinishLaunching(_ notification: Notification, win: WindowSettings) {
-//        let frame = win.loadWindowSettings()
-//        NSApplication.shared.windows.first?.setFrame(frame, display: true)
-//    }
+
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        let menubarEnabled = UserDefaults.standard.bool(forKey: "settings.menubar.enabled")
+
+#if !DEBUG
+        if menubarEnabled {
+            NSApp.windows.first?.close()
+            NSApplication.shared.setActivationPolicy(.accessory)
+        }
+#endif
+
+    }
 
 }
 

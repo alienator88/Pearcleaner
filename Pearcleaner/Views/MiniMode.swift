@@ -183,6 +183,7 @@ struct MiniAppView: View {
 
                         if appState.currentView != .empty {
                             SearchBarMiniBottom(search: $search)
+                                .padding(.horizontal)
                         }
                     }
                     .padding(.bottom)

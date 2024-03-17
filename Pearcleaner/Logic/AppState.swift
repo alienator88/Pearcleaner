@@ -105,6 +105,7 @@ struct ZombieFile: Identifiable, Equatable, Hashable {
 enum CurrentTabView:Int
 {
     case general
+    case menubar
 //    case permissions
 //    case sentinel
     case update
@@ -113,6 +114,7 @@ enum CurrentTabView:Int
     var title: String {
         switch self {
         case .general: return "General"
+        case .menubar: return "MenuBar"
 //        case .permissions: return "Permissions"
 //        case .sentinel: return "Sentinel"
         case .update: return "Update"

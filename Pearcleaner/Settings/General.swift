@@ -7,9 +7,11 @@
 
 import Foundation
 import SwiftUI
+import ServiceManagement
 
 struct GeneralSettingsTab: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var locations: Locations
     @State private var windowSettings = WindowSettings()
     @AppStorage("settings.general.glass") private var glass: Bool = true
     @AppStorage("settings.general.mini") private var mini: Bool = false
@@ -26,6 +28,7 @@ struct GeneralSettingsTab: View {
     @State private var accessStatus: Bool = false
     private let themes = ["Auto", "Dark", "Light"]
     @Binding var showPopover: Bool
+    @Binding var search: String
 
     var body: some View {
         Form {
@@ -148,7 +151,7 @@ struct GeneralSettingsTab: View {
                 .padding(5)
                 .padding(.leading)
 
-                // =========================================================================================================
+                // === Mini =================================================================================================
 
                 Divider()
                     .padding()
@@ -247,7 +250,7 @@ struct GeneralSettingsTab: View {
                 .padding(.leading)
 
 
-                // =========================================================================================================
+                // === Perms ================================================================================================
 
 
                 Divider()
@@ -312,7 +315,7 @@ struct GeneralSettingsTab: View {
                 .padding(.leading)
 
 
-                // =========================================================================================================
+                // === Sentinel =============================================================================================
 
                 Divider()
                     .padding()
@@ -362,11 +365,6 @@ struct GeneralSettingsTab: View {
             .onAppear {
                 diskStatus = checkAndRequestFullDiskAccess(appState: appState, skipAlert: true)
                 accessStatus = checkAndRequestAccessibilityAccess(appState: appState)
-//                if displayMode.colorScheme == .dark {
-//                    selectedTheme = "Dark"
-//                } else if displayMode.colorScheme == .light {
-//                    selectedTheme = "Light"
-//                }
             }
 
         }

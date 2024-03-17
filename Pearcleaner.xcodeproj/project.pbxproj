@@ -37,6 +37,9 @@
 		C7D31D4A2AFEB26700C7ED9E /* AppListItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D492AFEB26700C7ED9E /* AppListItems.swift */; };
 		C7D31D512AFF00F300C7ED9E /* Locations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D502AFF00F300C7ED9E /* Locations.swift */; };
 		C7DC1FEE2B9F7D3D009AC317 /* features.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DC1FED2B9F7D3D009AC317 /* features.json */; };
+		C7DE67272BA61E8D00EB1633 /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DE67262BA61E8D00EB1633 /* MenuBar.swift */; };
+		C7DE672B2BA6343D00EB1633 /* MenuBarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DE672A2BA6343D00EB1633 /* MenuBarItem.swift */; };
+		C7DE672D2BA6356500EB1633 /* MenuBarMiniAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DE672C2BA6356500EB1633 /* MenuBarMiniAppView.swift */; };
 		C7F539382AF60865007DF1B2 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F539372AF60865007DF1B2 /* Utilities.swift */; };
 		C7FB173B2B96321300B96F9A /* AppsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7FB173A2B96321300B96F9A /* AppsListView.swift */; };
 /* End PBXBuildFile section */
@@ -97,6 +100,9 @@
 		C7D31D492AFEB26700C7ED9E /* AppListItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppListItems.swift; sourceTree = "<group>"; };
 		C7D31D502AFF00F300C7ED9E /* Locations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locations.swift; sourceTree = "<group>"; };
 		C7DC1FED2B9F7D3D009AC317 /* features.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = features.json; sourceTree = SOURCE_ROOT; };
+		C7DE67262BA61E8D00EB1633 /* MenuBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBar.swift; sourceTree = "<group>"; };
+		C7DE672A2BA6343D00EB1633 /* MenuBarItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarItem.swift; sourceTree = "<group>"; };
+		C7DE672C2BA6356500EB1633 /* MenuBarMiniAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarMiniAppView.swift; sourceTree = "<group>"; };
 		C7F539372AF60865007DF1B2 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		C7FB173A2B96321300B96F9A /* AppsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsListView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -134,6 +140,7 @@
 			isa = PBXGroup;
 			children = (
 				C77B90192AF1938F009CC655 /* Logic.swift */,
+				C7DE672A2BA6343D00EB1633 /* MenuBarItem.swift */,
 				C77B90172AF19382009CC655 /* AppCommands.swift */,
 				C77B90152AF19377009CC655 /* AppState.swift */,
 				C7F539372AF60865007DF1B2 /* Utilities.swift */,
@@ -168,6 +175,7 @@
 			children = (
 				C77B901D2AF1A9DB009CC655 /* SettingsWindow.swift */,
 				C76D08492AF83C6E00D07867 /* General.swift */,
+				C7DE67262BA61E8D00EB1633 /* MenuBar.swift */,
 				C76D08472AF83C3F00D07867 /* Update.swift */,
 				C76D08502AF850F300D07867 /* About.swift */,
 			);
@@ -229,6 +237,7 @@
 				C7045A272B03E71D00376976 /* MiniMode.swift */,
 				C71848432B8D2D600046CB13 /* ZombieView.swift */,
 				C7FB173A2B96321300B96F9A /* AppsListView.swift */,
+				C7DE672C2BA6356500EB1633 /* MenuBarMiniAppView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -347,6 +356,7 @@
 				C7045A342B068B2900376976 /* UpdateView.swift in Sources */,
 				C77B90162AF19377009CC655 /* AppState.swift in Sources */,
 				C7045A322B068AD700376976 /* NewWin.swift in Sources */,
+				C7DE672D2BA6356500EB1633 /* MenuBarMiniAppView.swift in Sources */,
 				C7D31D512AFF00F300C7ED9E /* Locations.swift in Sources */,
 				C77B901A2AF1938F009CC655 /* Logic.swift in Sources */,
 				C7045A2A2B03FAF000376976 /* TopBarMini.swift in Sources */,
@@ -354,6 +364,7 @@
 				C7045A282B03E71D00376976 /* MiniMode.swift in Sources */,
 				C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */,
 				C71848442B8D2D600046CB13 /* ZombieView.swift in Sources */,
+				C7DE672B2BA6343D00EB1633 /* MenuBarItem.swift in Sources */,
 				C76D084A2AF83C6E00D07867 /* General.swift in Sources */,
 				C77B90042AF18E2E009CC655 /* PearcleanerApp.swift in Sources */,
 				C7045A362B068DD700376976 /* PermView.swift in Sources */,
@@ -367,6 +378,7 @@
 				C76D08552AF89CDE00D07867 /* RegularMode.swift in Sources */,
 				C7A9CE472B89164700EB6E78 /* Authorization.swift in Sources */,
 				C7CF47242B3B3F1700979C5F /* WindowSettings.swift in Sources */,
+				C7DE67272BA61E8D00EB1633 /* MenuBar.swift in Sources */,
 				C77B90232AF2D616009CC655 /* FilesView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

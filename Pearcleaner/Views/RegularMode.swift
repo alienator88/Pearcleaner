@@ -56,6 +56,7 @@ struct RegularMode: View {
                         VStack(alignment: .center, spacing: 20) {
                             HStack {
                                 SearchBarMiniBottom(search: $search)
+                                    .padding(.horizontal)
 
                             }
                         }

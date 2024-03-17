@@ -133,7 +133,7 @@ struct SearchBarMiniBottom: View {
             TextField(" Search", text: $search)
                 .textFieldStyle(SimpleSearchStyle(trash: true, text: $search))
         }
-        .padding(.horizontal)
-        .padding(.bottom, 0)
+//        .padding(.horizontal)
+//        .padding(.bottom, 0)
     }
 }
