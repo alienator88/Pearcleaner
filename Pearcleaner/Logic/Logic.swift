@@ -471,7 +471,7 @@ func loadAllPaths(allApps: [AppInfo], appState: AppState, locations: Locations, 
 
 
 // Load item in Files view
-func showAppInFiles(appInfo: AppInfo, mini: Bool, appState: AppState, locations: Locations, showPopover: Binding<Bool>) {
+func showAppInFiles(appInfo: AppInfo, appState: AppState, locations: Locations, showPopover: Binding<Bool>) {
     showPopover.wrappedValue = false
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
         updateOnMain {
@@ -481,23 +481,15 @@ func showAppInFiles(appInfo: AppInfo, mini: Bool, appState: AppState, locations:
                 appState.appInfo = storedAppInfo
                 appState.selectedItems = Set(storedAppInfo.files)
                 withAnimation(Animation.easeIn(duration: 0.4)) {
-                    if mini {
-                        appState.currentView = .files
-                        showPopover.wrappedValue.toggle()
-                    } else {
-                        appState.currentView = .files
-                    }
+                    appState.currentView = .files
+                    showPopover.wrappedValue.toggle()
                 }
             } else {
                 // Handle the case where the appInfo is not found in the store
                 withAnimation(Animation.easeIn(duration: 0.4)) {
                     appState.showProgress = true
-                    if mini {
-                        appState.currentView = .files
-                        showPopover.wrappedValue.toggle()
-                    } else {
-                        appState.currentView = .files
-                    }
+                    appState.currentView = .files
+                    showPopover.wrappedValue.toggle()
                 }
                 appState.appInfo = appInfo
                 findPathsForApp(appInfo: appInfo, appState: appState, locations: locations) {
@@ -640,7 +632,9 @@ func reversePathsSearch(appState: AppState, locations: Locations, completion: @e
 // Move files to trash using applescript/Finder so it asks for user password if needed
 func moveFilesToTrash(at fileURLs: [URL], completion: @escaping () -> Void = {}) {
     @AppStorage("settings.sentinel.enable") var sentinel: Bool = false
-
+    if sentinel {
+        launchctl(load: false)
+    }
     updateOnBackground {
         let posixFiles = fileURLs.map { "POSIX file \"\($0.path)\", " }.joined().dropLast(3)
         let scriptSource = """
@@ -660,6 +654,7 @@ func moveFilesToTrash(at fileURLs: [URL], completion: @escaping () -> Void = {})
             completion()
         }
     }
+
 }
 
 

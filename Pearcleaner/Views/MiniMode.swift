@@ -39,10 +39,10 @@ struct MiniMode: View {
             .popover(isPresented: $showPopover, arrowEdge: .trailing) {
                 VStack {
                     if appState.currentView == .files {
-                        FilesView(showPopover: $showPopover, search: $search)
+                        FilesView(showPopover: $showPopover, search: $search, regularWin: false)
                             .id(appState.appInfo.id)
                     } else if appState.currentView == .zombie {
-                        ZombieView(showPopover: $showPopover, search: $search)
+                        ZombieView(showPopover: $showPopover, search: $search, regularWin: false)
                             .id(appState.appInfo.id)
                     }
 

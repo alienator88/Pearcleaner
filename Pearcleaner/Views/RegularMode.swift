@@ -93,11 +93,11 @@ struct RegularMode: View {
                         AppDetailsEmptyView(showPopover: $showPopover)
                     } else if appState.currentView == .files {
                         TopBar(showPopover: $showPopover)
-                        FilesView(showPopover: $showPopover, search: $search)
+                        FilesView(showPopover: $showPopover, search: $search, regularWin: true)
                             .id(appState.appInfo.id)
                     } else if appState.currentView == .zombie {
                         TopBar(showPopover: $showPopover)
-                        ZombieView(showPopover: $showPopover, search: $search)
+                        ZombieView(showPopover: $showPopover, search: $search, regularWin: true)
                             .id(appState.appInfo.id)
                     }
                 }

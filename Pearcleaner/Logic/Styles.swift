@@ -11,15 +11,15 @@ import SwiftUI
 struct SimpleButtonStyle: ButtonStyle {
     @State private var hovered = false
     let icon: String
+    let label: String?
     let help: String
     let color: Color
-    let shield: Bool?
-    
-    init(icon: String, help: String, color: Color, shield: Bool? = nil) {
+
+    init(icon: String, label: String? = "", help: String, color: Color) {
         self.icon = icon
+        self.label = label
         self.help = help
         self.color = color
-        self.shield = shield
     }
     
     func makeBody(configuration: Self.Configuration) -> some View {
@@ -28,8 +28,11 @@ struct SimpleButtonStyle: ButtonStyle {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 20)
-                .foregroundColor(hovered ? color : color.opacity(0.5))
+            if label != "" {
+                Text(label!)
+            }
         }
+        .foregroundColor(hovered ? color : color.opacity(0.5))
         .padding(5)
         .onHover { hovering in
             withAnimation() {

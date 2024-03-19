@@ -22,6 +22,7 @@ struct MenuBarMiniAppView: View {
     @AppStorage("settings.general.glass") private var glass: Bool = true
     @AppStorage("settings.general.popover") private var popoverStay: Bool = true
     @Binding var showPopover: Bool
+    @State private var showMenu = false
 
     var body: some View {
 
@@ -57,20 +58,11 @@ struct MenuBarMiniAppView: View {
                         AppsListView(search: $search, showPopover: $showPopover, filteredApps: filteredApps).padding(0)
                         HStack(spacing: 10) {
 
-                            if #available(macOS 14.0, *) {
-                                SettingsLink()
-                                    .buttonStyle(SimpleButtonStyle(icon: "gear", help: "Settings", color: Color("mode")))
-                            } else {
-                                Button("Settings") {
-                                    NSApp.sendAction(Selector(("showPreferencesWindow:")), to: NSApp.delegate, from: nil)
-                                }
-                                .buttonStyle(SimpleButtonStyle(icon: "gear", help: "Settings", color: Color("mode")))
-                            }
-
-                            Button("") {
+                            Button("Leftover Files") {
+                                showMenu = false
                                 withAnimation(.easeInOut(duration: 0.5)) {
                                     showPopover = false
-                                    updateOnMain {
+                                    updateOnMain() {
                                         appState.appInfo = .empty
                                         appState.selectedZombieItems = []
                                         if appState.zombieFile.fileSize.keys.count == 0 {
@@ -91,34 +83,89 @@ struct MenuBarMiniAppView: View {
                                 }
                             }
                             .buttonStyle(SimpleButtonStyle(icon: "clock.arrow.circlepath", help: "Leftover Files", color: Color("mode")))
+                            .padding(.leading, 10)
 
                             SearchBarMiniBottom(search: $search)
+//                                .padding(.leading, 20)
 
-                            Button("Main") {
-                                findAndShowWindows(named: ["Pearcleaner"])
-//                                if mini {
-//                                    windowSettings.newWindow {
-//                                        MiniMode(search: $search, showPopover: $showPopover)
-//                                            .environmentObject(locations)
-//                                            .environmentObject(appState)
-//                                    }
-//                                } else {
-//                                    windowSettings.newWindow {
-//                                        RegularMode(search: $search, showPopover: $showPopover)
-//                                            .environmentObject(locations)
-//                                            .environmentObject(appState)
-//                                    }
-//                                }
-
+                            Button("More") {
+                                self.showMenu.toggle()
                             }
-                            .buttonStyle(SimpleButtonStyle(icon: "macwindow.on.rectangle", help: "Pop Out Window", color: Color("mode")))
+                            .padding(.trailing, 10)
+                            .buttonStyle(SimpleButtonStyle(icon: "ellipsis.circle", help: "More", color: Color("mode")))
+                            .popover(isPresented: $showMenu) {
+                                VStack(alignment: .leading) {
 
-                            Button("Kill") {
-                                NSApp.terminate(nil)
+                                    if #available(macOS 14.0, *) {
+                                        SettingsLink{
+                                            Label("Settings", systemImage: "gear")
+                                        }
+                                        .buttonStyle(SimpleButtonStyle(icon: "gear", label: "Settings", help: "Settings", color: Color("mode")))
+                                    } else {
+                                        Button("Settings") {
+                                            NSApp.sendAction(Selector(("showPreferencesWindow:")), to: NSApp.delegate, from: nil)
+                                            showMenu = false
+                                        }
+                                        .buttonStyle(SimpleButtonStyle(icon: "gear", label: "Settings", help: "Settings", color: Color("mode")))
+                                    }
+
+
+
+//                                    Button("Leftover Files") {
+//                                        showMenu = false
+//                                        withAnimation(.easeInOut(duration: 0.5)) {
+//                                            showPopover = false
+//                                            updateOnMain() {
+//                                                appState.appInfo = .empty
+//                                                appState.selectedZombieItems = []
+//                                                if appState.zombieFile.fileSize.keys.count == 0 {
+//                                                    appState.currentView = .zombie
+//                                                    appState.showProgress.toggle()
+//                                                    showPopover.toggle()
+//                                                    if instantSearch {
+//                                                        reversePathsSearch(appState: appState, locations: locations)
+//                                                    } else {
+//                                                        loadAllPaths(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
+//                                                    }
+//                                                } else {
+//                                                    appState.currentView = .zombie
+//                                                    showPopover.toggle()
+//                                                }
+//                                            }
+//
+//                                        }
+//                                    }
+//                                    .buttonStyle(SimpleButtonStyle(icon: "clock.arrow.circlepath", label: "Leftover Files", help: "Leftover Files", color: Color("mode")))
+
+
+
+
+                                    Button("Quit") {
+                                        NSApp.terminate(nil)
+                                    }
+                                    .buttonStyle(SimpleButtonStyle(icon: "x.circle.fill", label: "Quit Pearcleaner", help: "Quit Pearcleaner", color: Color("mode")))
+                                }
+                                .padding()
+                                .background(
+                                    Group {
+                                        if glass {
+                                            GlassEffect(material: .sidebar, blendingMode: .behindWindow)
+                                                .edgesIgnoringSafeArea(.all)
+                                        } else {
+                                            Rectangle()
+                                                .fill(Color("pop"))
+                                                .padding(-80)
+
+                                        }
+                                    }
+                                )
                             }
-                            .buttonStyle(SimpleButtonStyle(icon: "x.circle.fill", help: "Quit", color: Color("mode")))
+
+
+
+                            
                         }
-                        .padding(.horizontal)
+//                        .padding(.horizontal)
 
                     }
                     .padding(.vertical, 5)
@@ -136,30 +183,40 @@ struct MenuBarMiniAppView: View {
                     GlassEffect(material: .sidebar, blendingMode: .behindWindow)
                         .edgesIgnoringSafeArea(.all)
                 } else {
-                    Color("pop")
+                    Rectangle()
+                        .fill(Color("pop"))
                         .padding(-80)
+
                 }
             }
         )
         .transition(.opacity)
-        .popover(isPresented: $showPopover, arrowEdge: .trailing) {
+        .popover(isPresented: $showPopover, arrowEdge: .leading) {
             VStack {
                 if appState.currentView == .files {
-                    FilesView(showPopover: $showPopover, search: $search)
+                    FilesView(showPopover: $showPopover, search: $search, regularWin: false)
                         .id(appState.appInfo.id)
                 } else if appState.currentView == .zombie {
-                    ZombieView(showPopover: $showPopover, search: $search)
+                    ZombieView(showPopover: $showPopover, search: $search, regularWin: false)
                         .id(appState.appInfo.id)
                 }
 
             }
             .interactiveDismissDisabled(popoverStay)
             .background(
-                Rectangle()
-                    .fill(Color("pop"))
-                    .padding(-80)
+                Group {
+                    if glass {
+                        GlassEffect(material: .sidebar, blendingMode: .behindWindow)
+                            .edgesIgnoringSafeArea(.all)
+                    } else {
+                        Rectangle()
+                            .fill(Color("pop"))
+                            .padding(-80)
+
+                    }
+                }
             )
-            .frame(width: 650, height: 550)
+            .frame(width: 650, height: 500)
 
         }
     }

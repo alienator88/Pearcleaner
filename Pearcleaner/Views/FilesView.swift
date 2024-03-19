@@ -16,9 +16,11 @@ struct FilesView: View {
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.general.instant") var instantSearch: Bool = true
     @AppStorage("settings.general.brew") private var brew: Bool = false
+    @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
     @Binding var search: String
+    var regularWin: Bool
     @State private var selectedOption = "Default"
 
     var body: some View {
@@ -38,7 +40,7 @@ struct FilesView: View {
                 .transition(.opacity)
             } else {
                 // Titlebar
-                if mini {
+                if !regularWin {
                     HStack() {
                         Spacer()
 
@@ -192,7 +194,7 @@ struct FilesView: View {
                                     updateOnMain {
 //                                        appState.appInfo = AppInfo.empty
                                         search = ""
-                                        if mini {
+                                        if !regularWin {
                                             appState.currentView = .apps
                                             showPopover = false
                                         } else {
@@ -200,7 +202,6 @@ struct FilesView: View {
                                         }
                                     }
                                     var selectedItemsArray = Array(appState.selectedItems)
-
                                     if let url = URL(string: appState.appInfo.path.absoluteString) {
                                         let appFolderURL = appState.appInfo.path.absoluteString.contains("Wrapper") ? url.deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent() : url.deletingLastPathComponent() // Get the immediate parent directory of regular and wrapped apps
 
@@ -219,6 +220,9 @@ struct FilesView: View {
                                                 updateOnMain {
                                                     appState.currentView = mini ? .apps : .empty
                                                     appState.isReminderVisible.toggle()
+                                                }
+                                                if sentinel {
+                                                    launchctl(load: true)
                                                 }
                                             }
                                             // Remove app from app list

@@ -110,6 +110,7 @@ struct PearcleanerApp: App {
                         MenuBarMiniAppView(search: $search, showPopover: $showPopover)
                             .environmentObject(locations)
                             .environmentObject(appState)
+                            .preferredColorScheme(displayMode.colorScheme)
                     }, icon: selectedMenubarIcon)
                 }
 
@@ -181,49 +182,27 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
 
-#if !DEBUG
-    func windowShouldClose(_ sender: NSWindow) -> Bool {
-        let menubarEnabled = UserDefaults.standard.bool(forKey: "settings.menubar.enabled")
-//        let alert = NSAlert.init()
-//        alert.addButton(withTitle: "Return")
-//        alert.addButton(withTitle: "Quit")
-//        alert.informativeText = "Quit or return to application?"
-//        let response = alert.runModal()
-//        if response == NSApplication.ModalResponse.alertFirstButtonReturn {
+//#if !DEBUG
+//    func windowShouldClose(_ sender: NSWindow) -> Bool {
+//        let menubarEnabled = UserDefaults.standard.bool(forKey: "settings.menubar.enabled")
+//        if menubarEnabled {
+//            findAndHideWindows(named: ["Pearcleaner"])
 //            return false
 //        } else {
-//            NSApplication.shared.terminate(self)
 //            return true
 //        }
-        if menubarEnabled {
-            findAndHideWindows(named: ["Pearcleaner"])
-            return false
-        } else {
-            return true
-        }
-    }
-#endif
+//    }
+//#endif
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         let menubarEnabled = UserDefaults.standard.bool(forKey: "settings.menubar.enabled")
-//        let dockEnabled = UserDefaults.standard.bool(forKey: "settings.dock.enabled")
-
         if menubarEnabled {
-#if !DEBUG
             findAndHideWindows(named: ["Pearcleaner"])
-//            NSApp.windows.first?.close()
             NSApplication.shared.setActivationPolicy(.accessory)
-#endif
-//            if dockEnabled {
-//                NSApplication.shared.setActivationPolicy(.regular)
-//            } else {
-//                NSApplication.shared.setActivationPolicy(.accessory)
-//            }
         }
-
-        // Link window to delegate
-        let mainWindow = NSApp.windows[0]
-        mainWindow.delegate = self
+// Link window to delegate
+//        let mainWindow = NSApp.windows[0]
+//        mainWindow.delegate = self
 
     }
 

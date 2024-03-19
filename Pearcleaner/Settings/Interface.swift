@@ -15,7 +15,6 @@ struct InterfaceSettingsTab: View {
     @EnvironmentObject var locations: Locations
     @State private var windowSettings = WindowSettings()
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
-//    @AppStorage("settings.dock.enabled") private var dockEnabled: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @AppStorage("settings.general.glass") private var glass: Bool = true
@@ -57,6 +56,9 @@ struct InterfaceSettingsTab: View {
                     Toggle(isOn: $glass, label: {
                     })
                     .toggleStyle(.switch)
+                    .onChange(of: glass) { newVal in
+                        MenuBarExtraManager.shared.restartMenuBarExtra()
+                    }
                 }
                 .padding(5)
                 .padding(.leading)
@@ -89,13 +91,17 @@ struct InterfaceSettingsTab: View {
                             displayMode.colorScheme = nil
                             if isDarkModeEnabled() {
                                 displayMode.colorScheme = .dark
+                                MenuBarExtraManager.shared.restartMenuBarExtra()
                             } else {
                                 displayMode.colorScheme = .light
+                                MenuBarExtraManager.shared.restartMenuBarExtra()
                             }
                         case "Dark":
                             displayMode.colorScheme = .dark
+                            MenuBarExtraManager.shared.restartMenuBarExtra()
                         case "Light":
                             displayMode.colorScheme = .light
+                            MenuBarExtraManager.shared.restartMenuBarExtra()
                         default:
                             break
                         }
@@ -135,19 +141,35 @@ struct InterfaceSettingsTab: View {
                     Toggle(isOn: $mini, label: {
                     })
                     .toggleStyle(.switch)
+                    .disabled(menubarEnabled)
+                    .help(menubarEnabled ? "Disabled when menubar icon is enabled" : "")
                     .onChange(of: mini) { newVal in
-                        if mini {
-                            appState.currentView = miniView ? .apps : .empty
-                            showPopover = false
-                            resizeWindowAuto(windowSettings: windowSettings)
-                        } else {
-                            resizeWindowAuto(windowSettings: windowSettings)
-                            if appState.appInfo.appName.isEmpty {
-                                appState.currentView = .empty
+                            if mini {
+                                appState.currentView = miniView ? .apps : .empty
+                                showPopover = false
+                                windowSettings.newWindow {
+                                    MiniMode(search: $search, showPopover: $showPopover)
+                                        .environmentObject(locations)
+                                        .environmentObject(appState)
+                                        .preferredColorScheme(displayMode.colorScheme)
+                                }
+                                resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")
                             } else {
-                                appState.currentView = .files
+                                if appState.appInfo.appName.isEmpty {
+                                    appState.currentView = .empty
+                                } else {
+                                    appState.currentView = .files
+                                }
+                                windowSettings.newWindow {
+                                    RegularMode(search: $search, showPopover: $showPopover)
+                                        .environmentObject(locations)
+                                        .environmentObject(appState)
+                                        .preferredColorScheme(displayMode.colorScheme)
+                                }
+                                resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")
                             }
-                        }
+
+
                     }
                 }
                 .padding(5)
@@ -229,7 +251,7 @@ struct InterfaceSettingsTab: View {
                             .font(.callout)
                             .foregroundStyle(.gray)
                     }
-                    InfoButton(text: "When menubar icon is enabled, the main app window and dock icon will be hidden. You can still pop-out the main app window from the menubar icon temporarily if you'd like.", color: nil, label: "")
+                    InfoButton(text: "When menubar icon is enabled, the main app window and dock icon will be disabled since the app will be put in accessory mode.", color: nil, label: "")
                     Spacer()
                     Toggle(isOn: $menubarEnabled, label: {
                     })
@@ -240,12 +262,13 @@ struct InterfaceSettingsTab: View {
                                 MenuBarMiniAppView(search: $search, showPopover: $showPopover)
                                     .environmentObject(locations)
                                     .environmentObject(appState)
+                                    .preferredColorScheme(displayMode.colorScheme)
                             }, icon: selectedMenubarIcon)
                             NSApplication.shared.setActivationPolicy(.accessory)
-                            findAndShowWindows(named: ["Pearcleaner", "Interface"])
+                            findAndHideWindows(named: ["Pearcleaner"])
+//                            findAndShowWindows(named: ["Pearcleaner", "Interface"])
                         } else {
                             MenuBarExtraManager.shared.removeMenuBarExtra()
-//                            dockEnabled = true
                             NSApplication.shared.setActivationPolicy(.regular)
                             if !hasWindowOpen() {
                                 if mini {
@@ -253,13 +276,17 @@ struct InterfaceSettingsTab: View {
                                         MiniMode(search: $search, showPopover: $showPopover)
                                             .environmentObject(locations)
                                             .environmentObject(appState)
+                                            .preferredColorScheme(displayMode.colorScheme)
                                     }
+                                    resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")
                                 } else {
                                     windowSettings.newWindow {
                                         RegularMode(search: $search, showPopover: $showPopover)
                                             .environmentObject(locations)
                                             .environmentObject(appState)
+                                            .preferredColorScheme(displayMode.colorScheme)
                                     }
+                                    resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")
                                 }
                             }
 

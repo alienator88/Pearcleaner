@@ -15,23 +15,16 @@ struct ZombieView: View {
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.general.instant") private var instantSearch: Bool = true
+    @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
     @Binding var search: String
     @State private var searchZ: String = ""
     @State private var selectedOption = "Default"
+    var regularWin: Bool
 
     var body: some View {
-        
-//        let filteredAndSortedFiles: [URL] = {
-//            let files = appState.zombieFile.fileSize.keys.filter { url in
-//                searchZ.isEmpty || url.lastPathComponent.localizedCaseInsensitiveContains(searchZ)
-//            }
-//
-//            return selectedOption == "Default" ?
-//            files.sorted(by: { $0.lastPathComponent < $1.lastPathComponent }) :
-//            files.sorted(by: { appState.zombieFile.fileSize[$0, default: 0] > appState.zombieFile.fileSize[$1, default: 0] })
-//        }()
+
         let filteredAndSortedFiles: ([URL], Int64) = {
             let filteredFiles = appState.zombieFile.fileSize.filter { (url, _) in
                 searchZ.isEmpty || url.lastPathComponent.localizedCaseInsensitiveContains(searchZ)
@@ -68,7 +61,7 @@ struct ZombieView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 // Titlebar
-                if mini {
+                if !regularWin {
                     HStack(spacing: 0) {
                         Spacer()
 
@@ -188,7 +181,7 @@ struct ZombieView: View {
                                     updateOnMain {
                                         appState.zombieFile = .empty
                                         search = ""
-                                        if mini {
+                                        if !regularWin {
                                             appState.currentView = .apps
                                             showPopover = false
                                         } else {

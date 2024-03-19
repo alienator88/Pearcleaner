@@ -14,8 +14,8 @@ struct AppListItems: View {
     @State private var isHovered = false
     @State private var windowSettings = WindowSettings()
     @Environment(\.colorScheme) var colorScheme
-    @AppStorage("settings.general.mini") private var mini: Bool = false
-    @AppStorage("settings.general.popover") private var popoverStay: Bool = true
+//    @AppStorage("settings.general.mini") private var mini: Bool = false
+//    @AppStorage("settings.general.popover") private var popoverStay: Bool = true
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @Binding var showPopover: Bool
     @EnvironmentObject var locations: Locations
@@ -110,7 +110,7 @@ struct AppListItems: View {
             }
             .onTapGesture {
                 withAnimation(Animation.easeInOut(duration: 0.4)) {
-                    showAppInFiles(appInfo: appInfo, mini: mini, appState: appState, locations: locations, showPopover: $showPopover)
+                    showAppInFiles(appInfo: appInfo, appState: appState, locations: locations, showPopover: $showPopover)
                 }
             }
 

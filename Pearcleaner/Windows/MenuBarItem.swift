@@ -12,15 +12,22 @@ class MenuBarExtraManager {
     static let shared = MenuBarExtraManager()
     private var statusItem: NSStatusItem?
     private var popover = NSPopover()
+    // Store the last view and icon for restart
+    private var lastView: (() -> AnyView)?
+    private var lastIcon: String?
 
     func addMenuBarExtra<V: View>(withView view: @escaping () -> V, icon: String) {
         guard statusItem == nil else { return }
+
+        // Remember the last view and icon
+        lastView = { AnyView(view()) }
+        lastIcon = icon
 
         // Initialize the status item
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
 
         // Set up the status item's button
-        if let button = statusItem?.button {
+        if let button = statusItem?.button{
             if NSImage(systemSymbolName: icon, accessibilityDescription: nil) != nil {
                 button.image = NSImage(systemSymbolName: icon, accessibilityDescription: "Pearcleaner")
             } else {
@@ -29,6 +36,7 @@ class MenuBarExtraManager {
             }
             button.action = #selector(togglePopover(_:))
             button.target = self
+            button.sendAction(on: [.leftMouseDown, .rightMouseDown])
         }
 
         // Set up the popover
@@ -54,13 +62,16 @@ class MenuBarExtraManager {
         }
     }
 
-//    func getStatus() -> Bool {
-//        if let item = statusItem {
-//            return true
-//        } else {
-//            return false
-//        }
-//    }
+    func restartMenuBarExtra() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.removeMenuBarExtra()
+
+            // Ensure the last view and icon are available before re-adding
+            if let lastView = self.lastView, let lastIcon = self.lastIcon {
+                self.addMenuBarExtra(withView: lastView, icon: lastIcon)
+            }
+        }
+    }
 
     @objc func togglePopover(_ sender: AnyObject?) {
         if let button = statusItem?.button {
@@ -71,4 +82,6 @@ class MenuBarExtraManager {
             }
         }
     }
+
+
 }

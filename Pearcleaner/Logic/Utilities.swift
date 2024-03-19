@@ -34,15 +34,15 @@ func updateOnBackground(_ updates: @escaping () -> Void) {
 
 
 // Resize window
-func resizeWindow(width: CGFloat, height: CGFloat) {
-    if let window = NSApplication.shared.windows.first {
-        let newSize = NSSize(width: width, height: height)
-        window.setContentSize(newSize)
-    }
-}
+//func resizeWindow(width: CGFloat, height: CGFloat) {
+//    if let window = NSApplication.shared.windows.first {
+//        let newSize = NSSize(width: width, height: height)
+//        window.setContentSize(newSize)
+//    }
+//}
 
-func resizeWindowAuto(windowSettings: WindowSettings) {
-    if let window = NSApplication.shared.windows.first {
+func resizeWindowAuto(windowSettings: WindowSettings, title: String) {
+    if let window = NSApplication.shared.windows.first(where: { $0.title == title }) {
         let newSize = NSSize(width: windowSettings.loadWindowSettings().width, height: windowSettings.loadWindowSettings().height)
         window.setContentSize(newSize)
     }
@@ -168,7 +168,8 @@ func hasWindowOpen() -> Bool {
 func findAndHideWindows(named titles: [String]) {
     for title in titles {
         if let window = NSApp.windows.first(where: { $0.title == title }) {
-            window.orderOut(nil)
+//            window.orderOut(nil)
+            window.close()
         }
     }
 }
