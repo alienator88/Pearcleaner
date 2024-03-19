@@ -152,7 +152,7 @@ struct AboutSettingsTab: View {
             Text("Made with ❤️ by Alin Lupascu (dev@itsalin.com)").font(.footnote).padding(.bottom)
         }
         .padding(20)
-        .frame(width: 500, height: 650)
+        .frame(width: 500, height: 600)
 
     }
 }

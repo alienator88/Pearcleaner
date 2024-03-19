@@ -105,18 +105,14 @@ struct ZombieFile: Identifiable, Equatable, Hashable {
 enum CurrentTabView:Int
 {
     case general
-    case menubar
-//    case permissions
-//    case sentinel
+    case interface
     case update
     case about
     
     var title: String {
         switch self {
         case .general: return "General"
-        case .menubar: return "MenuBar"
-//        case .permissions: return "Permissions"
-//        case .sentinel: return "Sentinel"
+        case .interface: return "Interface"
         case .update: return "Update"
         case .about: return "About"
         }

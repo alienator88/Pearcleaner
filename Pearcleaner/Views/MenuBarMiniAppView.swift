@@ -12,7 +12,7 @@ struct MenuBarMiniAppView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
-    @State private var windowSettings = WindowSettings()
+//    @State private var windowSettings = WindowSettings()
     @State private var animateGradient: Bool = false
     @Binding var search: String
     @State private var showSys: Bool = true
@@ -56,6 +56,7 @@ struct MenuBarMiniAppView: View {
 
                         AppsListView(search: $search, showPopover: $showPopover, filteredApps: filteredApps).padding(0)
                         HStack(spacing: 10) {
+
                             if #available(macOS 14.0, *) {
                                 SettingsLink()
                                     .buttonStyle(SimpleButtonStyle(icon: "gear", help: "Settings", color: Color("mode")))
@@ -66,16 +67,51 @@ struct MenuBarMiniAppView: View {
                                 .buttonStyle(SimpleButtonStyle(icon: "gear", help: "Settings", color: Color("mode")))
                             }
 
+                            Button("") {
+                                withAnimation(.easeInOut(duration: 0.5)) {
+                                    showPopover = false
+                                    updateOnMain {
+                                        appState.appInfo = .empty
+                                        appState.selectedZombieItems = []
+                                        if appState.zombieFile.fileSize.keys.count == 0 {
+                                            appState.currentView = .zombie
+                                            appState.showProgress.toggle()
+                                            showPopover.toggle()
+                                            if instantSearch {
+                                                reversePathsSearch(appState: appState, locations: locations)
+                                            } else {
+                                                loadAllPaths(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
+                                            }
+                                        } else {
+                                            appState.currentView = .zombie
+                                            showPopover.toggle()
+                                        }
+                                    }
+
+                                }
+                            }
+                            .buttonStyle(SimpleButtonStyle(icon: "clock.arrow.circlepath", help: "Leftover Files", color: Color("mode")))
+
                             SearchBarMiniBottom(search: $search)
 
                             Button("Main") {
-                                windowSettings.newWindow {
-                                    MiniMode(search: $search, showPopover: $showPopover)
-                                        .environmentObject(locations)
-                                        .environmentObject(appState)
-                                }
+                                findAndShowWindows(named: ["Pearcleaner"])
+//                                if mini {
+//                                    windowSettings.newWindow {
+//                                        MiniMode(search: $search, showPopover: $showPopover)
+//                                            .environmentObject(locations)
+//                                            .environmentObject(appState)
+//                                    }
+//                                } else {
+//                                    windowSettings.newWindow {
+//                                        RegularMode(search: $search, showPopover: $showPopover)
+//                                            .environmentObject(locations)
+//                                            .environmentObject(appState)
+//                                    }
+//                                }
+
                             }
-                            .buttonStyle(SimpleButtonStyle(icon: "macwindow", help: "Show Main Window", color: Color("mode")))
+                            .buttonStyle(SimpleButtonStyle(icon: "macwindow.on.rectangle", help: "Pop Out Window", color: Color("mode")))
 
                             Button("Kill") {
                                 NSApp.terminate(nil)

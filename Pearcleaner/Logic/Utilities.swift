@@ -156,6 +156,31 @@ func isDarkModeEnabled() -> Bool {
     }
 }
 
+// Check if Pearcleaner has any windows open
+func hasWindowOpen() -> Bool {
+    for window in NSApp.windows where window.title == "Pearcleaner" {
+        return true
+    }
+    return false
+}
+
+// Find and hide/show main app window when using menubar item
+func findAndHideWindows(named titles: [String]) {
+    for title in titles {
+        if let window = NSApp.windows.first(where: { $0.title == title }) {
+            window.orderOut(nil)
+        }
+    }
+}
+
+func findAndShowWindows(named titles: [String]) {
+    for title in titles {
+        if let window = NSApp.windows.first(where: { $0.title == title }) {
+            window.makeKeyAndOrderFront(nil)
+        }
+    }
+}
+
 
 // Check if appearance is dark mode
 //func getCasks() -> [String] {

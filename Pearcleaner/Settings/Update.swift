@@ -107,7 +107,7 @@ struct UpdateSettingsTab: View {
             
         }
         .padding(20)
-        .frame(width: 500, height: 650)
+        .frame(width: 500, height: 520)
     }
     
 }

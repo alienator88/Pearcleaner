@@ -37,9 +37,10 @@
 		C7D31D4A2AFEB26700C7ED9E /* AppListItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D492AFEB26700C7ED9E /* AppListItems.swift */; };
 		C7D31D512AFF00F300C7ED9E /* Locations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D502AFF00F300C7ED9E /* Locations.swift */; };
 		C7DC1FEE2B9F7D3D009AC317 /* features.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DC1FED2B9F7D3D009AC317 /* features.json */; };
-		C7DE67272BA61E8D00EB1633 /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DE67262BA61E8D00EB1633 /* MenuBar.swift */; };
 		C7DE672B2BA6343D00EB1633 /* MenuBarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DE672A2BA6343D00EB1633 /* MenuBarItem.swift */; };
 		C7DE672D2BA6356500EB1633 /* MenuBarMiniAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DE672C2BA6356500EB1633 /* MenuBarMiniAppView.swift */; };
+		C7ED86B12BA8A35500F13DE4 /* Interface.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7ED86B02BA8A35500F13DE4 /* Interface.swift */; };
+		C7ED86B32BA8ED8800F13DE4 /* Trash.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7ED86B22BA8ED8800F13DE4 /* Trash.swift */; };
 		C7F539382AF60865007DF1B2 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F539372AF60865007DF1B2 /* Utilities.swift */; };
 		C7FB173B2B96321300B96F9A /* AppsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7FB173A2B96321300B96F9A /* AppsListView.swift */; };
 /* End PBXBuildFile section */
@@ -100,9 +101,10 @@
 		C7D31D492AFEB26700C7ED9E /* AppListItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppListItems.swift; sourceTree = "<group>"; };
 		C7D31D502AFF00F300C7ED9E /* Locations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locations.swift; sourceTree = "<group>"; };
 		C7DC1FED2B9F7D3D009AC317 /* features.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = features.json; sourceTree = SOURCE_ROOT; };
-		C7DE67262BA61E8D00EB1633 /* MenuBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBar.swift; sourceTree = "<group>"; };
 		C7DE672A2BA6343D00EB1633 /* MenuBarItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarItem.swift; sourceTree = "<group>"; };
 		C7DE672C2BA6356500EB1633 /* MenuBarMiniAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarMiniAppView.swift; sourceTree = "<group>"; };
+		C7ED86B02BA8A35500F13DE4 /* Interface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interface.swift; sourceTree = "<group>"; };
+		C7ED86B22BA8ED8800F13DE4 /* Trash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trash.swift; sourceTree = "<group>"; };
 		C7F539372AF60865007DF1B2 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		C7FB173A2B96321300B96F9A /* AppsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsListView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -132,6 +134,8 @@
 				C7045A312B068AD700376976 /* NewWin.swift */,
 				C7045A332B068B2900376976 /* UpdateView.swift */,
 				C7045A352B068DD700376976 /* PermView.swift */,
+				C7DE672A2BA6343D00EB1633 /* MenuBarItem.swift */,
+				C7CF47232B3B3F1700979C5F /* WindowSettings.swift */,
 			);
 			path = Windows;
 			sourceTree = "<group>";
@@ -140,16 +144,15 @@
 			isa = PBXGroup;
 			children = (
 				C77B90192AF1938F009CC655 /* Logic.swift */,
-				C7DE672A2BA6343D00EB1633 /* MenuBarItem.swift */,
 				C77B90172AF19382009CC655 /* AppCommands.swift */,
 				C77B90152AF19377009CC655 /* AppState.swift */,
 				C7F539372AF60865007DF1B2 /* Utilities.swift */,
 				C72893042AFD42E600C8C1CD /* DeepLink.swift */,
 				C77B901B2AF193A3009CC655 /* Styles.swift */,
 				C7D31D502AFF00F300C7ED9E /* Locations.swift */,
-				C7CF47232B3B3F1700979C5F /* WindowSettings.swift */,
 				C7A9CE462B89164700EB6E78 /* Authorization.swift */,
 				C7ACADE52B92A737000B5845 /* Features.swift */,
+				C7ED86B22BA8ED8800F13DE4 /* Trash.swift */,
 			);
 			path = Logic;
 			sourceTree = "<group>";
@@ -175,7 +178,7 @@
 			children = (
 				C77B901D2AF1A9DB009CC655 /* SettingsWindow.swift */,
 				C76D08492AF83C6E00D07867 /* General.swift */,
-				C7DE67262BA61E8D00EB1633 /* MenuBar.swift */,
+				C7ED86B02BA8A35500F13DE4 /* Interface.swift */,
 				C76D08472AF83C3F00D07867 /* Update.swift */,
 				C76D08502AF850F300D07867 /* About.swift */,
 			);
@@ -357,11 +360,13 @@
 				C77B90162AF19377009CC655 /* AppState.swift in Sources */,
 				C7045A322B068AD700376976 /* NewWin.swift in Sources */,
 				C7DE672D2BA6356500EB1633 /* MenuBarMiniAppView.swift in Sources */,
+				C7ED86B32BA8ED8800F13DE4 /* Trash.swift in Sources */,
 				C7D31D512AFF00F300C7ED9E /* Locations.swift in Sources */,
 				C77B901A2AF1938F009CC655 /* Logic.swift in Sources */,
 				C7045A2A2B03FAF000376976 /* TopBarMini.swift in Sources */,
 				C77B901C2AF193A3009CC655 /* Styles.swift in Sources */,
 				C7045A282B03E71D00376976 /* MiniMode.swift in Sources */,
+				C7ED86B12BA8A35500F13DE4 /* Interface.swift in Sources */,
 				C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */,
 				C71848442B8D2D600046CB13 /* ZombieView.swift in Sources */,
 				C7DE672B2BA6343D00EB1633 /* MenuBarItem.swift in Sources */,
@@ -378,7 +383,6 @@
 				C76D08552AF89CDE00D07867 /* RegularMode.swift in Sources */,
 				C7A9CE472B89164700EB6E78 /* Authorization.swift in Sources */,
 				C7CF47242B3B3F1700979C5F /* WindowSettings.swift in Sources */,
-				C7DE67272BA61E8D00EB1633 /* MenuBar.swift in Sources */,
 				C77B90232AF2D616009CC655 /* FilesView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -555,7 +559,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 23;
+				CURRENT_PROJECT_VERSION = 24;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = BK8443AXLU;
@@ -573,7 +577,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 3.1.1;
+				MARKETING_VERSION = 3.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.Pearcleaner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -590,7 +594,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 23;
+				CURRENT_PROJECT_VERSION = 24;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = BK8443AXLU;
@@ -608,7 +612,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 3.1.1;
+				MARKETING_VERSION = 3.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.Pearcleaner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

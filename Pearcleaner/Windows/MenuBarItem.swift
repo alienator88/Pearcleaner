@@ -13,7 +13,7 @@ class MenuBarExtraManager {
     private var statusItem: NSStatusItem?
     private var popover = NSPopover()
 
-    func addMenuBarExtra<V: View>(withView view: @escaping () -> V) {
+    func addMenuBarExtra<V: View>(withView view: @escaping () -> V, icon: String) {
         guard statusItem == nil else { return }
 
         // Initialize the status item
@@ -21,7 +21,12 @@ class MenuBarExtraManager {
 
         // Set up the status item's button
         if let button = statusItem?.button {
-            button.image = NSImage(systemSymbolName: "menubar.rectangle", accessibilityDescription: "Pearcleaner")
+            if NSImage(systemSymbolName: icon, accessibilityDescription: nil) != nil {
+                button.image = NSImage(systemSymbolName: icon, accessibilityDescription: "Pearcleaner")
+            } else {
+                button.image = NSImage(named: icon)
+
+            }
             button.action = #selector(togglePopover(_:))
             button.target = self
         }
@@ -40,13 +45,22 @@ class MenuBarExtraManager {
         }
     }
 
-    func getStatus() -> Bool {
-        if let item = statusItem {
-            return true
+    func swapMenuBarIcon(icon: String) {
+        guard let button = statusItem?.button else { return }
+        if let image = NSImage(systemSymbolName: icon, accessibilityDescription: nil) {
+            button.image = image
         } else {
-            return false
+            button.image = NSImage(named: icon)
         }
     }
+
+//    func getStatus() -> Bool {
+//        if let item = statusItem {
+//            return true
+//        } else {
+//            return false
+//        }
+//    }
 
     @objc func togglePopover(_ sender: AnyObject?) {
         if let button = statusItem?.button {

@@ -27,6 +27,7 @@ struct PearcleanerApp: App {
     @AppStorage("settings.general.brew") private var brew: Bool = false
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     @AppStorage("settings.menubar.mainWin") private var mainWinEnabled: Bool = false
+    @AppStorage("settings.interface.selectedMenubarIcon") var selectedMenubarIcon: String = "trash"
 
     @State private var search = ""
     @State private var showPopover: Bool = false
@@ -41,10 +42,8 @@ struct PearcleanerApp: App {
                 ZStack() {
                     if !mini {
                         RegularMode(search: $search, showPopover: $showPopover)
-                            .environmentObject(locations)
                     } else {
                         MiniMode(search: $search, showPopover: $showPopover)
-                            .environmentObject(locations)
                     }
                     
                     if showFeature {
@@ -57,8 +56,8 @@ struct PearcleanerApp: App {
 
             }
             .environmentObject(appState)
+            .environmentObject(locations)
             .preferredColorScheme(displayMode.colorScheme)
-//            .alert(isPresented: $appState.showAlert) { presentAlert(appState: appState) }
             .handlesExternalEvents(preferring: Set(arrayLiteral: "pear"), allowing: Set(arrayLiteral: "*"))
             .onOpenURL(perform: { url in
                 let deeplinkManager = DeeplinkManager(showPopover: $showPopover)
@@ -107,13 +106,12 @@ struct PearcleanerApp: App {
                 }
 
                 if menubarEnabled {
-                    MenuBarExtraManager.shared.addMenuBarExtra {
+                    MenuBarExtraManager.shared.addMenuBarExtra(withView: {
                         MenuBarMiniAppView(search: $search, showPopover: $showPopover)
                             .environmentObject(locations)
                             .environmentObject(appState)
-                    }
+                    }, icon: selectedMenubarIcon)
                 }
-
 
 
 #if !DEBUG
@@ -175,7 +173,7 @@ struct PearcleanerApp: App {
 
 
 
-class AppDelegate: NSObject, NSApplicationDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         let menubarEnabled = UserDefaults.standard.bool(forKey: "settings.menubar.enabled")
@@ -183,15 +181,49 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
 
+#if !DEBUG
+    func windowShouldClose(_ sender: NSWindow) -> Bool {
+        let menubarEnabled = UserDefaults.standard.bool(forKey: "settings.menubar.enabled")
+//        let alert = NSAlert.init()
+//        alert.addButton(withTitle: "Return")
+//        alert.addButton(withTitle: "Quit")
+//        alert.informativeText = "Quit or return to application?"
+//        let response = alert.runModal()
+//        if response == NSApplication.ModalResponse.alertFirstButtonReturn {
+//            return false
+//        } else {
+//            NSApplication.shared.terminate(self)
+//            return true
+//        }
+        if menubarEnabled {
+            findAndHideWindows(named: ["Pearcleaner"])
+            return false
+        } else {
+            return true
+        }
+    }
+#endif
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         let menubarEnabled = UserDefaults.standard.bool(forKey: "settings.menubar.enabled")
+//        let dockEnabled = UserDefaults.standard.bool(forKey: "settings.dock.enabled")
 
-#if !DEBUG
         if menubarEnabled {
-            NSApp.windows.first?.close()
+#if !DEBUG
+            findAndHideWindows(named: ["Pearcleaner"])
+//            NSApp.windows.first?.close()
             NSApplication.shared.setActivationPolicy(.accessory)
-        }
 #endif
+//            if dockEnabled {
+//                NSApplication.shared.setActivationPolicy(.regular)
+//            } else {
+//                NSApplication.shared.setActivationPolicy(.accessory)
+//            }
+        }
+
+        // Link window to delegate
+        let mainWindow = NSApp.windows[0]
+        mainWindow.delegate = self
 
     }
 

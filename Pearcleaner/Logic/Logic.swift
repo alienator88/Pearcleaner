@@ -640,30 +640,6 @@ func reversePathsSearch(appState: AppState, locations: Locations, completion: @e
 // Move files to trash using applescript/Finder so it asks for user password if needed
 func moveFilesToTrash(at fileURLs: [URL], completion: @escaping () -> Void = {}) {
     @AppStorage("settings.sentinel.enable") var sentinel: Bool = false
-//    var filesFinder = fileURLs
-//    var filesSudo: [URL] = []
-//
-//    for file in fileURLs {
-//        if isSocketFile(at: file) {
-//            if let index = filesFinder.firstIndex(of: file) {
-//                filesFinder.remove(at: index)
-//                filesSudo.insert(file, at: 0)
-//            }
-//        }
-//    }
-//
-//    if !filesSudo.isEmpty {
-//        // Remove socket files with rm
-//        let filesSudoPaths = filesSudo.map { $0.path }
-//        do {
-//            let fileHandler = try Authorization.executeWithPrivileges("/bin/rm -f \(filesSudoPaths.joined(separator: " "))").get()
-//            printOS(String(bytes: fileHandler.readDataToEndOfFile(), encoding: .utf8)!)
-//        } catch {
-//            printOS("Failed to remove socket file/s with privileges: \(error)")
-//        }
-//    }
-
-
 
     updateOnBackground {
         let posixFiles = fileURLs.map { "POSIX file \"\($0.path)\", " }.joined().dropLast(3)

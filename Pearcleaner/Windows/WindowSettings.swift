@@ -15,7 +15,7 @@ class WindowSettings {
     private let windowXKey = "windowXKey"
     private let windowYKey = "windowYKey"
     @AppStorage("settings.general.mini") private var mini: Bool = false
-    var window: NSWindow?
+    var windows: [NSWindow] = []
 
     func saveWindowSettings(frame: NSRect) {
 
@@ -37,7 +37,6 @@ class WindowSettings {
     func newWindow<V: View>(withView view: @escaping () -> V) {
         let contentView = view
         let frame = self.loadWindowSettings()
-        // Create the window and set the content view
         let newWindow = NSWindow(
             contentRect: frame,
             styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
@@ -47,7 +46,8 @@ class WindowSettings {
         newWindow.center()
         newWindow.setFrameAutosaveName("Main Window")
         newWindow.contentView = NSHostingView(rootView: contentView())
-        self.window = newWindow
+//        self.window = newWindow
+        self.windows.append(newWindow)
         newWindow.makeKeyAndOrderFront(nil)
     }
 }

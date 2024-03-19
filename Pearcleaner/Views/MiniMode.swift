@@ -65,6 +65,7 @@ struct MiniMode: View {
         // MARK: Background for whole app
         //        .background(Color("bg").opacity(1))
         //        .background(VisualEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all))
+        
     }
 }
 

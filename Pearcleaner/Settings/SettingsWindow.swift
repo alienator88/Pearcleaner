@@ -23,11 +23,11 @@ struct SettingsView: View {
                 }
                 .tag(CurrentTabView.general)
 
-            MenuBarSettingsTab(showPopover: $showPopover, search: $search)
+            InterfaceSettingsTab(showPopover: $showPopover, search: $search)
                 .tabItem {
-                    Label(CurrentTabView.menubar.title, systemImage: "menubar.rectangle")
+                    Label(CurrentTabView.interface.title, systemImage: "macwindow")
                 }
-                .tag(CurrentTabView.menubar)
+                .tag(CurrentTabView.interface)
 
             UpdateSettingsTab(showFeature: $showFeature)
                 .tabItem {
