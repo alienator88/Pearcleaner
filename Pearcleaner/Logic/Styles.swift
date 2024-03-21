@@ -308,6 +308,7 @@ struct AnimatedSearchStyle: TextFieldStyle {
     @FocusState private var isFocused: Bool
     @Binding var text: String
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var fsm: FolderSettingsManager
 
     func _body(configuration: TextField<Self._Label>) -> some View {
         
@@ -332,7 +333,7 @@ struct AnimatedSearchStyle: TextFieldStyle {
                         withAnimation {
                             // Refresh Apps list
                             appState.reload.toggle()
-                            let sortedApps = getSortedApps()
+                            let sortedApps = getSortedApps(paths: fsm.folderPaths, appState: appState)
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                 appState.sortedApps = sortedApps
                                 appState.reload.toggle()
@@ -435,13 +436,55 @@ struct SimpleSearchStyle: TextFieldStyle {
             }
             
         }
+        .disabled(appState.instantProgress != 0 && appState.instantProgress != appState.instantTotal)
         .padding(6)
         .overlay(
             Group {
-                RoundedRectangle(cornerRadius: 6)
-                    .strokeBorder(Color("mode").opacity(0.2), lineWidth: 1)
-                    .allowsHitTesting(false)
-                
+                GeometryReader { geometry in
+                    ZStack(alignment: .leading) {
+
+
+                        if appState.instantProgress != 0 && appState.instantProgress != appState.instantTotal {
+                            let totalWidth = geometry.size.width
+                            let progressFraction = CGFloat(appState.instantProgress / appState.instantTotal)
+                            let progressWidth = totalWidth * progressFraction
+
+                            RoundedRectangle(cornerRadius: 6)
+                                .fill(Color.accentColor)
+                                .padding(4)
+                                .frame(width: progressWidth)
+                                .animation(.linear, value: progressWidth)
+                                .allowsHitTesting(false)
+
+                        }
+
+                        RoundedRectangle(cornerRadius: 6)
+                            .strokeBorder(Color.gray.opacity(0.2), lineWidth: 1)
+                            .allowsHitTesting(false)
+                    }
+                }
+//                ZStack {
+//                    RoundedRectangle(cornerRadius: 6)
+//                        .strokeBorder(Color("mode").opacity(0.2), lineWidth: 1)
+//                        .allowsHitTesting(false)
+//                    
+//                    if appState.instantTotal > 0 {
+//                        let progressWidth = CGFloat(appState.instantProgress / appState.instantTotal)
+//                        * NSScreen.main.bounds.width // Assuming full width for simplicity; adjust as needed
+//                        RoundedRectangle(cornerRadius: 6)
+//                            .fill(Color.accentColor.opacity(0.5)) // Adjust color and opacity as needed
+//                            .frame(width: progressWidth)
+//                            .animation(.linear, value: progressWidth)
+//                            .allowsHitTesting(false)
+//                    }
+////                    if appState.instantProgress != 0 && appState.instantProgress != appState.instantTotal {
+////                        ProgressView("", value: appState.instantProgress, total: appState.instantTotal)
+////                            .progressViewStyle(.linear)
+////                            .padding()
+////                    }
+//                }
+
+
             }
         )
         .onHover { hovering in

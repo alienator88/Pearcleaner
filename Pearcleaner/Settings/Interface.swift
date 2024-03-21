@@ -13,6 +13,7 @@ import ServiceManagement
 struct InterfaceSettingsTab: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
+    @EnvironmentObject var fsm: FolderSettingsManager
     @State private var windowSettings = WindowSettings()
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
@@ -151,9 +152,12 @@ struct InterfaceSettingsTab: View {
                                     MiniMode(search: $search, showPopover: $showPopover)
                                         .environmentObject(locations)
                                         .environmentObject(appState)
+                                        .environmentObject(fsm)
                                         .preferredColorScheme(displayMode.colorScheme)
                                 }
-                                resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")
+                                updateOnMain(after: 0.1, {
+                                    resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")
+                                })
                             } else {
                                 if appState.appInfo.appName.isEmpty {
                                     appState.currentView = .empty
@@ -164,9 +168,12 @@ struct InterfaceSettingsTab: View {
                                     RegularMode(search: $search, showPopover: $showPopover)
                                         .environmentObject(locations)
                                         .environmentObject(appState)
+                                        .environmentObject(fsm)
                                         .preferredColorScheme(displayMode.colorScheme)
                                 }
-                                resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")
+                                updateOnMain(after: 0.1, {
+                                    resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")
+                                })
                             }
 
 
@@ -262,6 +269,7 @@ struct InterfaceSettingsTab: View {
                                 MenuBarMiniAppView(search: $search, showPopover: $showPopover)
                                     .environmentObject(locations)
                                     .environmentObject(appState)
+                                    .environmentObject(fsm)
                                     .preferredColorScheme(displayMode.colorScheme)
                             }, icon: selectedMenubarIcon)
                             NSApplication.shared.setActivationPolicy(.accessory)
@@ -276,6 +284,7 @@ struct InterfaceSettingsTab: View {
                                         MiniMode(search: $search, showPopover: $showPopover)
                                             .environmentObject(locations)
                                             .environmentObject(appState)
+                                            .environmentObject(fsm)
                                             .preferredColorScheme(displayMode.colorScheme)
                                     }
                                     resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")
@@ -284,6 +293,7 @@ struct InterfaceSettingsTab: View {
                                         RegularMode(search: $search, showPopover: $showPopover)
                                             .environmentObject(locations)
                                             .environmentObject(appState)
+                                            .environmentObject(fsm)
                                             .preferredColorScheme(displayMode.colorScheme)
                                     }
                                     resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")

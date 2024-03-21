@@ -42,6 +42,23 @@ struct TopBar: View {
             HStack() {
                 Spacer()
 
+                if appState.currentView == .zombie {
+                    Button("Rescan") {
+                        updateOnMain {
+                            appState.zombieFile = .empty
+                            appState.showProgress.toggle()
+                            if instantSearch {
+                                let reverse = ReversePathsSearcher(appState: appState, locations: locations)
+                                reverse.reversePathsSearch()
+                                //                                    reversePathsSearch(appState: appState, locations: locations)
+                            } else {
+                                loadAllPaths(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
+                            }
+                        }
+                    }
+                    .buttonStyle(NavButtonBottomBarStyle(image: "arrow.counterclockwise.circle.fill", help: "Rescan files"))
+                }
+
                 if appState.currentView != .zombie {
                     Button("") {
                         withAnimation(.easeInOut(duration: 0.5)) {
@@ -53,7 +70,9 @@ struct TopBar: View {
                                     appState.showProgress.toggle()
                                     showPopover.toggle()
                                     if instantSearch {
-                                        reversePathsSearch(appState: appState, locations: locations)
+                                        let reverse = ReversePathsSearcher(appState: appState, locations: locations)
+                                        reverse.reversePathsSearch()
+//                                        reversePathsSearch(appState: appState, locations: locations)
                                     } else {
                                         loadAllPaths(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
                                     }
@@ -79,6 +98,8 @@ struct TopBar: View {
                     .buttonStyle(SimpleButtonStyle(icon: "plus.square.dashed", help: "Drop Target", color: Color("mode")))
 
                 }
+
+
 
 
             }

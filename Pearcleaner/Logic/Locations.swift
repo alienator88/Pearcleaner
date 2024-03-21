@@ -14,7 +14,6 @@ class Locations: ObservableObject {
         var paths: [String]
     }
     
-    let home: String
     let cacheDir: String
     let tempDir: String
     
@@ -24,7 +23,6 @@ class Locations: ObservableObject {
 //    var plugins: Category
     
     init() {
-        self.home = FileManager.default.homeDirectoryForCurrentUser.path
         let (cacheDir, tempDir) = darwinCT()
         self.cacheDir = cacheDir
         self.tempDir = tempDir

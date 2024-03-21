@@ -37,7 +37,9 @@ struct TopBarMini: View {
                                     appState.showProgress.toggle()
                                     showPopover.toggle()
                                     if instantSearch {
-                                        reversePathsSearch(appState: appState, locations: locations)
+                                        let reverse = ReversePathsSearcher(appState: appState, locations: locations)
+                                        reverse.reversePathsSearch()
+//                                        reversePathsSearch(appState: appState, locations: locations)
                                     } else {
                                         loadAllPaths(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
                                     }
@@ -78,7 +80,9 @@ struct TopBarMini: View {
                                     appState.showProgress.toggle()
                                     showPopover.toggle()
                                     if instantSearch {
-                                        reversePathsSearch(appState: appState, locations: locations)
+                                        let reverse = ReversePathsSearcher(appState: appState, locations: locations)
+                                        reverse.reversePathsSearch()
+//                                        reversePathsSearch(appState: appState, locations: locations)
                                     } else {
                                         loadAllPaths(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
                                     }
@@ -130,10 +134,8 @@ struct SearchBarMiniBottom: View {
 
     var body: some View {
         HStack {
-            TextField(" Search", text: $search)
+            TextField("\(appState.instantTotal > appState.instantProgress ? " Searching the file system" : " Search")", text: $search)
                 .textFieldStyle(SimpleSearchStyle(trash: true, text: $search))
         }
-//        .padding(.horizontal)
-//        .padding(.bottom, 0)
     }
 }

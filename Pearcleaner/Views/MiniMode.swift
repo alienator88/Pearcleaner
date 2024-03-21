@@ -32,6 +32,7 @@ struct MiniMode: View {
                     } else {
                         TopBarMini(search: $search, showPopover: $showPopover)
                         MiniAppView(search: $search, showPopover: $showPopover)
+
                     }
                 }
                 .transition(.opacity)

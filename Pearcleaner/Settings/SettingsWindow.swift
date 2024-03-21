@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var fsm: FolderSettingsManager
     @Binding var showPopover: Bool
     @Binding var search: String
     @Binding var showFeature: Bool
@@ -26,6 +27,12 @@ struct SettingsView: View {
             InterfaceSettingsTab(showPopover: $showPopover, search: $search)
                 .tabItem {
                     Label(CurrentTabView.interface.title, systemImage: "macwindow")
+                }
+                .tag(CurrentTabView.interface)
+
+            FolderSettingsTab()
+                .tabItem {
+                    Label(CurrentTabView.folders.title, systemImage: "folder")
                 }
                 .tag(CurrentTabView.interface)
 

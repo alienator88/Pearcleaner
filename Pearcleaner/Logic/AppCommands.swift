@@ -12,10 +12,12 @@ struct AppCommands: Commands {
 
     let appState: AppState
     let locations: Locations
+    let fsm: FolderSettingsManager
 
-    init(appState: AppState, locations: Locations) {
+    init(appState: AppState, locations: Locations, fsm: FolderSettingsManager) {
         self.appState = appState
         self.locations = locations
+        self.fsm = fsm
     }
 
     var body: some Commands {
@@ -36,7 +38,7 @@ struct AppCommands: Commands {
                     updateOnMain {
                         appState.reload.toggle()
                     }
-                    let sortedApps = getSortedApps()
+                    let sortedApps = getSortedApps(paths: fsm.folderPaths, appState: appState)
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                         appState.sortedApps = []
 //                        appState.sortedApps.systemApps = []
@@ -71,7 +73,7 @@ struct AppCommands: Commands {
             Button
             {
                 undoTrash(appState: appState) {
-                    let sortedApps = getSortedApps()
+                    let sortedApps = getSortedApps(paths: fsm.folderPaths, appState: appState)
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                         appState.sortedApps = sortedApps
 //                        if instantSearch {

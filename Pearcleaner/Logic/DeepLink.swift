@@ -33,7 +33,7 @@ class DeeplinkManager {
                   let queryItems = components.queryItems {
             if let path = queryItems.first(where: { $0.name == DeepLinkConstants.query })?.value {
                 let pathURL = URL(fileURLWithPath: path)
-                let appInfo = getAppInfo(atPath: pathURL)
+                let appInfo = AppInfoFetcher.getAppInfo(atPath: pathURL)
                 showAppInFiles(appInfo: appInfo!, appState: appState, locations: locations, showPopover: $showPopover)
             } else {
                 printOS("No path query parameter found in the URL")
@@ -45,7 +45,7 @@ class DeeplinkManager {
 
     
     func handleAppBundle(url: URL, appState: AppState, locations: Locations) {
-        let appInfo = getAppInfo(atPath: url)
+        let appInfo = AppInfoFetcher.getAppInfo(atPath: url)
         showAppInFiles(appInfo: appInfo!, appState: appState, locations: locations, showPopover: $showPopover)
     }
     

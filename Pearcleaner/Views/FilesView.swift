@@ -22,7 +22,9 @@ struct FilesView: View {
     @Binding var search: String
     var regularWin: Bool
     @State private var selectedOption = "Default"
-
+    @State private var elapsedTime = 0
+    @State private var timer: Timer? = nil
+    
     var body: some View {
         VStack(alignment: .center) {
             if appState.showProgress {
@@ -30,14 +32,33 @@ struct FilesView: View {
                     Spacer()
                     Text("Searching the file system").font(.title3)
                         .foregroundStyle((.gray.opacity(0.8)))
-                    ProgressView()
-                        .progressViewStyle(.linear)
-                        .frame(width: 400, height: 10)
+
+                    HStack {
+                        ProgressView()
+                            .progressViewStyle(.linear)
+                            .frame(width: 400, height: 10)
+                        Image(systemName: "\(elapsedTime).circle")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 16, height: 16)
+                            .foregroundStyle((.gray.opacity(0.8)))
+                            .opacity(elapsedTime == 0 ? 0 : 1)
+                    }
 
                     Spacer()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .transition(.opacity)
+                .onAppear {
+                    self.timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+                        self.elapsedTime += 1
+                    }
+                }
+                .onDisappear {
+                    self.timer?.invalidate()
+                    self.timer = nil
+                    self.elapsedTime = 0
+                }
             } else {
                 // Titlebar
                 if !regularWin {
@@ -69,8 +90,14 @@ struct FilesView: View {
                                         .resizable()
                                         .scaledToFit()
                                         .frame(width: 50, height: 50)
-                                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                                        .padding(.trailing)
+//                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+//                                        .padding(.trailing)
+                                        .padding()
+                                        .background{
+                                            RoundedRectangle(cornerRadius: 16)
+                                                .fill(Color((appState.appInfo.appIcon?.averageColor)!))
+
+                                        }
                                 }
 
                                 VStack(alignment: .leading, spacing: 5){
@@ -86,6 +113,7 @@ struct FilesView: View {
                                     Text("\(appState.appInfo.bundleIdentifier)").font(.title3)
                                         .foregroundStyle((.gray.opacity(0.8)))
                                 }
+                                .padding(.leading)
 
                                 Spacer()
 
@@ -96,6 +124,7 @@ struct FilesView: View {
 
 
                             }
+
 
                                 HStack(alignment: .center, spacing: 10) {
 
@@ -157,7 +186,7 @@ struct FilesView: View {
                                     VStack {
                                         FileDetailsItem(size: fileSize, icon: iconImage, path: path)
                                         if path != appState.appInfo.files.last {
-                                            Divider().padding(.leading, 40)
+                                            Divider().padding(.leading, 40).opacity(0.5)
                                         }
                                     }
                                 }
@@ -268,17 +297,6 @@ struct FilesView: View {
         }
     }
 
-    func refreshAppList(_ appInfo: AppInfo) {
-        showPopover = false
-        let sortedApps = getSortedApps()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            appState.sortedApps = sortedApps
-//            appState.sortedApps.systemApps = sortedApps.systemApps
-//            if instantSearch {
-//                loadAllPaths(allApps: sortedApps.userApps + sortedApps.systemApps, appState: appState, locations: locations)
-//            }
-        }
-    }
 }
 
 
@@ -321,7 +339,7 @@ struct FileDetailsItem: View {
                     .help(path.lastPathComponent)
                 Text(path.path)
                     .font(.footnote)
-                    .lineLimit(2)
+                    .lineLimit(1)
                     .truncationMode(.tail)
                     .opacity(0.5)
                     .help(path.path)

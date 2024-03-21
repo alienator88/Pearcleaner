@@ -70,7 +70,9 @@ struct MenuBarMiniAppView: View {
                                             appState.showProgress.toggle()
                                             showPopover.toggle()
                                             if instantSearch {
-                                                reversePathsSearch(appState: appState, locations: locations)
+                                                let reverse = ReversePathsSearcher(appState: appState, locations: locations)
+                                                reverse.reversePathsSearch()
+//                                                reversePathsSearch(appState: appState, locations: locations)
                                             } else {
                                                 loadAllPaths(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
                                             }

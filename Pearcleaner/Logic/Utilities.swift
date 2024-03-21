@@ -312,7 +312,7 @@ func startEnd(_ function: @escaping () -> Void) {
     function()
     let endTime = Date()
     let executionTime = endTime.timeIntervalSince(startTime)
-    print("Function executed in: \n\(executionTime) seconds")
+    printOS("Function executed in: \n\(executionTime) seconds")
 }
 
 
@@ -325,6 +325,17 @@ func relaunchApp(afterDelay seconds: TimeInterval = 0.5) -> Never {
     
     NSApp.terminate(nil)
     exit(0)
+}
+
+// Check if app is running before deleting app files
+func killApp(appId: String, completion: @escaping () -> Void = {}) {
+    let runningApps = NSWorkspace.shared.runningApplications
+    for app in runningApps {
+        if app.bundleIdentifier == appId {
+            app.terminate()
+        }
+    }
+    completion()
 }
 
 // Remove app from cache
@@ -379,41 +390,80 @@ extension FileManager {
 // --- Extend print command to also output to the Console ---
 func printOS(_ items: Any..., separator: String = " ", terminator: String = "\n") {
     let message = items.map { "\($0)" }.joined(separator: separator)
-    let log = OSLog(subsystem: "com.alienator88.Pearcleaner", category: "Application")
-    os_log("%@", log: log, type: .debug, message)
+    let log = OSLog(subsystem: "pearcleaner", category: "Application")
+    os_log("%@", log: log, type: .default, message)
 
 }
 
 
 
+//func totalSizeOnDisk2(for paths: [URL]) -> Int64 {
+//    var totalSize = 0
+//    
+//    let process = Process()
+//    process.launchPath = "/usr/bin/du"
+//    process.arguments = ["-sk"] + paths.map { (url: URL) -> String in
+//        return url.path
+//    }
+//    let pipe = Pipe()
+//    process.standardOutput = pipe
+//    process.standardError =  pipe//FileHandle.nullDevice
+//
+//    try? process.run()
+//    process.waitUntilExit()
+//    
+//    let data = pipe.fileHandleForReading.readDataToEndOfFile()
+//    if let output = String(data: data, encoding: .utf8) {
+//        let lines = output.components(separatedBy: .newlines)
+//        for line in lines {
+//            let components = line.components(separatedBy: "\t")
+//            if let sizeString = components.first, let size = Int(sizeString) {
+//                totalSize += size
+//            }
+//        }
+//    }
+//
+//    return Int64(totalSize) * 1024 // Convert the size from kilobytes to bytes
+//}
+
+
 // Get total size of folders and files using DU cli command
 func totalSizeOnDisk(for paths: [URL]) -> Int64 {
-    var totalSize = 0
-    
-    let process = Process()
-    process.launchPath = "/usr/bin/du"
-    process.arguments = ["-sk"] + paths.map { (url: URL) -> String in
-        return url.path
-    }
-    let pipe = Pipe()
-    process.standardOutput = pipe
-    process.standardError =  pipe//FileHandle.nullDevice
+    let fileManager = FileManager.default
+    var totalSize: Int64 = 0
 
-    try? process.run()
-    process.waitUntilExit()
-    
-    let data = pipe.fileHandleForReading.readDataToEndOfFile()
-    if let output = String(data: data, encoding: .utf8) {
-        let lines = output.components(separatedBy: .newlines)
-        for line in lines {
-            let components = line.components(separatedBy: "\t")
-            if let sizeString = components.first, let size = Int(sizeString) {
-                totalSize += size
+    for url in paths {
+        var isDirectory: ObjCBool = false
+        if fileManager.fileExists(atPath: url.path, isDirectory: &isDirectory) {
+            if isDirectory.boolValue {
+                // It's a directory, recurse into it
+                if let enumerator = fileManager.enumerator(at: url, includingPropertiesForKeys: [.totalFileAllocatedSizeKey], errorHandler: nil) {
+                    for case let fileURL as URL in enumerator {
+                        do {
+                            let fileAttributes = try fileURL.resourceValues(forKeys: [.totalFileAllocatedSizeKey])
+                            if let fileSize = fileAttributes.totalFileAllocatedSize {
+                                totalSize += Int64(fileSize)
+                            }
+                        } catch {
+                            printOS("Error getting file size for \(fileURL): \(error)")
+                        }
+                    }
+                }
+            } else {
+                // It's a file
+                do {
+                    let fileAttributes = try url.resourceValues(forKeys: [.totalFileAllocatedSizeKey])
+                    if let fileSize = fileAttributes.totalFileAllocatedSize {
+                        totalSize += Int64(fileSize)
+                    }
+                } catch {
+                    printOS("Error getting file size for \(url): \(error)")
+                }
             }
         }
     }
 
-    return Int64(totalSize) * 1024 // Convert the size from kilobytes to bytes
+    return totalSize
 }
 
 func totalSizeOnDisk(for path: URL) -> Int64 {
@@ -428,53 +478,25 @@ func formatByte(size: Int64) -> String {
     return byteCountFormatter.string(fromByteCount: size)
 }
 
-
-// Get total size of folders and files using straight swift
-extension URL {
-    func totalAllocatedSize(includingSubfolders: Bool = false) throws -> Int? {
-        return try [self].totalAllocatedSize(includingSubfolders: includingSubfolders)
-    }
-    
-    func totalSizeOnDisk(includingSubfolders: Bool = false) throws -> String? {
-        return try [self].totalSizeOnDisk(includingSubfolders: includingSubfolders)
-    }
-}
-
-extension Array where Element == URL {
-    func totalAllocatedSize(includingSubfolders: Bool = false) throws -> Int? {
-        var totalSize = 0
-        
-        for path in self {
-                let resourceValues = try path.resourceValues(forKeys: [.isDirectoryKey, .isPackageKey, .totalFileAllocatedSizeKey])
-
-            if resourceValues.isDirectory == true || path.pathExtension == "app" {
-                    if includingSubfolders {
-                        let filePaths = FileManager.default.subpaths(atPath: path.path) ?? []
-                        for filePath in filePaths {
-                            let fileUrl = path.appendingPathComponent(filePath)
-                            let fileAttributes = try FileManager.default.attributesOfItem(atPath: fileUrl.path)
-                            let fileSize = fileAttributes[.size] as? Int64 ?? 0
-                            totalSize += Int(fileSize)
-                        }
-                    }
-                } else {
-                    totalSize += resourceValues.totalFileAllocatedSize ?? 0
-                }
-
+// Only process supported files
+func isSupportedFileType(at path: String) -> Bool {
+    let fileManager = FileManager.default
+    do {
+        let attributes = try fileManager.attributesOfItem(atPath: path)
+        if let fileType = attributes[FileAttributeKey.type] as? FileAttributeType {
+            switch fileType {
+            case .typeRegular, .typeDirectory, .typeSymbolicLink:
+                // The file is a regular file, directory, or symbolic link
+                return true
+            default:
+                // The file is a socket, pipe, or another type not supported
+                return false
+            }
         }
-        
-        return totalSize
+    } catch {
+        printOS("Error getting file attributes: \(error)")
     }
-    
-    func totalSizeOnDisk(includingSubfolders: Bool = false) throws -> String? {
-        if let totalSize = try self.totalAllocatedSize(includingSubfolders: includingSubfolders) {
-            let byteCountFormatter = ByteCountFormatter()
-            byteCountFormatter.countStyle = .file
-            byteCountFormatter.allowedUnits = [.useBytes, .useKB, .useMB, .useTB]
-            return byteCountFormatter.string(fromByteCount: Int64(totalSize))
-        }
-        return nil
-    }
+    return false
 }
 
 
@@ -518,11 +540,13 @@ func uninstallPearcleaner(appState: AppState, locations: Locations) {
     launchctl(load: false)
 
     // Get app info for Pearcleaner
-    let appInfo = getAppInfo(atPath: Bundle.main.bundleURL)
+    let appInfo = AppInfoFetcher.getAppInfo(atPath: Bundle.main.bundleURL)
 //    appState.appInfo = appInfo!
 
     // Find application files for Pearcleaner
-    findPathsForApp(appInfo: appInfo!,appState: appState, locations: locations)
+    let pathFinder = AppPathFinder(appInfo: appInfo!, appState: appState, locations: locations)
+    pathFinder.findPaths()
+//    findPathsForApp(appInfo: appInfo!,appState: appState, locations: locations)
 
     // Kill Pearcleaner and tell Finder to trash the files
     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
@@ -587,34 +611,32 @@ func writeLog(string: String) {
 // --- Load Plist file with launchctl ---
 func launchctl(load: Bool, completion: @escaping () -> Void = {}) {
     let cmd = load ? "load" : "unload"
+
     if let plistPath = Bundle.main.path(forResource: "com.alienator88.PearcleanerSentinel", ofType: "plist") {
         var plistContent = try! String(contentsOfFile: plistPath)
         let executableURL = Bundle.main.bundleURL.appendingPathComponent("Contents/MacOS/PearcleanerSentinel")
-        
+
         // Replace the placeholder with the actual executable path
         plistContent = plistContent.replacingOccurrences(of: "__EXECUTABLE_PATH__", with: executableURL.path)
-        
+
         // Create a temporary plist file with the updated content
         let temporaryPlistURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("com.alienator88.PearcleanerSentinel.plist")
-        
+
         do {
-            try plistContent.write(to: temporaryPlistURL, atomically: false, encoding: .utf8)
+            try plistContent.write(to: temporaryPlistURL, atomically: true, encoding: .utf8)
         } catch {
             printOS("Error writing the temporary plist file: \(error)")
             return
         }
+
         let task = Process()
         task.launchPath = "/bin/launchctl"
         task.arguments = [cmd, "-w", temporaryPlistURL.path]
-        
-        let pipe = Pipe()
-        task.standardOutput = pipe
-        task.standardError = pipe
-        
+        task.standardOutput = FileHandle.nullDevice
+        task.standardError = FileHandle.nullDevice
         task.launch()
 
         completion()
-
     }
 }
 

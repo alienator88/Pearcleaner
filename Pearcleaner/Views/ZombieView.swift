@@ -22,6 +22,8 @@ struct ZombieView: View {
     @State private var searchZ: String = ""
     @State private var selectedOption = "Default"
     var regularWin: Bool
+    @State private var elapsedTime = 0
+    @State private var timer: Timer? = nil
 
     var body: some View {
 
@@ -49,9 +51,19 @@ struct ZombieView: View {
 
                         Text("Searching the file system").font(.title3)
                             .foregroundStyle((.gray.opacity(0.8)))
-                        ProgressView()
-                            .progressViewStyle(.linear)
-                            .frame(width: 400, height: 10)
+
+                        HStack {
+                            ProgressView()
+                                .progressViewStyle(.linear)
+                                .frame(width: 400, height: 10)
+                            Image(systemName: "\(elapsedTime).circle")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 16, height: 16)
+                                .foregroundStyle((.gray.opacity(0.8)))
+                                .opacity(elapsedTime == 0 ? 0 : 1)
+                        }
+
 
                         Spacer()
                     }
@@ -59,6 +71,16 @@ struct ZombieView: View {
 
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .onAppear {
+                    self.timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+                        self.elapsedTime += 1
+                    }
+                }
+                .onDisappear {
+                    self.timer?.invalidate()
+                    self.timer = nil
+                    self.elapsedTime = 0
+                }
             } else {
                 // Titlebar
                 if !regularWin {
@@ -70,7 +92,9 @@ struct ZombieView: View {
                                 appState.zombieFile = .empty
                                 appState.showProgress.toggle()
                                 if instantSearch {
-                                    reversePathsSearch(appState: appState, locations: locations)
+                                    let reverse = ReversePathsSearcher(appState: appState, locations: locations)
+                                    reverse.reversePathsSearch()
+//                                    reversePathsSearch(appState: appState, locations: locations)
                                 } else {
                                     loadAllPaths(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
                                 }
@@ -131,6 +155,7 @@ struct ZombieView: View {
                     }
 
                     SearchBarMiniBottom(search: $searchZ)
+                        .padding(.top)
 
                     Divider()
                         .padding()
@@ -146,7 +171,7 @@ struct ZombieView: View {
                                         .padding(.trailing)
 
                                     if file != appState.zombieFile.fileSize.keys.sorted(by: { $0.absoluteString < $1.absoluteString }).last {
-                                        Divider().padding(.leading, 40)
+                                        Divider().padding(.leading, 40).opacity(0.5)
                                     }
                                 }
                             }
@@ -271,7 +296,7 @@ struct ZombieFileDetailsItem: View {
                     .help(path.lastPathComponent)
                 Text(path.path)
                     .font(.footnote)
-                    .lineLimit(2)
+                    .lineLimit(1)
                     .truncationMode(.tail)
                     .opacity(0.5)
                 //                    .foregroundStyle(Color("AccentColor"))

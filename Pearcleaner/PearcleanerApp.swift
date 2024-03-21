@@ -14,6 +14,7 @@ struct PearcleanerApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject var appState = AppState()
     @StateObject var locations = Locations()
+    @StateObject var fsm = FolderSettingsManager()
     @State private var windowSettings = WindowSettings()
     @AppStorage("settings.updater.updateTimeframe") private var updateTimeframe: Int = 1
     @AppStorage("settings.permissions.disk") private var diskP: Bool = false
@@ -57,6 +58,7 @@ struct PearcleanerApp: App {
             }
             .environmentObject(appState)
             .environmentObject(locations)
+            .environmentObject(fsm)
             .preferredColorScheme(displayMode.colorScheme)
             .handlesExternalEvents(preferring: Set(arrayLiteral: "pear"), allowing: Set(arrayLiteral: "*"))
             .onOpenURL(perform: { url in
@@ -96,24 +98,25 @@ struct PearcleanerApp: App {
                 NSApplication.shared.windows.first?.setFrame(frame, display: true)
 
                 // Get Apps
-                let sortedApps = getSortedApps()
+                let sortedApps = getSortedApps(paths: fsm.folderPaths, appState: appState)
                 appState.sortedApps = sortedApps
 
-
+                
                 // Find all app paths/information on load if instantSearch is enabled
                 if instantSearch {
                     loadAllPaths(allApps: sortedApps, appState: appState, locations: locations)
                 }
+
 
                 if menubarEnabled {
                     MenuBarExtraManager.shared.addMenuBarExtra(withView: {
                         MenuBarMiniAppView(search: $search, showPopover: $showPopover)
                             .environmentObject(locations)
                             .environmentObject(appState)
+                            .environmentObject(fsm)
                             .preferredColorScheme(displayMode.colorScheme)
                     }, icon: selectedMenubarIcon)
                 }
-
 
 #if !DEBUG
                 Task {
@@ -153,7 +156,7 @@ struct PearcleanerApp: App {
         .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentMinSize)
         .commands {
-            AppCommands(appState: appState, locations: locations)
+            AppCommands(appState: appState, locations: locations, fsm: fsm)
             CommandGroup(replacing: .newItem, addition: { })
             
         }
@@ -165,6 +168,7 @@ struct PearcleanerApp: App {
             SettingsView(showPopover: $showPopover, search: $search, showFeature: $showFeature)
                 .environmentObject(appState)
                 .environmentObject(locations)
+                .environmentObject(fsm)
                 .toolbarBackground(.clear)
                 .preferredColorScheme(displayMode.colorScheme)
         }

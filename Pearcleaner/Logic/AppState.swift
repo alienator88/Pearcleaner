@@ -28,6 +28,8 @@ class AppState: ObservableObject
     @Published var reload: Bool = false
     @Published var showProgress: Bool = false
     @Published var popCount: Int = 0
+    @Published var instantProgress: Double = 0.0
+    @Published var instantTotal: Double = 0.0
 
     
     init() {
@@ -106,6 +108,7 @@ enum CurrentTabView:Int
 {
     case general
     case interface
+    case folders
     case update
     case about
     
@@ -113,6 +116,7 @@ enum CurrentTabView:Int
         switch self {
         case .general: return "General"
         case .interface: return "Interface"
+        case .folders: return "Folders"
         case .update: return "Update"
         case .about: return "About"
         }

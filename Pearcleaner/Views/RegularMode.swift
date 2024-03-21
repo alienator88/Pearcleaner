@@ -178,6 +178,7 @@ struct Header: View {
     @State private var hovered = false
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
+    @EnvironmentObject var fsm: FolderSettingsManager
     @Binding var showPopover: Bool
     @AppStorage("settings.general.instant") private var instantSearch: Bool = true
     @AppStorage("settings.general.glass") private var glass: Bool = true
@@ -199,7 +200,7 @@ struct Header: View {
                                     // Refresh Apps list
                                     appState.reload.toggle()
                                     showPopover = false
-                                    let sortedApps = getSortedApps()
+                                    let sortedApps = getSortedApps(paths: fsm.folderPaths, appState: appState)
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                         appState.sortedApps = sortedApps
                                         if instantSearch {
