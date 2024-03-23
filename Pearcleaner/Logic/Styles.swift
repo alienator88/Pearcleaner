@@ -28,8 +28,8 @@ struct SimpleButtonStyle: ButtonStyle {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 20)
-            if label != "" {
-                Text(label!)
+            if let label = label, !label.isEmpty {
+                Text(label)
             }
         }
         .foregroundColor(hovered ? color : color.opacity(0.5))

@@ -210,9 +210,10 @@ class AppPathFinder {
                 self.appState.appInfo = self.appInfo
                 self.appState.selectedItems = Set(updatedCollection)
             }
-            self.appState.appInfoStore.append(self.appInfo)
 
+            // Only append object to store if instant search. Same for calculating progress.
             if self.instantSearch {
+                self.appState.appInfoStore.append(self.appInfo)
                 self.appState.instantProgress += 1
             }
 

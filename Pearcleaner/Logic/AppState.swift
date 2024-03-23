@@ -14,6 +14,7 @@ class AppState: ObservableObject
 {
     @Published var appInfo: AppInfo
     @Published var appInfoStore: [AppInfo] = []
+    @Published var trashedFiles: [AppInfo] = []
     @Published var zombieFile: ZombieFile
     @Published var sortedApps: [AppInfo] = []
     @Published var selectedItems = Set<URL>()

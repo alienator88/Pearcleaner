@@ -37,12 +37,16 @@ struct FilesView: View {
                         ProgressView()
                             .progressViewStyle(.linear)
                             .frame(width: 400, height: 10)
-                        Image(systemName: "\(elapsedTime).circle")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 16, height: 16)
+                        Text("\(elapsedTime)")
+                            .font(.caption)
                             .foregroundStyle((.gray.opacity(0.8)))
                             .opacity(elapsedTime == 0 ? 0 : 1)
+//                        Image(systemName: "\(elapsedTime).circle")
+//                            .resizable()
+//                            .aspectRatio(contentMode: .fit)
+//                            .frame(width: 16, height: 16)
+//                            .foregroundStyle((.gray.opacity(0.8)))
+//                            .opacity(elapsedTime == 0 ? 0 : 1)
                     }
 
                     Spacer()
@@ -62,8 +66,25 @@ struct FilesView: View {
             } else {
                 // Titlebar
                 if !regularWin {
-                    HStack() {
+                    HStack(spacing: 0) {
+
                         Spacer()
+
+                        if instantSearch {
+                            Button("Rescan") {
+                                updateOnMain {
+                                    appState.showProgress.toggle()
+                                    let pathFinder = AppPathFinder(appInfo: appState.appInfo, appState: appState, locations: locations) {
+                                        updateOnMain {
+                                            appState.showProgress = false
+                                        }
+                                    }
+                                    pathFinder.findPaths()
+                                }
+                            }
+                            .buttonStyle(NavButtonBottomBarStyle(image: "arrow.counterclockwise.circle.fill", help: "Rescan files"))
+                        }
+
 
                         Button("Close") {
                             updateOnMain {
@@ -122,46 +143,7 @@ struct FilesView: View {
                                     Text("\(appState.appInfo.fileSize.count > 1 ? "\(appState.appInfo.fileSize.count) items" : "\(appState.appInfo.fileSize.count) item")").font(.callout).underline().foregroundStyle((.gray.opacity(0.8)))
                                 }
 
-
                             }
-
-
-                                HStack(alignment: .center, spacing: 10) {
-
-                                    Spacer()
-
-                                    if appState.appInfo.webApp {
-                                        Text("web")
-                                            .font(.footnote)
-                                            .foregroundStyle(Color("mode").opacity(0.5))
-                                            .frame(minWidth: 30, minHeight: 15)
-                                            .padding(2)
-                                            .background(Color("mode").opacity(0.1))
-                                            .clipShape(.capsule)
-
-                                    }
-
-                                    if appState.appInfo.wrapped {
-                                        Text("iOS")
-                                            .font(.footnote)
-                                            .foregroundStyle(Color("mode").opacity(0.5))
-                                            .frame(minWidth: 30, minHeight: 15)
-                                            .padding(2)
-                                            .background(Color("mode").opacity(0.1))
-                                            .clipShape(.capsule)
-
-                                    }
-
-                                    Text(appState.appInfo.system ? "system" : "user")
-                                        .font(.footnote)
-                                        .foregroundStyle(Color("mode").opacity(0.5))
-                                        .frame(minWidth: 30, minHeight: 15)
-                                        .padding(2)
-                                        .padding(.horizontal, 2)
-                                        .background(Color("mode").opacity(0.1))
-                                        .clipShape(.capsule)
-
-                                }
 
                         }
                         .padding(.horizontal, 20)
@@ -169,14 +151,91 @@ struct FilesView: View {
                         
                     }
 
+
+                    // Item selection and sorting toolbar
+                    HStack() {
+                        Toggle("", isOn: Binding(
+                            get: { self.appState.selectedItems.count == self.appState.appInfo.files.count },
+                            set: { newValue in
+                                updateOnMain {
+                                    self.appState.selectedItems = newValue ? Set(self.appState.appInfo.files) : []
+                                }
+                            }
+                        ))
+
+
+                        Spacer()
+
+
+                        HStack(alignment: .center, spacing: 10) {
+
+                            if appState.appInfo.webApp {
+                                Text("web")
+                                    .font(.footnote)
+                                    .foregroundStyle(Color("mode").opacity(0.5))
+                                    .frame(minWidth: 30, minHeight: 15)
+                                    .padding(2)
+                                    .background(Color("mode").opacity(0.1))
+                                    .clipShape(.capsule)
+
+                            }
+
+                            if appState.appInfo.wrapped {
+                                Text("iOS")
+                                    .font(.footnote)
+                                    .foregroundStyle(Color("mode").opacity(0.5))
+                                    .frame(minWidth: 30, minHeight: 15)
+                                    .padding(2)
+                                    .background(Color("mode").opacity(0.1))
+                                    .clipShape(.capsule)
+
+                            }
+
+                            Text(appState.appInfo.system ? "system" : "user")
+                                .font(.footnote)
+                                .foregroundStyle(Color("mode").opacity(0.5))
+                                .frame(minWidth: 30, minHeight: 15)
+                                .padding(2)
+                                .padding(.horizontal, 2)
+                                .background(Color("mode").opacity(0.1))
+                                .clipShape(.capsule)
+                        }
+
+
+                        Spacer()
+
+                        Button("") {
+                            selectedOption = selectedOption == "Default" ? "Size" : "Default"
+                        }
+                        .buttonStyle(SimpleButtonStyle(icon: selectedOption == "Default" ? "textformat.abc" : "textformat.123", help: selectedOption == "Default" ? "Sorted alphabetically" : "Sorted by size", color: Color("mode")))
+
+                    }
+                    .padding()
+
+
+
                     Divider()
-                        .padding()
+                        .padding(.horizontal)
+
+
 
                     ScrollView() {
-                        VStack {
+                        LazyVStack {
                             let sortedFilesSize = appState.appInfo.files.sorted(by: { appState.appInfo.fileSize[$0, default: 0] > appState.appInfo.fileSize[$1, default: 0] })
 
-                            let sortedFilesAlpha = appState.appInfo.files
+//                            let sortedFilesAlpha = appState.appInfo.files
+                            let sortedFilesAlpha = appState.appInfo.files.sorted { firstURL, secondURL in
+                                let isFirstPathApp = firstURL.pathExtension == "app"
+                                let isSecondPathApp = secondURL.pathExtension == "app"
+                                if isFirstPathApp, !isSecondPathApp {
+                                    return true // .app extension always comes first
+                                } else if !isFirstPathApp, isSecondPathApp {
+                                    return false
+                                } else {
+                                    // If neither or both are .app, sort alphabetically
+                                    return firstURL.lastPathComponent.pearFormat() < secondURL.lastPathComponent.pearFormat()
+                                }
+                            }
 
                             let sort = selectedOption == "Default" ? sortedFilesAlpha : sortedFilesSize
 
@@ -195,25 +254,10 @@ struct FilesView: View {
                         .padding()
                     }
 
+
                     Spacer()
 
                     HStack() {
-
-                        Picker("", selection: Binding(
-                            get: { appState.selectedItems.count == appState.appInfo.files.count ? true : false },
-                            set: { newValue in
-                                updateOnMain {
-                                    appState.selectedItems = newValue ? Set(appState.appInfo.files) : []
-                                }
-                            }
-                        )) {
-                            Image(systemName: "checkmark.square").tag(true)
-                            Image(systemName: "square").tag(false)
-                        }
-                        .pickerStyle(SegmentedPickerStyle())
-                        .frame(width: 100)
-                        .offset(x: -8)
-                        .help("Item Selection")
 
                         Spacer()
 
@@ -221,7 +265,6 @@ struct FilesView: View {
                             Button("Uninstall") {
                                 Task {
                                     updateOnMain {
-//                                        appState.appInfo = AppInfo.empty
                                         search = ""
                                         if !regularWin {
                                             appState.currentView = .apps
@@ -254,13 +297,27 @@ struct FilesView: View {
                                                     launchctl(load: true)
                                                 }
                                             }
-                                            // Remove app from app list
-                                            removeApp(appState: appState, withId: appState.appInfo.id)
+                                            
                                             // Brew cleanup if enabled
                                             if brew {
                                                 caskCleanup(app: appState.appInfo.appName)
                                             }
-                                            // Clear out AppInfo state
+
+                                            // Remove app from app list if all app files were removed
+                                            if appState.appInfo.files.count == selectedItemsArray.count {
+                                                removeApp(appState: appState, withId: appState.appInfo.id)
+                                            } else {
+                                                // Add deleted appInfo object to trashed array
+                                                appState.appInfo.files = []
+                                                appState.appInfo.fileSize = [:]
+                                                appState.trashedFiles.append(appState.appInfo)
+
+                                                // Clear out appInfoStore object
+                                                if let index = appState.appInfoStore.firstIndex(where: { $0.path == appState.appInfo.path }) {
+                                                    appState.appInfoStore[index] = .empty
+                                                }
+                                            }
+
                                             appState.appInfo = AppInfo.empty
                                         }
                                     }
@@ -278,13 +335,6 @@ struct FilesView: View {
 
                         Spacer()
 
-                        Picker("", selection: $selectedOption) {
-                            Image(systemName: "textformat.abc").tag("Default")
-                            Image(systemName: "number").tag("Size")
-                        }
-                        .pickerStyle(SegmentedPickerStyle())
-                        .frame(width: 100)
-                        .help("Sorting alphabetically or by size")
                     }
 
                 }

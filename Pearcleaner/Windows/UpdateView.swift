@@ -10,8 +10,9 @@ import SwiftUI
 
 struct UpdateView: View {
     @EnvironmentObject var appState: AppState
-    let isAppInAppsDir = isAppInApplicationsDir()
-    
+    @State private var isAppInCorrectDirectory: Bool = false
+    @State private var isUserAdmin: Bool = false
+
     var body: some View {
         VStack(spacing: 5) {
             HStack {
@@ -52,10 +53,11 @@ struct UpdateView: View {
             
             Spacer()
             
-            if !isAppInAppsDir {
-                Text("Please move Pearcleaner to the **Applications** folder before updating!")
+            if !isAppInCorrectDirectory {
+                Text("To avoid permission issues, please move Pearcleaner to the \(isUserAdmin ? "/Applications" : "\(home)/Applications") folder before updating!")
                     .font(.callout)
-                    .foregroundStyle(.red)
+                    .foregroundStyle(Color.accentColor)
+                    .padding(.horizontal)
                     .padding(.top, 0)
             }
             
@@ -97,6 +99,12 @@ struct UpdateView: View {
             
         }
         .padding(EdgeInsets(top: -25, leading: 0, bottom: 25, trailing: 0))
+        .onAppear {
+            checkAppDirectoryAndUserRole { result in
+                isAppInCorrectDirectory = result.isInCorrectDirectory
+                isUserAdmin = result.isAdmin
+            }
+        }
 
         
         

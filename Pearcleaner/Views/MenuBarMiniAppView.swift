@@ -111,37 +111,6 @@ struct MenuBarMiniAppView: View {
                                         .buttonStyle(SimpleButtonStyle(icon: "gear", label: "Settings", help: "Settings", color: Color("mode")))
                                     }
 
-
-
-//                                    Button("Leftover Files") {
-//                                        showMenu = false
-//                                        withAnimation(.easeInOut(duration: 0.5)) {
-//                                            showPopover = false
-//                                            updateOnMain() {
-//                                                appState.appInfo = .empty
-//                                                appState.selectedZombieItems = []
-//                                                if appState.zombieFile.fileSize.keys.count == 0 {
-//                                                    appState.currentView = .zombie
-//                                                    appState.showProgress.toggle()
-//                                                    showPopover.toggle()
-//                                                    if instantSearch {
-//                                                        reversePathsSearch(appState: appState, locations: locations)
-//                                                    } else {
-//                                                        loadAllPaths(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
-//                                                    }
-//                                                } else {
-//                                                    appState.currentView = .zombie
-//                                                    showPopover.toggle()
-//                                                }
-//                                            }
-//
-//                                        }
-//                                    }
-//                                    .buttonStyle(SimpleButtonStyle(icon: "clock.arrow.circlepath", label: "Leftover Files", help: "Leftover Files", color: Color("mode")))
-
-
-
-
                                     Button("Quit") {
                                         NSApp.terminate(nil)
                                     }

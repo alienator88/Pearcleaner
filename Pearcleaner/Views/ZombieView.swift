@@ -33,9 +33,11 @@ struct ZombieView: View {
             }
 
             let sortedFilteredFiles = filteredFiles.sorted(by: {
-                selectedOption == "Default" ?
-                $0.key.lastPathComponent < $1.key.lastPathComponent :
-                $0.value > $1.value
+                if selectedOption == "Default" {
+                    return $0.key.lastPathComponent.pearFormat() < $1.key.lastPathComponent.pearFormat()
+                } else {
+                    return $0.value > $1.value
+                }
             }).map { $0.key }
 
             let totalSize = filteredFiles.values.reduce(0, +)
@@ -56,12 +58,14 @@ struct ZombieView: View {
                             ProgressView()
                                 .progressViewStyle(.linear)
                                 .frame(width: 400, height: 10)
-                            Image(systemName: "\(elapsedTime).circle")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 16, height: 16)
+                            Text("\(elapsedTime)")
+                                .font(.caption)
                                 .foregroundStyle((.gray.opacity(0.8)))
-                                .opacity(elapsedTime == 0 ? 0 : 1)
+//                            Image(systemName: "\(elapsedTime).circle")
+//                                .resizable()
+//                                .aspectRatio(contentMode: .fit)
+//                                .frame(width: 16, height: 16)
+//                                .foregroundStyle((.gray.opacity(0.8)))
                         }
 
 
@@ -154,15 +158,45 @@ struct ZombieView: View {
                         .padding(.top, 0)
                     }
 
-                    SearchBarMiniBottom(search: $searchZ)
-                        .padding(.top)
+//                    SearchBarMiniBottom(search: $searchZ)
+//                        .padding(.top)
+//                        .padding(.horizontal)
+
+                    // Item selection and sorting toolbar
+                    HStack {
+                        Toggle("", isOn: Binding(
+                            get: { appState.selectedZombieItems.count == appState.zombieFile.fileSize.count },
+                            set: { newValue in
+                                updateOnMain {
+                                    appState.selectedZombieItems = newValue ? Set(appState.zombieFile.fileSize.keys) : []
+                                }
+                            }
+                        ))
+
+                        SearchBarMiniBottom(search: $searchZ)
+//                            .padding(.top)
+                            .padding(.horizontal)
+
+//                        Spacer()
+
+                        Button("") {
+                            selectedOption = selectedOption == "Default" ? "Size" : "Default"
+                        }
+                        .buttonStyle(SimpleButtonStyle(icon: selectedOption == "Default" ? "textformat.abc" : "textformat.123", help: selectedOption == "Default" ? "Sorted alphabetically" : "Sorted by size", color: Color("mode")))
+
+
+                    }
+                    .padding(.horizontal)
+                    .padding(.vertical)
+
 
                     Divider()
-                        .padding()
+                        .padding(.horizontal)
+
+
 
                     ScrollView() {
                         LazyVStack {
-
                             ForEach(filteredAndSortedFiles.0, id: \.self) { file in
                                 if let fileSize = appState.zombieFile.fileSize[file], let fileIcon = appState.zombieFile.fileIcon[file] {
                                     let iconImage = fileIcon.map(Image.init(nsImage:))
@@ -176,27 +210,28 @@ struct ZombieView: View {
                                 }
                             }
                         }
-
+                        .padding()
                     }
-                    .padding()
+
+                    Spacer()
 
                     HStack() {
 
-                        Picker("", selection: Binding(
-                            get: { appState.selectedZombieItems.count == appState.zombieFile.fileSize.count ? true : false },
-                            set: { newValue in
-                                updateOnMain {
-                                    appState.selectedZombieItems = newValue ? Set(appState.zombieFile.fileSize.keys) : []
-                                }
-                            }
-                        )) {
-                            Image(systemName: "checkmark.square").tag(true)
-                            Image(systemName: "square").tag(false)
-                        }
-                        .pickerStyle(SegmentedPickerStyle())
-                        .frame(width: 100)
-                        .offset(x: -8)
-                        .help("Item Selection")
+//                        Picker("", selection: Binding(
+//                            get: { appState.selectedZombieItems.count == appState.zombieFile.fileSize.count ? true : false },
+//                            set: { newValue in
+//                                updateOnMain {
+//                                    appState.selectedZombieItems = newValue ? Set(appState.zombieFile.fileSize.keys) : []
+//                                }
+//                            }
+//                        )) {
+//                            Image(systemName: "checkmark.square").tag(true)
+//                            Image(systemName: "square").tag(false)
+//                        }
+//                        .pickerStyle(SegmentedPickerStyle())
+//                        .frame(width: 100)
+//                        .offset(x: -8)
+//                        .help("Item Selection")
                         
                         Spacer()
 
@@ -238,13 +273,13 @@ struct ZombieView: View {
 
                         Spacer()
 
-                        Picker("", selection: $selectedOption) {
-                            Image(systemName: "textformat.abc").tag("Default")
-                            Image(systemName: "number").tag("Size")
-                        }
-                        .pickerStyle(SegmentedPickerStyle())
-                        .frame(width: 100)
-                        .help("Sorting alphabetically or by size")
+//                        Picker("", selection: $selectedOption) {
+//                            Image(systemName: "textformat.abc").tag("Default")
+//                            Image(systemName: "number").tag("Size")
+//                        }
+//                        .pickerStyle(SegmentedPickerStyle())
+//                        .frame(width: 100)
+//                        .help("Sorting alphabetically or by size")
                     }
 
                 }

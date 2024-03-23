@@ -50,9 +50,18 @@ struct MiniMode: View {
                 }
                 .interactiveDismissDisabled(popoverStay)
                 .background(
-                    Rectangle()
-                        .fill(Color("pop"))
-                        .padding(-80)
+                    Group {
+                        if glass {
+                            GlassEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all)
+                        } else {
+                            Rectangle()
+                                .fill(Color("pop"))
+                                .padding(-80)
+                        }
+                    }
+//                    Rectangle()
+//                        .fill(Color("pop"))
+//                        .padding(-80)
                 )
                 .frame(width: 650, height: 550)
 

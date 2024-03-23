@@ -118,6 +118,7 @@ struct PearcleanerApp: App {
                     }, icon: selectedMenubarIcon)
                 }
 
+
 #if !DEBUG
                 Task {
 
@@ -157,7 +158,7 @@ struct PearcleanerApp: App {
         .windowResizability(.contentMinSize)
         .commands {
             AppCommands(appState: appState, locations: locations, fsm: fsm)
-            CommandGroup(replacing: .newItem, addition: { })
+//            CommandGroup(replacing: .newItem, addition: { })
             
         }
 
@@ -185,29 +186,33 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         return !menubarEnabled
     }
 
-
-//#if !DEBUG
-//    func windowShouldClose(_ sender: NSWindow) -> Bool {
-//        let menubarEnabled = UserDefaults.standard.bool(forKey: "settings.menubar.enabled")
-//        if menubarEnabled {
-//            findAndHideWindows(named: ["Pearcleaner"])
-//            return false
-//        } else {
-//            return true
-//        }
-//    }
-//#endif
-
     func applicationDidFinishLaunching(_ notification: Notification) {
         let menubarEnabled = UserDefaults.standard.bool(forKey: "settings.menubar.enabled")
         if menubarEnabled {
             findAndHideWindows(named: ["Pearcleaner"])
             NSApplication.shared.setActivationPolicy(.accessory)
         }
-// Link window to delegate
-//        let mainWindow = NSApp.windows[0]
-//        mainWindow.delegate = self
+    }
 
+
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        let windowSettings = WindowSettings()
+
+        if !flag {
+            // No visible windows, so let's open a new one
+            for window in sender.windows {
+                window.title = "Pearcleaner"
+                window.makeKeyAndOrderFront(self)
+                print(windowSettings.loadWindowSettings())
+                updateOnMain(after: 0.1, {
+                    resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")
+                    print(window.title)
+                })
+            }
+            return true // Indicates you've handled the re-open
+        }
+        // Return true if you want the application to proceed with its default behavior
+        return false
     }
 
 }

@@ -64,7 +64,7 @@ struct AppCommands: Commands {
             }
 
         }
-        
+
         
         
         // Edit Menu
@@ -74,18 +74,29 @@ struct AppCommands: Commands {
             {
                 undoTrash(appState: appState) {
                     let sortedApps = getSortedApps(paths: fsm.folderPaths, appState: appState)
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                         appState.sortedApps = sortedApps
-//                        if instantSearch {
-//                            loadAllPaths(allApps: sortedApps.userApps + sortedApps.systemApps, appState: appState, locations: locations)
-//                        }
-
+                        for app in appState.trashedFiles {
+                            let pathFinder = AppPathFinder(appInfo: app, appState: appState, locations: locations)
+                            pathFinder.findPaths()
+                        }
                     }
                 }
             } label: {
                 Label("Undo Removal", systemImage: "clear")
             }
             .keyboardShortcut("z", modifiers: .command)
+
+
+//            Button
+//            {
+//                updateOnMain {
+//                    appState.currentView = .zombie
+//                }
+//            } label: {
+//                Label("Zombie", systemImage: "clear")
+//            }
+//            .keyboardShortcut("f", modifiers: .command)
 
 
         }

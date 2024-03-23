@@ -59,9 +59,11 @@ class ReversePathsSearcher {
     private func processItem(_ itemName: String, itemURL: URL, allPaths: [String], allNames: [String]) {
         let formattedItemName = itemName.pearFormat()
         let itemPath = itemURL.path.pearFormat()
+        let itemLastPathComponent = itemURL.lastPathComponent.pearFormat()
 
         guard !skipped.contains(where: { formattedItemName.contains($0) }),
-              !allPaths.contains(itemPath),
+//              !allPaths.contains(itemPath),
+              !allPaths.contains(where: { $0 == itemPath || $0.hasSuffix("/\(itemLastPathComponent)") }),
               !allNames.contains(formattedItemName),
               isSupportedFileType(at: itemURL.path) else {
             return
