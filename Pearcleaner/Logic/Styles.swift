@@ -84,12 +84,13 @@ struct InfoButton: View {
         Button(action: {
             self.isPopoverPresented.toggle()
         }) {
-            HStack {
+            HStack(alignment: .center, spacing: 5) {
                 Image(systemName: "info.circle.fill")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 14, height: 14)
                     .foregroundColor(color?.opacity(0.7) ?? Color("mode").opacity(0.7))
+                    .frame(height: 16)
                 if !label!.isEmpty {
                     Text(label!)
                         .font(.callout)
@@ -97,7 +98,6 @@ struct InfoButton: View {
 
                 }
             }
-
         }
         .buttonStyle(PlainButtonStyle())
         .onHover { isHovered in

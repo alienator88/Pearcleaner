@@ -273,17 +273,36 @@ struct FilesView: View {
                                             appState.currentView = .empty
                                         }
                                     }
-                                    var selectedItemsArray = Array(appState.selectedItems)
-                                    if let url = URL(string: appState.appInfo.path.absoluteString) {
-                                        let appFolderURL = appState.appInfo.path.absoluteString.contains("Wrapper") ? url.deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent() : url.deletingLastPathComponent() // Get the immediate parent directory of regular and wrapped apps
+                                    let selectedItemsArray = Array(appState.selectedItems)
 
-                                        if appFolderURL.path == "/Applications" || appFolderURL.path == "\(home)/Applications" {
-                                            // Do nothing, skip insertion
-                                        } else if appFolderURL.pathComponents.count > 2 && appFolderURL.path.contains("Applications") {
-                                            // Insert into selectedItemsArray only if there is an intermediary folder
-                                            selectedItemsArray.insert(appFolderURL, at: 0)
-                                        }
-                                    }
+                                    // Delete all folders above app bundle between /Applications and app bundle file
+
+//                                    if let url = URL(string: appState.appInfo.path.absoluteString) {
+//                                        var parentURL = url.deletingLastPathComponent()  // Immediate parent of the .app bundle
+//
+//                                        // Traverse up the path components until just below /Applications or ~/Applications
+//                                        while parentURL.pathComponents.count > 2 && parentURL.path.contains("Applications") && parentURL.deletingLastPathComponent().path != "/Applications" && parentURL.deletingLastPathComponent().path != "\(home)/Applications" {
+//                                            parentURL = parentURL.deletingLastPathComponent()
+//                                        }
+//
+//                                        // Now, parentURL should be the directory just below /Applications or ~/Applications
+//                                        if parentURL.path != "/Applications" && parentURL.path != "\(home)/Applications" {
+//                                            selectedItemsArray.insert(parentURL, at: 0)  // Add the correct parent directory to the array
+//                                        }
+//                                    }
+
+                                    // Delete folder only 1 up from app bundle between /Applications and app bundle file
+
+//                                    if let url = URL(string: appState.appInfo.path.absoluteString) {
+//                                        let appFolderURL = appState.appInfo.path.absoluteString.contains("Wrapper") ? url.deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent() : url.deletingLastPathComponent() // Get the immediate parent directory of regular and wrapped apps
+//
+//                                        if appFolderURL.path == "/Applications" || appFolderURL.path == "\(home)/Applications" {
+//                                            // Do nothing, skip insertion
+//                                        } else if appFolderURL.pathComponents.count > 2 && appFolderURL.path.contains("Applications") {
+//                                            // Insert into selectedItemsArray only if there is an intermediary folder
+//                                            selectedItemsArray.insert(appFolderURL, at: 0)
+//                                        }
+//                                    }
 
                                     killApp(appId: appState.appInfo.bundleIdentifier) {
                                         moveFilesToTrash(at: selectedItemsArray) {
@@ -303,8 +322,8 @@ struct FilesView: View {
                                                 caskCleanup(app: appState.appInfo.appName)
                                             }
 
-                                            // Remove app from app list if all app files were removed
-                                            if appState.appInfo.files.count == selectedItemsArray.count {
+                                            // Remove app from app list if main app bundle is removed
+                                            if selectedItemsArray.contains(where: { $0.absoluteString == appState.appInfo.path.absoluteString }) {
                                                 removeApp(appState: appState, withId: appState.appInfo.id)
                                             } else {
                                                 // Add deleted appInfo object to trashed array
@@ -317,7 +336,6 @@ struct FilesView: View {
                                                     appState.appInfoStore[index] = .empty
                                                 }
                                             }
-
                                             appState.appInfo = AppInfo.empty
                                         }
                                     }
@@ -382,11 +400,17 @@ struct FileDetailsItem: View {
 
             }
             VStack(alignment: .leading, spacing: 5) {
-                Text(path.lastPathComponent)
-                    .font(.title3)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
-                    .help(path.lastPathComponent)
+                HStack(alignment: .center) {
+                    Text(path.lastPathComponent)
+                        .font(.title3)
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                        .help(path.lastPathComponent)
+                    if isNested(path: path) {
+                        InfoButton(text: "Application file is nested within subdirectories. To prevent deleting incorrect folders, Pearcleaner will leave these alone. You may manually delete the remaining folders if required.", color: nil, label: "")
+                    }
+                }
+
                 Text(path.path)
                     .font(.footnote)
                     .lineLimit(1)

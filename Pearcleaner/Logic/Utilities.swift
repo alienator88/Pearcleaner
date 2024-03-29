@@ -388,6 +388,23 @@ func removeApp(appState: AppState, withId id: UUID) {
 }
 
 
+// Check if app bundle is nested
+func isNested(path: URL) -> Bool {
+    let applicationsPath = "/Applications"
+    let homeApplicationsPath = "\(home)/Applications"
+
+    guard path.path.contains("Applications") else {
+        return false
+    }
+    
+    // Get the parent directory of the app
+    let parentDirectory = path.deletingLastPathComponent().path
+
+    // Check if the parent directory is not directly /Applications or ~/Applications
+    return parentDirectory != applicationsPath && parentDirectory != homeApplicationsPath
+}
+
+
 
 // --- Extend Int to convert hours to seconds ---
 extension Int {
