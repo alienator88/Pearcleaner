@@ -123,30 +123,41 @@ func loadAllPaths(allApps: [AppInfo], appState: AppState, locations: Locations, 
     for app in allApps {
         dispatchGroup.enter()
         DispatchQueue.global(qos: .background).async {
-            let pathFinder = AppPathFinder(appInfo: app, appState: appState, locations: locations, backgroundRun: true)
+            let pathFinder = AppPathFinder(appInfo: app, appState: appState, locations: locations, backgroundRun: true, reverseAddon: reverseAddon)
             pathFinder.findPaths()
             dispatchGroup.leave()
         }
     }
 
-    DispatchQueue.global(qos: .background).async {
-        _ = dispatchGroup.wait(timeout: .now() + 60)
+    dispatchGroup.notify(queue: DispatchQueue.global(qos: .background)) {
 
         func checkAllAppsProcessed(retryCount: Int = 0, maxRetry: Int = 120) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 if appState.appInfoStore.count == allApps.count {
                     if reverseAddon {
                         let reverse = ReversePathsSearcher(appState: appState, locations: locations)
-                        reverse.reversePathsSearch()
+                        reverse.reversePathsSearch() {
+                            updateOnMain {
+                                appState.showProgress = false
+                            }
+                        }
                     }
                     // Reset progress values to 0
-                    appState.instantProgress = 0
-                    appState.instantTotal = 0
-
+                    updateOnMain {
+                        appState.instantProgress = 0
+                        appState.instantTotal = 0
+                        appState.showProgress = false
+                    }
                     completion()
                 } else if retryCount < maxRetry {
                     checkAllAppsProcessed(retryCount: retryCount + 1, maxRetry: maxRetry)
                 } else {
+                    // Reset progress values to 0
+                    updateOnMain {
+                        appState.instantProgress = 0
+                        appState.instantTotal = 0
+                        appState.showProgress = false
+                    }
                     printOS("loadAllPaths - Retry limit reached. Not all paths were loaded.")
                     completion()
                 }

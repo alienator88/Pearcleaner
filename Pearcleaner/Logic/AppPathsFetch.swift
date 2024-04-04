@@ -1,8 +1,8 @@
 //
-//  AppPathsFetch.swift
+//  AppPathsFetch-NEW.swift
 //  Pearcleaner
 //
-//  Created by Alin Lupascu on 3/20/24.
+//  Created by Alin Lupascu on 4/4/24.
 //
 
 import Foundation
@@ -14,35 +14,27 @@ class AppPathFinder {
     private var appState: AppState
     private var locations: Locations
     private var backgroundRun: Bool
+    private var reverseAddon: Bool
     private var completion: () -> Void = {}
     private var collection: [URL] = []
     private let collectionAccessQueue = DispatchQueue(label: "com.alienator88.Pearcleaner.appPathFinder.collectionAccess")
     @AppStorage("settings.general.instant") var instantSearch: Bool = true
 
-    init(appInfo: AppInfo = .empty, appState: AppState, locations: Locations, backgroundRun: Bool = false, completion: @escaping () -> Void = {}) {
+    init(appInfo: AppInfo = .empty, appState: AppState, locations: Locations, backgroundRun: Bool = false, reverseAddon: Bool = false, completion: @escaping () -> Void = {}) {
         self.appInfo = appInfo
         self.appState = appState
         self.locations = locations
         self.backgroundRun = backgroundRun
+        self.reverseAddon = reverseAddon
         self.completion = completion
     }
 
     func findPaths() {
         Task(priority: .background) {
             self.initialURLProcessing()
-            let dispatchGroup = DispatchGroup()
-
-            for location in self.locations.apps.paths {
-                dispatchGroup.enter()
-                DispatchQueue.global(qos: .userInitiated).async {
-                    self.processLocation(location, with: dispatchGroup)
-                    dispatchGroup.leave()
-                }
-            }
-
-            dispatchGroup.notify(queue: .main) {
-                self.finalizeCollection()
-            }
+            self.collectDirectories()
+            self.collectFiles()
+            self.finalizeCollection()
         }
     }
 
@@ -53,32 +45,92 @@ class AppPathFinder {
         }
     }
 
-    private func processLocation(_ location: String, with dispatchGroup: DispatchGroup) {
-        // Check if the directory exists before attempting to read its contents
-        if FileManager.default.fileExists(atPath: location) {
-            do {
-                let contents = try FileManager.default.contentsOfDirectory(atPath: location)
+    private func collectDirectories() {
+        let dispatchGroup = DispatchGroup()
 
-                for item in contents {
-                    let itemURL = URL(fileURLWithPath: location).appendingPathComponent(item)
-                    let itemL = item.replacingOccurrences(of: ".", with: "").replacingOccurrences(of: " ", with: "").lowercased()
+        for location in self.locations.apps.paths {
+            dispatchGroup.enter()
+            DispatchQueue.global(qos: .userInitiated).async {
+                self.processDirectoryLocation(location)
+                dispatchGroup.leave()
+            }
+        }
 
-                    if shouldSkipItem(itemL, at: itemURL) { continue }
+        dispatchGroup.wait()
+    }
 
-                    if specificCondition(itemL: itemL, itemURL: itemURL) {
-                        collectionAccessQueue.async {
+    private func processDirectoryLocation(_ location: String) {
+        if let contents = try? FileManager.default.contentsOfDirectory(atPath: location) {
+            for item in contents {
+                let itemURL = URL(fileURLWithPath: location).appendingPathComponent(item)
+                let itemL = item.replacingOccurrences(of: ".", with: "").replacingOccurrences(of: " ", with: "").lowercased()
+
+                var isDirectory: ObjCBool = false
+                if FileManager.default.fileExists(atPath: itemURL.path, isDirectory: &isDirectory), isDirectory.boolValue {
+                    // Perform the check to skip the item if needed
+                    if shouldSkipItem(itemL, at: itemURL) {
+                        continue
+                    }
+
+                    collectionAccessQueue.sync {
+                        let alreadyIncluded = self.collection.contains { existingURL in
+                            itemURL.path.hasPrefix(existingURL.path)
+                        }
+
+                        if !alreadyIncluded && specificCondition(itemL: itemL, itemURL: itemURL) {
                             self.collection.append(itemURL)
                         }
                     }
                 }
-            } catch {
-                // If an error occurs while trying to read the directory's contents, log or handle it here if needed
-                printOS("Error processing location: \(location), \(error)")
+//                if FileManager.default.fileExists(atPath: itemURL.path, isDirectory: &isDirectory),
+//                   isDirectory.boolValue,
+//                   !shouldSkipItem(itemL, at: itemURL),
+//                   specificCondition(itemL: itemL, itemURL: itemURL) {
+//                    collectionAccessQueue.sync {
+//                        self.collection.append(itemURL)
+//                    }
+//                }
             }
-        } else {
-            // The directory does not exist; skip it
         }
     }
+
+    private func collectFiles() {
+        let dispatchGroup = DispatchGroup()
+
+        for location in self.locations.apps.paths {
+            dispatchGroup.enter()
+            DispatchQueue.global(qos: .userInitiated).async {
+                self.processFileLocation(location)
+                dispatchGroup.leave()
+            }
+        }
+
+        dispatchGroup.wait()
+    }
+
+    private func processFileLocation(_ location: String) {
+        if let contents = try? FileManager.default.contentsOfDirectory(atPath: location) {
+            for item in contents {
+                let itemURL = URL(fileURLWithPath: location).appendingPathComponent(item)
+                let itemL = item.replacingOccurrences(of: ".", with: "").replacingOccurrences(of: " ", with: "").lowercased()
+
+                var isDirectory: ObjCBool = false
+                if FileManager.default.fileExists(atPath: itemURL.path, isDirectory: &isDirectory),
+                   !isDirectory.boolValue,
+                   !shouldSkipItem(itemL, at: itemURL),
+                   specificCondition(itemL: itemL, itemURL: itemURL) {
+                    collectionAccessQueue.sync {
+                        let parentDirectory = itemURL.deletingLastPathComponent()
+                        if !self.collection.contains(parentDirectory) {
+                            self.collection.append(itemURL)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
 
     private func shouldSkipItem(_ itemL: String, at itemURL: URL) -> Bool {
         var containsItem = false
@@ -88,6 +140,10 @@ class AppPathFinder {
         return itemL.hasPrefix("comapple") && !["comappleconfigurator", "comappledt", "comappleiwork"].contains(where: itemL.hasPrefix) || containsItem || !isSupportedFileType(at: itemURL.path)
     }
 
+
+
+
+
     private func specificCondition(itemL: String, itemURL: URL) -> Bool {
         let bundleIdentifierL = self.appInfo.bundleIdentifier.pearFormat()
         let bundleComponents = self.appInfo.bundleIdentifier.components(separatedBy: ".").compactMap { $0 != "-" ? $0.lowercased() : nil }
@@ -95,44 +151,57 @@ class AppPathFinder {
         let nameL = self.appInfo.appName.pearFormat()
         let nameP = self.appInfo.path.lastPathComponent.replacingOccurrences(of: ".app", with: "")
 
+        let exclusions = [
+            "comappledtxcode": ["comrobotsandpencilsxcodesapp", "comoneminutegamesxcodecleaner", "iohyperappxcodecleaner", "xcodesjson"],
+            "comrobotsandpencilsxcodesapp": ["comappledtxcode", "comoneminutegamesxcodecleaner", "iohyperappxcodecleaner"],
+            "iohyperappxcodecleaner": ["comrobotsandpencilsxcodesapp", "comoneminutegamesxcodecleaner", "comappledtxcode", "xcodesjson"]
+        ]
+
+        if let excludedApps = exclusions[bundleIdentifierL], excludedApps.contains(where: { itemL.contains($0) }) {
+            return false
+        }
+
+        if bundleIdentifierL.contains("comappledtxcode") {
+            // Include items that are part of the Xcode ecosystem
+            if itemL.contains("comappledt") || itemL.contains("xcode") || itemL.contains("simulator") {
+                return true
+            }
+        }
+
+        if bundleIdentifierL.contains("uszoomxos") {
+            // Include items for Zoom that are not similar to the app name and/or bundle id
+            if itemL.contains("zoom") {
+                return true
+            }
+        }
+
+        if bundleIdentifierL.contains("combravebrowser") {
+            // Include items for Zoom that are not similar to the app name and/or bundle id
+            if itemL.contains("bravesoftware") {
+                return true
+            }
+        }
+
+        if bundleIdentifierL.contains("comlogioptionsplus") {
+            // Include items for Zoom that are not similar to the app name and/or bundle id
+            if itemL.contains("logi") && !itemL.contains("login") && !itemL.contains("logic") {
+                return true
+            }
+        }
+
+        if bundleIdentifierL.contains("commicrosoftvscode") {
+            // Include items for vscode
+            if itemL.contains("vscode") {
+                return true
+            }
+        }
+
         if self.appInfo.webApp {
             return itemL.contains(bundleIdentifierL)
-        } else {
-            if itemL.contains("xcode") && bundleIdentifierL.contains("comappledt") {
-                return !(itemURL.path.contains("comrobotsandpencilsxcodesapp") || itemURL.path.contains("comoneminutegamesxcodecleaner") || itemURL.path.contains("iohyperappxcodecleaner") || itemURL.path.contains("xcodesjson")) && (itemL.contains(bundle) || itemL.contains(bundleIdentifierL) || (nameL.count < 6 && itemL.contains(nameL)))
-            } else if itemL.contains("xcodes") && bundleIdentifierL.contains("comrobotsandpencilsxcodesapp") {
-                return !(itemURL.path.contains("comappledt")) && (itemL.contains(bundle) || itemL.contains(bundleIdentifierL) || (nameL.count > 4 && itemL.contains(nameL)))
-            } else {
-                return itemL.contains(bundleIdentifierL) || itemL.contains(bundle) || (nameL.count > 3 && itemL.contains(nameL)) || (nameP.count > 3 && itemL.contains(nameP))
-            }
-        }
-    }
-
-
-
-    private func filterParentDirectories(in collection: [URL]) -> [URL] {
-        // Normalize URLs by removing percent encoding and trailing slashes for accurate comparison
-        var filteredURLs: [URL] = []
-        let normalizedURLs = collection.map { url -> URL in
-            let path = url.path.removingPercentEncoding?.trimmingCharacters(in: CharacterSet(charactersIn: "/")) ?? ""
-            return URL(fileURLWithPath: path)
         }
 
-        for url in normalizedURLs {
-            // Determine if 'url' is a parent of any path in 'filteredURLs'
-            if !filteredURLs.contains(where: { $0.absoluteString.hasPrefix(url.absoluteString) }) {
-                filteredURLs.append(url)
-            }
-        }
+        return itemL.contains(bundleIdentifierL) || itemL.contains(bundle) || (nameL.count > 3 && itemL.contains(nameL)) || (nameP.count > 3 && itemL.contains(nameP))
 
-        // Remove URLs that are parents of another URL in the list
-        filteredURLs = filteredURLs.filter { parentUrl in
-            !filteredURLs.contains { childUrl in
-                childUrl != parentUrl && childUrl.absoluteString.hasPrefix(parentUrl.absoluteString)
-            }
-        }
-
-        return filteredURLs
     }
 
 
@@ -166,20 +235,44 @@ class AppPathFinder {
         return existingGroupContainers
     }
 
+
+    private func handleOutliers() -> [URL] {
+        var outliers: [URL] = []
+
+        // Handle VSCode folder
+        if self.appInfo.bundleIdentifier.pearFormat().contains("commicrosoftvscode") {
+            let appSupportCodePath = "\(home)/Library/Application Support/Code"
+            if let codeDirectoryURL = URL(string: appSupportCodePath), FileManager.default.fileExists(atPath: codeDirectoryURL.path) {
+                outliers.append(codeDirectoryURL)
+            }
+        }
+
+        // Handle Xcode folder
+        if self.appInfo.bundleIdentifier.pearFormat().contains("comappledtxcode") {
+            let simulators = "\(home)/Library/Containers/com.apple.iphonesimulator.ShareExtension"
+            if let simulatorsURL = URL(string: simulators), FileManager.default.fileExists(atPath: simulatorsURL.path) {
+                outliers.append(simulatorsURL)
+            }
+        }
+
+        // Add other outlier cases here as needed
+
+        return outliers
+    }
+
     private func finalizeCollection() {
         DispatchQueue.global(qos: .userInitiated).async {
             let groupContainers = self.getGroupContainers(bundleURL: self.appInfo.path)
+            let outliers = self.handleOutliers()
             var tempCollection: [URL] = []
             self.collectionAccessQueue.sync {
                 tempCollection = self.collection
             }
             tempCollection.append(contentsOf: groupContainers)
+            tempCollection.append(contentsOf: outliers)
 
-            // Apply the filter to remove parent directories
-            let filteredCollection = self.filterParentDirectories(in: tempCollection)
-            
             // Continue with the sorted collection
-            let sortedCollection = filteredCollection.sorted(by: { $0.absoluteString < $1.absoluteString })
+            let sortedCollection = tempCollection.sorted(by: { $0.absoluteString < $1.absoluteString })
             self.handlePostProcessing(sortedCollection: sortedCollection)
         }
 
@@ -217,11 +310,12 @@ class AppPathFinder {
                 self.appState.instantProgress += 1
             }
 
+            // Append object to store if running reverse search with empty store
+            if self.reverseAddon {
+                self.appState.appInfoStore.append(self.appInfo)
+            }
+
             self.completion()
         }
     }
 }
-
-
-
-//assert(!Thread.isMainThread, "This method should not run on the main thread")

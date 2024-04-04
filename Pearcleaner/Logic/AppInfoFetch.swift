@@ -46,9 +46,11 @@ class AppInfoFetcher {
             return nil
         }
 
-        let appName = bundle.localizedInfoDictionary?[kCFBundleNameKey as String] as? String
-        ?? bundle.infoDictionary?["CFBundleName"] as? String
-        ?? path.deletingPathExtension().lastPathComponent
+//        let appName = bundle.localizedInfoDictionary?[kCFBundleNameKey as String] as? String
+//        ?? bundle.infoDictionary?["CFBundleName"] as? String
+//        ?? path.deletingPathExtension().lastPathComponent
+
+        let appName = path.deletingPathExtension().lastPathComponent.capitalized
 
         let appVersion = bundle.infoDictionary?["CFBundleShortVersionString"] as? String
         ?? bundle.infoDictionary?["CFBundleVersion"] as? String

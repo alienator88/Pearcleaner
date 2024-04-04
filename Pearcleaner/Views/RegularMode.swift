@@ -206,7 +206,6 @@ struct Header: View {
                                         if instantSearch {
                                             loadAllPaths(allApps: sortedApps, appState: appState, locations: locations) {
                                                 appState.reload.toggle()
-
                                             }
                                         } else {
                                             appState.reload.toggle()
