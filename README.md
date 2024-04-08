@@ -109,3 +109,11 @@ brew install alienator88/homebrew-cask/pearcleaner
 ## Thanks
 
 Much appreciation to [Freemacsoft's AppCleaner](https://freemacsoft.net/appcleaner/) and [Sun Knudsen's app-cleaner script](https://sunknudsen.com/privacy-guides/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative)
+
+## Try my other apps
+
+[Viz](https://github.com/alienator88/Viz) - Utility for extracting text from images, videos, qr/barcodes
+
+[Sentinel](https://github.com/alienator88/Sentinel) - A GUI for controlling gatekeeper status on your mac
+
+[McBrew](https://github.com/alienator88/McBrew) - A GUI for managing your homebrew
