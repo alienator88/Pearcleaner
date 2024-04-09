@@ -35,7 +35,7 @@ struct SettingsView: View {
                 .tabItem {
                     Label(CurrentTabView.folders.title, systemImage: "folder")
                 }
-                .tag(CurrentTabView.interface)
+                .tag(CurrentTabView.folders)
 
             UpdateSettingsTab(showFeature: $showFeature)
                 .tabItem {
