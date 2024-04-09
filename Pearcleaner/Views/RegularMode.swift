@@ -29,6 +29,7 @@ struct RegularMode: View {
         }
     }
 
+//    let slate = Color(.sRGB, red: 0.188143, green: 0.208556, blue: 0.262679, opacity: 1)
 
     var body: some View {
 
@@ -103,6 +104,7 @@ struct RegularMode: View {
                 }
                 .transition(.opacity)
             }
+//            .background(slate)
 //            .onHover { hovering in
 //                withAnimation(Animation.easeInOut(duration: 0.4)) {
 //                    isHovering = hovering

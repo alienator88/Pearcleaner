@@ -123,6 +123,44 @@ struct InfoButton: View {
 }
 
 
+struct UninstallButton: ButtonStyle {
+    var isEnabled: Bool
+
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(alignment: .center, spacing: 10) {
+            Image(systemName: "trash")
+                .foregroundColor(isEnabled ? .white.opacity(1) : .white.opacity(0.3))
+
+            Divider()
+                .frame(height: 24)
+                .opacity(0.5)
+
+            configuration.label
+                .foregroundColor(isEnabled ? .white.opacity(1) : .white.opacity(0.3))
+
+        }
+        .frame(height: 24)
+        .frame(minWidth: 75)
+        .padding(.horizontal)
+        .padding(.vertical, 4)
+        .background(configuration.isPressed ? Color("uninstall").opacity(0.8) : Color("uninstall"))
+//        .background(
+//            configuration.isPressed ? Color("uninstall").opacity(0.8) :
+//                (isEnabled ? Color("uninstall") : Color.gray)
+//        )
+        .cornerRadius(8)
+        .onHover { over in
+            if over {
+                NSCursor.pointingHand.push()
+            } else {
+                NSCursor.pop()
+            }
+        }
+    }
+}
+
+
+
 struct WarningPopoverView: View {
     var label: String
     var bodyText: String

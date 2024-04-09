@@ -17,15 +17,22 @@ struct FilesView: View {
     @AppStorage("settings.general.instant") var instantSearch: Bool = true
     @AppStorage("settings.general.brew") private var brew: Bool = false
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
+    @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
     @Binding var search: String
     var regularWin: Bool
-    @State private var selectedOption = "Default"
+//    @State private var selectedOption = "Alpha"
     @State private var elapsedTime = 0
     @State private var timer: Timer? = nil
     
     var body: some View {
+
+
+        let totalSelectedSize = appState.selectedItems.reduce(Int64(0)) { (result, url) in
+            result + (appState.appInfo.fileSize[url] ?? 0)
+        }
+
         VStack(alignment: .center) {
             if appState.showProgress {
                 VStack {
@@ -131,7 +138,9 @@ struct FilesView: View {
                                         }
 
                                     }
-                                    Text("\(appState.appInfo.bundleIdentifier)").font(.title3)
+                                    Text("\(appState.appInfo.bundleIdentifier)")
+                                        .lineLimit(1)
+                                        .font(.title3)
                                         .foregroundStyle((.gray.opacity(0.8)))
                                 }
                                 .padding(.leading)
@@ -140,7 +149,8 @@ struct FilesView: View {
 
                                 VStack(alignment: .trailing, spacing: 5) {
                                     Text("\(formatByte(size: appState.appInfo.totalSize))").font(.title).fontWeight(.bold)
-                                    Text("\(appState.appInfo.fileSize.count > 1 ? "\(appState.appInfo.fileSize.count) items" : "\(appState.appInfo.fileSize.count) item")").font(.callout).underline().foregroundStyle((.gray.opacity(0.8)))
+                                    Text("\(appState.appInfo.fileSize.count == 1 ? "\(appState.selectedItems.count) / \(appState.appInfo.fileSize.count) item" : "\(appState.selectedItems.count) / \(appState.appInfo.fileSize.count) items")")
+                                        .font(.callout).foregroundStyle((.gray.opacity(0.8)))
                                 }
 
                             }
@@ -205,9 +215,10 @@ struct FilesView: View {
                         Spacer()
 
                         Button("") {
-                            selectedOption = selectedOption == "Default" ? "Size" : "Default"
+                            selectedSortAlpha.toggle()
+//                            selectedOption = selectedOption == "Alpha" ? "Size" : "Alpha"
                         }
-                        .buttonStyle(SimpleButtonStyle(icon: selectedOption == "Default" ? "textformat.abc" : "textformat.123", help: selectedOption == "Default" ? "Sorted alphabetically" : "Sorted by size", color: Color("mode")))
+                        .buttonStyle(SimpleButtonStyle(icon: selectedSortAlpha ? "textformat.abc" : "textformat.123", help: selectedSortAlpha ? "Sorted alphabetically" : "Sorted by size", color: Color("mode")))
 
                     }
                     .padding()
@@ -237,19 +248,20 @@ struct FilesView: View {
                                 }
                             }
 
-                            let sort = selectedOption == "Default" ? sortedFilesAlpha : sortedFilesSize
+                            let sort = selectedSortAlpha ? sortedFilesAlpha : sortedFilesSize
 
-                            ForEach(sort, id: \.self) { path in
+                            ForEach(Array(sort.enumerated()), id: \.element) { index, path in
                                 if let fileSize = appState.appInfo.fileSize[path], let fileIcon = appState.appInfo.fileIcon[path] {
                                     let iconImage = fileIcon.map(Image.init(nsImage:))
                                     VStack {
                                         FileDetailsItem(size: fileSize, icon: iconImage, path: path)
-                                        if path != appState.appInfo.files.last {
+                                        if index < sort.count - 1 {
                                             Divider().padding(.leading, 40).opacity(0.5)
                                         }
                                     }
                                 }
                             }
+
                         }
                         .padding()
                     }
@@ -261,97 +273,64 @@ struct FilesView: View {
 
                         Spacer()
 
-                        if !appState.selectedItems.isEmpty {
-                            Button("Uninstall") {
-                                Task {
-                                    updateOnMain {
-                                        search = ""
-                                        if !regularWin {
-                                            appState.currentView = .apps
+                        Button("\(formatByte(size: totalSelectedSize))") {
+                            Task {
+                                updateOnMain {
+                                    search = ""
+                                    if !regularWin {
+                                        appState.currentView = .apps
+                                        showPopover = false
+                                    } else {
+                                        appState.currentView = .empty
+                                    }
+                                }
+                                let selectedItemsArray = Array(appState.selectedItems)
+
+                                killApp(appId: appState.appInfo.bundleIdentifier) {
+                                    moveFilesToTrash(at: selectedItemsArray) {
+                                        withAnimation {
                                             showPopover = false
+                                            updateOnMain {
+                                                appState.currentView = mini ? .apps : .empty
+                                                appState.isReminderVisible.toggle()
+                                            }
+                                            if sentinel {
+                                                launchctl(load: true)
+                                            }
+                                        }
+
+                                        // Brew cleanup if enabled
+                                        if brew {
+                                            caskCleanup(app: appState.appInfo.appName)
+                                        }
+
+                                        // Remove app from app list if main app bundle is removed
+                                        if selectedItemsArray.contains(where: { $0.absoluteString == appState.appInfo.path.absoluteString }) {
+                                            removeApp(appState: appState, withId: appState.appInfo.id)
                                         } else {
-                                            appState.currentView = .empty
+                                            // Add deleted appInfo object to trashed array
+                                            appState.appInfo.files = []
+                                            appState.appInfo.fileSize = [:]
+                                            appState.trashedFiles.append(appState.appInfo)
+
+                                            // Clear out appInfoStore object
+                                            if let index = appState.appInfoStore.firstIndex(where: { $0.path == appState.appInfo.path }) {
+                                                appState.appInfoStore[index] = .empty
+                                            }
                                         }
+                                        appState.appInfo = AppInfo.empty
                                     }
-                                    let selectedItemsArray = Array(appState.selectedItems)
-
-                                    // Delete all folders above app bundle between /Applications and app bundle file
-
-//                                    if let url = URL(string: appState.appInfo.path.absoluteString) {
-//                                        var parentURL = url.deletingLastPathComponent()  // Immediate parent of the .app bundle
-//
-//                                        // Traverse up the path components until just below /Applications or ~/Applications
-//                                        while parentURL.pathComponents.count > 2 && parentURL.path.contains("Applications") && parentURL.deletingLastPathComponent().path != "/Applications" && parentURL.deletingLastPathComponent().path != "\(home)/Applications" {
-//                                            parentURL = parentURL.deletingLastPathComponent()
-//                                        }
-//
-//                                        // Now, parentURL should be the directory just below /Applications or ~/Applications
-//                                        if parentURL.path != "/Applications" && parentURL.path != "\(home)/Applications" {
-//                                            selectedItemsArray.insert(parentURL, at: 0)  // Add the correct parent directory to the array
-//                                        }
-//                                    }
-
-                                    // Delete folder only 1 up from app bundle between /Applications and app bundle file
-
-//                                    if let url = URL(string: appState.appInfo.path.absoluteString) {
-//                                        let appFolderURL = appState.appInfo.path.absoluteString.contains("Wrapper") ? url.deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent() : url.deletingLastPathComponent() // Get the immediate parent directory of regular and wrapped apps
-//
-//                                        if appFolderURL.path == "/Applications" || appFolderURL.path == "\(home)/Applications" {
-//                                            // Do nothing, skip insertion
-//                                        } else if appFolderURL.pathComponents.count > 2 && appFolderURL.path.contains("Applications") {
-//                                            // Insert into selectedItemsArray only if there is an intermediary folder
-//                                            selectedItemsArray.insert(appFolderURL, at: 0)
-//                                        }
-//                                    }
-
-                                    killApp(appId: appState.appInfo.bundleIdentifier) {
-                                        moveFilesToTrash(at: selectedItemsArray) {
-                                            withAnimation {
-                                                showPopover = false
-                                                updateOnMain {
-                                                    appState.currentView = mini ? .apps : .empty
-                                                    appState.isReminderVisible.toggle()
-                                                }
-                                                if sentinel {
-                                                    launchctl(load: true)
-                                                }
-                                            }
-                                            
-                                            // Brew cleanup if enabled
-                                            if brew {
-                                                caskCleanup(app: appState.appInfo.appName)
-                                            }
-
-                                            // Remove app from app list if main app bundle is removed
-                                            if selectedItemsArray.contains(where: { $0.absoluteString == appState.appInfo.path.absoluteString }) {
-                                                removeApp(appState: appState, withId: appState.appInfo.id)
-                                            } else {
-                                                // Add deleted appInfo object to trashed array
-                                                appState.appInfo.files = []
-                                                appState.appInfo.fileSize = [:]
-                                                appState.trashedFiles.append(appState.appInfo)
-
-                                                // Clear out appInfoStore object
-                                                if let index = appState.appInfoStore.firstIndex(where: { $0.path == appState.appInfo.path }) {
-                                                    appState.appInfoStore[index] = .empty
-                                                }
-                                            }
-                                            appState.appInfo = AppInfo.empty
-                                        }
-                                    }
-
                                 }
 
                             }
-                            .buttonStyle(NavButtonBottomBarStyle(image: "trash.fill", help: "Uninstall"))
 
-                        } else {
-                            Text("No files selected to remove").font(.title).foregroundStyle(Color("mode")).opacity(0.2)
-                                .padding(5)
                         }
+                        .buttonStyle(UninstallButton(isEnabled: !appState.selectedItems.isEmpty))
+                        .disabled(appState.selectedItems.isEmpty)
+                        .padding(.top)
 
 
-                        Spacer()
+//                        Spacer()
 
                     }
 

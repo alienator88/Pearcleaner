@@ -18,18 +18,18 @@ struct InterfaceSettingsTab: View {
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
+    @AppStorage("settings.general.selectedTab") private var selectedTab: CurrentTabView = .general
     @AppStorage("settings.general.glass") private var glass: Bool = true
     @AppStorage("settings.general.dark") var isDark: Bool = true
     @AppStorage("settings.general.popover") private var popoverStay: Bool = true
     @AppStorage("settings.general.miniview") private var miniView: Bool = true
     @AppStorage("settings.general.selectedTheme") var selectedTheme: String = "Auto"
     @AppStorage("settings.interface.selectedMenubarIcon") var selectedMenubarIcon: String = "pear-4"
-    private let themes = ["Auto", "Dark", "Light"]
     @State private var isLaunchAtLoginEnabled: Bool = false
-    let icons = ["externaldrive", "trash", "folder", "pear-1", "pear-1.5", "pear-2", "pear-3", "pear-4"]
-
     @Binding var showPopover: Bool
     @Binding var search: String
+    let icons = ["externaldrive", "trash", "folder", "pear-1", "pear-1.5", "pear-2", "pear-3", "pear-4"]
+    private let themes = ["Auto", "Dark", "Light"]
 
     var body: some View {
         Form {
@@ -67,7 +67,16 @@ struct InterfaceSettingsTab: View {
 
 
                 HStack(spacing: 0) {
-                    Image(systemName: displayMode.colorScheme == .dark ? "moon.fill" : "sun.max.fill")
+                    Image(systemName: {
+                        switch displayMode {
+                        case .dark:
+                            return "moon.fill"
+                        case .light:
+                            return "sun.max.fill"
+                        case .system:
+                            return "circle.righthalf.filled"
+                        }
+                    }())
                         .resizable()
                         .scaledToFit()
                         .frame(width: 20, height: 20)
@@ -90,19 +99,23 @@ struct InterfaceSettingsTab: View {
                         switch newTheme {
                         case "Auto":
                             displayMode.colorScheme = nil
-                            if isDarkModeEnabled() {
-                                displayMode.colorScheme = .dark
-                                MenuBarExtraManager.shared.restartMenuBarExtra()
-                            } else {
-                                displayMode.colorScheme = .light
+                            // Refresh foreground colors
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                self.selectedTab = .interface
+                            }
+                            if menubarEnabled{
                                 MenuBarExtraManager.shared.restartMenuBarExtra()
                             }
                         case "Dark":
                             displayMode.colorScheme = .dark
-                            MenuBarExtraManager.shared.restartMenuBarExtra()
+                            if menubarEnabled{
+                                MenuBarExtraManager.shared.restartMenuBarExtra()
+                            }
                         case "Light":
                             displayMode.colorScheme = .light
-                            MenuBarExtraManager.shared.restartMenuBarExtra()
+                            if menubarEnabled{
+                                MenuBarExtraManager.shared.restartMenuBarExtra()
+                            }
                         default:
                             break
                         }
@@ -148,6 +161,7 @@ struct InterfaceSettingsTab: View {
                             if mini {
                                 appState.currentView = miniView ? .apps : .empty
                                 showPopover = false
+                                findAndHideWindows(named: ["Pearcleaner"])
                                 windowSettings.newWindow {
                                     MiniMode(search: $search, showPopover: $showPopover)
                                         .environmentObject(locations)
@@ -164,6 +178,7 @@ struct InterfaceSettingsTab: View {
                                 } else {
                                     appState.currentView = .files
                                 }
+                                findAndHideWindows(named: ["Pearcleaner"])
                                 windowSettings.newWindow {
                                     RegularMode(search: $search, showPopover: $showPopover)
                                         .environmentObject(locations)

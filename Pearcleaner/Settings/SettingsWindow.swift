@@ -14,10 +14,11 @@ struct SettingsView: View {
     @Binding var search: String
     @Binding var showFeature: Bool
     @AppStorage("settings.general.glass") private var glass: Bool = true
+    @AppStorage("settings.general.selectedTab") private var selectedTab: CurrentTabView = .general
 
     var body: some View {
         
-        TabView() {
+        TabView(selection: $selectedTab) {
             GeneralSettingsTab(showPopover: $showPopover, search: $search)
                 .tabItem {
                     Label(CurrentTabView.general.title, systemImage: "gear")
@@ -47,13 +48,11 @@ struct SettingsView: View {
                     Label(CurrentTabView.about.title, systemImage: "info.circle")
                 }
                 .tag(CurrentTabView.about)
-
         }
         .background(glass ? GlassEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all) : nil)
 
-
     }
-    
+
 }
 
 

@@ -24,6 +24,8 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.brew") private var brew: Bool = false
     @AppStorage("settings.general.instant") private var instantSearch: Bool = true
     @AppStorage("settings.general.selectedTheme") var selectedTheme: String = "Auto"
+    @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
+
     @State private var diskStatus: Bool = false
     @State private var accessStatus: Bool = false
     private let themes = ["Auto", "Dark", "Light"]
@@ -87,6 +89,53 @@ struct GeneralSettingsTab: View {
                 }
                 .padding(5)
                 .padding(.leading)
+
+
+                HStack(spacing: 0) {
+                    Image(systemName: selectedSortAlpha ? "textformat.abc" : "textformat.123")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .padding(.trailing)
+                        .foregroundStyle(.gray)
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("File list sorting mode")
+                            .font(.callout)
+                            .foregroundStyle(.gray)
+                    }
+                    InfoButton(text: "When searching for app files or leftover files, the list will be sorted based on this choice", color: nil, label: "")
+                    Spacer()
+                    Picker("", selection: $selectedSortAlpha) {
+                        Text("Alphabetical").tag(true)
+                        Text("Size").tag(false)
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+                    .frame(width: 200)
+                }
+                .padding(5)
+                .padding(.leading)
+//                HStack(spacing: 0) {
+//                    Image(systemName: selectedSortAlpha ? "textformat.abc" : "textformat.123")
+//                        .resizable()
+//                        .scaledToFit()
+//                        .frame(width: 20, height: 20)
+//                        .padding(.trailing)
+//                        .foregroundStyle(.gray)
+//                    VStack(alignment: .leading, spacing: 5) {
+//                        Text("\(selectedSortAlpha ? "File list sorted alphabetically" : "File list sorted by size")")
+//                            .font(.callout)
+//                            .foregroundStyle(.gray)
+//                    }
+//
+//                    InfoButton(text: "When searching for app files or leftover files, the list will be sorted based on this choice", color: nil, label: "")
+//
+//                    Spacer()
+//                    Toggle(isOn: $selectedSortAlpha, label: {
+//                    })
+//                    .toggleStyle(.switch)
+//                }
+//                .padding(5)
+//                .padding(.leading)
 
 
                 // === Perms ================================================================================================
@@ -208,7 +257,7 @@ struct GeneralSettingsTab: View {
 
         }
         .padding(20)
-        .frame(width: 500, height: 420)
+        .frame(width: 500, height: 460)
 
     }
     

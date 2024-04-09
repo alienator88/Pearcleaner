@@ -16,16 +16,21 @@ struct ZombieView: View {
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.general.instant") private var instantSearch: Bool = true
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
+    @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
     @Binding var search: String
     @State private var searchZ: String = ""
-    @State private var selectedOption = "Default"
+//    @State private var selectedOption = "Alpha"
     var regularWin: Bool
     @State private var elapsedTime = 0
     @State private var timer: Timer? = nil
 
     var body: some View {
+
+        let totalSelectedZombieSize = appState.selectedZombieItems.reduce(Int64(0)) { (result, url) in
+            result + (appState.zombieFile.fileSize[url] ?? 0)
+        }
 
         let filteredAndSortedFiles: ([URL], Int64) = {
             let filteredFiles = appState.zombieFile.fileSize.filter { (url, _) in
@@ -33,7 +38,7 @@ struct ZombieView: View {
             }
 
             let sortedFilteredFiles = filteredFiles.sorted(by: {
-                if selectedOption == "Default" {
+                if selectedSortAlpha {
                     return $0.key.lastPathComponent.pearFormat() < $1.key.lastPathComponent.pearFormat()
                 } else {
                     return $0.value > $1.value
@@ -148,7 +153,9 @@ struct ZombieView: View {
 
                                 VStack(alignment: .trailing, spacing: 5) {
                                     Text("\(formatByte(size: filteredAndSortedFiles.1))").font(.title).fontWeight(.bold)
-                                    Text("\(filteredAndSortedFiles.0.count == 1 ? "\(filteredAndSortedFiles.0.count) item" : "\(filteredAndSortedFiles.0.count) items")").font(.callout).underline().foregroundStyle((.gray.opacity(0.8)))
+
+                                    Text("\(appState.zombieFile.fileSize.count == 1 ? "\(appState.selectedZombieItems.count) / \(appState.zombieFile.fileSize.count) item" : "\(appState.selectedZombieItems.count) / \(appState.zombieFile.fileSize.count) items")")
+                                        .font(.callout).foregroundStyle((.gray.opacity(0.8)))
                                 }
 
                             }
@@ -157,10 +164,6 @@ struct ZombieView: View {
                         .padding(.horizontal, 20)
                         .padding(.top, 0)
                     }
-
-//                    SearchBarMiniBottom(search: $searchZ)
-//                        .padding(.top)
-//                        .padding(.horizontal)
 
                     // Item selection and sorting toolbar
                     HStack {
@@ -177,12 +180,11 @@ struct ZombieView: View {
 //                            .padding(.top)
                             .padding(.horizontal)
 
-//                        Spacer()
 
                         Button("") {
-                            selectedOption = selectedOption == "Default" ? "Size" : "Default"
+                            selectedSortAlpha.toggle()
                         }
-                        .buttonStyle(SimpleButtonStyle(icon: selectedOption == "Default" ? "textformat.abc" : "textformat.123", help: selectedOption == "Default" ? "Sorted alphabetically" : "Sorted by size", color: Color("mode")))
+                        .buttonStyle(SimpleButtonStyle(icon: selectedSortAlpha ? "textformat.abc" : "textformat.123", help: selectedSortAlpha ? "Sorted alphabetically" : "Sorted by size", color: Color("mode")))
 
 
                     }
@@ -193,22 +195,22 @@ struct ZombieView: View {
                     Divider()
                         .padding(.horizontal)
 
-
-
                     ScrollView() {
                         LazyVStack {
-                            ForEach(filteredAndSortedFiles.0, id: \.self) { file in
+                            ForEach(Array(filteredAndSortedFiles.0.enumerated()), id: \.element) { index, file in
                                 if let fileSize = appState.zombieFile.fileSize[file], let fileIcon = appState.zombieFile.fileIcon[file] {
                                     let iconImage = fileIcon.map(Image.init(nsImage:))
+                                    VStack {
+                                        ZombieFileDetailsItem(size: fileSize, icon: iconImage, path: file)
+                                            .padding(.trailing)
 
-                                    ZombieFileDetailsItem(size: fileSize, icon: iconImage, path: file)
-                                        .padding(.trailing)
-
-                                    if file != appState.zombieFile.fileSize.keys.sorted(by: { $0.absoluteString < $1.absoluteString }).last {
-                                        Divider().padding(.leading, 40).opacity(0.5)
+                                        if index < filteredAndSortedFiles.0.count - 1 {
+                                            Divider().padding(.leading, 40).opacity(0.5)
+                                        }
                                     }
                                 }
                             }
+
                         }
                         .padding()
                     }
@@ -217,26 +219,9 @@ struct ZombieView: View {
 
                     HStack() {
 
-//                        Picker("", selection: Binding(
-//                            get: { appState.selectedZombieItems.count == appState.zombieFile.fileSize.count ? true : false },
-//                            set: { newValue in
-//                                updateOnMain {
-//                                    appState.selectedZombieItems = newValue ? Set(appState.zombieFile.fileSize.keys) : []
-//                                }
-//                            }
-//                        )) {
-//                            Image(systemName: "checkmark.square").tag(true)
-//                            Image(systemName: "square").tag(false)
-//                        }
-//                        .pickerStyle(SegmentedPickerStyle())
-//                        .frame(width: 100)
-//                        .offset(x: -8)
-//                        .help("Item Selection")
-                        
                         Spacer()
 
-                        if !appState.selectedZombieItems.isEmpty {
-                            Button("Remove") {
+                        Button("\(formatByte(size: totalSelectedZombieSize))") {
                                 Task {
                                     updateOnMain {
                                         appState.zombieFile = .empty
@@ -265,21 +250,13 @@ struct ZombieView: View {
                                 }
 
                             }
-                            .buttonStyle(NavButtonBottomBarStyle(image: "trash.fill", help: "Remove"))
-                        } else {
-                            Text("No files selected to remove").font(.title).foregroundStyle(Color("mode")).opacity(0.2)
-                                .padding(5)
-                        }
+                            .buttonStyle(UninstallButton(isEnabled: !appState.selectedZombieItems.isEmpty))
+                            .disabled(appState.selectedZombieItems.isEmpty)
+                            .padding(.top)
 
-                        Spacer()
 
-//                        Picker("", selection: $selectedOption) {
-//                            Image(systemName: "textformat.abc").tag("Default")
-//                            Image(systemName: "number").tag("Size")
-//                        }
-//                        .pickerStyle(SegmentedPickerStyle())
-//                        .frame(width: 100)
-//                        .help("Sorting alphabetically or by size")
+//                        Spacer()
+
                     }
 
                 }
