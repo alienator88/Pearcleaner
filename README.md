@@ -42,11 +42,11 @@ This project was born out of wanting to learn more on how macOS deals with app i
 
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/64f581a6-47b7-4ad1-acd3-24d585407aa7" align="left" width="400" />
 
-<img src="https://github.com/alienator88/Pearcleaner/assets/91337119/22786ddf-00c6-43d7-8fd2-d11b1237e56b" align="center" width="400" />
+<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/3cfe64c2-eba9-4aa0-8250-1f318d3f624c" align="center" width="400" />
 <p></p>
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/327388d9-e043-40ba-b473-4a7c255b1cdf" align="left" width="400" />
 
-<img src="https://github.com/alienator88/Pearcleaner/assets/91337119/6f4b247b-4bee-4db8-a758-fa55673dfe9a" align="center" width="400" />
+<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/e6cc2708-35ed-4084-aa0b-c789a85c6324" align="center" width="400" />
 <p></p>
 
 
@@ -78,6 +78,7 @@ This project was born out of wanting to learn more on how macOS deals with app i
 
 </details>
 
+<p></p>
 
 
 ## Requirements
