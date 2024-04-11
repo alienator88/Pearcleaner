@@ -82,14 +82,6 @@ class AppPathFinder {
                         }
                     }
                 }
-//                if FileManager.default.fileExists(atPath: itemURL.path, isDirectory: &isDirectory),
-//                   isDirectory.boolValue,
-//                   !shouldSkipItem(itemL, at: itemURL),
-//                   specificCondition(itemL: itemL, itemURL: itemURL) {
-//                    collectionAccessQueue.sync {
-//                        self.collection.append(itemURL)
-//                    }
-//                }
             }
         }
     }
@@ -114,16 +106,11 @@ class AppPathFinder {
                 let itemURL = URL(fileURLWithPath: location).appendingPathComponent(item)
                 let itemL = item.replacingOccurrences(of: ".", with: "").replacingOccurrences(of: " ", with: "").lowercased()
 
-                var isDirectory: ObjCBool = false
-                if FileManager.default.fileExists(atPath: itemURL.path, isDirectory: &isDirectory),
-                   !isDirectory.boolValue,
+                if FileManager.default.fileExists(atPath: itemURL.path),
                    !shouldSkipItem(itemL, at: itemURL),
                    specificCondition(itemL: itemL, itemURL: itemURL) {
                     collectionAccessQueue.sync {
-                        let parentDirectory = itemURL.deletingLastPathComponent()
-                        if !self.collection.contains(parentDirectory) {
-                            self.collection.append(itemURL)
-                        }
+                        self.collection.append(itemURL)
                     }
                 }
             }
@@ -137,7 +124,7 @@ class AppPathFinder {
         collectionAccessQueue.sync {
             containsItem = self.collection.contains(itemURL)
         }
-        return itemL.hasPrefix("comapple") && !["comappleconfigurator", "comappledt", "comappleiwork"].contains(where: itemL.hasPrefix) || containsItem || !isSupportedFileType(at: itemURL.path)
+        return itemL.hasPrefix("comapple") && !["comappleconfigurator", "comappledt", "comappleiwork", "comapplesfsymbols", "comappletestflight"].contains(where: itemL.hasPrefix) || containsItem || !isSupportedFileType(at: itemURL.path)
     }
 
 
@@ -176,8 +163,30 @@ class AppPathFinder {
         }
 
         if bundleIdentifierL.contains("combravebrowser") {
-            // Include items for Zoom that are not similar to the app name and/or bundle id
-            if itemL.contains("bravesoftware") {
+            // Include items for Brave that are not similar to the app name and/or bundle id
+            if itemL.contains("brave") {
+                return true
+            }
+        }
+
+        if bundleIdentifierL.contains("comgooglechrome") {
+            // Include items for Chrome that are not similar to the app name and/or bundle id
+            if (itemL.contains("google") && !itemL.contains("iterm")) || (itemL.contains("chrome")  && !itemL.contains("chromefeaturestate")) {
+                return true
+            }
+        }
+
+        if bundleIdentifierL.contains("commicrosoftedgemac") {
+            // Include items for Edge that are not similar to the app name and/or bundle id
+            let exclusions = ["vscode","rdc","appcenter","office","oneauth"]
+            if itemL.contains("microsoft") && !exclusions.contains(where: itemL.contains) {
+                return true
+            }
+        }
+
+        if bundleIdentifierL.contains("orgmozillafirefox") {
+            // Include items for Firefox that are not similar to the app name and/or bundle id
+            if itemL.contains("mozilla") {
                 return true
             }
         }
@@ -195,6 +204,22 @@ class AppPathFinder {
                 return true
             }
         }
+
+
+        if bundleIdentifierL.contains("comfacebookarchondeveloperid") {
+            // Include items for FB Messenger
+            if itemL.contains("archonloginhelper") {
+                return true
+            }
+        }
+
+        if bundleIdentifierL.contains("euexelbanstats") {
+            // Include items for Stats that are not similar to the app name and/or bundle id
+            if itemL.contains("video") {
+                return false
+            }
+        }
+
 
         if self.appInfo.webApp {
             return itemL.contains(bundleIdentifierL)
@@ -271,9 +296,21 @@ class AppPathFinder {
             tempCollection.append(contentsOf: groupContainers)
             tempCollection.append(contentsOf: outliers)
 
-            // Continue with the sorted collection
-            let sortedCollection = tempCollection.sorted(by: { $0.absoluteString < $1.absoluteString })
-            self.handlePostProcessing(sortedCollection: sortedCollection)
+            // Sort and standardize URLs to ensure consistent comparisons
+            let sortedCollection = tempCollection.map { $0.standardizedFileURL }.sorted(by: { $0.path < $1.path })
+            var filteredCollection: [URL] = []
+            var previousUrl: URL?
+            for url in sortedCollection {
+                if let previousUrl = previousUrl, url.path.hasPrefix(previousUrl.path + "/") {
+                    // Current URL is a subdirectory of the previous one, so skip it
+                    continue
+                }
+                // This URL is not a subdirectory of the previous one, so keep it and set it as the previous URL
+                filteredCollection.append(url)
+                previousUrl = url
+            }
+
+            self.handlePostProcessing(sortedCollection: filteredCollection)
         }
 
     }

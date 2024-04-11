@@ -34,6 +34,7 @@ class Locations: ObservableObject {
             "\(home)/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.ApplicationRecentDocuments",
             "\(home)/Library/Containers",
             "\(home)/Library/Caches",
+            "\(home)/Library/Group Containers",
             "\(home)/Library/HTTPStorages",
             "\(home)/Library/Internet Plug-Ins",
             "\(home)/Library/LaunchAgents",

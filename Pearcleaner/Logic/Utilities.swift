@@ -428,6 +428,17 @@ extension String {
     }
 }
 
+// --- Capitalize first letter of string only
+extension String {
+    func capitalizingFirstLetter() -> String {
+        return prefix(1).capitalized + dropFirst()
+    }
+
+    mutating func capitalizeFirstLetter() {
+        self = self.capitalizingFirstLetter()
+    }
+}
+
 
 // --- Trash Relationship ---
 extension FileManager {
