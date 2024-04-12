@@ -27,6 +27,7 @@ This project was born out of wanting to learn more on how macOS deals with app i
 - Sentinel monitor helper that can be enabled to watch Trash folder for deleted apps
 - Sentinel monitor is extremely small (210KB) and uses ~2mb of ram to run in the background and file watch
 - Mini mode which can be enabled from Settings
+- Menubar option
 - Can drop apps to uninstall directly on the Pearcleaner Dock icon itself or the drop target in the app window
 - Optional Finder Extension which allows you to uninstall an app directly from Finder by right clicking > Pearcleaner Uninstall
 - Theme System available with custom color selector
@@ -34,7 +35,7 @@ This project was born out of wanting to learn more on how macOS deals with app i
 - Will differentiate between regular apps and wrapped iOS apps with an "iOS" label next to each item in the list
 - Has clean uninstall menu option for the Pearcleaner app itself if you want to stop using it and get rid of all files and launch items
 - New feature alert on app startup
-- Menubar option
+
 - Optional Homebrew cleanup
 - Custom auto-updater that pulls latest release notes and binaries from GitHub Releases (Pearcleaner has to run from /Applications folder for this to work because of permissions)
 
@@ -52,7 +53,7 @@ This project was born out of wanting to learn more on how macOS deals with app i
 <p></p>
 
 
-<details>
+<details open>
   <summary>Themes</summary>
 <img src="https://github.com/alienator88/Pearcleaner/assets/6263626/e3178f02-785d-48b9-b9ac-20f4e94550ff" align="left" width="400" />
 
@@ -87,9 +88,9 @@ This project was born out of wanting to learn more on how macOS deals with app i
 
 <details>
   <summary>Settings</summary>
-<img src="https://github.com/alienator88/Pearcleaner/assets/91337119/684374f0-a342-420b-b251-5e35d07e4d72" align="left" width="400" />
+<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/dda6c134-57f1-4a37-95e7-a053d7bab62b" align="left" width="400" />
 
-<img src="https://github.com/alienator88/Pearcleaner/assets/91337119/c0d0541a-c13f-47b2-a0d7-59bf6e722499" align="center" width="400" />
+<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/dd483175-65ad-44de-a742-2bbfffbf124e" align="center" width="400" />
 
 </details>
 
