@@ -10,6 +10,7 @@ import SwiftUI
 
 struct RegularMode: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var themeSettings: ThemeSettings
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 280
     @AppStorage("settings.general.instant") private var instantSearch: Bool = true
@@ -69,21 +70,16 @@ struct RegularMode: View {
                     }
                     .frame(width: sidebarWidth)
                     .padding(.vertical)
-//                    .onHover { hovering in
-//                        withAnimation(Animation.easeInOut(duration: 0.4)) {
-//                            isHovering = hovering
-//                        }
-//                    }
-//                    .opacity(!isHovering ? 1 : 0.5)
-
                 }
 
 
             }
-            .background(glass ? GlassEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all) : nil)
+            .background(backgroundView(themeSettings: themeSettings, darker: true, glass: glass))
             .transition(.opacity)
 
             SlideableDivider(dimension: $sidebarWidth)
+                .background(backgroundView(themeSettings: themeSettings))
+                .zIndex(3)
 
 
             // Details View
@@ -104,30 +100,11 @@ struct RegularMode: View {
                 }
                 .transition(.opacity)
             }
-//            .background(slate)
-//            .onHover { hovering in
-//                withAnimation(Animation.easeInOut(duration: 0.4)) {
-//                    isHovering = hovering
-//                }
-//            }
-//            .opacity((isHovering2 || (!isHovering && !isHovering2)) ? 1 : 0.5)
-
-
+            .zIndex(2)
+            .background(backgroundView(themeSettings: themeSettings))
         }
         .frame(minWidth: 900, minHeight: 600)
         .edgesIgnoringSafeArea(.all)
-
-        // MARK: Background for whole app
-//        .background{
-//            Image("peakpx")
-//                .resizable()
-//                .scaledToFill()
-//                .edgesIgnoringSafeArea(.all)
-//            GlassEffect(material: .sidebar, blendingMode: .withinWindow)
-//                .edgesIgnoringSafeArea(.all)
-//        }
-        //        .background(Color("bg").opacity(1))
-        //        .background(VisualEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all))
     }
 }
 
@@ -188,56 +165,52 @@ struct Header: View {
 
     var body: some View {
         HStack {
-            Text(title).foregroundStyle(Color("mode")).opacity(0.5)
+            Text("\(title)").foregroundStyle(Color("mode")).opacity(0.5)
 
-            HStack {
-                if hovered {
-                    withAnimation() {
-                        Image(systemName: "arrow.circlepath")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 19, height: 19)
-                            .onTapGesture {
-                                withAnimation {
-                                    // Refresh Apps list
-                                    appState.reload.toggle()
-                                    showPopover = false
-                                    let sortedApps = getSortedApps(paths: fsm.folderPaths, appState: appState)
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                        appState.sortedApps = sortedApps
-                                        if instantSearch {
-                                            loadAllPaths(allApps: sortedApps, appState: appState, locations: locations) {
-                                                appState.reload.toggle()
-                                            }
-                                        } else {
-                                            appState.reload.toggle()
-                                        }
-
-                                    }
-                                }
-                            }
-                            .help("Refresh apps")
-                    }
-                } else {
-                    Text("\(count)")
-                        .font(.system(size: 10))
-                        .frame(minWidth: count > 99 ? 30 : 20, minHeight: 15)
-                        .padding(2)
-                        .background(Color("mode").opacity(0.1))
-                        .clipShape(.capsule)
-                }
-            }
-            .onHover { hovering in
-                withAnimation() {
-                    hovered = hovering
-                }
-            }
+            Text("\(count)")
+                .font(.system(size: 10))
+                .monospacedDigit()
+                .frame(minWidth: count > 99 ? 30 : 24, minHeight: 17)
+                .background(Color("mode").opacity(0.1))
+                .clipShape(.capsule)
+                .padding(.leading, 2)
 
             Spacer()
 
+            if hovered {
+                Text("REFRESH")
+                    .font(.system(size: 10))
+                    .monospaced()
+                    .foregroundStyle(Color("mode").opacity(0.8))
+            }
+
         }
-        .padding(.vertical, 9)
-        .padding(.leading, 6)
-//        .background(!glass ? Color("windowBG") : .clear)
+        .onHover { hovering in
+            withAnimation() {
+                hovered = hovering
+            }
+        }
+        .onTapGesture {
+            withAnimation {
+                // Refresh Apps list
+                appState.reload.toggle()
+                showPopover = false
+                let sortedApps = getSortedApps(paths: fsm.folderPaths, appState: appState)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    appState.sortedApps = sortedApps
+                    if instantSearch {
+                        loadAllPaths(allApps: sortedApps, appState: appState, locations: locations) {
+                            appState.reload.toggle()
+                        }
+                    } else {
+                        appState.reload.toggle()
+                    }
+
+                }
+            }
+        }
+        .frame(minHeight: 20)
+        .help("Click header or ⌘+R to refresh apps list")
+        .padding(5)
     }
 }

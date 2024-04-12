@@ -29,6 +29,9 @@
 		C77B901C2AF193A3009CC655 /* Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B901B2AF193A3009CC655 /* Styles.swift */; };
 		C77B901E2AF1A9DB009CC655 /* SettingsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B901D2AF1A9DB009CC655 /* SettingsWindow.swift */; };
 		C77B90232AF2D616009CC655 /* FilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90222AF2D616009CC655 /* FilesView.swift */; };
+		C78121662BC892A000BE06BD /* FinderOpen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78121652BC892A000BE06BD /* FinderOpen.swift */; };
+		C781216B2BC892A000BE06BD /* FinderOpen.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C78121632BC892A000BE06BD /* FinderOpen.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		C79D05202BC99EB40083F976 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79D051F2BC99EB40083F976 /* ThemeManager.swift */; };
 		C7A27E812AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist in Resources */ = {isa = PBXBuildFile; fileRef = C7A27E802AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist */; };
 		C7A2AE5D2B9644F300161540 /* FileWatcher in Frameworks */ = {isa = PBXBuildFile; productRef = C7A2AE5C2B9644F300161540 /* FileWatcher */; };
 		C7A9CE472B89164700EB6E78 /* Authorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A9CE462B89164700EB6E78 /* Authorization.swift */; };
@@ -49,6 +52,16 @@
 		C7FB173B2B96321300B96F9A /* AppsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7FB173A2B96321300B96F9A /* AppsListView.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		C78121692BC892A000BE06BD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C77B8FF82AF18E2E009CC655 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C78121622BC892A000BE06BD;
+			remoteInfo = FinderOpen;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		C728930D2AFD51EA00C8C1CD /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -58,6 +71,17 @@
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 1;
+		};
+		C781216C2BC892A000BE06BD /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				C781216B2BC892A000BE06BD /* FinderOpen.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C7A27E7D2AFD65C400166168 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -97,6 +121,11 @@
 		C77B901D2AF1A9DB009CC655 /* SettingsWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindow.swift; sourceTree = "<group>"; };
 		C77B90222AF2D616009CC655 /* FilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesView.swift; sourceTree = "<group>"; };
 		C77B90242AF2D796009CC655 /* Pearcleaner.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = Pearcleaner.entitlements; sourceTree = "<group>"; };
+		C78121632BC892A000BE06BD /* FinderOpen.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FinderOpen.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		C78121652BC892A000BE06BD /* FinderOpen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinderOpen.swift; sourceTree = "<group>"; };
+		C78121672BC892A000BE06BD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C78121682BC892A000BE06BD /* FinderOpen.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FinderOpen.entitlements; sourceTree = "<group>"; };
+		C79D051F2BC99EB40083F976 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		C7A27E7F2AFD70DD00166168 /* PearcleanerSentinel.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PearcleanerSentinel.entitlements; sourceTree = "<group>"; };
 		C7A27E802AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = com.alienator88.PearcleanerSentinel.plist; sourceTree = "<group>"; };
 		C7A9CE462B89164700EB6E78 /* Authorization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authorization.swift; sourceTree = "<group>"; };
@@ -127,6 +156,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C77B8FFD2AF18E2E009CC655 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C78121602BC892A000BE06BD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -164,6 +200,7 @@
 				C7A9CE462B89164700EB6E78 /* Authorization.swift */,
 				C7ACADE52B92A737000B5845 /* Features.swift */,
 				C7ED86B22BA8ED8800F13DE4 /* Trash.swift */,
+				C79D051F2BC99EB40083F976 /* ThemeManager.swift */,
 			);
 			path = Logic;
 			sourceTree = "<group>";
@@ -214,6 +251,7 @@
 			children = (
 				C77B90022AF18E2E009CC655 /* Pearcleaner */,
 				C72893102AFD51EA00C8C1CD /* PearcleanerSentinel */,
+				C78121642BC892A000BE06BD /* FinderOpen */,
 				C77B90012AF18E2E009CC655 /* Products */,
 				C72893162AFD531500C8C1CD /* Frameworks */,
 			);
@@ -224,6 +262,7 @@
 			children = (
 				C77B90002AF18E2E009CC655 /* Pearcleaner.app */,
 				C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */,
+				C78121632BC892A000BE06BD /* FinderOpen.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -257,6 +296,16 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		C78121642BC892A000BE06BD /* FinderOpen */ = {
+			isa = PBXGroup;
+			children = (
+				C78121652BC892A000BE06BD /* FinderOpen.swift */,
+				C78121672BC892A000BE06BD /* Info.plist */,
+				C78121682BC892A000BE06BD /* FinderOpen.entitlements */,
+			);
+			path = FinderOpen;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -288,10 +337,12 @@
 				C77B8FFD2AF18E2E009CC655 /* Frameworks */,
 				C77B8FFE2AF18E2E009CC655 /* Resources */,
 				C7A27E7D2AFD65C400166168 /* CopyFiles */,
+				C781216C2BC892A000BE06BD /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				C781216A2BC892A000BE06BD /* PBXTargetDependency */,
 			);
 			name = Pearcleaner;
 			packageProductDependencies = (
@@ -300,6 +351,23 @@
 			productReference = C77B90002AF18E2E009CC655 /* Pearcleaner.app */;
 			productType = "com.apple.product-type.application";
 		};
+		C78121622BC892A000BE06BD /* FinderOpen */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C781216F2BC892A000BE06BD /* Build configuration list for PBXNativeTarget "FinderOpen" */;
+			buildPhases = (
+				C781215F2BC892A000BE06BD /* Sources */,
+				C78121602BC892A000BE06BD /* Frameworks */,
+				C78121612BC892A000BE06BD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FinderOpen;
+			productName = FinderOpen;
+			productReference = C78121632BC892A000BE06BD /* FinderOpen.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -307,7 +375,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1500;
+				LastSwiftUpdateCheck = 1530;
 				LastUpgradeCheck = 1510;
 				TargetAttributes = {
 					C728930E2AFD51EA00C8C1CD = {
@@ -315,6 +383,9 @@
 					};
 					C77B8FFF2AF18E2E009CC655 = {
 						CreatedOnToolsVersion = 15.0.1;
+					};
+					C78121622BC892A000BE06BD = {
+						CreatedOnToolsVersion = 15.3;
 					};
 				};
 			};
@@ -336,6 +407,7 @@
 			targets = (
 				C77B8FFF2AF18E2E009CC655 /* Pearcleaner */,
 				C728930E2AFD51EA00C8C1CD /* PearcleanerSentinel */,
+				C78121622BC892A000BE06BD /* FinderOpen */,
 			);
 		};
 /* End PBXProject section */
@@ -348,6 +420,13 @@
 				C77B90082AF18E2F009CC655 /* Assets.xcassets in Resources */,
 				C7A27E812AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist in Resources */,
 				C7DC1FEE2B9F7D3D009AC317 /* features.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C78121612BC892A000BE06BD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -393,6 +472,7 @@
 				C7D31D4A2AFEB26700C7ED9E /* AppListItems.swift in Sources */,
 				C77B901E2AF1A9DB009CC655 /* SettingsWindow.swift in Sources */,
 				C74412C72BBF249000DDFCA8 /* AppPathsFetch.swift in Sources */,
+				C79D05202BC99EB40083F976 /* ThemeManager.swift in Sources */,
 				C7D31D482AFEB23700C7ED9E /* TopBar.swift in Sources */,
 				C7ACADE62B92A737000B5845 /* Features.swift in Sources */,
 				C7F539382AF60865007DF1B2 /* Utilities.swift in Sources */,
@@ -403,7 +483,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C781215F2BC892A000BE06BD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C78121662BC892A000BE06BD /* FinderOpen.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C781216A2BC892A000BE06BD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C78121622BC892A000BE06BD /* FinderOpen */;
+			targetProxy = C78121692BC892A000BE06BD /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		C72893142AFD51EA00C8C1CD /* Debug */ = {
@@ -412,6 +508,7 @@
 				CODE_SIGN_ENTITLEMENTS = PearcleanerSentinel/PearcleanerSentinel.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "";
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = BK8443AXLU;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -430,6 +527,7 @@
 				CODE_SIGN_ENTITLEMENTS = PearcleanerSentinel/PearcleanerSentinel.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "";
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = BK8443AXLU;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -446,6 +544,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				APP_BUILD = 34;
+				APP_VERSION = 3.5.0;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -477,6 +577,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = "";
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 33;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -499,6 +600,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 3.4.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -512,6 +614,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				APP_BUILD = 34;
+				APP_VERSION = 3.5.0;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -543,6 +647,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = "";
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 33;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -559,6 +664,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 3.4.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -569,13 +675,14 @@
 		C77B90102AF18E2F009CC655 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Pearcleaner/Resources/Pearcleaner.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 33;
+				CURRENT_PROJECT_VERSION = "$(APP_BUILD)";
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = BK8443AXLU;
@@ -593,7 +700,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 3.4.2;
+				MARKETING_VERSION = "$(APP_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.Pearcleaner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -604,13 +711,14 @@
 		C77B90112AF18E2F009CC655 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Pearcleaner/Resources/Pearcleaner.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 33;
+				CURRENT_PROJECT_VERSION = "$(APP_BUILD)";
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = BK8443AXLU;
@@ -628,9 +736,69 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 3.4.2;
+				MARKETING_VERSION = "$(APP_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.Pearcleaner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		C781216D2BC892A000BE06BD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = FinderOpen/FinderOpen.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = "$(APP_BUILD)";
+				DEVELOPMENT_TEAM = BK8443AXLU;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FinderOpen/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FinderOpen;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = "$(APP_VERSION)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.Pearcleaner.FinderOpen;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		C781216E2BC892A000BE06BD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = FinderOpen/FinderOpen.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = "$(APP_BUILD)";
+				DEVELOPMENT_TEAM = BK8443AXLU;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FinderOpen/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FinderOpen;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = "$(APP_VERSION)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.Pearcleaner.FinderOpen;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -662,6 +830,15 @@
 			buildConfigurations = (
 				C77B90102AF18E2F009CC655 /* Debug */,
 				C77B90112AF18E2F009CC655 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C781216F2BC892A000BE06BD /* Build configuration list for PBXNativeTarget "FinderOpen" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C781216D2BC892A000BE06BD /* Debug */,
+				C781216E2BC892A000BE06BD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -50,13 +50,12 @@ struct TopBar: View {
                             if instantSearch {
                                 let reverse = ReversePathsSearcher(appState: appState, locations: locations)
                                 reverse.reversePathsSearch()
-                                //                                    reversePathsSearch(appState: appState, locations: locations)
                             } else {
                                 loadAllPaths(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
                             }
                         }
                     }
-                    .buttonStyle(NavButtonBottomBarStyle(image: "arrow.counterclockwise.circle.fill", help: "Rescan files"))
+                    .buttonStyle(SimpleButtonStyle(icon: "arrow.counterclockwise.circle.fill", help: "Rescan files"))
                 }
 
                 if appState.currentView != .zombie {
@@ -84,7 +83,7 @@ struct TopBar: View {
 
                         }
                     }
-                    .buttonStyle(SimpleButtonStyle(icon: "clock.arrow.circlepath", help: "Leftover Files", color: Color("mode")))
+                    .buttonStyle(SimpleButtonStyle(icon: "clock.arrow.circlepath", help: "Leftover Files"))
                 }
                 
 
@@ -95,19 +94,15 @@ struct TopBar: View {
                             appState.appInfo = AppInfo.empty
                         }
                     }
-                    .buttonStyle(SimpleButtonStyle(icon: "plus.square.dashed", help: "Drop Target", color: Color("mode")))
+                    .buttonStyle(SimpleButtonStyle(icon: "plus.square.dashed", help: "Drop Target"))
 
                 }
 
 
-
-
             }
-
 
  
         }
-        .padding(.horizontal, 10)
-        .padding(.top, 15)
+        .padding(6)
     }
 }

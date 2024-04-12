@@ -38,23 +38,17 @@ struct FilesView: View {
                 VStack {
                     Spacer()
                     Text("Searching the file system").font(.title3)
-                        .foregroundStyle((.gray.opacity(0.8)))
+                        .foregroundStyle((Color("mode").opacity(0.5)))
 
-                    HStack {
-                        ProgressView()
-                            .progressViewStyle(.linear)
-                            .frame(width: 400, height: 10)
-                        Text("\(elapsedTime)")
-                            .font(.caption)
-                            .foregroundStyle((.gray.opacity(0.8)))
-                            .opacity(elapsedTime == 0 ? 0 : 1)
-//                        Image(systemName: "\(elapsedTime).circle")
-//                            .resizable()
-//                            .aspectRatio(contentMode: .fit)
-//                            .frame(width: 16, height: 16)
-//                            .foregroundStyle((.gray.opacity(0.8)))
-//                            .opacity(elapsedTime == 0 ? 0 : 1)
-                    }
+                    ProgressView()
+                        .progressViewStyle(.linear)
+                        .frame(width: 400, height: 10)
+
+                    Text("\(elapsedTime)")
+                        .font(.title).monospacedDigit()
+                        .foregroundStyle((Color("mode").opacity(0.5)))
+                        .opacity(elapsedTime == 0 ? 0 : 1)
+                        .contentTransition(.numericText())
 
                     Spacer()
                 }
@@ -62,7 +56,9 @@ struct FilesView: View {
                 .transition(.opacity)
                 .onAppear {
                     self.timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-                        self.elapsedTime += 1
+                        withAnimation {
+                            self.elapsedTime += 1
+                        }
                     }
                 }
                 .onDisappear {
@@ -89,7 +85,7 @@ struct FilesView: View {
                                     pathFinder.findPaths()
                                 }
                             }
-                            .buttonStyle(NavButtonBottomBarStyle(image: "arrow.counterclockwise.circle.fill", help: "Rescan files"))
+                            .buttonStyle(SimpleButtonStyle(icon: "arrow.counterclockwise.circle.fill", help: "Rescan files"))
                         }
 
 
@@ -101,7 +97,7 @@ struct FilesView: View {
                                 showPopover = false
                             }
                         }
-                        .buttonStyle(NavButtonBottomBarStyle(image: "x.circle.fill", help: "Close"))
+                        .buttonStyle(SimpleButtonStyle(icon: "x.circle.fill", help: "Close"))
                     }
                     .padding([.horizontal, .top], 5)
                 }
@@ -130,7 +126,7 @@ struct FilesView: View {
 
                                 VStack(alignment: .leading, spacing: 5){
                                     HStack {
-                                        Text("\(appState.appInfo.appName)").font(.title).fontWeight(.bold)
+                                        Text("\(appState.appInfo.appName)").font(.title).fontWeight(.bold).lineLimit(1)
                                         Text("•").foregroundStyle(Color("AccentColor"))
                                         Text("\(appState.appInfo.appVersion)").font(.title3)
                                         if appState.appInfo.appName.count < 5 {
@@ -141,7 +137,7 @@ struct FilesView: View {
                                     Text("\(appState.appInfo.bundleIdentifier)")
                                         .lineLimit(1)
                                         .font(.title3)
-                                        .foregroundStyle((.gray.opacity(0.8)))
+                                        .foregroundStyle((Color("mode").opacity(0.5)))
                                 }
                                 .padding(.leading)
 
@@ -150,7 +146,7 @@ struct FilesView: View {
                                 VStack(alignment: .trailing, spacing: 5) {
                                     Text("\(formatByte(size: appState.appInfo.totalSize))").font(.title).fontWeight(.bold)
                                     Text("\(appState.appInfo.fileSize.count == 1 ? "\(appState.selectedItems.count) / \(appState.appInfo.fileSize.count) item" : "\(appState.selectedItems.count) / \(appState.appInfo.fileSize.count) items")")
-                                        .font(.callout).foregroundStyle((.gray.opacity(0.8)))
+                                        .font(.callout).foregroundStyle((Color("mode").opacity(0.5)))
                                 }
 
                             }
@@ -218,7 +214,7 @@ struct FilesView: View {
                             selectedSortAlpha.toggle()
 //                            selectedOption = selectedOption == "Alpha" ? "Size" : "Alpha"
                         }
-                        .buttonStyle(SimpleButtonStyle(icon: selectedSortAlpha ? "textformat.abc" : "textformat.123", help: selectedSortAlpha ? "Sorted alphabetically" : "Sorted by size", color: Color("mode")))
+                        .buttonStyle(SimpleButtonStyle(icon: selectedSortAlpha ? "textformat.abc" : "textformat.123", help: selectedSortAlpha ? "Sorted alphabetically" : "Sorted by size"))
 
                     }
                     .padding()
@@ -407,7 +403,7 @@ struct FileDetailsItem: View {
             Button("") {
                 NSWorkspace.shared.selectFile(path.path, inFileViewerRootedAtPath: path.deletingLastPathComponent().path)
             }
-            .buttonStyle(SimpleButtonStyle(icon: "folder.fill", help: "Show in Finder", color: Color("mode")))
+            .buttonStyle(SimpleButtonStyle(icon: "folder.fill", help: "Show in Finder"))
 
         }
         .background(

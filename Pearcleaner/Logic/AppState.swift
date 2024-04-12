@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import FinderSync
 
 let home = FileManager.default.homeDirectoryForCurrentUser.path
 
@@ -31,6 +32,7 @@ class AppState: ObservableObject
     @Published var popCount: Int = 0
     @Published var instantProgress: Double = 0.0
     @Published var instantTotal: Double = 0.0
+    @Published var finderExtensionEnabled: Bool = false
 
     
     init() {
@@ -54,6 +56,21 @@ class AppState: ObservableObject
             fileSize: [:],
             fileIcon: [:]
         )
+        updateExtensionStatus()
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(updateExtensionStatus),
+            name: NSApplication.didBecomeActiveNotification,
+            object: nil
+        )
+
+    }
+
+    @objc func updateExtensionStatus() {
+        let extentionStatus = FIFinderSyncController.isExtensionEnabled
+        DispatchQueue.main.async {
+            self.finderExtensionEnabled = extentionStatus
+        }
     }
 }
 

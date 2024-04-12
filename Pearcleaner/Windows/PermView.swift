@@ -38,10 +38,10 @@ struct PermView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 20, height: 20)
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(Color("mode").opacity(0.5))
                     Text("Full Disk Access permission to find and delete files in system paths")
                         .font(.callout)
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(Color("mode").opacity(0.5))
                 }
 
                 HStack(alignment: .top, spacing: 20) {
@@ -49,10 +49,10 @@ struct PermView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 20, height: 20)
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(Color("mode").opacity(0.5))
                     Text("Accessibility permission to delete files via Finder")
                         .font(.callout)
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(Color("mode").opacity(0.5))
                 }
 
                 HStack(alignment: .top, spacing: 20) {
@@ -60,10 +60,10 @@ struct PermView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 20, height: 20)
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(Color("mode").opacity(0.5))
                     Text("Add Pearcleaner in both Privacy panes via the + or by dragging the app over the pane. If the app is already pre-populated in the list, just toggle On if neeeded. Restart app when both permissions are granted")
                         .font(.callout)
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(Color("mode").opacity(0.5))
                 }
             }
             .padding(.horizontal, 20)

@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import ServiceManagement
+import FinderSync
 
 struct GeneralSettingsTab: View {
     @EnvironmentObject var appState: AppState
@@ -25,7 +26,7 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.instant") private var instantSearch: Bool = true
     @AppStorage("settings.general.selectedTheme") var selectedTheme: String = "Auto"
     @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
-
+//    @State private var finderExtensionEnabled: Bool = false
     @State private var diskStatus: Bool = false
     @State private var accessStatus: Bool = false
     private let themes = ["Auto", "Dark", "Light"]
@@ -49,11 +50,11 @@ struct GeneralSettingsTab: View {
                         .scaledToFit()
                         .frame(width: 20, height: 20)
                         .padding(.trailing)
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(Color("mode").opacity(0.5))
                     VStack(alignment: .leading, spacing: 5) {
                         Text("\(instantSearch ? "Instant search is enabled" : "Instant search is disabled")")
                             .font(.callout)
-                            .foregroundStyle(.gray)
+                            .foregroundStyle(Color("mode").opacity(0.5))
                     }
 
                     InfoButton(text: "When instant search is enabled, all application files are gathered and cached for later use on startup instead of on each app click. There might be a slight delay of a few seconds when launching Pearcleaner depending on the amount of apps you have installed.", color: nil, label: "")
@@ -73,11 +74,11 @@ struct GeneralSettingsTab: View {
                         .scaledToFit()
                         .frame(width: 20, height: 20)
                         .padding(.trailing)
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(Color("mode").opacity(0.5))
                     VStack(alignment: .leading, spacing: 5) {
                         Text("\(brew ? "Homebrew cleanup is enabled" : "Homebrew cleanup is disabled")")
                             .font(.callout)
-                            .foregroundStyle(.gray)
+                            .foregroundStyle(Color("mode").opacity(0.5))
                     }
 
                     InfoButton(text: "When homebrew cleanup is enabled, Pearcleaner will check if the app you are removing was installed via homebrew and execute a brew uninstall and brew cleanup command as well to let homebrew know that the app is removed. This way your homebrew list will be synced up correctly and caching will be removed.\n\nNOTE: If you undo the file delete with CMD+Z, the files will be put back but homebrew will not be aware of it. To get the homebrew list back in sync you'd need to run:\n brew install APPNAME --force", color: nil, label: "")
@@ -97,11 +98,11 @@ struct GeneralSettingsTab: View {
                         .scaledToFit()
                         .frame(width: 20, height: 20)
                         .padding(.trailing)
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(Color("mode").opacity(0.5))
                     VStack(alignment: .leading, spacing: 5) {
                         Text("File list sorting mode")
                             .font(.callout)
-                            .foregroundStyle(.gray)
+                            .foregroundStyle(Color("mode").opacity(0.5))
                     }
                     InfoButton(text: "When searching for app files or leftover files, the list will be sorted based on this choice", color: nil, label: "")
                     Spacer()
@@ -114,28 +115,6 @@ struct GeneralSettingsTab: View {
                 }
                 .padding(5)
                 .padding(.leading)
-//                HStack(spacing: 0) {
-//                    Image(systemName: selectedSortAlpha ? "textformat.abc" : "textformat.123")
-//                        .resizable()
-//                        .scaledToFit()
-//                        .frame(width: 20, height: 20)
-//                        .padding(.trailing)
-//                        .foregroundStyle(.gray)
-//                    VStack(alignment: .leading, spacing: 5) {
-//                        Text("\(selectedSortAlpha ? "File list sorted alphabetically" : "File list sorted by size")")
-//                            .font(.callout)
-//                            .foregroundStyle(.gray)
-//                    }
-//
-//                    InfoButton(text: "When searching for app files or leftover files, the list will be sorted based on this choice", color: nil, label: "")
-//
-//                    Spacer()
-//                    Toggle(isOn: $selectedSortAlpha, label: {
-//                    })
-//                    .toggleStyle(.switch)
-//                }
-//                .padding(5)
-//                .padding(.leading)
 
 
                 // === Perms ================================================================================================
@@ -163,7 +142,7 @@ struct GeneralSettingsTab: View {
                         .saturation(displayMode.colorScheme == .dark ? 0.5 : 1)
                     Text(diskStatus ? "Full Disk permission granted" : "Full Disk permission **NOT** granted")
                         .font(.callout)
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(Color("mode").opacity(0.5))
                     Spacer()
 
                     Button("") {
@@ -171,7 +150,7 @@ struct GeneralSettingsTab: View {
                             NSWorkspace.shared.open(url)
                         }
                     }
-                    .buttonStyle(SimpleButtonStyle(icon: "folder", help: "View disk permissions pane", color: Color("mode")))
+                    .buttonStyle(SimpleButtonStyle(icon: "folder", help: "View disk permissions pane"))
 
                 }
                 .padding(5)
@@ -188,7 +167,7 @@ struct GeneralSettingsTab: View {
                         .saturation(displayMode.colorScheme == .dark ? 0.5 : 1)
                     Text(accessStatus ? "Accessibility permission granted" : "Accessibility permission **NOT** granted")
                         .font(.callout)
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(Color("mode").opacity(0.5))
                     Spacer()
 
                     Button("") {
@@ -196,7 +175,7 @@ struct GeneralSettingsTab: View {
                             NSWorkspace.shared.open(url)
                         }
                     }
-                    .buttonStyle(SimpleButtonStyle(icon: "folder", help: "View accessibility permissions pane", color: Color("mode")))
+                    .buttonStyle(SimpleButtonStyle(icon: "folder", help: "View accessibility permissions pane"))
 
                 }
                 .padding(5)
@@ -224,7 +203,7 @@ struct GeneralSettingsTab: View {
                         .saturation(displayMode.colorScheme == .dark ? 0.5 : 1)
                     Text(sentinel ? "Detecting when apps are moved to Trash" : "**NOT** detecting when apps are moved to Trash")
                         .font(.callout)
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(Color("mode").opacity(0.5))
                     Spacer()
 
                     Toggle(isOn: $sentinel, label: {
@@ -244,6 +223,44 @@ struct GeneralSettingsTab: View {
 
 
 
+                // === Finder Extension =============================================================================================
+
+                Divider()
+                    .padding()
+
+                HStack() {
+                    Text("Finder Extension").font(.title2)
+                    Spacer()
+                }
+                .padding(.leading)
+
+                HStack(spacing: 0) {
+                    Image(systemName: appState.finderExtensionEnabled ? "puzzlepiece.extension.fill" : "puzzlepiece.extension")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .padding(.trailing)
+                        .foregroundStyle(appState.finderExtensionEnabled ? .green : .red)
+                    Text(appState.finderExtensionEnabled ? "Context menu extension for Finder is enabled" : "Context menu extension for Finder is disabled")
+                        .font(.callout)
+                        .foregroundStyle(Color("mode").opacity(0.5))
+                    InfoButton(text: "Enabling the extension will allow you to right click apps in Finder and quickly uninstall them with Pearcleaner", color: nil, label: "")
+
+                    Spacer()
+
+                    Button("Extensions") {
+                        FIFinderSyncController.showExtensionManagementInterface()
+                    }
+                    .buttonStyle(SimpleButtonStyle(icon: "folder", help: "Show Extensions Pane"))
+
+
+                }
+                .padding(5)
+                .padding(.leading)
+
+
+
+
 
 
 
@@ -253,11 +270,12 @@ struct GeneralSettingsTab: View {
             .onAppear {
                 diskStatus = checkAndRequestFullDiskAccess(appState: appState, skipAlert: true)
                 accessStatus = checkAndRequestAccessibilityAccess(appState: appState)
+                appState.updateExtensionStatus()
             }
 
         }
         .padding(20)
-        .frame(width: 500, height: 460)
+        .frame(width: 500, height: 560)
 
     }
     

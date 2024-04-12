@@ -21,7 +21,6 @@ struct ZombieView: View {
     @Binding var showPopover: Bool
     @Binding var search: String
     @State private var searchZ: String = ""
-//    @State private var selectedOption = "Alpha"
     var regularWin: Bool
     @State private var elapsedTime = 0
     @State private var timer: Timer? = nil
@@ -57,21 +56,17 @@ struct ZombieView: View {
                         Spacer()
 
                         Text("Searching the file system").font(.title3)
-                            .foregroundStyle((.gray.opacity(0.8)))
+                            .foregroundStyle(Color("mode").opacity(0.5))
 
-                        HStack {
-                            ProgressView()
-                                .progressViewStyle(.linear)
-                                .frame(width: 400, height: 10)
-                            Text("\(elapsedTime)")
-                                .font(.caption)
-                                .foregroundStyle((.gray.opacity(0.8)))
-//                            Image(systemName: "\(elapsedTime).circle")
-//                                .resizable()
-//                                .aspectRatio(contentMode: .fit)
-//                                .frame(width: 16, height: 16)
-//                                .foregroundStyle((.gray.opacity(0.8)))
-                        }
+                        ProgressView()
+                            .progressViewStyle(.linear)
+                            .frame(width: 400, height: 10)
+
+                        Text("\(elapsedTime)")
+                            .font(.title).monospacedDigit()
+                            .foregroundStyle(Color("mode").opacity(0.5))
+                            .opacity(elapsedTime == 0 ? 0 : 1)
+                            .contentTransition(.numericText())
 
 
                         Spacer()
@@ -82,7 +77,9 @@ struct ZombieView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .onAppear {
                     self.timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-                        self.elapsedTime += 1
+                        withAnimation {
+                            self.elapsedTime += 1
+                        }
                     }
                 }
                 .onDisappear {
@@ -109,7 +106,7 @@ struct ZombieView: View {
                                 }
                             }
                         }
-                        .buttonStyle(NavButtonBottomBarStyle(image: "arrow.counterclockwise.circle.fill", help: "Rescan files"))
+                        .buttonStyle(SimpleButtonStyle(icon: "arrow.counterclockwise.circle.fill", help: "Rescan files"))
 
                         Button("Close") {
                             updateOnMain {
@@ -119,7 +116,7 @@ struct ZombieView: View {
                                 showPopover = false
                             }
                         }
-                        .buttonStyle(NavButtonBottomBarStyle(image: "x.circle.fill", help: "Close"))
+                        .buttonStyle(SimpleButtonStyle(icon: "x.circle.fill", help: "Close"))
                     }
                     .padding([.horizontal, .top], 5)
                 }
@@ -146,7 +143,7 @@ struct ZombieView: View {
                                         
                                     }
                                     Text("Files and folders remaining from previously installed applications")
-                                        .font(.callout).foregroundStyle((.gray.opacity(0.8)))
+                                        .font(.callout).foregroundStyle(Color("mode").opacity(0.5))
                                 }
 
                                 Spacer()
@@ -155,7 +152,7 @@ struct ZombieView: View {
                                     Text("\(formatByte(size: filteredAndSortedFiles.1))").font(.title).fontWeight(.bold)
 
                                     Text("\(appState.zombieFile.fileSize.count == 1 ? "\(appState.selectedZombieItems.count) / \(appState.zombieFile.fileSize.count) item" : "\(appState.selectedZombieItems.count) / \(appState.zombieFile.fileSize.count) items")")
-                                        .font(.callout).foregroundStyle((.gray.opacity(0.8)))
+                                        .font(.callout).foregroundStyle(Color("mode").opacity(0.5))
                                 }
 
                             }
@@ -184,7 +181,7 @@ struct ZombieView: View {
                         Button("") {
                             selectedSortAlpha.toggle()
                         }
-                        .buttonStyle(SimpleButtonStyle(icon: selectedSortAlpha ? "textformat.abc" : "textformat.123", help: selectedSortAlpha ? "Sorted alphabetically" : "Sorted by size", color: Color("mode")))
+                        .buttonStyle(SimpleButtonStyle(icon: selectedSortAlpha ? "textformat.abc" : "textformat.123", help: selectedSortAlpha ? "Sorted alphabetically" : "Sorted by size"))
 
 
                     }
@@ -311,7 +308,6 @@ struct ZombieFileDetailsItem: View {
                     .lineLimit(1)
                     .truncationMode(.tail)
                     .opacity(0.5)
-                //                    .foregroundStyle(Color("AccentColor"))
                     .help(path.path)
             }
 
@@ -324,7 +320,7 @@ struct ZombieFileDetailsItem: View {
             Button("") {
                 NSWorkspace.shared.selectFile(path.path, inFileViewerRootedAtPath: path.deletingLastPathComponent().path)
             }
-            .buttonStyle(SimpleButtonStyle(icon: "folder.fill", help: "Show in Finder", color: Color("mode")))
+            .buttonStyle(SimpleButtonStyle(icon: "folder.fill", help: "Show in Finder"))
 
         }
         .background(

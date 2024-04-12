@@ -59,6 +59,7 @@ struct PearcleanerApp: App {
             .environmentObject(appState)
             .environmentObject(locations)
             .environmentObject(fsm)
+            .environmentObject(ThemeSettings.shared)
             .preferredColorScheme(displayMode.colorScheme)
             .handlesExternalEvents(preferring: Set(arrayLiteral: "pear"), allowing: Set(arrayLiteral: "*"))
             .onOpenURL(perform: { url in
@@ -114,6 +115,7 @@ struct PearcleanerApp: App {
                             .environmentObject(locations)
                             .environmentObject(appState)
                             .environmentObject(fsm)
+                            .environmentObject(ThemeSettings.shared)
                             .preferredColorScheme(displayMode.colorScheme)
                     }, icon: selectedMenubarIcon)
                 }
@@ -170,6 +172,7 @@ struct PearcleanerApp: App {
                 .environmentObject(appState)
                 .environmentObject(locations)
                 .environmentObject(fsm)
+                .environmentObject(ThemeSettings.shared)
                 .toolbarBackground(.clear)
                 .preferredColorScheme(displayMode.colorScheme)
         }
@@ -192,6 +195,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             findAndHideWindows(named: ["Pearcleaner"])
             NSApplication.shared.setActivationPolicy(.accessory)
         }
+
     }
 
 

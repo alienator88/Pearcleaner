@@ -10,13 +10,14 @@ import SwiftUI
 
 struct AppListItems: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var themeSettings: ThemeSettings
     @Binding var search: String
     @State private var isHovered = false
     @State private var windowSettings = WindowSettings()
     @Environment(\.colorScheme) var colorScheme
-//    @AppStorage("settings.general.mini") private var mini: Bool = false
-//    @AppStorage("settings.general.popover") private var popoverStay: Bool = true
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
+    @AppStorage("settings.general.miniview") private var miniView: Bool = true
+    @AppStorage("settings.general.mini") private var mini: Bool = false
     @Binding var showPopover: Bool
     @EnvironmentObject var locations: Locations
     let itemId = UUID()
@@ -24,15 +25,12 @@ struct AppListItems: View {
     var isSelected: Bool {
         appState.appInfo.path == appInfo.path
     }
-    
+    @State private var hoveredItemPath: URL? = nil
     var body: some View {
-//        VStack(alignment: .leading, spacing: 5) {
-
-
 
             HStack(alignment: .center) {
 
-                if isHovered || isSelected {
+                if (isHovered || isSelected) && mini {
                     RoundedRectangle(cornerRadius: 50)
                         .fill(isSelected ? Color("pear") : Color("mode").opacity(0.5))
                         .frame(width: isSelected ? 4 : 2, height: 25)
@@ -41,24 +39,12 @@ struct AppListItems: View {
 
                 if let appIcon = appInfo.appIcon {
                     ZStack {
-//                        RoundedRectangle(cornerRadius: 8)
-//                            .fill(Color(appIcon.averageColor!))
-//                            .frame(width: 35, height: 35)
-//                            .saturation(3)
-//                            .opacity(0.5)
-////                            .brightness(displayMode.colorScheme == .dark ? 0 : 0.5)
-////                            .shadow(color: .black, radius: 1, y: 2)
-//                        RoundedRectangle(cornerRadius: 8)
-//                            .strokeBorder(Color("mode").opacity(0.1), lineWidth: 1)
-//                            .frame(width: 35, height: 35)
                         Image(nsImage: appIcon)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-//                            .scaledToFit()
                             .frame(width: 30, height: 30)
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                             .shadow(color: .black.opacity(0.5), radius: 2, y: 2)
-//                            .grayscale(opacityForItem())
                     }
 
                 }
@@ -100,31 +86,73 @@ struct AppListItems: View {
                     .font(.footnote)
                     .foregroundStyle(Color("mode").opacity(0.5))
 
+                if (isHovered || isSelected) && !mini {
+                    Triangle()
+                        .fill(isSelected ? themeSettings.themeColor : Color("mode").opacity(0.1))
+                        .frame(width: isSelected ? 16 : 8, height: 30)
+                        .padding(.leading, 5)
+                        .offset(x: 22)
+                        .zIndex(5)
+                }
+
             }
             .padding(.horizontal, 5)
             .help(appInfo.appName)
             .onHover { hovering in
                 withAnimation(Animation.easeIn(duration: 0.2)) {
                     self.isHovered = hovering
+                    self.hoveredItemPath = isHovered ? appInfo.path : nil
                 }
             }
             .onTapGesture {
                 withAnimation(Animation.easeInOut(duration: 0.4)) {
-                    showAppInFiles(appInfo: appInfo, appState: appState, locations: locations, showPopover: $showPopover)
+                    if isSelected {
+                        appState.appInfo = .empty
+                        appState.currentView = miniView ? .apps : .empty
+                        showPopover = false
+                    } else {
+                        showAppInFiles(appInfo: appInfo, appState: appState, locations: locations, showPopover: $showPopover)
+                    }
                 }
             }
+//            .grayscale(opacityForItem(appInfo.path))
 
     }
 
-    func opacityForItem() -> Double {
+    func opacityForItem(_ path: URL) -> Double {
         // Check if any item is selected
         let isAnyItemSelected = appState.sortedApps.contains(where: { $0.path == appState.appInfo.path })
-        // If this item is selected or no items are selected, keep full opacity
-        // Otherwise, reduce opacity
-        return isAnyItemSelected ? (appState.appInfo.path == appInfo.path ? 0 : 1.0) : 0
+
+        let isItemSelected = appState.appInfo.path == path
+        let isItemHovered = hoveredItemPath == path
+
+        // Logic to determine grayscale level
+        if isItemSelected || !isAnyItemSelected || isItemHovered {
+            return 0  // No grayscale
+        } else {
+            return 1.0  // Full grayscale
+        }
+
+//        return isAnyItemSelected ? (appState.appInfo.path == appInfo.path ? 0 : 1.0) : 0
     }
 
 }
 
 
 
+struct Triangle: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+
+        // Start at the top right
+        path.move(to: CGPoint(x: rect.maxX, y: rect.minY))
+        // Add line to the bottom right
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
+        // Add line to the left point
+        path.addLine(to: CGPoint(x: rect.minX, y: rect.midY))
+        // Close the path
+        path.closeSubpath()
+
+        return path
+    }
+}

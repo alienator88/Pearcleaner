@@ -53,14 +53,14 @@ struct AboutSettingsTab: View {
                         Text("Microsoft Designer")
                         Text("Application icon resource")
                             .font(.callout)
-                            .foregroundStyle(.gray)
+                            .foregroundStyle(Color("mode").opacity(0.5))
 
                     }
                     Spacer()
                     Button(""){
                         NSWorkspace.shared.open(URL(string: "https://designer.microsoft.com/image-creator")!)
                     }
-                    .buttonStyle(SimpleButtonStyle(icon: "link", help: "View", color: Color("mode")))
+                    .buttonStyle(SimpleButtonStyle(icon: "link", help: "View"))
 
                 }
                 .padding(5)
@@ -78,14 +78,14 @@ struct AboutSettingsTab: View {
                         Text("Namelix")
                         Text("Logo and branding generation")
                             .font(.callout)
-                            .foregroundStyle(.gray)
+                            .foregroundStyle(Color("mode").opacity(0.5))
 
                     }
                     Spacer()
                     Button(""){
                         NSWorkspace.shared.open(URL(string: "https://namelix.com/")!)
                     }
-                    .buttonStyle(SimpleButtonStyle(icon: "link", help: "View", color: Color("mode")))
+                    .buttonStyle(SimpleButtonStyle(icon: "link", help: "View"))
 
                 }
                 .padding(5)
@@ -103,7 +103,7 @@ struct AboutSettingsTab: View {
                         Text("Privacy Guides")
                         Text("Inspired by open-source appcleaner script from Sun Knudsen")
                             .font(.callout)
-                            .foregroundStyle(.gray)
+                            .foregroundStyle(Color("mode").opacity(0.5))
                             .lineLimit(2)
 
                     }
@@ -112,7 +112,7 @@ struct AboutSettingsTab: View {
                     Button("") {
                         NSWorkspace.shared.open(URL(string: "https://sunknudsen.com/privacy-guides/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative")!)
                     }
-                    .buttonStyle(SimpleButtonStyle(icon: "link", help: "View", color: Color("mode")))
+                    .buttonStyle(SimpleButtonStyle(icon: "link", help: "View"))
 
                 }
                 .padding(5)
@@ -130,14 +130,14 @@ struct AboutSettingsTab: View {
                         Text("AppCleaner")
                         Text("Inspired by AppCleaner from Freemacsoft")
                             .font(.callout)
-                            .foregroundStyle(.gray)
+                            .foregroundStyle(Color("mode").opacity(0.5))
 
                     }
                     Spacer()
                     Button(""){
                         NSWorkspace.shared.open(URL(string: "https://freemacsoft.net/appcleaner/")!)
                     }
-                    .buttonStyle(SimpleButtonStyle(icon: "link", help: "View", color: Color("mode")))
+                    .buttonStyle(SimpleButtonStyle(icon: "link", help: "View"))
 
                 }
                 .padding(5)

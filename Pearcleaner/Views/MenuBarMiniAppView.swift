@@ -12,7 +12,7 @@ struct MenuBarMiniAppView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
-//    @State private var windowSettings = WindowSettings()
+    @EnvironmentObject var themeSettings: ThemeSettings
     @State private var animateGradient: Bool = false
     @Binding var search: String
     @State private var showSys: Bool = true
@@ -55,7 +55,8 @@ struct MenuBarMiniAppView: View {
                 } else {
                     VStack(alignment: .center) {
 
-                        AppsListView(search: $search, showPopover: $showPopover, filteredApps: filteredApps).padding(0)
+                        AppsListView(search: $search, showPopover: $showPopover, filteredApps: filteredApps).padding(.top, 8)
+
                         HStack(spacing: 10) {
 
                             Button("Leftover Files") {
@@ -84,7 +85,7 @@ struct MenuBarMiniAppView: View {
 
                                 }
                             }
-                            .buttonStyle(SimpleButtonStyle(icon: "clock.arrow.circlepath", help: "Leftover Files", color: Color("mode")))
+                            .buttonStyle(SimpleButtonStyle(icon: "clock.arrow.circlepath", help: "Leftover Files"))
                             .padding(.leading, 10)
 
                             SearchBarMiniBottom(search: $search)
@@ -94,7 +95,7 @@ struct MenuBarMiniAppView: View {
                                 self.showMenu.toggle()
                             }
                             .padding(.trailing, 10)
-                            .buttonStyle(SimpleButtonStyle(icon: "ellipsis.circle", help: "More", color: Color("mode")))
+                            .buttonStyle(SimpleButtonStyle(icon: "ellipsis.circle", help: "More"))
                             .popover(isPresented: $showMenu) {
                                 VStack(alignment: .leading) {
 
@@ -102,34 +103,36 @@ struct MenuBarMiniAppView: View {
                                         SettingsLink{
                                             Label("Settings", systemImage: "gear")
                                         }
-                                        .buttonStyle(SimpleButtonStyle(icon: "gear", label: "Settings", help: "Settings", color: Color("mode")))
+                                        .buttonStyle(SimpleButtonStyle(icon: "gear", label: "Settings", help: "Settings"))
                                     } else {
                                         Button("Settings") {
                                             NSApp.sendAction(Selector(("showPreferencesWindow:")), to: NSApp.delegate, from: nil)
                                             showMenu = false
                                         }
-                                        .buttonStyle(SimpleButtonStyle(icon: "gear", label: "Settings", help: "Settings", color: Color("mode")))
+                                        .buttonStyle(SimpleButtonStyle(icon: "gear", label: "Settings", help: "Settings"))
                                     }
 
                                     Button("Quit") {
                                         NSApp.terminate(nil)
                                     }
-                                    .buttonStyle(SimpleButtonStyle(icon: "x.circle.fill", label: "Quit Pearcleaner", help: "Quit Pearcleaner", color: Color("mode")))
+                                    .buttonStyle(SimpleButtonStyle(icon: "x.circle.fill", label: "Quit Pearcleaner", help: "Quit Pearcleaner"))
                                 }
                                 .padding()
-                                .background(
-                                    Group {
-                                        if glass {
-                                            GlassEffect(material: .sidebar, blendingMode: .behindWindow)
-                                                .edgesIgnoringSafeArea(.all)
-                                        } else {
-                                            Rectangle()
-                                                .fill(Color("pop"))
-                                                .padding(-80)
+                                .background(backgroundView(themeSettings: themeSettings, glass: glass).padding(-80))
 
-                                        }
-                                    }
-                                )
+//                                .background(
+//                                    Group {
+//                                        if glass {
+//                                            GlassEffect(material: .sidebar, blendingMode: .behindWindow)
+//                                                .edgesIgnoringSafeArea(.all)
+//                                        } else {
+//                                            Rectangle()
+//                                                .fill(Color("pop"))
+//                                                .padding(-80)
+//
+//                                        }
+//                                    }
+//                                )
                             }
 
 
@@ -139,7 +142,7 @@ struct MenuBarMiniAppView: View {
 //                        .padding(.horizontal)
 
                     }
-                    .padding(.vertical, 5)
+                    .padding(.vertical, 8)
                     .padding(.bottom, 8)
                 }
 
@@ -148,19 +151,21 @@ struct MenuBarMiniAppView: View {
         }
         .frame(minWidth: 300, minHeight: 370)
         .edgesIgnoringSafeArea(.all)
-        .background(
-            Group {
-                if glass {
-                    GlassEffect(material: .sidebar, blendingMode: .behindWindow)
-                        .edgesIgnoringSafeArea(.all)
-                } else {
-                    Rectangle()
-                        .fill(Color("pop"))
-                        .padding(-80)
+        .background(backgroundView(themeSettings: themeSettings, glass: glass).padding(-80))
 
-                }
-            }
-        )
+//        .background(
+//            Group {
+//                if glass {
+//                    GlassEffect(material: .sidebar, blendingMode: .behindWindow)
+//                        .edgesIgnoringSafeArea(.all)
+//                } else {
+//                    Rectangle()
+//                        .fill(Color("pop"))
+//                        .padding(-80)
+//
+//                }
+//            }
+//        )
         .transition(.opacity)
         .popover(isPresented: $showPopover, arrowEdge: .leading) {
             VStack {
@@ -174,19 +179,21 @@ struct MenuBarMiniAppView: View {
 
             }
             .interactiveDismissDisabled(popoverStay)
-            .background(
-                Group {
-                    if glass {
-                        GlassEffect(material: .sidebar, blendingMode: .behindWindow)
-                            .edgesIgnoringSafeArea(.all)
-                    } else {
-                        Rectangle()
-                            .fill(Color("pop"))
-                            .padding(-80)
+            .background(backgroundView(themeSettings: themeSettings, glass: glass).padding(-80))
 
-                    }
-                }
-            )
+//            .background(
+//                Group {
+//                    if glass {
+//                        GlassEffect(material: .sidebar, blendingMode: .behindWindow)
+//                            .edgesIgnoringSafeArea(.all)
+//                    } else {
+//                        Rectangle()
+//                            .fill(Color("pop"))
+//                            .padding(-80)
+//
+//                    }
+//                }
+//            )
             .frame(width: 650, height: 500)
 
         }

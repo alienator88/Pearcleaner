@@ -11,6 +11,8 @@ import SwiftUI
 struct AppsListView: View {
     @Binding var search: String
     @Binding var showPopover: Bool
+    @AppStorage("settings.general.mini") private var mini: Bool = false
+
     var filteredApps: [AppInfo]
 
     var body: some View {
@@ -23,11 +25,13 @@ struct AppsListView: View {
                     SectionView(title: "User", count: filteredUserApps.count, apps: filteredUserApps, search: $search, showPopover: $showPopover)
                 }
 
+
                 if !filteredSystemApps.isEmpty {
                     SectionView(title: "System", count: filteredSystemApps.count, apps: filteredSystemApps, search: $search, showPopover: $showPopover)
                 }
             }
             .padding(.horizontal)
+            .padding(.top, !mini ? 4 : 0)
         }
         .scrollIndicators(.never)
     }

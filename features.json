@@ -1,4 +1,5 @@
 {
+    "3.5.0": "- Finder Extension: When enabled, you can right click an app in finder and uninstall with Pearcleaner directly|- Theme System: You can now select a base theme color for the application window",
     "3.3.0": "- Folder Settings: Add more directories where Pearcleaner should search for app files|- Progress: Show progress bar on startup when loading all app files with instant search enabled|- App Icon: Show background color behind app icons in FilesView based on icon's average color mapping|- Progress: Show time counter on regular file search views",
     "3.2.0": "- Menubar Item: You can choose to access Pearcleaner from the menubar. This will show a slightly modified Mini Mode view.",
     "3.1.0": "- Homebrew Cleanup: If you install apps using brew, you can now enable homebrew cleanup in the settings to have Pearcleaner alert Homebrew that the app was removed externally from Homebrew and keep the brew app list synced.",

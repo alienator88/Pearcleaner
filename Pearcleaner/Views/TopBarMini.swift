@@ -51,14 +51,14 @@ struct TopBarMini: View {
 
                         }
                     }
-                    .buttonStyle(SimpleButtonStyle(icon: "clock.arrow.circlepath", help: "Leftover Files", color: Color("mode")))
+                    .buttonStyle(SimpleButtonStyle(icon: "clock.arrow.circlepath", help: "Leftover Files"))
 
                     Button("") {
                         withAnimation(.easeInOut(duration: 0.5)) {
                             appState.currentView = .apps
                         }
                     }
-                    .buttonStyle(SimpleButtonStyle(icon: "square.grid.3x3.square", help: "Apps List", color: Color("mode")))
+                    .buttonStyle(SimpleButtonStyle(icon: "square.grid.3x3.square", help: "Apps List"))
 
 
                 }
@@ -93,7 +93,7 @@ struct TopBarMini: View {
 
                         }
                     }
-                    .buttonStyle(SimpleButtonStyle(icon: "clock.arrow.circlepath", help: "Leftover Files", color: Color("mode")))
+                    .buttonStyle(SimpleButtonStyle(icon: "clock.arrow.circlepath", help: "Leftover Files"))
 
                     Button("") {
                         withAnimation(.easeInOut(duration: 0.5)) {
@@ -102,7 +102,7 @@ struct TopBarMini: View {
                             showPopover = false
                         }
                     }
-                    .buttonStyle(SimpleButtonStyle(icon: "plus.square.dashed", help: "Drop Target", color: Color("mode")))
+                    .buttonStyle(SimpleButtonStyle(icon: "plus.square.dashed", help: "Drop Target"))
                 }
             }
 

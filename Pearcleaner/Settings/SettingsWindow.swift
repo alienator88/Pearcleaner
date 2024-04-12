@@ -10,6 +10,7 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var fsm: FolderSettingsManager
+    @EnvironmentObject var themeSettings: ThemeSettings
     @Binding var showPopover: Bool
     @Binding var search: String
     @Binding var showFeature: Bool
@@ -49,7 +50,8 @@ struct SettingsView: View {
                 }
                 .tag(CurrentTabView.about)
         }
-        .background(glass ? GlassEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all) : nil)
+        .background(backgroundView(themeSettings: themeSettings, glass: glass))
+//        .background(glass ? GlassEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all) : nil)
 
     }
 

@@ -11,6 +11,7 @@ import SwiftUI
 
 struct MiniMode: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var themeSettings: ThemeSettings
     @Binding var search: String
     @State private var showSys: Bool = true
     @State private var showUsr: Bool = true
@@ -49,20 +50,21 @@ struct MiniMode: View {
 
                 }
                 .interactiveDismissDisabled(popoverStay)
-                .background(
-                    Group {
-                        if glass {
-                            GlassEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all)
-                        } else {
-                            Rectangle()
-                                .fill(Color("pop"))
-                                .padding(-80)
-                        }
-                    }
-//                    Rectangle()
-//                        .fill(Color("pop"))
-//                        .padding(-80)
-                )
+//                .background(Color("pop"))
+//                .background(backgroundView(themeSettings: themeSettings, glass: false).padding(-80))
+                .background(backgroundView(themeSettings: themeSettings, glass: glass).padding(-80))
+//                .background(
+//                    Group {
+//                        if glass {
+//                            backgroundView(themeSettings: themeSettings).padding(-80)
+////                            GlassEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all)
+//                        } else {
+//                            Rectangle()
+//                                .fill(Color("pop"))
+//                                .padding(-80)
+//                        }
+//                    }
+//                )
                 .frame(width: 650, height: 550)
 
             }
@@ -71,7 +73,8 @@ struct MiniMode: View {
         }
         .frame(minWidth: 300, minHeight: 345)
         .edgesIgnoringSafeArea(.all)
-        .background(glass ? GlassEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all) : nil)
+        .background(backgroundView(themeSettings: themeSettings, glass: glass))
+//        .background(glass ? GlassEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all) : nil)
         // MARK: Background for whole app
         //        .background(Color("bg").opacity(1))
         //        .background(VisualEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all))
@@ -93,22 +96,20 @@ struct MiniEmptyView: View {
     @Binding var showPopover: Bool
 
     var body: some View {
-        VStack() {
-            
+        VStack(alignment: .center) {
+
             Spacer()
             
-            ZStack {
-                LinearGradient(gradient: Gradient(colors: [.green, .orange]), startPoint: .leading, endPoint: .trailing)
-                    .mask(
-                        Image(systemName: "plus.square.dashed")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 120, height: 120)
-                            .padding()
-                            .fontWeight(.ultraLight)
-                    )
-                    .frame(width: 160)
-            }
+            LinearGradient(gradient: Gradient(colors: [.green, .orange]), startPoint: .leading, endPoint: .trailing)
+                .mask(
+                    Image(systemName: "plus.square.dashed")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 120, height: 120, alignment: .center)
+                        .padding()
+                        .fontWeight(.ultraLight)
+                        .offset(x: 5, y: 5)
+                )
 
             Text("Drop your app here")
                 .font(.title3)
@@ -133,7 +134,6 @@ struct MiniEmptyView: View {
                             }
                         }
                     }
-                Spacer()
             }
 
             Spacer()

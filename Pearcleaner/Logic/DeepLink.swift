@@ -26,7 +26,6 @@ class DeeplinkManager {
         // This handles dropping an app onto Pearcleaner
         if url.pathExtension == "app" {
             handleAppBundle(url: url, appState: appState, locations: locations)
-            // This handles sentinel monitor launch
         } else if url.scheme == DeepLinkConstants.scheme,
                   url.host == DeepLinkConstants.host,
                   let components = URLComponents(url: url, resolvingAgainstBaseURL: true),

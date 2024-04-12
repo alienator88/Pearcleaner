@@ -41,15 +41,16 @@ struct AppCommands: Commands {
                     let sortedApps = getSortedApps(paths: fsm.folderPaths, appState: appState)
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                         appState.sortedApps = []
-//                        appState.sortedApps.systemApps = []
                         appState.sortedApps = sortedApps
-//                        appState.sortedApps.systemApps = sortedApps.systemApps
                         if instantSearch {
                             Task(priority: .high){
-                                loadAllPaths(allApps: sortedApps, appState: appState, locations: locations)
+                                loadAllPaths(allApps: sortedApps, appState: appState, locations: locations) {
+                                    appState.reload.toggle()
+                                }
                             }
+                        } else {
+                            appState.reload.toggle()
                         }
-                        appState.reload.toggle()
                     }
                 }
             } label: {

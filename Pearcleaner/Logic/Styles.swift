@@ -11,15 +11,17 @@ import SwiftUI
 struct SimpleButtonStyle: ButtonStyle {
     @State private var hovered = false
     let icon: String
-    let label: String?
+    let label: String
     let help: String
     let color: Color
+    let size: CGFloat
 
-    init(icon: String, label: String? = "", help: String, color: Color) {
+    init(icon: String, label: String = "", help: String, color: Color = Color("mode"), size: CGFloat = 20) {
         self.icon = icon
         self.label = label
         self.help = help
         self.color = color
+        self.size = size
     }
     
     func makeBody(configuration: Self.Configuration) -> some View {
@@ -27,8 +29,8 @@ struct SimpleButtonStyle: ButtonStyle {
             Image(systemName: icon)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 20)
-            if let label = label, !label.isEmpty {
+                .frame(width: size, height: size)
+            if !label.isEmpty {
                 Text(label)
             }
         }
@@ -40,34 +42,6 @@ struct SimpleButtonStyle: ButtonStyle {
             }
         }
         .scaleEffect(configuration.isPressed ? 0.95 : 1)
-        .help(help)
-    }
-}
-
-
-struct NavButtonBottomBarStyle: ButtonStyle {
-    @State private var isHovered = false
-    var image: String
-    var help: String
-
-    func makeBody(configuration: Configuration) -> some View {
-        ZStack {
-            Image(systemName: image)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 20, height: 20)
-                .foregroundStyle(isHovered ? Color("mode").opacity(0.8) : Color("mode").opacity(0.5))
-            Rectangle()
-                .foregroundColor(.clear)
-                .frame(width: 36, height: 36)
-                .cornerRadius(6)
-                .contentShape(Rectangle())
-        }
-        .scaleEffect(configuration.isPressed ? 0.95 : 1)
-        .buttonStyle(.plain)
-        .onHover { inside in
-            isHovered = inside
-        }
         .help(help)
     }
 }
@@ -215,7 +189,7 @@ public struct NewFeatureView: View {
                         showFeature = false
                     }
                 }
-                .buttonStyle(SimpleButtonStyle(icon: "x.circle.fill", help: "Close", color: .gray))
+                .buttonStyle(SimpleButtonStyle(icon: "x.circle.fill", help: "Close", color: (Color("mode").opacity(0.5))))
                 .onHover { isHovered in
                     if isHovered {
                         NSCursor.pointingHand.push()
@@ -249,43 +223,36 @@ public struct NewFeatureView: View {
 
 
 public struct SlideableDivider: View {
+    @EnvironmentObject private var themeSettings: ThemeSettings
     @Binding var dimension: Double
     @State private var dimensionStart: Double?
-    @State private var handleWidth: Double = 2
+    @State private var handleWidth: Double = 4
     @State private var handleHeight: Double = 30
+    @State private var isHovered: Bool = false
     public init(dimension: Binding<Double>) {
         self._dimension = dimension
     }
 
     public var body: some View {
         Rectangle()
-            .foregroundStyle(Color.gray.opacity(0.3))
-            .frame(width: 1)
-            .overlay(
-                VStack(spacing: 0) {
-                    Spacer()
-                    RoundedRectangle(cornerRadius: 50)
-                        .fill(Color("mode").opacity(0.3))
-                        .frame(width: handleWidth, height: handleHeight)
-                        .onHover { inside in
-                            if inside {
-                                NSCursor.resizeLeftRight.push()
+            .foregroundStyle(Color("mode").opacity(0.0))
+            .frame(width: 10)
+            .onHover { inside in
+                if inside {
+                    NSCursor.resizeLeftRight.push()
 
-                            } else {
-                                NSCursor.pop()
+                } else {
+                    NSCursor.pop()
 
-                            }
-                        }
-                        .contextMenu {
-                            Button("Reset Size") {
-                                dimension = 280
-                            }
-                        }
-                        .gesture(drag)
-                    Spacer()
                 }
-                    .offset(x: 5)
-            )
+            }
+            .contextMenu {
+                Button("Reset Size") {
+                    dimension = 280
+                }
+            }
+            .gesture(drag)
+            .help("Right click to reset size")
     }
 
     var drag: some Gesture {
@@ -302,13 +269,13 @@ public struct SlideableDivider: View {
                 let maxWidth: Double = 350
                 dimension = max(minWidth, min(maxWidth, newDimension))
                 NSCursor.closedHand.set()
-                handleWidth = 4
+                handleWidth = 6
                 handleHeight = 40
             }
             .onEnded { val in
                 dimensionStart = nil
                 NSCursor.arrow.set()
-                handleWidth = 2
+                handleWidth = 4
                 handleHeight = 30
             }
     }
@@ -323,18 +290,18 @@ struct LabeledDivider: View {
         HStack(spacing: 0) {
             Rectangle()
                 .frame(height: 1)
-                .foregroundColor(.gray.opacity(0.2))
+                .foregroundColor(Color("mode").opacity(0.2))
 
             Text(label)
                 .textCase(.uppercase)
                 .font(.title2)
-                .foregroundColor(.gray.opacity(0.6))
+                .foregroundColor(Color("mode").opacity(0.6))
                 .padding(.horizontal, 10)
                 .frame(minWidth: 80)
             
             Rectangle()
                 .frame(height: 1)
-                .foregroundColor(.gray.opacity(0.2))
+                .foregroundColor(Color("mode").opacity(0.2))
         }
         .frame(minHeight: 35)
     }
@@ -497,7 +464,7 @@ struct SimpleSearchStyle: TextFieldStyle {
                         }
 
                         RoundedRectangle(cornerRadius: 6)
-                            .strokeBorder(Color.gray.opacity(0.2), lineWidth: 1)
+                            .strokeBorder(Color("mode").opacity(0.2), lineWidth: 1)
                             .allowsHitTesting(false)
                     }
                 }
@@ -767,7 +734,7 @@ struct PillPicker: View {
                         
                         Text(i == 0 ? "Apps" : (i == 1 ? "Widgets" : "Plugins"))
                             .font(.system(size: 12))
-                            .foregroundColor(index == i ? (colorScheme == .dark ? .black : Color("AccentColor")) : .gray)
+                            .foregroundColor(index == i ? (colorScheme == .dark ? .black : Color("AccentColor")) : Color("mode"))
                     }
                     .padding(5)
                     .frame(height: 25)
@@ -826,3 +793,47 @@ struct PearDropView: View {
     }
 }
 
+
+
+// Used for testing UI bounds
+extension View {
+    func bounds() -> some View {
+        self.border(Color.red, width: 1)
+    }
+}
+
+
+@ViewBuilder
+func backgroundView(themeSettings: ThemeSettings, darker: Bool = false, glass: Bool = false) -> some View {
+    if glass {
+        GlassEffect(material: .sidebar, blendingMode: .behindWindow)
+            .edgesIgnoringSafeArea(.all)
+    } else {
+        darker ? themeSettings.themeColor.darker(by: 5).edgesIgnoringSafeArea(.all) : themeSettings.themeColor.edgesIgnoringSafeArea(.all)
+    }
+}
+
+
+
+struct PresetColor: ButtonStyle {
+    var fillColor: Color
+    var label: String
+
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(alignment: .center, spacing: 10) {
+            Circle()
+                .frame(width: 20, height: 20)
+                .fixedSize(horizontal: true, vertical: true)
+                .foregroundColor(fillColor)
+                .background(fillColor)
+                .clipShape(Circle())
+                .help(label)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 25)
+                        .strokeBorder(Color("mode").opacity(0.8), lineWidth: 1.5))
+//            Text(label)
+        }
+        .onHover { inside in inside ? NSCursor.pointingHand.push() : NSCursor.pop() }
+
+    }
+}
