@@ -4,7 +4,7 @@
    <br />
    <strong>Status: </strong>Maintained 
    <br />
-   <strong>Version: </strong>3.4.2
+   <strong>Version: </strong>3.5.0
    <br />
    <a href="https://github.com/alienator88/Pearcleaner/releases"><strong>Download</strong></a>
     · 
@@ -21,13 +21,15 @@ This project was born out of wanting to learn more on how macOS deals with app i
 
 ## Features
 - 100% Swift
-- Small app size (~2MB)
+- Small app size (~3MB)
 - Quick file search, can be made instant by enabling Instant Search in settings which caches all the apps and files on startup
 - Reverse search for finding remaining files from already uninstalled applications
 - Sentinel monitor helper that can be enabled to watch Trash folder for deleted apps
 - Sentinel monitor is extremely small (210KB) and uses ~2mb of ram to run in the background and file watch
 - Mini mode which can be enabled from Settings
 - Can drop apps to uninstall directly on the Pearcleaner Dock icon itself or the drop target in the app window
+- Optional Finder Extension which allows you to uninstall an app directly from Finder by right clicking > Pearcleaner Uninstall
+- Theme System available with custom color selector
 - Will differentiate between regular apps and Safari web-apps with a "web" label next to each item in the list
 - Will differentiate between regular apps and wrapped iOS apps with an "iOS" label next to each item in the list
 - Has clean uninstall menu option for the Pearcleaner app itself if you want to stop using it and get rid of all files and launch items
@@ -51,6 +53,14 @@ This project was born out of wanting to learn more on how macOS deals with app i
 
 
 <details>
+  <summary>Themes</summary>
+<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/e3178f02-785d-48b9-b9ac-20f4e94550ff" align="left" width="400" />
+
+<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/d65bc6b4-23b1-47de-b461-f24581aae149" align="center" width="400" />
+</details>
+
+
+<details>
   <summary>Mini Mode</summary>
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/0bcfbbee-7d43-4f14-9657-d3d62da72d88" align="left" width="400" />
 
@@ -60,6 +70,11 @@ This project was born out of wanting to learn more on how macOS deals with app i
 
 <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/52cec03b-9b5c-40c0-865d-669466713c18" align="center" width="400" />
 <p></p>
+</details>
+
+<details>
+  <summary>Finder Extension</summary>
+   <img src="https://github.com/alienator88/Pearcleaner/assets/6263626/098d58a4-bc2b-4bb3-958f-b1456dd7cb84" align="center" width="400" />
 </details>
 
 <details>
