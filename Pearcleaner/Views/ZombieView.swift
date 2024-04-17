@@ -14,9 +14,10 @@ struct ZombieView: View {
     @State private var showPop: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
-    @AppStorage("settings.general.instant") private var instantSearch: Bool = true
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
+    @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
+    @State private var localKey = UUID()
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
     @Binding var search: String
@@ -27,27 +28,44 @@ struct ZombieView: View {
 
     var body: some View {
 
-        let totalSelectedZombieSize = appState.selectedZombieItems.reduce(Int64(0)) { (result, url) in
-            result + (appState.zombieFile.fileSize[url] ?? 0)
-        }
+        let totalSelectedZombieSize: (real: String, logical: String, finder: String) = {
+            var totalReal: Int64 = 0
+            var totalLogical: Int64 = 0
 
-        let filteredAndSortedFiles: ([URL], Int64) = {
-            let filteredFiles = appState.zombieFile.fileSize.filter { (url, _) in
+            for url in appState.selectedZombieItems {
+                let realSize = appState.zombieFile.fileSize[url] ?? 0
+                let logicalSize = appState.zombieFile.fileSizeLogical[url] ?? 0
+                totalReal += realSize
+                totalLogical += logicalSize
+            }
+            return (formatByte(size: totalReal).human, formatByte(size:totalLogical).human, "\(formatByte(size: totalLogical).byte) (\(formatByte(size: totalReal).human))")
+        }()
+
+        let filteredAndSortedFiles: ([URL], Int64, Int64) = {
+            let fileSizeReal = appState.zombieFile.fileSize
+            let fileSizeLogical = appState.zombieFile.fileSizeLogical
+            let filteredFilesReal = fileSizeReal.filter { (url, _) in
                 searchZ.isEmpty || url.lastPathComponent.localizedCaseInsensitiveContains(searchZ)
             }
-
-            let sortedFilteredFiles = filteredFiles.sorted(by: {
+            let filteredFilesLogical = fileSizeLogical.filter { (url, _) in
+                searchZ.isEmpty || url.lastPathComponent.localizedCaseInsensitiveContains(searchZ)
+            }
+            let filesToSort = (sizeType == "Real" || sizeType == "Finder" ? filteredFilesReal : filteredFilesLogical)
+            let sortedFilteredFiles = filesToSort.sorted(by: {
                 if selectedSortAlpha {
                     return $0.key.lastPathComponent.pearFormat() < $1.key.lastPathComponent.pearFormat()
                 } else {
                     return $0.value > $1.value
                 }
             }).map { $0.key }
-
-            let totalSize = filteredFiles.values.reduce(0, +)
-
-            return (sortedFilteredFiles, totalSize)
+            let totalSize = filteredFilesReal.values.reduce(0, +)
+            let totalSizeL = filteredFilesLogical.values.reduce(0, +)
+            return (sortedFilteredFiles, totalSize, totalSizeL)
         }()
+
+        let displaySizeTotal = sizeType == "Real" ? formatByte(size: filteredAndSortedFiles.1).human :
+        sizeType == "Logical" ? formatByte(size: filteredAndSortedFiles.2).human :
+        "\(formatByte(size: filteredAndSortedFiles.2).byte) (\(formatByte(size: filteredAndSortedFiles.1).human))"
 
         VStack(alignment: .center) {
             if appState.showProgress {
@@ -61,6 +79,7 @@ struct ZombieView: View {
                         ProgressView()
                             .progressViewStyle(.linear)
                             .frame(width: 400, height: 10)
+
 
                         Text("\(elapsedTime)")
                             .font(.title).monospacedDigit()
@@ -97,13 +116,7 @@ struct ZombieView: View {
                             updateOnMain {
                                 appState.zombieFile = .empty
                                 appState.showProgress.toggle()
-                                if instantSearch {
-                                    let reverse = ReversePathsSearcher(appState: appState, locations: locations)
-                                    reverse.reversePathsSearch()
-//                                    reversePathsSearch(appState: appState, locations: locations)
-                                } else {
-                                    loadAllPaths(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
-                                }
+                                reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
                             }
                         }
                         .buttonStyle(SimpleButtonStyle(icon: "arrow.counterclockwise.circle.fill", help: "Rescan files"))
@@ -142,14 +155,14 @@ struct ZombieView: View {
                                         Spacer()
                                         
                                     }
-                                    Text("Files and folders remaining from previously installed applications")
+                                    Text("Remaining files and folders from previous installs")
                                         .font(.callout).foregroundStyle(Color("mode").opacity(0.5))
                                 }
 
                                 Spacer()
 
                                 VStack(alignment: .trailing, spacing: 5) {
-                                    Text("\(formatByte(size: filteredAndSortedFiles.1))").font(.title).fontWeight(.bold)
+                                    Text("\(displaySizeTotal)").font(.title).fontWeight(.bold).help("Total size on disk")
 
                                     Text("\(appState.zombieFile.fileSize.count == 1 ? "\(appState.selectedZombieItems.count) / \(appState.zombieFile.fileSize.count) item" : "\(appState.selectedZombieItems.count) / \(appState.zombieFile.fileSize.count) items")")
                                         .font(.callout).foregroundStyle(Color("mode").opacity(0.5))
@@ -195,10 +208,10 @@ struct ZombieView: View {
                     ScrollView() {
                         LazyVStack {
                             ForEach(Array(filteredAndSortedFiles.0.enumerated()), id: \.element) { index, file in
-                                if let fileSize = appState.zombieFile.fileSize[file], let fileIcon = appState.zombieFile.fileIcon[file] {
+                                if let fileSize = appState.zombieFile.fileSize[file], let fileSizeL = appState.zombieFile.fileSizeLogical[file], let fileIcon = appState.zombieFile.fileIcon[file] {
                                     let iconImage = fileIcon.map(Image.init(nsImage:))
                                     VStack {
-                                        ZombieFileDetailsItem(size: fileSize, icon: iconImage, path: file)
+                                        ZombieFileDetailsItem(size: fileSize, sizeL: fileSizeL, icon: iconImage, path: file)
                                             .padding(.trailing)
 
                                         if index < filteredAndSortedFiles.0.count - 1 {
@@ -210,7 +223,12 @@ struct ZombieView: View {
 
                         }
                         .padding()
+                        .onChange(of: sizeType) { _ in
+                            localKey = UUID()
+                        }
+                        .id(localKey)
                     }
+
 
                     Spacer()
 
@@ -218,7 +236,7 @@ struct ZombieView: View {
 
                         Spacer()
 
-                        Button("\(formatByte(size: totalSelectedZombieSize))") {
+                        Button("\(sizeType == "Logical" ? totalSelectedZombieSize.logical : sizeType == "Finder" ? totalSelectedZombieSize.finder : totalSelectedZombieSize.real)") {
                                 Task {
                                     updateOnMain {
                                         appState.zombieFile = .empty
@@ -271,7 +289,10 @@ struct ZombieView: View {
 
 struct ZombieFileDetailsItem: View {
     @EnvironmentObject var appState: AppState
+    @State private var isHovered = false
+    @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     let size: Int64?
+    let sizeL: Int64?
     let icon: Image?
     let path: URL
 
@@ -295,6 +316,8 @@ struct ZombieFileDetailsItem: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 30, height: 30)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .brightness(isHovered ? 0.2 : 0)
+                    .shadow(color: Color("mode"), radius: isHovered ? 2 : 0)
 
             }
             VStack(alignment: .leading, spacing: 5) {
@@ -313,20 +336,35 @@ struct ZombieFileDetailsItem: View {
 
             Spacer()
 
-            Text(formatByte(size:size!))
+            let displaySize = sizeType == "Real" ? formatByte(size: size!).human :
+            sizeType == "Logical" ? formatByte(size: sizeL!).human :
+            "\(formatByte(size: sizeL!).byte) (\(formatByte(size: size!).human))"
 
-
-
-            Button("") {
-                NSWorkspace.shared.selectFile(path.path, inFileViewerRootedAtPath: path.deletingLastPathComponent().path)
-            }
-            .buttonStyle(SimpleButtonStyle(icon: "folder.fill", help: "Show in Finder"))
+            Text("\(displaySize)")
 
         }
-        .background(
-            RoundedRectangle(cornerRadius: 10)
-                .fill(Color.white.opacity(0))
-        )
+        .onHover { hovering in
+            withAnimation(Animation.easeIn(duration: 0.2)) {
+                self.isHovered = hovering
+            }
+        }
+        .onTapGesture {
+            NSWorkspace.shared.selectFile(path.path, inFileViewerRootedAtPath: path.deletingLastPathComponent().path)
+        }
+        .contextMenu {
+            if path.pathExtension == "app" {
+                Button("Open \(path.deletingPathExtension().lastPathComponent)") {
+                    NSWorkspace.shared.open(path)
+                }
+                Divider()
+            }
+            Button("Copy Path") {
+                copyToClipboard(text: path.path)
+            }
+            Button("View in Finder") {
+                NSWorkspace.shared.selectFile(path.path, inFileViewerRootedAtPath: path.deletingLastPathComponent().path)
+            }
+        }
     }
 }
 

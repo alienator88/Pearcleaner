@@ -23,15 +23,14 @@ struct GeneralSettingsTab: View {
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.general.brew") private var brew: Bool = false
-    @AppStorage("settings.general.instant") private var instantSearch: Bool = true
-    @AppStorage("settings.general.selectedTheme") var selectedTheme: String = "Auto"
     @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
-//    @State private var finderExtensionEnabled: Bool = false
+    @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @State private var diskStatus: Bool = false
     @State private var accessStatus: Bool = false
-    private let themes = ["Auto", "Dark", "Light"]
     @Binding var showPopover: Bool
     @Binding var search: String
+
+    @State var selectedIndex: Int?
 
     var body: some View {
         Form {
@@ -41,30 +40,6 @@ struct GeneralSettingsTab: View {
                     Text("Functionality").font(.title2)
                     Spacer()
                 }
-                .padding(.leading)
-
-
-                HStack(spacing: 0) {
-                    Image(systemName: instantSearch ? "bolt" : "bolt.slash")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 20, height: 20)
-                        .padding(.trailing)
-                        .foregroundStyle(Color("mode").opacity(0.5))
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text("\(instantSearch ? "Instant search is enabled" : "Instant search is disabled")")
-                            .font(.callout)
-                            .foregroundStyle(Color("mode").opacity(0.5))
-                    }
-
-                    InfoButton(text: "When instant search is enabled, all application files are gathered and cached for later use on startup instead of on each app click. There might be a slight delay of a few seconds when launching Pearcleaner depending on the amount of apps you have installed.", color: nil, label: "")
-
-                    Spacer()
-                    Toggle(isOn: $instantSearch, label: {
-                    })
-                    .toggleStyle(.switch)
-                }
-                .padding(5)
                 .padding(.leading)
 
 
@@ -104,14 +79,88 @@ struct GeneralSettingsTab: View {
                             .font(.callout)
                             .foregroundStyle(Color("mode").opacity(0.5))
                     }
-                    InfoButton(text: "When searching for app files or leftover files, the list will be sorted based on this choice", color: nil, label: "")
+                    InfoButton(text: "When searching for app files or leftover files, the list will be sorted either alphabetically or by size(large to small)", color: nil, label: "")
                     Spacer()
-                    Picker("", selection: $selectedSortAlpha) {
-                        Text("Alphabetical").tag(true)
-                        Text("Size").tag(false)
+                    SegmentedPicker(
+                        ["Alpha", "Size"],
+                        selectedIndex: Binding(
+                            get: { selectedSortAlpha ? 0 : 1 },
+                            set: { newIndex in
+                                withAnimation(.easeInOut(duration: 0.3)) {
+                                    selectedSortAlpha = (newIndex == 0)
+                                }
+                            }),
+                        selectionAlignment: .bottom,
+                        content: { item, isSelected in
+                            Text(item)
+                                .font(.callout)
+                                .foregroundColor(isSelected ? Color("mode") : Color("mode").opacity(0.5))
+                                .padding(.horizontal)
+                                .padding(.bottom, 5)
+                                .frame(width: 75)
+
+                        },
+                        selection: {
+                            VStack(spacing: 0) {
+                                Spacer()
+                                Color("pear").frame(height: 1)
+                            }
+                        })
+                }
+                .padding(5)
+                .padding(.leading)
+
+
+                HStack(spacing: 0) {
+                    Image(systemName: "plus.forwardslash.minus")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .padding(.trailing)
+                        .foregroundStyle(Color("mode").opacity(0.5))
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("File size display")
+                            .font(.callout)
+                            .foregroundStyle(Color("mode").opacity(0.5))
                     }
-                    .pickerStyle(SegmentedPickerStyle())
-                    .frame(width: 200)
+                    InfoButton(text: "Real size type will show how much actual allocated space the file has on disk. Logical type shows the binary size. The filesystem can compress and deduplicate sectors on disk, so real size is sometimes smaller(or bigger) than logical size. Finder size is similar to if you right click > Get Info on a file in Finder, which will show both the logical and real sizes together.", color: nil, label: "")
+                    Spacer()
+                    SegmentedPicker(
+                        ["Real", "Logical", "Finder"],
+                        selectedIndex: Binding(
+                            get: {
+                                switch sizeType {
+                                case "Real": return 0
+                                case "Logical": return 1
+                                case "Finder": return 2
+                                default: return 0
+                                }
+                            },
+                            set: { newIndex in
+                                withAnimation(.easeInOut(duration: 0.3)) {
+                                    switch newIndex {
+                                    case 0: sizeType = "Real"
+                                    case 1: sizeType = "Logical"
+                                    case 2: sizeType = "Finder"
+                                    default: sizeType = "Real"
+                                    }
+                                }
+                            }),
+                        selectionAlignment: .bottom,
+                        content: { item, isSelected in
+                            Text(item)
+                                .font(.callout)
+                                .foregroundColor(isSelected ? Color("mode") : Color("mode").opacity(0.5) )
+                                .padding(.horizontal)
+                                .padding(.bottom, 5)
+                                .frame(width: 75)
+                        },
+                        selection: {
+                            VStack(spacing: 0) {
+                                Spacer()
+                                Color("pear").frame(height: 1)
+                            }
+                        })
                 }
                 .padding(5)
                 .padding(.leading)
@@ -275,7 +324,7 @@ struct GeneralSettingsTab: View {
 
         }
         .padding(20)
-        .frame(width: 500, height: 560)
+        .frame(width: 500, height: 600)
 
     }
     

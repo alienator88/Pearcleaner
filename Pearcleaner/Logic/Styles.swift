@@ -441,56 +441,11 @@ struct SimpleSearchStyle: TextFieldStyle {
             }
             
         }
-        .disabled(appState.instantProgress != 0 && appState.instantProgress != appState.instantTotal)
         .padding(6)
         .overlay(
-            Group {
-                GeometryReader { geometry in
-                    ZStack(alignment: .leading) {
-
-
-                        if appState.instantProgress != 0 && appState.instantProgress != appState.instantTotal {
-                            let totalWidth = geometry.size.width
-                            let progressFraction = CGFloat(appState.instantProgress / appState.instantTotal)
-                            let progressWidth = totalWidth * progressFraction
-
-                            RoundedRectangle(cornerRadius: 6)
-                                .fill(Color.accentColor)
-                                .padding(4)
-                                .frame(width: progressWidth)
-                                .animation(.linear, value: progressWidth)
-                                .allowsHitTesting(false)
-
-                        }
-
-                        RoundedRectangle(cornerRadius: 6)
-                            .strokeBorder(Color("mode").opacity(0.2), lineWidth: 1)
-                            .allowsHitTesting(false)
-                    }
-                }
-//                ZStack {
-//                    RoundedRectangle(cornerRadius: 6)
-//                        .strokeBorder(Color("mode").opacity(0.2), lineWidth: 1)
-//                        .allowsHitTesting(false)
-//                    
-//                    if appState.instantTotal > 0 {
-//                        let progressWidth = CGFloat(appState.instantProgress / appState.instantTotal)
-//                        * NSScreen.main.bounds.width // Assuming full width for simplicity; adjust as needed
-//                        RoundedRectangle(cornerRadius: 6)
-//                            .fill(Color.accentColor.opacity(0.5)) // Adjust color and opacity as needed
-//                            .frame(width: progressWidth)
-//                            .animation(.linear, value: progressWidth)
-//                            .allowsHitTesting(false)
-//                    }
-////                    if appState.instantProgress != 0 && appState.instantProgress != appState.instantTotal {
-////                        ProgressView("", value: appState.instantProgress, total: appState.instantTotal)
-////                            .progressViewStyle(.linear)
-////                            .padding()
-////                    }
-//                }
-
-
-            }
+            RoundedRectangle(cornerRadius: 6)
+                .strokeBorder(Color("mode").opacity(0.2), lineWidth: 1)
+                .allowsHitTesting(false)
         )
         .onHover { hovering in
             withAnimation(Animation.easeInOut(duration: 0.15)) {

@@ -174,20 +174,13 @@ func isCurrentUserAdmin(completion: @escaping (Bool) -> Void) {
 }
 
 // Check if appearance is dark mode
-func isDarkModeEnabled() -> Bool {
-    let process = Process()
-    process.executableURL = URL(fileURLWithPath: "/bin/zsh")
-    process.arguments = ["-c", "defaults read -g AppleInterfaceStyle"]
-    let pipe = Pipe()
-    process.standardOutput = pipe
-    process.standardError = pipe
-    try? process.run()
-    let data = pipe.fileHandleForReading.readDataToEndOfFile()
-    if !data.isEmpty{
-        return true
-    } else {
-        return false
-    }
+func isDarkMode() -> Bool {
+    return NSApp.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+}
+
+// Set app color mode
+func setAppearance(mode: NSAppearance.Name) {
+    NSApp.appearance = NSAppearance(named: mode)
 }
 
 // Check if Pearcleaner has any windows open
@@ -214,6 +207,13 @@ func findAndShowWindows(named titles: [String]) {
             window.makeKeyAndOrderFront(nil)
         }
     }
+}
+
+// Copy to clipboard
+func copyToClipboard(text: String) {
+    let pasteboard = NSPasteboard.general
+    pasteboard.clearContents()
+    pasteboard.setString(text, forType: .string)
 }
 
 
@@ -458,86 +458,73 @@ func printOS(_ items: Any..., separator: String = " ", terminator: String = "\n"
 }
 
 
-
-//func totalSizeOnDisk2(for paths: [URL]) -> Int64 {
-//    var totalSize = 0
-//    
-//    let process = Process()
-//    process.launchPath = "/usr/bin/du"
-//    process.arguments = ["-sk"] + paths.map { (url: URL) -> String in
-//        return url.path
-//    }
-//    let pipe = Pipe()
-//    process.standardOutput = pipe
-//    process.standardError =  pipe//FileHandle.nullDevice
-//
-//    try? process.run()
-//    process.waitUntilExit()
-//    
-//    let data = pipe.fileHandleForReading.readDataToEndOfFile()
-//    if let output = String(data: data, encoding: .utf8) {
-//        let lines = output.components(separatedBy: .newlines)
-//        for line in lines {
-//            let components = line.components(separatedBy: "\t")
-//            if let sizeString = components.first, let size = Int(sizeString) {
-//                totalSize += size
-//            }
-//        }
-//    }
-//
-//    return Int64(totalSize) * 1024 // Convert the size from kilobytes to bytes
-//}
-
-
-// Get total size of folders and files using DU cli command
-func totalSizeOnDisk(for paths: [URL]) -> Int64 {
+// Get size of files
+func totalSizeOnDisk(for paths: [URL]) -> (real: Int64, logical: Int64) {
     let fileManager = FileManager.default
-    var totalSize: Int64 = 0
+    var totalAllocatedSize: Int64 = 0
+    var totalFileSize: Int64 = 0
 
     for url in paths {
         var isDirectory: ObjCBool = false
         if fileManager.fileExists(atPath: url.path, isDirectory: &isDirectory) {
+            let keys: [URLResourceKey] = [.totalFileAllocatedSizeKey, .fileSizeKey]
             if isDirectory.boolValue {
                 // It's a directory, recurse into it
-                if let enumerator = fileManager.enumerator(at: url, includingPropertiesForKeys: [.totalFileAllocatedSizeKey], errorHandler: nil) {
+                if let enumerator = fileManager.enumerator(at: url, includingPropertiesForKeys: keys, errorHandler: nil) {
                     for case let fileURL as URL in enumerator {
                         do {
-                            let fileAttributes = try fileURL.resourceValues(forKeys: [.totalFileAllocatedSizeKey])
-                            if let fileSize = fileAttributes.totalFileAllocatedSize {
-                                totalSize += Int64(fileSize)
+                            let fileAttributes = try fileURL.resourceValues(forKeys: Set(keys))
+                            if let allocatedSize = fileAttributes.totalFileAllocatedSize {
+                                totalAllocatedSize += Int64(allocatedSize)
+                            }
+                            if let fileSize = fileAttributes.fileSize {
+                                totalFileSize += Int64(fileSize)
                             }
                         } catch {
-                            printOS("Error getting file size for \(fileURL): \(error)")
+                            print("Error getting file attributes for \(fileURL): \(error)")
                         }
                     }
                 }
             } else {
                 // It's a file
                 do {
-                    let fileAttributes = try url.resourceValues(forKeys: [.totalFileAllocatedSizeKey])
-                    if let fileSize = fileAttributes.totalFileAllocatedSize {
-                        totalSize += Int64(fileSize)
+                    let fileAttributes = try url.resourceValues(forKeys: Set(keys))
+                    if let allocatedSize = fileAttributes.totalFileAllocatedSize {
+                        totalAllocatedSize += Int64(allocatedSize)
+                    }
+                    if let fileSize = fileAttributes.fileSize {
+                        totalFileSize += Int64(fileSize)
                     }
                 } catch {
-                    printOS("Error getting file size for \(url): \(error)")
+                    print("Error getting file attributes for \(url): \(error)")
                 }
             }
         }
     }
 
-    return totalSize
+    return (real: totalAllocatedSize, logical: totalFileSize)
 }
 
-func totalSizeOnDisk(for path: URL) -> Int64 {
+
+
+func totalSizeOnDisk(for path: URL) -> (real: Int64, logical: Int64) {
     return totalSizeOnDisk(for: [path])
 }
 
 // ByteFormatter
-func formatByte(size: Int64) -> String {
+func formatByte(size: Int64) -> (human: String, byte: String) {
     let byteCountFormatter = ByteCountFormatter()
     byteCountFormatter.countStyle = .file
     byteCountFormatter.allowedUnits = [.useAll]
-    return byteCountFormatter.string(fromByteCount: size)
+    let human = byteCountFormatter.string(fromByteCount: size)
+
+    let numberformatter = NumberFormatter()
+    numberformatter.numberStyle = .decimal
+    let formattedNumber = numberformatter.string(from: NSNumber(value: size)) ?? "\(size)"
+    let byte = "\(formattedNumber)"
+
+    return (human: human, byte: byte)
+
 }
 
 // Only process supported files
@@ -603,12 +590,9 @@ func uninstallPearcleaner(appState: AppState, locations: Locations) {
 
     // Get app info for Pearcleaner
     let appInfo = AppInfoFetcher.getAppInfo(atPath: Bundle.main.bundleURL)
-//    appState.appInfo = appInfo!
 
     // Find application files for Pearcleaner
-    let pathFinder = AppPathFinder(appInfo: appInfo!, appState: appState, locations: locations)
-    pathFinder.findPaths()
-//    findPathsForApp(appInfo: appInfo!,appState: appState, locations: locations)
+    AppPathFinder(appInfo: appInfo!, appState: appState, locations: locations).findPaths()
 
     // Kill Pearcleaner and tell Finder to trash the files
     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {

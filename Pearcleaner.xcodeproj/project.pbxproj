@@ -16,11 +16,13 @@
 		C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72893042AFD42E600C8C1CD /* DeepLink.swift */; };
 		C72893122AFD51EA00C8C1CD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72893112AFD51EA00C8C1CD /* main.swift */; };
 		C74412C72BBF249000DDFCA8 /* AppPathsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74412C62BBF249000DDFCA8 /* AppPathsFetch.swift */; };
+		C74FDC632BCD833D00B8960F /* Conditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74FDC622BCD833D00B8960F /* Conditions.swift */; };
 		C7575D392B0182DE006A600A /* PearcleanerSentinel in CopyFiles */ = {isa = PBXBuildFile; fileRef = C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C76D08482AF83C3F00D07867 /* Update.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08472AF83C3F00D07867 /* Update.swift */; };
 		C76D084A2AF83C6E00D07867 /* General.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08492AF83C6E00D07867 /* General.swift */; };
 		C76D08512AF850F300D07867 /* About.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08502AF850F300D07867 /* About.swift */; };
 		C76D08552AF89CDE00D07867 /* RegularMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08542AF89CDE00D07867 /* RegularMode.swift */; };
+		C771CB762BD028AF00C33A18 /* SegmentedPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C771CB752BD028AF00C33A18 /* SegmentedPicker.swift */; };
 		C77B90042AF18E2E009CC655 /* PearcleanerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90032AF18E2E009CC655 /* PearcleanerApp.swift */; };
 		C77B90082AF18E2F009CC655 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C77B90072AF18E2F009CC655 /* Assets.xcassets */; };
 		C77B90162AF19377009CC655 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90152AF19377009CC655 /* AppState.swift */; };
@@ -106,10 +108,12 @@
 		C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PearcleanerSentinel; sourceTree = BUILT_PRODUCTS_DIR; };
 		C72893112AFD51EA00C8C1CD /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		C74412C62BBF249000DDFCA8 /* AppPathsFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPathsFetch.swift; sourceTree = "<group>"; };
+		C74FDC622BCD833D00B8960F /* Conditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conditions.swift; sourceTree = "<group>"; };
 		C76D08472AF83C3F00D07867 /* Update.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Update.swift; sourceTree = "<group>"; };
 		C76D08492AF83C6E00D07867 /* General.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = General.swift; sourceTree = "<group>"; };
 		C76D08502AF850F300D07867 /* About.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = About.swift; sourceTree = "<group>"; };
 		C76D08542AF89CDE00D07867 /* RegularMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularMode.swift; sourceTree = "<group>"; };
+		C771CB752BD028AF00C33A18 /* SegmentedPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPicker.swift; sourceTree = "<group>"; };
 		C77B90002AF18E2E009CC655 /* Pearcleaner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pearcleaner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C77B90032AF18E2E009CC655 /* PearcleanerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PearcleanerApp.swift; sourceTree = "<group>"; };
 		C77B90072AF18E2F009CC655 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -197,6 +201,7 @@
 				C72893042AFD42E600C8C1CD /* DeepLink.swift */,
 				C77B901B2AF193A3009CC655 /* Styles.swift */,
 				C7D31D502AFF00F300C7ED9E /* Locations.swift */,
+				C74FDC622BCD833D00B8960F /* Conditions.swift */,
 				C7A9CE462B89164700EB6E78 /* Authorization.swift */,
 				C7ACADE52B92A737000B5845 /* Features.swift */,
 				C7ED86B22BA8ED8800F13DE4 /* Trash.swift */,
@@ -246,6 +251,14 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		C771CB742BD028A000C33A18 /* Picker */ = {
+			isa = PBXGroup;
+			children = (
+				C771CB752BD028AF00C33A18 /* SegmentedPicker.swift */,
+			);
+			path = Picker;
+			sourceTree = "<group>";
+		};
 		C77B8FF72AF18E2E009CC655 = {
 			isa = PBXGroup;
 			children = (
@@ -283,6 +296,7 @@
 		C77B901F2AF1B390009CC655 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				C771CB742BD028A000C33A18 /* Picker */,
 				C77B90222AF2D616009CC655 /* FilesView.swift */,
 				C71848432B8D2D600046CB13 /* ZombieView.swift */,
 				C76D08542AF89CDE00D07867 /* RegularMode.swift */,
@@ -471,9 +485,11 @@
 				C77B90182AF19382009CC655 /* AppCommands.swift in Sources */,
 				C7D31D4A2AFEB26700C7ED9E /* AppListItems.swift in Sources */,
 				C77B901E2AF1A9DB009CC655 /* SettingsWindow.swift in Sources */,
+				C771CB762BD028AF00C33A18 /* SegmentedPicker.swift in Sources */,
 				C74412C72BBF249000DDFCA8 /* AppPathsFetch.swift in Sources */,
 				C79D05202BC99EB40083F976 /* ThemeManager.swift in Sources */,
 				C7D31D482AFEB23700C7ED9E /* TopBar.swift in Sources */,
+				C74FDC632BCD833D00B8960F /* Conditions.swift in Sources */,
 				C7ACADE62B92A737000B5845 /* Features.swift in Sources */,
 				C7F539382AF60865007DF1B2 /* Utilities.swift in Sources */,
 				C76D08552AF89CDE00D07867 /* RegularMode.swift in Sources */,

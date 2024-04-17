@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct AppCommands: Commands {
-    @AppStorage("settings.general.instant") private var instantSearch: Bool = true
 
     let appState: AppState
     let locations: Locations
@@ -42,15 +41,7 @@ struct AppCommands: Commands {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                         appState.sortedApps = []
                         appState.sortedApps = sortedApps
-                        if instantSearch {
-                            Task(priority: .high){
-                                loadAllPaths(allApps: sortedApps, appState: appState, locations: locations) {
-                                    appState.reload.toggle()
-                                }
-                            }
-                        } else {
-                            appState.reload.toggle()
-                        }
+                        appState.reload.toggle()
                     }
                 }
             } label: {
@@ -78,8 +69,7 @@ struct AppCommands: Commands {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                         appState.sortedApps = sortedApps
                         for app in appState.trashedFiles {
-                            let pathFinder = AppPathFinder(appInfo: app, appState: appState, locations: locations)
-                            pathFinder.findPaths()
+                            AppPathFinder(appInfo: app, appState: appState, locations: locations).findPaths()
                         }
                     }
                 }

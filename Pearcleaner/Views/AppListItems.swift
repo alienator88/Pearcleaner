@@ -88,7 +88,7 @@ struct AppListItems: View {
 
                 if (isHovered || isSelected) && !mini {
                     Triangle()
-                        .fill(isSelected ? themeSettings.themeColor : Color("mode").opacity(0.1))
+                        .fill(themeSettings.themeColor)
                         .frame(width: isSelected ? 16 : 8, height: 30)
                         .padding(.leading, 5)
                         .offset(x: 22)
@@ -115,7 +115,6 @@ struct AppListItems: View {
                     }
                 }
             }
-//            .grayscale(opacityForItem(appInfo.path))
 
     }
 

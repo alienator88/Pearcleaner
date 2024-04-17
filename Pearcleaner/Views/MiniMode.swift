@@ -155,7 +155,6 @@ struct MiniAppView: View {
     @State private var showSys: Bool = true
     @State private var showUsr: Bool = true
     @AppStorage("settings.general.mini") private var mini: Bool = false
-    @AppStorage("settings.general.instant") private var instantSearch: Bool = true
     @AppStorage("settings.general.glass") private var glass: Bool = true
     @Binding var showPopover: Bool
     
@@ -175,15 +174,7 @@ struct MiniAppView: View {
                 if appState.reload {
                     VStack {
                         Spacer()
-                        ProgressView(instantSearch ? "Refreshing app list and caching files" : "Refreshing app list")
-                        if instantSearch {
-                            Image(systemName: "bolt.fill")
-                                .resizable()
-                                .scaledToFit()
-                                .foregroundStyle(Color("mode").opacity(0.5))
-                                .frame(width: 30, height: 30)
-                                .padding()
-                        }
+                        ProgressView("Refreshing app list")
                         Spacer()
                     }
                     .padding(.vertical)

@@ -19,8 +19,6 @@ class Locations: ObservableObject {
     
     var apps: Category
     var reverse: Category
-//    var widgets: Category
-//    var plugins: Category
     
     init() {
         let (cacheDir, tempDir) = darwinCT()
@@ -103,35 +101,5 @@ class Locations: ObservableObject {
             cacheDir,
             tempDir
         ])
-
-//        self.widgets = Category(name: "Widgets", paths: [
-//            // User
-//            "~/Library/Widgets",
-//            // System
-//            "/Library/Widgets"
-//        ])
-//        
-//        self.plugins = Category(name: "Plugins", paths: [
-//            // User
-//            "~/Library/Contextual Menu Items",
-//            "~/Library/InputManagers",
-//            "~/Library/Internet Plug-Ins",
-//            "~/Library/Mail/Bundles",
-//            "~/Library/PreferencePanes",
-//            "~/Library/QuickLook",
-//            "~/Library/QuickTime",
-//            "~/Library/Screen Savers",
-//            "~/Library/Spotlight",
-//            // System
-//            "/Library/Contextual Menu Items",
-//            "/Library/InputManagers",
-//            "/Library/Internet Plug-Ins",
-//            "/Library/Mail/Bundles",
-//            "/Library/PreferencePanes",
-//            "/Library/QuickLook",
-//            "/Library/QuickTime",
-//            "/Library/Screen Savers",
-//            "/Library/Spotlight",
-//        ])
     }
 }

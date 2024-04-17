@@ -14,24 +14,36 @@ struct FilesView: View {
     @State private var showPop: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
-    @AppStorage("settings.general.instant") var instantSearch: Bool = true
     @AppStorage("settings.general.brew") private var brew: Bool = false
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
+    @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
+    @State private var localKey = UUID()
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
     @Binding var search: String
     var regularWin: Bool
-//    @State private var selectedOption = "Alpha"
     @State private var elapsedTime = 0
     @State private var timer: Timer? = nil
     
     var body: some View {
 
 
-        let totalSelectedSize = appState.selectedItems.reduce(Int64(0)) { (result, url) in
-            result + (appState.appInfo.fileSize[url] ?? 0)
+        var totalSelectedSize: (real: String, logical: String, finder: String) {
+            var totalReal: Int64 = 0
+            var totalLogical: Int64 = 0
+            for url in appState.selectedItems {
+                let realSize = appState.appInfo.fileSize[url] ?? 0
+                let logicalSize = appState.appInfo.fileSizeLogical[url] ?? 0
+                totalReal += realSize
+                totalLogical += logicalSize
+            }
+            return (real: formatByte(size: totalReal).human, logical: formatByte(size: totalLogical).human, finder: "\(formatByte(size: totalLogical).byte) (\(formatByte(size: totalReal).human))")
         }
+
+        let displaySizeTotal = sizeType == "Real" ? formatByte(size: appState.appInfo.totalSize).human :
+        sizeType == "Logical" ? formatByte(size: appState.appInfo.totalSizeLogical).human :
+        "\(formatByte(size: appState.appInfo.totalSizeLogical).byte) (\(formatByte(size: appState.appInfo.totalSize).human))"
 
         VStack(alignment: .center) {
             if appState.showProgress {
@@ -72,22 +84,6 @@ struct FilesView: View {
                     HStack(spacing: 0) {
 
                         Spacer()
-
-                        if instantSearch {
-                            Button("Rescan") {
-                                updateOnMain {
-                                    appState.showProgress.toggle()
-                                    let pathFinder = AppPathFinder(appInfo: appState.appInfo, appState: appState, locations: locations) {
-                                        updateOnMain {
-                                            appState.showProgress = false
-                                        }
-                                    }
-                                    pathFinder.findPaths()
-                                }
-                            }
-                            .buttonStyle(SimpleButtonStyle(icon: "arrow.counterclockwise.circle.fill", help: "Rescan files"))
-                        }
-
 
                         Button("Close") {
                             updateOnMain {
@@ -144,7 +140,8 @@ struct FilesView: View {
                                 Spacer()
 
                                 VStack(alignment: .trailing, spacing: 5) {
-                                    Text("\(formatByte(size: appState.appInfo.totalSize))").font(.title).fontWeight(.bold)
+
+                                    Text("\(displaySizeTotal)").font(.title).fontWeight(.bold).help("Total size on disk")
                                     Text("\(appState.appInfo.fileSize.count == 1 ? "\(appState.selectedItems.count) / \(appState.appInfo.fileSize.count) item" : "\(appState.selectedItems.count) / \(appState.appInfo.fileSize.count) items")")
                                         .font(.callout).foregroundStyle((Color("mode").opacity(0.5)))
                                 }
@@ -161,10 +158,10 @@ struct FilesView: View {
                     // Item selection and sorting toolbar
                     HStack() {
                         Toggle("", isOn: Binding(
-                            get: { self.appState.selectedItems.count == self.appState.appInfo.files.count },
+                            get: { self.appState.selectedItems.count == self.appState.appInfo.fileSize.keys.count },
                             set: { newValue in
                                 updateOnMain {
-                                    self.appState.selectedItems = newValue ? Set(self.appState.appInfo.files) : []
+                                    self.appState.selectedItems = newValue ? Set(self.appState.appInfo.fileSize.keys) : []
                                 }
                             }
                         ))
@@ -212,7 +209,6 @@ struct FilesView: View {
 
                         Button("") {
                             selectedSortAlpha.toggle()
-//                            selectedOption = selectedOption == "Alpha" ? "Size" : "Alpha"
                         }
                         .buttonStyle(SimpleButtonStyle(icon: selectedSortAlpha ? "textformat.abc" : "textformat.123", help: selectedSortAlpha ? "Sorted alphabetically" : "Sorted by size"))
 
@@ -228,10 +224,9 @@ struct FilesView: View {
 
                     ScrollView() {
                         LazyVStack {
-                            let sortedFilesSize = appState.appInfo.files.sorted(by: { appState.appInfo.fileSize[$0, default: 0] > appState.appInfo.fileSize[$1, default: 0] })
+                            let sortedFilesSize = appState.appInfo.fileSize.keys.sorted(by: { appState.appInfo.fileSize[$0, default: 0] > appState.appInfo.fileSize[$1, default: 0] })
 
-//                            let sortedFilesAlpha = appState.appInfo.files
-                            let sortedFilesAlpha = appState.appInfo.files.sorted { firstURL, secondURL in
+                            let sortedFilesAlpha = appState.appInfo.fileSize.keys.sorted { firstURL, secondURL in
                                 let isFirstPathApp = firstURL.pathExtension == "app"
                                 let isSecondPathApp = secondURL.pathExtension == "app"
                                 if isFirstPathApp, !isSecondPathApp {
@@ -247,10 +242,10 @@ struct FilesView: View {
                             let sort = selectedSortAlpha ? sortedFilesAlpha : sortedFilesSize
 
                             ForEach(Array(sort.enumerated()), id: \.element) { index, path in
-                                if let fileSize = appState.appInfo.fileSize[path], let fileIcon = appState.appInfo.fileIcon[path] {
+                                if let fileSize = appState.appInfo.fileSize[path], let fileSizeL = appState.appInfo.fileSizeLogical[path], let fileIcon = appState.appInfo.fileIcon[path] {
                                     let iconImage = fileIcon.map(Image.init(nsImage:))
                                     VStack {
-                                        FileDetailsItem(size: fileSize, icon: iconImage, path: path)
+                                        FileDetailsItem(size: fileSize, sizeL: fileSizeL, icon: iconImage, path: path)
                                         if index < sort.count - 1 {
                                             Divider().padding(.leading, 40).opacity(0.5)
                                         }
@@ -260,7 +255,12 @@ struct FilesView: View {
 
                         }
                         .padding()
+                        .onChange(of: sizeType) { _ in
+                            localKey = UUID()
+                        }
+                        .id(localKey)
                     }
+
 
 
                     Spacer()
@@ -269,7 +269,7 @@ struct FilesView: View {
 
                         Spacer()
 
-                        Button("\(formatByte(size: totalSelectedSize))") {
+                        Button("\(sizeType == "Logical" ? totalSelectedSize.logical : sizeType == "Finder" ? totalSelectedSize.finder : totalSelectedSize.real)") {
                             Task {
                                 updateOnMain {
                                     search = ""
@@ -305,7 +305,6 @@ struct FilesView: View {
                                             removeApp(appState: appState, withId: appState.appInfo.id)
                                         } else {
                                             // Add deleted appInfo object to trashed array
-                                            appState.appInfo.files = []
                                             appState.appInfo.fileSize = [:]
                                             appState.trashedFiles.append(appState.appInfo)
 
@@ -346,7 +345,10 @@ struct FilesView: View {
 
 struct FileDetailsItem: View {
     @EnvironmentObject var appState: AppState
+    @State private var isHovered = false
+    @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     let size: Int64?
+    let sizeL: Int64?
     let icon: Image?
     let path: URL
 
@@ -372,6 +374,8 @@ struct FileDetailsItem: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 30, height: 30)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .brightness(isHovered ? 0.2 : 0)
+                    .shadow(color: Color("mode"), radius: isHovered ? 2 : 0)
 
             }
             VStack(alignment: .leading, spacing: 5) {
@@ -396,19 +400,35 @@ struct FileDetailsItem: View {
 
             Spacer()
 
-            Text(formatByte(size:size!))
+            let displaySize = sizeType == "Real" ? formatByte(size: size!).human :
+            sizeType == "Logical" ? formatByte(size: sizeL!).human :
+            "\(formatByte(size: sizeL!).byte) (\(formatByte(size: size!).human))"
 
-
-
-            Button("") {
-                NSWorkspace.shared.selectFile(path.path, inFileViewerRootedAtPath: path.deletingLastPathComponent().path)
-            }
-            .buttonStyle(SimpleButtonStyle(icon: "folder.fill", help: "Show in Finder"))
+            Text("\(displaySize)")
 
         }
-        .background(
-            RoundedRectangle(cornerRadius: 10)
-                .fill(Color.white.opacity(0))
-        )
+        .onHover { hovering in
+            withAnimation(Animation.easeIn(duration: 0.2)) {
+                self.isHovered = hovering
+            }
+        }
+        .onTapGesture {
+            NSWorkspace.shared.selectFile(path.path, inFileViewerRootedAtPath: path.deletingLastPathComponent().path)
+        }
+        .contextMenu {
+            if path.pathExtension == "app" {
+                Button("Open \(path.deletingPathExtension().lastPathComponent)") {
+                    NSWorkspace.shared.open(path)
+                }
+                Divider()
+            }
+            Button("Copy Path") {
+                copyToClipboard(text: path.path)
+            }
+            Button("View in Finder") {
+                NSWorkspace.shared.selectFile(path.path, inFileViewerRootedAtPath: path.deletingLastPathComponent().path)
+            }
+        }
+
     }
 }

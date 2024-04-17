@@ -12,7 +12,6 @@ struct TopBarMini: View {
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
-    @AppStorage("settings.general.instant") private var instantSearch: Bool = true
     @Binding var search: String
     @Binding var showPopover: Bool
     @EnvironmentObject var appState: AppState
@@ -36,13 +35,7 @@ struct TopBarMini: View {
                                     appState.currentView = .zombie
                                     appState.showProgress.toggle()
                                     showPopover.toggle()
-                                    if instantSearch {
-                                        let reverse = ReversePathsSearcher(appState: appState, locations: locations)
-                                        reverse.reversePathsSearch()
-//                                        reversePathsSearch(appState: appState, locations: locations)
-                                    } else {
-                                        loadAllPaths(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
-                                    }
+                                    reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
                                 } else {
                                     appState.currentView = .zombie
                                     showPopover.toggle()
@@ -79,12 +72,7 @@ struct TopBarMini: View {
                                     appState.currentView = .zombie
                                     appState.showProgress.toggle()
                                     showPopover.toggle()
-                                    if instantSearch {
-                                        let reverse = ReversePathsSearcher(appState: appState, locations: locations)
-                                        reverse.reversePathsSearch()
-                                    } else {
-                                        loadAllPaths(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
-                                    }
+                                    reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
                                 } else {
                                     appState.currentView = .zombie
                                     showPopover.toggle()
@@ -133,7 +121,7 @@ struct SearchBarMiniBottom: View {
 
     var body: some View {
         HStack {
-            TextField("\(appState.instantTotal > appState.instantProgress ? " Searching the file system" : " Search")", text: $search)
+            TextField(" Search", text: $search)
                 .textFieldStyle(SimpleSearchStyle(trash: true, text: $search))
         }
     }

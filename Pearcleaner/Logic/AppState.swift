@@ -29,9 +29,6 @@ class AppState: ObservableObject
     @Published var progressBar: (String, Double) = ("Ready", 0.0)
     @Published var reload: Bool = false
     @Published var showProgress: Bool = false
-    @Published var popCount: Int = 0
-    @Published var instantProgress: Double = 0.0
-    @Published var instantTotal: Double = 0.0
     @Published var finderExtensionEnabled: Bool = false
 
     
@@ -48,12 +45,14 @@ class AppState: ObservableObject
             system: false,
             files: [],
             fileSize: [:],
+            fileSizeLogical: [:],
             fileIcon: [:]
         )
 
         self.zombieFile = ZombieFile(
             id: UUID(),
             fileSize: [:],
+            fileSizeLogical: [:],
             fileIcon: [:]
         )
         updateExtensionStatus()
@@ -91,14 +90,19 @@ struct AppInfo: Identifiable, Equatable, Hashable {
     let system: Bool
     var files: [URL]
     var fileSize: [URL:Int64]
+    var fileSizeLogical: [URL:Int64]
     var fileIcon: [URL:NSImage?]
     var totalSize: Int64 
     {
         return fileSize.values.reduce(0, +)
     }
+    var totalSizeLogical: Int64
+    {
+        return fileSizeLogical.values.reduce(0, +)
+    }
 
 
-    static let empty = AppInfo(id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "", appVersion: "", appIcon: nil, webApp: false, wrapped: false, system: false, files: [], fileSize: [:], fileIcon: [:])
+    static let empty = AppInfo(id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "", appVersion: "", appIcon: nil, webApp: false, wrapped: false, system: false, files: [], fileSize: [:], fileSizeLogical: [:], fileIcon: [:])
 
 }
 
@@ -107,14 +111,19 @@ struct AppInfo: Identifiable, Equatable, Hashable {
 struct ZombieFile: Identifiable, Equatable, Hashable {
     let id: UUID
     var fileSize: [URL:Int64]
+    var fileSizeLogical: [URL:Int64]
     var fileIcon: [URL:NSImage?]
     var totalSize: Int64
     {
         return fileSize.values.reduce(0, +)
     }
+    var totalSizeLogical: Int64
+    {
+        return fileSizeLogical.values.reduce(0, +)
+    }
 
 
-    static let empty = ZombieFile(id: UUID(), fileSize: [:], fileIcon: [:])
+    static let empty = ZombieFile(id: UUID(), fileSize: [:], fileSizeLogical: [:], fileIcon: [:])
 
 }
 
@@ -201,5 +210,3 @@ enum DisplayMode: Int, CaseIterable {
         }
     }
 }
-
-

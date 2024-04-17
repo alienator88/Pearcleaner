@@ -13,7 +13,6 @@ struct TopBar: View {
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
-    @AppStorage("settings.general.instant") private var instantSearch: Bool = true
     @EnvironmentObject var appState: AppState
     @Binding var showPopover: Bool
     @EnvironmentObject var locations: Locations
@@ -47,12 +46,7 @@ struct TopBar: View {
                         updateOnMain {
                             appState.zombieFile = .empty
                             appState.showProgress.toggle()
-                            if instantSearch {
-                                let reverse = ReversePathsSearcher(appState: appState, locations: locations)
-                                reverse.reversePathsSearch()
-                            } else {
-                                loadAllPaths(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
-                            }
+                            reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
                         }
                     }
                     .buttonStyle(SimpleButtonStyle(icon: "arrow.counterclockwise.circle.fill", help: "Rescan files"))
@@ -68,13 +62,7 @@ struct TopBar: View {
                                     appState.currentView = .zombie
                                     appState.showProgress.toggle()
                                     showPopover.toggle()
-                                    if instantSearch {
-                                        let reverse = ReversePathsSearcher(appState: appState, locations: locations)
-                                        reverse.reversePathsSearch()
-//                                        reversePathsSearch(appState: appState, locations: locations)
-                                    } else {
-                                        loadAllPaths(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
-                                    }
+                                    reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
                                 } else {
                                     appState.currentView = .zombie
                                     showPopover.toggle()

@@ -13,13 +13,10 @@ struct RegularMode: View {
     @EnvironmentObject var themeSettings: ThemeSettings
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 280
-    @AppStorage("settings.general.instant") private var instantSearch: Bool = true
     @Binding var search: String
     @State private var showSys: Bool = true
     @State private var showUsr: Bool = true
     @Binding var showPopover: Bool
-//    @State private var isHovering = false
-//    @State private var isHovering2 = false
 
 
     var filteredApps: [AppInfo] {
@@ -30,7 +27,6 @@ struct RegularMode: View {
         }
     }
 
-//    let slate = Color(.sRGB, red: 0.188143, green: 0.208556, blue: 0.262679, opacity: 1)
 
     var body: some View {
 
@@ -41,13 +37,7 @@ struct RegularMode: View {
                 if appState.reload {
                     VStack {
                         Spacer()
-                        ProgressView(instantSearch ? "Refreshing app list and caching files" : "Refreshing app list")
-                        if instantSearch {
-                            Image(systemName: "bolt")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 30, height: 30)
-                        }
+                        ProgressView("Refreshing app list")
                         Spacer()
                     }
                     .frame(width: sidebarWidth)
@@ -159,7 +149,6 @@ struct Header: View {
     @EnvironmentObject var locations: Locations
     @EnvironmentObject var fsm: FolderSettingsManager
     @Binding var showPopover: Bool
-    @AppStorage("settings.general.instant") private var instantSearch: Bool = true
     @AppStorage("settings.general.glass") private var glass: Bool = true
 
 
@@ -198,14 +187,7 @@ struct Header: View {
                 let sortedApps = getSortedApps(paths: fsm.folderPaths, appState: appState)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     appState.sortedApps = sortedApps
-                    if instantSearch {
-                        loadAllPaths(allApps: sortedApps, appState: appState, locations: locations) {
-                            appState.reload.toggle()
-                        }
-                    } else {
-                        appState.reload.toggle()
-                    }
-
+                    appState.reload.toggle()
                 }
             }
         }

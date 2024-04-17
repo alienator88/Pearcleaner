@@ -23,7 +23,6 @@ struct PearcleanerApp: App {
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.general.miniview") private var miniView: Bool = true
-    @AppStorage("settings.general.instant") private var instantSearch: Bool = true
     @AppStorage("settings.general.features") private var features: String = ""
     @AppStorage("settings.general.brew") private var brew: Bool = false
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
@@ -102,13 +101,7 @@ struct PearcleanerApp: App {
                 let sortedApps = getSortedApps(paths: fsm.folderPaths, appState: appState)
                 appState.sortedApps = sortedApps
 
-                
-                // Find all app paths/information on load if instantSearch is enabled
-                if instantSearch {
-                    loadAllPaths(allApps: sortedApps, appState: appState, locations: locations)
-                }
-
-
+                // Enable menubar item
                 if menubarEnabled {
                     MenuBarExtraManager.shared.addMenuBarExtra(withView: {
                         MenuBarMiniAppView(search: $search, showPopover: $showPopover)
@@ -139,6 +132,9 @@ struct PearcleanerApp: App {
                         _ = checkAndRequestFullDiskAccess(appState: appState)
                         hasLaunched = true
                     }
+
+                    // Load extra conditions from GitHub
+                    loadConditionsFromGitHub()
 
 
                     // TIMERS ////////////////////////////////////////////////////////////////////////////////////
@@ -183,6 +179,7 @@ struct PearcleanerApp: App {
 
 
 class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
+    var observer: NSObjectProtocol?
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         let menubarEnabled = UserDefaults.standard.bool(forKey: "settings.menubar.enabled")
@@ -191,11 +188,49 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         let menubarEnabled = UserDefaults.standard.bool(forKey: "settings.menubar.enabled")
+
+        if UserDefaults.standard.object(forKey: "themeColor") == nil {
+            self.appearanceChanged()
+        }
+
         if menubarEnabled {
             findAndHideWindows(named: ["Pearcleaner"])
             NSApplication.shared.setActivationPolicy(.accessory)
         }
 
+        // Start observing the appearance change
+        observer = DistributedNotificationCenter.default().addObserver(forName: NSNotification.Name(rawValue: "AppleInterfaceThemeChangedNotification"), object: nil, queue: OperationQueue.main) { [weak self] _ in
+            let themeMode = UserDefaults.standard.string(forKey: "settings.general.selectedTheme")
+            if themeMode == "Auto" {
+                self?.appearanceChanged()
+            }
+        }
+
+    }
+
+
+    func appearanceChanged() {
+        let dm = UserDefaults.standard.integer(forKey: "displayMode")
+        var displayMode = DisplayMode(rawValue: dm)
+        let dark = isDarkMode()
+        if dark {
+            displayMode?.colorScheme = .dark
+        } else {
+            displayMode?.colorScheme = .light
+        }
+
+        UserDefaults.standard.set(displayMode?.rawValue, forKey: "displayMode")
+
+        ThemeSettings.shared.themeColor = isDarkMode() ? Color(.sRGB, red: 0.149, green: 0.149, blue: 0.149, opacity: 1) : Color(.sRGB, red: 1.0, green: 1.0, blue: 1.0, opacity: 1)
+        ThemeSettings.shared.saveThemeColor()
+
+    }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        // Stop observing the appearance change
+        if let observer = observer {
+            DistributedNotificationCenter.default().removeObserver(observer)
+        }
     }
 
 
@@ -220,4 +255,3 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
 }
-

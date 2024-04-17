@@ -11,7 +11,6 @@ import SwiftUI
 
 // Get all apps from /Applications and ~/Applications
 func getSortedApps(paths: [String], appState: AppState) -> [AppInfo] {
-    @AppStorage("settings.general.instant") var instantSearch: Bool = true
     let fileManager = FileManager.default
     var apps: [URL] = []
 
@@ -42,11 +41,6 @@ func getSortedApps(paths: [String], appState: AppState) -> [AppInfo] {
         .compactMap { AppInfoFetcher.getAppInfo(atPath: $0) }
         .sorted { $0.appName.replacingOccurrences(of: ".", with: "").lowercased() < $1.appName.replacingOccurrences(of: ".", with: "").lowercased() }
 
-    if instantSearch {
-        updateOnMain {
-            appState.instantTotal = Double(sortedApps.count)
-        }
-    }
 
     return sortedApps
 }
@@ -116,15 +110,14 @@ func listAppSupportDirectories() -> [String] {
 
 
 // Load app paths on launch
-func loadAllPaths(allApps: [AppInfo], appState: AppState, locations: Locations, reverseAddon: Bool = false, completion: @escaping () -> Void = {}) {
+func reversePreloader(allApps: [AppInfo], appState: AppState, locations: Locations, reverseAddon: Bool = false, completion: @escaping () -> Void = {}) {
     let dispatchGroup = DispatchGroup()
     appState.appInfoStore.removeAll()
 
     for app in allApps {
         dispatchGroup.enter()
         DispatchQueue.global(qos: .background).async {
-            let pathFinder = AppPathFinder(appInfo: app, appState: appState, locations: locations, backgroundRun: true, reverseAddon: reverseAddon)
-            pathFinder.findPaths()
+            AppPathFinder(appInfo: app, appState: appState, locations: locations, backgroundRun: true, reverseAddon: reverseAddon).findPaths()
             dispatchGroup.leave()
         }
     }
@@ -134,19 +127,10 @@ func loadAllPaths(allApps: [AppInfo], appState: AppState, locations: Locations, 
         func checkAllAppsProcessed(retryCount: Int = 0, maxRetry: Int = 120) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 if appState.appInfoStore.count == allApps.count {
-                    if reverseAddon {
-                        let reverse = ReversePathsSearcher(appState: appState, locations: locations)
-                        reverse.reversePathsSearch() {
-                            updateOnMain {
-                                appState.showProgress = false
-                            }
+                    ReversePathsSearcher(appState: appState, locations: locations).reversePathsSearch() {
+                        updateOnMain {
+                            appState.showProgress = false
                         }
-                    }
-                    // Reset progress values to 0
-                    updateOnMain {
-                        appState.instantProgress = 0
-                        appState.instantTotal = 0
-                        appState.showProgress = false
                     }
                     completion()
                 } else if retryCount < maxRetry {
@@ -154,8 +138,6 @@ func loadAllPaths(allApps: [AppInfo], appState: AppState, locations: Locations, 
                 } else {
                     // Reset progress values to 0
                     updateOnMain {
-                        appState.instantProgress = 0
-                        appState.instantTotal = 0
                         appState.showProgress = false
                     }
                     printOS("loadAllPaths - Retry limit reached. Not all paths were loaded.")
@@ -196,13 +178,13 @@ func showAppInFiles(appInfo: AppInfo, appState: AppState, locations: Locations, 
             appState.showProgress = true
 
             // Initialize the path finder and execute its search.
-            let pathFinder = AppPathFinder(appInfo: appInfo, appState: appState, locations: locations) {
+            AppPathFinder(appInfo: appInfo, appState: appState, locations: locations) {
                 updateOnMain {
                     // Update the progress indicator on the main thread once the search completes.
                     appState.showProgress = false
                 }
-            }
-            pathFinder.findPaths()
+            }.findPaths()
+
             appState.appInfo = appInfo
 
             // Animate the view change and popover display.

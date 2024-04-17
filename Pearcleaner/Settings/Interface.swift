@@ -31,17 +31,8 @@ struct InterfaceSettingsTab: View {
     @Binding var showPopover: Bool
     @Binding var search: String
     let icons = ["externaldrive", "trash", "folder", "pear-1", "pear-1.5", "pear-2", "pear-3", "pear-4"]
-    private let themes = ["Auto", "Dark", "Light"]
-
-//    @State private var slate = Color(.sRGB, red: 0.188143, green: 0.208556, blue: 0.262679, opacity: 1)
-//    @State private var solarized = Color(.sRGB, red: 0.117257, green: 0.22506, blue: 0.249171, opacity: 1)
-//    @State private var dracula = Color(.sRGB, red: 0.268614, green: 0.264737, blue: 0.383503, opacity: 1)
 
     var body: some View {
-
-        let slate = displayMode.colorScheme == .light ? Color(.sRGB, red: 0.499549, green: 0.545169, blue: 0.682028, opacity: 1) : Color(.sRGB, red: 0.188143, green: 0.208556, blue: 0.262679, opacity: 1)
-        let solarized = displayMode.colorScheme == .light ? Color(.sRGB, red: 0.554372, green: 0.6557, blue: 0.734336, opacity: 1) : Color(.sRGB, red: 0.117257, green: 0.22506, blue: 0.249171, opacity: 1)
-        let dracula = displayMode.colorScheme == .light ? Color(.sRGB, red: 0.567094, green: 0.562125, blue: 0.81285, opacity: 1) : Color(.sRGB, red: 0.268614, green: 0.264737, blue: 0.383503, opacity: 1)
 
         Form {
             VStack {
@@ -92,23 +83,21 @@ struct InterfaceSettingsTab: View {
                     Spacer()
 
                     Button("") {
-                        themeSettings.themeColor = slate
-                        themeSettings.saveThemeColor()
+                        themeSettings.setPreset(preset: "slate", colorScheme: displayMode)
                     }
-                    .buttonStyle(PresetColor(fillColor: slate, label: "Slate"))
+                    .buttonStyle(PresetColor(fillColor: themeSettings.getColorForPreset(preset: "slate", colorScheme: displayMode), label: "Slate"))
 
                     Button("") {
-                        themeSettings.themeColor = dracula
-                        themeSettings.saveThemeColor()
+                        themeSettings.setPreset(preset: "dracula", colorScheme: displayMode)
                     }
-                    .buttonStyle(PresetColor(fillColor: dracula, label: "Dracula"))
+                    .buttonStyle(PresetColor(fillColor: themeSettings.getColorForPreset(preset: "dracula", colorScheme: displayMode), label: "Dracula"))
                     .padding(.horizontal)
 
                     Button("") {
-                        themeSettings.themeColor = solarized
+                        themeSettings.setPreset(preset: "solarized", colorScheme: displayMode)
                         themeSettings.saveThemeColor()
                     }
-                    .buttonStyle(PresetColor(fillColor: solarized, label: "Solarized"))
+                    .buttonStyle(PresetColor(fillColor: themeSettings.getColorForPreset(preset: "solarized", colorScheme: displayMode), label: "Solarized"))
 
                     Spacer()
 
@@ -151,18 +140,50 @@ struct InterfaceSettingsTab: View {
                     }
                     InfoButton(text: "Changing the color mode will reset the base color to defaults", color: nil, label: "")
                     Spacer()
-                    Picker("", selection: $selectedTheme) {
-                        ForEach(themes, id: \.self) { theme in
-                            Text(theme)
-                        }
-                    }
-                    .pickerStyle(SegmentedPickerStyle())
-                    .frame(width: 200)
+                    SegmentedPicker(
+                        ["Auto", "Dark", "Light"],
+                        selectedIndex: Binding(
+                            get: {
+                                switch selectedTheme {
+                                case "Dark": return 1
+                                case "Light": return 2
+                                default: return 0
+                                }
+                            },
+                            set: { newIndex in
+                                withAnimation(.easeInOut(duration: 0.3)) {
+                                    switch newIndex {
+                                    case 1: selectedTheme = "Dark"
+                                    case 2: selectedTheme = "Light"
+                                    default: selectedTheme = "Auto"
+                                    }
+                                }
+                            }),
+                        selectionAlignment: .bottom,
+                        content: { item, isSelected in
+                            Text(item)
+                                .font(.callout)
+                                .foregroundColor(isSelected ? Color("mode") : Color("mode").opacity(0.5) )
+                                .padding(.horizontal)
+                                .padding(.bottom, 5)
+                                .frame(width: 65)
+                        },
+                        selection: {
+                            VStack(spacing: 0) {
+                                Spacer()
+                                Color("pear").frame(height: 1)
+                            }
+                        })
                     .onChange(of: selectedTheme) { newTheme in
                         switch newTheme {
                         case "Auto":
-                            displayMode.colorScheme = nil
-                            themeSettings.resetToDefault(dark: isDarkModeEnabled())
+                            if isDarkMode() {
+                                displayMode.colorScheme = .dark
+                            } else {
+                                displayMode.colorScheme = .light
+                            }
+                            //                            displayMode.colorScheme = nil
+                            themeSettings.resetToDefault(dark: isDarkMode())
                             // Refresh foreground colors
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                 self.selectedTab = .interface
@@ -172,7 +193,7 @@ struct InterfaceSettingsTab: View {
                             }
                         case "Dark":
                             displayMode.colorScheme = .dark
-                            themeSettings.resetToDefault(dark: true)
+                            //                            themeSettings.resetToDefault(dark: true)
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                 self.selectedTab = .interface
                             }
@@ -181,7 +202,7 @@ struct InterfaceSettingsTab: View {
                             }
                         case "Light":
                             displayMode.colorScheme = .light
-                            themeSettings.resetToDefault(dark: false)
+                            //                            themeSettings.resetToDefault(dark: false)
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                 self.selectedTab = .interface
                             }

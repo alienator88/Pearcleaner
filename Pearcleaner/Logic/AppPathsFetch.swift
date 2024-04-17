@@ -9,6 +9,7 @@ import Foundation
 import AppKit
 import SwiftUI
 
+
 class AppPathFinder {
     private var appInfo: AppInfo
     private var appState: AppState
@@ -18,7 +19,6 @@ class AppPathFinder {
     private var completion: () -> Void = {}
     private var collection: [URL] = []
     private let collectionAccessQueue = DispatchQueue(label: "com.alienator88.Pearcleaner.appPathFinder.collectionAccess")
-    @AppStorage("settings.general.instant") var instantSearch: Bool = true
 
     init(appInfo: AppInfo = .empty, appState: AppState, locations: Locations, backgroundRun: Bool = false, reverseAddon: Bool = false, completion: @escaping () -> Void = {}) {
         self.appInfo = appInfo
@@ -124,10 +124,21 @@ class AppPathFinder {
         collectionAccessQueue.sync {
             containsItem = self.collection.contains(itemURL)
         }
-        return itemL.hasPrefix("comapple") && !["comappleconfigurator", "comappledt", "comappleiwork", "comapplesfsymbols", "comappletestflight"].contains(where: itemL.hasPrefix) || containsItem || !isSupportedFileType(at: itemURL.path)
+        if containsItem || !isSupportedFileType(at: itemURL.path) {
+            return true
+        }
+
+        for skipCondition in skipConditions {
+            if itemL.hasPrefix(skipCondition.skipPrefix) {
+                let isAllowed = skipCondition.allowPrefixes.contains(where: itemL.hasPrefix)
+                if !isAllowed {
+                    return true // Skip because it starts with a base prefix but is not in the allowed list
+                }
+            }
+        }
+
+        return false
     }
-
-
 
 
 
@@ -138,85 +149,20 @@ class AppPathFinder {
         let nameL = self.appInfo.appName.pearFormat()
         let nameP = self.appInfo.path.lastPathComponent.replacingOccurrences(of: ".app", with: "")
 
-        let exclusions = [
-            "comappledtxcode": ["comrobotsandpencilsxcodesapp", "comoneminutegamesxcodecleaner", "iohyperappxcodecleaner", "xcodesjson"],
-            "comrobotsandpencilsxcodesapp": ["comappledtxcode", "comoneminutegamesxcodecleaner", "iohyperappxcodecleaner"],
-            "iohyperappxcodecleaner": ["comrobotsandpencilsxcodesapp", "comoneminutegamesxcodecleaner", "comappledtxcode", "xcodesjson"]
-        ]
+        for condition in conditions {
+            if bundleIdentifierL.contains(condition.bundle_id) {
+                // Exclude and include keywords
+                let hasIncludeKeyword = condition.include.contains(where: itemL.contains)
+                let hasExcludeKeyword = condition.exclude.contains(where: itemL.contains)
 
-        if let excludedApps = exclusions[bundleIdentifierL], excludedApps.contains(where: { itemL.contains($0) }) {
-            return false
-        }
-
-        if bundleIdentifierL.contains("comappledtxcode") {
-            // Include items that are part of the Xcode ecosystem
-            if itemL.contains("comappledt") || itemL.contains("xcode") || itemL.contains("simulator") {
-                return true
-            }
-        }
-
-        if bundleIdentifierL.contains("uszoomxos") {
-            // Include items for Zoom that are not similar to the app name and/or bundle id
-            if itemL.contains("zoom") {
-                return true
-            }
-        }
-
-        if bundleIdentifierL.contains("combravebrowser") {
-            // Include items for Brave that are not similar to the app name and/or bundle id
-            if itemL.contains("brave") {
-                return true
-            }
-        }
-
-        if bundleIdentifierL.contains("comgooglechrome") {
-            // Include items for Chrome that are not similar to the app name and/or bundle id
-            if (itemL.contains("google") && !itemL.contains("iterm")) || (itemL.contains("chrome")  && !itemL.contains("chromefeaturestate")) {
-                return true
-            }
-        }
-
-        if bundleIdentifierL.contains("commicrosoftedgemac") {
-            // Include items for Edge that are not similar to the app name and/or bundle id
-            let exclusions = ["vscode","rdc","appcenter","office","oneauth"]
-            if itemL.contains("microsoft") && !exclusions.contains(where: itemL.contains) {
-                return true
-            }
-        }
-
-        if bundleIdentifierL.contains("orgmozillafirefox") {
-            // Include items for Firefox that are not similar to the app name and/or bundle id
-            if itemL.contains("mozilla") {
-                return true
-            }
-        }
-
-        if bundleIdentifierL.contains("comlogioptionsplus") {
-            // Include items for Zoom that are not similar to the app name and/or bundle id
-            if itemL.contains("logi") && !itemL.contains("login") && !itemL.contains("logic") {
-                return true
-            }
-        }
-
-        if bundleIdentifierL.contains("commicrosoftvscode") {
-            // Include items for vscode
-            if itemL.contains("vscode") {
-                return true
-            }
-        }
-
-
-        if bundleIdentifierL.contains("comfacebookarchondeveloperid") {
-            // Include items for FB Messenger
-            if itemL.contains("archonloginhelper") {
-                return true
-            }
-        }
-
-        if bundleIdentifierL.contains("euexelbanstats") {
-            // Include items for Stats that are not similar to the app name and/or bundle id
-            if itemL.contains("video") {
-                return false
+                if hasExcludeKeyword {
+                    return false
+                }
+                if hasIncludeKeyword {
+                    if !condition.exclude.contains(where: itemL.contains) {
+                        return true
+                    }
+                }
             }
         }
 
@@ -263,37 +209,35 @@ class AppPathFinder {
 
     private func handleOutliers() -> [URL] {
         var outliers: [URL] = []
+        let bundleIdentifier = self.appInfo.bundleIdentifier.pearFormat()
 
-        // Handle VSCode folder
-        if self.appInfo.bundleIdentifier.pearFormat().contains("commicrosoftvscode") {
-            let appSupportCodePath = "\(home)/Library/Application Support/Code"
-            if let codeDirectoryURL = URL(string: appSupportCodePath), FileManager.default.fileExists(atPath: codeDirectoryURL.path) {
-                outliers.append(codeDirectoryURL)
-            }
+        // Find conditions that match the current app's bundle identifier
+        let matchingConditions = conditions.filter { condition in
+            bundleIdentifier.contains(condition.bundle_id)
         }
 
-        // Handle Xcode folder
-        if self.appInfo.bundleIdentifier.pearFormat().contains("comappledtxcode") {
-            let simulators = "\(home)/Library/Containers/com.apple.iphonesimulator.ShareExtension"
-            if let simulatorsURL = URL(string: simulators), FileManager.default.fileExists(atPath: simulatorsURL.path) {
-                outliers.append(simulatorsURL)
+        for condition in matchingConditions {
+            if let forceIncludes = condition.includeForce {
+                for path in forceIncludes {
+                    if let url = URL(string: path), FileManager.default.fileExists(atPath: url.path) {
+                        outliers.append(url)
+                    }
+                }
             }
         }
-
-        // Add other outlier cases here as needed
 
         return outliers
     }
 
     private func finalizeCollection() {
         DispatchQueue.global(qos: .userInitiated).async {
-            let groupContainers = self.getGroupContainers(bundleURL: self.appInfo.path)
+//            let groupContainers = self.getGroupContainers(bundleURL: self.appInfo.path)
             let outliers = self.handleOutliers()
             var tempCollection: [URL] = []
             self.collectionAccessQueue.sync {
                 tempCollection = self.collection
             }
-            tempCollection.append(contentsOf: groupContainers)
+//            tempCollection.append(contentsOf: groupContainers)
             tempCollection.append(contentsOf: outliers)
 
             // Sort and standardize URLs to ensure consistent comparisons
@@ -318,10 +262,13 @@ class AppPathFinder {
     private func handlePostProcessing(sortedCollection: [URL]) {
         // Calculate file details (sizes and icons), update app state, and call completion
         var fileSize: [URL: Int64] = [:]
+        var fileSizeLogical: [URL: Int64] = [:]
         var fileIcon: [URL: NSImage?] = [:]
 
         for path in sortedCollection {
-            fileSize[path] = totalSizeOnDisk(for: path)
+            let size = totalSizeOnDisk(for: path)
+            fileSize[path] = size.real
+            fileSizeLogical[path] = size.logical
             fileIcon[path] = getIconForFileOrFolderNS(atPath: path)
         }
 
@@ -332,19 +279,13 @@ class AppPathFinder {
             }
 
             // Update appInfo and appState with the new values
-            self.appInfo.files = updatedCollection
             self.appInfo.fileSize = fileSize
+            self.appInfo.fileSizeLogical = fileSizeLogical
             self.appInfo.fileIcon = fileIcon
 
             if !self.backgroundRun {
                 self.appState.appInfo = self.appInfo
                 self.appState.selectedItems = Set(updatedCollection)
-            }
-
-            // Only append object to store if instant search. Same for calculating progress.
-            if self.instantSearch {
-                self.appState.appInfoStore.append(self.appInfo)
-                self.appState.instantProgress += 1
             }
 
             // Append object to store if running reverse search with empty store
@@ -356,3 +297,324 @@ class AppPathFinder {
         }
     }
 }
+
+
+
+
+
+
+
+
+// Async Test
+//class AppPathFinder {
+//    private var appInfo: AppInfo
+//    private var appState: AppState
+//    private var locations: Locations
+//    private var backgroundRun: Bool
+//    private var reverseAddon: Bool
+//    private var completion: () -> Void = {}
+//    private var collection: [URL] = []
+//    private let collectionAccessQueue = DispatchQueue(label: "com.alienator88.Pearcleaner.appPathFinder.collectionAccess")
+//    private var state = PathFinderState() // Actor instance
+//
+//    init(appInfo: AppInfo = .empty, appState: AppState, locations: Locations, backgroundRun: Bool = false, reverseAddon: Bool = false, completion: @escaping () -> Void = {}) {
+//        self.appInfo = appInfo
+//        self.appState = appState
+//        self.locations = locations
+//        self.backgroundRun = backgroundRun
+//        self.reverseAddon = reverseAddon
+//        self.completion = completion
+//    }
+//
+//    func findPaths() async {
+//        await initialURLProcessing()
+//        await collectDirectories()
+//        await collectFiles()
+//        await finalizeCollection()
+//    }
+//
+//    private func initialURLProcessing() async {
+//        if let url = URL(string: self.appInfo.path.absoluteString), !url.path.contains(".Trash") {
+//            let modifiedUrl = url.path.contains("Wrapper") ? url.deletingLastPathComponent().deletingLastPathComponent() : url
+//            collectionAccessQueue.sync {
+//                self.collection.append(modifiedUrl)
+//            }
+//        }
+//    }
+//
+//    private func collectDirectories() async {
+//        for location in self.locations.apps.paths {
+//            await processDirectoryLocation(location)
+//        }
+//    }
+//
+//    private func processDirectoryLocation(_ location: String) async {
+//        do {
+//            let contents = try FileManager.default.contentsOfDirectory(atPath: location)
+//            for item in contents {
+//                let itemURL = URL(fileURLWithPath: location).appendingPathComponent(item)
+//                let itemL = item.replacingOccurrences(of: ".", with: "").replacingOccurrences(of: " ", with: "").lowercased()
+//
+//                var isDirectory: ObjCBool = false
+//                if FileManager.default.fileExists(atPath: itemURL.path, isDirectory: &isDirectory), isDirectory.boolValue {
+//                    // Perform the check to skip the item if needed
+//                    if shouldSkipItem(itemL, at: itemURL) {
+//                        continue
+//                    }
+//
+//                    collectionAccessQueue.sync {
+//                        let alreadyIncluded = self.collection.contains { existingURL in
+//                            itemURL.path.hasPrefix(existingURL.path)
+//                        }
+//
+//                        if !alreadyIncluded && specificCondition(itemL: itemL, itemURL: itemURL) {
+//                            self.collection.append(itemURL)
+//                        }
+//                    }
+//                }
+//            }
+//        } catch {
+//            print("Error processing directory location: \(location), error: \(error)")
+//        }
+//    }
+//
+//    private func collectFiles() async {
+//        for location in self.locations.apps.paths {
+//            await processFileLocation(location)
+//        }
+//    }
+//
+//    private func processFileLocation(_ location: String) async {
+//        do {
+//            let contents = try FileManager.default.contentsOfDirectory(atPath: location)
+//            for item in contents {
+//                let itemURL = URL(fileURLWithPath: location).appendingPathComponent(item)
+//                let itemL = item.replacingOccurrences(of: ".", with: "").replacingOccurrences(of: " ", with: "").lowercased()
+//
+//                if FileManager.default.fileExists(atPath: itemURL.path),
+//                   !shouldSkipItem(itemL, at: itemURL),
+//                   specificCondition(itemL: itemL, itemURL: itemURL) {
+//                    collectionAccessQueue.sync {
+//                        self.collection.append(itemURL)
+//                    }
+//                }
+//            }
+//        } catch {
+//            print("Error processing file location: \(location), error: \(error)")
+//        }
+//    }
+//
+//
+//
+//    private func shouldSkipItem(_ itemL: String, at itemURL: URL) -> Bool {
+//        var containsItem = false
+//        collectionAccessQueue.sync {
+//            containsItem = self.collection.contains(itemURL)
+//        }
+//        if containsItem || !isSupportedFileType(at: itemURL.path) {
+//            return true
+//        }
+//
+//        for skipCondition in skipConditions {
+//            if itemL.hasPrefix(skipCondition.skipPrefix) {
+//                let isAllowed = skipCondition.allowPrefixes.contains(where: itemL.hasPrefix)
+//                if !isAllowed {
+//                    return true // Skip because it starts with a base prefix but is not in the allowed list
+//                }
+//            }
+//        }
+//
+//        return false
+//    }
+//
+//
+//
+//    private func specificCondition(itemL: String, itemURL: URL) -> Bool {
+//        let bundleIdentifierL = self.appInfo.bundleIdentifier.pearFormat()
+//        let bundleComponents = self.appInfo.bundleIdentifier.components(separatedBy: ".").compactMap { $0 != "-" ? $0.lowercased() : nil }
+//        let bundle = bundleComponents.suffix(2).joined()
+//        let nameL = self.appInfo.appName.pearFormat()
+//        let nameP = self.appInfo.path.lastPathComponent.replacingOccurrences(of: ".app", with: "")
+//
+//        for condition in conditions {
+//            if bundleIdentifierL.contains(condition.bundle_id) {
+//                // Exclude and include keywords
+//                let hasIncludeKeyword = condition.include.contains(where: itemL.contains)
+//                let hasExcludeKeyword = condition.exclude.contains(where: itemL.contains)
+//
+//                if hasExcludeKeyword {
+//                    return false
+//                }
+//                if hasIncludeKeyword {
+//                    if !condition.exclude.contains(where: itemL.contains) {
+//                        return true
+//                    }
+//                }
+//            }
+//        }
+//
+//
+//        if self.appInfo.webApp {
+//            return itemL.contains(bundleIdentifierL)
+//        }
+//
+//        return itemL.contains(bundleIdentifierL) || itemL.contains(bundle) || (nameL.count > 3 && itemL.contains(nameL)) || (nameP.count > 3 && itemL.contains(nameP))
+//
+//    }
+//
+//
+//    func getGroupContainers(bundleURL: URL) async -> [URL] {
+//        await withCheckedContinuation { continuation in
+//            var groupContainers: [URL] = []
+//            // Assume creating a SecStaticCode is synchronous and quick.
+//            var staticCode: SecStaticCode?
+//            let status = SecStaticCodeCreateWithPath(bundleURL as CFURL, [], &staticCode)
+//
+//            if status == errSecSuccess, let staticCode = staticCode {
+//                var signingInformation: CFDictionary?
+//
+//                // This may involve a blocking call to fetch signing information.
+//                let status = SecCodeCopySigningInformation(staticCode, SecCSFlags(), &signingInformation)
+//
+//                if status == errSecSuccess, let infoDict = signingInformation as? [String: Any],
+//                   let entitlementsDict = infoDict["entitlements-dict"] as? [String: Any],
+//                   let appGroups = entitlementsDict["com.apple.security.application-groups"] as? [String] {
+//
+//                    let fileManager = FileManager.default
+//                    let home = NSHomeDirectory()  // Assuming `home` is derived earlier or statically known.
+//
+//                    for groupID in appGroups {
+//                        let groupURL = URL(fileURLWithPath: "\(home)/Library/Group Containers/\(groupID)")
+//                        if fileManager.fileExists(atPath: groupURL.path) {
+//                            groupContainers.append(groupURL)
+//                        }
+//                    }
+//                }
+//            }
+//
+//            // Continue once all operations are complete.
+//            continuation.resume(returning: groupContainers)
+//        }
+//    }
+//
+//
+//    private func handleOutliers() -> [URL] {
+//        var outliers: [URL] = []
+//        let bundleIdentifier = self.appInfo.bundleIdentifier.pearFormat()
+//
+//        // Find conditions that match the current app's bundle identifier
+//        let matchingConditions = conditions.filter { condition in
+//            bundleIdentifier.contains(condition.bundle_id)
+//        }
+//
+//        for condition in matchingConditions {
+//            if let forceIncludes = condition.includeForce {
+//                for path in forceIncludes {
+//                    if let url = URL(string: path), FileManager.default.fileExists(atPath: url.path) {
+//                        outliers.append(url)
+//                    }
+//                }
+//            }
+//        }
+//
+//        return outliers
+//    }
+//
+//    private func finalizeCollection() async {
+//        let groupContainers = await getGroupContainers(bundleURL: self.appInfo.path)
+//        let outliers = handleOutliers()
+//        var tempCollection: [URL] = []
+//
+//        collectionAccessQueue.sync {
+//            tempCollection = self.collection
+//        }
+//
+//        tempCollection.append(contentsOf: groupContainers)
+//        tempCollection.append(contentsOf: outliers)
+//
+//        // Sort and standardize URLs to ensure consistent comparisons
+//        let sortedCollection = tempCollection.map { $0.standardizedFileURL }.sorted(by: { $0.path < $1.path })
+//        var filteredCollection: [URL] = []
+//        var previousUrl: URL?
+//
+//        for url in sortedCollection {
+//            if let previous = previousUrl, url.path.hasPrefix(previous.path + "/") {
+//                // Current URL is a subdirectory of the previous one, so skip it
+//                continue
+//            }
+//            // This URL is not a subdirectory of the previous one, so keep it and set it as the previous URL
+//            filteredCollection.append(url)
+//            previousUrl = url
+//        }
+//
+//        await handlePostProcessing(sortedCollection: filteredCollection)
+//    }
+//
+//    private func handlePostProcessing(sortedCollection: [URL]) async {
+//        for path in sortedCollection {
+//            let size = totalSizeOnDisk(for: path)
+//            if let icon = getIconForFileOrFolderNS(atPath: path) {  // Retrieve NSImage
+//                let iconData = serializeImage(icon)  // Convert NSImage to Data
+//                await state.setFileDetails(for: path, size: size, icon: iconData)  // Pass Data to actor
+//            } else {
+//                await state.setFileDetails(for: path, size: size, icon: nil)
+//            }
+//        }
+//        await updateAppState(with: sortedCollection)
+//    }
+//
+//    private func updateAppState(with sortedCollection: [URL]) async {
+//        // Retrieve state from the actor
+//        let fileSize = await self.state.getFileSize()
+//        let fileIconData = await self.state.getFileIconData()
+//        let fileIcons = fileIconData.mapValues { deserializeImage($0) }
+//
+//        // Assume updating of appInfo needs to happen on the main thread
+//        self.appInfo.fileSize = fileSize
+//        self.appInfo.fileIcon = fileIcons
+//
+//        // Execute UI related updates on the main thread using MainActor
+//        await MainActor.run {
+//            if !self.backgroundRun {
+//                self.appState.appInfo = self.appInfo
+//                self.appState.selectedItems = Set(sortedCollection)
+//            }
+//
+//            
+//        }
+//
+//        self.completion()  // Call the completion handler
+//    }
+//}
+//
+//actor PathFinderState {
+//    var fileSize: [URL: Int64] = [:]
+//    var fileIconData: [URL: Data?] = [:]
+//
+//    func setFileDetails(for path: URL, size: Int64, icon: Data?) {
+//        fileSize[path] = size
+//        fileIconData[path] = icon
+//    }
+//
+//    func getFileSize() -> [URL: Int64] {
+//        return fileSize
+//    }
+//
+//    func getFileIconData() -> [URL: Data?] {
+//        return fileIconData
+//    }
+//}
+//
+//
+//func serializeImage(_ image: NSImage?) -> Data? {
+//    guard let image = image else { return nil }
+//    guard let tiffData = image.tiffRepresentation else { return nil }
+//    let bitmapImage = NSBitmapImageRep(data: tiffData)
+//    return bitmapImage?.representation(using: .png, properties: [:])
+//}
+//
+//func deserializeImage(_ data: Data?) -> NSImage? {
+//    guard let data = data else { return nil }
+//    return NSImage(data: data)
+//}
+
