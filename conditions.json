@@ -1,0 +1,14 @@
+[
+    {
+        "bundle_id": "comnewapp",
+        "include": ["newfeature"],
+        "exclude": ["oldmodule"],
+        "includeForce": []
+    },
+    {
+        "bundle_id": "comanotherapp",
+        "include": ["anotherfeature"],
+        "exclude": [],
+        "includeForce": ["~/Library/Application Support/AnotherApp"]
+    }
+]
