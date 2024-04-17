@@ -2,7 +2,9 @@
     {
         "bundle_id": "uszoomxos",
         "include": ["newfeature"],
-        "exclude": ["oldmodule"]
+        "exclude": ["oldmodule"],
+        "includeForce": ["~/Library/Application Support/AnotherApp"]
+
     },
     {
         "bundle_id": "comanotherapp",
