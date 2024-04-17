@@ -2,8 +2,7 @@
     {
         "bundle_id": "comnewapp",
         "include": ["newfeature"],
-        "exclude": ["oldmodule"],
-        "includeForce": []
+        "exclude": ["oldmodule"]
     },
     {
         "bundle_id": "comanotherapp",
