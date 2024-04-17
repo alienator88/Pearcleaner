@@ -1,6 +1,6 @@
 [
     {
-        "bundle_id": "comnewapp",
+        "bundle_id": "uszoomxos",
         "include": ["newfeature"],
         "exclude": ["oldmodule"]
     },
