@@ -295,11 +295,6 @@ struct FilesView: View {
                                             }
                                         }
 
-                                        // Brew cleanup if enabled
-                                        if brew {
-                                            caskCleanup(app: appState.appInfo.appName)
-                                        }
-
                                         // Remove app from app list if main app bundle is removed
                                         if selectedItemsArray.contains(where: { $0.absoluteString == appState.appInfo.path.absoluteString }) {
                                             removeApp(appState: appState, withId: appState.appInfo.id)

@@ -324,7 +324,7 @@ struct GeneralSettingsTab: View {
 
         }
         .padding(20)
-        .frame(width: 500, height: 600)
+        .frame(width: 500, height: 570)
 
     }
     

@@ -374,6 +374,7 @@ func killApp(appId: String, completion: @escaping () -> Void = {}) {
 
 // Remove app from cache
 func removeApp(appState: AppState, withId id: UUID) {
+    @AppStorage("settings.general.brew") var brew: Bool = false
     DispatchQueue.main.async {
         // Remove from sortedApps if found
         if let index = appState.sortedApps.firstIndex(where: { $0.id == id }) {
@@ -383,6 +384,10 @@ func removeApp(appState: AppState, withId id: UUID) {
         // Remove from appInfoStore if found
         if let index = appState.appInfoStore.firstIndex(where: { $0.id == id }) {
             appState.appInfoStore.remove(at: index)
+        }
+        // Brew cleanup if enabled
+        if brew {
+            caskCleanup(app: appState.appInfo.appName)
         }
     }
 }

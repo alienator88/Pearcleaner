@@ -506,7 +506,7 @@ struct InterfaceSettingsTab: View {
 
         }
         .padding(20)
-        .frame(width: 500, height: 550)
+        .frame(width: 500, height: 570)
 
     }
 
