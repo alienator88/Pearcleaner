@@ -16,35 +16,46 @@
 </p>
 </br>
 
-A free and source-available, fair-code licensed mac app cleaner inspired by [Freemacsoft's AppCleaner](https://freemacsoft.net/appcleaner/) and [Sun Knudsen's Privacy Guides](https://sunknudsen.com/privacy-guides/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative) post on his app-cleaner script.
+A free, source-available and fair-code licensed mac app cleaner inspired by [Freemacsoft's AppCleaner](https://freemacsoft.net/appcleaner/) and [Sun Knudsen's Privacy Guides](https://sunknudsen.com/privacy-guides/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative) post on his app-cleaner script.
 This project was born out of wanting to learn more on how macOS deals with app installation/uninstallation and getting more Swift experience. If you have suggestions I'm open to hearing them, submit a feature request!
 
-# TOC
+### TOC
+[Monetization](#monetization)
+
 [Features](#features)
 
 [Screenshots](#screenshots)
 
+[Requirements](#requirements)
+
+[Download](#getting-pearcleaner)
+
+[Thanks](#thanks)
+
+[Other Apps](#other-apps)
+
+## Monetization
+>In asserting my ethical stance on software management, I've implemented a Commons Clause in the Apache 2.0 licensing agreement of Pearcleaner to explicitly prohibit any form of monetization. This stance is rooted in the belief that the functionality to cleanly uninstall applications should be a standard, no-cost feature within operating systems. Since macOS does not currently offer this essential feature, my application(and others) fill this gap by providing a transparent and privacy-focused alternative. By legally ensuring that this software remains free of charge, I am upholding a commitment to software transparency and user privacy, guaranteeing that this critical tool remains accessible to all, thereby fostering an environment of trust and utility.
+
+Be weary of copy clones [like this](https://apps.apple.com/us/app/cyclear/id6480414027?mt=12) charging exorbitant amounts for an app that is free and will remain free.
 
 ## Features
 - 100% Swift
 - Small app size (~3MB)
-- Quick file search, can be made instant by enabling Instant Search in settings which caches all the apps and files on startup
-- Reverse search for finding remaining files from already uninstalled applications
-- Sentinel monitor helper that can be enabled to watch Trash folder for deleted apps
-- Sentinel monitor is extremely small (210KB) and uses ~2mb of ram to run in the background and file watch
+- Quick file search
+- Reverse search for finding remaining files from previously uninstalled applications
+- Sentinel monitor helper that can be enabled to watch Trash folder for deleted apps to cleanup after the fact(Extremely small (210KB) and uses ~2mb of ram to run in the background and file watch)
 - Mini mode which can be enabled from Settings
 - Menubar option
 - Can drop apps to uninstall directly on the Pearcleaner Dock icon itself or the drop target in the app window
 - Optional Finder Extension which allows you to uninstall an app directly from Finder by right clicking > Pearcleaner Uninstall
 - Theme System available with custom color selector
-- Will differentiate between regular apps and Safari web-apps with a "web" label next to each item in the list
-- Will differentiate between regular apps and wrapped iOS apps with an "iOS" label next to each item in the list
+- Will differentiate between regular apps and Safari web-apps with a "web" label and also iOS apps with an "iOS" label next to each item in the list
 - Has clean uninstall menu option for the Pearcleaner app itself if you want to stop using it and get rid of all files and launch items
 - New feature alert on app startup
-
+- Can update app conditions remotely for finding more files for unique apps, therefore not requiring a new app updates/releases
 - Optional Homebrew cleanup
-- Custom auto-updater that pulls latest release notes and binaries from GitHub Releases (Pearcleaner has to run from /Applications folder for this to work because of permissions)
-
+- Custom auto-updater that pulls latest release notes and binaries from GitHub Releases (Pearcleaner should run from `/Applications` folder to avoid permission issues)
 
 
 ## Screenshots
@@ -133,7 +144,7 @@ brew install alienator88/homebrew-cask/pearcleaner
 
 Much appreciation to [Freemacsoft's AppCleaner](https://freemacsoft.net/appcleaner/) and [Sun Knudsen's app-cleaner script](https://sunknudsen.com/privacy-guides/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative)
 
-## Some of my apps
+## Other Apps
 
 [Pearcleaner](https://github.com/alienator88/Pearcleaner) - An opensource app cleaner with privacy in mind
 
