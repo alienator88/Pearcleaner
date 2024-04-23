@@ -46,11 +46,10 @@ class AppInfoFetcher {
             return nil
         }
 
-//        let appName = bundle.localizedInfoDictionary?[kCFBundleNameKey as String] as? String
-//        ?? bundle.infoDictionary?["CFBundleName"] as? String
-//        ?? path.deletingPathExtension().lastPathComponent
+//        let appName = bundle.infoDictionary?["CFBundleDisplayName"] as? String ?? bundle.infoDictionary?["CFBundleName"] as? String
+//        ?? bundle.localizedInfoDictionary?[kCFBundleNameKey as String] as? String ?? path.deletingPathExtension().lastPathComponent
 
-        let appName = path.deletingPathExtension().lastPathComponent.capitalizingFirstLetter()
+        let appName = wrapped ? path.deletingLastPathComponent().deletingLastPathComponent().deletingPathExtension().lastPathComponent.capitalizingFirstLetter() : path.deletingPathExtension().lastPathComponent.capitalizingFirstLetter()
 
         let appVersion = bundle.infoDictionary?["CFBundleShortVersionString"] as? String
         ?? bundle.infoDictionary?["CFBundleVersion"] as? String
@@ -76,101 +75,3 @@ class AppInfoFetcher {
     }
 
 }
-
-
-
-// OLD FUNCTION ============================================================
-
-//func getAppInfo(atPath path: URL, wrapped: Bool = false) -> AppInfo? {
-//    let filemanager = FileManager.default
-//    let wrapperURL = path.appendingPathComponent("Wrapper")
-//    if filemanager.fileExists(atPath: wrapperURL.path) {
-//        do {
-//            let contents = try filemanager.contentsOfDirectory(at: wrapperURL, includingPropertiesForKeys: nil, options: [])
-//            let appFiles = contents.filter { $0.pathExtension == "app" }
-//
-//            if let firstAppFile = appFiles.first {
-//                let fullPath = wrapperURL.appendingPathComponent(firstAppFile.lastPathComponent)
-//                if let wrappedAppInfo = getAppInfo(atPath: fullPath, wrapped: true) {
-//                    return wrappedAppInfo
-//                }
-//            } else {
-//                printOS("No .app files found in the 'Wrapper' directory: \(wrapperURL)")
-//            }
-//        } catch {
-//            printOS("Error reading contents of 'Wrapper' directory: \(error.localizedDescription)\n\(wrapperURL)")
-//        }
-//    } else {
-//        if let bundle = Bundle(url: path) {
-//            if let bundleIdentifier = bundle.bundleIdentifier {
-//                var appVersion: String?
-//                var appIcon: NSImage?
-//                var appName: String?
-//                var webApp: Bool?
-//                var wrappedApp: Bool?
-//                var system: Bool?
-//
-//                if let shortVersion = bundle.infoDictionary?["CFBundleShortVersionString"] as? String, !shortVersion.isEmpty {
-//                    appVersion = shortVersion
-//                } else {
-//                    if let bundleVersion = bundle.infoDictionary?["CFBundleVersion"] as? String, !bundleVersion.isEmpty {
-//                        appVersion = bundleVersion
-//                    } else {
-//                        printOS("Failed to retrieve bundle version")
-//                    }
-//                }
-//
-//                if let localizedName = bundle.localizedInfoDictionary?[kCFBundleNameKey as String] as? String {
-//                    appName = localizedName
-//                } else if let bundleName = bundle.infoDictionary?["CFBundleName"] as? String {
-//                    appName = bundleName
-//                } else {
-//                    appName = path.deletingPathExtension().lastPathComponent
-//                }
-//
-//                // Get icon from app
-//                if path.absoluteString.contains("Wrapper") {
-//                    appIcon = getIconForFileOrFolderNS(atPath: path.deletingLastPathComponent().deletingLastPathComponent())
-//                } else {
-//                    appIcon = getIconForFileOrFolderNS(atPath: path)
-//                }
-//
-//                // Convert the icon to a 100x100 PNG image
-//                if let pngIcon = appIcon.flatMap({ convertICNSToPNG(icon: $0, size: NSSize(width: 100, height: 100)) }) {
-//                    appIcon = pngIcon
-//                }
-//
-//                if appIcon == nil {
-//                    printOS("App Icon not found for app at path: \(path)")
-//                }
-//
-//                if bundle.infoDictionary?["LSTemplateApplication"] is Bool {
-//                    webApp = true
-//                } else {
-//                    webApp = false
-//                }
-//
-//                if wrapped {
-//                    wrappedApp = true
-//                } else {
-//                    wrappedApp = false
-//                }
-//
-//                if !path.path.contains(home) {
-//                    system = true
-//                } else {
-//                    system = false
-//                }
-//
-//
-//                return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName ?? "", appVersion: appVersion ?? "", appIcon: appIcon, webApp: webApp ?? false, wrapped: wrappedApp ?? false, system: system ?? false, files: [], fileSize: [:], fileIcon: [:])
-//
-//            } else {
-//                printOS("Bundle identifier not found at path: \(path)")
-//            }
-//        } else {
-//            printOS("Bundle not found at path: \(path)")
-//        }
-//    }
-//    return nil
-//}

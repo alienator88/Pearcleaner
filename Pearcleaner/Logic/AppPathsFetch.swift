@@ -176,34 +176,70 @@ class AppPathFinder {
     }
 
 
-    private func getGroupContainers(bundleURL: URL) -> [URL] {
-        // Get group containers
-        var staticCode: SecStaticCode?
+    private func getAllContainers(bundleURL: URL) -> [URL] {
+        var containers = [URL]()
 
-        guard SecStaticCodeCreateWithPath(bundleURL as CFURL, [], &staticCode) == errSecSuccess else {
-            return []
+        // Extract bundle identifier from bundleURL
+        let bundleIdentifier = Bundle(url: bundleURL)?.bundleIdentifier
+
+        // Ensure the bundleIdentifier is not nil
+        guard let containerBundleIdentifier = bundleIdentifier else {
+            printOS("Get Containers: No bundle identifier found for the given bundle URL.")
+            return containers  // Returns whatever was found so far, possibly empty
         }
 
-        var signingInformation: CFDictionary?
-
-        let status = SecCodeCopySigningInformation(staticCode!, SecCSFlags(), &signingInformation)
-
-        if status != errSecSuccess {
-            printOS("Failed to copy signing information. Status: \(status)")
-            return []
+        // Get the regular container URL for the extracted bundle identifier
+        if let groupContainer = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: containerBundleIdentifier) {
+            containers.append(groupContainer)
+        } else {
+            printOS("Get Containers: Failed to retrieve container URL for bundle identifier: \(containerBundleIdentifier)")
         }
 
-        guard let topDict = signingInformation as? [String: Any],
-              let entitlementsDict = topDict["entitlements-dict"] as? [String: Any],
-              let appGroups = entitlementsDict["com.apple.security.application-groups"] as? [String] else {
-            //        printOS("No application groups to extract from entitlements for this app.")
-            return []
+        let containersPath = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first?.appendingPathComponent("Containers")
+
+        do {
+            let containerDirectories = try FileManager.default.contentsOfDirectory(at: containersPath!, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)
+
+            // Define a regular expression to match UUID format
+            let uuidRegex = try NSRegularExpression(pattern: "^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$", options: .caseInsensitive)
+
+            for directory in containerDirectories {
+                let directoryName = directory.lastPathComponent
+
+                // Check if the directory name matches the UUID pattern
+                if uuidRegex.firstMatch(in: directoryName, options: [], range: NSRange(location: 0, length: directoryName.utf16.count)) != nil {
+                    // Attempt to read the metadata plist file
+                    let metadataPlistURL = directory.appendingPathComponent(".com.apple.containermanagerd.metadata.plist")
+                    if let metadataDict = NSDictionary(contentsOf: metadataPlistURL), let applicationBundleID = metadataDict["MCMMetadataIdentifier"] as? String {
+                        if applicationBundleID == self.appInfo.bundleIdentifier {
+                            containers.append(directory)
+                        }
+                    }
+                }
+            }
+        } catch {
+            printOS("Error accessing the Containers directory: \(error)")
         }
 
-        let groupContainersPath = appGroups.map { URL(fileURLWithPath: "\(home)/Library/Group Containers/" + $0) }
-        let existingGroupContainers = groupContainersPath.filter { FileManager.default.fileExists(atPath: $0.path) }
 
-        return existingGroupContainers
+//        let fileURL = URL(fileURLWithPath: "/Users/alin/Library/Containers/2792352D-95FE-43AE-947D-FF4BF31DE4E6")
+//
+//        do {
+//            // Retrieve the localized name
+//            let resourceValues = try fileURL.resourceValues(forKeys: [.localizedNameKey])
+//            if let localizedName = resourceValues.localizedName {
+//                print("Localized Name: \(localizedName)")
+//            } else {
+//                print("Localized name not available.")
+//            }
+//        } catch {
+//            print("Error retrieving localized name: \(error)")
+//        }
+
+
+
+        // Return all found containers
+        return containers
     }
 
 
@@ -231,13 +267,13 @@ class AppPathFinder {
 
     private func finalizeCollection() {
         DispatchQueue.global(qos: .userInitiated).async {
-//            let groupContainers = self.getGroupContainers(bundleURL: self.appInfo.path)
+            let allContainers = self.getAllContainers(bundleURL: self.appInfo.path)
             let outliers = self.handleOutliers()
             var tempCollection: [URL] = []
             self.collectionAccessQueue.sync {
                 tempCollection = self.collection
             }
-//            tempCollection.append(contentsOf: groupContainers)
+            tempCollection.append(contentsOf: allContainers)
             tempCollection.append(contentsOf: outliers)
 
             // Sort and standardize URLs to ensure consistent comparisons
