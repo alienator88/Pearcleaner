@@ -30,7 +30,7 @@ struct AppsListView: View {
                     SectionView(title: "System", count: filteredSystemApps.count, apps: filteredSystemApps, search: $search, showPopover: $showPopover)
                 }
             }
-            .padding(.horizontal)
+//            .padding(.horizontal)
             .padding(.top, !mini ? 4 : 0)
         }
         .scrollIndicators(.never)
@@ -47,11 +47,11 @@ struct SectionView: View {
     var body: some View {
         VStack(spacing: 0) {
             Header(title: title, count: count, showPopover: $showPopover)
+                .padding(.leading, 5)
             ForEach(apps, id: \.self) { appInfo in
                 AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
-                    .padding(.vertical, 5)
                 if appInfo != apps.last {
-                    Divider().padding(.horizontal, 5)
+//                    Divider().padding(.horizontal, 5)
                 }
             }
         }

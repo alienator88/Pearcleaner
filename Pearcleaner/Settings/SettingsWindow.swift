@@ -14,7 +14,7 @@ struct SettingsView: View {
     @Binding var showPopover: Bool
     @Binding var search: String
     @Binding var showFeature: Bool
-    @AppStorage("settings.general.glass") private var glass: Bool = true
+    @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.general.selectedTab") private var selectedTab: CurrentTabView = .general
 
     var body: some View {

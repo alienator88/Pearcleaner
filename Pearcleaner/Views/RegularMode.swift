@@ -59,7 +59,7 @@ struct RegularMode: View {
 
                     }
                     .frame(width: sidebarWidth)
-                    .padding(.vertical)
+                    .padding(.vertical, 7)
                 }
 
 
@@ -107,19 +107,34 @@ struct AppDetailsEmptyView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
-    @State private var animateGradient: Bool = false
+    @AppStorage("settings.general.animateLogo") private var animateLogo: Bool = true
     @Binding var showPopover: Bool
 
     var body: some View {
         VStack(alignment: .center) {
 
             Spacer()
+            if #available(macOS 14, *) {
+                if animateLogo {
+                    PearDropView()
+                        .phaseAnimator([false, true]) { wwdc24, chromaRotate in
+                            wwdc24
+                                .hueRotation(.degrees(chromaRotate ? 420 : 0))
+                        } animation: { chromaRotate in
+                                .easeInOut(duration: 6)
+                        }
+                } else {
+                    PearDropView()
+                }
 
-            PearDropView()
+            } else {
+                PearDropView()
+            }
+
 
             Spacer()
 
-            Text("Drop your app here or select one from the list")
+            Text("Drop an app here")
                 .font(.title3)
                 .padding(.bottom, 25)
                 .opacity(0.5)

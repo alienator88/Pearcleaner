@@ -74,7 +74,6 @@ struct MenuBarMiniAppView: View {
                             .padding(.leading, 10)
 
                             SearchBarMiniBottom(search: $search)
-//                                .padding(.leading, 20)
 
                             Button("More") {
                                 self.showMenu.toggle()
@@ -105,26 +104,11 @@ struct MenuBarMiniAppView: View {
                                 .padding()
                                 .background(backgroundView(themeSettings: themeSettings, glass: glass).padding(-80))
 
-//                                .background(
-//                                    Group {
-//                                        if glass {
-//                                            GlassEffect(material: .sidebar, blendingMode: .behindWindow)
-//                                                .edgesIgnoringSafeArea(.all)
-//                                        } else {
-//                                            Rectangle()
-//                                                .fill(Color("pop"))
-//                                                .padding(-80)
-//
-//                                        }
-//                                    }
-//                                )
                             }
-
-
-
                             
                         }
-//                        .padding(.horizontal)
+                        .padding(.top, 5)
+
 
                     }
                     .padding(.vertical, 8)
@@ -137,20 +121,6 @@ struct MenuBarMiniAppView: View {
         .frame(minWidth: 300, minHeight: 370)
         .edgesIgnoringSafeArea(.all)
         .background(backgroundView(themeSettings: themeSettings, glass: glass).padding(-80))
-
-//        .background(
-//            Group {
-//                if glass {
-//                    GlassEffect(material: .sidebar, blendingMode: .behindWindow)
-//                        .edgesIgnoringSafeArea(.all)
-//                } else {
-//                    Rectangle()
-//                        .fill(Color("pop"))
-//                        .padding(-80)
-//
-//                }
-//            }
-//        )
         .transition(.opacity)
         .popover(isPresented: $showPopover, arrowEdge: .leading) {
             VStack {
@@ -165,20 +135,6 @@ struct MenuBarMiniAppView: View {
             }
             .interactiveDismissDisabled(popoverStay)
             .background(backgroundView(themeSettings: themeSettings, glass: glass).padding(-80))
-
-//            .background(
-//                Group {
-//                    if glass {
-//                        GlassEffect(material: .sidebar, blendingMode: .behindWindow)
-//                            .edgesIgnoringSafeArea(.all)
-//                    } else {
-//                        Rectangle()
-//                            .fill(Color("pop"))
-//                            .padding(-80)
-//
-//                    }
-//                }
-//            )
             .frame(width: 650, height: 500)
 
         }

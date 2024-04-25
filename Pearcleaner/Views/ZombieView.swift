@@ -255,9 +255,9 @@ struct ZombieView: View {
                                         moveFilesToTrash(at: selectedItemsArray) {
                                             withAnimation {
                                                 showPopover = false
-                                                updateOnMain {
-                                                    appState.isReminderVisible.toggle()
-                                                }
+//                                                updateOnMain {
+//                                                    appState.isReminderVisible.toggle()
+//                                                }
                                             }
                                         }
                                     }
@@ -321,11 +321,19 @@ struct ZombieFileDetailsItem: View {
 
             }
             VStack(alignment: .leading, spacing: 5) {
-                Text(path.lastPathComponent)
-                    .font(.title3)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
-                    .help(path.lastPathComponent)
+
+                HStack(alignment: .center) {
+                    Text(showLocalized(url: path))
+                        .font(.title3)
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                        .help(path.lastPathComponent)
+
+                    if let imageView = folderImages(for: path.path) {
+                        imageView
+                    }
+                }
+
                 Text(path.path)
                     .font(.footnote)
                     .lineLimit(1)

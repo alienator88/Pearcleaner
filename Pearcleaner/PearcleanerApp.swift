@@ -7,7 +7,7 @@
 
 import SwiftUI
 import AppKit
-import ServiceManagement
+//import ServiceManagement
 
 @main
 struct PearcleanerApp: App {
@@ -221,7 +221,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
         UserDefaults.standard.set(displayMode?.rawValue, forKey: "displayMode")
 
-        ThemeSettings.shared.themeColor = isDarkMode() ? Color(.sRGB, red: 0.149, green: 0.149, blue: 0.149, opacity: 1) : Color(.sRGB, red: 1.0, green: 1.0, blue: 1.0, opacity: 1)
+        // Customize dark mode color to use Slate by default
+        ThemeSettings.shared.themeColor = isDarkMode() ? Color(.sRGB, red: 0.188143, green: 0.208556, blue: 0.262679, opacity: 1) : Color(.sRGB, red: 1.0, green: 1.0, blue: 1.0, opacity: 1)
+//        ThemeSettings.shared.themeColor = isDarkMode() ? Color(.sRGB, red: 0.149, green: 0.149, blue: 0.149, opacity: 1) : Color(.sRGB, red: 1.0, green: 1.0, blue: 1.0, opacity: 1)
         ThemeSettings.shared.saveThemeColor()
 
     }

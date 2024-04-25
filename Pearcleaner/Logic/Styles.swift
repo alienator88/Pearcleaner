@@ -47,6 +47,80 @@ struct SimpleButtonStyle: ButtonStyle {
 }
 
 
+struct RegularButtonStyle: ButtonStyle {
+    let icon: String
+    let label: String
+    let help: String
+    @State private var hovered = false
+
+    func makeBody(configuration: Configuration) -> some View {
+
+        HStack(alignment: .center) {
+            Image(systemName: icon).foregroundColor(Color("mode")).padding(.leading, 2).padding(.trailing, 0)
+            Text(label).textCase(.uppercase).foregroundColor(Color("mode")).fontWeight(.bold).padding(.trailing, 2)
+
+        }
+        .padding(8)
+        .background(!configuration.isPressed ? hovered ? Color("mode").opacity(0.4) : Color("mode").opacity(0) : Color("mode").opacity(0.5))
+        .cornerRadius(6)
+        .scaleEffect(configuration.isPressed ? 0.95 : 1)
+        .animation(.easeOut(duration: 0.2), value: configuration.isPressed)
+        .onHover { hovering in
+            withAnimation(Animation.easeIn(duration: 0.15)) {
+                hovered = hovering
+            }
+        }
+        .overlay(
+            RoundedRectangle(cornerRadius: 6)
+                .strokeBorder(Color("mode").opacity(0.5), lineWidth: 1)
+                .scaleEffect(configuration.isPressed ? 0.95 : 1)
+        )
+        .help(help)
+
+    }
+}
+
+
+struct ResetSettingsButtonStyle: ButtonStyle {
+    @Binding var isResetting: Bool
+    let label: String
+    let help: String
+    @State private var hovered = false
+
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(alignment: .center) {
+            if isResetting {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle())
+                    .controlSize(.small)
+                    .frame(width: 15)
+            } else {
+                Image(systemName: "gear")
+                    .foregroundColor(Color("mode")).padding(.leading, 2).padding(.trailing, 0)
+            }
+            Text(label)
+                .textCase(.uppercase).foregroundColor(Color("mode")).fontWeight(.bold).padding(.trailing, 2)
+        }
+        .padding(8)
+        .background(!configuration.isPressed ? hovered ? Color("mode").opacity(0.4) : Color("mode").opacity(0) : Color("mode").opacity(0.5))
+        .cornerRadius(6)
+        .scaleEffect(configuration.isPressed ? 0.95 : 1)
+        .animation(.easeOut(duration: 0.2), value: configuration.isPressed)
+        .onHover { hovering in
+            withAnimation(Animation.easeIn(duration: 0.15)) {
+                hovered = hovering
+            }
+        }
+        .overlay(
+            RoundedRectangle(cornerRadius: 6)
+                .strokeBorder(Color("mode").opacity(0.5), lineWidth: 1)
+                .scaleEffect(configuration.isPressed ? 0.95 : 1)
+        )
+        .help(help)
+    }
+}
+
+
 
 struct InfoButton: View {
     @State private var isPopoverPresented: Bool = false
@@ -767,7 +841,6 @@ func backgroundView(themeSettings: ThemeSettings, darker: Bool = false, glass: B
         darker ? themeSettings.themeColor.darker(by: 5).edgesIgnoringSafeArea(.all) : themeSettings.themeColor.edgesIgnoringSafeArea(.all)
     }
 }
-
 
 
 struct PresetColor: ButtonStyle {

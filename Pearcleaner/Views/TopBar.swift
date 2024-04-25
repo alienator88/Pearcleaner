@@ -20,21 +20,21 @@ struct TopBar: View {
     var body: some View {
         HStack(alignment: .center, spacing: 0) {
 
-            Spacer()
-
-            if appState.isReminderVisible {
-                Text("CMD + Z to undo")
-                    .font(.title2)
-                    .foregroundStyle(Color("mode").opacity(0.5))
-                    .fontWeight(.medium)
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                            withAnimation {
-                                appState.isReminderVisible = false
-                            }
-                        }
-                    }
-            }
+//            Spacer()
+//
+//            if appState.isReminderVisible {
+//                Text("CMD + Z to undo")
+//                    .font(.title2)
+//                    .foregroundStyle(Color("mode").opacity(0.5))
+//                    .fontWeight(.medium)
+//                    .onAppear {
+//                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+//                            withAnimation {
+//                                appState.isReminderVisible = false
+//                            }
+//                        }
+//                    }
+//            }
 
             Spacer()
 

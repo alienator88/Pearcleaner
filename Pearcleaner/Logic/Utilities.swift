@@ -312,16 +312,13 @@ func convertICNSToPNG(icon: NSImage, size: NSSize) -> NSImage? {
 
 // Get icon for files and folders
 func getIconForFileOrFolder(atPath path: URL) -> Image? {
-    let icon = NSWorkspace.shared.icon(forFile: path.path)
-    let nsImage = icon
-    return Image(nsImage: nsImage)
+    return Image(nsImage: NSWorkspace.shared.icon(forFile: path.path))
 }
 
 func getIconForFileOrFolderNS(atPath path: URL) -> NSImage? {
-    let icon = NSWorkspace.shared.icon(forFile: path.path)
-    let nsImage = icon
-    return nsImage
+    return NSWorkspace.shared.icon(forFile: path.path)
 }
+
 
 // Get average color from image
 extension NSImage {
@@ -390,6 +387,60 @@ func removeApp(appState: AppState, withId id: UUID) {
             caskCleanup(app: appState.appInfo.appName)
         }
     }
+}
+
+
+// Check if file/folder name has localized variant
+func showLocalized(url: URL) -> String {
+    guard FileManager.default.fileExists(atPath: url.path) else {
+        return url.lastPathComponent
+    }
+    do {
+        // Retrieve the localized name
+        let resourceValues = try url.resourceValues(forKeys: [.localizedNameKey])
+        if let localizedName = resourceValues.localizedName {
+            return localizedName
+        }
+    } catch {
+        printOS("Error retrieving localized name: \(error)")
+    }
+    // Return the last path component as a fallback
+    return url.lastPathComponent
+}
+
+// Return image for different folders
+func folderImages(for path: String) -> AnyView? {
+    if path.contains("/Library/Containers/") || path.contains("/Library/Group Containers/") {
+        return AnyView(
+            Image(systemName: "shippingbox.fill")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 13)
+                .foregroundStyle(Color("mode").opacity(0.5))
+                .help("Container")
+        )
+    } else if path.contains("/Library/Application Scripts/") {
+        return AnyView(
+            Image(systemName: "applescript.fill")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 13)
+                .foregroundStyle(Color("mode").opacity(0.5))
+                .help("Application Script")
+        )
+    } else if path.contains(".plist") {
+        return AnyView(
+            Image(systemName: "doc.badge.gearshape.fill")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 13)
+                .foregroundStyle(Color("mode").opacity(0.5))
+                .help("Plist File")
+        )
+    }
+
+    // Return nil if no conditions are met
+    return nil
 }
 
 

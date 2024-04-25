@@ -110,8 +110,6 @@ struct FilesView: View {
                                         .resizable()
                                         .scaledToFit()
                                         .frame(width: 50, height: 50)
-//                                        .clipShape(RoundedRectangle(cornerRadius: 8))
-//                                        .padding(.trailing)
                                         .padding()
                                         .background{
                                             RoundedRectangle(cornerRadius: 16)
@@ -288,15 +286,17 @@ struct FilesView: View {
                                             showPopover = false
                                             updateOnMain {
                                                 appState.currentView = mini ? .apps : .empty
-                                                appState.isReminderVisible.toggle()
+//                                                appState.isReminderVisible.toggle()
                                             }
                                             if sentinel {
                                                 launchctl(load: true)
                                             }
                                         }
 
-                                        // Remove app from app list if main app bundle is removed
-                                        if selectedItemsArray.contains(where: { $0.absoluteString == appState.appInfo.path.absoluteString }) {
+                                        // Remove app from app list if main app bundle is removed for regular and wrapped apps
+                                        if (appState.appInfo.wrapped && selectedItemsArray.contains(where: { $0.absoluteString == appState.appInfo.path.deletingLastPathComponent().deletingLastPathComponent().absoluteString })) ||
+                                            (!appState.appInfo.wrapped && selectedItemsArray.contains(where: { $0.absoluteString == appState.appInfo.path.absoluteString })) {
+                                            // Match found, remove the app
                                             removeApp(appState: appState, withId: appState.appInfo.id)
                                         } else {
                                             // Add deleted appInfo object to trashed array
@@ -373,15 +373,22 @@ struct FileDetailsItem: View {
                     .shadow(color: Color("mode"), radius: isHovered ? 2 : 0)
 
             }
+
+
             VStack(alignment: .leading, spacing: 5) {
                 HStack(alignment: .center) {
-                    Text(path.lastPathComponent)
+                    Text(showLocalized(url: path))
                         .font(.title3)
                         .lineLimit(1)
                         .truncationMode(.tail)
                         .help(path.lastPathComponent)
+
                     if isNested(path: path) {
                         InfoButton(text: "Application file is nested within subdirectories. To prevent deleting incorrect folders, Pearcleaner will leave these alone. You may manually delete the remaining folders if required.", color: nil, label: "")
+                    }
+
+                    if let imageView = folderImages(for: path.path) {
+                        imageView
                     }
                 }
 

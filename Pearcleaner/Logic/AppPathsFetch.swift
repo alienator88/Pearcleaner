@@ -177,7 +177,7 @@ class AppPathFinder {
 
 
     private func getAllContainers(bundleURL: URL) -> [URL] {
-        var containers = [URL]()
+        var containers: [URL] = []
 
         // Extract bundle identifier from bundleURL
         let bundleIdentifier = Bundle(url: bundleURL)?.bundleIdentifier
@@ -190,7 +190,9 @@ class AppPathFinder {
 
         // Get the regular container URL for the extracted bundle identifier
         if let groupContainer = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: containerBundleIdentifier) {
-            containers.append(groupContainer)
+            if FileManager.default.fileExists(atPath: groupContainer.path) {
+                containers.append(groupContainer)
+            }
         } else {
             printOS("Get Containers: Failed to retrieve container URL for bundle identifier: \(containerBundleIdentifier)")
         }
@@ -220,23 +222,6 @@ class AppPathFinder {
         } catch {
             printOS("Error accessing the Containers directory: \(error)")
         }
-
-
-//        let fileURL = URL(fileURLWithPath: "/Users/alin/Library/Containers/2792352D-95FE-43AE-947D-FF4BF31DE4E6")
-//
-//        do {
-//            // Retrieve the localized name
-//            let resourceValues = try fileURL.resourceValues(forKeys: [.localizedNameKey])
-//            if let localizedName = resourceValues.localizedName {
-//                print("Localized Name: \(localizedName)")
-//            } else {
-//                print("Localized name not available.")
-//            }
-//        } catch {
-//            print("Error retrieving localized name: \(error)")
-//        }
-
-
 
         // Return all found containers
         return containers

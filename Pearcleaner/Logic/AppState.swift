@@ -24,7 +24,7 @@ class AppState: ObservableObject
     @Published var currentView = CurrentDetailsView.empty
     @Published var showAlert: Bool = false
     @Published var sidebar: Bool = true
-    @Published var isReminderVisible: Bool = false
+//    @Published var isReminderVisible: Bool = false
     @Published var releases = [Release]()
     @Published var progressBar: (String, Double) = ("Ready", 0.0)
     @Published var reload: Bool = false
@@ -55,6 +55,7 @@ class AppState: ObservableObject
             fileSizeLogical: [:],
             fileIcon: [:]
         )
+
         updateExtensionStatus()
         NotificationCenter.default.addObserver(
             self,
@@ -66,9 +67,9 @@ class AppState: ObservableObject
     }
 
     @objc func updateExtensionStatus() {
-        let extentionStatus = FIFinderSyncController.isExtensionEnabled
+        let extensionStatus = FIFinderSyncController.isExtensionEnabled
         DispatchQueue.main.async {
-            self.finderExtensionEnabled = extentionStatus
+            self.finderExtensionEnabled = extensionStatus
         }
     }
 }

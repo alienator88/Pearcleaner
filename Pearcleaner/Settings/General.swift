@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftUI
-import ServiceManagement
+//import ServiceManagement
 import FinderSync
 
 struct GeneralSettingsTab: View {
@@ -29,8 +29,8 @@ struct GeneralSettingsTab: View {
     @State private var accessStatus: Bool = false
     @Binding var showPopover: Bool
     @Binding var search: String
-
     @State var selectedIndex: Int?
+    @State private var isResetting = false
 
     var body: some View {
         Form {
@@ -290,6 +290,7 @@ struct GeneralSettingsTab: View {
                         .frame(width: 20, height: 20)
                         .padding(.trailing)
                         .foregroundStyle(appState.finderExtensionEnabled ? .green : .red)
+                        .saturation(displayMode.colorScheme == .dark ? 0.5 : 1)
                     Text(appState.finderExtensionEnabled ? "Context menu extension for Finder is enabled" : "Context menu extension for Finder is disabled")
                         .font(.callout)
                         .foregroundStyle(Color("mode").opacity(0.5))
@@ -307,7 +308,20 @@ struct GeneralSettingsTab: View {
                 .padding(5)
                 .padding(.leading)
 
+                // === Reset Settings =============================================================================================
 
+                HStack() {
+                    Spacer()
+
+                    Button("") {
+                        resetUserDefaults()
+                    }
+                    .buttonStyle(ResetSettingsButtonStyle(isResetting: $isResetting, label: "Reset Settings", help: "Reset all app settings to default"))
+                    .disabled(isResetting)
+
+                    Spacer()
+                }
+                .padding(.vertical, 5)
 
 
 
@@ -324,8 +338,28 @@ struct GeneralSettingsTab: View {
 
         }
         .padding(20)
-        .frame(width: 500, height: 570)
+        .frame(width: 500, height: 620)
 
     }
-    
+
+    private var keysToIgnore: Set<String> {
+        ["windowWidthKey", "windowHeightKey", "windowWidthKeyMini", "windowHeightKeyMini", "windowXKey", "windowYKey"]
+    }
+
+    private func resetUserDefaults() {
+        isResetting = true
+        DispatchQueue.global(qos: .background).async {
+            let defaults = UserDefaults.standard
+            let dictionary = defaults.dictionaryRepresentation()
+            dictionary.keys.forEach { key in
+                if !keysToIgnore.contains(key) {
+                    defaults.removeObject(forKey: key)
+                }
+            }
+            DispatchQueue.main.async {
+                isResetting = false
+            }
+        }
+    }
+
 }

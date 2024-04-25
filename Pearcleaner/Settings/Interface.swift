@@ -21,16 +21,25 @@ struct InterfaceSettingsTab: View {
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @AppStorage("settings.general.selectedTab") private var selectedTab: CurrentTabView = .general
-    @AppStorage("settings.general.glass") private var glass: Bool = true
+    @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.general.dark") var isDark: Bool = true
     @AppStorage("settings.general.popover") private var popoverStay: Bool = true
     @AppStorage("settings.general.miniview") private var miniView: Bool = true
+    @AppStorage("settings.general.animateLogo") private var animateLogo: Bool = true
     @AppStorage("settings.general.selectedTheme") var selectedTheme: String = "Auto"
     @AppStorage("settings.interface.selectedMenubarIcon") var selectedMenubarIcon: String = "pear-4"
     @State private var isLaunchAtLoginEnabled: Bool = false
     @Binding var showPopover: Bool
     @Binding var search: String
     let icons = ["externaldrive", "trash", "folder", "pear-1", "pear-1.5", "pear-2", "pear-3", "pear-4"]
+
+    var isMacOS14OrHigher: Bool {
+        if #available(macOS 14, *) {
+            return true
+        } else {
+            return false
+        }
+    }
 
     var body: some View {
 
@@ -68,6 +77,38 @@ struct InterfaceSettingsTab: View {
 
 
                 HStack(spacing: 0) {
+                    Image(systemName: animateLogo ? "play.fill" : "pause")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .padding(.trailing)
+                        .foregroundStyle(Color("mode").opacity(0.5))
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("\(animateLogo ? "Logo animation enabled" : "Logo animation disabled")")
+                            .font(.callout)
+                            .foregroundStyle(Color("mode").opacity(0.5))
+
+                    }
+                    if !isMacOS14OrHigher {
+                        Text("(macOS 14+)")
+                            .font(.footnote)
+                            .foregroundStyle(Color("mode").opacity(0.3))
+                            .padding(.leading, 5)
+                    }
+//                    InfoButton(text: "The logo animation is only available in macOS 14 or higher", color: nil, label: "")
+                    Spacer()
+                    Toggle(isOn: $animateLogo, label: {
+                    })
+                    .toggleStyle(.switch)
+                    .disabled(!isMacOS14OrHigher)
+                }
+                .padding(5)
+                .padding(.leading)
+
+
+
+
+                HStack(spacing: 0) {
                     Image(systemName: "paintbrush")
                         .resizable()
                         .scaledToFit()
@@ -82,22 +123,33 @@ struct InterfaceSettingsTab: View {
                     InfoButton(text: "When using a custom color, you might need to change the application color mode below to Dark or Light so text is readable", color: nil, label: "")
                     Spacer()
 
-                    Button("") {
-                        themeSettings.setPreset(preset: "slate", colorScheme: displayMode)
-                    }
-                    .buttonStyle(PresetColor(fillColor: themeSettings.getColorForPreset(preset: "slate", colorScheme: displayMode), label: "Slate"))
 
-                    Button("") {
-                        themeSettings.setPreset(preset: "dracula", colorScheme: displayMode)
-                    }
-                    .buttonStyle(PresetColor(fillColor: themeSettings.getColorForPreset(preset: "dracula", colorScheme: displayMode), label: "Dracula"))
-                    .padding(.horizontal)
+                    HStack(spacing: 10) {
+                        Button("") {
+                            themeSettings.setPreset(preset: "slate", colorScheme: displayMode)
+                        }
+                        .buttonStyle(PresetColor(fillColor: themeSettings.getColorForPreset(preset: "slate", colorScheme: displayMode), label: "Slate"))
 
-                    Button("") {
-                        themeSettings.setPreset(preset: "solarized", colorScheme: displayMode)
-                        themeSettings.saveThemeColor()
+                        Button("") {
+                            themeSettings.setPreset(preset: "dracula", colorScheme: displayMode)
+                        }
+                        .buttonStyle(PresetColor(fillColor: themeSettings.getColorForPreset(preset: "dracula", colorScheme: displayMode), label: "Dracula"))
+
+                        Button("") {
+                            themeSettings.setPreset(preset: "solarized", colorScheme: displayMode)
+                            themeSettings.saveThemeColor()
+                        }
+                        .buttonStyle(PresetColor(fillColor: themeSettings.getColorForPreset(preset: "solarized", colorScheme: displayMode), label: "Solarized"))
+
+                        Button("") {
+                            themeSettings.setPreset(preset: "macOS", colorScheme: displayMode)
+                            themeSettings.saveThemeColor()
+                        }
+                        .buttonStyle(PresetColor(fillColor: themeSettings.getColorForPreset(preset: "macOS", colorScheme: displayMode), label: "macOS"))
                     }
-                    .buttonStyle(PresetColor(fillColor: themeSettings.getColorForPreset(preset: "solarized", colorScheme: displayMode), label: "Solarized"))
+
+
+
 
                     Spacer()
 
@@ -106,6 +158,7 @@ struct InterfaceSettingsTab: View {
                             themeSettings.saveThemeColor()
                         }
                         .padding(.horizontal, 5)
+                    
                     Button("") {
                         themeSettings.resetToDefault(dark: colorScheme == .dark)
                     }
@@ -182,7 +235,6 @@ struct InterfaceSettingsTab: View {
                             } else {
                                 displayMode.colorScheme = .light
                             }
-                            //                            displayMode.colorScheme = nil
                             themeSettings.resetToDefault(dark: isDarkMode())
                             // Refresh foreground colors
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -193,7 +245,7 @@ struct InterfaceSettingsTab: View {
                             }
                         case "Dark":
                             displayMode.colorScheme = .dark
-                            //                            themeSettings.resetToDefault(dark: true)
+                            themeSettings.resetToDefault(dark: true)
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                 self.selectedTab = .interface
                             }
@@ -202,7 +254,7 @@ struct InterfaceSettingsTab: View {
                             }
                         case "Light":
                             displayMode.colorScheme = .light
-                            //                            themeSettings.resetToDefault(dark: false)
+                            themeSettings.resetToDefault(dark: false)
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                 self.selectedTab = .interface
                             }
@@ -506,7 +558,7 @@ struct InterfaceSettingsTab: View {
 
         }
         .padding(20)
-        .frame(width: 500, height: 570)
+        .frame(width: 500, height: 600)
 
     }
 
