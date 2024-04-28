@@ -69,7 +69,7 @@ struct AppCommands: Commands {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                         appState.sortedApps = sortedApps
                         for app in appState.trashedFiles {
-                            AppPathFinder(appInfo: app, appState: appState, locations: locations).findPaths()
+                            AppPathFinder(appInfo: app, appState: appState, locations: locations, undo: true).findPaths()
                         }
                     }
                 }

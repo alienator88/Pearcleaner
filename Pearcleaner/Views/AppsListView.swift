@@ -30,12 +30,12 @@ struct AppsListView: View {
                     SectionView(title: "System", count: filteredSystemApps.count, apps: filteredSystemApps, search: $search, showPopover: $showPopover)
                 }
             }
-//            .padding(.horizontal)
             .padding(.top, !mini ? 4 : 0)
         }
         .scrollIndicators(.never)
     }
 }
+
 
 struct SectionView: View {
     var title: String
@@ -51,12 +51,77 @@ struct SectionView: View {
             ForEach(apps, id: \.self) { appInfo in
                 AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
                 if appInfo != apps.last {
-//                    Divider().padding(.horizontal, 5)
                 }
             }
         }
     }
 }
+
+
+
+struct Header: View {
+    let title: String
+    let count: Int
+    @State private var hovered = false
+    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var locations: Locations
+    @EnvironmentObject var fsm: FolderSettingsManager
+    @Binding var showPopover: Bool
+    @AppStorage("settings.general.glass") private var glass: Bool = true
+
+
+    var body: some View {
+        HStack {
+            Text("\(title)").foregroundStyle(Color("mode")).opacity(0.5)
+
+            Text("\(count)")
+                .font(.system(size: 10))
+                .monospacedDigit()
+                .frame(minWidth: count > 99 ? 30 : 24, minHeight: 17)
+                .background(Color("mode").opacity(0.1))
+                .clipShape(.capsule)
+                .padding(.leading, 2)
+
+            Spacer()
+
+            if hovered {
+                Text("REFRESH")
+                    .font(.system(size: 10))
+                    .monospaced()
+                    .foregroundStyle(Color("mode").opacity(0.8))
+            }
+
+        }
+        .onHover { hovering in
+            withAnimation() {
+                hovered = hovering
+            }
+        }
+        .onTapGesture {
+            withAnimation {
+                // Refresh Apps list
+                appState.reload.toggle()
+                showPopover = false
+                let sortedApps = getSortedApps(paths: fsm.folderPaths, appState: appState)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    appState.sortedApps = sortedApps
+                    appState.reload.toggle()
+                }
+            }
+        }
+        .frame(minHeight: 20)
+        .help("Click header or ⌘+R to refresh apps list")
+        .padding(5)
+    }
+}
+
+
+
+
+
+
+
+
 
 
 //List {

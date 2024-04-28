@@ -428,7 +428,7 @@ struct InterfaceSettingsTab: View {
                     .onChange(of: menubarEnabled) { newVal in
                         if newVal {
                             MenuBarExtraManager.shared.addMenuBarExtra(withView:  {
-                                MenuBarMiniAppView(search: $search, showPopover: $showPopover)
+                                MiniAppView(search: $search, showPopover: $showPopover)
                                     .environmentObject(locations)
                                     .environmentObject(appState)
                                     .environmentObject(fsm)

@@ -13,6 +13,7 @@ struct ZombieView: View {
     @EnvironmentObject var locations: Locations
     @State private var showPop: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
+    @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
@@ -108,31 +109,22 @@ struct ZombieView: View {
                 }
             } else {
                 // Titlebar
-                if !regularWin {
-                    HStack(spacing: 0) {
-                        Spacer()
+                HStack(spacing: 0) {
+                    Spacer()
 
-                        Button("Rescan") {
-                            updateOnMain {
-                                appState.zombieFile = .empty
-                                appState.showProgress.toggle()
-                                reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
-                            }
+                    Button("Close") {
+                        updateOnMain {
+                            appState.appInfo = AppInfo.empty
+                            search = ""
+                            appState.currentView = .apps
+                            showPopover = false
                         }
-                        .buttonStyle(SimpleButtonStyle(icon: "arrow.counterclockwise.circle.fill", help: "Rescan files"))
-
-                        Button("Close") {
-                            updateOnMain {
-                                appState.appInfo = AppInfo.empty
-                                search = ""
-                                appState.currentView = .apps
-                                showPopover = false
-                            }
-                        }
-                        .buttonStyle(SimpleButtonStyle(icon: "x.circle.fill", help: "Close"))
                     }
-                    .padding([.horizontal, .top], 5)
+                    .buttonStyle(SimpleButtonStyle(icon: "x.circle", iconFlip: "x.circle.fill", help: "Close"))
                 }
+                .padding(.top, 6)
+                .padding(.trailing, (mini || menubarEnabled) ? 6 : 0)
+
 
                 VStack() {
                     // Main Group
@@ -141,7 +133,7 @@ struct ZombieView: View {
                         VStack(alignment: .center) {
 
                             HStack(alignment: .center) {
-                                Image(systemName: "clock.arrow.circlepath")
+                                Image(systemName: "doc.badge.clock.fill")
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 50, height: 50)
@@ -185,9 +177,11 @@ struct ZombieView: View {
                                 }
                             }
                         ))
+                        .toggleStyle(SimpleCheckboxToggleStyle())
+                        .help("All checkboxes")
 
-                        SearchBarMiniBottom(search: $searchZ)
-//                            .padding(.top)
+
+                        SearchBar(search: $searchZ, darker: true, glass: glass)
                             .padding(.horizontal)
 
 
@@ -212,11 +206,7 @@ struct ZombieView: View {
                                     let iconImage = fileIcon.map(Image.init(nsImage:))
                                     VStack {
                                         ZombieFileDetailsItem(size: fileSize, sizeL: fileSizeL, icon: iconImage, path: file)
-                                            .padding(.trailing)
-
-                                        if index < filteredAndSortedFiles.0.count - 1 {
-                                            Divider().padding(.leading, 40).opacity(0.5)
-                                        }
+                                            .padding(.vertical, 5)
                                     }
                                 }
                             }
@@ -226,8 +216,9 @@ struct ZombieView: View {
                         .onChange(of: sizeType) { _ in
                             localKey = UUID()
                         }
-                        .id(localKey)
                     }
+                    .id(localKey)
+
 
 
                     Spacer()
@@ -236,30 +227,45 @@ struct ZombieView: View {
 
                         Spacer()
 
+                        Button("Rescan") {
+                            updateOnMain {
+                                appState.zombieFile = .empty
+                                appState.showProgress.toggle()
+                                reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
+                            }
+                        }
+                        .buttonStyle(RescanButton())
+
                         Button("\(sizeType == "Logical" ? totalSelectedZombieSize.logical : sizeType == "Finder" ? totalSelectedZombieSize.finder : totalSelectedZombieSize.real)") {
                                 Task {
-                                    updateOnMain {
-                                        appState.zombieFile = .empty
-                                        search = ""
-                                        if !regularWin {
-                                            appState.currentView = .apps
-                                            showPopover = false
-                                        } else {
-                                            appState.currentView = .empty
+                                    if appState.selectedZombieItems.count == appState.zombieFile.fileSize.keys.count {
+                                        updateOnMain {
+                                            appState.zombieFile = .empty
+                                            search = ""
+                                            searchZ = ""
+                                            if mini || menubarEnabled {
+                                                appState.currentView = .apps
+                                                showPopover = false
+                                            } else {
+                                                appState.currentView = .empty
+                                            }
                                         }
                                     }
 
+
                                     let selectedItemsArray = Array(appState.selectedZombieItems)
 
-                                    killApp(appId: appState.appInfo.bundleIdentifier) {
-                                        moveFilesToTrash(at: selectedItemsArray) {
-                                            withAnimation {
-                                                showPopover = false
-//                                                updateOnMain {
-//                                                    appState.isReminderVisible.toggle()
-//                                                }
-                                            }
+                                    moveFilesToTrash(at: selectedItemsArray) {
+                                        withAnimation {
+                                            showPopover = false
                                         }
+                                        updateOnMain {
+                                            // Remove items from the list
+                                            appState.zombieFile.fileSize = appState.zombieFile.fileSize.filter { !appState.selectedZombieItems.contains($0.key) }
+                                            // Update the selectedZombieFiles to remove references that are no longer present
+                                            appState.selectedZombieItems.removeAll()
+                                        }
+
                                     }
 
                                 }
@@ -267,20 +273,16 @@ struct ZombieView: View {
                             }
                             .buttonStyle(UninstallButton(isEnabled: !appState.selectedZombieItems.isEmpty))
                             .disabled(appState.selectedZombieItems.isEmpty)
-                            .padding(.top)
 
-
-//                        Spacer()
 
                     }
-
+                    .padding(.top)
                 }
                 .transition(.opacity)
                 .padding([.horizontal, .bottom], 20)
                 .padding(.top, !mini ? 10 : 0)
 
             }
-
         }
     }
 }
@@ -309,6 +311,7 @@ struct ZombieFileDetailsItem: View {
                     }
                 }
             ))
+            .toggleStyle(SimpleCheckboxToggleStyle())
 
             if let appIcon = icon {
                 appIcon
@@ -316,10 +319,9 @@ struct ZombieFileDetailsItem: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 30, height: 30)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
-                    .brightness(isHovered ? 0.2 : 0)
-                    .shadow(color: Color("mode"), radius: isHovered ? 2 : 0)
 
             }
+
             VStack(alignment: .leading, spacing: 5) {
 
                 HStack(alignment: .center) {
@@ -328,6 +330,17 @@ struct ZombieFileDetailsItem: View {
                         .lineLimit(1)
                         .truncationMode(.tail)
                         .help(path.lastPathComponent)
+                        .overlay{
+                            if (isHovered) {
+                                VStack {
+                                    Spacer()
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .fill(Color("mode").opacity(0.5))
+                                        .frame(height: 1.5)
+                                        .offset(y: 3)
+                                }
+                            }
+                        }
 
                     if let imageView = folderImages(for: path.path) {
                         imageView
@@ -341,6 +354,14 @@ struct ZombieFileDetailsItem: View {
                     .opacity(0.5)
                     .help(path.path)
             }
+            .onHover { hovering in
+                withAnimation(Animation.easeIn(duration: 0.2)) {
+                    self.isHovered = hovering
+                }
+            }
+            .onTapGesture {
+                NSWorkspace.shared.selectFile(path.path, inFileViewerRootedAtPath: path.deletingLastPathComponent().path)
+            }
 
             Spacer()
 
@@ -350,14 +371,6 @@ struct ZombieFileDetailsItem: View {
 
             Text("\(displaySize)")
 
-        }
-        .onHover { hovering in
-            withAnimation(Animation.easeIn(duration: 0.2)) {
-                self.isHovered = hovering
-            }
-        }
-        .onTapGesture {
-            NSWorkspace.shared.selectFile(path.path, inFileViewerRootedAtPath: path.deletingLastPathComponent().path)
         }
         .contextMenu {
             if path.pathExtension == "app" {

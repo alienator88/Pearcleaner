@@ -11,22 +11,26 @@ import SwiftUI
 struct SimpleButtonStyle: ButtonStyle {
     @State private var hovered = false
     let icon: String
+    let iconFlip: String
     let label: String
     let help: String
     let color: Color
     let size: CGFloat
+    let padding: CGFloat
 
-    init(icon: String, label: String = "", help: String, color: Color = Color("mode"), size: CGFloat = 20) {
+    init(icon: String, iconFlip: String = "", label: String = "", help: String, color: Color = Color("mode"), size: CGFloat = 20, padding: CGFloat = 5) {
         self.icon = icon
+        self.iconFlip = iconFlip
         self.label = label
         self.help = help
         self.color = color
         self.size = size
+        self.padding = padding
     }
     
     func makeBody(configuration: Self.Configuration) -> some View {
-        HStack {
-            Image(systemName: icon)
+        HStack(alignment: .center) {
+            Image(systemName: (hovered && !iconFlip.isEmpty) ? iconFlip : icon)
                 .resizable()
                 .scaledToFit()
                 .frame(width: size, height: size)
@@ -35,7 +39,7 @@ struct SimpleButtonStyle: ButtonStyle {
             }
         }
         .foregroundColor(hovered ? color : color.opacity(0.5))
-        .padding(5)
+        .padding(padding)
         .onHover { hovering in
             withAnimation() {
                 hovered = hovering
@@ -121,6 +125,35 @@ struct ResetSettingsButtonStyle: ButtonStyle {
 }
 
 
+struct SimpleCheckboxToggleStyle: ToggleStyle {
+    @EnvironmentObject private var themeSettings: ThemeSettings
+    @State private var isHovered: Bool = false
+
+    func makeBody(configuration: Configuration) -> some View {
+        HStack {
+            RoundedRectangle(cornerRadius: 4)
+                .fill(themeSettings.themeColor.darker(by: 5))
+                .frame(width: 18, height: 18)
+                .overlay {
+                    if configuration.isOn {
+                        Image(systemName: "checkmark")
+                            .foregroundStyle(Color("mode"))
+                            .scaleEffect(isHovered ? 0.8 : 1.0)
+                    }
+                }
+                .onTapGesture {
+                    withAnimation(.smooth()) {
+                        configuration.isOn.toggle()
+                    }
+                }
+            configuration.label
+        }
+        .onHover(perform: { hovering in
+            self.isHovered = hovering
+        })
+    }
+}
+
 
 struct InfoButton: View {
     @State private var isPopoverPresented: Bool = false
@@ -192,10 +225,40 @@ struct UninstallButton: ButtonStyle {
         .padding(.horizontal)
         .padding(.vertical, 4)
         .background(configuration.isPressed ? Color("uninstall").opacity(0.8) : Color("uninstall"))
-//        .background(
-//            configuration.isPressed ? Color("uninstall").opacity(0.8) :
-//                (isEnabled ? Color("uninstall") : Color.gray)
-//        )
+        .cornerRadius(8)
+        .onHover { over in
+            if over {
+                NSCursor.pointingHand.push()
+            } else {
+                NSCursor.pop()
+            }
+        }
+    }
+}
+
+
+
+struct RescanButton: ButtonStyle {
+
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(alignment: .center, spacing: 10) {
+            Image(systemName: "arrow.counterclockwise.circle")
+                .foregroundColor(.white)
+
+            Divider()
+                .frame(height: 24)
+                .foregroundColor(.white)
+                .opacity(0.5)
+
+            configuration.label
+                .foregroundColor(.white)
+
+        }
+        .frame(height: 24)
+        .frame(minWidth: 75)
+        .padding(.horizontal)
+        .padding(.vertical, 4)
+        .background(configuration.isPressed ? Color("button").opacity(0.8) : Color("button"))
         .cornerRadius(8)
         .onHover { over in
             if over {
@@ -473,68 +536,6 @@ struct AnimatedSearchStyle: TextFieldStyle {
     }
 }
 
-
-
-
-struct SimpleSearchStyle: TextFieldStyle {
-    @State private var isHovered = false
-    @FocusState private var isFocused: Bool
-    @State var icon: Image?
-    @State var trash: Bool = false
-    @Binding var text: String
-    @EnvironmentObject var appState: AppState
-    @AppStorage("settings.general.mini") private var mini: Bool = false
-
-    func _body(configuration: TextField<Self._Label>) -> some View {
-        
-        HStack(spacing: 5) {
-            
-            HStack(spacing: 5) {
-                if icon != nil {
-                    icon
-                        .foregroundColor(Color("mode").opacity(0.5))
-                }
-                
-                configuration
-                    .font(.title3)
-                    .textFieldStyle(PlainTextFieldStyle())
-
-                
-                if trash && text != "" {
-                    Image(systemName: "xmark")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 10, height: 10)
-                        .padding(.trailing, 5)
-                        .foregroundStyle(isHovered ? Color("mode").opacity(0.8) : Color("mode").opacity(0.5))
-                        .onTapGesture {
-                            text = ""
-                        }
-                        .help("Clear search")
-                }
-            }
-            
-        }
-        .padding(6)
-        .overlay(
-            RoundedRectangle(cornerRadius: 6)
-                .strokeBorder(Color("mode").opacity(0.2), lineWidth: 1)
-                .allowsHitTesting(false)
-        )
-        .onHover { hovering in
-            withAnimation(Animation.easeInOut(duration: 0.15)) {
-                self.isHovered = hovering
-                self.isFocused = true
-            }
-        }
-        .focused($isFocused)
-        .onAppear {
-            updateOnMain {
-                self.isFocused = false
-            }
-        }
-    }
-}
 
 
 struct GlassEffect: NSViewRepresentable {

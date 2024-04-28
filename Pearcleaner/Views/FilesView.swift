@@ -25,7 +25,7 @@ struct FilesView: View {
     var regularWin: Bool
     @State private var elapsedTime = 0
     @State private var timer: Timer? = nil
-    
+
     var body: some View {
 
 
@@ -80,25 +80,25 @@ struct FilesView: View {
                 }
             } else {
                 // Titlebar
-                if !regularWin {
-                    HStack(spacing: 0) {
+                HStack(spacing: 0) {
 
-                        Spacer()
+                    Spacer()
 
-                        Button("Close") {
-                            updateOnMain {
-                                appState.appInfo = AppInfo.empty
-                                search = ""
-                                appState.currentView = .apps
-                                showPopover = false
-                            }
+                    Button("Close") {
+                        updateOnMain {
+                            appState.appInfo = AppInfo.empty
+                            search = ""
+                            appState.currentView = .apps
+                            showPopover = false
                         }
-                        .buttonStyle(SimpleButtonStyle(icon: "x.circle.fill", help: "Close"))
                     }
-                    .padding([.horizontal, .top], 5)
+                    .buttonStyle(SimpleButtonStyle(icon: "x.circle", iconFlip: "x.circle.fill", help: "Close"))
                 }
+                .padding(.top, 6)
+                .padding(.trailing, (mini || menubarEnabled) ? 6 : 0)
+
                 VStack(spacing: 0) {
-                    
+
                     // Main Group
                     HStack(alignment: .center) {
 
@@ -149,7 +149,7 @@ struct FilesView: View {
                         }
                         .padding(.horizontal, 20)
                         .padding(.top, 0)
-                        
+
                     }
 
 
@@ -163,6 +163,8 @@ struct FilesView: View {
                                 }
                             }
                         ))
+                        .toggleStyle(SimpleCheckboxToggleStyle())
+                        .help("All checkboxes")
 
 
                         Spacer()
@@ -244,9 +246,11 @@ struct FilesView: View {
                                     let iconImage = fileIcon.map(Image.init(nsImage:))
                                     VStack {
                                         FileDetailsItem(size: fileSize, sizeL: fileSizeL, icon: iconImage, path: path)
-                                        if index < sort.count - 1 {
-                                            Divider().padding(.leading, 40).opacity(0.5)
-                                        }
+                                            .padding(.vertical, 5)
+//                                            .padding(.leading, 40)
+//                                        if index < sort.count - 1 {
+//                                            Divider().padding(.leading, 40).opacity(0.5)
+//                                        }
                                     }
                                 }
                             }
@@ -269,25 +273,27 @@ struct FilesView: View {
 
                         Button("\(sizeType == "Logical" ? totalSelectedSize.logical : sizeType == "Finder" ? totalSelectedSize.finder : totalSelectedSize.real)") {
                             Task {
-                                updateOnMain {
-                                    search = ""
-                                    if !regularWin {
-                                        appState.currentView = .apps
-                                        showPopover = false
-                                    } else {
-                                        appState.currentView = .empty
+                                if appState.selectedItems.count == appState.appInfo.fileSize.keys.count {
+                                    updateOnMain {
+                                        search = ""
+                                        if mini || menubarEnabled {
+                                            appState.currentView = .apps
+                                            showPopover = false
+                                        } else {
+                                            appState.currentView = .empty
+                                        }
                                     }
                                 }
+
                                 let selectedItemsArray = Array(appState.selectedItems)
 
                                 killApp(appId: appState.appInfo.bundleIdentifier) {
                                     moveFilesToTrash(at: selectedItemsArray) {
                                         withAnimation {
                                             showPopover = false
-                                            updateOnMain {
-                                                appState.currentView = mini ? .apps : .empty
-//                                                appState.isReminderVisible.toggle()
-                                            }
+//                                            updateOnMain {
+//                                                appState.currentView = mini ? .apps : .empty
+//                                            }
                                             if sentinel {
                                                 launchctl(load: true)
                                             }
@@ -300,15 +306,20 @@ struct FilesView: View {
                                             removeApp(appState: appState, withId: appState.appInfo.id)
                                         } else {
                                             // Add deleted appInfo object to trashed array
-                                            appState.appInfo.fileSize = [:]
                                             appState.trashedFiles.append(appState.appInfo)
 
-                                            // Clear out appInfoStore object
+                                            // Clear out appInfoStore object (Used for leftover file search)
                                             if let index = appState.appInfoStore.firstIndex(where: { $0.path == appState.appInfo.path }) {
                                                 appState.appInfoStore[index] = .empty
                                             }
+
+                                            updateOnMain {
+                                                // Remove items from the list
+                                                appState.appInfo.fileSize = appState.appInfo.fileSize.filter { !appState.selectedItems.contains($0.key) }
+                                                // Update the selectedFiles to remove references that are no longer present
+                                                appState.selectedItems.removeAll()
+                                            }
                                         }
-                                        appState.appInfo = AppInfo.empty
                                     }
                                 }
 
@@ -319,8 +330,6 @@ struct FilesView: View {
                         .disabled(appState.selectedItems.isEmpty)
                         .padding(.top)
 
-
-//                        Spacer()
 
                     }
 
@@ -360,7 +369,7 @@ struct FileDetailsItem: View {
                     }
                 }
             ))
-
+            .toggleStyle(SimpleCheckboxToggleStyle())
             .disabled(self.path.path.contains(".Trash"))
 
             if let appIcon = icon {
@@ -369,8 +378,6 @@ struct FileDetailsItem: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 30, height: 30)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
-                    .brightness(isHovered ? 0.2 : 0)
-                    .shadow(color: Color("mode"), radius: isHovered ? 2 : 0)
 
             }
 
@@ -382,6 +389,17 @@ struct FileDetailsItem: View {
                         .lineLimit(1)
                         .truncationMode(.tail)
                         .help(path.lastPathComponent)
+                        .overlay{
+                            if (isHovered) {
+                                VStack {
+                                    Spacer()
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .fill(Color("mode").opacity(0.5))
+                                        .frame(height: 1.5)
+                                        .offset(y: 3)
+                                }
+                            }
+                        }
 
                     if isNested(path: path) {
                         InfoButton(text: "Application file is nested within subdirectories. To prevent deleting incorrect folders, Pearcleaner will leave these alone. You may manually delete the remaining folders if required.", color: nil, label: "")
@@ -398,7 +416,17 @@ struct FileDetailsItem: View {
                     .truncationMode(.tail)
                     .opacity(0.5)
                     .help(path.path)
+
             }
+            .onTapGesture {
+                NSWorkspace.shared.selectFile(path.path, inFileViewerRootedAtPath: path.deletingLastPathComponent().path)
+            }
+            .onHover { hovering in
+                withAnimation(Animation.easeIn(duration: 0.2)) {
+                    self.isHovered = hovering
+                }
+            }
+
 
             Spacer()
 
@@ -408,14 +436,6 @@ struct FileDetailsItem: View {
 
             Text("\(displaySize)")
 
-        }
-        .onHover { hovering in
-            withAnimation(Animation.easeIn(duration: 0.2)) {
-                self.isHovered = hovering
-            }
-        }
-        .onTapGesture {
-            NSWorkspace.shared.selectFile(path.path, inFileViewerRootedAtPath: path.deletingLastPathComponent().path)
         }
         .contextMenu {
             if path.pathExtension == "app" {

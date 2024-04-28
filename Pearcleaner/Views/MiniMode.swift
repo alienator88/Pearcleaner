@@ -28,56 +28,17 @@ struct MiniMode: View {
             VStack(spacing: 0) {
                 Group {
                     if appState.currentView == .empty {
-                        TopBarMini(search: $search, showPopover: $showPopover)
                         MiniEmptyView(showPopover: $showPopover)
                     } else {
-                        TopBarMini(search: $search, showPopover: $showPopover)
                         MiniAppView(search: $search, showPopover: $showPopover)
-
                     }
                 }
                 .transition(.opacity)
             }
-            .popover(isPresented: $showPopover, arrowEdge: .trailing) {
-                VStack {
-                    if appState.currentView == .files {
-                        FilesView(showPopover: $showPopover, search: $search, regularWin: false)
-                            .id(appState.appInfo.id)
-                    } else if appState.currentView == .zombie {
-                        ZombieView(showPopover: $showPopover, search: $search, regularWin: false)
-                            .id(appState.appInfo.id)
-                    }
-
-                }
-                .interactiveDismissDisabled(popoverStay)
-//                .background(Color("pop"))
-//                .background(backgroundView(themeSettings: themeSettings, glass: false).padding(-80))
-                .background(backgroundView(themeSettings: themeSettings, glass: glass).padding(-80))
-//                .background(
-//                    Group {
-//                        if glass {
-//                            backgroundView(themeSettings: themeSettings).padding(-80)
-////                            GlassEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all)
-//                        } else {
-//                            Rectangle()
-//                                .fill(Color("pop"))
-//                                .padding(-80)
-//                        }
-//                    }
-//                )
-                .frame(width: 650, height: 550)
-
-            }
-
-            
         }
         .frame(minWidth: 300, minHeight: 345)
         .edgesIgnoringSafeArea(.all)
         .background(backgroundView(themeSettings: themeSettings, glass: glass))
-//        .background(glass ? GlassEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all) : nil)
-        // MARK: Background for whole app
-        //        .background(Color("bg").opacity(1))
-        //        .background(VisualEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all))
         
     }
 }
@@ -95,6 +56,7 @@ struct MiniEmptyView: View {
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.general.animateLogo") private var animateLogo: Bool = true
     @Binding var showPopover: Bool
+    @State private var animationStart = false
 
     var body: some View {
         VStack(alignment: .center) {
@@ -102,7 +64,7 @@ struct MiniEmptyView: View {
             Spacer()
             
             if #available(macOS 14, *) {
-                if animateLogo {
+                if animateLogo && animationStart {
                     LinearGradient(gradient: Gradient(colors: [.green, .orange]), startPoint: .leading, endPoint: .trailing)
                         .mask(
                             Image(systemName: "plus.square.dashed")
@@ -144,36 +106,28 @@ struct MiniEmptyView: View {
                     )
             }
 
-
-
             Text("Drop an app here")
                 .font(.title3)
+                .opacity(0.7)
+
+            Text("Click for apps list")
+                .font(.footnote)
                 .padding(.bottom, 25)
                 .opacity(0.5)
 
-
             Spacer()
-            
-
-//            if appState.isReminderVisible {
-//                Text("CMD + Z to undo")
-//                    .font(.title2)
-//                    .foregroundStyle(Color("mode").opacity(0.5))
-//                    .fontWeight(.medium)
-//                    .onAppear {
-//                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-//                            withAnimation {
-//                                updateOnMain {
-//                                    appState.isReminderVisible = false
-//                                }
-//                            }
-//                        }
-//                    }
-//            }
-//
-//            Spacer()
 
             
+        }
+        .onTapGesture {
+            withAnimation(.easeInOut(duration: 0.5)) {
+                appState.currentView = .apps
+            }
+        }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                animationStart = true
+            }
         }
     }
 }
@@ -185,52 +139,58 @@ struct MiniEmptyView: View {
 struct MiniAppView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var locations: Locations
+    @EnvironmentObject var themeSettings: ThemeSettings
     @State private var animateGradient: Bool = false
     @Binding var search: String
     @State private var showSys: Bool = true
     @State private var showUsr: Bool = true
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.general.glass") private var glass: Bool = true
+    @AppStorage("settings.general.popover") private var popoverStay: Bool = true
+    @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
+    @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 280
     @Binding var showPopover: Bool
-    
+    @State private var showMenu = false
+
     var body: some View {
-        
-        var filteredApps: [AppInfo] {
-            if search.isEmpty {
-                return appState.sortedApps
-            } else {
-                return appState.sortedApps.filter { $0.appName.localizedCaseInsensitiveContains(search) }
-            }
-        }
-        
+
+
         ZStack {
-            HStack(spacing: 0){
-                
-                if appState.reload {
-                    VStack {
-                        Spacer()
-                        ProgressView("Refreshing app list")
-                        Spacer()
-                    }
-                    .padding(.vertical)
-                } else {
-                    VStack(alignment: .center) {
 
-                        AppsListView(search: $search, showPopover: $showPopover, filteredApps: filteredApps)
-
-                        if appState.currentView != .empty {
-                            SearchBarMiniBottom(search: $search)
-                                .padding(.horizontal)
-                                .padding(.top, 5)
-                        }
-                    }
-                    .padding(.bottom)
+            if appState.reload {
+                VStack {
+                    Spacer()
+                    ProgressView("Refreshing app list")
+                    Spacer()
                 }
-                
-                
+                .padding(.vertical)
+            } else {
+                Searchbar(glass: glass, sidebarWidth: sidebarWidth, menubarEnabled: menubarEnabled, mini: mini, search: $search, showPopover: $showPopover)
             }
+
         }
         .transition(.opacity)
+        .frame(minWidth: 300, minHeight: 370)
+        .edgesIgnoringSafeArea(.all)
+        .background(backgroundView(themeSettings: themeSettings, glass: glass).padding(-80))
+        .transition(.opacity)
+        .popover(isPresented: $showPopover, arrowEdge: .trailing) {
+            VStack {
+                if appState.currentView == .files {
+                    FilesView(showPopover: $showPopover, search: $search, regularWin: false)
+                        .id(appState.appInfo.id)
+                } else if appState.currentView == .zombie {
+                    ZombieView(showPopover: $showPopover, search: $search, regularWin: false)
+                        .id(appState.appInfo.id)
+                }
+
+            }
+            .interactiveDismissDisabled(popoverStay)
+            .background(backgroundView(themeSettings: themeSettings, glass: glass).padding(-80))
+            .frame(width: 650, height: 500)
+
+        }
     }
 }
 

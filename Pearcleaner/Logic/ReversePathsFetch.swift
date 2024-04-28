@@ -39,6 +39,7 @@ class ReversePathsSearcher {
         let allNames = appState.appInfoStore.map { $0.appName.pearFormat() }
 
         for location in locations.reverse.paths where fileManager.fileExists(atPath: location) {
+
             dispatchGroup.enter()
             processLocation(location, allPaths: allPaths, allNames: allNames)
             dispatchGroup.leave()

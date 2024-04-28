@@ -25,7 +25,7 @@ struct AppListItems: View {
     let itemId = UUID()
     let appInfo: AppInfo
     var isSelected: Bool {
-        appState.appInfo.id == appInfo.id
+        appState.appInfo.path == appInfo.path
     }
     @State private var hoveredItemPath: URL? = nil
     var body: some View {
@@ -39,7 +39,8 @@ struct AppListItems: View {
                         Image(nsImage: appIcon)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: (isHovered || isSelected) ? 32 : 30, height: (isHovered || isSelected) ? 32 : 30)
+                            .frame(width: 30)
+//                            .frame(width: (isHovered || isSelected) ? 32 : 30, height: (isHovered || isSelected) ? 32 : 30)
                             .clipShape(RoundedRectangle(cornerRadius: 8))
 //                            .shadow(color: Color("pop").opacity(0.8), radius: isSelected ? 2 : 0)
                     }

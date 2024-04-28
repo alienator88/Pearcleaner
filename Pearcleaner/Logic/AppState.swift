@@ -24,14 +24,13 @@ class AppState: ObservableObject
     @Published var currentView = CurrentDetailsView.empty
     @Published var showAlert: Bool = false
     @Published var sidebar: Bool = true
-//    @Published var isReminderVisible: Bool = false
     @Published var releases = [Release]()
     @Published var progressBar: (String, Double) = ("Ready", 0.0)
     @Published var reload: Bool = false
     @Published var showProgress: Bool = false
     @Published var finderExtensionEnabled: Bool = false
 
-    
+
     init() {
         self.appInfo = AppInfo(
             id: UUID(),

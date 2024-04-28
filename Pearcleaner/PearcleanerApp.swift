@@ -104,7 +104,7 @@ struct PearcleanerApp: App {
                 // Enable menubar item
                 if menubarEnabled {
                     MenuBarExtraManager.shared.addMenuBarExtra(withView: {
-                        MenuBarMiniAppView(search: $search, showPopover: $showPopover)
+                        MiniAppView(search: $search, showPopover: $showPopover)
                             .environmentObject(locations)
                             .environmentObject(appState)
                             .environmentObject(fsm)

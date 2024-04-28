@@ -11,26 +11,22 @@ import SwiftUI
 struct RegularMode: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var themeSettings: ThemeSettings
+    @EnvironmentObject var locations: Locations
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 280
+    @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
+    @AppStorage("settings.general.mini") private var mini: Bool = false
     @Binding var search: String
     @State private var showSys: Bool = true
     @State private var showUsr: Bool = true
     @Binding var showPopover: Bool
-
-
-    var filteredApps: [AppInfo] {
-        if search.isEmpty {
-            return appState.sortedApps
-        } else {
-            return appState.sortedApps.filter { $0.appName.localizedCaseInsensitiveContains(search) }
-        }
-    }
+    @State private var showMenu = false
 
 
     var body: some View {
 
         HStack(alignment: .center, spacing: 0) {
+
             // App List
             HStack(spacing: 0){
 
@@ -43,25 +39,9 @@ struct RegularMode: View {
                     .frame(width: sidebarWidth)
                     .padding(.vertical)
                 } else {
-                    VStack(alignment: .center) {
-
-                        VStack(alignment: .center, spacing: 20) {
-                            HStack {
-                                SearchBarMiniBottom(search: $search)
-                                    .padding(.horizontal)
-
-                            }
-                        }
-                        .padding(.top, 20)
-
-
-                        AppsListView(search: $search, showPopover: $showPopover, filteredApps: filteredApps)
-
-                    }
-                    .frame(width: sidebarWidth)
-                    .padding(.vertical, 7)
+                    Searchbar(glass: glass, sidebarWidth: sidebarWidth, menubarEnabled: menubarEnabled, mini: mini, search: $search, showPopover: $showPopover)
+                        .frame(width: sidebarWidth)
                 }
-
 
             }
             .background(backgroundView(themeSettings: themeSettings, darker: true, glass: glass))
@@ -73,22 +53,21 @@ struct RegularMode: View {
 
 
             // Details View
-            VStack(spacing: 0) {
+            HStack(spacing: 0) {
+                Spacer()
                 Group {
                     if appState.currentView == .empty || appState.currentView == .apps {
-                        TopBar(showPopover: $showPopover)
                         AppDetailsEmptyView(showPopover: $showPopover)
                     } else if appState.currentView == .files {
-                        TopBar(showPopover: $showPopover)
                         FilesView(showPopover: $showPopover, search: $search, regularWin: true)
                             .id(appState.appInfo.id)
                     } else if appState.currentView == .zombie {
-                        TopBar(showPopover: $showPopover)
                         ZombieView(showPopover: $showPopover, search: $search, regularWin: true)
                             .id(appState.appInfo.id)
                     }
                 }
                 .transition(.opacity)
+                Spacer()
             }
             .zIndex(2)
             .background(backgroundView(themeSettings: themeSettings))
@@ -109,13 +88,14 @@ struct AppDetailsEmptyView: View {
     @EnvironmentObject var locations: Locations
     @AppStorage("settings.general.animateLogo") private var animateLogo: Bool = true
     @Binding var showPopover: Bool
+    @State private var animationStart = false
 
     var body: some View {
         VStack(alignment: .center) {
 
             Spacer()
             if #available(macOS 14, *) {
-                if animateLogo {
+                if animateLogo && animationStart {
                     PearDropView()
                         .phaseAnimator([false, true]) { wwdc24, chromaRotate in
                             wwdc24
@@ -139,75 +119,10 @@ struct AppDetailsEmptyView: View {
                 .padding(.bottom, 25)
                 .opacity(0.5)
         }
-    }
-}
-
-
-struct SearchBar: View {
-    @Binding var search: String
-
-    var body: some View {
-        HStack {
-            TextField("Search", text: $search)
-                .textFieldStyle(SimpleSearchStyle(icon: Image(systemName: "magnifyingglass"),trash: true, text: $search))
-        }
-        .frame(height: 30)
-    }
-}
-
-
-struct Header: View {
-    let title: String
-    let count: Int
-    @State private var hovered = false
-    @EnvironmentObject var appState: AppState
-    @EnvironmentObject var locations: Locations
-    @EnvironmentObject var fsm: FolderSettingsManager
-    @Binding var showPopover: Bool
-    @AppStorage("settings.general.glass") private var glass: Bool = true
-
-
-    var body: some View {
-        HStack {
-            Text("\(title)").foregroundStyle(Color("mode")).opacity(0.5)
-
-            Text("\(count)")
-                .font(.system(size: 10))
-                .monospacedDigit()
-                .frame(minWidth: count > 99 ? 30 : 24, minHeight: 17)
-                .background(Color("mode").opacity(0.1))
-                .clipShape(.capsule)
-                .padding(.leading, 2)
-
-            Spacer()
-
-            if hovered {
-                Text("REFRESH")
-                    .font(.system(size: 10))
-                    .monospaced()
-                    .foregroundStyle(Color("mode").opacity(0.8))
-            }
-
-        }
-        .onHover { hovering in
-            withAnimation() {
-                hovered = hovering
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                animationStart = true
             }
         }
-        .onTapGesture {
-            withAnimation {
-                // Refresh Apps list
-                appState.reload.toggle()
-                showPopover = false
-                let sortedApps = getSortedApps(paths: fsm.folderPaths, appState: appState)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    appState.sortedApps = sortedApps
-                    appState.reload.toggle()
-                }
-            }
-        }
-        .frame(minHeight: 20)
-        .help("Click header or ⌘+R to refresh apps list")
-        .padding(5)
     }
 }

@@ -386,6 +386,9 @@ func removeApp(appState: AppState, withId id: UUID) {
         if brew {
             caskCleanup(app: appState.appInfo.appName)
         }
+
+        appState.appInfo = AppInfo.empty
+
     }
 }
 
