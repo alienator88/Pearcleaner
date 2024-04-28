@@ -20,7 +20,7 @@ A free, source-available and fair-code licensed mac app cleaner inspired by [Fre
 This project was born out of wanting to learn more on how macOS deals with app installation/uninstallation and getting more Swift experience. If you have suggestions I'm open to hearing them, submit a feature request!
 
 ### TOC
-[Monetization](#monetization)
+[License](#license)
 
 [Features](#features)
 
@@ -34,10 +34,11 @@ This project was born out of wanting to learn more on how macOS deals with app i
 
 [Other Apps](#other-apps)
 
-## Monetization
->In asserting my ethical stance on software management, I've implemented a Commons Clause in the Apache 2.0 licensing agreement of Pearcleaner to explicitly prohibit any form of monetization. This stance is rooted in the belief that the functionality to cleanly uninstall applications should be a standard, no-cost feature within operating systems. Since macOS does not currently offer this essential feature, my application(and others) fill this gap by providing a transparent and privacy-focused alternative. By legally ensuring that this software remains free of charge, I am upholding a commitment to software transparency and user privacy, guaranteeing that this critical tool remains accessible to all, thereby fostering an environment of trust and utility.
+<br>
 
-Be weary of copy clones [like this](https://apps.apple.com/us/app/cyclear/id6480414027?mt=12) charging exorbitant amounts for an app that is free and will remain free.
+## License
+> [!IMPORTANT]
+> Pearcleaner is licensed under Apache 2.0 with [Commons Clause](https://commonsclause.com/). This means that you can do anything you'd like with the source, modify it, contribute to it, etc., but the license explicitly prohibits any form of monetization for Pearcleaner or any modified versions of it. See full license [HERE](https://github.com/alienator88/Pearcleaner/blob/main/LICENSE.md)
 
 ## Features
 - 100% Swift
@@ -48,12 +49,12 @@ Be weary of copy clones [like this](https://apps.apple.com/us/app/cyclear/id6480
 - Mini mode which can be enabled from Settings
 - Menubar option
 - Can drop apps to uninstall directly on the Pearcleaner Dock icon itself or the drop target in the app window
-- Optional Finder Extension which allows you to uninstall an app directly from Finder by right clicking > Pearcleaner Uninstall
+- Optional Finder Extension which allows you to uninstall an app directly from Finder by `right click > Pearcleaner Uninstall`
 - Theme System available with custom color selector
 - Will differentiate between regular apps and Safari web-apps with a "web" label and also iOS apps with an "iOS" label next to each item in the list
 - Has clean uninstall menu option for the Pearcleaner app itself if you want to stop using it and get rid of all files and launch items
 - New feature alert on app startup
-- Can update app conditions remotely for finding more files for unique apps, therefore not requiring a new app updates/releases
+- Can update app conditions remotely for finding more files for unique apps, therefore not requiring new app updates/releases
 - Optional Homebrew cleanup
 - Custom auto-updater that pulls latest release notes and binaries from GitHub Releases (Pearcleaner should run from `/Applications` folder to avoid permission issues)
 
@@ -115,9 +116,10 @@ Be weary of copy clones [like this](https://apps.apple.com/us/app/cyclear/id6480
 
 
 ## Requirements
-- MacOS 13.0+ (App uses a lot of newer SwiftUI functions/modifiers which don't work on any OS lower than 13.0)
-- Open Pearcleaner first time by right clicking and selecting Open. This adds an exception to Gatekeeper so it doesn't complain about the app not being signed with an Apple Developer certificate
-- Full Disk permission to search for files and also Accessibility permission to delete/restore files
+> [!NOTE]
+> - MacOS 13.0+ (App uses a lot of newer SwiftUI functions/modifiers which don't work on any OS lower than 13.0)
+> - Open Pearcleaner first time by right clicking and selecting Open. This adds an exception to Gatekeeper so it doesn't complain about the app not being signed with an Apple Developer certificate
+> - Full Disk permission to search for files and also Accessibility permission to delete/restore files
 
 
 
@@ -126,15 +128,15 @@ Be weary of copy clones [like this](https://apps.apple.com/us/app/cyclear/id6480
 <details>
   <summary>Releases</summary>
 
-> Pre-compiled, always up-to-date versions are available from my releases page.
-You might need to open this with right click-open since I don't have a paid developer account.
+Pre-compiled, always up-to-date versions are available from my [releases](https://github.com/alienator88/Pearcleaner/releases) page.
+You will need to open Pearcleaner the first time with `right click -> Open` since it's not signed.
 </details>
 
 <details>
   <summary>Homebrew</summary>
    
-> Since I don't have a paid developer account, I can't submit to the main Homebrew cask repo.
-You can still add the app via Homebrew by tapping my homebrew repo:
+Without a paid developer account, I can't submit to the main Homebrew cask repo.
+You can still add the app via Homebrew by tapping my homebrew repo directly:
 ```
 brew install alienator88/homebrew-cask/pearcleaner
 ```
@@ -151,5 +153,3 @@ Much appreciation to [Freemacsoft's AppCleaner](https://freemacsoft.net/appclean
 [Sentinel](https://github.com/alienator88/Sentinel) - A GUI for controlling gatekeeper status on your mac
 
 [Viz](https://github.com/alienator88/Viz) - Utility for extracting text from images, videos, qr/barcodes
-
-[McBrew](https://github.com/alienator88/McBrew) - A GUI for managing your homebrew
