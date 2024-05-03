@@ -18,11 +18,9 @@ struct FilesView: View {
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
-    @State private var localKey = UUID()
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
     @Binding var search: String
-    var regularWin: Bool
     @State private var elapsedTime = 0
     @State private var timer: Timer? = nil
 
@@ -247,20 +245,12 @@ struct FilesView: View {
                                     VStack {
                                         FileDetailsItem(size: fileSize, sizeL: fileSizeL, icon: iconImage, path: path)
                                             .padding(.vertical, 5)
-//                                            .padding(.leading, 40)
-//                                        if index < sort.count - 1 {
-//                                            Divider().padding(.leading, 40).opacity(0.5)
-//                                        }
                                     }
                                 }
                             }
 
                         }
                         .padding()
-                        .onChange(of: sizeType) { _ in
-                            localKey = UUID()
-                        }
-                        .id(localKey)
                     }
 
 

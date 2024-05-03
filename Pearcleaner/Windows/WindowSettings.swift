@@ -27,10 +27,21 @@ class WindowSettings {
 
     func loadWindowSettings() -> NSRect {
 
+        // Retrieve window size
         let width = CGFloat(UserDefaults.standard.float(forKey: mini ? windowWidthKeyMini : windowWidthKey))
         let height = CGFloat(UserDefaults.standard.float(forKey: mini ? windowHeightKeyMini : windowHeightKey))
-        let x = CGFloat(UserDefaults.standard.float(forKey: windowXKey))
-        let y = CGFloat(UserDefaults.standard.float(forKey: windowYKey))
+
+        // Set default middle position if not set in UserDefaults
+        var x = CGFloat(UserDefaults.standard.float(forKey: windowXKey))
+        var y = CGFloat(UserDefaults.standard.float(forKey: windowYKey))
+
+        if UserDefaults.standard.object(forKey: windowXKey) == nil || UserDefaults.standard.object(forKey: windowYKey) == nil {
+            // Set window to center of the screen if not set
+            let screenSize = NSScreen.main?.frame.size ?? NSSize(width: 800, height: 600) // Fallback screen size
+            x = (screenSize.width - width) / 2
+            y = (screenSize.height - height) / 2
+        }
+
         return NSRect(x: x, y: y, width: width, height: height)
     }
 
@@ -49,7 +60,6 @@ class WindowSettings {
         newWindow.titleVisibility = .hidden
         newWindow.setFrameAutosaveName("Pearcleaner")
         newWindow.contentView = NSHostingView(rootView: contentView())
-//        self.window = newWindow
         self.windows.append(newWindow)
         newWindow.makeKeyAndOrderFront(nil)
     }

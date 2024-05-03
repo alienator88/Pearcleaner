@@ -21,17 +21,31 @@ struct FolderSettingsTab: View {
     @EnvironmentObject var locations: Locations
     @EnvironmentObject var fsm: FolderSettingsManager
     @State private var isHovered = false
-    @State private var isHoveredPlus = false
 
     var body: some View {
         Form {
-            VStack {
+            VStack(spacing: 0) {
 
                 HStack(spacing: 0) {
                     Text("Apps").font(.title2)
-                    InfoButton(text: "Locations that will be searched for .app files. Click a non-default path to remove it. Add new folders below or drag/drop a folder over the list.", color: nil, label: "")
+                    InfoButton(text: "Locations that will be searched for .app files. Click a non-default path to remove it. Add new folders using the + button or drag/drop over the list. Non-default paths can't be removed.", color: nil, label: "")
                     Spacer()
+
+                    Button("") {
+                        selectFolder()
+                    }
+                    .buttonStyle(SimpleButtonStyle(icon: "plus", help: "Add folder"))
+                    .onHover(perform: { hovering in
+                        if hovering {
+                            NSCursor.pointingHand.push()
+
+                        } else {
+                            NSCursor.pop()
+                        }
+                    })
+
                 }
+                .padding(.bottom, 5)
 
 
                 ScrollView {
@@ -92,38 +106,92 @@ struct FolderSettingsTab: View {
                 }
 
 
+                Divider()
+                    .padding(.vertical)
 
+                // === LEFTOVER FILES ================================================================================================
 
+                HStack(spacing: 0) {
+                    Text("Leftover Files").font(.title2)
+                    InfoButton(text: "Add files or folders that will be ignored when searching for leftover files. Click a path to remove it from the list. Add new files/folders using the + button or drag/drop over the list.", color: nil, label: "")
+                    Spacer()
 
-                // === OTHER ================================================================================================
-
-                ZStack {
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(Color("mode").opacity(0.1))
-//                        .strokeBorder(Color("mode").opacity(0.1), lineWidth: 2)
-                        .frame(width: 300, height: 100)
-
-                    Image(systemName: "plus")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 30, height: 30)
-                        .foregroundStyle(isHoveredPlus ? Color("mode") : Color("mode").opacity(0.5))
-                }
-                .padding(.top)
-                .onTapGesture {
-                    selectFolder()
-                }
-                .onHover { hovering in
-                    withAnimation(Animation.easeInOut(duration: 0.4)) {
-                        isHoveredPlus = hovering
+                    Button("") {
+                        selectFilesFoldersZ()
                     }
-                    if isHoveredPlus {
-                        NSCursor.pointingHand.push()
-                    } else {
-                        NSCursor.pop()
-                    }
+                    .buttonStyle(SimpleButtonStyle(icon: "plus", help: "Add file/folder"))
+                    .onHover(perform: { hovering in
+                        if hovering {
+                            NSCursor.pointingHand.push()
+                        } else {
+                            NSCursor.pop()
+                        }
+                    })
                 }
+                .padding(.bottom, 5)
 
+
+                ScrollView {
+                    VStack(spacing: 5) {
+                        if fsm.fileFolderPathsZ.count == 0 {
+                            HStack {
+                                Text("No files or folders added")
+                                    .font(.callout)
+                                    .opacity(0.5)
+                                    .padding(5)
+                                Spacer()
+                            }
+                            .disabled(true)
+                        }
+                        ForEach(fsm.fileFolderPathsZ.indices, id: \.self) { index in
+                            HStack {
+
+                                Text(fsm.fileFolderPathsZ[index])
+                                    .font(.callout)
+                                    .padding(5)
+                                Spacer()
+                            }
+                            .onHover { hovering in
+                                withAnimation(Animation.easeInOut(duration: 0.4)) {
+                                    isHovered = hovering
+                                }
+                                if isHovered {
+                                    NSCursor.disappearingItem.push()
+                                } else {
+                                    NSCursor.pop()
+                                }
+                            }
+                            .onTapGesture {
+                                fsm.removePathZ(at: index)
+                            }
+
+                            if index != fsm.fileFolderPathsZ.indices.last {
+                                Divider().opacity(0.5)
+                            }
+                        }
+
+                    }
+
+                }
+                .scrollIndicators(.automatic)
+                .padding()
+                .background(Color("mode").opacity(0.05))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .onDrop(of: ["public.file-url"], isTargeted: nil) { providers -> Bool in
+                    providers.forEach { provider in
+                        provider.loadDataRepresentation(forTypeIdentifier: "public.file-url") { (data, error) in
+                            guard let data = data, error == nil,
+                                  let url = URL(dataRepresentation: data, relativeTo: nil) else {
+                                printOS("FSM: Failed to load URL")
+                                return
+                            }
+                            updateOnMain {
+                                fsm.addPathZ(url.path)
+                            }
+                        }
+                    }
+                    return true
+                }
 
 
 
@@ -134,7 +202,7 @@ struct FolderSettingsTab: View {
 
         }
         .padding(20)
-        .frame(width: 500, height: 420)
+        .frame(width: 500, height: 600)
 
     }
 
@@ -157,46 +225,100 @@ struct FolderSettingsTab: View {
         }
     }
 
+
+    private func selectFilesFoldersZ() {
+        let dialog = NSOpenPanel()
+        dialog.title                   = "Choose files or folders"
+        dialog.showsResizeIndicator    = false
+        dialog.showsHiddenFiles        = true
+        dialog.canChooseDirectories    = true
+        dialog.canCreateDirectories    = false
+        dialog.canChooseFiles          = true
+
+        if dialog.runModal() == NSApplication.ModalResponse.OK {
+            if let result = dialog.url {
+                fsm.addPathZ(result.path)
+            }
+        } else {
+            return
+        }
+    }
+
 }
 
 
 
 class FolderSettingsManager: ObservableObject {
     @Published var folderPaths: [String] = []
-    private let userDefaultsKey = "settings.folders.apps"
+    @Published var fileFolderPathsZ: [String] = []
+    private let appsKey = "settings.folders.apps"
+    private let zombieKey = "settings.folders.zombie"
     let defaultPaths = ["/Applications", "\(NSHomeDirectory())/Applications"]
 
     init() {
         loadDefaultPathsIfNeeded()
     }
 
+
+
+    // Application folders //////////////////////////////////////////////////////////////////////////////////
     private func loadDefaultPathsIfNeeded() {
-        var paths = UserDefaults.standard.stringArray(forKey: userDefaultsKey) ?? defaultPaths
-        if paths.count < 2 {
-            paths = defaultPaths
+        var appsPaths = UserDefaults.standard.stringArray(forKey: appsKey) ?? defaultPaths
+        let zombiePaths = UserDefaults.standard.stringArray(forKey: zombieKey) ?? []
+        if appsPaths.count < 2 {
+            appsPaths = defaultPaths
         }
-        UserDefaults.standard.set(paths, forKey: userDefaultsKey)
-        self.folderPaths = paths
+        UserDefaults.standard.set(appsPaths, forKey: appsKey)
+        self.folderPaths = appsPaths
+        self.fileFolderPathsZ = zombiePaths
     }
 
     func addPath(_ path: String) {
         if !self.folderPaths.contains(path) {
             self.folderPaths.append(path)
-            UserDefaults.standard.set(self.folderPaths, forKey: userDefaultsKey)
+            UserDefaults.standard.set(self.folderPaths, forKey: appsKey)
         }
     }
 
     func removePath(at index: Int) {
         guard self.folderPaths.indices.contains(index) else { return }
         self.folderPaths.remove(at: index) // Update local state
-        UserDefaults.standard.set(self.folderPaths, forKey: userDefaultsKey)
+        UserDefaults.standard.set(self.folderPaths, forKey: appsKey)
     }
 
     func refreshPaths() {
-        self.folderPaths = UserDefaults.standard.stringArray(forKey: userDefaultsKey) ?? defaultPaths
+        self.folderPaths = UserDefaults.standard.stringArray(forKey: appsKey) ?? defaultPaths
     }
 
     func getPaths() -> [String] {
-        return UserDefaults.standard.stringArray(forKey: userDefaultsKey) ?? defaultPaths
+        return UserDefaults.standard.stringArray(forKey: appsKey) ?? defaultPaths
     }
+
+
+
+    // Leftover files //////////////////////////////////////////////////////////////////////////////////
+    func addPathZ(_ path: String) {
+        let sanitizedPath = path.hasPrefix("/private") ? String(path.dropFirst(8)) : path
+
+        if !self.fileFolderPathsZ.contains(sanitizedPath) {
+            self.fileFolderPathsZ.append(sanitizedPath)
+            UserDefaults.standard.set(self.fileFolderPathsZ, forKey: zombieKey)
+        }
+    }
+
+    func removePathZ(at index: Int) {
+        guard self.fileFolderPathsZ.indices.contains(index) else { return }
+        self.fileFolderPathsZ.remove(at: index) // Update local state
+        UserDefaults.standard.set(self.fileFolderPathsZ, forKey: zombieKey)
+    }
+
+    func refreshPathsZ() {
+        self.fileFolderPathsZ = UserDefaults.standard.stringArray(forKey: zombieKey) ?? []
+    }
+
+    func getPathsZ() -> [String] {
+        return UserDefaults.standard.stringArray(forKey: zombieKey) ?? []
+    }
+
+
 }

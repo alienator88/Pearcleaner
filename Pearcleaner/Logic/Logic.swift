@@ -110,7 +110,7 @@ func listAppSupportDirectories() -> [String] {
 
 
 // Load app paths on launch
-func reversePreloader(allApps: [AppInfo], appState: AppState, locations: Locations, reverseAddon: Bool = false, completion: @escaping () -> Void = {}) {
+func reversePreloader(allApps: [AppInfo], appState: AppState, locations: Locations, fsm: FolderSettingsManager, reverseAddon: Bool = false, completion: @escaping () -> Void = {}) {
     let dispatchGroup = DispatchGroup()
     appState.appInfoStore.removeAll()
 
@@ -127,7 +127,7 @@ func reversePreloader(allApps: [AppInfo], appState: AppState, locations: Locatio
         func checkAllAppsProcessed(retryCount: Int = 0, maxRetry: Int = 120) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 if appState.appInfoStore.count == allApps.count {
-                    ReversePathsSearcher(appState: appState, locations: locations).reversePathsSearch() {
+                    ReversePathsSearcher(appState: appState, locations: locations, fsm: fsm).reversePathsSearch() {
                         updateOnMain {
                             appState.showProgress = false
                         }

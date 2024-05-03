@@ -99,7 +99,7 @@ class Locations: ObservableObject {
             "/Library/PrivilegedHelperTools",
             "/private/var/db/receipts",
             cacheDir,
-            tempDir
+//            tempDir // Stop listing these files as there's a ton of them and they get cleaned up by the OS anyways
         ])
     }
 }

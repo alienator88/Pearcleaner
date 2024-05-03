@@ -178,10 +178,10 @@ struct MiniAppView: View {
         .popover(isPresented: $showPopover, arrowEdge: .trailing) {
             VStack {
                 if appState.currentView == .files {
-                    FilesView(showPopover: $showPopover, search: $search, regularWin: false)
+                    FilesView(showPopover: $showPopover, search: $search)
                         .id(appState.appInfo.id)
                 } else if appState.currentView == .zombie {
-                    ZombieView(showPopover: $showPopover, search: $search, regularWin: false)
+                    ZombieView(showPopover: $showPopover, search: $search)
                         .id(appState.appInfo.id)
                 }
 

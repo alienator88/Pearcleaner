@@ -11,6 +11,7 @@ struct Searchbar: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var themeSettings: ThemeSettings
     @EnvironmentObject var locations: Locations
+    @EnvironmentObject var fsm: FolderSettingsManager
     var glass: Bool
     var sidebarWidth: Double
     var menubarEnabled: Bool
@@ -53,7 +54,7 @@ struct Searchbar: View {
                                         showPopover = false
                                     }
                                 }
-                                .buttonStyle(SimpleButtonStyle(icon: "plus.square.dashed", label: "Drop Target", help: "Drop Target"))
+                                .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Drop Target", help: "Drop Target", size: 5))
                             }
 
 
@@ -62,12 +63,11 @@ struct Searchbar: View {
                                 withAnimation(.easeInOut(duration: 0.5)) {
                                     showPopover = false
                                     appState.appInfo = .empty
-                                    appState.selectedZombieItems = []
                                     if appState.zombieFile.fileSize.keys.isEmpty {
                                         appState.currentView = .zombie
                                         appState.showProgress.toggle()
                                         showPopover.toggle()
-                                        reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
+                                        reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, fsm: fsm, reverseAddon: true)
                                     } else {
                                         appState.currentView = .zombie
                                         showPopover.toggle()
@@ -92,7 +92,7 @@ struct Searchbar: View {
                                 Button("Quit") {
                                     NSApp.terminate(nil)
                                 }
-                                .buttonStyle(SimpleButtonStyle(icon: "x.circle.fill", label: "Quit Pearcleaner", help: "Quit Pearcleaner"))
+                                .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Quit Pearcleaner", help: "Quit Pearcleaner", size: 5))
                             }
 
                         }
@@ -130,9 +130,11 @@ struct SimpleSearchStyle: TextFieldStyle {
     @State var darker: Bool = false
     @State var glass: Bool = false
     @State var padding: CGFloat = 5
+    @State var sidebar: Bool = true
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var themeSettings: ThemeSettings
     @AppStorage("settings.general.mini") private var mini: Bool = false
+    @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
 
     func _body(configuration: TextField<Self._Label>) -> some View {
 
@@ -141,7 +143,7 @@ struct SimpleSearchStyle: TextFieldStyle {
                 .fill(darker ? themeSettings.themeColor.darker(by: 5) : themeSettings.themeColor)
                 .allowsHitTesting(false)
                 .frame(height: 30)
-                .opacity(glass ? 0.0 : 1.0)
+                .opacity((glass && (sidebar || !mini && !menubarEnabled)) || mini || menubarEnabled ? 0.0 : 1.0)
 
 
             ZStack {
@@ -202,12 +204,13 @@ struct SearchBar: View {
     @State var darker: Bool = false
     @State var glass: Bool = false
     @State var padding: CGFloat = 5
+    @State var sidebar: Bool = true
     @EnvironmentObject var appState: AppState
 
     var body: some View {
         HStack {
             TextField("", text: $search)
-                .textFieldStyle(SimpleSearchStyle(trash: true, text: $search, darker: darker, glass: glass, padding: padding))
+                .textFieldStyle(SimpleSearchStyle(trash: true, text: $search, darker: darker, glass: glass, padding: padding, sidebar: sidebar))
         }
     }
 }

@@ -11,6 +11,7 @@ import AppKit
 class ReversePathsSearcher {
     private let appState: AppState
     private let locations: Locations
+    private let fsm: FolderSettingsManager
     private let fileManager = FileManager.default
     private var collection: [URL] = []
     private var fileSize: [URL: Int64] = [:]
@@ -18,9 +19,10 @@ class ReversePathsSearcher {
     private var fileIcon: [URL: NSImage?] = [:]
     private let dispatchGroup = DispatchGroup()
 
-    init(appState: AppState, locations: Locations) {
+    init(appState: AppState, locations: Locations, fsm: FolderSettingsManager) {
         self.appState = appState
         self.locations = locations
+        self.fsm = fsm
     }
 
     
@@ -64,6 +66,11 @@ class ReversePathsSearcher {
         let formattedItemName = itemName.pearFormat()
         let itemPath = itemURL.path.pearFormat()
         let itemLastPathComponent = itemURL.lastPathComponent.pearFormat()
+        let exclusionList = fsm.fileFolderPathsZ.map { $0.pearFormat() }
+
+        if exclusionList.contains(itemPath) || itemPath.contains("dsstore") || itemPath.contains("daemonnameoridentifierhere") {
+            return
+        }
 
         guard !skipReverse.contains(where: { formattedItemName.contains($0) }),
               !allPaths.contains(where: { $0 == itemPath || $0.hasSuffix("/\(itemLastPathComponent)") }),

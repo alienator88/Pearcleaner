@@ -11,6 +11,7 @@ import SwiftUI
 struct ZombieView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
+    @EnvironmentObject var fsm: FolderSettingsManager
     @State private var showPop: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.general.glass") private var glass: Bool = false
@@ -18,55 +19,61 @@ struct ZombieView: View {
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
-    @State private var localKey = UUID()
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
     @Binding var search: String
     @State private var searchZ: String = ""
-    var regularWin: Bool
     @State private var elapsedTime = 0
     @State private var timer: Timer? = nil
+    @State private var selectedZombieItemsLocal: Set<URL> = []
+    @State private var memoizedFiles: [URL] = []
+    @State private var lastSearchTermUsed: String? = nil
+    @State private var totalRealSize: Int64 = 0
+    @State private var totalLogicalSize: Int64 = 0
+    @State private var totalRealSizeUninstallBtn: String = ""
+    @State private var totalLogicalSizeUninstallBtn: String = ""
+    @State private var totalFinderSizeUninstallBtn: String = ""
 
     var body: some View {
 
-        let totalSelectedZombieSize: (real: String, logical: String, finder: String) = {
-            var totalReal: Int64 = 0
-            var totalLogical: Int64 = 0
+//        let totalSelectedZombieSize: (real: String, logical: String, finder: String) = {
+//            var totalReal: Int64 = 0
+//            var totalLogical: Int64 = 0
+//
+//            for url in selectedZombieItemsLocal {
+//                let realSize = appState.zombieFile.fileSize[url] ?? 0
+//                let logicalSize = appState.zombieFile.fileSizeLogical[url] ?? 0
+//                totalReal += realSize
+//                totalLogical += logicalSize
+//            }
+//            return (formatByte(size: totalReal).human, formatByte(size:totalLogical).human, "\(formatByte(size: totalLogical).byte) (\(formatByte(size: totalReal).human))")
+//        }()
 
-            for url in appState.selectedZombieItems {
-                let realSize = appState.zombieFile.fileSize[url] ?? 0
-                let logicalSize = appState.zombieFile.fileSizeLogical[url] ?? 0
-                totalReal += realSize
-                totalLogical += logicalSize
-            }
-            return (formatByte(size: totalReal).human, formatByte(size:totalLogical).human, "\(formatByte(size: totalLogical).byte) (\(formatByte(size: totalReal).human))")
-        }()
+//        let filteredAndSortedFiles: ([URL], Int64, Int64) = {
+//            let fileSizeReal = appState.zombieFile.fileSize
+//            let fileSizeLogical = appState.zombieFile.fileSizeLogical
+//            let filteredFilesReal = fileSizeReal.filter { (url, _) in
+//                searchZ.isEmpty || url.lastPathComponent.localizedCaseInsensitiveContains(searchZ)
+//            }
+//            let filteredFilesLogical = fileSizeLogical.filter { (url, _) in
+//                searchZ.isEmpty || url.lastPathComponent.localizedCaseInsensitiveContains(searchZ)
+//            }
+//            let filesToSort = (sizeType == "Real" || sizeType == "Finder" ? filteredFilesReal : filteredFilesLogical)
+//            let sortedFilteredFiles = filesToSort.sorted(by: {
+//                if selectedSortAlpha {
+//                    return $0.key.lastPathComponent.pearFormat() < $1.key.lastPathComponent.pearFormat()
+//                } else {
+//                    return $0.value > $1.value
+//                }
+//            }).map { $0.key }
+//            let totalSize = filteredFilesReal.values.reduce(0, +)
+//            let totalSizeL = filteredFilesLogical.values.reduce(0, +)
+//            return (sortedFilteredFiles, totalSize, totalSizeL)
+//        }()
 
-        let filteredAndSortedFiles: ([URL], Int64, Int64) = {
-            let fileSizeReal = appState.zombieFile.fileSize
-            let fileSizeLogical = appState.zombieFile.fileSizeLogical
-            let filteredFilesReal = fileSizeReal.filter { (url, _) in
-                searchZ.isEmpty || url.lastPathComponent.localizedCaseInsensitiveContains(searchZ)
-            }
-            let filteredFilesLogical = fileSizeLogical.filter { (url, _) in
-                searchZ.isEmpty || url.lastPathComponent.localizedCaseInsensitiveContains(searchZ)
-            }
-            let filesToSort = (sizeType == "Real" || sizeType == "Finder" ? filteredFilesReal : filteredFilesLogical)
-            let sortedFilteredFiles = filesToSort.sorted(by: {
-                if selectedSortAlpha {
-                    return $0.key.lastPathComponent.pearFormat() < $1.key.lastPathComponent.pearFormat()
-                } else {
-                    return $0.value > $1.value
-                }
-            }).map { $0.key }
-            let totalSize = filteredFilesReal.values.reduce(0, +)
-            let totalSizeL = filteredFilesLogical.values.reduce(0, +)
-            return (sortedFilteredFiles, totalSize, totalSizeL)
-        }()
-
-        let displaySizeTotal = sizeType == "Real" ? formatByte(size: filteredAndSortedFiles.1).human :
-        sizeType == "Logical" ? formatByte(size: filteredAndSortedFiles.2).human :
-        "\(formatByte(size: filteredAndSortedFiles.2).byte) (\(formatByte(size: filteredAndSortedFiles.1).human))"
+//        let displaySizeTotal = sizeType == "Real" ? formatByte(size: filteredAndSortedFiles.1).human :
+//        sizeType == "Logical" ? formatByte(size: filteredAndSortedFiles.2).human :
+//        "\(formatByte(size: filteredAndSortedFiles.2).byte) (\(formatByte(size: filteredAndSortedFiles.1).human))"
 
         VStack(alignment: .center) {
             if appState.showProgress {
@@ -156,7 +163,7 @@ struct ZombieView: View {
                                 VStack(alignment: .trailing, spacing: 5) {
                                     Text("\(displaySizeTotal)").font(.title).fontWeight(.bold).help("Total size on disk")
 
-                                    Text("\(appState.zombieFile.fileSize.count == 1 ? "\(appState.selectedZombieItems.count) / \(appState.zombieFile.fileSize.count) item" : "\(appState.selectedZombieItems.count) / \(appState.zombieFile.fileSize.count) items")")
+                                    Text("\(selectedZombieItemsLocal.count) / \(searchZ.isEmpty ? appState.zombieFile.fileSize.count : memoizedFiles.count) \(appState.zombieFile.fileSize.count == 1 ? "item" : "items")")
                                         .font(.callout).foregroundStyle(Color("mode").opacity(0.5))
                                 }
 
@@ -170,23 +177,51 @@ struct ZombieView: View {
                     // Item selection and sorting toolbar
                     HStack {
                         Toggle("", isOn: Binding(
-                            get: { appState.selectedZombieItems.count == appState.zombieFile.fileSize.count },
-                            set: { newValue in
-                                updateOnMain {
-                                    appState.selectedZombieItems = newValue ? Set(appState.zombieFile.fileSize.keys) : []
+                            get: {
+                                if searchZ.isEmpty {
+                                    // All items are selected if no filter is applied and all items are selected
+                                    return selectedZombieItemsLocal.count == appState.zombieFile.fileSize.count
+                                } else {
+                                    // All currently filtered files are selected when a filter is applied
+                                    return Set(memoizedFiles).isSubset(of: selectedZombieItemsLocal) && selectedZombieItemsLocal.count == memoizedFiles.count
                                 }
+                            },
+                            set: { newValue in
+                                if newValue {
+                                    if searchZ.isEmpty {
+                                        // Select all files if no filter is applied
+                                        selectedZombieItemsLocal = Set(appState.zombieFile.fileSize.keys)
+                                    } else {
+                                        // Select only filtered files if a filter is applied
+                                        selectedZombieItemsLocal.formUnion(memoizedFiles)
+                                    }
+                                } else {
+                                    if searchZ.isEmpty {
+                                        // Deselect all files if no filter is applied
+                                        selectedZombieItemsLocal.removeAll()
+                                    } else {
+                                        // Deselect only filtered files if a filter is applied
+                                        selectedZombieItemsLocal.subtract(memoizedFiles)
+                                    }
+                                }
+
+                                updateTotalSizes()
                             }
                         ))
                         .toggleStyle(SimpleCheckboxToggleStyle())
                         .help("All checkboxes")
 
 
-                        SearchBar(search: $searchZ, darker: true, glass: glass)
+                        SearchBar(search: $searchZ, darker: true, glass: glass, sidebar: false)
                             .padding(.horizontal)
+                            .onChange(of: searchZ) { newValue in
+                                updateMemoizedFiles(for: newValue, sizeType: sizeType, selectedSortAlpha: selectedSortAlpha)
+                            }
 
 
                         Button("") {
                             selectedSortAlpha.toggle()
+                            updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSortAlpha: selectedSortAlpha, force: true)
                         }
                         .buttonStyle(SimpleButtonStyle(icon: selectedSortAlpha ? "textformat.abc" : "textformat.123", help: selectedSortAlpha ? "Sorted alphabetically" : "Sorted by size"))
 
@@ -201,11 +236,11 @@ struct ZombieView: View {
 
                     ScrollView() {
                         LazyVStack {
-                            ForEach(Array(filteredAndSortedFiles.0.enumerated()), id: \.element) { index, file in
+                            ForEach(memoizedFiles, id: \.self) { file in
                                 if let fileSize = appState.zombieFile.fileSize[file], let fileSizeL = appState.zombieFile.fileSizeLogical[file], let fileIcon = appState.zombieFile.fileIcon[file] {
                                     let iconImage = fileIcon.map(Image.init(nsImage:))
                                     VStack {
-                                        ZombieFileDetailsItem(size: fileSize, sizeL: fileSizeL, icon: iconImage, path: file)
+                                        ZombieFileDetailsItem(size: fileSize, sizeL: fileSizeL, icon: iconImage, path: file, isSelected: self.binding(for: file))
                                             .padding(.vertical, 5)
                                     }
                                 }
@@ -213,11 +248,7 @@ struct ZombieView: View {
 
                         }
                         .padding()
-                        .onChange(of: sizeType) { _ in
-                            localKey = UUID()
-                        }
                     }
-                    .id(localKey)
 
 
 
@@ -231,14 +262,14 @@ struct ZombieView: View {
                             updateOnMain {
                                 appState.zombieFile = .empty
                                 appState.showProgress.toggle()
-                                reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, reverseAddon: true)
+                                reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, fsm: fsm, reverseAddon: true)
                             }
                         }
                         .buttonStyle(RescanButton())
 
-                        Button("\(sizeType == "Logical" ? totalSelectedZombieSize.logical : sizeType == "Finder" ? totalSelectedZombieSize.finder : totalSelectedZombieSize.real)") {
+                        Button("\(sizeType == "Logical" ? totalLogicalSizeUninstallBtn : sizeType == "Finder" ? totalFinderSizeUninstallBtn : totalRealSizeUninstallBtn)") {
                                 Task {
-                                    if appState.selectedZombieItems.count == appState.zombieFile.fileSize.keys.count {
+                                    if selectedZombieItemsLocal.count == appState.zombieFile.fileSize.keys.count {
                                         updateOnMain {
                                             appState.zombieFile = .empty
                                             search = ""
@@ -253,7 +284,7 @@ struct ZombieView: View {
                                     }
 
 
-                                    let selectedItemsArray = Array(appState.selectedZombieItems)
+                                    let selectedItemsArray = Array(selectedZombieItemsLocal)
 
                                     moveFilesToTrash(at: selectedItemsArray) {
                                         withAnimation {
@@ -261,18 +292,22 @@ struct ZombieView: View {
                                         }
                                         updateOnMain {
                                             // Remove items from the list
-                                            appState.zombieFile.fileSize = appState.zombieFile.fileSize.filter { !appState.selectedZombieItems.contains($0.key) }
+                                            appState.zombieFile.fileSize = appState.zombieFile.fileSize.filter { !selectedZombieItemsLocal.contains($0.key) }
                                             // Update the selectedZombieFiles to remove references that are no longer present
-                                            appState.selectedZombieItems.removeAll()
+                                            selectedZombieItemsLocal.removeAll()
+                                            updateTotalSizes()
+
                                         }
 
                                     }
 
+//                                    updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSortAlpha: selectedSortAlpha, force: true)
+
                                 }
 
                             }
-                            .buttonStyle(UninstallButton(isEnabled: !appState.selectedZombieItems.isEmpty))
-                            .disabled(appState.selectedZombieItems.isEmpty)
+                            .buttonStyle(UninstallButton(isEnabled: !selectedZombieItemsLocal.isEmpty))
+                            .disabled(selectedZombieItemsLocal.isEmpty)
 
 
                     }
@@ -281,10 +316,112 @@ struct ZombieView: View {
                 .transition(.opacity)
                 .padding([.horizontal, .bottom], 20)
                 .padding(.top, !mini ? 10 : 0)
+                .onAppear {
+                    updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSortAlpha: selectedSortAlpha, force: true)
+                }
 
             }
         }
     }
+
+    private func binding(for file: URL) -> Binding<Bool> {
+        Binding<Bool>(
+            get: { self.selectedZombieItemsLocal.contains(file) },
+            set: { isSelected in
+                if isSelected {
+                    self.selectedZombieItemsLocal.insert(file)
+                } else {
+                    self.selectedZombieItemsLocal.remove(file)
+                }
+                updateTotalSizes()
+            }
+        )
+    }
+
+
+    private func updateMemoizedFiles(for searchTerm: String, sizeType: String, selectedSortAlpha: Bool, force: Bool = false) {
+        if !force && searchTerm == lastSearchTermUsed && self.sizeType == sizeType && self.selectedSortAlpha == selectedSortAlpha {
+            return
+        }
+
+        let results = filterAndSortFiles(for: searchTerm, sizeType: sizeType, selectedSortAlpha: selectedSortAlpha)
+        memoizedFiles = results.files
+        totalRealSize = results.totalRealSize
+        totalLogicalSize = results.totalLogicalSize
+        lastSearchTermUsed = searchTerm
+        self.sizeType = sizeType
+        self.selectedSortAlpha = selectedSortAlpha
+        updateTotalSizes()
+    }
+
+    private func filterAndSortFiles(for searchTerm: String, sizeType: String, selectedSortAlpha: Bool) -> (files: [URL], totalRealSize: Int64, totalLogicalSize: Int64) {
+        let fileSizeReal = appState.zombieFile.fileSize
+        let fileSizeLogical = appState.zombieFile.fileSizeLogical
+
+        let filteredFilesReal = fileSizeReal.filter { url, _ in searchTerm.isEmpty || url.lastPathComponent.localizedCaseInsensitiveContains(searchTerm) }
+        let filteredFilesLogical = fileSizeLogical.filter { url, _ in searchTerm.isEmpty || url.lastPathComponent.localizedCaseInsensitiveContains(searchTerm) }
+
+        let filesToSort = sizeType == "Real" || sizeType == "Finder" ? filteredFilesReal : filteredFilesLogical
+        let sortedFilteredFiles = filesToSort.sorted { (left, right) -> Bool in
+            if selectedSortAlpha {
+                return left.key.lastPathComponent.pearFormat() < right.key.lastPathComponent.pearFormat()
+            } else {
+                return left.value > right.value
+            }
+        }.map(\.key)
+
+        let totalRealSize = filteredFilesReal.values.reduce(0, +)
+        let totalLogicalSize = filteredFilesLogical.values.reduce(0, +)
+
+        return (sortedFilteredFiles, totalRealSize, totalLogicalSize)
+    }
+
+    func calculateTotalSelectedZombieSize() -> (real: String, logical: String, finder: String) {
+        var totalReal: Int64 = 0
+        var totalLogical: Int64 = 0
+
+        for url in selectedZombieItemsLocal {
+            let realSize = appState.zombieFile.fileSize[url] ?? 0
+            let logicalSize = appState.zombieFile.fileSizeLogical[url] ?? 0
+            totalReal += realSize
+            totalLogical += logicalSize
+        }
+
+        return (formatByte(size: totalReal).human,
+                formatByte(size: totalLogical).human,
+                "\(formatByte(size: totalLogical).byte) (\(formatByte(size: totalReal).human))")
+    }
+
+    private func updateTotalSizes() {
+        let sizes = calculateTotalSelectedZombieSize()
+        totalRealSizeUninstallBtn = sizes.real
+        totalLogicalSizeUninstallBtn = sizes.logical
+        totalFinderSizeUninstallBtn = "\(sizes.logical) (\(sizes.real))"
+    }
+
+    private var displaySizeText: String {
+        switch sizeType {
+        case "Logical":
+            return totalLogicalSizeUninstallBtn
+        case "Finder":
+            return totalFinderSizeUninstallBtn
+        default:
+            return totalRealSizeUninstallBtn
+        }
+    }
+
+
+    private var displaySizeTotal: String {
+        switch sizeType {
+        case "Real":
+            return formatByte(size: totalRealSize).human
+        case "Logical":
+            return formatByte(size: totalLogicalSize).human
+        default:
+            return "\(formatByte(size: totalLogicalSize).byte) (\(formatByte(size: totalRealSize).human))"
+        }
+    }
+
 }
 
 
@@ -297,21 +434,25 @@ struct ZombieFileDetailsItem: View {
     let sizeL: Int64?
     let icon: Image?
     let path: URL
+    @Binding var isSelected: Bool
 
     var body: some View {
 
         HStack(alignment: .center, spacing: 20) {
-            Toggle("", isOn: Binding(
-                get: { self.appState.selectedZombieItems.contains(self.path) },
-                set: { isChecked in
-                    if isChecked {
-                        self.appState.selectedZombieItems.insert(self.path)
-                    } else {
-                        self.appState.selectedZombieItems.remove(self.path)
-                    }
-                }
-            ))
+            Toggle("", isOn: $isSelected)
             .toggleStyle(SimpleCheckboxToggleStyle())
+
+//            Toggle("", isOn: Binding(
+//                get: { self.selectedZombieItemsLocal.contains(self.path) },
+//                set: { isChecked in
+//                    if isChecked {
+//                        self.selectedZombieItemsLocal.insert(self.path)
+//                    } else {
+//                        self.selectedZombieItemsLocal.remove(self.path)
+//                    }
+//                }
+//            ))
+//            .toggleStyle(SimpleCheckboxToggleStyle())
 
             if let appIcon = icon {
                 appIcon

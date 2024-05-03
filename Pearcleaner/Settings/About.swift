@@ -28,6 +28,32 @@ struct AboutSettingsTab: View {
                 }
 
 
+                HStack{
+                    Image(systemName: "star")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .padding(.trailing)
+
+                    VStack(alignment: .leading){
+                        Text("GitHub")
+                        Text("Submit a bug or feature request via the repo")
+                            .font(.callout)
+                            .foregroundStyle(Color("mode").opacity(0.5))
+
+                    }
+                    Spacer()
+                    Button(""){
+                        NSWorkspace.shared.open(URL(string: "https://github.com/alienator88/Pearcleaner/issues/new/choose")!)
+                    }
+                    .buttonStyle(SimpleButtonStyle(icon: "link", help: "View"))
+
+                }
+                .padding(5)
+                .padding(.leading)
+                .padding(.top, 5)
+
+
                 Divider()
                     .padding()
 
@@ -66,30 +92,6 @@ struct AboutSettingsTab: View {
                 .padding(5)
                 .padding(.leading)
 
-
-                HStack{
-                    Image(systemName: "n.circle")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 20, height: 20)
-                        .padding(.trailing)
-
-                    VStack(alignment: .leading){
-                        Text("Namelix")
-                        Text("Logo and branding generation")
-                            .font(.callout)
-                            .foregroundStyle(Color("mode").opacity(0.5))
-
-                    }
-                    Spacer()
-                    Button(""){
-                        NSWorkspace.shared.open(URL(string: "https://namelix.com/")!)
-                    }
-                    .buttonStyle(SimpleButtonStyle(icon: "link", help: "View"))
-
-                }
-                .padding(5)
-                .padding(.leading)
 
 
                 HStack{
@@ -149,7 +151,7 @@ struct AboutSettingsTab: View {
 
             Spacer()
 
-            Text("Made with ❤️ by Alin Lupascu (dev@itsalin.com)").font(.footnote).padding(.bottom)
+            Text("Made with ❤️ by Alin Lupascu").font(.footnote).padding(.bottom)
         }
         .padding(20)
         .frame(width: 500, height: 600)

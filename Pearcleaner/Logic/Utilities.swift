@@ -476,7 +476,8 @@ extension Int {
 // --- Extend String to remove periods, spaces and lowercase the string
 extension String {
     func pearFormat() -> String {
-        return self.replacingOccurrences(of: ".", with: "").replacingOccurrences(of: " ", with: "").replacingOccurrences(of: "-", with: "").lowercased()
+        // Remove all non-alphanumeric characters using regular expression and convert to lowercase
+        return self.replacingOccurrences(of: "[^a-zA-Z0-9]", with: "", options: .regularExpression).lowercased()
     }
 }
 
