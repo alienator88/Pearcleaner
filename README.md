@@ -4,7 +4,7 @@
    <br />
    <strong>Status: </strong>Maintained 
    <br />
-   <strong>Version: </strong>3.6.0
+   <strong>Version: </strong>3.6.1
    <br />
    <a href="https://github.com/alienator88/Pearcleaner/releases"><strong>Download</strong></a>
     · 
@@ -56,6 +56,8 @@ This project was born out of wanting to learn more on how macOS deals with app i
 - New feature alert on app startup
 - Can update app conditions remotely for finding more files for unique apps, therefore not requiring new app updates/releases
 - Optional Homebrew cleanup
+- Include extra directories to search for apps in
+- Exclude files/folders from the leftover file search
 - Custom auto-updater that pulls latest release notes and binaries from GitHub Releases (Pearcleaner should run from `/Applications` folder to avoid permission issues)
 
 
