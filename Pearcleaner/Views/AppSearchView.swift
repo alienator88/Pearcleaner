@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct Searchbar: View {
+struct AppSearchView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var themeSettings: ThemeSettings
     @EnvironmentObject var locations: Locations
@@ -26,9 +26,13 @@ struct Searchbar: View {
         VStack(alignment: .center, spacing: 0) {
             Spacer()
                 .frame(height: 10)
+                .padding(.top, !menubarEnabled ? 25 : 0)
+
+            if appState.updateAvailable {
+                UpdateNotificationView(appState: appState)
+            }
 
             AppsListView(search: $search, showPopover: $showPopover, filteredApps: filteredApps)
-                .padding(.top, 25)
 
             Divider()
 
@@ -42,7 +46,7 @@ struct Searchbar: View {
                     Button("More") {
                         self.showMenu.toggle()
                     }
-                    .buttonStyle(SimpleButtonStyle(icon: "ellipsis.circle", help: "More"))
+                    .buttonStyle(SimpleButtonStyle(icon: "ellipsis.circle", help: "More", rotate: true))
                     .popover(isPresented: $showMenu) {
                         VStack(alignment: .leading) {
 

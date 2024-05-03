@@ -73,15 +73,15 @@ struct UpdateView: View {
                 Button(action: NewWin.close) {
                     Text("Cancel")
                 }
-                .buttonStyle(SimpleButtonBrightStyle(icon: "x.circle", help: "Close", color: .red))
-                
+                .buttonStyle(SimpleButtonBrightStyle(icon: "x.circle", label: "Close", help: "Close", color: .red))
+
                 if appState.progressBar.1 != 1.0 {
                     Button(action: {
                         downloadUpdate(appState: appState)
                     }) {
                         Text("Update")
                     }
-                    .buttonStyle(SimpleButtonBrightStyle(icon: "arrow.down.circle", help: "Update", color: .accentColor))
+                    .buttonStyle(SimpleButtonBrightStyle(icon: "arrow.down.circle", label: "Update", help: "Update", color: .accentColor))
                 } else {
                     Button(action: {
                         NewWin.close()
@@ -89,7 +89,7 @@ struct UpdateView: View {
                     }) {
                         Text("Restart")
                     }
-                    .buttonStyle(SimpleButtonBrightStyle(icon: "arrow.uturn.left.circle", help: "Restart", color: .accentColor))
+                    .buttonStyle(SimpleButtonBrightStyle(icon: "arrow.uturn.left.circle", label: "Restart", help: "Restart", color: .accentColor))
                 }
                 
             }
@@ -178,14 +178,14 @@ struct NoUpdateView: View {
                     }) {
                         Text("Force Update")
                     }
-                    .buttonStyle(SimpleButtonBrightStyle(icon: "arrow.down.circle", help: "Force-Update", color: .red))
+                    .buttonStyle(SimpleButtonBrightStyle(icon: "arrow.down.circle", label: "Force Update", help: "Force-Update", color: .red))
 
                     Button(action: {
                         NewWin.close()
                     }) {
                         Text("Okay")
                     }
-                    .buttonStyle(SimpleButtonBrightStyle(icon: "checkmark.circle", help: "Ok", color: .accentColor))
+                    .buttonStyle(SimpleButtonBrightStyle(icon: "checkmark.circle", label: "Ok", help: "Ok", color: .accentColor))
 
                 }
                 
@@ -197,7 +197,7 @@ struct NoUpdateView: View {
                     }) {
                         Text("Restart")
                     }
-                    .buttonStyle(SimpleButtonBrightStyle(icon: "arrow.uturn.left.circle", help: "Restart", color: .accentColor))
+                    .buttonStyle(SimpleButtonBrightStyle(icon: "arrow.uturn.left.circle", label: "Restart", help: "Restart", color: .accentColor))
                 }
             }
             .padding(.bottom)

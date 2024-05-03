@@ -17,8 +17,9 @@ struct SimpleButtonStyle: ButtonStyle {
     let color: Color
     let size: CGFloat
     let padding: CGFloat
+    let rotate: Bool
 
-    init(icon: String, iconFlip: String = "", label: String = "", help: String, color: Color = Color("mode"), size: CGFloat = 20, padding: CGFloat = 5) {
+    init(icon: String, iconFlip: String = "", label: String = "", help: String, color: Color = Color("mode"), size: CGFloat = 20, padding: CGFloat = 5, rotate: Bool = false) {
         self.icon = icon
         self.iconFlip = iconFlip
         self.label = label
@@ -26,6 +27,7 @@ struct SimpleButtonStyle: ButtonStyle {
         self.color = color
         self.size = size
         self.padding = padding
+        self.rotate = rotate
     }
     
     func makeBody(configuration: Self.Configuration) -> some View {
@@ -34,6 +36,9 @@ struct SimpleButtonStyle: ButtonStyle {
                 .resizable()
                 .scaledToFit()
                 .frame(width: size, height: size)
+                .scaleEffect(hovered ? 1.1 : 1.0)
+                .rotationEffect(.degrees(rotate ? (hovered ? 90 : 0) : 0))
+                .animation(.easeInOut(duration: 0.2), value: hovered)
             if !label.isEmpty {
                 Text(label)
             }
@@ -158,24 +163,33 @@ struct SimpleCheckboxToggleStyle: ToggleStyle {
 struct InfoButton: View {
     @State private var isPopoverPresented: Bool = false
     let text: String
-    let color: Color?
-    let label: String?
+    let color: Color
+    let label: String
+    let warning: Bool
+
+    init(text: String, color: Color = Color("mode"), label: String = "", warning: Bool = false) {
+        self.text = text
+        self.color = color
+        self.label = label
+        self.warning = warning
+
+    }
 
     var body: some View {
         Button(action: {
             self.isPopoverPresented.toggle()
         }) {
             HStack(alignment: .center, spacing: 5) {
-                Image(systemName: "info.circle.fill")
+                Image(systemName: !warning ? "info.circle.fill" : "exclamationmark.triangle.fill")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 14, height: 14)
-                    .foregroundColor(color?.opacity(0.7) ?? Color("mode").opacity(0.7))
+                    .foregroundColor(!warning ? color.opacity(0.7) : color)
                     .frame(height: 16)
-                if !label!.isEmpty {
-                    Text(label!)
+                if !label.isEmpty {
+                    Text(label)
                         .font(.callout)
-                        .foregroundColor(color?.opacity(0.7) ?? Color("mode").opacity(0.7))
+                        .foregroundColor(color.opacity(0.7))
 
                 }
             }
@@ -205,12 +219,15 @@ struct InfoButton: View {
 
 
 struct UninstallButton: ButtonStyle {
+    @State private var hovered: Bool = false
     var isEnabled: Bool
 
     func makeBody(configuration: Configuration) -> some View {
         HStack(alignment: .center, spacing: 10) {
-            Image(systemName: "trash")
+            Image(systemName: !hovered ? "trash" : "trash.fill")
                 .foregroundColor(isEnabled ? .white.opacity(1) : .white.opacity(0.3))
+                .scaleEffect(hovered ? 1.2 : 1.0)
+                .animation(.easeInOut(duration: 0.2), value: hovered)
 
             Divider()
                 .frame(height: 24)
@@ -227,11 +244,7 @@ struct UninstallButton: ButtonStyle {
         .background(configuration.isPressed ? Color("uninstall").opacity(0.8) : Color("uninstall"))
         .cornerRadius(8)
         .onHover { over in
-            if over {
-                NSCursor.pointingHand.push()
-            } else {
-                NSCursor.pop()
-            }
+            hovered = over
         }
     }
 }
@@ -239,11 +252,14 @@ struct UninstallButton: ButtonStyle {
 
 
 struct RescanButton: ButtonStyle {
+    @State private var hovered: Bool = false
 
     func makeBody(configuration: Configuration) -> some View {
         HStack(alignment: .center, spacing: 10) {
-            Image(systemName: "arrow.counterclockwise.circle")
+            Image(systemName: !hovered ? "arrow.counterclockwise.circle" : "arrow.counterclockwise.circle.fill")
                 .foregroundColor(.white)
+                .scaleEffect(hovered ? 1.2 : 1.0)
+                .animation(.easeInOut(duration: 0.2), value: hovered)
 
             Divider()
                 .frame(height: 24)
@@ -261,11 +277,7 @@ struct RescanButton: ButtonStyle {
         .background(configuration.isPressed ? Color("button").opacity(0.8) : Color("button"))
         .cornerRadius(8)
         .onHover { over in
-            if over {
-                NSCursor.pointingHand.push()
-            } else {
-                NSCursor.pop()
-            }
+            hovered = over
         }
     }
 }
@@ -606,12 +618,14 @@ struct WindowActionButton: ButtonStyle {
 struct SimpleButtonBrightStyle: ButtonStyle {
     @State private var hovered = false
     let icon: String
+    let label: String
     let help: String
     let color: Color
     let shield: Bool?
 
-    init(icon: String, help: String, color: Color, shield: Bool? = nil) {
+    init(icon: String, label: String = "", help: String, color: Color, shield: Bool? = nil) {
         self.icon = icon
+        self.label = label
         self.help = help
         self.color = color
         self.shield = shield
@@ -624,6 +638,7 @@ struct SimpleButtonBrightStyle: ButtonStyle {
                 .scaledToFit()
                 .frame(width: 20)
                 .foregroundColor(hovered ? color.opacity(0.5) : color)
+            Text(label)
         }
         .padding(5)
         .onHover { hovering in

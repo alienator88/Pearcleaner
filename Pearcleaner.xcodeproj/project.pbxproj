@@ -44,12 +44,13 @@
 		C7DD49EA2BAB4D8100CCBA16 /* AppInfoFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */; };
 		C7DD49EE2BAB7F6000CCBA16 /* ReversePathsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */; };
 		C7DD49F02BABA14400CCBA16 /* Folders.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD49EF2BABA14400CCBA16 /* Folders.swift */; };
+		C7DE17652BE54F4900197715 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DE17642BE54F4900197715 /* Updater.swift */; };
 		C7DE672B2BA6343D00EB1633 /* MenuBarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DE672A2BA6343D00EB1633 /* MenuBarItem.swift */; };
 		C7ED86B12BA8A35500F13DE4 /* Interface.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7ED86B02BA8A35500F13DE4 /* Interface.swift */; };
 		C7ED86B32BA8ED8800F13DE4 /* Trash.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7ED86B22BA8ED8800F13DE4 /* Trash.swift */; };
 		C7F539382AF60865007DF1B2 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F539372AF60865007DF1B2 /* Utilities.swift */; };
 		C7FB173B2B96321300B96F9A /* AppsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7FB173A2B96321300B96F9A /* AppsListView.swift */; };
-		C7FEBA112BDC422200AE195F /* Searchbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7FEBA102BDC422200AE195F /* Searchbar.swift */; };
+		C7FEBA112BDC422200AE195F /* AppSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7FEBA102BDC422200AE195F /* AppSearchView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -138,12 +139,13 @@
 		C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfoFetch.swift; sourceTree = "<group>"; };
 		C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReversePathsFetch.swift; sourceTree = "<group>"; };
 		C7DD49EF2BABA14400CCBA16 /* Folders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Folders.swift; sourceTree = "<group>"; };
+		C7DE17642BE54F4900197715 /* Updater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.swift; sourceTree = "<group>"; };
 		C7DE672A2BA6343D00EB1633 /* MenuBarItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarItem.swift; sourceTree = "<group>"; };
 		C7ED86B02BA8A35500F13DE4 /* Interface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interface.swift; sourceTree = "<group>"; };
 		C7ED86B22BA8ED8800F13DE4 /* Trash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trash.swift; sourceTree = "<group>"; };
 		C7F539372AF60865007DF1B2 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		C7FB173A2B96321300B96F9A /* AppsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsListView.swift; sourceTree = "<group>"; };
-		C7FEBA102BDC422200AE195F /* Searchbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Searchbar.swift; sourceTree = "<group>"; };
+		C7FEBA102BDC422200AE195F /* AppSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSearchView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -202,6 +204,7 @@
 				C7ACADE52B92A737000B5845 /* Features.swift */,
 				C7ED86B22BA8ED8800F13DE4 /* Trash.swift */,
 				C79D051F2BC99EB40083F976 /* ThemeManager.swift */,
+				C7DE17642BE54F4900197715 /* Updater.swift */,
 			);
 			path = Logic;
 			sourceTree = "<group>";
@@ -299,7 +302,7 @@
 				C7D31D492AFEB26700C7ED9E /* AppListItems.swift */,
 				C7045A272B03E71D00376976 /* MiniMode.swift */,
 				C7FB173A2B96321300B96F9A /* AppsListView.swift */,
-				C7FEBA102BDC422200AE195F /* Searchbar.swift */,
+				C7FEBA102BDC422200AE195F /* AppSearchView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -458,6 +461,7 @@
 				C7FB173B2B96321300B96F9A /* AppsListView.swift in Sources */,
 				C7045A342B068B2900376976 /* UpdateView.swift in Sources */,
 				C77B90162AF19377009CC655 /* AppState.swift in Sources */,
+				C7DE17652BE54F4900197715 /* Updater.swift in Sources */,
 				C7DD49EE2BAB7F6000CCBA16 /* ReversePathsFetch.swift in Sources */,
 				C7045A322B068AD700376976 /* NewWin.swift in Sources */,
 				C7DD49F02BABA14400CCBA16 /* Folders.swift in Sources */,
@@ -485,7 +489,7 @@
 				C7F539382AF60865007DF1B2 /* Utilities.swift in Sources */,
 				C76D08552AF89CDE00D07867 /* RegularMode.swift in Sources */,
 				C7A9CE472B89164700EB6E78 /* Authorization.swift in Sources */,
-				C7FEBA112BDC422200AE195F /* Searchbar.swift in Sources */,
+				C7FEBA112BDC422200AE195F /* AppSearchView.swift in Sources */,
 				C7CF47242B3B3F1700979C5F /* WindowSettings.swift in Sources */,
 				C77B90232AF2D616009CC655 /* FilesView.swift in Sources */,
 			);
@@ -556,8 +560,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 39;
-				APP_VERSION = 3.6.0;
+				APP_BUILD = 40;
+				APP_VERSION = 3.6.1;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -626,8 +630,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 39;
-				APP_VERSION = 3.6.0;
+				APP_BUILD = 40;
+				APP_VERSION = 3.6.1;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;

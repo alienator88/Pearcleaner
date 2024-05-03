@@ -77,7 +77,7 @@ struct PermView: View {
                 }) {
                     Text("Restart")
                 }
-                .buttonStyle(SimpleButtonBrightStyle(icon: "arrow.uturn.left.circle", help: "Restart", color: .red))
+                .buttonStyle(SimpleButtonBrightStyle(icon: "arrow.uturn.left.circle", label: "Restart", help: "Restart", color: .red))
                 .padding()
                 
                 Button(action: {
@@ -87,7 +87,7 @@ struct PermView: View {
                 }) {
                     Text("Full Disk Access")
                 }
-                .buttonStyle(SimpleButtonBrightStyle(icon: "externaldrive", help: "Full Disk", color: .accentColor))
+                .buttonStyle(SimpleButtonBrightStyle(icon: "externaldrive", label: "Full Disk", help: "Full Disk", color: .accentColor))
 
                 .padding()
                 
@@ -98,7 +98,7 @@ struct PermView: View {
                 }) {
                     Text("Accessibility")
                 }
-                .buttonStyle(SimpleButtonBrightStyle(icon: "accessibility", help: "Accessibility", color: .accentColor))
+                .buttonStyle(SimpleButtonBrightStyle(icon: "accessibility", label: "Accessibility", help: "Accessibility", color: .accentColor))
                 .padding()
                 
 

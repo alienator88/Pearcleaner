@@ -27,22 +27,15 @@ struct FolderSettingsTab: View {
             VStack(spacing: 0) {
 
                 HStack(spacing: 0) {
-                    Text("Apps").font(.title2)
-                    InfoButton(text: "Locations that will be searched for .app files. Click a non-default path to remove it. Add new folders using the + button or drag/drop over the list. Non-default paths can't be removed.", color: nil, label: "")
+                    Text("Application Folders").font(.title2)
+                    InfoButton(text: "Locations that will be searched for .app files. Click a non-default path to remove it. Add new folders using the + button or drag/drop over the list. Non-default paths can't be removed.")
+                        .padding(.leading, 5)
                     Spacer()
 
                     Button("") {
                         selectFolder()
                     }
-                    .buttonStyle(SimpleButtonStyle(icon: "plus", help: "Add folder"))
-                    .onHover(perform: { hovering in
-                        if hovering {
-                            NSCursor.pointingHand.push()
-
-                        } else {
-                            NSCursor.pop()
-                        }
-                    })
+                    .buttonStyle(SimpleButtonStyle(icon: "plus.circle", help: "Add folder", size: 16, rotate: true))
 
                 }
                 .padding(.bottom, 5)
@@ -55,6 +48,8 @@ struct FolderSettingsTab: View {
 
                                 Text(fsm.folderPaths[index])
                                     .font(.callout)
+                                    .lineLimit(1)
+                                    .truncationMode(.tail)
                                     .opacity(fsm.defaultPaths.contains(fsm.folderPaths[index]) ? 0.5 : 1)
                                     .padding(5)
                                 Spacer()
@@ -105,6 +100,13 @@ struct FolderSettingsTab: View {
                     return true
                 }
 
+                HStack {
+                    Spacer()
+                    Text("Drop folders here").opacity(0.5)
+                    Spacer()
+                }
+                .padding(.top, 5)
+
 
                 Divider()
                     .padding(.vertical)
@@ -112,21 +114,15 @@ struct FolderSettingsTab: View {
                 // === LEFTOVER FILES ================================================================================================
 
                 HStack(spacing: 0) {
-                    Text("Leftover Files").font(.title2)
-                    InfoButton(text: "Add files or folders that will be ignored when searching for leftover files. Click a path to remove it from the list. Add new files/folders using the + button or drag/drop over the list.", color: nil, label: "")
+                    Text("Leftover Files Exclusions").font(.title2)
+                    InfoButton(text: "Add files or folders that will be ignored when searching for leftover files. Click a path to remove it from the list. Add new files/folders using the + button or drag/drop over the list.")
+                        .padding(.leading, 5)
                     Spacer()
 
                     Button("") {
                         selectFilesFoldersZ()
                     }
-                    .buttonStyle(SimpleButtonStyle(icon: "plus", help: "Add file/folder"))
-                    .onHover(perform: { hovering in
-                        if hovering {
-                            NSCursor.pointingHand.push()
-                        } else {
-                            NSCursor.pop()
-                        }
-                    })
+                    .buttonStyle(SimpleButtonStyle(icon: "plus.circle", help: "Add file/folder", size: 16, rotate: true))
                 }
                 .padding(.bottom, 5)
 
@@ -148,6 +144,8 @@ struct FolderSettingsTab: View {
 
                                 Text(fsm.fileFolderPathsZ[index])
                                     .font(.callout)
+                                    .lineLimit(1)
+                                    .truncationMode(.tail)
                                     .padding(5)
                                 Spacer()
                             }
@@ -193,7 +191,12 @@ struct FolderSettingsTab: View {
                     return true
                 }
 
-
+                HStack {
+                    Spacer()
+                    Text("Drop files/folders here").opacity(0.5)
+                    Spacer()
+                }
+                .padding(.top, 5)
 
 
                 Spacer()

@@ -150,11 +150,11 @@ struct ZombieView: View {
                                 VStack(alignment: .leading, spacing: 10){
                                     HStack {
                                         Text("Leftover Files").font(.title).fontWeight(.bold)
-                                        InfoButton(text: "Leftover file search is not 100% accurate as it doesn't have any app bundles to check against. This searches for files/folders and excludes the ones that have overlap with your currently installed apps. Make sure to confirm files marked for removal are correct.", color: .red, label: "READ")
+                                        InfoButton(text: "Leftover file search is not and can never be 100% accurate as it doesn't have any old/uninstalled app bundles to check against for file exclusion. This does a best guess search for files/folders and excludes the ones that have overlap with your currently installed applications. Please confirm files marked for deletion really do belong to old/uninstalled applications.", color: .orange, warning: true)
                                         Spacer()
                                         
                                     }
-                                    Text("Remaining files and folders from previous installs")
+                                    Text("Remaining files and folders from previous applications")
                                         .font(.callout).foregroundStyle(Color("mode").opacity(0.5))
                                 }
 

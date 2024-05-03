@@ -56,7 +56,7 @@ struct GeneralSettingsTab: View {
                             .foregroundStyle(Color("mode").opacity(0.5))
                     }
 
-                    InfoButton(text: "When homebrew cleanup is enabled, Pearcleaner will check if the app you are removing was installed via homebrew and execute a brew uninstall and brew cleanup command as well to let homebrew know that the app is removed. This way your homebrew list will be synced up correctly and caching will be removed.\n\nNOTE: If you undo the file delete with CMD+Z, the files will be put back but homebrew will not be aware of it. To get the homebrew list back in sync you'd need to run:\n brew install APPNAME --force", color: nil, label: "")
+                    InfoButton(text: "When homebrew cleanup is enabled, Pearcleaner will check if the app you are removing was installed via homebrew and execute a brew uninstall and brew cleanup command as well to let homebrew know that the app is removed. This way your homebrew list will be synced up correctly and caching will be removed.\n\nNOTE: If you undo the file delete with CMD+Z, the files will be put back but homebrew will not be aware of it. To get the homebrew list back in sync you'd need to run:\n brew install APPNAME --force")
 
                     Spacer()
                     Toggle(isOn: $brew, label: {
@@ -79,7 +79,7 @@ struct GeneralSettingsTab: View {
                             .font(.callout)
                             .foregroundStyle(Color("mode").opacity(0.5))
                     }
-                    InfoButton(text: "When searching for app files or leftover files, the list will be sorted either alphabetically or by size(large to small)", color: nil, label: "")
+                    InfoButton(text: "When searching for app files or leftover files, the list will be sorted either alphabetically or by size(large to small)")
                     Spacer()
                     SegmentedPicker(
                         ["Alpha", "Size"],
@@ -123,7 +123,7 @@ struct GeneralSettingsTab: View {
                             .font(.callout)
                             .foregroundStyle(Color("mode").opacity(0.5))
                     }
-                    InfoButton(text: "Real size type will show how much actual allocated space the file has on disk. Logical type shows the binary size. The filesystem can compress and deduplicate sectors on disk, so real size is sometimes smaller(or bigger) than logical size. Finder size is similar to if you right click > Get Info on a file in Finder, which will show both the logical and real sizes together.", color: nil, label: "")
+                    InfoButton(text: "Real size type will show how much actual allocated space the file has on disk. Logical type shows the binary size. The filesystem can compress and deduplicate sectors on disk, so real size is sometimes smaller(or bigger) than logical size. Finder size is similar to if you right click > Get Info on a file in Finder, which will show both the logical and real sizes together.")
                     Spacer()
                     SegmentedPicker(
                         ["Real", "Logical", "Finder"],
@@ -294,7 +294,7 @@ struct GeneralSettingsTab: View {
                     Text(appState.finderExtensionEnabled ? "Context menu extension for Finder is enabled" : "Context menu extension for Finder is disabled")
                         .font(.callout)
                         .foregroundStyle(Color("mode").opacity(0.5))
-                    InfoButton(text: "Enabling the extension will allow you to right click apps in Finder and quickly uninstall them with Pearcleaner", color: nil, label: "")
+                    InfoButton(text: "Enabling the extension will allow you to right click apps in Finder and quickly uninstall them with Pearcleaner")
 
                     Spacer()
 

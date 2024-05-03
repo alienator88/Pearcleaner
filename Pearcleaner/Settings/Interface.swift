@@ -95,7 +95,7 @@ struct InterfaceSettingsTab: View {
                             .foregroundStyle(Color("mode").opacity(0.3))
                             .padding(.leading, 5)
                     }
-//                    InfoButton(text: "The logo animation is only available in macOS 14 or higher", color: nil, label: "")
+//                    InfoButton(text: "The logo animation is only available in macOS 14 or higher")
                     Spacer()
                     Toggle(isOn: $animateLogo, label: {
                     })
@@ -120,7 +120,7 @@ struct InterfaceSettingsTab: View {
                             .font(.callout)
                             .foregroundStyle(Color("mode").opacity(0.5))
                     }
-                    InfoButton(text: "When using a custom color, you might need to change the application color mode below to Dark or Light so text is readable", color: nil, label: "")
+                    InfoButton(text: "When using a custom color, you might need to change the application color mode below to Dark or Light so text is readable")
                     Spacer()
 
 
@@ -191,7 +191,7 @@ struct InterfaceSettingsTab: View {
                             .font(.callout)
                             .foregroundStyle(Color("mode").opacity(0.5))
                     }
-                    InfoButton(text: "Changing the color mode will reset the base color to defaults", color: nil, label: "")
+                    InfoButton(text: "Changing the color mode will reset the base color to defaults")
                     Spacer()
                     SegmentedPicker(
                         ["Auto", "Dark", "Light"],
@@ -358,7 +358,7 @@ struct InterfaceSettingsTab: View {
                             .foregroundStyle(Color("mode").opacity(0.5))
                     }
 
-                    InfoButton(text: "In mini window mode, you can have Pearcleaner startup to the Apps List view or the Drop Target view.", color: nil, label: "")
+                    InfoButton(text: "In mini window mode, you can have Pearcleaner startup to the Apps List view or the Drop Target view.")
 
                     Spacer()
                     Toggle(isOn: $miniView, label: {
@@ -385,7 +385,7 @@ struct InterfaceSettingsTab: View {
                             .foregroundStyle(Color("mode").opacity(0.5))
                     }
 
-                    InfoButton(text: "In mini window mode, if you pin the Files popover on top, clicking away from the window will not dismiss it. Otherwise, it will dismiss by clicking anywhere outside the popover.", color: nil, label: "")
+                    InfoButton(text: "In mini window mode, if you pin the Files popover on top, clicking away from the window will not dismiss it. Otherwise, it will dismiss by clicking anywhere outside the popover.")
 
                     Spacer()
                     Toggle(isOn: $popoverStay, label: {
@@ -420,7 +420,7 @@ struct InterfaceSettingsTab: View {
                             .font(.callout)
                             .foregroundStyle(Color("mode").opacity(0.5))
                     }
-                    InfoButton(text: "When menubar icon is enabled, the main app window and dock icon will be disabled since the app will be put in accessory mode.", color: nil, label: "")
+                    InfoButton(text: "When menubar icon is enabled, the main app window and dock icon will be disabled since the app will be put in accessory mode.")
                     Spacer()
                     Toggle(isOn: $menubarEnabled, label: {
                     })
@@ -485,7 +485,7 @@ struct InterfaceSettingsTab: View {
                             .font(.callout)
                             .foregroundStyle(Color("mode").opacity(0.5))
                     }
-                    InfoButton(text: "This setting will affect Pearcleaner whether you're running in menubar mode or regular mode. If you disable menubar icon, you might want to disable this as well so Pearcleaner doesn't start on login.", color: nil, label: "")
+                    InfoButton(text: "This setting will affect Pearcleaner whether you're running in menubar mode or regular mode. If you disable menubar icon, you might want to disable this as well so Pearcleaner doesn't start on login.")
                     Spacer()
                     Toggle(isOn: $isLaunchAtLoginEnabled, label: {
                     })

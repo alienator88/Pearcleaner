@@ -19,7 +19,6 @@ class AppState: ObservableObject
     @Published var zombieFile: ZombieFile
     @Published var sortedApps: [AppInfo] = []
     @Published var selectedItems = Set<URL>()
-//    @Published var selectedZombieItems = Set<URL>()
     @Published var alertType = AlertType.off
     @Published var currentView = CurrentDetailsView.empty
     @Published var showAlert: Bool = false
@@ -29,6 +28,7 @@ class AppState: ObservableObject
     @Published var reload: Bool = false
     @Published var showProgress: Bool = false
     @Published var finderExtensionEnabled: Bool = false
+    @Published var updateAvailable: Bool = false
 
 
     init() {
