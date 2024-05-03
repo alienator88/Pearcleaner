@@ -44,7 +44,7 @@ This project was born out of wanting to learn more on how macOS deals with app i
 - 100% Swift
 - Small app size (~3MB)
 - Quick file search
-- Reverse search for finding remaining files from previously uninstalled applications
+- Leftover file search for finding remaining files from previously uninstalled applications
 - Sentinel monitor helper that can be enabled to watch Trash folder for deleted apps to cleanup after the fact(Extremely small (210KB) and uses ~2mb of ram to run in the background and file watch)
 - Mini mode which can be enabled from Settings
 - Menubar option
