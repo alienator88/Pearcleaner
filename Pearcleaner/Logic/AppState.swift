@@ -29,6 +29,9 @@ class AppState: ObservableObject
     @Published var showProgress: Bool = false
     @Published var finderExtensionEnabled: Bool = false
     @Published var updateAvailable: Bool = false
+    @Published var permissionsOkay: Bool = true
+    @Published var permissionResults: PermissionsCheckResults?
+
 
 
     init() {

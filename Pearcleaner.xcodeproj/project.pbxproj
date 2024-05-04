@@ -16,6 +16,7 @@
 		C72893122AFD51EA00C8C1CD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72893112AFD51EA00C8C1CD /* main.swift */; };
 		C74412C72BBF249000DDFCA8 /* AppPathsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74412C62BBF249000DDFCA8 /* AppPathsFetch.swift */; };
 		C74FDC632BCD833D00B8960F /* Conditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74FDC622BCD833D00B8960F /* Conditions.swift */; };
+		C75347642BE599FA00AAFCC3 /* PermissionChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C75347632BE599FA00AAFCC3 /* PermissionChecker.swift */; };
 		C7575D392B0182DE006A600A /* PearcleanerSentinel in CopyFiles */ = {isa = PBXBuildFile; fileRef = C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C76D08482AF83C3F00D07867 /* Update.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08472AF83C3F00D07867 /* Update.swift */; };
 		C76D084A2AF83C6E00D07867 /* General.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08492AF83C6E00D07867 /* General.swift */; };
@@ -107,6 +108,7 @@
 		C72893112AFD51EA00C8C1CD /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		C74412C62BBF249000DDFCA8 /* AppPathsFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPathsFetch.swift; sourceTree = "<group>"; };
 		C74FDC622BCD833D00B8960F /* Conditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conditions.swift; sourceTree = "<group>"; };
+		C75347632BE599FA00AAFCC3 /* PermissionChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionChecker.swift; sourceTree = "<group>"; };
 		C76D08472AF83C3F00D07867 /* Update.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Update.swift; sourceTree = "<group>"; };
 		C76D08492AF83C6E00D07867 /* General.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = General.swift; sourceTree = "<group>"; };
 		C76D08502AF850F300D07867 /* About.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = About.swift; sourceTree = "<group>"; };
@@ -205,6 +207,7 @@
 				C7ED86B22BA8ED8800F13DE4 /* Trash.swift */,
 				C79D051F2BC99EB40083F976 /* ThemeManager.swift */,
 				C7DE17642BE54F4900197715 /* Updater.swift */,
+				C75347632BE599FA00AAFCC3 /* PermissionChecker.swift */,
 			);
 			path = Logic;
 			sourceTree = "<group>";
@@ -461,6 +464,7 @@
 				C7FB173B2B96321300B96F9A /* AppsListView.swift in Sources */,
 				C7045A342B068B2900376976 /* UpdateView.swift in Sources */,
 				C77B90162AF19377009CC655 /* AppState.swift in Sources */,
+				C75347642BE599FA00AAFCC3 /* PermissionChecker.swift in Sources */,
 				C7DE17652BE54F4900197715 /* Updater.swift in Sources */,
 				C7DD49EE2BAB7F6000CCBA16 /* ReversePathsFetch.swift in Sources */,
 				C7045A322B068AD700376976 /* NewWin.swift in Sources */,

@@ -30,6 +30,8 @@ struct AppSearchView: View {
 
             if appState.updateAvailable {
                 UpdateNotificationView(appState: appState)
+            } else if !appState.permissionsOkay {
+                PermissionsNotificationView(appState: appState)
             }
 
             AppsListView(search: $search, showPopover: $showPopover, filteredApps: filteredApps)

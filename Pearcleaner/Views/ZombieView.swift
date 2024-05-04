@@ -269,27 +269,34 @@ struct ZombieView: View {
 
                         Button("\(sizeType == "Logical" ? totalLogicalSizeUninstallBtn : sizeType == "Finder" ? totalFinderSizeUninstallBtn : totalRealSizeUninstallBtn)") {
                                 Task {
-                                    if selectedZombieItemsLocal.count == appState.zombieFile.fileSize.keys.count {
-                                        updateOnMain {
-                                            appState.zombieFile = .empty
-                                            search = ""
-                                            searchZ = ""
-                                            if mini || menubarEnabled {
-                                                appState.currentView = .apps
-                                                showPopover = false
-                                            } else {
-                                                appState.currentView = .empty
-                                            }
-                                        }
-                                    }
+
 
 
                                     let selectedItemsArray = Array(selectedZombieItemsLocal)
 
-                                    moveFilesToTrash(at: selectedItemsArray) {
-                                        withAnimation {
-                                            showPopover = false
+                                    moveFilesToTrash(appState: appState, at: selectedItemsArray) { success in
+
+                                        guard success else {
+                                            return
                                         }
+
+                                        if selectedZombieItemsLocal.count == appState.zombieFile.fileSize.keys.count {
+                                            updateOnMain {
+                                                appState.zombieFile = .empty
+                                                search = ""
+                                                searchZ = ""
+                                                withAnimation {
+                                                    if mini || menubarEnabled {
+                                                        appState.currentView = .apps
+                                                        showPopover = false
+                                                    } else {
+                                                        appState.currentView = .empty
+                                                    }
+                                                }
+
+                                            }
+                                        }
+
                                         updateOnMain {
                                             // Remove items from the list
                                             appState.zombieFile.fileSize = appState.zombieFile.fileSize.filter { !selectedZombieItemsLocal.contains($0.key) }

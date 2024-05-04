@@ -35,13 +35,12 @@ class WindowSettings {
         var x = CGFloat(UserDefaults.standard.float(forKey: windowXKey))
         var y = CGFloat(UserDefaults.standard.float(forKey: windowYKey))
 
-        if UserDefaults.standard.object(forKey: windowXKey) == nil || UserDefaults.standard.object(forKey: windowYKey) == nil {
-            // Set window to center of the screen if not set
-            let screenSize = NSScreen.main?.frame.size ?? NSSize(width: 800, height: 600) // Fallback screen size
-            x = (screenSize.width - width) / 2
-            y = (screenSize.height - height) / 2
-        }
 
+        if UserDefaults.standard.object(forKey: windowXKey) == nil || UserDefaults.standard.object(forKey: windowYKey) == nil {
+            let screenFrame = NSScreen.main?.visibleFrame ?? NSRect(x: 0, y: 0, width: 800, height: 600)
+            x = (screenFrame.width - width) / 2 + screenFrame.origin.x
+            y = (screenFrame.height - height) / 2 + screenFrame.origin.y
+        }
         return NSRect(x: x, y: y, width: width, height: height)
     }
 
@@ -62,5 +61,25 @@ class WindowSettings {
         newWindow.contentView = NSHostingView(rootView: contentView())
         self.windows.append(newWindow)
         newWindow.makeKeyAndOrderFront(nil)
+    }
+}
+
+
+
+struct WillRestore: ViewModifier {
+    let restore: Bool
+
+    func body(content: Content) -> some View {
+        content
+            .onReceive(NotificationCenter.default.publisher(for: NSWindow.didBecomeKeyNotification), perform: { output in
+                let window = output.object as! NSWindow
+                window.isRestorable = false
+            })
+    }
+}
+
+extension View {
+    func willRestore(_ restoreState: Bool = true) -> some View {
+        modifier(WillRestore(restore: restoreState))
     }
 }

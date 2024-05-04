@@ -51,7 +51,6 @@ struct SettingsView: View {
                 .tag(CurrentTabView.about)
         }
         .background(backgroundView(themeSettings: themeSettings, glass: glass))
-//        .background(glass ? GlassEffect(material: .sidebar, blendingMode: .behindWindow).edgesIgnoringSafeArea(.all) : nil)
 
     }
 

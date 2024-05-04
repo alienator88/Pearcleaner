@@ -41,7 +41,6 @@ func loadGithubReleases(appState: AppState, manual: Bool = false) {
                     let lastFewReleases = Array(decodedResponse.prefix(3)) // Get only the last 3 recent releases
                     appState.releases = lastFewReleases
                     checkForUpdate(appState: appState, manual: manual)
-
                 }
                 return
             }
@@ -173,7 +172,7 @@ struct UpdateNotificationView: View {
     var body: some View {
         HStack {
 
-            Text("Update Available")
+            Text("Update Available!")
                 .font(.callout)
                 .opacity(0.5)
                 .padding(.leading, 7)
@@ -199,14 +198,15 @@ struct UpdateNotificationView: View {
                     hovered = hovering
                 }
             }
+            .onTapGesture {
+                NewWin.show(appState: appState, width: 500, height: 440, newWin: .update)
+            }
             .help("Download latest update")
             .padding(.horizontal, 5)
             .padding(.vertical, 4)
             .background(Color("pear"))
             .clipShape(RoundedRectangle(cornerRadius: 6))
-            .onTapGesture {
-                NewWin.show(appState: appState, width: 500, height: 440, newWin: .update)
-            }
+
         }
         .frame(height: 30)
         .padding(5)

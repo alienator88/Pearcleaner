@@ -49,86 +49,6 @@ func resizeWindowAuto(windowSettings: WindowSettings, title: String) {
 }
 
 
-// Check FDA
-func checkFullDiskAccessForApp() -> Bool {
-    let process = Process()
-    process.launchPath = "/usr/bin/sqlite3"
-    process.arguments = ["/Library/Application Support/com.apple.TCC/TCC.db", "select client from access where auth_value and service = \"kTCCServiceSystemPolicyAllFiles\" and client = \"com.alienator88.Pearcleaner\""]
-    
-    let pipe = Pipe()
-    let pipeErr = Pipe()
-    process.standardOutput = pipe
-    process.standardError = pipeErr
-    process.launch()
-    
-    let dataErr = pipeErr.fileHandleForReading.readDataToEndOfFile()
-
-    let output = String(data: dataErr, encoding: .utf8)
-    
-    // Check if the app is in the results
-    if let result = output, result.isEmpty {
-        return true
-    } else {
-        return false
-    }
-}
-
-
-
-
-
-
-// Check for access to Full Disk access
-func checkAndRequestFullDiskAccess(appState: AppState, skipAlert: Bool = false) -> Bool {
-    @AppStorage("settings.permissions.disk") var diskP: Bool = false
-    @AppStorage("settings.permissions.hasLaunched") var hasLaunched: Bool = false
-
-    let process = Process()
-    process.launchPath = "/usr/bin/sqlite3"
-    process.arguments = ["/Library/Application Support/com.apple.TCC/TCC.db", "select client from access where auth_value and service = \"kTCCServiceSystemPolicyAllFiles\" and client = \"com.alienator88.Pearcleaner\""]
-    
-    let pipe = Pipe()
-    let pipeErr = Pipe()
-    process.standardOutput = pipe
-    process.standardError = pipeErr
-    process.launch()
-    
-    let dataErr = pipeErr.fileHandleForReading.readDataToEndOfFile()
-    
-    let output = String(data: dataErr, encoding: .utf8)
-    
-    // Check if the app is in the results
-    if let result = output, result.isEmpty {
-        diskP = true
-        _ = checkAndRequestAccessibilityAccess(appState: appState)
-        return true
-    } else {
-        diskP = false
-        if !skipAlert {
-            NewWin.show(appState: appState, width: 500, height: 350, newWin: .perm)
-        }
-        
-        return false
-    }
-
-}
-
-
-// Check for access to System Events
-func checkAndRequestAccessibilityAccess(appState: AppState) -> Bool {
-    @AppStorage("settings.permissions.events") var diskE: Bool = false
-
-    let options: NSDictionary = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true]
-    let accessEnabled = AXIsProcessTrustedWithOptions(options)
-    if accessEnabled {
-        diskE = true
-        return accessEnabled
-    } else {
-        diskE = false
-        return false
-
-    }
-}
 
 // Check app directory based on user permission
 func checkAppDirectoryAndUserRole(completion: @escaping ((isInCorrectDirectory: Bool, isAdmin: Bool)) -> Void) {
@@ -195,11 +115,21 @@ func hasWindowOpen() -> Bool {
 func findAndHideWindows(named titles: [String]) {
     for title in titles {
         if let window = NSApp.windows.first(where: { $0.title == title }) {
-//            window.orderOut(nil)
             window.close()
         }
     }
 }
+
+func findAndSetWindowFrame(named titles: [String], windowSettings: WindowSettings) {
+    for title in titles {
+        if let window = NSApp.windows.first(where: { $0.title == title }) {
+//            window.isRestorable = false    // Doing this via view
+            let frame = windowSettings.loadWindowSettings()
+            window.setFrame(frame, display: true)
+        }
+    }
+}
+
 
 func findAndShowWindows(named titles: [String]) {
     for title in titles {
@@ -217,28 +147,7 @@ func copyToClipboard(text: String) {
 }
 
 
-// Check if appearance is dark mode
-//func getCasks() -> [String] {
-//    let process = Process()
-//#if arch(x86_64)
-//    let cmd = "/usr/local/bin/brew"
-//#elseif arch(arm64)
-//    let cmd = "/opt/homebrew/bin/brew"
-//#endif
-//    process.executableURL = URL(fileURLWithPath: cmd)
-//    process.arguments = ["list", "--cask"]
-//    let pipe = Pipe()
-//    process.standardOutput = pipe
-//    process.standardError = pipe
-//    try? process.run()
-//    process.waitUntilExit() // Ensure the process completes
-//    let data = pipe.fileHandleForReading.readDataToEndOfFile()
-//    if let output = String(data: data, encoding: .utf8), !output.isEmpty {
-//        return output.components(separatedBy: "\n").filter { !$0.isEmpty }.map { $0.replacingOccurrences(of: "-", with: " ") }
-//    } else {
-//        return []
-//    }
-//}
+
 
 // Brew cleanup
 func caskCleanup(app: String) {
@@ -677,12 +586,12 @@ func uninstallPearcleaner(appState: AppState, locations: Locations) {
 // --- Create Application Support folder if it doesn't exist ---
 func ensureApplicationSupportFolderExists(appState: AppState) {
     let fileManager = FileManager.default
-    let supportURL = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!.appendingPathComponent("Pearcleaner")
-    
+    let supportURL = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!.appendingPathComponent("com.alienator88.Pearcleaner")
+
     // Check to make sure Application Support/Pearcleaner folder exists
     if !fileManager.fileExists(atPath: supportURL.path) {
         try! fileManager.createDirectory(at: supportURL, withIntermediateDirectories: true)
-        printOS("Created Application Support/Pearcleaner folder")
+        printOS("Created Application Support/com.alienator88.Pearcleaner folder")
     }
 }
 

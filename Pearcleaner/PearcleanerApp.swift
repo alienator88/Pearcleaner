@@ -17,8 +17,6 @@ struct PearcleanerApp: App {
     @StateObject var fsm = FolderSettingsManager()
     @State private var windowSettings = WindowSettings()
     @AppStorage("settings.updater.updateTimeframe") private var updateTimeframe: Int = 1
-    @AppStorage("settings.permissions.disk") private var diskP: Bool = false
-    @AppStorage("settings.permissions.events") private var diskE: Bool = false
     @AppStorage("settings.permissions.hasLaunched") private var hasLaunched: Bool = false
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @AppStorage("settings.general.mini") private var mini: Bool = false
@@ -93,9 +91,9 @@ struct PearcleanerApp: App {
                 // Disable tabbing
                 NSWindow.allowsAutomaticWindowTabbing = false
 
+
                 // Set window size on load
-                let frame = windowSettings.loadWindowSettings()
-                NSApplication.shared.windows.first?.setFrame(frame, display: true)
+//                findAndSetWindowFrame(named: ["Pearcleaner"], windowSettings: windowSettings)
 
                 // Get Apps
                 let sortedApps = getSortedApps(paths: fsm.folderPaths, appState: appState)
@@ -114,7 +112,7 @@ struct PearcleanerApp: App {
                 }
 
 
-#if !DEBUG
+#if DEBUG
                 Task {
 
 
@@ -122,15 +120,12 @@ struct PearcleanerApp: App {
                     ensureApplicationSupportFolderExists(appState: appState)
 
                     // Check for updates after app launch
-                    if diskP {
-                        loadGithubReleases(appState: appState)
-                        getFeatures(appState: appState, show: $showFeature, features: $features)
-                    }
-
-                    // Check for disk/accessibility permissions just once on initial app launch
-                    if !hasLaunched {
-                        _ = checkAndRequestFullDiskAccess(appState: appState)
-                        hasLaunched = true
+                    checkAllPermissions(appState: appState) { results in
+                        appState.permissionResults = results
+                        if results.allPermissionsGranted {
+                            loadGithubReleases(appState: appState)
+                            getFeatures(appState: appState, show: $showFeature, features: $features)
+                        }
                     }
 
                     // Load extra conditions from GitHub
@@ -171,6 +166,7 @@ struct PearcleanerApp: App {
                 .environmentObject(ThemeSettings.shared)
                 .toolbarBackground(.clear)
                 .preferredColorScheme(displayMode.colorScheme)
+                .willRestore()
         }
     }
 }
@@ -180,6 +176,7 @@ struct PearcleanerApp: App {
 
 class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     var observer: NSObjectProtocol?
+    var windowSettings = WindowSettings()
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         let menubarEnabled = UserDefaults.standard.bool(forKey: "settings.menubar.enabled")
@@ -188,6 +185,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         let menubarEnabled = UserDefaults.standard.bool(forKey: "settings.menubar.enabled")
+//        UserDefaults.standard.register(defaults: ["NSQuitAlwaysKeepsWindows" : false])
+        findAndSetWindowFrame(named: ["Pearcleaner"], windowSettings: windowSettings)
 
         if UserDefaults.standard.object(forKey: "themeColor") == nil {
             self.appearanceChanged()

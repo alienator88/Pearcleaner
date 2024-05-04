@@ -263,29 +263,32 @@ struct FilesView: View {
 
                         Button("\(sizeType == "Logical" ? totalSelectedSize.logical : sizeType == "Finder" ? totalSelectedSize.finder : totalSelectedSize.real)") {
                             Task {
-                                if appState.selectedItems.count == appState.appInfo.fileSize.keys.count {
-                                    updateOnMain {
-                                        search = ""
-                                        if mini || menubarEnabled {
-                                            appState.currentView = .apps
-                                            showPopover = false
-                                        } else {
-                                            appState.currentView = .empty
-                                        }
-                                    }
-                                }
+
 
                                 let selectedItemsArray = Array(appState.selectedItems)
 
                                 killApp(appId: appState.appInfo.bundleIdentifier) {
-                                    moveFilesToTrash(at: selectedItemsArray) {
-                                        withAnimation {
-                                            showPopover = false
-//                                            updateOnMain {
-//                                                appState.currentView = mini ? .apps : .empty
-//                                            }
-                                            if sentinel {
-                                                launchctl(load: true)
+                                    
+                                    moveFilesToTrash(appState: appState, at: selectedItemsArray) { success in
+                                        if sentinel {
+                                            launchctl(load: true)
+                                        }
+
+                                        guard success else {
+                                            return
+                                        }
+
+                                        if appState.selectedItems.count == appState.appInfo.fileSize.keys.count {
+                                            updateOnMain {
+                                                search = ""
+                                                withAnimation {
+                                                    if mini || menubarEnabled {
+                                                        appState.currentView = .apps
+                                                        showPopover = false
+                                                    } else {
+                                                        appState.currentView = .empty
+                                                    }
+                                                }
                                             }
                                         }
 

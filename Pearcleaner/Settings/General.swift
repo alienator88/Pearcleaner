@@ -27,6 +27,8 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @State private var diskStatus: Bool = false
     @State private var accessStatus: Bool = false
+    @State private var autoStatus: Bool = false
+    @State private var remStatus: Bool = false
     @Binding var showPopover: Bool
     @Binding var search: String
     @State var selectedIndex: Int?
@@ -177,58 +179,163 @@ struct GeneralSettingsTab: View {
 
                 HStack() {
                     Text("Permissions").font(.title2)
-                    Spacer()
-                }
-                .padding(.leading)
 
-                HStack(spacing: 0) {
-                    Image(systemName: diskStatus ? "externaldrive" : "externaldrive")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 20, height: 20)
-                        .padding(.trailing)
-                        .foregroundStyle(diskStatus ? .green : .red)
-                        .saturation(displayMode.colorScheme == .dark ? 0.5 : 1)
-                    Text(diskStatus ? "Full Disk permission granted" : "Full Disk permission **NOT** granted")
-                        .font(.callout)
-                        .foregroundStyle(Color("mode").opacity(0.5))
-                    Spacer()
+                    InfoButtonPerms()
 
-                    Button("") {
-                        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles") {
-                            NSWorkspace.shared.open(url)
+                    Button("Refresh") {
+                        checkAllPermissions(appState: appState) { results in
+                            updateOnMain {
+                                appState.permissionResults = results
+                            }
+                            diskStatus = results.fullDiskAccess
+                            accessStatus = results.accessibility
+                            autoStatus = results.automation
+                            remStatus = results.reminders
+                            if results.allPermissionsGranted {
+                                updateOnMain {
+                                    appState.permissionsOkay = true
+                                }
+                            }
                         }
                     }
-                    .buttonStyle(SimpleButtonStyle(icon: "folder", help: "View disk permissions pane"))
+                    .buttonStyle(SimpleButtonStyle(icon: "arrow.triangle.2.circlepath", help: "Refresh permissions"))
 
+
+                    Spacer()
                 }
-                .padding(5)
                 .padding(.leading)
 
 
-                HStack(spacing: 0) {
-                    Image(systemName: accessStatus ? "accessibility" : "accessibility")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 20, height: 20)
-                        .padding(.trailing)
-                        .foregroundStyle(accessStatus ? .green : .red)
-                        .saturation(displayMode.colorScheme == .dark ? 0.5 : 1)
-                    Text(accessStatus ? "Accessibility permission granted" : "Accessibility permission **NOT** granted")
-                        .font(.callout)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                HStack {
+                    HStack(spacing: 0) {
+                        Image(systemName: "externaldrive")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 20, height: 20)
+                            .padding(.trailing)
+                            .foregroundStyle(diskStatus ? .green : .red)
+                            .saturation(displayMode.colorScheme == .dark ? 0.5 : 1)
+                        Text("Full Disk")
+                            .font(.callout)
+                            .foregroundStyle(Color("mode").opacity(0.5))
+                            .frame(width: 100)
+
+                        Spacer()
+
+                        Button("") {
+                            if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles") {
+                                NSWorkspace.shared.open(url)
+                            }
+                        }
+                        .buttonStyle(SimpleButtonStyle(icon: "arrow.right.circle.fill", help: "View disk permissions pane", size: 14))
+
+                        Spacer()
+
+                    }
+                    .padding(5)
+                    .padding(.leading)
+                    .frame(width: 200)
+
                     Spacer()
 
-                    Button("") {
-                        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
-                            NSWorkspace.shared.open(url)
+
+                    HStack(spacing: 0) {
+                        Image(systemName: "accessibility")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 20, height: 20)
+                            .padding(.trailing)
+                            .foregroundStyle(accessStatus ? .green : .red)
+                            .saturation(displayMode.colorScheme == .dark ? 0.5 : 1)
+                        Text("Accessibility")
+                            .font(.callout)
+                            .foregroundStyle(Color("mode").opacity(0.5))
+                            .frame(width: 100)
+
+                        Spacer()
+
+                        Button("") {
+                            if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
+                                NSWorkspace.shared.open(url)
+                            }
                         }
+                        .buttonStyle(SimpleButtonStyle(icon: "arrow.right.circle.fill", help: "View accessibility permissions pane", size: 14))
+
+                        Spacer()
+
                     }
-                    .buttonStyle(SimpleButtonStyle(icon: "folder", help: "View accessibility permissions pane"))
+                    .padding(5)
+                    .padding(.leading)
+                    .frame(width: 200)
 
                 }
-                .padding(5)
-                .padding(.leading)
+
+
+                HStack {
+                    HStack(spacing: 0) {
+                        Image(systemName: "gearshape.2")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 20, height: 20)
+                            .padding(.trailing)
+                            .foregroundStyle(autoStatus ? .green : .red)
+                            .saturation(displayMode.colorScheme == .dark ? 0.5 : 1)
+                        Text("Automation")
+                            .font(.callout)
+                            .foregroundStyle(Color("mode").opacity(0.5))
+                            .frame(width: 100)
+
+                        Spacer()
+
+                        Button("") {
+                            if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Automation") {
+                                NSWorkspace.shared.open(url)
+                            }
+                        }
+                        .buttonStyle(SimpleButtonStyle(icon: "arrow.right.circle.fill", help: "View automation permissions pane", size: 14))
+
+                        Spacer()
+
+                    }
+                    .padding(5)
+                    .padding(.leading)
+                    .frame(width: 200)
+
+
+                    Spacer()
+
+                    HStack(spacing: 0) {
+                        Image(systemName: "calendar")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 20, height: 20)
+                            .padding(.trailing)
+                            .foregroundStyle(remStatus ? .green : .red)
+                            .saturation(displayMode.colorScheme == .dark ? 0.5 : 1)
+                        Text("Reminders")
+                            .font(.callout)
+                            .foregroundStyle(Color("mode").opacity(0.5))
+                            .frame(width: 100)
+
+                        Spacer()
+
+                        Button("") {
+                            if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Reminders") {
+                                NSWorkspace.shared.open(url)
+                            }
+                        }
+                        .buttonStyle(SimpleButtonStyle(icon: "arrow.right.circle.fill", help: "View reminders permissions pane", size: 14))
+
+                        Spacer()
+
+                    }
+                    .padding(5)
+                    .padding(.leading)
+                    .frame(width: 200)
+
+                }
+
+
 
 
                 // === Sentinel =============================================================================================
@@ -331,14 +438,26 @@ struct GeneralSettingsTab: View {
                 Spacer()
             }
             .onAppear {
-                diskStatus = checkAndRequestFullDiskAccess(appState: appState, skipAlert: true)
-                accessStatus = checkAndRequestAccessibilityAccess(appState: appState)
+                checkAllPermissions(appState: appState) { results in
+                    updateOnMain {
+                        appState.permissionResults = results
+                    }
+                    diskStatus = results.fullDiskAccess
+                    accessStatus = results.accessibility
+                    autoStatus = results.automation
+                    remStatus = results.reminders
+                    if results.allPermissionsGranted {
+                        updateOnMain {
+                            appState.permissionsOkay = true
+                        }
+                    }
+                }
                 appState.updateExtensionStatus()
             }
 
         }
         .padding(20)
-        .frame(width: 500, height: 620)
+        .frame(width: 500, height: 650)
 
     }
 

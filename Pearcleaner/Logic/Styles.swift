@@ -218,6 +218,101 @@ struct InfoButton: View {
 }
 
 
+
+struct InfoButtonPerms: View {
+    @State private var isPopoverPresented: Bool = false
+    let color: Color
+    let label: String
+    let warning: Bool
+
+    init(color: Color = Color("mode"), label: String = "", warning: Bool = false) {
+        self.color = color
+        self.label = label
+        self.warning = warning
+
+    }
+
+    var body: some View {
+        Button(action: {
+            self.isPopoverPresented.toggle()
+        }) {
+            HStack(alignment: .center, spacing: 5) {
+                Image(systemName: !warning ? "info.circle.fill" : "exclamationmark.triangle.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 14, height: 14)
+                    .foregroundColor(!warning ? color.opacity(0.7) : color)
+                    .frame(height: 16)
+                if !label.isEmpty {
+                    Text(label)
+                        .font(.callout)
+                        .foregroundColor(color.opacity(0.7))
+
+                }
+            }
+        }
+        .buttonStyle(PlainButtonStyle())
+        .onHover { isHovered in
+            if isHovered {
+                NSCursor.pointingHand.push()
+            } else {
+                NSCursor.pop()
+            }
+        }
+        .popover(isPresented: $isPopoverPresented, arrowEdge: .bottom) {
+            VStack(alignment: .leading, spacing: 10) {
+
+                HStack(alignment: .top, spacing: 20) {
+                    Image(systemName: "externaldrive")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .foregroundStyle(Color("mode").opacity(0.5))
+                    Text("Full Disk Access permission to find and delete files in system paths")
+                        .font(.callout)
+                        .foregroundStyle(Color("mode").opacity(0.5))
+                }
+
+                HStack(alignment: .top, spacing: 20) {
+                    Image(systemName: "accessibility")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .foregroundStyle(Color("mode").opacity(0.5))
+                    Text("Accessibility permission to delete files via Finder")
+                        .font(.callout)
+                        .foregroundStyle(Color("mode").opacity(0.5))
+                }
+
+                HStack(alignment: .top, spacing: 20) {
+                    Image(systemName: "gearshape.2")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .foregroundStyle(Color("mode").opacity(0.5))
+                    Text("Automation permission to perform extension actions via Finder")
+                        .font(.callout)
+                        .foregroundStyle(Color("mode").opacity(0.5))
+                }
+
+                HStack(alignment: .top, spacing: 20) {
+                    Image(systemName: "calendar")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .foregroundStyle(Color("mode").opacity(0.5))
+                    Text("Reminders permission to find and delete some reminder files that certain apps cache")
+                        .font(.callout)
+                        .foregroundStyle(Color("mode").opacity(0.5))
+                }
+            }
+            .padding()
+        }
+        .padding(.horizontal, 5)
+    }
+}
+
+
 struct UninstallButton: ButtonStyle {
     @State private var hovered: Bool = false
     var isEnabled: Bool

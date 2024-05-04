@@ -199,7 +199,7 @@ func showAppInFiles(appInfo: AppInfo, appState: AppState, locations: Locations, 
 
 
 // Move files to trash using applescript/Finder so it asks for user password if needed
-func moveFilesToTrash(at fileURLs: [URL], completion: @escaping () -> Void = {}) {
+func moveFilesToTrash(appState: AppState, at fileURLs: [URL], completion: @escaping (Bool) -> Void = {_ in }) {
     @AppStorage("settings.sentinel.enable") var sentinel: Bool = false
     if sentinel {
         launchctl(load: false)
@@ -214,13 +214,26 @@ func moveFilesToTrash(at fileURLs: [URL], completion: @escaping () -> Void = {})
         if let scriptObject = NSAppleScript(source: scriptSource) {
             let output: NSAppleEventDescriptor = scriptObject.executeAndReturnError(&error)
             if let error = error {
-                printOS("Error: \(error)")
-            } else if let outputString = output.stringValue {
+                checkAllPermissions(appState: appState) { results in
+                    appState.permissionResults = results
+                    if !results.allPermissionsGranted {
+                        updateOnMain {
+                            appState.permissionsOkay = false
+                        }
+                    }
+                }
+                printOS("Trash Error: \(error)")
+                DispatchQueue.main.async {
+                    completion(false)  // Indicate failure
+                }
+                return
+            }
+            if let outputString = output.stringValue {
                 printOS(outputString)
             }
         }
         DispatchQueue.main.async {
-            completion()
+            completion(true)  // Indicate success
         }
     }
 
@@ -250,12 +263,15 @@ func undoTrash(appState: AppState, completion: @escaping () -> Void = {}) {
         if let scriptObject = NSAppleScript(source: scriptSource) {
             let output: NSAppleEventDescriptor = scriptObject.executeAndReturnError(&error)
             if let error = error {
-                if let value = error["NSAppleScriptErrorNumber"] {
-                    if value as! Int == 1002 {
-                        _ = checkAndRequestAccessibilityAccess(appState: appState)
+                checkAllPermissions(appState: appState) { results in
+                    appState.permissionResults = results
+                    if !results.allPermissionsGranted {
+                        updateOnMain {
+                            appState.permissionsOkay = false
+                        }
                     }
                 }
-                printOS("Error: \(error)")
+                printOS("Undo Trash Error: \(error)")
             } else if let outputString = output.stringValue {
                 printOS(outputString)
             }
