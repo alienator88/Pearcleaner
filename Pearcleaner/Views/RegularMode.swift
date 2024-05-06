@@ -111,7 +111,6 @@ struct AppDetailsEmptyView: View {
                 PearDropView()
             }
 
-
             Spacer()
 
             Text("Drop an app here")

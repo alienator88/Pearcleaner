@@ -42,6 +42,11 @@ struct AppSearchView: View {
 
             HStack(spacing: 10) {
 
+#if DEBUG
+                Image(systemName: "ant.fill")
+                    .foregroundStyle(.orange)
+                    .help("DEBUG")
+#endif
 
                 SearchBar(search: $search, darker: (mini || menubarEnabled) ? false : true, glass: glass)
 

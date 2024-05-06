@@ -200,14 +200,14 @@ func showAppInFiles(appInfo: AppInfo, appState: AppState, locations: Locations, 
 
 // Move files to trash using applescript/Finder so it asks for user password if needed
 func moveFilesToTrash(appState: AppState, at fileURLs: [URL], completion: @escaping (Bool) -> Void = {_ in }) {
-    @AppStorage("settings.sentinel.enable") var sentinel: Bool = false
-    if sentinel {
-        launchctl(load: false)
-    }
+    // Stop Sentinel FileWatcher momentarily to ignore .app bundle being sent to Trash
+    sendStopNotificationFW()
+
     updateOnBackground {
-        let posixFiles = fileURLs.map { "POSIX file \"\($0.path)\", " }.joined().dropLast(3)
+        let posixFiles = fileURLs.map { item in
+            return "POSIX file \"\(item.path)\"" + (item == fileURLs.last ? "" : ", ")}.joined()
         let scriptSource = """
-        tell application \"Finder\" to delete { \(posixFiles)" }
+        tell application \"Finder\" to delete { \(posixFiles) }
         """
 
         var error: NSDictionary?

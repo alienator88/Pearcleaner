@@ -121,11 +121,13 @@ func findAndHideWindows(named titles: [String]) {
 }
 
 func findAndSetWindowFrame(named titles: [String], windowSettings: WindowSettings) {
-    for title in titles {
-        if let window = NSApp.windows.first(where: { $0.title == title }) {
-            window.isRestorable = false
-            let frame = windowSettings.loadWindowSettings()
-            window.setFrame(frame, display: true)
+    windowSettings.registerDefaultWindowSettings() {
+        for title in titles {
+            if let window = NSApp.windows.first(where: { $0.title == title }) {
+                window.isRestorable = false
+                let frame = windowSettings.loadWindowSettings()
+                window.setFrame(frame, display: true)
+            }
         }
     }
 }
@@ -279,16 +281,17 @@ func killApp(appId: String, completion: @escaping () -> Void = {}) {
 }
 
 // Remove app from cache
-func removeApp(appState: AppState, withId id: UUID) {
+func removeApp(appState: AppState, withPath path: URL) {
     @AppStorage("settings.general.brew") var brew: Bool = false
     DispatchQueue.main.async {
+
         // Remove from sortedApps if found
-        if let index = appState.sortedApps.firstIndex(where: { $0.id == id }) {
+        if let index = appState.sortedApps.firstIndex(where: { $0.path == path }) {
             appState.sortedApps.remove(at: index)
-            return // Exit the function if the app was found and removed
+//            return // Exit the function if the app was found and removed
         }
         // Remove from appInfoStore if found
-        if let index = appState.appInfoStore.firstIndex(where: { $0.id == id }) {
+        if let index = appState.appInfoStore.firstIndex(where: { $0.path == path }) {
             appState.appInfoStore.remove(at: index)
         }
         // Brew cleanup if enabled
@@ -410,13 +413,13 @@ extension String {
 
 
 // --- Trash Relationship ---
-extension FileManager {
-    public func isInTrash(_ file: URL) -> Bool {
-        var relationship: URLRelationship = .other
-        try? getRelationship(&relationship, of: .trashDirectory, in: .userDomainMask, toItemAt: file)
-        return relationship == .contains
-    }
-}
+//extension FileManager {
+//    public func isInTrash(_ file: URL) -> Bool {
+//        var relationship: URLRelationship = .other
+//        try? getRelationship(&relationship, of: .trashDirectory, in: .userDomainMask, toItemAt: file)
+//        return relationship == .contains
+//    }
+//}
 
 // --- Extend print command to also output to the Console ---
 func printOS(_ items: Any..., separator: String = " ", terminator: String = "\n") {
@@ -518,37 +521,6 @@ func isSupportedFileType(at path: String) -> Bool {
 }
 
 
-// Alerts
-func presentAlert(appState: AppState) -> Alert {
-
-    switch appState.alertType {
-    case .update:
-        return Alert(title: Text("Update Available 🥳"), message: Text("You may choose to install the update now, otherwise you may check again later from Settings"), primaryButton: .default(Text("Install")) {
-            downloadUpdate(appState: appState)
-            appState.alertType = .off
-        }, secondaryButton: .cancel())
-    case .no_update:
-        return Alert(title: Text("No Updates 😌"), message: Text("Pearcleaner is on the latest release available"), primaryButton: .cancel(Text("Okay")), secondaryButton: .default(Text("Force Update")) {
-            downloadUpdate(appState: appState)
-            appState.alertType = .off
-        })
-    case .diskAccess:
-        return Alert(title: Text("Permissions"), message: Text("Pearcleaner requires Full Disk and Accessibility permissions. Drag the app into the Full Disk and Accessibility pane to enable or toggle On if already present."), primaryButton: .default(Text("Allow in Settings")) {
-            if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles") {
-                NSWorkspace.shared.open(url)
-            }
-            appState.alertType = .off
-        }, secondaryButton: .cancel(Text("Later")))
-    case .restartApp:
-        return Alert(title: Text("Update Completed!"), message: Text("The application has been updated to the latest version, would you like to restart now?"), primaryButton: .default(Text("Restart")) {
-            appState.alertType = .off
-            relaunchApp()
-        }, secondaryButton: .cancel(Text("Later")))
-    case .off:
-        return Alert(title: Text(""))
-    }
-}
-
 
 
 // --- Pearcleaner Uninstall --
@@ -564,16 +536,15 @@ func uninstallPearcleaner(appState: AppState, locations: Locations) {
     AppPathFinder(appInfo: appInfo!, appState: appState, locations: locations, completion: {
         // Kill Pearcleaner and tell Finder to trash the files
         let selectedItemsArray = Array(appState.selectedItems).filter { !$0.path.contains(".Trash") }
-        let posixFiles = selectedItemsArray.map { "POSIX file \"\($0.path)\", " }.joined().dropLast(3)
+        let posixFiles = selectedItemsArray.map { item in
+            return "POSIX file \"\(item.path)\"" + (item == selectedItemsArray.last ? "" : ", ")}.joined()
         let scriptSource = """
-        tell application \"Finder\" to delete { \(posixFiles)" }
+        tell application \"Finder\" to delete { \(posixFiles) }
         """
         let task = Process()
         task.launchPath = "/bin/sh"
         task.arguments = ["-c", "sleep 1; osascript -e '\(scriptSource)'"]
         task.launch()
-
-        NSApp.terminate(nil)
         exit(0)
     }).findPaths()
 }
@@ -653,7 +624,13 @@ func launchctl(load: Bool, completion: @escaping () -> Void = {}) {
 }
 
 
+func sendStartNotificationFW() {
+    DistributedNotificationCenter.default().postNotificationName(Notification.Name("Pearcleaner.StartFileWatcher"), object: nil, userInfo: nil, deliverImmediately: true)
+}
 
+func sendStopNotificationFW() {
+    DistributedNotificationCenter.default().postNotificationName(Notification.Name("Pearcleaner.StopFileWatcher"), object: nil, userInfo: nil, deliverImmediately: true)
+}
 
 
 func getCurrentTimestamp() -> String {

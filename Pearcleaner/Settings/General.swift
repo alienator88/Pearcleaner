@@ -198,7 +198,7 @@ struct GeneralSettingsTab: View {
                             }
                         }
                     }
-                    .buttonStyle(SimpleButtonStyle(icon: "arrow.triangle.2.circlepath", help: "Refresh permissions"))
+                    .buttonStyle(SimpleButtonStyle(icon: "arrow.triangle.2.circlepath", label: "Refresh", help: "Refresh permissions"))
                     .padding(.trailing, 5)
 
                 }
@@ -412,11 +412,7 @@ struct GeneralSettingsTab: View {
     private func resetUserDefaults() {
         isResetting = true
         DispatchQueue.global(qos: .background).async {
-            let defaults = UserDefaults.standard
-            let dictionary = defaults.dictionaryRepresentation()
-            dictionary.keys.forEach { key in
-                defaults.removeObject(forKey: key)
-            }
+            UserDefaults.standard.dictionaryRepresentation().keys.forEach(UserDefaults.standard.removeObject(forKey:))
             DispatchQueue.main.async {
                 isResetting = false
             }
@@ -424,3 +420,6 @@ struct GeneralSettingsTab: View {
     }
 
 }
+
+
+

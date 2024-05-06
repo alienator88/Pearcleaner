@@ -27,6 +27,7 @@ class DeeplinkManager {
         if url.pathExtension == "app" {
             handleAppBundle(url: url, appState: appState, locations: locations)
         } else if url.scheme == DeepLinkConstants.scheme,
+                  // This handles SentinelMonitor FileWatcher
                   url.host == DeepLinkConstants.host,
                   let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
                   let queryItems = components.queryItems {

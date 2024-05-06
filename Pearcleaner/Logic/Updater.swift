@@ -66,10 +66,10 @@ func checkForUpdate(appState: AppState, manual: Bool = false) {
 
 func downloadUpdate(appState: AppState) {
     updateOnMain {
-        appState.progressBar.0 = "Getting update file links ready"
+        appState.progressBar.0 = "UPDATER: Getting update link"
         appState.progressBar.1 = 0.1
     }
-
+    let fileManager = FileManager.default
     guard let latestRelease = appState.releases.first else { return }
     guard let asset = latestRelease.assets.first else { return }
     guard let url = URL(string: asset.url) else { return }
@@ -78,38 +78,37 @@ func downloadUpdate(appState: AppState) {
 
     let downloadTask = URLSession.shared.downloadTask(with: request) { localURL, urlResponse, error in
         updateOnMain {
-            appState.progressBar.0 = "Downloading update file"
+            appState.progressBar.0 = "UPDATER: Starting download of update file"
             appState.progressBar.1 = 0.2
         }
 
         guard let localURL = localURL else { return }
-
-        let fileManager = FileManager.default
-        let destinationURL = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!.appendingPathComponent("Pearcleaner").appendingPathComponent("\(asset.name)")
+        
+        let destinationURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(asset.name)")
 
         do {
             if fileManager.fileExists(atPath: destinationURL.path) {
                 try? fileManager.removeItem(at: destinationURL)
             }
+
             updateOnMain {
-                appState.progressBar.0 = "Moving update file to Application Support"
+                appState.progressBar.0 = "UPDATER: File downloaded to temp directory"
+                appState.progressBar.1 = 0.3
+            }
+            try fileManager.moveItem(at: localURL, to: destinationURL)
+
+            updateOnMain {
+                appState.progressBar.0 = "UPDATER: File renamed using asset name"
                 appState.progressBar.1 = 0.4
             }
 
-            try fileManager.moveItem(at: localURL, to: destinationURL)
-
             UnzipAndReplace(DownloadedFileURL: destinationURL.path, appState: appState)
-
-            updateOnMain {
-                appState.progressBar.0 = "Done, please restart!"
-                appState.progressBar.1 = 1.0
-                appState.updateAvailable = false
-            }
-
 
         } catch {
             printOS("Error moving downloaded file: \(error.localizedDescription)")
         }
+
+
     }
 
     downloadTask.resume()
@@ -122,7 +121,7 @@ func UnzipAndReplace(DownloadedFileURL fileURL: String, appState: AppState) {
 
     do {
         updateOnMain {
-            appState.progressBar.0 = "Deleting existing application"
+            appState.progressBar.0 = "UPDATER: Removing currently installed application bundle"
             appState.progressBar.1 = 0.5
         }
 
@@ -130,10 +129,9 @@ func UnzipAndReplace(DownloadedFileURL fileURL: String, appState: AppState) {
         try fileManager.removeItem(atPath: appBundle)
 
         updateOnMain {
-            appState.progressBar.0 = "Unziping new update file to original Pearcleaner location"
+            appState.progressBar.0 = "UPDATER: Unziping file to original install location"
             appState.progressBar.1 = 0.6
         }
-
 
         // Unzip the downloaded update file to your app's bundle path
         let process = Process()
@@ -146,13 +144,18 @@ func UnzipAndReplace(DownloadedFileURL fileURL: String, appState: AppState) {
         process.waitUntilExit()
 
         updateOnMain {
-            appState.progressBar.0 = "Deleting update file"
+            appState.progressBar.0 = "UPDATER: Removing file from temp directory"
             appState.progressBar.1 = 0.8
         }
 
         // After unzipping, remove the update file
         try fileManager.removeItem(atPath: fileURL)
 
+        updateOnMain {
+            appState.progressBar.0 = "UPDATER: Completed, please restart!"
+            appState.progressBar.1 = 1.0
+            appState.updateAvailable = false
+        }
 
     } catch {
         printOS("Error updating the app: \(error)")

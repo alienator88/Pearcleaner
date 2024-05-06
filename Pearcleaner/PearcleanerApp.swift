@@ -7,7 +7,6 @@
 
 import SwiftUI
 import AppKit
-//import ServiceManagement
 
 @main
 struct PearcleanerApp: App {
@@ -111,7 +110,8 @@ struct PearcleanerApp: App {
 
 
                     // Make sure App Support folder exists in the future if needed for storage
-                    ensureApplicationSupportFolderExists(appState: appState)
+                    //MARK: This is not needed any longer as the update file is stored in /tmp directory
+//                    ensureApplicationSupportFolderExists(appState: appState)
 
                     // Check for updates after app launch
                     checkAllPermissions(appState: appState) { results in
@@ -184,7 +184,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         if UserDefaults.standard.object(forKey: "themeColor") == nil {
             self.appearanceChanged()
         }
-
+        
         if menubarEnabled {
             findAndHideWindows(named: ["Pearcleaner"])
             NSApplication.shared.setActivationPolicy(.accessory)

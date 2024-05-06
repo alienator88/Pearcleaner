@@ -257,22 +257,30 @@ struct FilesView: View {
 
                     Spacer()
 
-                    HStack() {
+                    HStack(alignment: .center) {
+
+                        Spacer()
+
+                        if appState.appInfo.fileSize.keys.count == 0 {
+                            Text("Sentinel Monitor found no other files to remove")
+                                .font(.title2)
+                                .opacity(0.5)
+                                .padding(.top)
+                        }
 
                         Spacer()
 
                         Button("\(sizeType == "Logical" ? totalSelectedSize.logical : sizeType == "Finder" ? totalSelectedSize.finder : totalSelectedSize.real)") {
                             Task {
 
-
                                 let selectedItemsArray = Array(appState.selectedItems)
 
                                 killApp(appId: appState.appInfo.bundleIdentifier) {
                                     
                                     moveFilesToTrash(appState: appState, at: selectedItemsArray) { success in
-                                        if sentinel {
-                                            launchctl(load: true)
-                                        }
+
+                                        // Send Sentinel FileWatcher start notification
+                                        sendStartNotificationFW()
 
                                         guard success else {
                                             return
@@ -296,7 +304,7 @@ struct FilesView: View {
                                         if (appState.appInfo.wrapped && selectedItemsArray.contains(where: { $0.absoluteString == appState.appInfo.path.deletingLastPathComponent().deletingLastPathComponent().absoluteString })) ||
                                             (!appState.appInfo.wrapped && selectedItemsArray.contains(where: { $0.absoluteString == appState.appInfo.path.absoluteString })) {
                                             // Match found, remove the app
-                                            removeApp(appState: appState, withId: appState.appInfo.id)
+                                            removeApp(appState: appState, withPath: appState.appInfo.path)
                                         } else {
                                             // Add deleted appInfo object to trashed array
                                             appState.trashedFiles.append(appState.appInfo)
