@@ -39,6 +39,7 @@
 		C7A9CE472B89164700EB6E78 /* Authorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A9CE462B89164700EB6E78 /* Authorization.swift */; };
 		C7ACADE62B92A737000B5845 /* Features.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7ACADE52B92A737000B5845 /* Features.swift */; };
 		C7CF47242B3B3F1700979C5F /* WindowSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7CF47232B3B3F1700979C5F /* WindowSettings.swift */; };
+		C7D15BBE2BE85F4D007D57CF /* FeatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D15BBD2BE85F4D007D57CF /* FeatureView.swift */; };
 		C7D31D4A2AFEB26700C7ED9E /* AppListItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D492AFEB26700C7ED9E /* AppListItems.swift */; };
 		C7D31D512AFF00F300C7ED9E /* Locations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D502AFF00F300C7ED9E /* Locations.swift */; };
 		C7DC1FEE2B9F7D3D009AC317 /* features.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DC1FED2B9F7D3D009AC317 /* features.json */; };
@@ -135,6 +136,7 @@
 		C7A9CE462B89164700EB6E78 /* Authorization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authorization.swift; sourceTree = "<group>"; };
 		C7ACADE52B92A737000B5845 /* Features.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features.swift; sourceTree = "<group>"; };
 		C7CF47232B3B3F1700979C5F /* WindowSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowSettings.swift; sourceTree = "<group>"; };
+		C7D15BBD2BE85F4D007D57CF /* FeatureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureView.swift; sourceTree = "<group>"; };
 		C7D31D492AFEB26700C7ED9E /* AppListItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppListItems.swift; sourceTree = "<group>"; };
 		C7D31D502AFF00F300C7ED9E /* Locations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locations.swift; sourceTree = "<group>"; };
 		C7DC1FED2B9F7D3D009AC317 /* features.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = features.json; sourceTree = SOURCE_ROOT; };
@@ -181,6 +183,7 @@
 			children = (
 				C7045A312B068AD700376976 /* NewWin.swift */,
 				C7045A332B068B2900376976 /* UpdateView.swift */,
+				C7D15BBD2BE85F4D007D57CF /* FeatureView.swift */,
 				C7045A352B068DD700376976 /* PermView.swift */,
 				C7DE672A2BA6343D00EB1633 /* MenuBarItem.swift */,
 				C7CF47232B3B3F1700979C5F /* WindowSettings.swift */,
@@ -492,6 +495,7 @@
 				C7ACADE62B92A737000B5845 /* Features.swift in Sources */,
 				C7F539382AF60865007DF1B2 /* Utilities.swift in Sources */,
 				C76D08552AF89CDE00D07867 /* RegularMode.swift in Sources */,
+				C7D15BBE2BE85F4D007D57CF /* FeatureView.swift in Sources */,
 				C7A9CE472B89164700EB6E78 /* Authorization.swift in Sources */,
 				C7FEBA112BDC422200AE195F /* AppSearchView.swift in Sources */,
 				C7CF47242B3B3F1700979C5F /* WindowSettings.swift in Sources */,

@@ -306,26 +306,23 @@ struct InterfaceSettingsTab: View {
                             if mini {
                                 appState.currentView = miniView ? .apps : .empty
                                 showPopover = false
-                                findAndHideWindows(named: ["Pearcleaner"])
-                                windowSettings.newWindow {
+                                windowSettings.newWindow(withView: {
                                     MiniMode(search: $search, showPopover: $showPopover)
                                         .environmentObject(locations)
                                         .environmentObject(appState)
                                         .environmentObject(fsm)
                                         .environmentObject(ThemeSettings.shared)
                                         .preferredColorScheme(displayMode.colorScheme)
-                                }
-                                updateOnMain(after: 0.1, {
+                                }) {
                                     resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")
-                                })
+                                }
                             } else {
                                 if appState.appInfo.appName.isEmpty {
                                     appState.currentView = .empty
                                 } else {
                                     appState.currentView = .files
                                 }
-                                findAndHideWindows(named: ["Pearcleaner"])
-                                windowSettings.newWindow {
+                                windowSettings.newWindow(withView: {
                                     RegularMode(search: $search, showPopover: $showPopover)
                                         .environmentObject(locations)
                                         .environmentObject(appState)
@@ -333,9 +330,9 @@ struct InterfaceSettingsTab: View {
                                         .environmentObject(ThemeSettings.shared)
                                         .preferredColorScheme(displayMode.colorScheme)
                                 }
-                                updateOnMain(after: 0.1, {
+                                ) {
                                     resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")
-                                })
+                                }
                             }
 
 
@@ -443,25 +440,27 @@ struct InterfaceSettingsTab: View {
                             NSApplication.shared.setActivationPolicy(.regular)
                             if !hasWindowOpen() {
                                 if mini {
-                                    windowSettings.newWindow {
+                                    windowSettings.newWindow(withView: {
                                         MiniMode(search: $search, showPopover: $showPopover)
                                             .environmentObject(locations)
                                             .environmentObject(appState)
                                             .environmentObject(fsm)
                                             .environmentObject(ThemeSettings.shared)
                                             .preferredColorScheme(displayMode.colorScheme)
+                                    }) {
+                                        resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")
                                     }
-                                    resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")
                                 } else {
-                                    windowSettings.newWindow {
+                                    windowSettings.newWindow(withView: {
                                         RegularMode(search: $search, showPopover: $showPopover)
                                             .environmentObject(locations)
                                             .environmentObject(appState)
                                             .environmentObject(fsm)
                                             .environmentObject(ThemeSettings.shared)
                                             .preferredColorScheme(displayMode.colorScheme)
+                                    }) {
+                                        resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")
                                     }
-                                    resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")
                                 }
                             }
 

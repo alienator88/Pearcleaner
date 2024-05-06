@@ -310,7 +310,6 @@ class AppPathFinder {
                 self.appState.appInfo = self.appInfo
                 if !self.undo {
                     self.appState.selectedItems = Set(updatedCollection)
-
                 }
             }
 

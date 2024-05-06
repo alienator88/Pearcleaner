@@ -6,17 +6,16 @@
 //
 
 import SwiftUI
-import EventKit
+//import EventKit
 
 struct PermissionsCheckResults {
     var fullDiskAccess: Bool
     var accessibility: Bool
     var automation: Bool
-    var reminders: Bool
-    
+
     // Computed property to check if all permissions are granted
     var allPermissionsGranted: Bool {
-        return fullDiskAccess && accessibility && automation && reminders
+        return fullDiskAccess && accessibility && automation
     }
 }
 
@@ -51,25 +50,17 @@ func checkAllPermissions(appState: AppState, completion: @escaping (PermissionsC
         dispatchGroup.leave()
     }
 
-    // Check Reminders Permission
-    var remindersAccess = false
-    dispatchGroup.enter()
-    checkRemindersAccess(appState: appState) { granted in
-        remindersAccess = granted
-        dispatchGroup.leave()
-    }
 
     // Wait for all async checks to complete
     dispatchGroup.notify(queue: .main) {
         let results = PermissionsCheckResults(
             fullDiskAccess: fullDiskAccess,
             accessibility: accessibilityEnabled,
-            automation: automationAccess,
-            reminders: remindersAccess
+            automation: automationAccess
         )
 
         // Check if any permission is denied and show window
-        if !(results.fullDiskAccess && results.accessibility && results.automation && results.reminders) {
+        if !(results.fullDiskAccess && results.accessibility && results.automation) {
             updateOnMain {
                 appState.permissionsOkay = false
             }
@@ -98,22 +89,6 @@ func checkAutomationPermission(appState: AppState, completion: @escaping (Bool) 
         }
     }
 }
-
-// Check Reminders storage permission
-func checkRemindersAccess(appState: AppState, completion: @escaping (Bool) -> Void) {
-    let eventStore = EKEventStore()
-    eventStore.requestAccess(to: .reminder) { granted, error in
-        DispatchQueue.main.async {
-            if error != nil {
-                completion(false)
-            } else {
-                completion(granted)
-            }
-        }
-    }
-}
-
-
 
 
 

@@ -80,7 +80,11 @@ class NewWin: NSWindowController {
             return AnyView(PermView()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.black.opacity(0.2))
-
+                .environmentObject(appState))
+        case .feature:
+            return AnyView(FeatureView()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(.black.opacity(0.2))
                 .environmentObject(appState))
         }
     }

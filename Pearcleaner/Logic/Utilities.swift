@@ -123,7 +123,7 @@ func findAndHideWindows(named titles: [String]) {
 func findAndSetWindowFrame(named titles: [String], windowSettings: WindowSettings) {
     for title in titles {
         if let window = NSApp.windows.first(where: { $0.title == title }) {
-//            window.isRestorable = false    // Doing this via view
+            window.isRestorable = false
             let frame = windowSettings.loadWindowSettings()
             window.setFrame(frame, display: true)
         }
@@ -561,10 +561,8 @@ func uninstallPearcleaner(appState: AppState, locations: Locations) {
     let appInfo = AppInfoFetcher.getAppInfo(atPath: Bundle.main.bundleURL)
 
     // Find application files for Pearcleaner
-    AppPathFinder(appInfo: appInfo!, appState: appState, locations: locations).findPaths()
-
-    // Kill Pearcleaner and tell Finder to trash the files
-    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+    AppPathFinder(appInfo: appInfo!, appState: appState, locations: locations, completion: {
+        // Kill Pearcleaner and tell Finder to trash the files
         let selectedItemsArray = Array(appState.selectedItems).filter { !$0.path.contains(".Trash") }
         let posixFiles = selectedItemsArray.map { "POSIX file \"\($0.path)\", " }.joined().dropLast(3)
         let scriptSource = """
@@ -577,8 +575,7 @@ func uninstallPearcleaner(appState: AppState, locations: Locations) {
 
         NSApp.terminate(nil)
         exit(0)
-    }
-
+    }).findPaths()
 }
 
 

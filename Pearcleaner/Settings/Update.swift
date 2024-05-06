@@ -14,7 +14,6 @@ struct UpdateSettingsTab: View {
     @State private var showAlert = false
     @State private var showDone = false
     @AppStorage("settings.updater.updateTimeframe") private var updateTimeframe: Int = 1
-    @Binding var showFeature: Bool
 
     var body: some View {
         VStack {
@@ -61,7 +60,7 @@ struct UpdateSettingsTab: View {
                 Spacer()
 
                 Button(""){
-                    showFeature.toggle()
+                    NewWin.show(appState: appState, width: 500, height: 440, newWin: .feature)
                 }
                 .buttonStyle(SimpleButtonStyle(icon: "star", help: "Show last feature alert"))
 

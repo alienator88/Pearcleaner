@@ -26,10 +26,8 @@ struct PearcleanerApp: App {
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     @AppStorage("settings.menubar.mainWin") private var mainWinEnabled: Bool = false
     @AppStorage("settings.interface.selectedMenubarIcon") var selectedMenubarIcon: String = "trash"
-
     @State private var search = ""
     @State private var showPopover: Bool = false
-    @State private var showFeature: Bool = false
 
 
 
@@ -37,21 +35,11 @@ struct PearcleanerApp: App {
 
         WindowGroup {
             Group {
-                ZStack() {
                     if !mini {
                         RegularMode(search: $search, showPopover: $showPopover)
                     } else {
                         MiniMode(search: $search, showPopover: $showPopover)
                     }
-                    
-                    if showFeature {
-                        NewFeatureView(text: features, mini: mini, showFeature: $showFeature)
-                            .transition(.opacity)
-                    }
-
-                }
-
-
             }
             .environmentObject(appState)
             .environmentObject(locations)
@@ -80,6 +68,16 @@ struct PearcleanerApp: App {
                     windowSettings.saveWindowSettings(frame: newFrame)
                 }
             }
+            .alert(isPresented: $appState.showUninstallAlert) {
+                Alert(
+                    title: Text("Warning!"),
+                    message: Text("Pearcleaner and all of its files will be cleanly removed, are you sure?"),
+                    primaryButton: .destructive(Text("Uninstall")) {
+                        uninstallPearcleaner(appState: appState, locations: locations)
+                    },
+                    secondaryButton: .cancel()
+                )
+            }
             .onAppear {
 
                 if miniView {
@@ -90,10 +88,6 @@ struct PearcleanerApp: App {
 
                 // Disable tabbing
                 NSWindow.allowsAutomaticWindowTabbing = false
-
-
-                // Set window size on load
-//                findAndSetWindowFrame(named: ["Pearcleaner"], windowSettings: windowSettings)
 
                 // Get Apps
                 let sortedApps = getSortedApps(paths: fsm.folderPaths, appState: appState)
@@ -112,7 +106,7 @@ struct PearcleanerApp: App {
                 }
 
 
-#if DEBUG
+#if !DEBUG
                 Task {
 
 
@@ -124,7 +118,7 @@ struct PearcleanerApp: App {
                         appState.permissionResults = results
                         if results.allPermissionsGranted {
                             loadGithubReleases(appState: appState)
-                            getFeatures(appState: appState, show: $showFeature, features: $features)
+                            getFeatures(appState: appState, features: $features)
                         }
                     }
 
@@ -159,14 +153,13 @@ struct PearcleanerApp: App {
 
         
         Settings {
-            SettingsView(showPopover: $showPopover, search: $search, showFeature: $showFeature)
+            SettingsView(showPopover: $showPopover, search: $search)
                 .environmentObject(appState)
                 .environmentObject(locations)
                 .environmentObject(fsm)
                 .environmentObject(ThemeSettings.shared)
                 .toolbarBackground(.clear)
                 .preferredColorScheme(displayMode.colorScheme)
-                .willRestore()
         }
     }
 }

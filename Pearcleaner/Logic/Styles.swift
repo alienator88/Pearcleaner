@@ -260,7 +260,7 @@ struct InfoButtonPerms: View {
             }
         }
         .popover(isPresented: $isPopoverPresented, arrowEdge: .bottom) {
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: 15) {
 
                 HStack(alignment: .top, spacing: 20) {
                     Image(systemName: "externaldrive")
@@ -268,7 +268,7 @@ struct InfoButtonPerms: View {
                         .scaledToFit()
                         .frame(width: 20, height: 20)
                         .foregroundStyle(Color("mode").opacity(0.5))
-                    Text("Full Disk Access permission to find and delete files in system paths")
+                    Text("Full Disk permission to access files/folders in system paths")
                         .font(.callout)
                         .foregroundStyle(Color("mode").opacity(0.5))
                 }
@@ -279,7 +279,7 @@ struct InfoButtonPerms: View {
                         .scaledToFit()
                         .frame(width: 20, height: 20)
                         .foregroundStyle(Color("mode").opacity(0.5))
-                    Text("Accessibility permission to delete files via Finder")
+                    Text("Accessibility permission to allow execution of AppleScript")
                         .font(.callout)
                         .foregroundStyle(Color("mode").opacity(0.5))
                 }
@@ -290,21 +290,11 @@ struct InfoButtonPerms: View {
                         .scaledToFit()
                         .frame(width: 20, height: 20)
                         .foregroundStyle(Color("mode").opacity(0.5))
-                    Text("Automation permission to perform extension actions via Finder")
+                    Text("Automation permission to perform delete actions via Finder")
                         .font(.callout)
                         .foregroundStyle(Color("mode").opacity(0.5))
                 }
 
-                HStack(alignment: .top, spacing: 20) {
-                    Image(systemName: "calendar")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 20, height: 20)
-                        .foregroundStyle(Color("mode").opacity(0.5))
-                    Text("Reminders permission to find and delete some reminder files that certain apps cache")
-                        .font(.callout)
-                        .foregroundStyle(Color("mode").opacity(0.5))
-                }
             }
             .padding()
         }

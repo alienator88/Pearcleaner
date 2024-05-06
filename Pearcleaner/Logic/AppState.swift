@@ -11,8 +11,7 @@ import FinderSync
 
 let home = FileManager.default.homeDirectoryForCurrentUser.path
 
-class AppState: ObservableObject
-{
+class AppState: ObservableObject {
     @Published var appInfo: AppInfo
     @Published var appInfoStore: [AppInfo] = []
     @Published var trashedFiles: [AppInfo] = []
@@ -29,8 +28,10 @@ class AppState: ObservableObject
     @Published var showProgress: Bool = false
     @Published var finderExtensionEnabled: Bool = false
     @Published var updateAvailable: Bool = false
+    @Published var featureAvailable: Bool = false
     @Published var permissionsOkay: Bool = true
     @Published var permissionResults: PermissionsCheckResults?
+    @Published var showUninstallAlert: Bool = false
 
 
 
@@ -74,6 +75,11 @@ class AppState: ObservableObject
             self.finderExtensionEnabled = extensionStatus
         }
     }
+
+    func triggerUninstallAlert() {
+        self.showUninstallAlert = true
+    }
+
 }
 
 
@@ -166,6 +172,7 @@ enum NewWindow:Int
     case update
     case no_update
     case perm
+    case feature
 }
 
 

@@ -13,7 +13,6 @@ struct SettingsView: View {
     @EnvironmentObject var themeSettings: ThemeSettings
     @Binding var showPopover: Bool
     @Binding var search: String
-    @Binding var showFeature: Bool
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.general.selectedTab") private var selectedTab: CurrentTabView = .general
 
@@ -38,7 +37,7 @@ struct SettingsView: View {
                 }
                 .tag(CurrentTabView.folders)
 
-            UpdateSettingsTab(showFeature: $showFeature)
+            UpdateSettingsTab()
                 .tabItem {
                     Label(CurrentTabView.update.title, systemImage: "cloud")
                 }

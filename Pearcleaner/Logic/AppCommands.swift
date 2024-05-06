@@ -50,7 +50,7 @@ struct AppCommands: Commands {
             .keyboardShortcut("r", modifiers: .command)
 
             Button {
-                uninstallPearcleaner(appState: appState, locations: locations)
+                appState.triggerUninstallAlert()
             } label: {
                 Text("Uninstall Pearcleaner")
             }

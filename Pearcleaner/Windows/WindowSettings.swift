@@ -44,7 +44,7 @@ class WindowSettings {
         return NSRect(x: x, y: y, width: width, height: height)
     }
 
-    func newWindow<V: View>(withView view: @escaping () -> V) {
+    func newWindow<V: View>(withView view: @escaping () -> V, completion: @escaping () -> Void = {}) {
         findAndHideWindows(named: ["Pearcleaner"])
         let contentView = view
         let frame = self.loadWindowSettings()
@@ -56,30 +56,32 @@ class WindowSettings {
         newWindow.isMovableByWindowBackground = true
         newWindow.center()
         newWindow.title = "Pearcleaner"
+        newWindow.isRestorable = false
         newWindow.titleVisibility = .hidden
         newWindow.setFrameAutosaveName("Pearcleaner")
         newWindow.contentView = NSHostingView(rootView: contentView())
         self.windows.append(newWindow)
         newWindow.makeKeyAndOrderFront(nil)
+        completion()
     }
 }
 
 
 
-struct WillRestore: ViewModifier {
-    let restore: Bool
-
-    func body(content: Content) -> some View {
-        content
-            .onReceive(NotificationCenter.default.publisher(for: NSWindow.didBecomeKeyNotification), perform: { output in
-                let window = output.object as! NSWindow
-                window.isRestorable = false
-            })
-    }
-}
-
-extension View {
-    func willRestore(_ restoreState: Bool = true) -> some View {
-        modifier(WillRestore(restore: restoreState))
-    }
-}
+//struct WillRestore: ViewModifier {
+//    let restore: Bool
+//
+//    func body(content: Content) -> some View {
+//        content
+//            .onReceive(NotificationCenter.default.publisher(for: NSWindow.didBecomeKeyNotification), perform: { output in
+//                let window = output.object as! NSWindow
+//                window.isRestorable = false
+//            })
+//    }
+//}
+//
+//extension View {
+//    func willRestore(_ restoreState: Bool = true) -> some View {
+//        modifier(WillRestore(restore: restoreState))
+//    }
+//}

@@ -29,7 +29,6 @@ class Locations: ObservableObject {
             "\(home)/Library",
             "\(home)/Library/Application Scripts",
             "\(home)/Library/Application Support",
-            "\(home)/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.ApplicationRecentDocuments",
             "\(home)/Library/Containers",
             "\(home)/Library/Caches",
             "\(home)/Library/Group Containers",
