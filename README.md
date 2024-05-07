@@ -26,6 +26,8 @@ This project was born out of wanting to learn more on how macOS deals with app i
 
 [Screenshots](#screenshots)
 
+[Issues](#issues)
+
 [Requirements](#requirements)
 
 [Download](#getting-pearcleaner)
@@ -115,6 +117,12 @@ This project was born out of wanting to learn more on how macOS deals with app i
 </details>
 
 <p></p>
+
+
+## Issues
+> [!WARNING]
+> - When submitting issues, please use the appropriate issue template corresponding with your problem [HERE](https://github.com/alienator88/Pearcleaner/issues/new/choose)
+> - Templates not filled out with the requested details will be closed. Unfortunately I don't have the time to act as help desk support asking for all the missing information. Help me help you 🙂
 
 
 ## Requirements
