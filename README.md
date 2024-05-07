@@ -19,22 +19,9 @@
 A free, source-available and fair-code licensed mac app cleaner inspired by [Freemacsoft's AppCleaner](https://freemacsoft.net/appcleaner/) and [Sun Knudsen's Privacy Guides](https://sunknudsen.com/privacy-guides/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative) post on his app-cleaner script.
 This project was born out of wanting to learn more on how macOS deals with app installation/uninstallation and getting more Swift experience. If you have suggestions I'm open to hearing them, submit a feature request!
 
-### TOC
-[License](#license)
 
-[Features](#features)
-
-[Screenshots](#screenshots)
-
-[Issues](#issues)
-
-[Requirements](#requirements)
-
-[Download](#getting-pearcleaner)
-
-[Thanks](#thanks)
-
-[Other Apps](#other-apps)
+### Table of Contents:
+[License](#license) | [Features](#features) | [Screenshots](#screenshots) | [Issues](#issues) | [Requirements](#requirements) | [Download](#getting-pearcleaner) | [Thanks](#thanks) | [Other Apps](#other-apps)
 
 <br>
 
