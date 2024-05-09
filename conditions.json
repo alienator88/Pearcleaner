@@ -1,7 +1,7 @@
 [
     {
-        "bundle_id": "TEMPLATE",
-        "include": [],
+        "bundle_id": "orgmozillanightly",
+        "include": ["firefox"],
         "exclude": [],
         "includeForce": []
     }
