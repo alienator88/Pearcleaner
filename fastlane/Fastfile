@@ -1,0 +1,57 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+opt_out_usage
+
+
+default_platform(:mac)
+
+platform :mac do
+  desc "Archive the macOS app, copy it to the Downloads folder, and compress it to a zip file"
+  lane :release do
+    # Define the output path for the archive
+    output_path = "#{Dir.home}/Downloads"
+
+    # Archive the app
+    gym(
+      scheme: "Pearcleaner Release",
+      export_method: "mac-application", # Change as needed (e.g., app-store, ad-hoc)
+      output_directory: output_path,
+      output_name: "Pearcleaner",
+      silent: true
+    )
+
+    # Remove the dSYM zip file if it exists
+    dsym_path = Dir["#{output_path}/*.dSYM.zip"].first
+    FileUtils.rm_rf(dsym_path) if dsym_path
+
+    # Move the .app file to the Downloads folder
+    app_path = Dir["#{output_path}/Pearcleaner.app"].first
+    if app_path
+      zip_path = "#{output_path}/Pearcleaner.zip"
+      Dir.chdir(output_path) do
+        system("zip -r #{zip_path} Pearcleaner.app")
+      end
+      FileUtils.rm_rf("#{output_path}/Pearcleaner.app") # Remove the .app folder after zipping
+      UI.message("App compressed to #{zip_path}")
+    else
+      UI.user_error!("Failed to find .app file in #{output_path}")
+    end
+
+    # Open Finder at the Downloads folder
+    system("open #{output_path}")
+
+  end
+end
