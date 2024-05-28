@@ -67,9 +67,6 @@ func checkApp(file: String) {
 
 
 
-
-
-
 // --- Trash Relationship ---
 extension FileManager {
     public func isInTrash(_ file: URL) -> Bool {

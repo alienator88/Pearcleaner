@@ -62,7 +62,7 @@ struct SectionView: View {
 struct Header: View {
     let title: String
     let count: Int
-    @State private var hovered = false
+//    @State private var hovered = false
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
     @EnvironmentObject var fsm: FolderSettingsManager
@@ -84,33 +84,8 @@ struct Header: View {
 
             Spacer()
 
-            if hovered {
-                Text("REFRESH")
-                    .font(.system(size: 10))
-                    .monospaced()
-                    .foregroundStyle(Color("mode").opacity(0.8))
-            }
-
-        }
-        .onHover { hovering in
-            withAnimation() {
-                hovered = hovering
-            }
-        }
-        .onTapGesture {
-            withAnimation {
-                // Refresh Apps list
-                appState.reload.toggle()
-                showPopover = false
-                let sortedApps = getSortedApps(paths: fsm.folderPaths, appState: appState)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    appState.sortedApps = sortedApps
-                    appState.reload.toggle()
-                }
-            }
         }
         .frame(minHeight: 20)
-        .help("Click header or ⌘+R to refresh apps list")
         .padding(5)
     }
 }

@@ -97,7 +97,7 @@ struct PermView: View {
                 
                 if #available(macOS 14.0, *) {
                     SettingsLink {}
-                        .buttonStyle(SimpleButtonBrightStyle(icon: "gear", label: "Settings", help: "Check permissions in Settings", color: .accentColor))
+                        .buttonStyle(SimpleButtonBrightStyle(icon: "gear", label: "Settings", help: "Check permissions in Settings", color: Color("mode")))
                 } else {
                     Button("Settings") {
                         NSApp.sendAction(Selector(("showPreferencesWindow:")), to: NSApp.delegate, from: nil)

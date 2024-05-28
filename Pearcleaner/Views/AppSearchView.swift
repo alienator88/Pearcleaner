@@ -21,12 +21,13 @@ struct AppSearchView: View {
     @State private var showMenu = false
     @State private var showSys: Bool = true
     @State private var showUsr: Bool = true
+    @Binding var isMenuBar: Bool
 
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
             Spacer()
                 .frame(height: 10)
-                .padding(.top, !menubarEnabled ? 25 : 0)
+                .padding(.top, !isMenuBar ? 25 : 0)
 
             if appState.updateAvailable {
                 UpdateNotificationView(appState: appState)
@@ -40,13 +41,30 @@ struct AppSearchView: View {
 
             Divider()
 
+#if DEBUG
+            Rectangle()
+                .fill(.orange)
+                .frame(height: 2)
+
+#endif
+
             HStack(spacing: 10) {
 
-#if DEBUG
-                Image(systemName: "ant.fill")
-                    .foregroundStyle(.orange)
-                    .help("DEBUG")
-#endif
+                if search.isEmpty {
+                    Button("Refresh") {
+                        withAnimation {
+                            // Refresh Apps list
+                            appState.reload.toggle()
+                            showPopover = false
+                            let sortedApps = getSortedApps(paths: fsm.folderPaths, appState: appState)
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                appState.sortedApps = sortedApps
+                                appState.reload.toggle()
+                            }
+                        }
+                    }
+                    .buttonStyle(SimpleButtonStyle(icon: "arrow.uturn.backward.circle", help: "Refresh apps (⌘+R)", size: 16))
+                }
 
                 SearchBar(search: $search, darker: (mini || menubarEnabled) ? false : true, glass: glass)
 
@@ -55,7 +73,7 @@ struct AppSearchView: View {
                     Button("More") {
                         self.showMenu.toggle()
                     }
-                    .buttonStyle(SimpleButtonStyle(icon: "ellipsis.circle", help: "More", rotate: true))
+                    .buttonStyle(SimpleButtonStyle(icon: "ellipsis.circle", help: "More", size: 16, rotate: true))
                     .popover(isPresented: $showMenu) {
                         VStack(alignment: .leading) {
 

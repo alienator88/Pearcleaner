@@ -152,6 +152,7 @@ struct MiniAppView: View {
     @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 280
     @Binding var showPopover: Bool
     @State private var showMenu = false
+    @State var isMenuBar: Bool = false
 
     var body: some View {
 
@@ -166,7 +167,7 @@ struct MiniAppView: View {
                 }
                 .padding(.vertical)
             } else {
-                AppSearchView(glass: glass, sidebarWidth: sidebarWidth, menubarEnabled: menubarEnabled, mini: mini, search: $search, showPopover: $showPopover)
+                AppSearchView(glass: glass, sidebarWidth: sidebarWidth, menubarEnabled: menubarEnabled, mini: mini, search: $search, showPopover: $showPopover, isMenuBar: $isMenuBar)
             }
 
         }

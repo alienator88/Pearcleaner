@@ -95,7 +95,7 @@ struct PearcleanerApp: App {
                 // Enable menubar item
                 if menubarEnabled {
                     MenuBarExtraManager.shared.addMenuBarExtra(withView: {
-                        MiniAppView(search: $search, showPopover: $showPopover)
+                        MiniAppView(search: $search, showPopover: $showPopover, isMenuBar: true)
                             .environmentObject(locations)
                             .environmentObject(appState)
                             .environmentObject(fsm)
@@ -179,6 +179,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         let menubarEnabled = UserDefaults.standard.bool(forKey: "settings.menubar.enabled")
 //        UserDefaults.standard.register(defaults: ["NSQuitAlwaysKeepsWindows" : false])
+
         findAndSetWindowFrame(named: ["Pearcleaner"], windowSettings: windowSettings)
 
         if UserDefaults.standard.object(forKey: "themeColor") == nil {

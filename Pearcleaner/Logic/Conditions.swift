@@ -67,7 +67,7 @@ var conditions: [Condition] = [
     ),
     Condition(
         bundle_id: "orgmozillafirefox",
-        include: ["mozilla"],
+        include: ["mozilla", "firefox"],
         exclude: []
     ),
     Condition(

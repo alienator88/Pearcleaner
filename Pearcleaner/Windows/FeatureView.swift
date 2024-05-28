@@ -45,7 +45,7 @@ struct FeatureView: View {
                 }) {
                     Text("Okay")
                 }
-                .buttonStyle(SimpleButtonBrightStyle(icon: "checkmark.circle", label: "Ok", help: "Ok", color: .accentColor))
+                .buttonStyle(SimpleButtonBrightStyle(icon: "checkmark.circle", label: "Ok", help: "Ok", color: Color("mode")))
             }
             .padding(.bottom)
 

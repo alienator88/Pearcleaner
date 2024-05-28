@@ -56,7 +56,7 @@ struct UpdateView: View {
             if !isAppInCorrectDirectory {
                 Text("To avoid permission issues, please move Pearcleaner to the \(isUserAdmin ? "/Applications" : "\(home)/Applications") folder before updating!")
                     .font(.callout)
-                    .foregroundStyle(Color.accentColor)
+                    .foregroundStyle(Color("mode"))
                     .padding(.horizontal)
                     .padding(.top, 0)
             }
@@ -81,7 +81,7 @@ struct UpdateView: View {
                     }) {
                         Text("Update")
                     }
-                    .buttonStyle(SimpleButtonBrightStyle(icon: "arrow.down.circle", label: "Update", help: "Update", color: .accentColor))
+                    .buttonStyle(SimpleButtonBrightStyle(icon: "arrow.down.circle", label: "Update", help: "Update", color: Color("mode")))
                 } else {
                     Button(action: {
                         NewWin.close()
@@ -89,7 +89,7 @@ struct UpdateView: View {
                     }) {
                         Text("Restart")
                     }
-                    .buttonStyle(SimpleButtonBrightStyle(icon: "arrow.uturn.left.circle", label: "Restart", help: "Restart", color: .accentColor))
+                    .buttonStyle(SimpleButtonBrightStyle(icon: "arrow.uturn.left.circle", label: "Restart", help: "Restart", color: Color("mode")))
                 }
                 
             }
@@ -185,7 +185,7 @@ struct NoUpdateView: View {
                     }) {
                         Text("Okay")
                     }
-                    .buttonStyle(SimpleButtonBrightStyle(icon: "checkmark.circle", label: "Ok", help: "Ok", color: .accentColor))
+                    .buttonStyle(SimpleButtonBrightStyle(icon: "checkmark.circle", label: "Ok", help: "Ok", color: Color("mode")))
 
                 }
                 
@@ -197,7 +197,7 @@ struct NoUpdateView: View {
                     }) {
                         Text("Restart")
                     }
-                    .buttonStyle(SimpleButtonBrightStyle(icon: "arrow.uturn.left.circle", label: "Restart", help: "Restart", color: .accentColor))
+                    .buttonStyle(SimpleButtonBrightStyle(icon: "arrow.uturn.left.circle", label: "Restart", help: "Restart", color: Color("mode")))
                 }
             }
             .padding(.bottom)

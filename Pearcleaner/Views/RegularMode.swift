@@ -21,7 +21,7 @@ struct RegularMode: View {
     @State private var showUsr: Bool = true
     @Binding var showPopover: Bool
     @State private var showMenu = false
-
+    @State var isMenuBar: Bool = false
 
     var body: some View {
 
@@ -39,7 +39,7 @@ struct RegularMode: View {
                     .frame(width: sidebarWidth)
                     .padding(.vertical)
                 } else {
-                    AppSearchView(glass: glass, sidebarWidth: sidebarWidth, menubarEnabled: menubarEnabled, mini: mini, search: $search, showPopover: $showPopover)
+                    AppSearchView(glass: glass, sidebarWidth: sidebarWidth, menubarEnabled: menubarEnabled, mini: mini, search: $search, showPopover: $showPopover, isMenuBar: $isMenuBar)
                         .frame(width: sidebarWidth)
                 }
 

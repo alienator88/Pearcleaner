@@ -303,6 +303,18 @@ struct FilesView: View {
                                         // Remove app from app list if main app bundle is removed for regular and wrapped apps
                                         if (appState.appInfo.wrapped && selectedItemsArray.contains(where: { $0.absoluteString == appState.appInfo.path.deletingLastPathComponent().deletingLastPathComponent().absoluteString })) ||
                                             (!appState.appInfo.wrapped && selectedItemsArray.contains(where: { $0.absoluteString == appState.appInfo.path.absoluteString })) {
+                                            // Change view back to empty/apps if main app bundle is removed
+                                            updateOnMain {
+                                                search = ""
+                                                withAnimation {
+                                                    if mini || menubarEnabled {
+                                                        appState.currentView = .apps
+                                                        showPopover = false
+                                                    } else {
+                                                        appState.currentView = .empty
+                                                    }
+                                                }
+                                            }
                                             // Match found, remove the app
                                             removeApp(appState: appState, withPath: appState.appInfo.path)
                                         } else {
