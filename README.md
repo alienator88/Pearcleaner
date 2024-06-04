@@ -4,7 +4,7 @@
    <br />
    <strong>Status: </strong>Maintained 
    <br />
-   <strong>Version: </strong>3.6.4
+   <strong>Version: </strong>3.6.5
    <br />
    <a href="https://github.com/alienator88/Pearcleaner/releases"><strong>Download</strong></a>
     · 
@@ -37,6 +37,7 @@ This project was born out of wanting to learn more on how macOS deals with app i
 - Sentinel monitor helper that can be enabled to watch Trash folder for deleted apps to cleanup after the fact(Extremely small (210KB) and uses ~2mb of ram to run in the background and file watch)
 - Mini mode which can be enabled from Settings
 - Menubar option
+- One-Shot Mode
 - Can drop apps to uninstall directly on the Pearcleaner Dock icon itself or the drop target in the app window
 - Optional Finder Extension which allows you to uninstall an app directly from Finder by `right click > Pearcleaner Uninstall`
 - Theme System available with custom color selector
