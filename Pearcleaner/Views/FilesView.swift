@@ -317,6 +317,11 @@ struct FilesView: View {
                                             }
                                             // Match found, remove the app
                                             removeApp(appState: appState, withPath: appState.appInfo.path)
+
+                                            if appState.oneShotMode {
+                                                NSApp.terminate(nil)
+                                            }
+
                                         } else {
                                             // Add deleted appInfo object to trashed array
                                             appState.trashedFiles.append(appState.appInfo)
@@ -331,6 +336,9 @@ struct FilesView: View {
                                                 appState.appInfo.fileSize = appState.appInfo.fileSize.filter { !appState.selectedItems.contains($0.key) }
                                                 // Update the selectedFiles to remove references that are no longer present
                                                 appState.selectedItems.removeAll()
+                                                if appState.oneShotMode {
+                                                    NSApp.terminate(nil)
+                                                }
                                             }
                                         }
                                     }

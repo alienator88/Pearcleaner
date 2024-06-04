@@ -11,6 +11,7 @@ import SwiftUI
 class DeeplinkManager {
     @Binding var showPopover: Bool
     @AppStorage("settings.general.mini") private var mini: Bool = false
+    @AppStorage("settings.general.oneshot") private var oneShotMode: Bool = false
 
     init(showPopover: Binding<Bool>) {
         _showPopover = showPopover
@@ -27,7 +28,7 @@ class DeeplinkManager {
         if url.pathExtension == "app" {
             handleAppBundle(url: url, appState: appState, locations: locations)
         } else if url.scheme == DeepLinkConstants.scheme,
-                  // This handles SentinelMonitor FileWatcher
+                  // This handles SentinelMonitor FileWatcher and FinderOpen extension
                   url.host == DeepLinkConstants.host,
                   let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
                   let queryItems = components.queryItems {
@@ -35,6 +36,11 @@ class DeeplinkManager {
                 let pathURL = URL(fileURLWithPath: path)
                 let appInfo = AppInfoFetcher.getAppInfo(atPath: pathURL)
                 showAppInFiles(appInfo: appInfo!, appState: appState, locations: locations, showPopover: $showPopover)
+                if oneShotMode {
+                    updateOnMain {
+                        appState.oneShotMode = true
+                    }
+                }
             } else {
                 printOS("No path query parameter found in the URL")
             }
@@ -47,6 +53,12 @@ class DeeplinkManager {
     func handleAppBundle(url: URL, appState: AppState, locations: Locations) {
         let appInfo = AppInfoFetcher.getAppInfo(atPath: url)
         showAppInFiles(appInfo: appInfo!, appState: appState, locations: locations, showPopover: $showPopover)
+        // Even if enabled, disable one-shot mode for app drops
+        if oneShotMode {
+            updateOnMain {
+                appState.oneShotMode = false
+            }
+        }
     }
     
 }

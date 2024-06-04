@@ -86,30 +86,31 @@ struct AppDetailsEmptyView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
-    @AppStorage("settings.general.animateLogo") private var animateLogo: Bool = true
+//    @AppStorage("settings.general.animateLogo") private var animateLogo: Bool = true
     @Binding var showPopover: Bool
-    @State private var animationStart = false
+//    @State private var animationStart = false
 
     var body: some View {
         VStack(alignment: .center) {
 
             Spacer()
-            if #available(macOS 14, *) {
-                if animateLogo && animationStart {
-                    PearDropView()
-                        .phaseAnimator([false, true]) { wwdc24, chromaRotate in
-                            wwdc24
-                                .hueRotation(.degrees(chromaRotate ? 420 : 0))
-                        } animation: { chromaRotate in
-                                .easeInOut(duration: 6)
-                        }
-                } else {
-                    PearDropView()
-                }
-
-            } else {
-                PearDropView()
-            }
+            PearDropView()
+//            if #available(macOS 14, *) {
+//                if animateLogo && animationStart {
+//                    PearDropView()
+//                        .phaseAnimator([false, true]) { wwdc24, chromaRotate in
+//                            wwdc24
+//                                .hueRotation(.degrees(chromaRotate ? 420 : 0))
+//                        } animation: { chromaRotate in
+//                                .easeInOut(duration: 6)
+//                        }
+//                } else {
+//                    PearDropView()
+//                }
+//
+//            } else {
+//                PearDropView()
+//            }
 
             Spacer()
 
@@ -118,10 +119,10 @@ struct AppDetailsEmptyView: View {
                 .padding(.bottom, 25)
                 .opacity(0.5)
         }
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                animationStart = true
-            }
-        }
+//        .onAppear {
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+//                animationStart = true
+//            }
+//        }
     }
 }

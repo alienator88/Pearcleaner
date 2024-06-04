@@ -25,7 +25,7 @@ struct InterfaceSettingsTab: View {
     @AppStorage("settings.general.dark") var isDark: Bool = true
     @AppStorage("settings.general.popover") private var popoverStay: Bool = true
     @AppStorage("settings.general.miniview") private var miniView: Bool = true
-    @AppStorage("settings.general.animateLogo") private var animateLogo: Bool = true
+//    @AppStorage("settings.general.animateLogo") private var animateLogo: Bool = true
     @AppStorage("settings.general.selectedTheme") var selectedTheme: String = "Auto"
     @AppStorage("settings.interface.selectedMenubarIcon") var selectedMenubarIcon: String = "pear-4"
     @State private var isLaunchAtLoginEnabled: Bool = false
@@ -76,34 +76,34 @@ struct InterfaceSettingsTab: View {
                 .padding(.leading)
 
 
-                HStack(spacing: 0) {
-                    Image(systemName: animateLogo ? "play.fill" : "pause")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 20, height: 20)
-                        .padding(.trailing)
-                        .foregroundStyle(Color("mode").opacity(0.5))
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text("\(animateLogo ? "Logo animation enabled" : "Logo animation disabled")")
-                            .font(.callout)
-                            .foregroundStyle(Color("mode").opacity(0.5))
-
-                    }
-                    if !isMacOS14OrHigher {
-                        Text("(macOS 14+)")
-                            .font(.footnote)
-                            .foregroundStyle(Color("mode").opacity(0.3))
-                            .padding(.leading, 5)
-                    }
-//                    InfoButton(text: "The logo animation is only available in macOS 14 or higher")
-                    Spacer()
-                    Toggle(isOn: $animateLogo, label: {
-                    })
-                    .toggleStyle(.switch)
-                    .disabled(!isMacOS14OrHigher)
-                }
-                .padding(5)
-                .padding(.leading)
+//                HStack(spacing: 0) {
+//                    Image(systemName: animateLogo ? "play.fill" : "pause")
+//                        .resizable()
+//                        .scaledToFit()
+//                        .frame(width: 20, height: 20)
+//                        .padding(.trailing)
+//                        .foregroundStyle(Color("mode").opacity(0.5))
+//                    VStack(alignment: .leading, spacing: 5) {
+//                        Text("\(animateLogo ? "Logo animation enabled" : "Logo animation disabled")")
+//                            .font(.callout)
+//                            .foregroundStyle(Color("mode").opacity(0.5))
+//
+//                    }
+//                    if !isMacOS14OrHigher {
+//                        Text("(macOS 14+)")
+//                            .font(.footnote)
+//                            .foregroundStyle(Color("mode").opacity(0.3))
+//                            .padding(.leading, 5)
+//                    }
+////                    InfoButton(text: "The logo animation is only available in macOS 14 or higher")
+//                    Spacer()
+//                    Toggle(isOn: $animateLogo, label: {
+//                    })
+//                    .toggleStyle(.switch)
+//                    .disabled(!isMacOS14OrHigher)
+//                }
+//                .padding(5)
+//                .padding(.leading)
 
 
 
@@ -557,7 +557,7 @@ struct InterfaceSettingsTab: View {
 
         }
         .padding(20)
-        .frame(width: 500, height: 600)
+        .frame(width: 500, height: 580)
 
     }
 

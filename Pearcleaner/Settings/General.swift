@@ -23,6 +23,7 @@ struct GeneralSettingsTab: View {
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.general.brew") private var brew: Bool = false
+    @AppStorage("settings.general.oneshot") private var oneShotMode: Bool = false
     @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @State private var diskStatus: Bool = false
@@ -61,6 +62,30 @@ struct GeneralSettingsTab: View {
 
                     Spacer()
                     Toggle(isOn: $brew, label: {
+                    })
+                    .toggleStyle(.switch)
+                }
+                .padding(5)
+                .padding(.leading)
+
+
+                HStack(spacing: 0) {
+                    Image(systemName: oneShotMode ? "scope" : "circlebadge")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .padding(.trailing)
+                        .foregroundStyle(Color("mode").opacity(0.5))
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("\(oneShotMode ? "One-Shot Mode is enabled" : "One-Shot Mode is disabled")")
+                            .font(.callout)
+                            .foregroundStyle(Color("mode").opacity(0.5))
+                    }
+
+                    InfoButton(text: "When one-shot mode is enabled, clicking the Uninstall button to remove an app will also close Pearcleaner right after. This only affects Pearcleaner when it is opened via external means, like Sentinel Trash Monitor or the Finder extension. This allows for single use of the app, AKA one-shot mode. When Pearcleaner is opened normally, this setting is ignored and will work as usual.")
+
+                    Spacer()
+                    Toggle(isOn: $oneShotMode, label: {
                     })
                     .toggleStyle(.switch)
                 }
@@ -405,7 +430,7 @@ struct GeneralSettingsTab: View {
 
         }
         .padding(20)
-        .frame(width: 500, height: 670)
+        .frame(width: 500, height: 710)
 
     }
 

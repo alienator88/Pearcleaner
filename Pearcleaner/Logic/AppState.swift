@@ -32,6 +32,7 @@ class AppState: ObservableObject {
     @Published var permissionsOkay: Bool = true
     @Published var permissionResults: PermissionsCheckResults?
     @Published var showUninstallAlert: Bool = false
+    @Published var oneShotMode: Bool = false
 
 
 
