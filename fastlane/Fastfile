@@ -30,7 +30,8 @@ platform :mac do
       export_method: "mac-application", # Change as needed (e.g., app-store, ad-hoc)
       output_directory: output_path,
       output_name: "Pearcleaner",
-      silent: true
+      silent: true,
+      suppress_xcode_output: true
     )
 
     # Remove the dSYM zip file if it exists
