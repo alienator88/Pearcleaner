@@ -31,11 +31,8 @@ struct FeatureView: View {
 
             Text(features)
                 .font(.body)
-                .lineLimit(3)
                 .multilineTextAlignment(.leading)
                 .padding()
-
-
 
             Spacer()
 
