@@ -22,6 +22,9 @@ struct AppSearchView: View {
     @State private var showSys: Bool = true
     @State private var showUsr: Bool = true
     @Binding var isMenuBar: Bool
+    @AppStorage("settings.general.selectedSortAppsList") var selectedSortAlpha: Bool = true
+    @State private var progress: Double = 0.0
+
 
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
@@ -53,17 +56,11 @@ struct AppSearchView: View {
                 if search.isEmpty {
                     Button("Refresh") {
                         withAnimation {
-                            // Refresh Apps list
-                            appState.reload.toggle()
                             showPopover = false
-                            let sortedApps = getSortedApps(paths: fsm.folderPaths, appState: appState)
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                appState.sortedApps = sortedApps
-                                appState.reload.toggle()
-                            }
+                            reloadAppsList(appState: appState, fsm: fsm)
                         }
                     }
-                    .buttonStyle(SimpleButtonStyle(icon: "arrow.uturn.backward.circle", help: "Refresh apps (⌘+R)", size: 16))
+                    .buttonStyle(SimpleButtonStyle(icon: "arrow.counterclockwise.circle", help: "Refresh apps (⌘+R)", size: 16))
                 }
 
                 SearchBar(search: $search, darker: (mini || menubarEnabled) ? false : true, glass: glass)
@@ -76,6 +73,13 @@ struct AppSearchView: View {
                     .buttonStyle(SimpleButtonStyle(icon: "ellipsis.circle", help: "More", size: 16, rotate: true))
                     .popover(isPresented: $showMenu) {
                         VStack(alignment: .leading) {
+
+                            Button("") {
+                                withAnimation(.easeInOut(duration: 0.5)) {
+                                    selectedSortAlpha.toggle()
+                                }
+                            }
+                            .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "App List Sorting", help: "Can also click on User/System headers to toggle this", size: 5))
 
                             if mini && !menubarEnabled {
                                 Button("") {
@@ -142,12 +146,21 @@ struct AppSearchView: View {
     }
 
     private var filteredApps: [AppInfo] {
+        let apps: [AppInfo]
         if search.isEmpty {
-            return appState.sortedApps
+            apps = appState.sortedApps
         } else {
-            return appState.sortedApps.filter { $0.appName.localizedCaseInsensitiveContains(search) }
+            apps = appState.sortedApps.filter { $0.appName.localizedCaseInsensitiveContains(search) }
+        }
+
+        switch selectedSortAlpha {
+        case true:
+            return apps.sorted { $0.appName.replacingOccurrences(of: ".", with: "").lowercased() < $1.appName.replacingOccurrences(of: ".", with: "").lowercased() }
+        case false:
+            return apps.sorted { $0.bundleSize > $1.bundleSize }
         }
     }
+    
 }
 
 

@@ -47,6 +47,7 @@ class AppState: ObservableObject {
             webApp: false,
             wrapped: false,
             system: false,
+            bundleSize: 0,
             files: [],
             fileSize: [:],
             fileSizeLogical: [:],
@@ -98,6 +99,7 @@ struct AppInfo: Identifiable, Equatable, Hashable {
     let webApp: Bool
     let wrapped: Bool
     let system: Bool
+    var bundleSize: Int64
     var files: [URL]
     var fileSize: [URL:Int64]
     var fileSizeLogical: [URL:Int64]
@@ -112,7 +114,7 @@ struct AppInfo: Identifiable, Equatable, Hashable {
     }
 
 
-    static let empty = AppInfo(id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "", appVersion: "", appIcon: nil, webApp: false, wrapped: false, system: false, files: [], fileSize: [:], fileSizeLogical: [:], fileIcon: [:])
+    static let empty = AppInfo(id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "", appVersion: "", appIcon: nil, webApp: false, wrapped: false, system: false, bundleSize: 0, files: [], fileSize: [:], fileSizeLogical: [:], fileIcon: [:])
 
 }
 

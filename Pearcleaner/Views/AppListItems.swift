@@ -24,10 +24,10 @@ struct AppListItems: View {
     @EnvironmentObject var locations: Locations
     let itemId = UUID()
     let appInfo: AppInfo
-    var isSelected: Bool {
-        appState.appInfo.path == appInfo.path
-    }
+    var isSelected: Bool { appState.appInfo.path == appInfo.path }
     @State private var hoveredItemPath: URL? = nil
+    @State private var bundleSize: Int64 = 0
+
     var body: some View {
 
         ZStack() {
@@ -40,9 +40,7 @@ struct AppListItems: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 30)
-//                            .frame(width: (isHovered || isSelected) ? 32 : 30, height: (isHovered || isSelected) ? 32 : 30)
                             .clipShape(RoundedRectangle(cornerRadius: 8))
-//                            .shadow(color: Color("pop").opacity(0.8), radius: isSelected ? 2 : 0)
                     }
 
                 }
@@ -80,17 +78,13 @@ struct AppListItems: View {
                         )
                 }
 
-                Text(appInfo.appVersion)
-                    .font(.system(size: (isHovered || isSelected) ? 12 : 10))
-                    .foregroundStyle(Color("mode").opacity(0.5))
-
-//                if (isHovered || isSelected) {
-//                    RoundedRectangle(cornerRadius: 50)
-//                        .fill(isSelected ? Color("pear") : Color("mode").opacity(0.5))
-//                        .frame(width: isSelected ? 4 : 2, height: 25)
-//                        .padding(.trailing, 5)
-//                }
-
+                if bundleSize == 0 {
+                    ProgressView().controlSize(.mini)
+                } else {
+                    Text("\(isHovered ? "v\(appInfo.appVersion)" : formatByte(size: bundleSize).human)")
+                        .font(.system(size: (isHovered || isSelected) ? 12 : 10))
+                        .foregroundStyle(Color("mode").opacity(0.5))
+                }
             }
 
         }
@@ -99,7 +93,7 @@ struct AppListItems: View {
         .padding(.vertical, 5)
         .help(appInfo.appName)
         .onHover { hovering in
-            withAnimation(Animation.easeIn(duration: 0.2)) {
+            withAnimation(Animation.easeIn(duration: 0.3)) {
                 self.isHovered = hovering
                 self.hoveredItemPath = isHovered ? appInfo.path : nil
             }
@@ -130,6 +124,19 @@ struct AppListItems: View {
                         .padding(.trailing, 5)
                 }
 
+            }
+        }
+        .onAppear {
+            DispatchQueue.global(qos: .userInitiated).async {
+                let size = totalSizeOnDisk(for: appInfo.path).logical
+                DispatchQueue.main.async {
+                    self.bundleSize = size
+
+                    // Optionally, update the appInfo in the appState array
+                    if let index = appState.sortedApps.firstIndex(where: { $0.path == appInfo.path }) {
+                        appState.sortedApps[index].bundleSize = size
+                    }
+                }
             }
         }
 

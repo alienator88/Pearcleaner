@@ -12,6 +12,7 @@ struct AppsListView: View {
     @Binding var search: String
     @Binding var showPopover: Bool
     @AppStorage("settings.general.mini") private var mini: Bool = false
+    @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
 
     var filteredApps: [AppInfo]
 
@@ -62,12 +63,12 @@ struct SectionView: View {
 struct Header: View {
     let title: String
     let count: Int
-//    @State private var hovered = false
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
     @EnvironmentObject var fsm: FolderSettingsManager
     @Binding var showPopover: Bool
     @AppStorage("settings.general.glass") private var glass: Bool = true
+    @AppStorage("settings.general.selectedSortAppsList") var selectedSortAlpha: Bool = true
 
 
     var body: some View {
@@ -87,6 +88,10 @@ struct Header: View {
         }
         .frame(minHeight: 20)
         .padding(5)
+        .help("Click header to change sorting order")
+        .onTapGesture {
+            selectedSortAlpha.toggle()
+        }
     }
 }
 

@@ -33,16 +33,7 @@ struct AppCommands: Commands {
             
             Button {
                 withAnimation(.easeInOut(duration: 0.5)) {
-                    // Refresh Apps list
-                    updateOnMain {
-                        appState.reload.toggle()
-                    }
-                    let sortedApps = getSortedApps(paths: fsm.folderPaths, appState: appState)
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        appState.sortedApps = []
-                        appState.sortedApps = sortedApps
-                        appState.reload.toggle()
-                    }
+                    reloadAppsList(appState: appState, fsm: fsm)
                 }
             } label: {
                 Text("Refresh Apps")
@@ -65,12 +56,9 @@ struct AppCommands: Commands {
             Button
             {
                 undoTrash(appState: appState) {
-                    let sortedApps = getSortedApps(paths: fsm.folderPaths, appState: appState)
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        appState.sortedApps = sortedApps
-                        for app in appState.trashedFiles {
-                            AppPathFinder(appInfo: app, appState: appState, locations: locations, undo: true).findPaths()
-                        }
+                    reloadAppsList(appState: appState, fsm: fsm)
+                    for app in appState.trashedFiles {
+                        AppPathFinder(appInfo: app, appState: appState, locations: locations, undo: true).findPaths()
                     }
                 }
             } label: {

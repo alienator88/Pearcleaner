@@ -33,7 +33,12 @@ struct RegularMode: View {
                 if appState.reload {
                     VStack {
                         Spacer()
-                        ProgressView("Refreshing app list")
+                        ProgressView() {
+                            Text("Gathering app details")
+                                .font(.callout)
+                                .foregroundStyle(Color("mode").opacity(0.5))
+                                .padding(5)
+                        }
                         Spacer()
                     }
                     .frame(width: sidebarWidth)

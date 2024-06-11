@@ -13,6 +13,8 @@ struct ZombieView: View {
     @EnvironmentObject var locations: Locations
     @EnvironmentObject var fsm: FolderSettingsManager
     @State private var showPop: Bool = false
+    @AppStorage("settings.general.leftoverWarning") private var warning: Bool = false
+    @State private var showAlert = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
@@ -35,45 +37,6 @@ struct ZombieView: View {
     @State private var totalFinderSizeUninstallBtn: String = ""
 
     var body: some View {
-
-//        let totalSelectedZombieSize: (real: String, logical: String, finder: String) = {
-//            var totalReal: Int64 = 0
-//            var totalLogical: Int64 = 0
-//
-//            for url in selectedZombieItemsLocal {
-//                let realSize = appState.zombieFile.fileSize[url] ?? 0
-//                let logicalSize = appState.zombieFile.fileSizeLogical[url] ?? 0
-//                totalReal += realSize
-//                totalLogical += logicalSize
-//            }
-//            return (formatByte(size: totalReal).human, formatByte(size:totalLogical).human, "\(formatByte(size: totalLogical).byte) (\(formatByte(size: totalReal).human))")
-//        }()
-
-//        let filteredAndSortedFiles: ([URL], Int64, Int64) = {
-//            let fileSizeReal = appState.zombieFile.fileSize
-//            let fileSizeLogical = appState.zombieFile.fileSizeLogical
-//            let filteredFilesReal = fileSizeReal.filter { (url, _) in
-//                searchZ.isEmpty || url.lastPathComponent.localizedCaseInsensitiveContains(searchZ)
-//            }
-//            let filteredFilesLogical = fileSizeLogical.filter { (url, _) in
-//                searchZ.isEmpty || url.lastPathComponent.localizedCaseInsensitiveContains(searchZ)
-//            }
-//            let filesToSort = (sizeType == "Real" || sizeType == "Finder" ? filteredFilesReal : filteredFilesLogical)
-//            let sortedFilteredFiles = filesToSort.sorted(by: {
-//                if selectedSortAlpha {
-//                    return $0.key.lastPathComponent.pearFormat() < $1.key.lastPathComponent.pearFormat()
-//                } else {
-//                    return $0.value > $1.value
-//                }
-//            }).map { $0.key }
-//            let totalSize = filteredFilesReal.values.reduce(0, +)
-//            let totalSizeL = filteredFilesLogical.values.reduce(0, +)
-//            return (sortedFilteredFiles, totalSize, totalSizeL)
-//        }()
-
-//        let displaySizeTotal = sizeType == "Real" ? formatByte(size: filteredAndSortedFiles.1).human :
-//        sizeType == "Logical" ? formatByte(size: filteredAndSortedFiles.2).human :
-//        "\(formatByte(size: filteredAndSortedFiles.2).byte) (\(formatByte(size: filteredAndSortedFiles.1).human))"
 
         VStack(alignment: .center) {
             if appState.showProgress {
@@ -150,7 +113,7 @@ struct ZombieView: View {
                                 VStack(alignment: .leading, spacing: 10){
                                     HStack {
                                         Text("Leftover Files").font(.title).fontWeight(.bold)
-                                        InfoButton(text: "Leftover file search is not and can never be 100% accurate as it doesn't have any old/uninstalled app bundles to check against for file exclusion. This does a best guess search for files/folders and excludes the ones that have overlap with your currently installed applications. Please confirm files marked for deletion really do belong to old/uninstalled applications.", color: .orange, warning: true)
+                                        InfoButton(text: "Leftover file search is not 100% accurate as it doesn't have any uninstalled app bundles to check against for file exclusion. This does a best guess search for files/folders and excludes the ones that have overlap with your currently installed applications. Please confirm files marked for deletion really do belong to uninstalled applications.", color: .orange, warning: true)
                                         Spacer()
                                         
                                     }
@@ -326,9 +289,34 @@ struct ZombieView: View {
                 .onAppear {
                     updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSortAlpha: selectedSortAlpha, force: true)
                 }
+                .sheet(isPresented: $showAlert, content: {
+                        VStack(spacing: 10) {
+                            Text("Important")
+                                .font(.headline)
+                            Spacer()
+                            Text("Leftover file search is not 100% accurate as it doesn't have any uninstalled app bundles to check against for file exclusion. This does a best guess search for files/folders and excludes the ones that have overlap with your currently installed applications. Please confirm files marked for deletion really do belong to uninstalled applications.")
+                                .font(.subheadline)
+                            Spacer()
+                            Button("Close") {
+                                warning = true
+                                showAlert = false
+                            }
+                            .buttonStyle(SimpleButtonStyle(icon: "x.circle.fill", label: "Close", help: "Dismiss"))
+                            Spacer()
+                        }
+                        .padding(15)
+                        .frame(width: 400, height: 250)
+                        .background(GlassEffect(material: .hudWindow, blendingMode: .behindWindow))
+                })
 
             }
         }
+        .onAppear {
+            if !warning {
+                showAlert = true
+            }
+        }
+
     }
 
     private func binding(for file: URL) -> Binding<Bool> {

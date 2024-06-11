@@ -46,22 +46,19 @@ class AppInfoFetcher {
             return nil
         }
 
-//        let appName = bundle.infoDictionary?["CFBundleDisplayName"] as? String ?? bundle.infoDictionary?["CFBundleName"] as? String
-//        ?? bundle.localizedInfoDictionary?[kCFBundleNameKey as String] as? String ?? path.deletingPathExtension().lastPathComponent
-
         let appName = wrapped ? path.deletingLastPathComponent().deletingLastPathComponent().deletingPathExtension().lastPathComponent.capitalizingFirstLetter() : path.deletingPathExtension().lastPathComponent.capitalizingFirstLetter()
 
-        let appVersion = bundle.infoDictionary?["CFBundleShortVersionString"] as? String
-        ?? bundle.infoDictionary?["CFBundleVersion"] as? String
-        ?? ""
+        let appVersion = (bundle.infoDictionary?["CFBundleShortVersionString"] as? String)?.isEmpty ?? true
+        ? bundle.infoDictionary?["CFBundleVersion"] as? String ?? ""
+        : bundle.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
 
         let appIcon = fetchAppIcon(for: path, wrapped: wrapped)
+        let webApp = (bundle.infoDictionary?["LSTemplateApplication"] as? Bool ?? false || bundle.infoDictionary?["CFBundleExecutable"] as? String == "app_mode_loader")
 
-        let webApp = bundle.infoDictionary?["LSTemplateApplication"] as? Bool ?? false
         let system = !path.path.contains(NSHomeDirectory())
 
         return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName, appVersion: appVersion, appIcon: appIcon,
-                       webApp: webApp, wrapped: wrapped, system: system, files: [], fileSize: [:], fileSizeLogical: [:], fileIcon: [:])
+                       webApp: webApp, wrapped: wrapped, system: system, bundleSize: 0, files: [], fileSize: [:], fileSizeLogical: [:], fileIcon: [:])
     }
 
     private static func fetchAppIcon(for path: URL, wrapped: Bool) -> NSImage? {

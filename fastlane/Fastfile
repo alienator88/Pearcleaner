@@ -11,7 +11,7 @@
 #
 
 # Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
+update_fastlane
 
 opt_out_usage
 
@@ -50,6 +50,11 @@ platform :mac do
     else
       UI.user_error!("Failed to find .app file in #{output_path}")
     end
+
+    # Empty the Archives folder
+    archives_path = "#{Dir.home}/Library/Developer/Xcode/Archives"
+    FileUtils.rm_rf(Dir.glob("#{archives_path}/*"))
+
 
     # Open Finder at the Downloads folder
     system("open #{output_path}")

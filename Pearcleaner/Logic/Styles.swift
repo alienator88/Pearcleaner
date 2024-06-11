@@ -570,13 +570,7 @@ struct AnimatedSearchStyle: TextFieldStyle {
                     .foregroundStyle(isHovered ? Color("mode").opacity(0.8) : Color("mode").opacity(0.5))
                     .onTapGesture {
                         withAnimation {
-                            // Refresh Apps list
-                            appState.reload.toggle()
-                            let sortedApps = getSortedApps(paths: fsm.folderPaths, appState: appState)
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                appState.sortedApps = sortedApps
-                                appState.reload.toggle()
-                            }
+                            reloadAppsList(appState: appState, fsm: fsm)
                         }
                         
                     }

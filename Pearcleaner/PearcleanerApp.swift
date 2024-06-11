@@ -88,9 +88,9 @@ struct PearcleanerApp: App {
                 // Disable tabbing
                 NSWindow.allowsAutomaticWindowTabbing = false
 
-                // Get Apps
-                let sortedApps = getSortedApps(paths: fsm.folderPaths, appState: appState)
-                appState.sortedApps = sortedApps
+                // Load apps list on startup
+                reloadAppsList(appState: appState, fsm: fsm)
+
 
                 // Enable menubar item
                 if menubarEnabled {

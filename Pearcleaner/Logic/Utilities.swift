@@ -27,19 +27,25 @@ func updateOnMain(after delay: Double? = nil, _ updates: @escaping () -> Void) {
 
 // Execute functions on background thread
 func updateOnBackground(_ updates: @escaping () -> Void) {
-    DispatchQueue.global(qos: .background).async {
+    DispatchQueue.global(qos: .userInitiated).async {
         updates()
     }
 }
 
+// Reload apps list
+func reloadAppsList(appState: AppState, fsm: FolderSettingsManager) {
+    appState.reload = true
+    updateOnBackground {
+        let sortedApps = getSortedApps(paths: fsm.folderPaths, appState: appState)
+        // Update UI on the main thread
+        updateOnMain {
+            appState.sortedApps = sortedApps
+            appState.reload = false
+        }
+    }
+}
 
-// Resize window
-//func resizeWindow(width: CGFloat, height: CGFloat) {
-//    if let window = NSApplication.shared.windows.first {
-//        let newSize = NSSize(width: width, height: height)
-//        window.setContentSize(newSize)
-//    }
-//}
+
 
 func resizeWindowAuto(windowSettings: WindowSettings, title: String) {
     if let window = NSApplication.shared.windows.first(where: { $0.title == title }) {
@@ -160,16 +166,26 @@ func caskCleanup(app: String) {
 #elseif arch(arm64)
         let cmd = "/opt/homebrew/bin/brew"
 #endif
+        let formattedApp = app.lowercased().replacingOccurrences(of: " ", with: "-")
         process.executableURL = URL(fileURLWithPath: "/bin/zsh")
-        process.arguments = ["-c", "\(cmd) uninstall --cask \(app) --force; \(cmd) cleanup"]
-//        let pipe = Pipe()
-        process.standardOutput = FileHandle.nullDevice//pipe
-        process.standardError = FileHandle.nullDevice//pipe
+//        process.arguments = ["-c", "\(cmd) uninstall --cask \"\(formattedApp)\" --force; \(cmd) cleanup"]
+        process.arguments = ["-c", """
+        found_cask=$(\(cmd) list --cask | grep "\(formattedApp)")
+        if [ -n "$found_cask" ]; then
+            \(cmd) uninstall --cask "$found_cask" --force;
+            \(cmd) cleanup;
+        else
+            echo "Cask not found for \(formattedApp)";
+        fi
+        """]
+        let pipe = Pipe()
+        process.standardOutput = pipe
+        process.standardError = pipe
         try? process.run()
         process.waitUntilExit() // Ensure the process completes
-//        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-//        let output = (String(data: data, encoding: .utf8) ?? "") as String
-//        print(output)
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        let output = (String(data: data, encoding: .utf8) ?? "") as String
+        print(output)
     }
 }
 
@@ -498,6 +514,7 @@ func formatByte(size: Int64) -> (human: String, byte: String) {
     return (human: human, byte: byte)
 
 }
+
 
 // Only process supported files
 func isSupportedFileType(at path: String) -> Bool {

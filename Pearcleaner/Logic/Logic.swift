@@ -39,8 +39,6 @@ func getSortedApps(paths: [String], appState: AppState) -> [AppInfo] {
     // Get app info and sort
     let sortedApps = apps
         .compactMap { AppInfoFetcher.getAppInfo(atPath: $0) }
-        .sorted { $0.appName.replacingOccurrences(of: ".", with: "").lowercased() < $1.appName.replacingOccurrences(of: ".", with: "").lowercased() }
-
 
     return sortedApps
 }
