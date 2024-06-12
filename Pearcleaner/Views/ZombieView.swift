@@ -113,9 +113,7 @@ struct ZombieView: View {
                                 VStack(alignment: .leading, spacing: 10){
                                     HStack {
                                         Text("Leftover Files").font(.title).fontWeight(.bold)
-                                        InfoButton(text: "Leftover file search is not 100% accurate as it doesn't have any uninstalled app bundles to check against for file exclusion. This does a best guess search for files/folders and excludes the ones that have overlap with your currently installed applications. Please confirm files marked for deletion really do belong to uninstalled applications.", color: .orange, warning: true)
                                         Spacer()
-                                        
                                     }
                                     Text("Remaining files and folders from previous applications")
                                         .font(.callout).foregroundStyle(Color("mode").opacity(0.5))
@@ -221,6 +219,8 @@ struct ZombieView: View {
 
                         Spacer()
 
+                        InfoButton(text: "Leftover file search is not 100% accurate as it doesn't have any uninstalled app bundles to check against for file exclusion. This does a best guess search for files/folders and excludes the ones that have overlap with your currently installed applications. Please confirm files marked for deletion really do belong to uninstalled applications.", color: .orange, warning: true, edge: .top)
+
                         Button("Rescan") {
                             updateOnMain {
                                 appState.zombieFile = .empty
@@ -293,6 +293,7 @@ struct ZombieView: View {
                         VStack(spacing: 10) {
                             Text("Important")
                                 .font(.headline)
+                            Divider()
                             Spacer()
                             Text("Leftover file search is not 100% accurate as it doesn't have any uninstalled app bundles to check against for file exclusion. This does a best guess search for files/folders and excludes the ones that have overlap with your currently installed applications. Please confirm files marked for deletion really do belong to uninstalled applications.")
                                 .font(.subheadline)

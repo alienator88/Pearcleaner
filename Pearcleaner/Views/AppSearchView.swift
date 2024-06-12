@@ -79,7 +79,7 @@ struct AppSearchView: View {
                                     selectedSortAlpha.toggle()
                                 }
                             }
-                            .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "App List Sorting", help: "Can also click on User/System headers to toggle this", size: 5))
+                            .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Sorting: \(selectedSortAlpha ? "ABC" : "123")", help: "Can also click on User/System headers to toggle this", size: 5))
 
                             if mini && !menubarEnabled {
                                 Button("") {

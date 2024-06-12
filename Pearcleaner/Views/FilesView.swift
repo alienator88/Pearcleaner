@@ -18,6 +18,8 @@ struct FilesView: View {
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
+    @AppStorage("settings.general.filesWarning") private var warning: Bool = false
+    @State private var showAlert = false
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
     @Binding var search: String
@@ -121,9 +123,10 @@ struct FilesView: View {
                                         Text("\(appState.appInfo.appName)").font(.title).fontWeight(.bold).lineLimit(1)
                                         Text("•").foregroundStyle(Color("AccentColor"))
                                         Text("v\(appState.appInfo.appVersion)").font(.title3)
-                                        if appState.appInfo.appName.count < 5 {
-                                            InfoButton(text: "Pearcleaner searches for files via a combination of bundle id and app name. \(appState.appInfo.appName) has a common or short app name so there might be unrelated files found. Please check the list thoroughly before uninstalling.")
-                                        }
+
+//                                        if appState.appInfo.appName.count < 5 {
+//                                            InfoButton(text: "Pearcleaner searches for files via a combination of bundle id and app name. \(appState.appInfo.appName) has a common or short app name so there might be unrelated files found. Please check the list thoroughly before uninstalling.")
+//                                        }
 
                                     }
                                     Text("\(appState.appInfo.bundleIdentifier)")
@@ -270,6 +273,10 @@ struct FilesView: View {
 
                         Spacer()
 
+                        InfoButton(text: "Always double-check the files/folders marked for removal. In some rare cases, Pearcleaner may find some unrelated files when app names are too similar.", color: Color("mode").opacity(0.5), warning: true, edge: .top)
+                            .padding(.top)
+
+
                         Button("\(sizeType == "Logical" ? totalSelectedSize.logical : sizeType == "Finder" ? totalSelectedSize.finder : totalSelectedSize.real)") {
                             Task {
 
@@ -361,6 +368,31 @@ struct FilesView: View {
 
             }
 
+        }
+        .sheet(isPresented: $showAlert, content: {
+            VStack(spacing: 10) {
+                Text("Important")
+                    .font(.headline)
+                Divider()
+                Spacer()
+                Text("Always double-check the files/folders marked for removal. In some rare cases, Pearcleaner may find some unrelated files when app names are too similar.")
+                    .font(.subheadline)
+                Spacer()
+                Button("Close") {
+                    warning = true
+                    showAlert = false
+                }
+                .buttonStyle(SimpleButtonStyle(icon: "x.circle.fill", label: "Close", help: "Dismiss"))
+                Spacer()
+            }
+            .padding(15)
+            .frame(width: 400, height: 200)
+            .background(GlassEffect(material: .hudWindow, blendingMode: .behindWindow))
+        })
+        .onAppear {
+            if !warning {
+                showAlert = true
+            }
         }
     }
 

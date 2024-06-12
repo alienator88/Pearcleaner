@@ -166,12 +166,14 @@ struct InfoButton: View {
     let color: Color
     let label: String
     let warning: Bool
+    let edge: Edge
 
-    init(text: String, color: Color = Color("mode"), label: String = "", warning: Bool = false) {
+    init(text: String, color: Color = Color("mode"), label: String = "", warning: Bool = false, edge: Edge = .bottom) {
         self.text = text
         self.color = color
         self.label = label
         self.warning = warning
+        self.edge = edge
 
     }
 
@@ -202,7 +204,7 @@ struct InfoButton: View {
                 NSCursor.pop()
             }
         }
-        .popover(isPresented: $isPopoverPresented, arrowEdge: .bottom) {
+        .popover(isPresented: $isPopoverPresented, arrowEdge: edge) {
             VStack {
                 Spacer()
                 Text(text)
