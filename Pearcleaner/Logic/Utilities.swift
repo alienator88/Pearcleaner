@@ -657,5 +657,13 @@ func getCurrentTimestamp() -> String {
 }
 
 
+func formattedDate(_ date: Date?) -> String {
+    guard let date = date else { return "N/A" }
+    let formatter = DateFormatter()
+    formatter.dateStyle = .short
+    formatter.timeStyle = .none
+    return formatter.string(from: date)
+}
+
 
 

@@ -13,20 +13,62 @@ struct UpdateSettingsTab: View {
     @EnvironmentObject var appState: AppState
     @State private var showAlert = false
     @State private var showDone = false
+    @AppStorage("settings.updater.nextUpdateDate") private var nextUpdateDate = Date.now.timeIntervalSinceReferenceDate
     @AppStorage("settings.updater.updateTimeframe") private var updateTimeframe: Int = 1
+    @AppStorage("settings.updater.enableUpdates") private var enableUpdates: Bool = true
 
     var body: some View {
         VStack {
-            
-            HStack {
-                Text("Check for updates every ") +
-                Text("**\(updateTimeframe)**").foregroundColor(.red) +
-                Text(updateTimeframe == 1 ? " day" : " days")
-                Stepper(value: $updateTimeframe, in: 1...7) {
-                    Text("")
+
+            HStack(spacing: 0) {
+                Image(systemName: "arrow.down.square")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 20, height: 20)
+                    .padding(.trailing)
+                    .foregroundStyle(Color("mode").opacity(0.5))
+
+                VStack {
+                    HStack(spacing: 0) {
+                        Text("\(enableUpdates ? "Pearcleaner will check for updates every " : "Automatic updates are disabled")")
+                            .font(.callout)
+                            .foregroundStyle(Color("mode").opacity(0.5))
+
+                        if enableUpdates {
+                            Text("**\(updateTimeframe)**").font(.system(.callout, design: .monospaced)).monospacedDigit()
+                            Text(updateTimeframe == 1 ? " day" : " days")
+                                .font(.callout)
+                                .foregroundStyle(Color("mode").opacity(0.5))
+
+                            Stepper("", value: $updateTimeframe, in: 0...30)
+                                .onChange(of: updateTimeframe, perform: { _ in
+                                    updateNextUpdateDate()
+                                })
+                        }
+                        Spacer()
+                    }
+
+                    if enableUpdates {
+                        HStack {
+                            Text("Next update check: \(formattedDate(Date(timeIntervalSinceReferenceDate: nextUpdateDate)))")
+                                .font(.footnote)
+                                .foregroundStyle(Color("mode").opacity(0.3))
+                            Spacer()
+                        }
+                    }
+
+
+
                 }
+
+                Spacer()
+                Toggle(isOn: $enableUpdates, label: {
+                })
+                .toggleStyle(.switch)
             }
-            
+            .padding(5)
+            .padding(.leading)
+
             ScrollView {
                 VStack() {
                     ForEach(appState.releases, id: \.id) { release in
@@ -87,6 +129,10 @@ struct UpdateSettingsTab: View {
         }
         .padding(20)
         .frame(width: 500, height: 520)
+//        .onAppear {
+//            // Convert TimeInterval to Date on appearance
+//            let _ = Date(timeIntervalSinceReferenceDate: nextUpdateDate)
+//        }
     }
     
 }

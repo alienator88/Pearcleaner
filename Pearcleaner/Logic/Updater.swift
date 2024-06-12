@@ -29,9 +29,10 @@ extension Release {
 }
 
 
+// --- Updater functionality
 
 
-func loadGithubReleases(appState: AppState, manual: Bool = false) {
+func loadGithubReleases(appState: AppState, manual: Bool = false, releaseOnly: Bool = false) {
     let url = URL(string: "https://api.github.com/repos/alienator88/Pearcleaner/releases")!
     let request = URLRequest(url: url)
     URLSession.shared.dataTask(with: request) { data, response, error in
@@ -40,7 +41,9 @@ func loadGithubReleases(appState: AppState, manual: Bool = false) {
                 DispatchQueue.main.async {
                     let lastFewReleases = Array(decodedResponse.prefix(3)) // Get only the last 3 recent releases
                     appState.releases = lastFewReleases
-                    checkForUpdate(appState: appState, manual: manual)
+                    if !releaseOnly {
+                        checkForUpdate(appState: appState, manual: manual)
+                    }
                 }
                 return
             }
@@ -165,7 +168,58 @@ func UnzipAndReplace(DownloadedFileURL fileURL: String, appState: AppState) {
 
 
 
+// --- Updater check frequency
 
+func updateNextUpdateDate() {
+    @AppStorage("settings.updater.updateTimeframe") var updateTimeframe: Int = 1
+    @AppStorage("settings.updater.nextUpdateDate") var nextUpdateDate = Date.now.timeIntervalSinceReferenceDate
+    let updateSeconds = updateTimeframe.daysToSeconds
+    let newUpdateDate = Calendar.current.startOfDay(for: Date().addingTimeInterval(updateSeconds))
+    nextUpdateDate = newUpdateDate.timeIntervalSinceReferenceDate
+}
+
+func checkAndUpdateIfNeeded(appState: AppState) {
+    @AppStorage("settings.updater.updateTimeframe") var updateTimeframe: Int = 1
+    @AppStorage("settings.updater.nextUpdateDate") var nextUpdateDate = Date.now.timeIntervalSinceReferenceDate
+
+    let updateSeconds = updateTimeframe.daysToSeconds
+    let now = Date()
+
+    // Retrieve the next update date from UserDefaults
+    let nextUpdateDateLocal = Date(timeIntervalSinceReferenceDate: nextUpdateDate)
+//    let nextUpdateDate = UserDefaults.standard.object(forKey: "settings.updater.nextUpdateDate") as? Date
+
+    // If there's no stored next update date or it's in the past, update immediately
+    if !isSameDay(date1: nextUpdateDateLocal, date2: now) {
+        // Next update date is in the future, no need to update
+        printOS("Updater: next update date is in the future, skipping")
+        return
+    }
+
+    // Update immediately and set next update date
+    updateApp(appState: appState)
+    setNextUpdateDate(interval: updateSeconds)
+}
+
+func updateApp(appState: AppState) {
+    // Perform your update logic here
+    printOS("Updater: performing update")
+    loadGithubReleases(appState: appState)
+}
+
+func setNextUpdateDate(interval: TimeInterval) {
+    let newUpdateDate = Calendar.current.startOfDay(for: Date().addingTimeInterval(interval))
+    UserDefaults.standard.set(newUpdateDate.timeIntervalSinceReferenceDate, forKey: "settings.updater.nextUpdateDate")
+//    UserDefaults.standard.set(newUpdateDate, forKey: "settings.updater.nextUpdateDate")
+}
+
+func isSameDay(date1: Date, date2: Date) -> Bool {
+    return Calendar.current.isDate(date1, inSameDayAs: date2)
+}
+
+
+
+// --- Updater Badge View
 
 
 struct UpdateNotificationView: View {

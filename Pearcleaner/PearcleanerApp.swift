@@ -15,7 +15,8 @@ struct PearcleanerApp: App {
     @StateObject var locations = Locations()
     @StateObject var fsm = FolderSettingsManager()
     @State private var windowSettings = WindowSettings()
-    @AppStorage("settings.updater.updateTimeframe") private var updateTimeframe: Int = 1
+//    @AppStorage("settings.updater.updateTimeframe") private var updateTimeframe: Int = 1
+    @AppStorage("settings.updater.enableUpdates") private var enableUpdates: Bool = true
     @AppStorage("settings.permissions.hasLaunched") private var hasLaunched: Bool = false
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @AppStorage("settings.general.mini") private var mini: Bool = false
@@ -110,31 +111,29 @@ struct PearcleanerApp: App {
 
 
                     // Make sure App Support folder exists in the future if needed for storage
-                    //MARK: This is not needed any longer as the update file is stored in /tmp directory
+                    //MARK: This is not needed any longer as the update file is stored in /tmp directory. Use in the future for any local db functions the app might need
 //                    ensureApplicationSupportFolderExists(appState: appState)
 
                     // Check for updates after app launch
                     checkAllPermissions(appState: appState) { results in
                         appState.permissionResults = results
                         if results.allPermissionsGranted {
-                            loadGithubReleases(appState: appState)
+                            // Get GH releases
+                            loadGithubReleases(appState: appState, releaseOnly: true)
+                            
+                            if enableUpdates {
+                                // Update checker
+                                checkAndUpdateIfNeeded(appState: appState)
+                            }
+                            // Get new features
                             getFeatures(appState: appState, features: $features)
+                            // Load extra conditions from GitHub
+                            loadConditionsFromGitHub()
                         }
                     }
 
-                    // Load extra conditions from GitHub
-                    loadConditionsFromGitHub()
 
 
-                    // TIMERS ////////////////////////////////////////////////////////////////////////////////////
-
-                    // Check for app updates every 8 hours or whatever user saved setting.
-                    let updateSeconds = updateTimeframe.daysToSeconds
-                    _ = Timer.scheduledTimer(withTimeInterval: updateSeconds, repeats: true) { _ in
-                        DispatchQueue.main.async {
-                            loadGithubReleases(appState: appState)
-                        }
-                    }
                 }
 
 #endif
