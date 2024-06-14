@@ -238,7 +238,7 @@ struct SimpleSearchStyle: TextFieldStyle {
 extension NSTextView {
     open override var frame: CGRect {
         didSet {
-            insertionPointColor = .clear
+            insertionPointColor = NSColor(Color("mode").opacity(0.2))//.clear
         }
     }
 }

@@ -630,6 +630,20 @@ struct AnimatedSearchStyle: TextFieldStyle {
 }
 
 
+struct RoundedTextFieldStyle: TextFieldStyle {
+    func _body(configuration: TextField<Self._Label>) -> some View {
+        configuration
+            .padding(8)
+            .cornerRadius(6)
+            .textFieldStyle(.plain)
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .strokeBorder(Color("mode").opacity(0.4), lineWidth: 0.8)
+            )
+    }
+}
+
+
 
 struct GlassEffect: NSViewRepresentable {
     var material: NSVisualEffectView.Material // Choose the material you want

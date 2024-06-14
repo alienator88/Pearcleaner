@@ -27,7 +27,7 @@ struct PearcleanerApp: App {
     @AppStorage("settings.interface.selectedMenubarIcon") var selectedMenubarIcon: String = "trash"
     @State private var search = ""
     @State private var showPopover: Bool = false
-
+    let conditionManager = ConditionManager.shared
 
 
     var body: some Scene {
@@ -127,7 +127,7 @@ struct PearcleanerApp: App {
                             // Get new features
                             getFeatures(appState: appState, features: $features)
                             // Load extra conditions from GitHub
-                            loadConditionsFromGitHub()
+//                            loadConditionsFromGitHub() // REPLACE THIS WITH NEW CONDITION MANAGER
                         }
                     }
 

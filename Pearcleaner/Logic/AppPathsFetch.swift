@@ -153,17 +153,15 @@ class AppPathFinder {
 
         for condition in conditions {
             if bundleIdentifierL.contains(condition.bundle_id) {
-                // Exclude and include keywords
-                let hasIncludeKeyword = condition.include.contains(where: itemL.contains)
+                // Exclude keywords
                 let hasExcludeKeyword = condition.exclude.contains(where: itemL.contains)
-
                 if hasExcludeKeyword {
                     return false
                 }
+                // Include keywords
+                let hasIncludeKeyword = condition.include.contains(where: itemL.contains)
                 if hasIncludeKeyword {
-                    if !condition.exclude.contains(where: itemL.contains) {
-                        return true
-                    }
+                    return true
                 }
             }
         }
@@ -230,7 +228,7 @@ class AppPathFinder {
     }
 
 
-    private func handleOutliers() -> [URL] {
+    private func handleOutliers(include: Bool = true) -> [URL] {
         var outliers: [URL] = []
         let bundleIdentifier = self.appInfo.bundleIdentifier.pearFormat()
 
@@ -239,14 +237,24 @@ class AppPathFinder {
             bundleIdentifier.contains(condition.bundle_id)
         }
 
+
         for condition in matchingConditions {
-            if let forceIncludes = condition.includeForce {
-                for path in forceIncludes {
-                    if let url = URL(string: path), FileManager.default.fileExists(atPath: url.path) {
-                        outliers.append(url)
+            if include {
+                // Handle includeForce
+                if let forceIncludes = condition.includeForce {
+                    for path in forceIncludes {
+                        outliers.append(path)
+                    }
+                }
+            } else {
+                // Handle excludeForce
+                if let excludeForce = condition.excludeForce {
+                    for path in excludeForce {
+                        outliers.append(path)
                     }
                 }
             }
+
         }
 
         return outliers
@@ -256,12 +264,19 @@ class AppPathFinder {
         DispatchQueue.global(qos: .userInitiated).async {
             let allContainers = self.getAllContainers(bundleURL: self.appInfo.path)
             let outliers = self.handleOutliers()
+            let outliersEx = self.handleOutliers(include: false)
             var tempCollection: [URL] = []
             self.collectionAccessQueue.sync {
                 tempCollection = self.collection
             }
             tempCollection.append(contentsOf: allContainers)
             tempCollection.append(contentsOf: outliers)
+
+            // Remove URLs based on outliersExcludes
+            let excludePaths = outliersEx.map { $0.path }
+            tempCollection.removeAll { url in
+                excludePaths.contains(url.path)
+            }
 
             // Sort and standardize URLs to ensure consistent comparisons
             let sortedCollection = tempCollection.map { $0.standardizedFileURL }.sorted(by: { $0.path < $1.path })

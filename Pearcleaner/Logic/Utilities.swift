@@ -427,6 +427,31 @@ extension String {
     }
 }
 
+// --- Returns comma separated string as array of strings
+extension String {
+    func toConditionFormat() -> [String] {
+        if self.isEmpty {
+            return []
+        }
+        return self.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+    }
+}
+
+
+// --- Overload the greater than operator ">" to do a semantic check on the string versions
+extension String {
+    func versionStringToTuple() -> (Int, Int, Int) {
+        let components = self.split(separator: ".").compactMap { Int($0) }
+        return (components[0], components[1], components[2])
+    }
+
+    static func > (lhs: String, rhs: String) -> Bool {
+        let lhsVersion = lhs.versionStringToTuple()
+        let rhsVersion = rhs.versionStringToTuple()
+        return lhsVersion > rhsVersion
+    }
+}
+
 
 // --- Trash Relationship ---
 //extension FileManager {

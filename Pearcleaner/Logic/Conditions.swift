@@ -6,13 +6,32 @@
 //
 
 import Foundation
+import SwiftData
 
-
-struct Condition: Decodable {
+struct Condition: Codable {
     var bundle_id: String
     var include: [String]
     var exclude: [String]
-    var includeForce: [String]?
+    var includeForce: [URL]?
+    var excludeForce: [URL]?
+
+    init(bundle_id: String, include: [String], exclude: [String], includeForce: [String]? = nil, excludeForce: [String]? = nil) {
+        self.bundle_id = bundle_id.pearFormat()
+        self.include = include.map { $0.pearFormat() }
+        self.exclude = exclude.map { $0.pearFormat() }
+        self.includeForce = includeForce?.compactMap { path in
+            if let url = URL(string: path), FileManager.default.fileExists(atPath: url.path) {
+                return url
+            }
+            return nil
+        }
+        self.excludeForce = excludeForce?.compactMap { path in
+            if let url = URL(string: path), FileManager.default.fileExists(atPath: url.path) {
+                return url
+            }
+            return nil
+        }
+    }
 }
 
 struct SkipCondition {
@@ -25,70 +44,75 @@ struct SkipCondition {
 // Conditions for some apps that need to include/exclude certain files/folders when names are more complicated
 var conditions: [Condition] = [
     Condition(
-        bundle_id: "comappledtxcode",
-        include: ["comappledt", "xcode", "simulator"],
-        exclude: ["comrobotsandpencilsxcodesapp", "comoneminutegamesxcodecleaner", "iohyperappxcodecleaner", "xcodesjson"],
+        bundle_id: "com.apple.dt.xcode",
+        include: ["com.apple.dt", "xcode", "simulator"],
+        exclude: ["com.robotsandpencils.xcodesapp", "com.oneminutegames.xcodecleaner", "io.hyperapp.xcodecleaner", "xcodes.json"],
         includeForce: ["\(home)/Library/Containers/com.apple.iphonesimulator.ShareExtension"]
     ),
     Condition(
-        bundle_id: "comrobotsandpencilsxcodesapp",
+        bundle_id: "com.robotsandpencils.xcodesapp",
         include: [],
-        exclude: ["comappledtxcode", "comoneminutegamesxcodecleaner", "iohyperappxcodecleaner"]
+        exclude: ["com.apple.dt.xcode", "com.oneminutegames.xcodecleaner", "io.hyperapp.xcodecleaner"]
     ),
     Condition(
-        bundle_id: "iohyperappxcodecleaner",
+        bundle_id: "io.hyperapp.xcodecleaner",
         include: [],
-        exclude: ["comrobotsandpencilsxcodesapp", "comoneminutegamesxcodecleaner", "comappledtxcode", "xcodesjson"]
+        exclude: ["com.robotsandpencils.xcodesapp", "com.oneminutegames.xcodecleaner", "com.apple.dt.xcode", "xcodes.json"]
     ),
     Condition(
-        bundle_id: "uszoomxos",
+        bundle_id: "us.zoom.xos",
         include: ["zoom"],
         exclude: []
     ),
     Condition(
-        bundle_id: "combravebrowser",
+        bundle_id: "com.brave.browser",
         include: ["brave"],
         exclude: []
     ),
     Condition(
-        bundle_id: "comoktamobile",
+        bundle_id: "com.okta.mobile",
         include: ["okta"],
         exclude: []
     ),
     Condition(
-        bundle_id: "comgooglechrome",
+        bundle_id: "com.google.chrome",
         include: ["google", "chrome"],
         exclude: ["iterm", "chromefeaturestate"]
     ),
     Condition(
-        bundle_id: "commicrosoftedgemac",
+        bundle_id: "com.microsoft.edgemac",
         include: ["microsoft"],
         exclude: ["vscode", "rdc", "appcenter", "office", "oneauth"]
     ),
     Condition(
-        bundle_id: "orgmozillafirefox",
+        bundle_id: "org.mozilla.firefox",
         include: ["mozilla", "firefox"],
         exclude: []
     ),
     Condition(
-        bundle_id: "comlogioptionsplus",
+        bundle_id: "org.mozilla.firefox.nightly",
+        include: ["mozilla", "firefox"],
+        exclude: []
+    ),
+    Condition(
+        bundle_id: "com.logi.optionsplus",
         include: ["logi"],
         exclude: ["login", "logic"],
         includeForce: []
     ),
     Condition(
-        bundle_id: "commicrosoftvscode",
+        bundle_id: "com.microsoft.vscode",
         include: ["vscode"],
         exclude: [],
-        includeForce: ["\(home)/Library/Application Support/Code"]
+        includeForce: ["\(home)/Library/Application Support/Code/"]
     ),
     Condition(
-        bundle_id: "comfacebookarchondeveloperid",
-        include: ["archonloginhelper"],
+        bundle_id: "com.facebook.archon.developerid",
+        include: ["archon.loginhelper"],
         exclude: []
     ),
     Condition(
-        bundle_id: "euexelbanstats",
+        bundle_id: "eu.exelban.stats",
         include: [],
         exclude: ["video"]
     ),
@@ -114,36 +138,59 @@ let skipConditions: [SkipCondition] = [
 let skipReverse = ["apple", "temporary", "btserver", "proapps", "scripteditor", "ilife", "livefsd", "siritoday", "addressbook", "animoji", "appstore", "askpermission", "callhistory", "clouddocs", "diskimages", "dock", "facetime", "fileprovider", "instruments", "knowledge", "mobilesync", "syncservices", "homeenergyd", "icloud", "icdd", "networkserviceproxy", "familycircle", "geoservices", "installation", "passkit", "sharedimagecache", "desktop", "mbuseragent", "swiftpm", "baseband", "coresimulator", "photoslegacyupgrade", "photosupgrade", "siritts", "ipod", "globalpreferences", "apmanalytics", "apmexperiment", "avatarcache", "byhost", "contextstoreagent", "mobilemeaccounts", "intentbuilderc", "loginwindow", "momc", "replayd", "sharedfilelistd", "clang", "audiocomponent", "csexattrcryptoservice", "livetranscriptionagent", "sandboxhelper", "statuskitagent", "betaenrollmentd", "contentlinkingd", "diagnosticextensionsd", "gamed", "heard", "homed", "itunescloudd", "lldb", "mds", "mediaanalysisd", "metrickitd", "mobiletimerd", "proactived", "ptpcamerad", "studentd", "talagent", "watchlistd", "apptranslocation", "xcrun", "ds_store", "caches", "crashreporter", "trash", "pearcleaner", "amsdatamigratortool", "arfilecache", "assistant", "chromium", "cloudkit", "webkit", "databases", "diagnostic", "cache", "gamekit", "homebrew", "logi", "microsoft", "mozilla", "sync", "google", "sentinel", "hexnode", "sentry", "tvappservices", "reminders"]
 
 
-// Function to load additional conditions from a GitHub JSON file
-func loadConditionsFromGitHub() {
-    let url = URL(string: "https://api.github.com/repos/alienator88/Pearcleaner/contents/conditions.json")!
-    var request = URLRequest(url: url)
-    request.setValue("application/vnd.github.VERSION.raw", forHTTPHeaderField: "Accept")
-    request.setValue("2022-11-28", forHTTPHeaderField: "X-GitHub-Api-Version")
 
-    URLSession.shared.dataTask(with: request) { data, response, error in
-        if let data = data {
-            do {
-                // Assuming the JSON structure directly maps to an array of Condition
-                let jsonObject = try JSONSerialization.jsonObject(with: data, options: [])
-                if let conditionArray = jsonObject as? [[String: Any]] {
-                    let jsonData = try JSONSerialization.data(withJSONObject: conditionArray, options: [])
-                    let additionalConditions = try JSONDecoder().decode([Condition].self, from: jsonData)
 
-                    if !additionalConditions.isEmpty {
-                        DispatchQueue.main.async {
-                            conditions += additionalConditions
-                        }
-                    }
-                } else {
-                    printOS("The data format is incorrect or empty for GitHub conditions processing.")
-                }
-            } catch {
-                printOS("Failed to decode conditions JSON: \(error.localizedDescription)")
-            }
-        } else {
-            printOS("Failed to fetch conditions data: \(error?.localizedDescription ?? "Unknown error")")
+
+
+// Store and load conditions locally via SwiftData
+class ConditionManager {
+    static let shared = ConditionManager()
+
+    private init() {
+        loadConditions()
+    }
+
+    // Function to save a condition
+    func saveCondition(_ condition: Condition) {
+        if condition.include.isEmpty && condition.exclude.isEmpty && (condition.includeForce?.isEmpty ?? true) {
+            deleteCondition(bundle_id: condition.bundle_id)
+            return
         }
-    }.resume()
-}
+        let defaults = UserDefaults.standard
+        let encoder = JSONEncoder()
+        let key = "Condition-\(condition.bundle_id)"
 
+        if let encoded = try? encoder.encode(condition) {
+            defaults.set(encoded, forKey: key)
+            conditions.append(condition)
+        }
+    }
+
+    // Function to delete a condition from defaults and conditions variable
+    func deleteCondition(bundle_id: String) {
+        let defaults = UserDefaults.standard
+        let key = "Condition-\(bundle_id.pearFormat())"
+
+        // Remove from UserDefaults
+        defaults.removeObject(forKey: key)
+
+        // Remove from conditions variable
+        conditions.removeAll { $0.bundle_id == bundle_id.pearFormat() }
+    }
+
+    // Function to load a condition and append to the global variable
+    func loadConditions() {
+        let defaults = UserDefaults.standard
+        let decoder = JSONDecoder()
+
+        for (key, value) in defaults.dictionaryRepresentation() {
+            if key.starts(with: "Condition-"), let savedCondition = value as? Data {
+                if let loadedCondition = try? decoder.decode(Condition.self, from: savedCondition) {
+                    conditions.append(loadedCondition)
+                }
+            }
+        }
+    }
+
+    
+}
