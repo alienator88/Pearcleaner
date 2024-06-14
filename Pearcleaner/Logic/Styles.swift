@@ -928,7 +928,7 @@ extension View {
     }
 }
 
-
+// Background color/glass setter
 @ViewBuilder
 func backgroundView(themeSettings: ThemeSettings, darker: Bool = false, glass: Bool = false) -> some View {
     if glass {
@@ -940,6 +940,32 @@ func backgroundView(themeSettings: ThemeSettings, darker: Bool = false, glass: B
 }
 
 
+struct PickerModifier: ViewModifier {
+    @State private var isHovered: Bool = false
+    let themeSettings: ThemeSettings
+
+    func body(content: Content) -> some View {
+        content
+            .buttonStyle(.borderless)
+            .padding(4)
+            .background {
+                backgroundView(themeSettings: themeSettings, darker: isHovered)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+            .onHover { hovering in
+                isHovered = hovering
+            }
+    }
+}
+
+extension View {
+    func pickerStyle(themeSettings: ThemeSettings) -> some View {
+        self.modifier(PickerModifier(themeSettings: themeSettings))
+    }
+}
+
+
+// Preset view elements
 struct PresetColor: ButtonStyle {
     var fillColor: Color
     var label: String

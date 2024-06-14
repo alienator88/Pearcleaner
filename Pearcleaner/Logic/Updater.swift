@@ -170,35 +170,62 @@ func UnzipAndReplace(DownloadedFileURL fileURL: String, appState: AppState) {
 
 // --- Updater check frequency
 
-func updateNextUpdateDate() {
-    @AppStorage("settings.updater.updateTimeframe") var updateTimeframe: Int = 1
-    @AppStorage("settings.updater.nextUpdateDate") var nextUpdateDate = Date.now.timeIntervalSinceReferenceDate
-    let updateSeconds = updateTimeframe.daysToSeconds
-    let newUpdateDate = Calendar.current.startOfDay(for: Date().addingTimeInterval(updateSeconds))
-    nextUpdateDate = newUpdateDate.timeIntervalSinceReferenceDate
+enum UpdateFrequency: String, CaseIterable, Identifiable {
+    case none = "Never"
+    case daily = "Daily"
+    case weekly = "Weekly"
+    case monthly = "Monthly"
+
+    var id: String { self.rawValue }
+
+    var interval: TimeInterval? {
+        switch self {
+        case .none:
+            return nil
+        case .daily:
+            return 86400 // 1 day in seconds
+        case .weekly:
+            return 604800 // 7 days in seconds
+        case .monthly:
+            return 2592000 // 30 days in seconds
+        }
+    }
+
+    func updateNextUpdateDate() {
+        guard let updateInterval = self.interval else { return }
+        let newUpdateDate = Calendar.current.startOfDay(for: Date().addingTimeInterval(updateInterval))
+        UserDefaults.standard.set(newUpdateDate.timeIntervalSinceReferenceDate, forKey: "settings.updater.nextUpdateDate")
+    }
 }
 
+//func updateNextUpdateDate() {
+//    @AppStorage("settings.updater.updateFrequency") var updateFrequency: UpdateFrequency = .daily
+//    @AppStorage("settings.updater.nextUpdateDate") var nextUpdateDate = Date.now.timeIntervalSinceReferenceDate
+//
+//    guard let updateInterval = updateFrequency.interval else { return }
+//    let newUpdateDate = Calendar.current.startOfDay(for: Date().addingTimeInterval(updateInterval))
+//    nextUpdateDate = newUpdateDate.timeIntervalSinceReferenceDate
+//}
+
 func checkAndUpdateIfNeeded(appState: AppState) {
-    @AppStorage("settings.updater.updateTimeframe") var updateTimeframe: Int = 1
+    @AppStorage("settings.updater.updateFrequency") var updateFrequency: UpdateFrequency = .daily
     @AppStorage("settings.updater.nextUpdateDate") var nextUpdateDate = Date.now.timeIntervalSinceReferenceDate
 
-    let updateSeconds = updateTimeframe.daysToSeconds
-    let now = Date()
-
-    // Retrieve the next update date from UserDefaults
-    let nextUpdateDateLocal = Date(timeIntervalSinceReferenceDate: nextUpdateDate)
-//    let nextUpdateDate = UserDefaults.standard.object(forKey: "settings.updater.nextUpdateDate") as? Date
-
-    // If there's no stored next update date or it's in the past, update immediately
-    if !isSameDay(date1: nextUpdateDateLocal, date2: now) {
-        // Next update date is in the future, no need to update
-        printOS("Updater: next update date is in the future, skipping")
+    guard let updateInterval = updateFrequency.interval else {
+        printOS("Updater: no update frequency set, skipping check")
         return
     }
 
-    // Update immediately and set next update date
+    let now = Date()
+    let nextUpdateDateLocal = Date(timeIntervalSinceReferenceDate: nextUpdateDate)
+
+    if !isSameDay(date1: nextUpdateDateLocal, date2: now) {
+        printOS("Updater: next update date is in the future, skipping (\(nextUpdateDateLocal))")
+        return
+    }
+
     updateApp(appState: appState)
-    setNextUpdateDate(interval: updateSeconds)
+    setNextUpdateDate(interval: updateInterval)
 }
 
 func updateApp(appState: AppState) {
@@ -210,12 +237,58 @@ func updateApp(appState: AppState) {
 func setNextUpdateDate(interval: TimeInterval) {
     let newUpdateDate = Calendar.current.startOfDay(for: Date().addingTimeInterval(interval))
     UserDefaults.standard.set(newUpdateDate.timeIntervalSinceReferenceDate, forKey: "settings.updater.nextUpdateDate")
-//    UserDefaults.standard.set(newUpdateDate, forKey: "settings.updater.nextUpdateDate")
 }
 
 func isSameDay(date1: Date, date2: Date) -> Bool {
     return Calendar.current.isDate(date1, inSameDayAs: date2)
 }
+
+//func updateNextUpdateDate() {
+//    @AppStorage("settings.updater.updateTimeframe") var updateTimeframe: Int = 1
+//    @AppStorage("settings.updater.nextUpdateDate") var nextUpdateDate = Date.now.timeIntervalSinceReferenceDate
+//    let updateSeconds = updateTimeframe.daysToSeconds
+//    let newUpdateDate = Calendar.current.startOfDay(for: Date().addingTimeInterval(updateSeconds))
+//    nextUpdateDate = newUpdateDate.timeIntervalSinceReferenceDate
+//}
+//
+//func checkAndUpdateIfNeeded(appState: AppState) {
+//    @AppStorage("settings.updater.updateTimeframe") var updateTimeframe: Int = 1
+//    @AppStorage("settings.updater.nextUpdateDate") var nextUpdateDate = Date.now.timeIntervalSinceReferenceDate
+//
+//    let updateSeconds = updateTimeframe.daysToSeconds
+//    let now = Date()
+//
+//    // Retrieve the next update date from UserDefaults
+//    let nextUpdateDateLocal = Date(timeIntervalSinceReferenceDate: nextUpdateDate)
+////    let nextUpdateDate = UserDefaults.standard.object(forKey: "settings.updater.nextUpdateDate") as? Date
+//
+//    // If there's no stored next update date or it's in the past, update immediately
+//    if !isSameDay(date1: nextUpdateDateLocal, date2: now) {
+//        // Next update date is in the future, no need to update
+//        printOS("Updater: next update date is in the future, skipping")
+//        return
+//    }
+//
+//    // Update immediately and set next update date
+//    updateApp(appState: appState)
+//    setNextUpdateDate(interval: updateSeconds)
+//}
+//
+//func updateApp(appState: AppState) {
+//    // Perform your update logic here
+//    printOS("Updater: performing update")
+//    loadGithubReleases(appState: appState)
+//}
+//
+//func setNextUpdateDate(interval: TimeInterval) {
+//    let newUpdateDate = Calendar.current.startOfDay(for: Date().addingTimeInterval(interval))
+//    UserDefaults.standard.set(newUpdateDate.timeIntervalSinceReferenceDate, forKey: "settings.updater.nextUpdateDate")
+////    UserDefaults.standard.set(newUpdateDate, forKey: "settings.updater.nextUpdateDate")
+//}
+//
+//func isSameDay(date1: Date, date2: Date) -> Bool {
+//    return Calendar.current.isDate(date1, inSameDayAs: date2)
+//}
 
 
 

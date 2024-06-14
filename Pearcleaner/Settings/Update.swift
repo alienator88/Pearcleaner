@@ -11,44 +11,36 @@ import Foundation
 
 struct UpdateSettingsTab: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var themeSettings: ThemeSettings
     @State private var showAlert = false
     @State private var showDone = false
     @AppStorage("settings.updater.nextUpdateDate") private var nextUpdateDate = Date.now.timeIntervalSinceReferenceDate
-    @AppStorage("settings.updater.updateTimeframe") private var updateTimeframe: Int = 1
-    @AppStorage("settings.updater.enableUpdates") private var enableUpdates: Bool = true
+    @AppStorage("settings.updater.updateFrequency") private var updateFrequency: UpdateFrequency = .daily
 
     var body: some View {
         VStack {
 
-            HStack(spacing: 0) {
-                Image(systemName: "arrow.down.square")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 20, height: 20)
-                    .padding(.trailing)
-                    .foregroundStyle(Color("mode").opacity(0.5))
-
                 VStack {
                     HStack(spacing: 0) {
-                        Text("\(enableUpdates ? "Pearcleaner will check for updates every " : "Automatic updates are disabled")")
+
+                        Text("Pearcleaner will check for updates")
                             .font(.callout)
                             .foregroundStyle(Color("mode").opacity(0.5))
 
-                        if enableUpdates {
-                            Text("**\(updateTimeframe)**").font(.system(.callout, design: .monospaced)).monospacedDigit()
-                            Text(updateTimeframe == 1 ? " day" : " days")
-                                .font(.callout)
-                                .foregroundStyle(Color("mode").opacity(0.5))
-
-                            Stepper("", value: $updateTimeframe, in: 0...30)
-                                .onChange(of: updateTimeframe, perform: { _ in
-                                    updateNextUpdateDate()
-                                })
-                        }
                         Spacer()
+
+                        Picker("", selection: $updateFrequency) {
+                            ForEach(UpdateFrequency.allCases, id: \.self) { frequency in
+                                Text(frequency.rawValue).tag(frequency)
+                            }
+                        }
+                        .onChange(of: updateFrequency) { frequency in
+                            updateFrequency.updateNextUpdateDate()
+                        }
+                        .pickerStyle(themeSettings: themeSettings)
                     }
 
-                    if enableUpdates {
+                    if updateFrequency != .none {
                         HStack {
                             Text("Next update check: \(formattedDate(Date(timeIntervalSinceReferenceDate: nextUpdateDate)))")
                                 .font(.footnote)
@@ -56,18 +48,9 @@ struct UpdateSettingsTab: View {
                             Spacer()
                         }
                     }
-
-
-
                 }
-
-                Spacer()
-                Toggle(isOn: $enableUpdates, label: {
-                })
-                .toggleStyle(.switch)
-            }
-            .padding(5)
-            .padding(.leading)
+                .padding(5)
+                .padding(.horizontal)
 
             ScrollView {
                 VStack() {
@@ -83,8 +66,11 @@ struct UpdateSettingsTab: View {
             }
             .frame(minHeight: 0, maxHeight: .infinity)
             .frame(minWidth: 0, maxWidth: .infinity)
-            .padding()
-            
+//            .background(Color("mode").opacity(0.05))
+            .background(backgroundView(themeSettings: themeSettings, darker: true))
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .padding(.bottom)
+
             Text("Showing last 3 releases")
                 .font(.callout)
                 .foregroundStyle(Color("mode").opacity(0.5))
@@ -129,10 +115,6 @@ struct UpdateSettingsTab: View {
         }
         .padding(20)
         .frame(width: 500, height: 520)
-//        .onAppear {
-//            // Convert TimeInterval to Date on appearance
-//            let _ = Date(timeIntervalSinceReferenceDate: nextUpdateDate)
-//        }
     }
     
 }

@@ -107,3 +107,105 @@ extension View {
         }
     }
 }
+
+
+//                    SegmentedPicker(
+//                        ["Alpha", "Size"],
+//                        selectedIndex: Binding(
+//                            get: { selectedSortAlpha ? 0 : 1 },
+//                            set: { newIndex in
+//                                withAnimation(.easeInOut(duration: 0.3)) {
+//                                    selectedSortAlpha = (newIndex == 0)
+//                                }
+//                            }),
+//                        selectionAlignment: .bottom,
+//                        content: { item, isSelected in
+//                            Text(item)
+//                                .font(.callout)
+//                                .foregroundColor(isSelected ? Color("mode") : Color("mode").opacity(0.5))
+//                                .padding(.horizontal)
+//                                .padding(.bottom, 5)
+//                                .frame(width: 75)
+//
+//                        },
+//                        selection: {
+//                            VStack(spacing: 0) {
+//                                Spacer()
+//                                Color("pear").frame(height: 1)
+//                            }
+//                        })
+
+
+//                    SegmentedPicker(
+//                        ["Real", "Logical", "Finder"],
+//                        selectedIndex: Binding(
+//                            get: {
+//                                switch sizeType {
+//                                case "Real": return 0
+//                                case "Logical": return 1
+//                                case "Finder": return 2
+//                                default: return 0
+//                                }
+//                            },
+//                            set: { newIndex in
+//                                withAnimation(.easeInOut(duration: 0.3)) {
+//                                    switch newIndex {
+//                                    case 0: sizeType = "Real"
+//                                    case 1: sizeType = "Logical"
+//                                    case 2: sizeType = "Finder"
+//                                    default: sizeType = "Real"
+//                                    }
+//                                }
+//                            }),
+//                        selectionAlignment: .bottom,
+//                        content: { item, isSelected in
+//                            Text(item)
+//                                .font(.callout)
+//                                .foregroundColor(isSelected ? Color("mode") : Color("mode").opacity(0.5) )
+//                                .padding(.horizontal)
+//                                .padding(.bottom, 5)
+//                                .frame(width: 75)
+//                        },
+//                        selection: {
+//                            VStack(spacing: 0) {
+//                                Spacer()
+//                                Color("pear").frame(height: 1)
+//                            }
+//                        })
+
+
+
+//                    SegmentedPicker(
+//                        ["Auto", "Dark", "Light"],
+//                        selectedIndex: Binding(
+//                            get: {
+//                                switch selectedTheme {
+//                                case "Dark": return 1
+//                                case "Light": return 2
+//                                default: return 0
+//                                }
+//                            },
+//                            set: { newIndex in
+//                                withAnimation(.easeInOut(duration: 0.3)) {
+//                                    switch newIndex {
+//                                    case 1: selectedTheme = "Dark"
+//                                    case 2: selectedTheme = "Light"
+//                                    default: selectedTheme = "Auto"
+//                                    }
+//                                }
+//                            }),
+//                        selectionAlignment: .bottom,
+//                        content: { item, isSelected in
+//                            Text(item)
+//                                .font(.callout)
+//                                .foregroundColor(isSelected ? Color("mode") : Color("mode").opacity(0.5) )
+//                                .padding(.horizontal)
+//                                .padding(.bottom, 5)
+//                                .frame(width: 65)
+//                        },
+//                        selection: {
+//                            VStack(spacing: 0) {
+//                                Spacer()
+//                                Color("pear").frame(height: 1)
+//                            }
+//                        })

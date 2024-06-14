@@ -15,8 +15,7 @@ struct PearcleanerApp: App {
     @StateObject var locations = Locations()
     @StateObject var fsm = FolderSettingsManager()
     @State private var windowSettings = WindowSettings()
-//    @AppStorage("settings.updater.updateTimeframe") private var updateTimeframe: Int = 1
-    @AppStorage("settings.updater.enableUpdates") private var enableUpdates: Bool = true
+    @AppStorage("settings.updater.updateFrequency") private var updateFrequency: UpdateFrequency = .daily
     @AppStorage("settings.permissions.hasLaunched") private var hasLaunched: Bool = false
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @AppStorage("settings.general.mini") private var mini: Bool = false
@@ -121,7 +120,7 @@ struct PearcleanerApp: App {
                             // Get GH releases
                             loadGithubReleases(appState: appState, releaseOnly: true)
                             
-                            if enableUpdates {
+                            if updateFrequency != .none {
                                 // Update checker
                                 checkAndUpdateIfNeeded(appState: appState)
                             }
@@ -181,10 +180,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
         findAndSetWindowFrame(named: ["Pearcleaner"], windowSettings: windowSettings)
 
-        if UserDefaults.standard.object(forKey: "themeColor") == nil {
-            self.appearanceChanged()
-        }
+//        if UserDefaults.standard.object(forKey: "themeColor") == nil {
+//            self.appearanceChanged()
+//        }
         
+        self.appearanceCheck()
+
         if menubarEnabled {
             findAndHideWindows(named: ["Pearcleaner"])
             NSApplication.shared.setActivationPolicy(.accessory)
@@ -194,14 +195,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         observer = DistributedNotificationCenter.default().addObserver(forName: NSNotification.Name(rawValue: "AppleInterfaceThemeChangedNotification"), object: nil, queue: OperationQueue.main) { [weak self] _ in
             let themeMode = UserDefaults.standard.string(forKey: "settings.general.selectedTheme")
             if themeMode == "Auto" {
-                self?.appearanceChanged()
+                self?.appearanceCheck()
             }
         }
 
     }
 
 
-    func appearanceChanged() {
+    func appearanceCheck() {
         let dm = UserDefaults.standard.integer(forKey: "displayMode")
         var displayMode = DisplayMode(rawValue: dm)
         let dark = isDarkMode()

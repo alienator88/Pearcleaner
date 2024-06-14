@@ -193,40 +193,15 @@ struct InterfaceSettingsTab: View {
                     }
                     InfoButton(text: "Changing the color mode will reset the base color to defaults")
                     Spacer()
-                    SegmentedPicker(
-                        ["Auto", "Dark", "Light"],
-                        selectedIndex: Binding(
-                            get: {
-                                switch selectedTheme {
-                                case "Dark": return 1
-                                case "Light": return 2
-                                default: return 0
-                                }
-                            },
-                            set: { newIndex in
-                                withAnimation(.easeInOut(duration: 0.3)) {
-                                    switch newIndex {
-                                    case 1: selectedTheme = "Dark"
-                                    case 2: selectedTheme = "Light"
-                                    default: selectedTheme = "Auto"
-                                    }
-                                }
-                            }),
-                        selectionAlignment: .bottom,
-                        content: { item, isSelected in
-                            Text(item)
-                                .font(.callout)
-                                .foregroundColor(isSelected ? Color("mode") : Color("mode").opacity(0.5) )
-                                .padding(.horizontal)
-                                .padding(.bottom, 5)
-                                .frame(width: 65)
-                        },
-                        selection: {
-                            VStack(spacing: 0) {
-                                Spacer()
-                                Color("pear").frame(height: 1)
-                            }
-                        })
+                    Picker("", selection: $selectedTheme) {
+                        Text("Auto")
+                            .tag("Auto")
+                        Text("Dark")
+                            .tag("Dark")
+                        Text("Light")
+                            .tag("Light")
+                    }
+                    .pickerStyle(themeSettings: themeSettings)
                     .onChange(of: selectedTheme) { newTheme in
                         switch newTheme {
                         case "Auto":

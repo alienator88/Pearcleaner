@@ -79,7 +79,7 @@ struct AppListItems: View {
                 }
 
                 if bundleSize == 0 {
-                    ProgressView().controlSize(.mini)
+                    ProgressView().controlSize(.mini).padding(.leading, 5)
                 } else {
                     Text("\(isHovered ? "v\(appInfo.appVersion)" : formatByte(size: bundleSize).human)")
                         .font(.system(size: (isHovered || isSelected) ? 12 : 10))

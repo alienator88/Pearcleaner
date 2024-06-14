@@ -13,6 +13,7 @@ import FinderSync
 struct GeneralSettingsTab: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
+    @EnvironmentObject var themeSettings: ThemeSettings
     @State private var windowSettings = WindowSettings()
     @AppStorage("settings.general.glass") private var glass: Bool = true
     @AppStorage("settings.general.mini") private var mini: Bool = false
@@ -107,31 +108,13 @@ struct GeneralSettingsTab: View {
                     }
                     InfoButton(text: "When searching for app files or leftover files, the list will be sorted either alphabetically or by size(large to small)")
                     Spacer()
-                    SegmentedPicker(
-                        ["Alpha", "Size"],
-                        selectedIndex: Binding(
-                            get: { selectedSortAlpha ? 0 : 1 },
-                            set: { newIndex in
-                                withAnimation(.easeInOut(duration: 0.3)) {
-                                    selectedSortAlpha = (newIndex == 0)
-                                }
-                            }),
-                        selectionAlignment: .bottom,
-                        content: { item, isSelected in
-                            Text(item)
-                                .font(.callout)
-                                .foregroundColor(isSelected ? Color("mode") : Color("mode").opacity(0.5))
-                                .padding(.horizontal)
-                                .padding(.bottom, 5)
-                                .frame(width: 75)
-
-                        },
-                        selection: {
-                            VStack(spacing: 0) {
-                                Spacer()
-                                Color("pear").frame(height: 1)
-                            }
-                        })
+                    Picker("", selection: $selectedSortAlpha) {
+                        Text("Alpha")
+                            .tag(true)
+                        Text("Size")
+                            .tag(false)
+                    }
+                    .pickerStyle(themeSettings: themeSettings)
                 }
                 .padding(5)
                 .padding(.leading)
@@ -145,48 +128,23 @@ struct GeneralSettingsTab: View {
                         .padding(.trailing)
                         .foregroundStyle(Color("mode").opacity(0.5))
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("File size display")
+                        Text("File size display mode")
                             .font(.callout)
                             .foregroundStyle(Color("mode").opacity(0.5))
                     }
                     InfoButton(text: "Real size type will show how much actual allocated space the file has on disk. Logical type shows the binary size. The filesystem can compress and deduplicate sectors on disk, so real size is sometimes smaller(or bigger) than logical size. Finder size is similar to if you right click > Get Info on a file in Finder, which will show both the logical and real sizes together.")
                     Spacer()
-                    SegmentedPicker(
-                        ["Real", "Logical", "Finder"],
-                        selectedIndex: Binding(
-                            get: {
-                                switch sizeType {
-                                case "Real": return 0
-                                case "Logical": return 1
-                                case "Finder": return 2
-                                default: return 0
-                                }
-                            },
-                            set: { newIndex in
-                                withAnimation(.easeInOut(duration: 0.3)) {
-                                    switch newIndex {
-                                    case 0: sizeType = "Real"
-                                    case 1: sizeType = "Logical"
-                                    case 2: sizeType = "Finder"
-                                    default: sizeType = "Real"
-                                    }
-                                }
-                            }),
-                        selectionAlignment: .bottom,
-                        content: { item, isSelected in
-                            Text(item)
-                                .font(.callout)
-                                .foregroundColor(isSelected ? Color("mode") : Color("mode").opacity(0.5) )
-                                .padding(.horizontal)
-                                .padding(.bottom, 5)
-                                .frame(width: 75)
-                        },
-                        selection: {
-                            VStack(spacing: 0) {
-                                Spacer()
-                                Color("pear").frame(height: 1)
-                            }
-                        })
+                    Picker("", selection: $sizeType) {
+                        Text("Real")
+                            .tag("Real")
+                        Text("Logical")
+                            .tag("Logical")
+                        Text("Finder")
+                            .tag("Finder")
+                    }
+                    .pickerStyle(themeSettings: themeSettings)
+
+
                 }
                 .padding(5)
                 .padding(.leading)
@@ -237,7 +195,7 @@ struct GeneralSettingsTab: View {
                         .frame(width: 20, height: 20)
                         .padding(.trailing)
                         .foregroundStyle(diskStatus ? .green : .red)
-                        .saturation(displayMode.colorScheme == .dark ? 0.5 : 1)
+                        .saturation(displayMode.colorScheme == .dark ? 0.8 : 1)
                     Text(diskStatus ? "Full Disk permission granted" : "Full Disk permission not granted")
                         .font(.callout)
                         .foregroundStyle(Color("mode").opacity(0.5))
@@ -265,7 +223,7 @@ struct GeneralSettingsTab: View {
                         .frame(width: 20, height: 20)
                         .padding(.trailing)
                         .foregroundStyle(accessStatus ? .green : .red)
-                        .saturation(displayMode.colorScheme == .dark ? 0.5 : 1)
+                        .saturation(displayMode.colorScheme == .dark ? 0.8 : 1)
                     Text(accessStatus ? "Accessibility permission granted" : "Accessibility permission not granted")
                         .font(.callout)
                         .foregroundStyle(Color("mode").opacity(0.5))
@@ -292,7 +250,7 @@ struct GeneralSettingsTab: View {
                         .frame(width: 20, height: 20)
                         .padding(.trailing)
                         .foregroundStyle(autoStatus ? .green : .red)
-                        .saturation(displayMode.colorScheme == .dark ? 0.5 : 1)
+                        .saturation(displayMode.colorScheme == .dark ? 0.8 : 1)
                     Text(autoStatus ? "Automation permission granted" : "Automation permission not granted")
                         .font(.callout)
                         .foregroundStyle(Color("mode").opacity(0.5))
@@ -330,7 +288,7 @@ struct GeneralSettingsTab: View {
                         .frame(width: 20, height: 20)
                         .padding(.trailing)
                         .foregroundStyle(sentinel ? .green : .red)
-                        .saturation(displayMode.colorScheme == .dark ? 0.5 : 1)
+                        .saturation(displayMode.colorScheme == .dark ? 0.8 : 1)
                     Text(sentinel ? "Detecting when apps are moved to Trash" : "**NOT** detecting when apps are moved to Trash")
                         .font(.callout)
                         .foregroundStyle(Color("mode").opacity(0.5))
@@ -371,7 +329,7 @@ struct GeneralSettingsTab: View {
                         .frame(width: 20, height: 20)
                         .padding(.trailing)
                         .foregroundStyle(appState.finderExtensionEnabled ? .green : .red)
-                        .saturation(displayMode.colorScheme == .dark ? 0.5 : 1)
+                        .saturation(displayMode.colorScheme == .dark ? 0.8 : 1)
                     Text(appState.finderExtensionEnabled ? "Context menu extension for Finder is enabled" : "Context menu extension for Finder is disabled")
                         .font(.callout)
                         .foregroundStyle(Color("mode").opacity(0.5))

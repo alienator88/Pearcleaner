@@ -20,6 +20,7 @@ struct FolderSettingsTab: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
     @EnvironmentObject var fsm: FolderSettingsManager
+    @EnvironmentObject var themeSettings: ThemeSettings
     @State private var isHovered = false
 
     var body: some View {
@@ -81,7 +82,8 @@ struct FolderSettingsTab: View {
                 }
                 .scrollIndicators(.automatic)
                 .padding()
-                .background(Color("mode").opacity(0.05))
+//                .background(Color("mode").opacity(0.05))
+                .background(backgroundView(themeSettings: themeSettings, darker: true))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 .onDrop(of: ["public.file-url"], isTargeted: nil) { providers -> Bool in
                     providers.forEach { provider in
@@ -173,7 +175,8 @@ struct FolderSettingsTab: View {
                 }
                 .scrollIndicators(.automatic)
                 .padding()
-                .background(Color("mode").opacity(0.05))
+                .background(backgroundView(themeSettings: themeSettings, darker: true))
+//                .background(Color("mode").opacity(0.05))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 .onDrop(of: ["public.file-url"], isTargeted: nil) { providers -> Bool in
                     providers.forEach { provider in
