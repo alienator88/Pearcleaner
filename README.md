@@ -115,7 +115,7 @@ This project was born out of wanting to learn more on how macOS deals with app i
 
 ## Requirements
 > [!NOTE]
-> - MacOS 13.0+ (App uses a lot of newer SwiftUI functions/modifiers which don't work on any OS lower than 13.0)
+> - MacOS 13.0+ (Most functions might work on a Beta OS, but I will not support bugs for these until they are out of Beta channel.)
 > - Open Pearcleaner first time by right clicking and selecting Open. This adds an exception to Gatekeeper so it doesn't complain about the app not being signed with an Apple Developer certificate
 > - Full Disk permission to search for files and also Accessibility permission to delete/restore files
 
