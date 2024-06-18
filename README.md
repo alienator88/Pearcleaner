@@ -97,6 +97,12 @@ This project was born out of wanting to learn more on how macOS deals with app i
 </details>
 
 <details>
+  <summary>Condition Builder</summary>
+<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/07ee866a-e872-472e-b4af-94d7fafe1c4f" align="center" width="400" />
+   
+</details>
+
+<details>
   <summary>Settings</summary>
 <img src="https://github.com/alienator88/Pearcleaner/assets/6263626/dda6c134-57f1-4a37-95e7-a053d7bab62b" align="left" width="400" />
 
@@ -110,6 +116,7 @@ This project was born out of wanting to learn more on how macOS deals with app i
 ## Issues
 > [!WARNING]
 > - When submitting issues, please use the appropriate issue template corresponding with your problem [HERE](https://github.com/alienator88/Pearcleaner/issues/new/choose)
+> - For issues with unrelated files being found or not enough files being found, try the new Condition Builder (Hammer icon next to uninstall button) before submitting an APP bug
 > - Templates not filled out with the requested details will be closed. Unfortunately I don't have the time to act as help desk support asking for all the missing information. Help me help you 🙂
 
 
