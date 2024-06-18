@@ -1,11 +1,16 @@
 ---
 name: App
-about: Use this to submit bugs for specific apps either crashing when deleting, not showing up in the app list or files/folders not being deleted
+about: Use this to submit bugs for specific apps either crashing when deleting, not showing up in the app list, files/folders not being deleted or unrelated files from other apps being found
 title: "[APP] ENTER ISSUE TITLE HERE"
 labels: ''
 assignees: ''
 
 ---
+
+NOTE: If a specific app is finding unrelated files or not finding expected files, use the new condition builder to either include or exclude files from the search. Click the hammer icon next to the Uninstall button when you're on an app's page.
+
+![image](https://github.com/alienator88/Pearcleaner/assets/6263626/7a594a1a-d098-4d15-b103-7abe49b18610)
+
 
 **Describe the app**
 
