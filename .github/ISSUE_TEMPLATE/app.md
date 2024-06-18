@@ -7,9 +7,7 @@ assignees: ''
 
 ---
 
-NOTE: If a specific app is finding unrelated files or not finding expected files, use the new condition builder to either include or exclude files from the search. Click the hammer icon next to the Uninstall button when you're on an app's page.
-
-![image](https://github.com/alienator88/Pearcleaner/assets/6263626/7a594a1a-d098-4d15-b103-7abe49b18610)
+>NOTE: If a specific app is finding unrelated files or not finding expected files, use the new condition builder to either include or exclude files from the search. Click the hammer icon next to the Uninstall button when you're on an app's page.
 
 
 **Describe the app**
