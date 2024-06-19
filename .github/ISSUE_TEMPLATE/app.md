@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
->NOTE: If a specific app is finding unrelated files or not finding expected files, use the new condition builder to either include or exclude files from the search. Click the hammer icon next to the Uninstall button when you're on an app's page.
+>NOTE: If a specific app is finding unrelated files or not finding expected files, use the new condition builder to either include or exclude files from the search. Push CMD+B when you're on an app's page to show the condition builder.
 
 
 **Describe the app**
