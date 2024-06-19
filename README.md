@@ -4,7 +4,7 @@
    <br />
    <strong>Status: </strong>Maintained 
    <br />
-   <strong>Version: </strong>3.7.3
+   <strong>Version: </strong>3.7.4
    <br />
    <a href="https://github.com/alienator88/Pearcleaner/releases"><strong>Download</strong></a>
     · 
@@ -45,6 +45,7 @@ This project was born out of wanting to learn more on how macOS deals with app i
 - Has clean uninstall menu option for the Pearcleaner app itself if you want to stop using it and get rid of all files and launch items
 - New feature alert on app startup
 - Condition builder to easily include or exclude files from searches when file names don't match the app name/bundle id very well
+- Export app file list search results
 - Optional Homebrew cleanup
 - Include extra directories to search for apps in
 - Exclude files/folders from the leftover file search
