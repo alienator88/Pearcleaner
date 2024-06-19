@@ -185,7 +185,40 @@ func caskCleanup(app: String) {
         process.waitUntilExit() // Ensure the process completes
         let data = pipe.fileHandleForReading.readDataToEndOfFile()
         let output = (String(data: data, encoding: .utf8) ?? "") as String
-        print(output)
+        printOS(output)
+    }
+}
+
+
+// Print list of files locally
+func saveURLsToFile(urls: Set<URL>, appState: AppState) {
+    let panel = NSOpenPanel()
+    panel.canChooseFiles = false
+    panel.canChooseDirectories = true
+    panel.allowsMultipleSelection = false
+    panel.prompt = "Select Folder"
+
+    if panel.runModal() == .OK, let selectedFolder = panel.url {
+        let filePath = selectedFolder.appendingPathComponent("Export-\(appState.appInfo.appName)(v\(appState.appInfo.appVersion)).txt")
+        var fileContent = ""
+        var count = 1
+        let sortedUrls = urls.sorted { $0.path < $1.path }
+
+        for url in sortedUrls {
+            fileContent += "[\(count)] - \(url.path)\n"
+            count += 1
+        }
+
+        do {
+            try fileContent.write(to: filePath, atomically: true, encoding: .utf8)
+            printOS("File saved successfully at \(filePath.path)")
+            // Open Finder and select the file
+            NSWorkspace.shared.selectFile(filePath.path, inFileViewerRootedAtPath: filePath.deletingLastPathComponent().path)
+        } catch {
+            printOS("Error saving file: \(error)")
+        }
+    } else {
+        printOS("Folder selection was canceled.")
     }
 }
 

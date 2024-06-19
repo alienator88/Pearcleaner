@@ -126,8 +126,7 @@ struct PearcleanerApp: App {
                             }
                             // Get new features
                             getFeatures(appState: appState, features: $features)
-                            // Load extra conditions from GitHub
-//                            loadConditionsFromGitHub() // REPLACE THIS WITH NEW CONDITION MANAGER
+
                         }
                     }
 

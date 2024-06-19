@@ -20,7 +20,7 @@ struct FilesView: View {
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @AppStorage("settings.general.filesWarning") private var warning: Bool = false
     @State private var showAlert = false
-    @State private var showConditionBuilder = false
+//    @State private var showConditionBuilder = false
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
     @Binding var search: String
@@ -278,12 +278,12 @@ struct FilesView: View {
                             .padding(.top)
 
 
-                        Button("Builder") {
-                            showConditionBuilder = true
-                        }
-                        .buttonStyle(SimpleButtonStyle(icon: "hammer.fill", help: "Condition Builder", size: 14))
-                        .padding(.top)
-                        .padding(.trailing, 5)
+//                        Button("Builder") {
+//                            appState.showConditionBuilder = true
+//                        }
+//                        .buttonStyle(SimpleButtonStyle(icon: "hammer.fill", help: "Condition Builder", size: 14))
+//                        .padding(.top)
+//                        .padding(.trailing, 5)
 
 
                         Button("\(sizeType == "Logical" ? totalSelectedSize.logical : sizeType == "Finder" ? totalSelectedSize.finder : totalSelectedSize.real)") {
@@ -395,11 +395,11 @@ struct FilesView: View {
                 Spacer()
             }
             .padding(15)
-            .frame(width: 400, height: 200)
+            .frame(width: 400, height: 220)
             .background(GlassEffect(material: .hudWindow, blendingMode: .behindWindow))
         })
-        .sheet(isPresented: $showConditionBuilder, content: {
-            ConditionBuilderView(showAlert: $showConditionBuilder, bundle: appState.appInfo.bundleIdentifier)
+        .sheet(isPresented: $appState.showConditionBuilder, content: {
+            ConditionBuilderView(showAlert: $appState.showConditionBuilder, bundle: appState.appInfo.bundleIdentifier)
         })
         .onAppear {
             if !warning {

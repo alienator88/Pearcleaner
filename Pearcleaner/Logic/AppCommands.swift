@@ -80,7 +80,33 @@ struct AppCommands: Commands {
 
         }
         
-        
+
+        // Tools Menu
+        CommandMenu(Text("Tools", comment: "Tools Menu")) {
+
+            Button
+            {
+                if !appState.appInfo.bundleIdentifier.isEmpty {
+                    appState.showConditionBuilder = true
+                }
+            } label: {
+                Label("Condition Builder", systemImage: "hammer")
+            }
+            .keyboardShortcut("b", modifiers: .command)
+
+            Button
+            {
+                if !appState.appInfo.bundleIdentifier.isEmpty {
+                    saveURLsToFile(urls: appState.selectedItems, appState: appState)
+                }
+            } label: {
+                Label("Export Files", systemImage: "square.and.arrow.up")
+            }
+            .keyboardShortcut("e", modifiers: .command)
+
+
+        }
+
         
         // GitHub Menu
         CommandMenu(Text("GitHub", comment: "Github Repo")) {
