@@ -180,8 +180,10 @@ struct FilesView: View {
                                     .foregroundStyle(Color("mode").opacity(0.5))
                                     .frame(minWidth: 30, minHeight: 15)
                                     .padding(2)
+                                    .padding(.horizontal, 2)
                                     .background(Color("mode").opacity(0.1))
                                     .clipShape(.capsule)
+                                    .help("This is a web app")
 
                             }
 
@@ -191,8 +193,23 @@ struct FilesView: View {
                                     .foregroundStyle(Color("mode").opacity(0.5))
                                     .frame(minWidth: 30, minHeight: 15)
                                     .padding(2)
+                                    .padding(.horizontal, 2)
                                     .background(Color("mode").opacity(0.1))
                                     .clipShape(.capsule)
+                                    .help("This is a wrapped iOS app")
+
+                            }
+
+                            if appState.appInfo.arch != .empty {
+                                Text("\(appState.appInfo.arch)")
+                                    .font(.footnote)
+                                    .foregroundStyle(Color("mode").opacity(0.5))
+                                    .frame(minWidth: 30, minHeight: 15)
+                                    .padding(2)
+                                    .padding(.horizontal, 2)
+                                    .background(Color("mode").opacity(0.1))
+                                    .clipShape(.capsule)
+                                    .help("This bundle's architecture is \(appState.appInfo.arch)")
 
                             }
 
@@ -204,6 +221,7 @@ struct FilesView: View {
                                 .padding(.horizontal, 2)
                                 .background(Color("mode").opacity(0.1))
                                 .clipShape(.capsule)
+                                .help("This app is located in \(appState.appInfo.system ? "/Applications" : "\(home)")")
                         }
 
 

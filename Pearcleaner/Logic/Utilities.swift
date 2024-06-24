@@ -252,6 +252,50 @@ func isRestricted(atPath path: URL) -> Bool {
 }
 
 
+// Check app bundle architecture
+func checkAppBundleArchitecture(at appBundlePath: String) -> Arch {
+
+    let bundleURL = URL(fileURLWithPath: appBundlePath)
+    let executableName: String
+
+    // Extract the executable name from Info.plist
+    let infoPlistPath = bundleURL.appendingPathComponent("Contents/Info.plist")
+    if let infoPlist = NSDictionary(contentsOf: infoPlistPath) as? [String: Any],
+       let bundleExecutable = infoPlist["CFBundleExecutable"] as? String {
+        executableName = bundleExecutable
+    } else {
+        return .empty
+    }
+
+    let executablePath = bundleURL.appendingPathComponent("Contents/MacOS/\(executableName)").path
+
+    let task = Process()
+    task.launchPath = "/usr/bin/lipo"
+    task.arguments = ["-archs", executablePath]
+
+    let pipe = Pipe()
+    task.standardOutput = pipe
+    task.launch()
+
+    let data = pipe.fileHandleForReading.readDataToEndOfFile()
+    task.waitUntilExit()
+
+    if let output = String(data: data, encoding: .utf8) {
+        let architectures = output.trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: " ")
+        if architectures.contains("x86_64") && architectures.contains("arm64") {
+            return .universal
+        } else if architectures.contains("x86_64") {
+            return .intel
+        } else if architectures.contains("arm64") {
+            return .arm
+        }
+    }
+
+    return .empty
+}
+
+
+
 // Convert icon to png so colors render correctly
 func convertICNSToPNG(icon: NSImage, size: NSSize) -> NSImage? {
     // Resize the icon to the specified size

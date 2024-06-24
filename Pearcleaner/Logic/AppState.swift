@@ -48,6 +48,7 @@ class AppState: ObservableObject {
             webApp: false,
             wrapped: false,
             system: false,
+            arch: .empty,
             bundleSize: 0,
             files: [],
             fileSize: [:],
@@ -100,6 +101,7 @@ struct AppInfo: Identifiable, Equatable, Hashable {
     let webApp: Bool
     let wrapped: Bool
     let system: Bool
+    var arch: Arch
     var bundleSize: Int64
     var files: [URL]
     var fileSize: [URL:Int64]
@@ -115,7 +117,7 @@ struct AppInfo: Identifiable, Equatable, Hashable {
     }
 
 
-    static let empty = AppInfo(id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "", appVersion: "", appIcon: nil, webApp: false, wrapped: false, system: false, bundleSize: 0, files: [], fileSize: [:], fileSizeLogical: [:], fileIcon: [:])
+    static let empty = AppInfo(id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "", appVersion: "", appIcon: nil, webApp: false, wrapped: false, system: false, arch: .empty, bundleSize: 0, files: [], fileSize: [:], fileSizeLogical: [:], fileIcon: [:])
 
 }
 
@@ -141,7 +143,12 @@ struct ZombieFile: Identifiable, Equatable, Hashable {
 }
 
 
-
+enum Arch {
+    case arm
+    case intel
+    case universal
+    case empty
+}
 
 
 enum CurrentTabView:Int

@@ -33,10 +33,16 @@ class AppPathFinder {
 
     func findPaths() {
         Task(priority: .background) {
-            self.initialURLProcessing()
-            self.collectDirectories()
-            self.collectFiles()
-            self.finalizeCollection()
+            if self.appInfo.webApp {
+                self.initialURLProcessing()
+                self.finalizeCollection()
+            } else {
+                self.initialURLProcessing()
+                self.collectDirectories()
+                self.collectFiles()
+                self.finalizeCollection()
+            }
+
         }
     }
 

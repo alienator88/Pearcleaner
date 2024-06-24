@@ -137,6 +137,14 @@ struct AppListItems: View {
                         appState.sortedApps[index].bundleSize = size
                     }
                 }
+
+                let architecture = checkAppBundleArchitecture(at: appInfo.path.path)
+                updateOnMain {
+                    // Optionally, update the appInfo in the appState array
+                    if let index = appState.sortedApps.firstIndex(where: { $0.path == appInfo.path }) {
+                        appState.sortedApps[index].arch = architecture
+                    }
+                }
             }
         }
 

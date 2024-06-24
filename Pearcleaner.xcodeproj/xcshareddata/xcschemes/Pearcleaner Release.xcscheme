@@ -80,5 +80,24 @@
    <ArchiveAction
       buildConfiguration = "Release"
       revealArchiveInOrganizer = "YES">
+      <PostActions>
+         <ExecutionAction
+            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+            <ActionContent
+               title = "Run Script"
+               scriptText = "/Users/alin/Projects/Bash/xcode-release.sh Work:false Project:&quot;/Users/alin/GitHub/PearcleanerGH&quot; Name:&quot;Pearcleaner&quot; Log:false&#10;"
+               shellToInvoke = "/bin/sh">
+               <EnvironmentBuildable>
+                  <BuildableReference
+                     BuildableIdentifier = "primary"
+                     BlueprintIdentifier = "C77B8FFF2AF18E2E009CC655"
+                     BuildableName = "Pearcleaner.app"
+                     BlueprintName = "Pearcleaner"
+                     ReferencedContainer = "container:Pearcleaner.xcodeproj">
+                  </BuildableReference>
+               </EnvironmentBuildable>
+            </ActionContent>
+         </ExecutionAction>
+      </PostActions>
    </ArchiveAction>
 </Scheme>

@@ -58,7 +58,7 @@ class AppInfoFetcher {
         let system = !path.path.contains(NSHomeDirectory())
 
         return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName, appVersion: appVersion, appIcon: appIcon,
-                       webApp: webApp, wrapped: wrapped, system: system, bundleSize: 0, files: [], fileSize: [:], fileSizeLogical: [:], fileIcon: [:])
+                       webApp: webApp, wrapped: wrapped, system: system, arch: .empty, bundleSize: 0, files: [], fileSize: [:], fileSizeLogical: [:], fileIcon: [:])
     }
 
     private static func fetchAppIcon(for path: URL, wrapped: Bool) -> NSImage? {

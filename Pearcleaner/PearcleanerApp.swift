@@ -31,7 +31,6 @@ struct PearcleanerApp: App {
 
 
     var body: some Scene {
-
         WindowGroup {
             Group {
                     if !mini {
