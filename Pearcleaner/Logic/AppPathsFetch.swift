@@ -316,6 +316,8 @@ class AppPathFinder {
             fileIcon[path] = getIconForFileOrFolderNS(atPath: path)
         }
 
+        let arch = checkAppBundleArchitecture(at: self.appInfo.path.path)
+
         DispatchQueue.main.async {
             var updatedCollection = sortedCollection
             if updatedCollection.count == 1, let firstURL = updatedCollection.first, firstURL.path.contains(".Trash") {
@@ -326,6 +328,7 @@ class AppPathFinder {
             self.appInfo.fileSize = fileSize
             self.appInfo.fileSizeLogical = fileSizeLogical
             self.appInfo.fileIcon = fileIcon
+            self.appInfo.arch = arch
 
             if !self.backgroundRun {
                 self.appState.appInfo = self.appInfo

@@ -254,7 +254,6 @@ func isRestricted(atPath path: URL) -> Bool {
 
 // Check app bundle architecture
 func checkAppBundleArchitecture(at appBundlePath: String) -> Arch {
-
     let bundleURL = URL(fileURLWithPath: appBundlePath)
     let executableName: String
 
@@ -264,14 +263,15 @@ func checkAppBundleArchitecture(at appBundlePath: String) -> Arch {
        let bundleExecutable = infoPlist["CFBundleExecutable"] as? String {
         executableName = bundleExecutable
     } else {
+        printOS("Failed to read Info.plist or CFBundleExecutable not found when checking bundle architecture")
         return .empty
     }
 
     let executablePath = bundleURL.appendingPathComponent("Contents/MacOS/\(executableName)").path
 
     let task = Process()
-    task.launchPath = "/usr/bin/lipo"
-    task.arguments = ["-archs", executablePath]
+    task.launchPath = "/usr/bin/file"
+    task.arguments = [executablePath]
 
     let pipe = Pipe()
     task.standardOutput = pipe
@@ -281,13 +281,13 @@ func checkAppBundleArchitecture(at appBundlePath: String) -> Arch {
     task.waitUntilExit()
 
     if let output = String(data: data, encoding: .utf8) {
-        let architectures = output.trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: " ")
-        if architectures.contains("x86_64") && architectures.contains("arm64") {
+
+        if output.contains("Mach-O universal binary") {
             return .universal
-        } else if architectures.contains("x86_64") {
-            return .intel
-        } else if architectures.contains("arm64") {
+        } else if output.contains("arm64") {
             return .arm
+        } else if output.contains("x86_64") {
+            return .intel
         }
     }
 
