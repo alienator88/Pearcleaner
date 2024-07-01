@@ -14,6 +14,7 @@
 		C71848442B8D2D600046CB13 /* ZombieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71848432B8D2D600046CB13 /* ZombieView.swift */; };
 		C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72893042AFD42E600C8C1CD /* DeepLink.swift */; };
 		C72893122AFD51EA00C8C1CD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72893112AFD51EA00C8C1CD /* main.swift */; };
+		C736E7652C2DF1C9009EDB6A /* AppPathsFetch-Async.swift in Sources */ = {isa = PBXBuildFile; fileRef = C736E7642C2DF1C9009EDB6A /* AppPathsFetch-Async.swift */; };
 		C74412C72BBF249000DDFCA8 /* AppPathsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74412C62BBF249000DDFCA8 /* AppPathsFetch.swift */; };
 		C74FDC632BCD833D00B8960F /* Conditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74FDC622BCD833D00B8960F /* Conditions.swift */; };
 		C75347642BE599FA00AAFCC3 /* PermissionChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C75347632BE599FA00AAFCC3 /* PermissionChecker.swift */; };
@@ -109,6 +110,7 @@
 		C72893042AFD42E600C8C1CD /* DeepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLink.swift; sourceTree = "<group>"; };
 		C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PearcleanerSentinel; sourceTree = BUILT_PRODUCTS_DIR; };
 		C72893112AFD51EA00C8C1CD /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		C736E7642C2DF1C9009EDB6A /* AppPathsFetch-Async.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppPathsFetch-Async.swift"; sourceTree = "<group>"; };
 		C74412C62BBF249000DDFCA8 /* AppPathsFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPathsFetch.swift; sourceTree = "<group>"; };
 		C74FDC622BCD833D00B8960F /* Conditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conditions.swift; sourceTree = "<group>"; };
 		C75347632BE599FA00AAFCC3 /* PermissionChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionChecker.swift; sourceTree = "<group>"; };
@@ -201,6 +203,7 @@
 				C77B90192AF1938F009CC655 /* Logic.swift */,
 				C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */,
 				C74412C62BBF249000DDFCA8 /* AppPathsFetch.swift */,
+				C736E7642C2DF1C9009EDB6A /* AppPathsFetch-Async.swift */,
 				C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */,
 				C77B90172AF19382009CC655 /* AppCommands.swift */,
 				C77B90152AF19377009CC655 /* AppState.swift */,
@@ -487,6 +490,7 @@
 				C7045A282B03E71D00376976 /* MiniMode.swift in Sources */,
 				C7ED86B12BA8A35500F13DE4 /* Interface.swift in Sources */,
 				C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */,
+				C736E7652C2DF1C9009EDB6A /* AppPathsFetch-Async.swift in Sources */,
 				C71848442B8D2D600046CB13 /* ZombieView.swift in Sources */,
 				C7DE672B2BA6343D00EB1633 /* MenuBarItem.swift in Sources */,
 				C76D084A2AF83C6E00D07867 /* General.swift in Sources */,
