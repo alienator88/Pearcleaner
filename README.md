@@ -144,7 +144,7 @@ You will need to open Pearcleaner the first time with `right click -> Open` sinc
 Without a paid developer account, I can't submit to the main Homebrew cask repo.
 You can still add the app via Homebrew by tapping my homebrew repo directly:
 ```
-brew install alienator88/homebrew-cask/pearcleaner
+brew install alienator88/homebrew-cask/pearcleaner --no-quarantine
 ```
 </details>
 
