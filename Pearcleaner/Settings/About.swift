@@ -145,6 +145,31 @@ struct AboutSettingsTab: View {
                 .padding(5)
                 .padding(.leading)
 
+
+                HStack{
+                    Image(systemName: "dollarsign.circle.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .padding(.trailing)
+
+                    VStack(alignment: .leading){
+                        Text("Apple Developer Account Sponsor")
+                        Text("Many thanks to redditor u/dharsanb")
+                            .font(.callout)
+                            .foregroundStyle(Color("mode").opacity(0.5))
+
+                    }
+                    Spacer()
+                    Button(""){
+                        NSWorkspace.shared.open(URL(string: "https://www.reddit.com/user/dharsanb/")!)
+                    }
+                    .buttonStyle(SimpleButtonStyle(icon: "link", help: "View"))
+
+                }
+                .padding(5)
+                .padding(.leading)
+
                 Spacer()
 
             }

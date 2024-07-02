@@ -43,6 +43,12 @@ struct SettingsView: View {
                 }
                 .tag(CurrentTabView.update)
 
+            TipsSettingsTab()
+                .tabItem {
+                    Label(CurrentTabView.tips.title, systemImage: "star")
+                }
+                .tag(CurrentTabView.tips)
+
             AboutSettingsTab()
                 .tabItem {
                     Label(CurrentTabView.about.title, systemImage: "info.circle")

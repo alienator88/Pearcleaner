@@ -157,6 +157,7 @@ enum CurrentTabView:Int
     case interface
     case folders
     case update
+    case tips
     case about
     
     var title: String {
@@ -165,6 +166,7 @@ enum CurrentTabView:Int
         case .interface: return "Interface"
         case .folders: return "Folders"
         case .update: return "Update"
+        case .tips: return "Tips"
         case .about: return "About"
         }
     }
