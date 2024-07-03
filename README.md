@@ -30,18 +30,18 @@ This project was born out of wanting to learn more on how macOS deals with app i
 > Pearcleaner is licensed under Apache 2.0 with [Commons Clause](https://commonsclause.com/). This means that you can do anything you'd like with the source, modify it, contribute to it, etc., but the license explicitly prohibits any form of monetization for Pearcleaner or any modified versions of it. See full license [HERE](https://github.com/alienator88/Pearcleaner/blob/main/LICENSE.md)
 
 ## Features
-- 100% Swift
+- Signed/notarized
+- Swift/SwiftUI
 - Small app size (~3MB)
-- Quick file search
 - Leftover file search for finding remaining files from previously uninstalled applications
 - Sentinel monitor helper that can be enabled to watch Trash folder for deleted apps to cleanup after the fact(Extremely small (210KB) and uses ~2mb of ram to run in the background and file watch)
 - Mini mode which can be enabled from Settings
-- Menubar option
+- Menubar icon option
 - One-Shot Mode
-- Can drop apps to uninstall directly on the Pearcleaner Dock icon itself or the drop target in the app window
+- Can drop apps to uninstall directly on the Pearcleaner Dock icon or the app window
 - Optional Finder Extension which allows you to uninstall an app directly from Finder by `right click > Pearcleaner Uninstall`
 - Theme System available with custom color selector
-- Will differentiate between regular apps and Safari web-apps with a "web" label and also iOS apps with an "iOS" label next to each item in the list
+- Differentiate between regular, Safari web-apps and mobile apps with badges like **web** and **iOS**
 - Has clean uninstall menu option for the Pearcleaner app itself if you want to stop using it and get rid of all files and launch items
 - New feature alert on app startup
 - Condition builder to easily include or exclude files from searches when file names don't match the app name/bundle id very well
@@ -124,7 +124,6 @@ This project was born out of wanting to learn more on how macOS deals with app i
 ## Requirements
 > [!NOTE]
 > - MacOS 13.0+ (Most functions might work on a Beta OS, but I will not support bugs for these until they are out of Beta channel.)
-> - Pearcleaner is now signed/notarized ~~Open Pearcleaner first time by right clicking and selecting Open. This adds an exception to Gatekeeper so it doesn't complain about the app not being signed with an Apple Developer certificate~~
 > - Full Disk permission to search for files and also Accessibility permission to delete/restore files
 
 
@@ -135,14 +134,12 @@ This project was born out of wanting to learn more on how macOS deals with app i
   <summary>Releases</summary>
 
 Pre-compiled, always up-to-date versions are available from my [releases](https://github.com/alienator88/Pearcleaner/releases) page.
-You will need to open Pearcleaner the first time with `right click -> Open` since it's not signed.
 </details>
 
 <details>
   <summary>Homebrew</summary>
-   
-Without a paid developer account, I can't submit to the main Homebrew cask repo.
-You can still add the app via Homebrew by tapping my homebrew repo directly:
+
+You can add the app via Homebrew by tapping my homebrew repo directly:
 ```
 brew install alienator88/homebrew-cask/pearcleaner --no-quarantine
 ```
@@ -150,7 +147,8 @@ brew install alienator88/homebrew-cask/pearcleaner --no-quarantine
 
 ## Thanks
 
-Much appreciation to [Freemacsoft's AppCleaner](https://freemacsoft.net/appcleaner/) and [Sun Knudsen's app-cleaner script](https://sunknudsen.com/privacy-guides/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative)
+- Much appreciation to [Freemacsoft's AppCleaner](https://freemacsoft.net/appcleaner/) and [Sun Knudsen's app-cleaner script](https://sunknudsen.com/privacy-guides/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative)
+- [u/dharsnab](https://www.reddit.com/user/dharsanb/) for sponsoring my apple developer account
 
 ## Other Apps
 
