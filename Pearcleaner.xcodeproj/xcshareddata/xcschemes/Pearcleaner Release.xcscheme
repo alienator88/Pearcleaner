@@ -85,7 +85,7 @@
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
                title = "Run Script"
-               scriptText = "/Users/alin/Projects/Bash/xcode-release.sh Work:false Project:&quot;/Users/alin/GitHub/PearcleanerGH&quot; Name:&quot;Pearcleaner&quot; Log:false&#10;"
+               scriptText = "/Users/alin/Projects/Bash/xcode-release.sh Work:false Project:&quot;/Users/alin/GitHub/PearcleanerGH&quot; Name:&quot;Pearcleaner&quot; Log:true&#10;"
                shellToInvoke = "/bin/sh">
                <EnvironmentBuildable>
                   <BuildableReference
