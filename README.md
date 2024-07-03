@@ -148,7 +148,7 @@ brew install alienator88/homebrew-cask/pearcleaner --no-quarantine
 ## Thanks
 
 - Much appreciation to [Freemacsoft's AppCleaner](https://freemacsoft.net/appcleaner/) and [Sun Knudsen's app-cleaner script](https://sunknudsen.com/privacy-guides/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative)
-- [dharsnab](https://github.com/dharsanb) for sponsoring my apple developer account
+- [DharsanB](https://github.com/dharsanb) for sponsoring my apple developer account
 
 ## Other Apps
 
