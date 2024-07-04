@@ -191,16 +191,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
         // Start observing the appearance change
         observer = DistributedNotificationCenter.default().addObserver(forName: NSNotification.Name(rawValue: "AppleInterfaceThemeChangedNotification"), object: nil, queue: OperationQueue.main) { [weak self] _ in
-            let themeMode = UserDefaults.standard.string(forKey: "settings.general.selectedTheme")
-            if themeMode == "Auto" {
-                self?.appearanceCheck()
-            }
+//            let themeMode = UserDefaults.standard.string(forKey: "settings.general.selectedTheme")
+//            if themeMode == "Auto" {
+//                self?.appearanceCheck()
+//            }
+            self?.appearanceCheck(reset: true)
         }
 
     }
 
 
-    func appearanceCheck() {
+    func appearanceCheck(reset: Bool = false) {
         let dm = UserDefaults.standard.integer(forKey: "displayMode")
         var displayMode = DisplayMode(rawValue: dm)
         let dark = isDarkMode()
@@ -212,10 +213,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
         UserDefaults.standard.set(displayMode?.rawValue, forKey: "displayMode")
 
-        // Customize dark mode color to use Slate by default
-        ThemeSettings.shared.themeColor = isDarkMode() ? Color(.sRGB, red: 0.188143, green: 0.208556, blue: 0.262679, opacity: 1) : Color(.sRGB, red: 1.0, green: 1.0, blue: 1.0, opacity: 1)
-//        ThemeSettings.shared.themeColor = isDarkMode() ? Color(.sRGB, red: 0.149, green: 0.149, blue: 0.149, opacity: 1) : Color(.sRGB, red: 1.0, green: 1.0, blue: 1.0, opacity: 1)
-        ThemeSettings.shared.saveThemeColor()
+        // Reset theme when OS changes appearance
+        if reset {
+            ThemeSettings.shared.resetToDefault(dark: dark)
+        }
 
     }
 

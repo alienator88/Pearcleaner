@@ -155,14 +155,14 @@ struct AboutSettingsTab: View {
 
                     VStack(alignment: .leading){
                         Text("Apple Developer Account Sponsor")
-                        Text("Many thanks to redditor u/dharsanb")
+                        Text("Many thanks to user DharsanB")
                             .font(.callout)
                             .foregroundStyle(Color("mode").opacity(0.5))
 
                     }
                     Spacer()
                     Button(""){
-                        NSWorkspace.shared.open(URL(string: "https://www.reddit.com/user/dharsanb/")!)
+                        NSWorkspace.shared.open(URL(string: "https://github.com/dharsanb")!)
                     }
                     .buttonStyle(SimpleButtonStyle(icon: "link", help: "View"))
 

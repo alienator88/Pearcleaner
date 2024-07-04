@@ -126,9 +126,9 @@ struct InterfaceSettingsTab: View {
 
                     HStack(spacing: 10) {
                         Button("") {
-                            themeSettings.setPreset(preset: "slate", colorScheme: displayMode)
+                            themeSettings.setPreset(preset: "pearcleaner", colorScheme: displayMode)
                         }
-                        .buttonStyle(PresetColor(fillColor: themeSettings.getColorForPreset(preset: "slate", colorScheme: displayMode), label: "Slate"))
+                        .buttonStyle(PresetColor(fillColor: themeSettings.getColorForPreset(preset: "pearcleaner", colorScheme: displayMode), label: "Pearcleaner"))
 
                         Button("") {
                             themeSettings.setPreset(preset: "dracula", colorScheme: displayMode)

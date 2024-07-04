@@ -22,14 +22,14 @@ class ThemeSettings: ObservableObject {
 
     // light - Color(.sRGB, red: 1.0, green: 1.0, blue: 1.0, opacity: 1)
     // dark  - Color(.sRGB, red: 0.149, green: 0.149, blue: 0.149, opacity: 1)
-    // slate - Color(.sRGB, red: 0.188143, green: 0.208556, blue: 0.262679, opacity: 1)
+    // pearcleaner - Color(.sRGB, red: 0.188143, green: 0.208556, blue: 0.262679, opacity: 1)
 
     init() {
         // Initialize color from UserDefaults or use a default value
         if let components = UserDefaults.standard.object(forKey: colorKey) as? [CGFloat], components.count >= 4 {
             themeColor = Color(.sRGB, red: components[0], green: components[1], blue: components[2], opacity: components[3])
         } else {
-            themeColor = Color.clear
+            themeColor = Color(.sRGB, red: 0.188143, green: 0.208556, blue: 0.262679, opacity: 1)
         }
     }
 
@@ -53,14 +53,14 @@ class ThemeSettings: ObservableObject {
     }
 
     func getColorForPreset(preset: String, colorScheme: DisplayMode) -> Color {
-        let slate = colorScheme.colorScheme == .light ? Color(.sRGB, red: 0.499549, green: 0.545169, blue: 0.682028, opacity: 1) : Color(.sRGB, red: 0.188143, green: 0.208556, blue: 0.262679, opacity: 1)
+        let pearcleaner = colorScheme.colorScheme == .light ? Color(.sRGB, red: 0.499549, green: 0.545169, blue: 0.682028, opacity: 1) : Color(.sRGB, red: 0.188143, green: 0.208556, blue: 0.262679, opacity: 1)
         let solarized = colorScheme.colorScheme == .light ? Color(.sRGB, red: 0.554372, green: 0.6557, blue: 0.734336, opacity: 1) : Color(.sRGB, red: 0.117257, green: 0.22506, blue: 0.249171, opacity: 1)
         let dracula = colorScheme.colorScheme == .light ? Color(.sRGB, red: 0.567094, green: 0.562125, blue: 0.81285, opacity: 1) : Color(.sRGB, red: 0.268614, green: 0.264737, blue: 0.383503, opacity: 1)
         let macOS = colorScheme.colorScheme == .light ? Color(.sRGB, red: 1.0, green: 1.0, blue: 1.0, opacity: 1) : Color(.sRGB, red: 0.149, green: 0.149, blue: 0.149, opacity: 1)
 
         switch preset {
-        case "slate":
-            return slate
+        case "pearcleaner":
+            return pearcleaner
         case "solarized":
             return solarized
         case "dracula":

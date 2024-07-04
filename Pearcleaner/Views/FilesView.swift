@@ -20,12 +20,12 @@ struct FilesView: View {
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @AppStorage("settings.general.filesWarning") private var warning: Bool = false
     @State private var showAlert = false
-//    @State private var showConditionBuilder = false
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
     @Binding var search: String
     @State private var elapsedTime = 0
     @State private var timer: Timer? = nil
+    @State private var isShowingInspector = false
 
     var body: some View {
 
@@ -292,16 +292,9 @@ struct FilesView: View {
 
                         Spacer()
 
+
                         InfoButton(text: "Always double-check the files/folders marked for removal. In some rare cases, Pearcleaner may find some unrelated files when app names are too similar.", color: Color("mode").opacity(0.5), warning: true, edge: .top)
                             .padding(.top)
-
-
-//                        Button("Builder") {
-//                            appState.showConditionBuilder = true
-//                        }
-//                        .buttonStyle(SimpleButtonStyle(icon: "hammer.fill", help: "Condition Builder", size: 14))
-//                        .padding(.top)
-//                        .padding(.trailing, 5)
 
 
                         Button("\(sizeType == "Logical" ? totalSelectedSize.logical : sizeType == "Finder" ? totalSelectedSize.finder : totalSelectedSize.real)") {
