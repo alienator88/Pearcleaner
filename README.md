@@ -141,7 +141,7 @@ Pre-compiled, always up-to-date versions are available from my [releases](https:
 
 You can add the app via Homebrew by tapping my homebrew repo directly:
 ```
-brew install alienator88/homebrew-cask/pearcleaner --no-quarantine
+brew install alienator88/homebrew-cask/pearcleaner
 ```
 </details>
 
