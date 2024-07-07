@@ -16,6 +16,10 @@
 </p>
 </br>
 
+> [!NOTE]
+> Pearcleaner is now signed/notarized with an Apple Developer account. Updating from the older unsigned version `(v3.7.6 and below)` of the app to the signed version `(v3.7.7 and up)`, you will need to fully remove and re-add Pearcleaner in the Accessibility and Full Disk Access permissions panes using the -/+ buttons. Toggling the permission off and on doesn't register unfortunately as macOS sees these as two separate apps now since the certificates are different. Use the permissions checker in the Pearcleaner general settings tab to navigate to these locations quickly.
+
+
 A free, source-available and fair-code licensed mac app cleaner inspired by [Freemacsoft's AppCleaner](https://freemacsoft.net/appcleaner/) and [Sun Knudsen's Privacy Guides](https://sunknudsen.com/privacy-guides/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative) post on his app-cleaner script.
 This project was born out of wanting to learn more on how macOS deals with app installation/uninstallation and getting more Swift experience. If you have suggestions I'm open to hearing them, submit a feature request!
 
