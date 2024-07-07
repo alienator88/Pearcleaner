@@ -468,6 +468,15 @@ func isNested(path: URL) -> Bool {
     return parentDirectory != applicationsPath && parentDirectory != homeApplicationsPath
 }
 
+// Check if macOS is 14.0 or higher
+func isMacOS14OrHigher() -> Bool {
+    if #available(macOS 14, *) {
+        return true
+    } else {
+        return false
+    }
+}
+
 
 
 // --- Extend Int to convert hours to seconds ---

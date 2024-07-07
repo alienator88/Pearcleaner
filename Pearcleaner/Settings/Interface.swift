@@ -33,13 +33,6 @@ struct InterfaceSettingsTab: View {
     @Binding var search: String
     let icons = ["externaldrive", "trash", "folder", "pear-1", "pear-1.5", "pear-2", "pear-3", "pear-4"]
 
-    var isMacOS14OrHigher: Bool {
-        if #available(macOS 14, *) {
-            return true
-        } else {
-            return false
-        }
-    }
 
     var body: some View {
 
@@ -191,7 +184,7 @@ struct InterfaceSettingsTab: View {
                             .font(.callout)
                             .foregroundStyle(Color("mode").opacity(0.5))
                     }
-                    InfoButton(text: "Changing the color mode will reset the base color to defaults")
+                    InfoButton(text: "This changes the text color to match the OS. It will also reset the base color to defaults when swapping between these.")
                     Spacer()
                     Picker("", selection: $selectedTheme) {
                         Text("Auto")
@@ -260,7 +253,7 @@ struct InterfaceSettingsTab: View {
                 .padding(.leading)
 
                 HStack(spacing: 0) {
-                    Image(systemName: mini ? "square.resize.up" : "square.resize.down")
+                    Image(systemName: isMacOS14OrHigher() ? "square.resize.up" : "macwindow.on.rectangle")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 20, height: 20)
@@ -448,7 +441,7 @@ struct InterfaceSettingsTab: View {
 
 
                 HStack(spacing: 0) {
-                    Image(systemName: isLaunchAtLoginEnabled ? "person" : "person.slash")
+                    Image(systemName: isLaunchAtLoginEnabled ? "person.fill" : "person")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 20, height: 20)

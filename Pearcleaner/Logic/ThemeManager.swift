@@ -25,14 +25,24 @@ class ThemeSettings: ObservableObject {
     // pearcleaner - Color(.sRGB, red: 0.188143, green: 0.208556, blue: 0.262679, opacity: 1)
 
     init() {
-        // Initialize color from UserDefaults or use a default value
-        if let components = UserDefaults.standard.object(forKey: colorKey) as? [CGFloat], components.count >= 4 {
-            themeColor = Color(.sRGB, red: components[0], green: components[1], blue: components[2], opacity: components[3])
-        } else {
-            themeColor = Color(.sRGB, red: 0.188143, green: 0.208556, blue: 0.262679, opacity: 1)
+        themeColor = userDefaults.color(forKey: colorKey) ?? .clear
+    }
+
+    func setupInitialColor() {
+        if userDefaults.color(forKey: colorKey) == nil {
+            // Only set the initial color if it has not been set by the user.
+            let darkMode = isDarkMode()  // Safe to call here after the application is fully set up.
+            themeColor = darkMode ? Color(.sRGB, red: 0.188143, green: 0.208556, blue: 0.262679, opacity: 1) :
+            Color(.sRGB, red: 1.0, green: 1.0, blue: 1.0, opacity: 1)
+            saveThemeColor()
         }
     }
 
+    private func loadThemeColor() {
+        if let components = UserDefaults.standard.array(forKey: colorKey) as? [CGFloat], components.count == 4 {
+            themeColor = Color(.sRGB, red: components[0], green: components[1], blue: components[2], opacity: components[3])
+        }
+    }
 
     func saveThemeColor() {
         let nsColor = NSColor(themeColor)
@@ -87,6 +97,18 @@ extension Color {
         var hsb = (hue: CGFloat(0), saturation: CGFloat(0), brightness: CGFloat(0), alpha: CGFloat(0))
         NSColor(self).getHue(&hsb.hue, saturation: &hsb.saturation, brightness: &hsb.brightness, alpha: &hsb.alpha)
         return Color(hue: hsb.hue, saturation: hsb.saturation, brightness: min(hsb.brightness + percentage / 100, 1.0), opacity: hsb.alpha)
+    }
+}
+
+extension Color {
+    /// Checks if the current themeColor is of a light or dark variant to set the appropriate displayMode on launch
+    func isLight() -> Bool? {
+        guard let components = NSColor(self).cgColor.components, components.count >= 3 else {
+            return nil
+        }
+        // Formula to calculate perceived luminance
+        let brightness = 0.299 * components[0] + 0.587 * components[1] + 0.114 * components[2]
+        return brightness > 0.5
     }
 }
 

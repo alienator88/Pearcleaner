@@ -117,7 +117,12 @@ struct AppSearchView: View {
                                     .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Settings", help: "Settings", size: 5))
                             } else {
                                 Button("Settings") {
-                                    NSApp.sendAction(Selector(("showPreferencesWindow:")), to: NSApp.delegate, from: nil)
+                                    if #available(macOS 13.0, *) {
+                                        NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+                                    }
+                                    else {
+                                        NSApp.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
+                                    }
                                     showMenu = false
                                 }
                                 .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Settings", help: "Settings", size: 5))

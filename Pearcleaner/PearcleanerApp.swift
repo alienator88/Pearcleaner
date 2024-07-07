@@ -202,19 +202,26 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
 
     func appearanceCheck(reset: Bool = false) {
-        let dm = UserDefaults.standard.integer(forKey: "displayMode")
-        var displayMode = DisplayMode(rawValue: dm)
-        let dark = isDarkMode()
-        if dark {
-            displayMode?.colorScheme = .dark
-        } else {
-            displayMode?.colorScheme = .light
-        }
 
-        UserDefaults.standard.set(displayMode?.rawValue, forKey: "displayMode")
+        // Setup initial color
+        ThemeSettings.shared.setupInitialColor()
+
+        // Get the current theme color
+        let themeColor = ThemeSettings.shared.themeColor
+
+        // Determine if the color is light or dark
+        if let isLightColor = themeColor.isLight() {
+            let shouldUseDarkMode = !isLightColor // Use dark mode if color is dark
+            UserDefaults.standard.set(shouldUseDarkMode ? DisplayMode.dark.rawValue : DisplayMode.light.rawValue, forKey: "displayMode")
+        } else {
+            // Default to system preference if unable to determine color brightness
+            let dark = isDarkMode()
+            UserDefaults.standard.set(dark ? DisplayMode.dark.rawValue : DisplayMode.light.rawValue, forKey: "displayMode")
+        }
 
         // Reset theme when OS changes appearance
         if reset {
+            let dark = isDarkMode()
             ThemeSettings.shared.resetToDefault(dark: dark)
         }
 

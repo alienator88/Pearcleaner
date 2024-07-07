@@ -217,7 +217,7 @@ struct GeneralSettingsTab: View {
 
 
                 HStack(spacing: 0) {
-                    Image(systemName: "accessibility")
+                    Image(systemName: isMacOS14OrHigher() ? "accessibility" : "figure.arms.open")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 20, height: 20)

@@ -100,7 +100,12 @@ struct PermView: View {
                         .buttonStyle(SimpleButtonBrightStyle(icon: "gear", label: "Settings", help: "Check permissions in Settings", color: Color("mode")))
                 } else {
                     Button("Settings") {
-                        NSApp.sendAction(Selector(("showPreferencesWindow:")), to: NSApp.delegate, from: nil)
+                        if #available(macOS 13.0, *) {
+                            NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+                        }
+                        else {
+                            NSApp.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
+                        }
                     }
                     .buttonStyle(SimpleButtonBrightStyle(icon: "gear", label: "Settings", help: "Check permissions in Settings", color: .red))
                 }
