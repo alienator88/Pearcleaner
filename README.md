@@ -17,7 +17,13 @@
 </br>
 
 > [!NOTE]
-> Pearcleaner is now signed/notarized with an Apple Developer account. Updating from the older unsigned version `(v3.7.6 and below)` of the app to the signed version `(v3.7.7 and up)`, you will need to fully remove and re-add Pearcleaner in the Accessibility and Full Disk Access permissions panes using the -/+ buttons. Toggling the permission off and on doesn't register unfortunately as macOS sees these as two separate apps now since the certificates are different. Use the permissions checker in the Pearcleaner general settings tab to navigate to these locations quickly.
+> Pearcleaner is now signed/notarized with an Apple Developer account.
+>
+> ### <ins>Updating Pearcleaner to the signed/notarized version</ins>
+> Any app on version `v3.7.6 and below` that used the old unsigned certificate had its authorization revoked when I switched to signing/notarizing the app with a valid apple certificate. With this in mind, the auto-updater built-in to the app and homebrew updating will likely not work. This will require you to manually remove the old app and download the latest version from GitHub to get to the signed version successfully.
+>
+> ### <ins>Permissions alert on the signed/notarized version</ins>
+> You might need to fully remove and re-add Pearcleaner in the Accessibility and Full Disk Access permissions panes using the -/+ buttons if you get a permissions error on launch. Toggling the permission off and on doesn't register unfortunately as macOS sees these as two separate apps now since the certificates are different. Use the permissions checker in the Pearcleaner general settings tab to navigate to these locations quickly to make these changes.
 
 
 A free, source-available and fair-code licensed mac app cleaner inspired by [Freemacsoft's AppCleaner](https://freemacsoft.net/appcleaner/) and [Sun Knudsen's Privacy Guides](https://sunknudsen.com/privacy-guides/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative) post on his app-cleaner script.
