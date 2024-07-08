@@ -962,10 +962,10 @@ struct PickerModifier: ViewModifier {
         content
             .buttonStyle(.borderless)
             .padding(4)
-            .background {
-                backgroundView(themeSettings: themeSettings, darker: isHovered)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-            }
+//            .background {
+//                backgroundView(themeSettings: themeSettings, darker: isHovered)
+//                    .clipShape(RoundedRectangle(cornerRadius: 10))
+//            }
             .onHover { hovering in
                 isHovered = hovering
             }
@@ -995,7 +995,7 @@ struct PresetColor: ButtonStyle {
                 .help(label)
                 .overlay(
                     RoundedRectangle(cornerRadius: 25)
-                        .strokeBorder(Color("mode").opacity(0.8), lineWidth: 1.5))
+                        .strokeBorder(Color("mode").opacity(0.8), lineWidth: 1))
 //            Text(label)
         }
         .onHover { inside in inside ? NSCursor.pointingHand.push() : NSCursor.pop() }

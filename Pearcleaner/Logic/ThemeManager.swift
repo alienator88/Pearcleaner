@@ -28,14 +28,14 @@ class ThemeSettings: ObservableObject {
         themeColor = userDefaults.color(forKey: colorKey) ?? .clear
     }
 
-    func setupInitialColor() {
-        if userDefaults.color(forKey: colorKey) == nil {
-            // Only set the initial color if it has not been set by the user.
-            let darkMode = isDarkMode()  // Safe to call here after the application is fully set up.
-            themeColor = darkMode ? Color(.sRGB, red: 0.188143, green: 0.208556, blue: 0.262679, opacity: 1) :
-            Color(.sRGB, red: 1.0, green: 1.0, blue: 1.0, opacity: 1)
-            saveThemeColor()
-        }
+    func setupInitialColor(forcedDarkMode: Bool? = nil) {
+        // Determine dark mode either from forced setting or system setting
+        let darkMode = forcedDarkMode ?? isDarkMode()
+
+        // Set the theme color based on the dark mode status
+        themeColor = darkMode ? Color(.sRGB, red: 0.188143, green: 0.208556, blue: 0.262679, opacity: 1) :
+        Color(.sRGB, red: 1.0, green: 1.0, blue: 1.0, opacity: 1)
+        saveThemeColor()
     }
 
     private func loadThemeColor() {

@@ -177,10 +177,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 //        UserDefaults.standard.register(defaults: ["NSQuitAlwaysKeepsWindows" : false])
 
         findAndSetWindowFrame(named: ["Pearcleaner"], windowSettings: windowSettings)
-
-//        if UserDefaults.standard.object(forKey: "themeColor") == nil {
-//            self.appearanceChanged()
-//        }
         
         self.appearanceCheck()
 
@@ -191,11 +187,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
         // Start observing the appearance change
         observer = DistributedNotificationCenter.default().addObserver(forName: NSNotification.Name(rawValue: "AppleInterfaceThemeChangedNotification"), object: nil, queue: OperationQueue.main) { [weak self] _ in
-//            let themeMode = UserDefaults.standard.string(forKey: "settings.general.selectedTheme")
-//            if themeMode == "Auto" {
-//                self?.appearanceCheck()
-//            }
-            self?.appearanceCheck(reset: true)
+            let themeMode = UserDefaults.standard.string(forKey: "settings.general.selectedTheme")
+            let themesEnabled = UserDefaults.standard.bool(forKey: "settings.interface.themesEnabled")
+            if themeMode == "Auto" && !themesEnabled {
+                self?.appearanceCheck(reset: true)
+            }
         }
 
     }
@@ -203,28 +199,44 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     func appearanceCheck(reset: Bool = false) {
 
-        // Setup initial color
-        ThemeSettings.shared.setupInitialColor()
+        let themesEnabled = UserDefaults.standard.bool(forKey: "settings.interface.themesEnabled")
+        let themeMode = UserDefaults.standard.string(forKey: "settings.general.selectedTheme")
 
-        // Get the current theme color
-        let themeColor = ThemeSettings.shared.themeColor
-
-        // Determine if the color is light or dark
-        if let isLightColor = themeColor.isLight() {
-            let shouldUseDarkMode = !isLightColor // Use dark mode if color is dark
-            UserDefaults.standard.set(shouldUseDarkMode ? DisplayMode.dark.rawValue : DisplayMode.light.rawValue, forKey: "displayMode")
+        if themesEnabled {
+            // Custom theming is enabled; user's manual settings take priority.
         } else {
-            // Default to system preference if unable to determine color brightness
-            let dark = isDarkMode()
-            UserDefaults.standard.set(dark ? DisplayMode.dark.rawValue : DisplayMode.light.rawValue, forKey: "displayMode")
+            switch themeMode {
+            case "Auto":
+                // Auto mode: adjust theme based on system appearance.
+                ThemeSettings.shared.setupInitialColor()
+                updateDisplayModeBasedOnThemeColor()
+            case "Light", "Dark":
+                // Specific mode set: ensure theme color matches the display mode.
+                ThemeSettings.shared.setupInitialColor(forcedDarkMode: themeMode == "Dark")
+                UserDefaults.standard.set(themeMode == "Dark" ? DisplayMode.dark.rawValue : DisplayMode.light.rawValue, forKey: "displayMode")
+            default:
+                // No specific handling needed or unrecognized mode; fall back to default behavior.
+                printOS("No specific theme mode set or unrecognized value.")
+            }
         }
 
-        // Reset theme when OS changes appearance
-        if reset {
+        if reset && themeMode == "Auto" {
             let dark = isDarkMode()
             ThemeSettings.shared.resetToDefault(dark: dark)
         }
 
+    }
+
+    func updateDisplayModeBasedOnThemeColor() {
+        let themeColor = ThemeSettings.shared.themeColor
+        if let isLightColor = themeColor.isLight() {
+            let shouldUseDarkMode = !isLightColor
+            UserDefaults.standard.set(shouldUseDarkMode ? DisplayMode.dark.rawValue : DisplayMode.light.rawValue, forKey: "displayMode")
+        } else {
+            // Default to system preference if brightness cannot be determined.
+            let dark = isDarkMode()
+            UserDefaults.standard.set(dark ? DisplayMode.dark.rawValue : DisplayMode.light.rawValue, forKey: "displayMode")
+        }
     }
 
     func applicationWillTerminate(_ notification: Notification) {

@@ -23,9 +23,9 @@ struct InterfaceSettingsTab: View {
     @AppStorage("settings.general.selectedTab") private var selectedTab: CurrentTabView = .general
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.general.dark") var isDark: Bool = true
+    @AppStorage("settings.interface.themesEnabled") var themesEnabled: Bool = false
     @AppStorage("settings.general.popover") private var popoverStay: Bool = true
     @AppStorage("settings.general.miniview") private var miniView: Bool = true
-//    @AppStorage("settings.general.animateLogo") private var animateLogo: Bool = true
     @AppStorage("settings.general.selectedTheme") var selectedTheme: String = "Auto"
     @AppStorage("settings.interface.selectedMenubarIcon") var selectedMenubarIcon: String = "pear-4"
     @State private var isLaunchAtLoginEnabled: Bool = false
@@ -69,97 +69,107 @@ struct InterfaceSettingsTab: View {
                 .padding(.leading)
 
 
-//                HStack(spacing: 0) {
-//                    Image(systemName: animateLogo ? "play.fill" : "pause")
-//                        .resizable()
-//                        .scaledToFit()
-//                        .frame(width: 20, height: 20)
-//                        .padding(.trailing)
-//                        .foregroundStyle(Color("mode").opacity(0.5))
-//                    VStack(alignment: .leading, spacing: 5) {
-//                        Text("\(animateLogo ? "Logo animation enabled" : "Logo animation disabled")")
-//                            .font(.callout)
-//                            .foregroundStyle(Color("mode").opacity(0.5))
-//
-//                    }
-//                    if !isMacOS14OrHigher {
-//                        Text("(macOS 14+)")
-//                            .font(.footnote)
-//                            .foregroundStyle(Color("mode").opacity(0.3))
-//                            .padding(.leading, 5)
-//                    }
-////                    InfoButton(text: "The logo animation is only available in macOS 14 or higher")
-//                    Spacer()
-//                    Toggle(isOn: $animateLogo, label: {
-//                    })
-//                    .toggleStyle(.switch)
-//                    .disabled(!isMacOS14OrHigher)
-//                }
-//                .padding(5)
-//                .padding(.leading)
-
-
-
 
                 HStack(spacing: 0) {
-                    Image(systemName: "paintbrush")
+                    Image(systemName: themesEnabled ? "paintpalette.fill" : "paintpalette")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 20, height: 20)
                         .padding(.trailing)
                         .foregroundStyle(Color("mode").opacity(0.5))
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("Application base color")
+                        Text("\(themesEnabled ? "Custom theming is enabled" : "Custom theming is disabled")")
                             .font(.callout)
                             .foregroundStyle(Color("mode").opacity(0.5))
                     }
-                    InfoButton(text: "When using a custom color, you might need to change the application color mode below to Dark or Light so text is readable")
                     Spacer()
-
-
-                    HStack(spacing: 10) {
-                        Button("") {
-                            themeSettings.setPreset(preset: "pearcleaner", colorScheme: displayMode)
+                    Toggle(isOn: $themesEnabled, label: {
+                    })
+                    .toggleStyle(.switch)
+                    .onChange(of: themesEnabled) { newVal in
+                        themeSettings.resetToDefault(dark: isDarkMode())
+                        if isDarkMode() {
+                            displayMode.colorScheme = .dark
+                        } else {
+                            displayMode.colorScheme = .light
                         }
-                        .buttonStyle(PresetColor(fillColor: themeSettings.getColorForPreset(preset: "pearcleaner", colorScheme: displayMode), label: "Pearcleaner"))
-
-                        Button("") {
-                            themeSettings.setPreset(preset: "dracula", colorScheme: displayMode)
+                        if newVal {
+                            selectedTheme = isDarkMode() ? "Dark" : "Light"
+                        } else {
+                            selectedTheme = "Auto"
                         }
-                        .buttonStyle(PresetColor(fillColor: themeSettings.getColorForPreset(preset: "dracula", colorScheme: displayMode), label: "Dracula"))
-
-                        Button("") {
-                            themeSettings.setPreset(preset: "solarized", colorScheme: displayMode)
-                            themeSettings.saveThemeColor()
-                        }
-                        .buttonStyle(PresetColor(fillColor: themeSettings.getColorForPreset(preset: "solarized", colorScheme: displayMode), label: "Solarized"))
-
-                        Button("") {
-                            themeSettings.setPreset(preset: "macOS", colorScheme: displayMode)
-                            themeSettings.saveThemeColor()
-                        }
-                        .buttonStyle(PresetColor(fillColor: themeSettings.getColorForPreset(preset: "macOS", colorScheme: displayMode), label: "macOS"))
                     }
-
-
-
-
-                    Spacer()
-
-                    ColorPicker("", selection: $themeSettings.themeColor, supportsOpacity: false)
-                        .onChange(of: themeSettings.themeColor) { newValue in
-                            themeSettings.saveThemeColor()
-                        }
-                        .padding(.horizontal, 5)
-                    
-                    Button("") {
-                        themeSettings.resetToDefault(dark: colorScheme == .dark)
-                    }
-                    .buttonStyle(SimpleButtonStyle(icon: "arrow.uturn.left.circle", help: "Reset color to default"))
-
                 }
                 .padding(5)
                 .padding(.leading)
+
+
+                /// Show theme color selector if theming is enabled
+                if themesEnabled {
+                    HStack(spacing: 0) {
+                        Image(systemName: "paintbrush")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 20, height: 20)
+                            .padding(.trailing)
+                            .foregroundStyle(Color("mode").opacity(0.5))
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text("Application theme color")
+                                .font(.callout)
+                                .foregroundStyle(Color("mode").opacity(0.5))
+                        }
+//                        InfoButton(text: "When using a custom color, you might need to change the application color mode below to Dark or Light so text is readable")
+                        Spacer()
+
+
+                        HStack(spacing: 10) {
+                            Button("") {
+                                themeSettings.setPreset(preset: "pearcleaner", colorScheme: displayMode)
+                            }
+                            .buttonStyle(PresetColor(fillColor: themeSettings.getColorForPreset(preset: "pearcleaner", colorScheme: displayMode), label: "Pearcleaner"))
+
+                            Button("") {
+                                themeSettings.setPreset(preset: "dracula", colorScheme: displayMode)
+                            }
+                            .buttonStyle(PresetColor(fillColor: themeSettings.getColorForPreset(preset: "dracula", colorScheme: displayMode), label: "Dracula"))
+
+                            Button("") {
+                                themeSettings.setPreset(preset: "solarized", colorScheme: displayMode)
+                            }
+                            .buttonStyle(PresetColor(fillColor: themeSettings.getColorForPreset(preset: "solarized", colorScheme: displayMode), label: "Solarized"))
+
+                            Button("") {
+                                themeSettings.setPreset(preset: "macOS", colorScheme: displayMode)
+                            }
+                            .buttonStyle(PresetColor(fillColor: themeSettings.getColorForPreset(preset: "macOS", colorScheme: displayMode), label: "macOS"))
+                        }
+
+
+
+
+                        Spacer()
+
+                        ColorPicker("", selection: $themeSettings.themeColor, supportsOpacity: false)
+                            .onChange(of: themeSettings.themeColor) { newValue in
+                                themeSettings.saveThemeColor()
+                            }
+                            .padding(.horizontal, 5)
+
+                        Button("") {
+                            themeSettings.resetToDefault(dark: isDarkMode())
+                            if isDarkMode() {
+                                displayMode.colorScheme = .dark
+                            } else {
+                                displayMode.colorScheme = .light
+                            }
+                            selectedTheme = isDarkMode() ? "Dark" : "Light"
+                        }
+                        .buttonStyle(SimpleButtonStyle(icon: "arrow.uturn.left.circle", help: "Reset color to default"))
+
+                    }
+                    .padding(5)
+                    .padding(.leading)
+                }
 
 
 
@@ -180,18 +190,20 @@ struct InterfaceSettingsTab: View {
                         .padding(.trailing)
                         .foregroundStyle(Color("mode").opacity(0.5))
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("Application color mode")
+                        Text(themesEnabled ? "Application font color" : "Application color mode")
                             .font(.callout)
                             .foregroundStyle(Color("mode").opacity(0.5))
                     }
-                    InfoButton(text: "This changes the text color to match the OS. It will also reset the base color to defaults when swapping between these.")
+                    InfoButton(text: "When custom theming is disabled, you can set the application color mode to follow the operating system using Auto. Or manually set it to Light or Dark. When custom theming is enabled, this selector acts mainly as a font color picker between light or dark to match your custom theme color.")
                     Spacer()
                     Picker("", selection: $selectedTheme) {
-                        Text("Auto")
-                            .tag("Auto")
-                        Text("Dark")
+                        if !themesEnabled {
+                            Text("Auto")
+                                .tag("Auto")
+                        }
+                        Text(themesEnabled ? "Light" : "Dark")
                             .tag("Dark")
-                        Text("Light")
+                        Text(themesEnabled ? "Dark" : "Light")
                             .tag("Light")
                     }
                     .pickerStyle(themeSettings: themeSettings)
@@ -203,7 +215,9 @@ struct InterfaceSettingsTab: View {
                             } else {
                                 displayMode.colorScheme = .light
                             }
-                            themeSettings.resetToDefault(dark: isDarkMode())
+                            if !themesEnabled {
+                                themeSettings.resetToDefault(dark: isDarkMode())
+                            }
                             // Refresh foreground colors
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                 self.selectedTab = .interface
@@ -213,7 +227,9 @@ struct InterfaceSettingsTab: View {
                             }
                         case "Dark":
                             displayMode.colorScheme = .dark
-                            themeSettings.resetToDefault(dark: true)
+                            if !themesEnabled {
+                                themeSettings.resetToDefault(dark: true)
+                            }
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                 self.selectedTab = .interface
                             }
@@ -222,7 +238,9 @@ struct InterfaceSettingsTab: View {
                             }
                         case "Light":
                             displayMode.colorScheme = .light
-                            themeSettings.resetToDefault(dark: false)
+                            if !themesEnabled {
+                                themeSettings.resetToDefault(dark: false)
+                            }
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                 self.selectedTab = .interface
                             }
@@ -515,6 +533,8 @@ struct InterfaceSettingsTab: View {
                     .onChange(of: selectedMenubarIcon) { newValue in
                         MenuBarExtraManager.shared.swapMenuBarIcon(icon: newValue)
                     }
+                    .pickerStyle(themeSettings: themeSettings)
+
 
                 }
                 .padding(5)
@@ -525,7 +545,7 @@ struct InterfaceSettingsTab: View {
 
         }
         .padding(20)
-        .frame(width: 500, height: 580)
+        .frame(width: 500, height: themesEnabled ? 600 : 580)
 
     }
 
