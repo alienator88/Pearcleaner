@@ -118,7 +118,7 @@ struct InterfaceSettingsTab: View {
                                 .font(.callout)
                                 .foregroundStyle(Color("mode").opacity(0.5))
                         }
-//                        InfoButton(text: "When using a custom color, you might need to change the application color mode below to Dark or Light so text is readable")
+
                         Spacer()
 
 

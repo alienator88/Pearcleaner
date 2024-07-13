@@ -342,14 +342,6 @@ extension NSImage {
     }
 }
 
-func startEnd(_ function: @escaping () -> Void) {
-    let startTime = Date() // Capture start time
-    function()
-    let endTime = Date()
-    let executionTime = endTime.timeIntervalSince(startTime)
-    printOS("Function executed in: \n\(executionTime) seconds")
-}
-
 
 // Relaunch app
 func relaunchApp(afterDelay seconds: TimeInterval = 0.5) -> Never {
@@ -553,7 +545,6 @@ func printOS(_ items: Any..., separator: String = " ", terminator: String = "\n"
     let message = items.map { "\($0)" }.joined(separator: separator)
     let log = OSLog(subsystem: "pearcleaner", category: "Application")
     os_log("%@", log: log, type: .default, message)
-
 }
 
 

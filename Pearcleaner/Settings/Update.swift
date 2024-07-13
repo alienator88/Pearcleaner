@@ -35,7 +35,7 @@ struct UpdateSettingsTab: View {
                             }
                         }
                         .onChange(of: updateFrequency) { frequency in
-                            updateFrequency.updateNextUpdateDate()
+                            frequency.updateNextUpdateDate()
                         }
                         .pickerStyle(themeSettings: themeSettings)
                     }

@@ -24,8 +24,7 @@ struct UpdateView: View {
                     .padding()
 
                 Spacer()
-//                    .frame(width: appState.progressBar.1 != 1.0 ? 150 : 180)
-                
+
                 Text("\(appState.progressBar.1 != 1.0 ? "Update Available 🥳" : "Completed 🚀")")
                     .font(.title)
                     .bold()
@@ -105,11 +104,8 @@ struct UpdateView: View {
                 isUserAdmin = result.isAdmin
             }
         }
-
-        
         
     }
-    
     
 }
 
@@ -128,8 +124,7 @@ struct NoUpdateView: View {
                     .padding()
 
                 Spacer()
-//                    .frame(width: appState.progressBar.1 != 1.0 ? 140 : 180)
-                
+
                 Text("\(appState.progressBar.1 != 1.0 ? "No Update 😌" : "Completed 🚀")")
                     .font(.title)
                     .bold()
@@ -144,12 +139,6 @@ struct NoUpdateView: View {
                     .padding()
                 
             }
-
-//            Text("App: \(Bundle.main.version) | GitHub: \(appState.releases.first?.tag_name ?? "")")
-//                .font(.title3)
-//                .fontWeight(.semibold)
-//                .opacity(0.5)
-//                .padding(.vertical, 5)
 
             Divider()
                 .padding([.horizontal])
@@ -201,15 +190,11 @@ struct NoUpdateView: View {
                 }
             }
             .padding(.bottom)
-            
-            
-            
+
         }
         .padding(EdgeInsets(top: -25, leading: 0, bottom: 25, trailing: 0))
-        
-        
+
     }
-    
     
 }
 
