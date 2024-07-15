@@ -67,15 +67,6 @@ class NewWin: NSWindowController {
     private func makeNewView(appState: AppState, newWin: NewWindow) -> some View {
 
         switch newWin {
-        case .update:
-            return AnyView(UpdateView()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(.black.opacity(0.2))
-                .environmentObject(appState))
-        case .no_update:
-            return AnyView(NoUpdateView()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .environmentObject(appState))
         case .perm:
             return AnyView(PermView()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)

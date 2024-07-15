@@ -3,13 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		C7045A282B03E71D00376976 /* MiniMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7045A272B03E71D00376976 /* MiniMode.swift */; };
 		C7045A322B068AD700376976 /* NewWin.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7045A312B068AD700376976 /* NewWin.swift */; };
-		C7045A342B068B2900376976 /* UpdateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7045A332B068B2900376976 /* UpdateView.swift */; };
 		C7045A362B068DD700376976 /* PermView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7045A352B068DD700376976 /* PermView.swift */; };
 		C71848442B8D2D600046CB13 /* ZombieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71848432B8D2D600046CB13 /* ZombieView.swift */; };
 		C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72893042AFD42E600C8C1CD /* DeepLink.swift */; };
@@ -17,12 +16,12 @@
 		C736E7652C2DF1C9009EDB6A /* AppPathsFetch-Async.swift in Sources */ = {isa = PBXBuildFile; fileRef = C736E7642C2DF1C9009EDB6A /* AppPathsFetch-Async.swift */; };
 		C74412C72BBF249000DDFCA8 /* AppPathsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74412C62BBF249000DDFCA8 /* AppPathsFetch.swift */; };
 		C74FDC632BCD833D00B8960F /* Conditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74FDC622BCD833D00B8960F /* Conditions.swift */; };
-		C75347642BE599FA00AAFCC3 /* PermissionChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C75347632BE599FA00AAFCC3 /* PermissionChecker.swift */; };
 		C7575D392B0182DE006A600A /* PearcleanerSentinel in CopyFiles */ = {isa = PBXBuildFile; fileRef = C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C76D08482AF83C3F00D07867 /* Update.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08472AF83C3F00D07867 /* Update.swift */; };
 		C76D084A2AF83C6E00D07867 /* General.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08492AF83C6E00D07867 /* General.swift */; };
 		C76D08512AF850F300D07867 /* About.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08502AF850F300D07867 /* About.swift */; };
 		C76D08552AF89CDE00D07867 /* RegularMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08542AF89CDE00D07867 /* RegularMode.swift */; };
+		C76EDCD62C45DC82000CF29D /* AlinFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = C76EDCD52C45DC82000CF29D /* AlinFoundation */; };
 		C771CB762BD028AF00C33A18 /* SegmentedPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C771CB752BD028AF00C33A18 /* SegmentedPicker.swift */; };
 		C77B90042AF18E2E009CC655 /* PearcleanerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90032AF18E2E009CC655 /* PearcleanerApp.swift */; };
 		C77B90082AF18E2F009CC655 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C77B90072AF18E2F009CC655 /* Assets.xcassets */; };
@@ -35,7 +34,6 @@
 		C78121662BC892A000BE06BD /* FinderOpen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78121652BC892A000BE06BD /* FinderOpen.swift */; };
 		C781216B2BC892A000BE06BD /* FinderOpen.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C78121632BC892A000BE06BD /* FinderOpen.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C79947962C34A794007279CC /* Tips.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79947952C34A794007279CC /* Tips.swift */; };
-		C79D05202BC99EB40083F976 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79D051F2BC99EB40083F976 /* ThemeManager.swift */; };
 		C7A27E812AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist in Resources */ = {isa = PBXBuildFile; fileRef = C7A27E802AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist */; };
 		C7A2AE5D2B9644F300161540 /* FileWatcher in Frameworks */ = {isa = PBXBuildFile; productRef = C7A2AE5C2B9644F300161540 /* FileWatcher */; };
 		C7A9CE472B89164700EB6E78 /* Authorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A9CE462B89164700EB6E78 /* Authorization.swift */; };
@@ -48,7 +46,6 @@
 		C7DD49EA2BAB4D8100CCBA16 /* AppInfoFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */; };
 		C7DD49EE2BAB7F6000CCBA16 /* ReversePathsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */; };
 		C7DD49F02BABA14400CCBA16 /* Folders.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD49EF2BABA14400CCBA16 /* Folders.swift */; };
-		C7DE17652BE54F4900197715 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DE17642BE54F4900197715 /* Updater.swift */; };
 		C7DE672B2BA6343D00EB1633 /* MenuBarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DE672A2BA6343D00EB1633 /* MenuBarItem.swift */; };
 		C7EA06332C1CBE2000F872FC /* ConditionBuilderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7EA06322C1CBE2000F872FC /* ConditionBuilderView.swift */; };
 		C7ED86B12BA8A35500F13DE4 /* Interface.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7ED86B02BA8A35500F13DE4 /* Interface.swift */; };
@@ -104,7 +101,6 @@
 /* Begin PBXFileReference section */
 		C7045A272B03E71D00376976 /* MiniMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniMode.swift; sourceTree = "<group>"; };
 		C7045A312B068AD700376976 /* NewWin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewWin.swift; sourceTree = "<group>"; };
-		C7045A332B068B2900376976 /* UpdateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateView.swift; sourceTree = "<group>"; };
 		C7045A352B068DD700376976 /* PermView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermView.swift; sourceTree = "<group>"; };
 		C71848432B8D2D600046CB13 /* ZombieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZombieView.swift; sourceTree = "<group>"; };
 		C72893042AFD42E600C8C1CD /* DeepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLink.swift; sourceTree = "<group>"; };
@@ -113,7 +109,6 @@
 		C736E7642C2DF1C9009EDB6A /* AppPathsFetch-Async.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppPathsFetch-Async.swift"; sourceTree = "<group>"; };
 		C74412C62BBF249000DDFCA8 /* AppPathsFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPathsFetch.swift; sourceTree = "<group>"; };
 		C74FDC622BCD833D00B8960F /* Conditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conditions.swift; sourceTree = "<group>"; };
-		C75347632BE599FA00AAFCC3 /* PermissionChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionChecker.swift; sourceTree = "<group>"; };
 		C76D08472AF83C3F00D07867 /* Update.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Update.swift; sourceTree = "<group>"; };
 		C76D08492AF83C6E00D07867 /* General.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = General.swift; sourceTree = "<group>"; };
 		C76D08502AF850F300D07867 /* About.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = About.swift; sourceTree = "<group>"; };
@@ -136,7 +131,6 @@
 		C78121682BC892A000BE06BD /* FinderOpen.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FinderOpen.entitlements; sourceTree = "<group>"; };
 		C786F1A72C29E599001B3800 /* Builds */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Builds; sourceTree = SOURCE_ROOT; };
 		C79947952C34A794007279CC /* Tips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tips.swift; sourceTree = "<group>"; };
-		C79D051F2BC99EB40083F976 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		C7A27E7F2AFD70DD00166168 /* PearcleanerSentinel.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PearcleanerSentinel.entitlements; sourceTree = "<group>"; };
 		C7A27E802AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = com.alienator88.PearcleanerSentinel.plist; sourceTree = "<group>"; };
 		C7A9CE462B89164700EB6E78 /* Authorization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authorization.swift; sourceTree = "<group>"; };
@@ -149,7 +143,6 @@
 		C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfoFetch.swift; sourceTree = "<group>"; };
 		C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReversePathsFetch.swift; sourceTree = "<group>"; };
 		C7DD49EF2BABA14400CCBA16 /* Folders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Folders.swift; sourceTree = "<group>"; };
-		C7DE17642BE54F4900197715 /* Updater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.swift; sourceTree = "<group>"; };
 		C7DE672A2BA6343D00EB1633 /* MenuBarItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarItem.swift; sourceTree = "<group>"; };
 		C7EA06322C1CBE2000F872FC /* ConditionBuilderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionBuilderView.swift; sourceTree = "<group>"; };
 		C7ED86B02BA8A35500F13DE4 /* Interface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interface.swift; sourceTree = "<group>"; };
@@ -172,6 +165,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C76EDCD62C45DC82000CF29D /* AlinFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -189,7 +183,6 @@
 			isa = PBXGroup;
 			children = (
 				C7045A312B068AD700376976 /* NewWin.swift */,
-				C7045A332B068B2900376976 /* UpdateView.swift */,
 				C7D15BBD2BE85F4D007D57CF /* FeatureView.swift */,
 				C7045A352B068DD700376976 /* PermView.swift */,
 				C7DE672A2BA6343D00EB1633 /* MenuBarItem.swift */,
@@ -216,9 +209,6 @@
 				C7A9CE462B89164700EB6E78 /* Authorization.swift */,
 				C7ACADE52B92A737000B5845 /* Features.swift */,
 				C7ED86B22BA8ED8800F13DE4 /* Trash.swift */,
-				C79D051F2BC99EB40083F976 /* ThemeManager.swift */,
-				C7DE17642BE54F4900197715 /* Updater.swift */,
-				C75347632BE599FA00AAFCC3 /* PermissionChecker.swift */,
 			);
 			path = Logic;
 			sourceTree = "<group>";
@@ -374,6 +364,7 @@
 			);
 			name = Pearcleaner;
 			packageProductDependencies = (
+				C76EDCD52C45DC82000CF29D /* AlinFoundation */,
 			);
 			productName = PeakPurge;
 			productReference = C77B90002AF18E2E009CC655 /* Pearcleaner.app */;
@@ -428,6 +419,7 @@
 			mainGroup = C77B8FF72AF18E2E009CC655;
 			packageReferences = (
 				C7A2AE5B2B9644DA00161540 /* XCRemoteSwiftPackageReference "FileWatcher" */,
+				C76EDCD42C45DC82000CF29D /* XCLocalSwiftPackageReference "../AlinFoundation" */,
 			);
 			productRefGroup = C77B90012AF18E2E009CC655 /* Products */;
 			projectDirPath = "";
@@ -477,10 +469,7 @@
 				C79947962C34A794007279CC /* Tips.swift in Sources */,
 				C76D08482AF83C3F00D07867 /* Update.swift in Sources */,
 				C7FB173B2B96321300B96F9A /* AppsListView.swift in Sources */,
-				C7045A342B068B2900376976 /* UpdateView.swift in Sources */,
 				C77B90162AF19377009CC655 /* AppState.swift in Sources */,
-				C75347642BE599FA00AAFCC3 /* PermissionChecker.swift in Sources */,
-				C7DE17652BE54F4900197715 /* Updater.swift in Sources */,
 				C7DD49EE2BAB7F6000CCBA16 /* ReversePathsFetch.swift in Sources */,
 				C7045A322B068AD700376976 /* NewWin.swift in Sources */,
 				C7EA06332C1CBE2000F872FC /* ConditionBuilderView.swift in Sources */,
@@ -504,7 +493,6 @@
 				C77B901E2AF1A9DB009CC655 /* SettingsWindow.swift in Sources */,
 				C771CB762BD028AF00C33A18 /* SegmentedPicker.swift in Sources */,
 				C74412C72BBF249000DDFCA8 /* AppPathsFetch.swift in Sources */,
-				C79D05202BC99EB40083F976 /* ThemeManager.swift in Sources */,
 				C74FDC632BCD833D00B8960F /* Conditions.swift in Sources */,
 				C7ACADE62B92A737000B5845 /* Features.swift in Sources */,
 				C7F539382AF60865007DF1B2 /* Utilities.swift in Sources */,
@@ -905,6 +893,13 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		C76EDCD42C45DC82000CF29D /* XCLocalSwiftPackageReference "../AlinFoundation" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../AlinFoundation;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		C7A2AE5B2B9644DA00161540 /* XCRemoteSwiftPackageReference "FileWatcher" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -917,6 +912,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		C76EDCD52C45DC82000CF29D /* AlinFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AlinFoundation;
+		};
 		C7A2AE5C2B9644F300161540 /* FileWatcher */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = C7A2AE5B2B9644DA00161540 /* XCRemoteSwiftPackageReference "FileWatcher" */;

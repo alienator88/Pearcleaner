@@ -6,17 +6,22 @@
 //
 
 import SwiftUI
+import AlinFoundation
 
 struct AppCommands: Commands {
 
     let appState: AppState
     let locations: Locations
     let fsm: FolderSettingsManager
+    let updater: Updater
+    let themeManager: ThemeManager
 
-    init(appState: AppState, locations: Locations, fsm: FolderSettingsManager) {
+    init(appState: AppState, locations: Locations, fsm: FolderSettingsManager, updater: Updater, themeManager: ThemeManager) {
         self.appState = appState
         self.locations = locations
         self.fsm = fsm
+        self.updater = updater
+        self.themeManager = themeManager
     }
 
     var body: some Commands {
@@ -25,7 +30,7 @@ struct AppCommands: Commands {
         CommandGroup(replacing: .appInfo) {
 
             Button {
-                loadGithubReleases(appState: appState, manual: true)
+                updater.checkForUpdates()
             } label: {
                 Text("Check for Updates")
             }
@@ -55,12 +60,15 @@ struct AppCommands: Commands {
 
             Button
             {
-                undoTrash(appState: appState) {
-                    reloadAppsList(appState: appState, fsm: fsm)
-                    for app in appState.trashedFiles {
-                        AppPathFinder(appInfo: app, appState: appState, locations: locations, undo: true).findPaths()
+                if appState.currentView != .zombie {
+                    undoTrash(appState: appState) {
+                        reloadAppsList(appState: appState, fsm: fsm)
+                        for app in appState.trashedFiles {
+                            AppPathFinder(appInfo: app, appState: appState, locations: locations, undo: true).findPaths()
+                        }
                     }
                 }
+
             } label: {
                 Label("Undo Removal", systemImage: "clear")
             }

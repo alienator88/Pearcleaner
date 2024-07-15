@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import AlinFoundation
 
 struct ZombieView: View {
     @EnvironmentObject var appState: AppState
@@ -45,7 +46,7 @@ struct ZombieView: View {
                         Spacer()
 
                         Text("Searching the file system").font(.title3)
-                            .foregroundStyle(Color("mode").opacity(0.5))
+                            .foregroundStyle(.primary.opacity(0.5))
 
                         ProgressView()
                             .progressViewStyle(.linear)
@@ -54,7 +55,7 @@ struct ZombieView: View {
 
                         Text("\(elapsedTime)")
                             .font(.title).monospacedDigit()
-                            .foregroundStyle(Color("mode").opacity(0.5))
+                            .foregroundStyle(.primary.opacity(0.5))
                             .opacity(elapsedTime == 0 ? 0 : 1)
                             .contentTransition(.numericText())
 
@@ -116,7 +117,7 @@ struct ZombieView: View {
                                         Spacer()
                                     }
                                     Text("Remaining files and folders from previous applications")
-                                        .font(.callout).foregroundStyle(Color("mode").opacity(0.5))
+                                        .font(.callout).foregroundStyle(.primary.opacity(0.5))
                                 }
 
                                 Spacer()
@@ -125,7 +126,7 @@ struct ZombieView: View {
                                     Text("\(displaySizeTotal)").font(.title).fontWeight(.bold).help("Total size on disk")
 
                                     Text("\(selectedZombieItemsLocal.count) / \(searchZ.isEmpty ? appState.zombieFile.fileSize.count : memoizedFiles.count) \(appState.zombieFile.fileSize.count == 1 ? "item" : "items")")
-                                        .font(.callout).foregroundStyle(Color("mode").opacity(0.5))
+                                        .font(.callout).foregroundStyle(.primary.opacity(0.5))
                                 }
 
                             }
@@ -258,16 +259,27 @@ struct ZombieView: View {
                                                 }
 
                                             }
-                                        }
-
-                                        updateOnMain {
+                                        } else {
                                             // Remove items from the list
                                             appState.zombieFile.fileSize = appState.zombieFile.fileSize.filter { !selectedZombieItemsLocal.contains($0.key) }
-                                            // Update the selectedZombieFiles to remove references that are no longer present
-                                            selectedZombieItemsLocal.removeAll()
-                                            updateTotalSizes()
+                                            appState.zombieFile.fileSizeLogical = appState.zombieFile.fileSizeLogical.filter { !selectedZombieItemsLocal.contains($0.key) }
+                                            appState.zombieFile.fileIcon = appState.zombieFile.fileIcon.filter { !selectedZombieItemsLocal.contains($0.key) }
 
+                                            // Clear the selection
+                                            selectedZombieItemsLocal.removeAll()
+
+                                            // Update memoized files and total sizes
+                                            updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSortAlpha: selectedSortAlpha, force: true)
                                         }
+
+//                                        updateOnMain {
+//                                            // Remove items from the list
+//                                            appState.zombieFile.fileSize = appState.zombieFile.fileSize.filter { !selectedZombieItemsLocal.contains($0.key) }
+//                                            // Update the selectedZombieFiles to remove references that are no longer present
+//                                            selectedZombieItemsLocal.removeAll()
+//                                            updateTotalSizes()
+//
+//                                        }
 
                                     }
 
@@ -472,7 +484,7 @@ struct ZombieFileDetailsItem: View {
                                 VStack {
                                     Spacer()
                                     RoundedRectangle(cornerRadius: 10)
-                                        .fill(Color("mode").opacity(0.5))
+                                        .fill(.primary.opacity(0.5))
                                         .frame(height: 1.5)
                                         .offset(y: 3)
                                 }

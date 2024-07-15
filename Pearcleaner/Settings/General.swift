@@ -7,13 +7,13 @@
 
 import Foundation
 import SwiftUI
-//import ServiceManagement
 import FinderSync
+import AlinFoundation
 
 struct GeneralSettingsTab: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
-    @EnvironmentObject var themeSettings: ThemeSettings
+    @EnvironmentObject var themeManager: ThemeManager
     @State private var windowSettings = WindowSettings()
     @AppStorage("settings.general.glass") private var glass: Bool = true
     @AppStorage("settings.general.mini") private var mini: Bool = false
@@ -52,11 +52,11 @@ struct GeneralSettingsTab: View {
                         .scaledToFit()
                         .frame(width: 20, height: 20)
                         .padding(.trailing)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(.primary.opacity(0.5))
                     VStack(alignment: .leading, spacing: 5) {
                         Text("\(brew ? "Homebrew cleanup is enabled" : "Homebrew cleanup is disabled")")
                             .font(.callout)
-                            .foregroundStyle(Color("mode").opacity(0.5))
+                            .foregroundStyle(.primary.opacity(0.5))
                     }
 
                     InfoButton(text: "When homebrew cleanup is enabled, Pearcleaner will check if the app you are removing was installed via homebrew and execute a brew uninstall and brew cleanup command as well to let homebrew know that the app is removed. This way your homebrew list will be synced up correctly and caching will be removed.\n\nNOTE: If you undo the file delete with CMD+Z, the files will be put back but homebrew will not be aware of it. To get the homebrew list back in sync you'd need to run:\n brew install APPNAME --force")
@@ -76,11 +76,11 @@ struct GeneralSettingsTab: View {
                         .scaledToFit()
                         .frame(width: 20, height: 20)
                         .padding(.trailing)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(.primary.opacity(0.5))
                     VStack(alignment: .leading, spacing: 5) {
                         Text("\(oneShotMode ? "One-Shot Mode is enabled" : "One-Shot Mode is disabled")")
                             .font(.callout)
-                            .foregroundStyle(Color("mode").opacity(0.5))
+                            .foregroundStyle(.primary.opacity(0.5))
                     }
 
                     InfoButton(text: "When one-shot mode is enabled, clicking the Uninstall button to remove an app will also close Pearcleaner right after. This only affects Pearcleaner when it is opened via external means, like Sentinel Trash Monitor or the Finder extension. This allows for single use of the app, AKA one-shot mode. When Pearcleaner is opened normally, this setting is ignored and will work as usual.")
@@ -100,11 +100,11 @@ struct GeneralSettingsTab: View {
                         .scaledToFit()
                         .frame(width: 20, height: 20)
                         .padding(.trailing)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(.primary.opacity(0.5))
                     VStack(alignment: .leading, spacing: 5) {
                         Text("File list sorting mode")
                             .font(.callout)
-                            .foregroundStyle(Color("mode").opacity(0.5))
+                            .foregroundStyle(.primary.opacity(0.5))
                     }
                     InfoButton(text: "When searching for app files or leftover files, the list will be sorted either alphabetically or by size(large to small)")
                     Spacer()
@@ -114,7 +114,7 @@ struct GeneralSettingsTab: View {
                         Text("Size")
                             .tag(false)
                     }
-                    .pickerStyle(themeSettings: themeSettings)
+                    .buttonStyle(.borderless)
                 }
                 .padding(5)
                 .padding(.leading)
@@ -126,11 +126,11 @@ struct GeneralSettingsTab: View {
                         .scaledToFit()
                         .frame(width: 20, height: 20)
                         .padding(.trailing)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(.primary.opacity(0.5))
                     VStack(alignment: .leading, spacing: 5) {
                         Text("File size display mode")
                             .font(.callout)
-                            .foregroundStyle(Color("mode").opacity(0.5))
+                            .foregroundStyle(.primary.opacity(0.5))
                     }
                     InfoButton(text: "Real size type will show how much actual allocated space the file has on disk. Logical type shows the binary size. The filesystem can compress and deduplicate sectors on disk, so real size is sometimes smaller(or bigger) than logical size. Finder size is similar to if you right click > Get Info on a file in Finder, which will show both the logical and real sizes together.")
                     Spacer()
@@ -142,8 +142,7 @@ struct GeneralSettingsTab: View {
                         Text("Finder")
                             .tag("Finder")
                     }
-                    .pickerStyle(themeSettings: themeSettings)
-
+                    .buttonStyle(.borderless)
 
                 }
                 .padding(5)
@@ -153,120 +152,116 @@ struct GeneralSettingsTab: View {
                 // === Perms ================================================================================================
 
 
-                Divider()
-                    .padding()
+//                Divider()
+//                    .padding()
 
 
+//                HStack() {
+//                    Text("Permissions").font(.title2)
+//
+////                    InfoButtonPerms()
+//
+//                    Spacer()
+//
+//                    Button("Refresh") {
+//                        checkAllPermissions(appState: appState) { results in
+//                            updateOnMain {
+//                                appState.permissionResults = results
+//                            }
+//                            diskStatus = results.fullDiskAccess
+//                            accessStatus = results.accessibility
+//                            autoStatus = results.automation
+//                            if results.allPermissionsGranted {
+//                                updateOnMain {
+//                                    appState.permissionsOkay = true
+//                                }
+//                            }
+//                        }
+//                    }
+//                    .buttonStyle(SimpleButtonStyle(icon: "arrow.triangle.2.circlepath", label: "Refresh", help: "Refresh permissions"))
+//                    .padding(.trailing, 5)
+//
+//                }
+//                .padding(.leading)
 
 
-                HStack() {
-                    Text("Permissions").font(.title2)
-
-                    InfoButtonPerms()
-
-                    Spacer()
-
-                    Button("Refresh") {
-                        checkAllPermissions(appState: appState) { results in
-                            updateOnMain {
-                                appState.permissionResults = results
-                            }
-                            diskStatus = results.fullDiskAccess
-                            accessStatus = results.accessibility
-                            autoStatus = results.automation
-                            if results.allPermissionsGranted {
-                                updateOnMain {
-                                    appState.permissionsOkay = true
-                                }
-                            }
-                        }
-                    }
-                    .buttonStyle(SimpleButtonStyle(icon: "arrow.triangle.2.circlepath", label: "Refresh", help: "Refresh permissions"))
-                    .padding(.trailing, 5)
-
-                }
-                .padding(.leading)
-
-
-                HStack(spacing: 0) {
-                    Image(systemName: "externaldrive")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 20, height: 20)
-                        .padding(.trailing)
-                        .foregroundStyle(diskStatus ? .green : .red)
-                        .saturation(displayMode.colorScheme == .dark ? 0.8 : 1)
-                    Text(diskStatus ? "Full Disk permission granted" : "Full Disk permission not granted")
-                        .font(.callout)
-                        .foregroundStyle(Color("mode").opacity(0.5))
-
-                    Spacer()
-
-                    Button("") {
-                        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles") {
-                            NSWorkspace.shared.open(url)
-                        }
-                    }
-                    .buttonStyle(SimpleButtonStyle(icon: "folder", help: "View disk permissions pane"))
-
-                }
-                .padding(5)
-                .padding(.leading)
-
-                Spacer()
-
-
-                HStack(spacing: 0) {
-                    Image(systemName: isMacOS14OrHigher() ? "accessibility" : "figure.arms.open")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 20, height: 20)
-                        .padding(.trailing)
-                        .foregroundStyle(accessStatus ? .green : .red)
-                        .saturation(displayMode.colorScheme == .dark ? 0.8 : 1)
-                    Text(accessStatus ? "Accessibility permission granted" : "Accessibility permission not granted")
-                        .font(.callout)
-                        .foregroundStyle(Color("mode").opacity(0.5))
-
-                    Spacer()
-
-                    Button("") {
-                        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
-                            NSWorkspace.shared.open(url)
-                        }
-                    }
-                    .buttonStyle(SimpleButtonStyle(icon: "folder", help: "View accessibility permissions pane"))
-
-                }
-                .padding(5)
-                .padding(.leading)
-
-                Spacer()
-
-                HStack(spacing: 0) {
-                    Image(systemName: "gearshape.2")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 20, height: 20)
-                        .padding(.trailing)
-                        .foregroundStyle(autoStatus ? .green : .red)
-                        .saturation(displayMode.colorScheme == .dark ? 0.8 : 1)
-                    Text(autoStatus ? "Automation permission granted" : "Automation permission not granted")
-                        .font(.callout)
-                        .foregroundStyle(Color("mode").opacity(0.5))
-
-                    Spacer()
-
-                    Button("") {
-                        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Automation") {
-                            NSWorkspace.shared.open(url)
-                        }
-                    }
-                    .buttonStyle(SimpleButtonStyle(icon: "folder", help: "View automation permissions pane"))
-
-                }
-                .padding(5)
-                .padding(.leading)
+//                HStack(spacing: 0) {
+//                    Image(systemName: "externaldrive")
+//                        .resizable()
+//                        .scaledToFit()
+//                        .frame(width: 20, height: 20)
+//                        .padding(.trailing)
+//                        .foregroundStyle(diskStatus ? .green : .red)
+//                        .saturation(displayMode.colorScheme == .dark ? 0.8 : 1)
+//                    Text(diskStatus ? "Full Disk permission granted" : "Full Disk permission not granted")
+//                        .font(.callout)
+//                        .foregroundStyle(.primary.opacity(0.5))
+//
+//                    Spacer()
+//
+//                    Button("") {
+//                        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles") {
+//                            NSWorkspace.shared.open(url)
+//                        }
+//                    }
+//                    .buttonStyle(SimpleButtonStyle(icon: "folder", help: "View disk permissions pane"))
+//
+//                }
+//                .padding(5)
+//                .padding(.leading)
+//
+//
+//
+//                HStack(spacing: 0) {
+//                    Image(systemName: isVersionOrHigher(version: 14) ? "accessibility" : "figure.arms.open")
+//                        .resizable()
+//                        .scaledToFit()
+//                        .frame(width: 20, height: 20)
+//                        .padding(.trailing)
+//                        .foregroundStyle(accessStatus ? .green : .red)
+//                        .saturation(displayMode.colorScheme == .dark ? 0.8 : 1)
+//                    Text(accessStatus ? "Accessibility permission granted" : "Accessibility permission not granted")
+//                        .font(.callout)
+//                        .foregroundStyle(.primary.opacity(0.5))
+//
+//                    Spacer()
+//
+//                    Button("") {
+//                        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
+//                            NSWorkspace.shared.open(url)
+//                        }
+//                    }
+//                    .buttonStyle(SimpleButtonStyle(icon: "folder", help: "View accessibility permissions pane"))
+//
+//                }
+//                .padding(5)
+//                .padding(.leading)
+//
+//
+//                HStack(spacing: 0) {
+//                    Image(systemName: "gearshape.2")
+//                        .resizable()
+//                        .scaledToFit()
+//                        .frame(width: 20, height: 20)
+//                        .padding(.trailing)
+//                        .foregroundStyle(autoStatus ? .green : .red)
+//                        .saturation(displayMode.colorScheme == .dark ? 0.8 : 1)
+//                    Text(autoStatus ? "Automation permission granted" : "Automation permission not granted")
+//                        .font(.callout)
+//                        .foregroundStyle(.primary.opacity(0.5))
+//
+//                    Spacer()
+//
+//                    Button("") {
+//                        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Automation") {
+//                            NSWorkspace.shared.open(url)
+//                        }
+//                    }
+//                    .buttonStyle(SimpleButtonStyle(icon: "folder", help: "View automation permissions pane"))
+//
+//                }
+//                .padding(5)
+//                .padding(.leading)
 
 
 
@@ -291,7 +286,7 @@ struct GeneralSettingsTab: View {
                         .saturation(displayMode.colorScheme == .dark ? 0.8 : 1)
                     Text(sentinel ? "Detecting when apps are moved to Trash" : "**NOT** detecting when apps are moved to Trash")
                         .font(.callout)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(.primary.opacity(0.5))
                     Spacer()
 
                     Toggle(isOn: $sentinel, label: {
@@ -332,7 +327,7 @@ struct GeneralSettingsTab: View {
                         .saturation(displayMode.colorScheme == .dark ? 0.8 : 1)
                     Text(appState.finderExtensionEnabled ? "Context menu extension for Finder is enabled" : "Context menu extension for Finder is disabled")
                         .font(.callout)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(.primary.opacity(0.5))
                     InfoButton(text: "Enabling the extension will allow you to right click apps in Finder and quickly uninstall them with Pearcleaner")
 
                     Spacer()
@@ -362,33 +357,14 @@ struct GeneralSettingsTab: View {
                 }
                 .padding(.vertical, 5)
 
-
-
-
-
-
-                Spacer()
             }
             .onAppear {
-                checkAllPermissions(appState: appState) { results in
-                    updateOnMain {
-                        appState.permissionResults = results
-                    }
-                    diskStatus = results.fullDiskAccess
-                    accessStatus = results.accessibility
-                    autoStatus = results.automation
-                    if results.allPermissionsGranted {
-                        updateOnMain {
-                            appState.permissionsOkay = true
-                        }
-                    }
-                }
                 appState.updateExtensionStatus()
             }
 
         }
         .padding(20)
-        .frame(width: 500, height: 710)
+        .frame(width: 500)//, height: 710)
 
     }
 

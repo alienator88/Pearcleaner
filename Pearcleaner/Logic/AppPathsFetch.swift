@@ -8,7 +8,7 @@
 import Foundation
 import AppKit
 import SwiftUI
-
+import AlinFoundation
 
 class AppPathFinder {
     private var appInfo: AppInfo

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AlinFoundation
 
 class WindowSettings {
     private let windowWidthKey = "windowWidthKey"

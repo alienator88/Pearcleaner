@@ -122,7 +122,7 @@ extension View {
 //                        content: { item, isSelected in
 //                            Text(item)
 //                                .font(.callout)
-//                                .foregroundColor(isSelected ? Color("mode") : Color("mode").opacity(0.5))
+//                                .foregroundColor(isSelected ? .primary : .primary.opacity(0.5))
 //                                .padding(.horizontal)
 //                                .padding(.bottom, 5)
 //                                .frame(width: 75)
@@ -161,7 +161,7 @@ extension View {
 //                        content: { item, isSelected in
 //                            Text(item)
 //                                .font(.callout)
-//                                .foregroundColor(isSelected ? Color("mode") : Color("mode").opacity(0.5) )
+//                                .foregroundColor(isSelected ? .primary : .primary.opacity(0.5) )
 //                                .padding(.horizontal)
 //                                .padding(.bottom, 5)
 //                                .frame(width: 75)
@@ -198,7 +198,7 @@ extension View {
 //                        content: { item, isSelected in
 //                            Text(item)
 //                                .font(.callout)
-//                                .foregroundColor(isSelected ? Color("mode") : Color("mode").opacity(0.5) )
+//                                .foregroundColor(isSelected ? .primary : .primary.opacity(0.5) )
 //                                .padding(.horizontal)
 //                                .padding(.bottom, 5)
 //                                .frame(width: 65)

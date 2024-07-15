@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import AlinFoundation
 
 struct FilesView: View {
     @EnvironmentObject var appState: AppState
@@ -51,7 +52,7 @@ struct FilesView: View {
                 VStack {
                     Spacer()
                     Text("Searching the file system").font(.title3)
-                        .foregroundStyle((Color("mode").opacity(0.5)))
+                        .foregroundStyle((.primary.opacity(0.5)))
 
                     ProgressView()
                         .progressViewStyle(.linear)
@@ -59,7 +60,7 @@ struct FilesView: View {
 
                     Text("\(elapsedTime)")
                         .font(.title).monospacedDigit()
-                        .foregroundStyle((Color("mode").opacity(0.5)))
+                        .foregroundStyle((.primary.opacity(0.5)))
                         .opacity(elapsedTime == 0 ? 0 : 1)
                         .contentTransition(.numericText())
 
@@ -133,7 +134,7 @@ struct FilesView: View {
                                     Text("\(appState.appInfo.bundleIdentifier)")
                                         .lineLimit(1)
                                         .font(.title3)
-                                        .foregroundStyle((Color("mode").opacity(0.5)))
+                                        .foregroundStyle((.primary.opacity(0.5)))
                                 }
                                 .padding(.leading)
 
@@ -143,7 +144,7 @@ struct FilesView: View {
 
                                     Text("\(displaySizeTotal)").font(.title).fontWeight(.bold).help("Total size on disk")
                                     Text("\(appState.appInfo.fileSize.count == 1 ? "\(appState.selectedItems.count) / \(appState.appInfo.fileSize.count) item" : "\(appState.selectedItems.count) / \(appState.appInfo.fileSize.count) items")")
-                                        .font(.callout).foregroundStyle((Color("mode").opacity(0.5)))
+                                        .font(.callout).foregroundStyle((.primary.opacity(0.5)))
                                 }
 
                             }
@@ -177,11 +178,11 @@ struct FilesView: View {
                             if appState.appInfo.webApp {
                                 Text("web")
                                     .font(.footnote)
-                                    .foregroundStyle(Color("mode").opacity(0.5))
+                                    .foregroundStyle(.primary.opacity(0.5))
                                     .frame(minWidth: 30, minHeight: 15)
                                     .padding(2)
                                     .padding(.horizontal, 2)
-                                    .background(Color("mode").opacity(0.1))
+                                    .background(.primary.opacity(0.1))
                                     .clipShape(.capsule)
                                     .help("This is a web app")
 
@@ -190,11 +191,11 @@ struct FilesView: View {
                             if appState.appInfo.wrapped {
                                 Text("iOS")
                                     .font(.footnote)
-                                    .foregroundStyle(Color("mode").opacity(0.5))
+                                    .foregroundStyle(.primary.opacity(0.5))
                                     .frame(minWidth: 30, minHeight: 15)
                                     .padding(2)
                                     .padding(.horizontal, 2)
-                                    .background(Color("mode").opacity(0.1))
+                                    .background(.primary.opacity(0.1))
                                     .clipShape(.capsule)
                                     .help("This is a wrapped iOS app")
 
@@ -203,11 +204,11 @@ struct FilesView: View {
                             if appState.appInfo.arch != .empty {
                                 Text("\(appState.appInfo.arch)")
                                     .font(.footnote)
-                                    .foregroundStyle(Color("mode").opacity(0.5))
+                                    .foregroundStyle(.primary.opacity(0.5))
                                     .frame(minWidth: 30, minHeight: 15)
                                     .padding(2)
                                     .padding(.horizontal, 2)
-                                    .background(Color("mode").opacity(0.1))
+                                    .background(.primary.opacity(0.1))
                                     .clipShape(.capsule)
                                     .help("This bundle's architecture is \(appState.appInfo.arch)")
 
@@ -215,11 +216,11 @@ struct FilesView: View {
 
                             Text(appState.appInfo.system ? "system" : "user")
                                 .font(.footnote)
-                                .foregroundStyle(Color("mode").opacity(0.5))
+                                .foregroundStyle(.primary.opacity(0.5))
                                 .frame(minWidth: 30, minHeight: 15)
                                 .padding(2)
                                 .padding(.horizontal, 2)
-                                .background(Color("mode").opacity(0.1))
+                                .background(.primary.opacity(0.1))
                                 .clipShape(.capsule)
                                 .help("This app is located in \(appState.appInfo.system ? "/Applications" : "\(home)")")
                         }
@@ -293,7 +294,7 @@ struct FilesView: View {
                         Spacer()
 
 
-                        InfoButton(text: "Always double-check the files/folders marked for removal. In some rare cases, Pearcleaner may find some unrelated files when app names are too similar.", color: Color("mode").opacity(0.5), warning: true, edge: .top)
+                        InfoButton(text: "Always double-check the files/folders marked for removal. In some rare cases, Pearcleaner may find some unrelated files when app names are too similar.", color: .primary.opacity(0.5), warning: true, edge: .top)
                             .padding(.top)
 
 
@@ -470,7 +471,7 @@ struct FileDetailsItem: View {
                                 VStack {
                                     Spacer()
                                     RoundedRectangle(cornerRadius: 10)
-                                        .fill(Color("mode").opacity(0.5))
+                                        .fill(.primary.opacity(0.5))
                                         .frame(height: 1.5)
                                         .offset(y: 3)
                                 }

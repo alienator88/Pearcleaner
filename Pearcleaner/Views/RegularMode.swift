@@ -7,10 +7,11 @@
 
 import Foundation
 import SwiftUI
+import AlinFoundation
 
 struct RegularMode: View {
     @EnvironmentObject var appState: AppState
-    @EnvironmentObject var themeSettings: ThemeSettings
+    @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var locations: Locations
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 280
@@ -36,7 +37,7 @@ struct RegularMode: View {
                         ProgressView() {
                             Text("Gathering app details")
                                 .font(.callout)
-                                .foregroundStyle(Color("mode").opacity(0.5))
+                                .foregroundStyle(.primary.opacity(0.5))
                                 .padding(5)
                         }
                         Spacer()
@@ -49,11 +50,11 @@ struct RegularMode: View {
                 }
 
             }
-            .background(backgroundView(themeSettings: themeSettings, darker: true, glass: glass))
+            .background(backgroundView(themeManager: themeManager, darker: true, glass: glass))
             .transition(.opacity)
 
             SlideableDivider(dimension: $sidebarWidth)
-                .background(backgroundView(themeSettings: themeSettings))
+                .background(backgroundView(themeManager: themeManager))
                 .zIndex(3)
 
 
@@ -75,7 +76,7 @@ struct RegularMode: View {
                 Spacer()
             }
             .zIndex(2)
-            .background(backgroundView(themeSettings: themeSettings))
+            .background(backgroundView(themeManager: themeManager))
         }
         .frame(minWidth: 900, minHeight: 600)
         .edgesIgnoringSafeArea(.all)

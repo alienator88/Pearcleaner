@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import AlinFoundation
 
 
 // Get all apps from /Applications and ~/Applications
@@ -212,14 +213,14 @@ func moveFilesToTrash(appState: AppState, at fileURLs: [URL], completion: @escap
         if let scriptObject = NSAppleScript(source: scriptSource) {
             let output: NSAppleEventDescriptor = scriptObject.executeAndReturnError(&error)
             if let error = error {
-                checkAllPermissions(appState: appState) { results in
-                    appState.permissionResults = results
-                    if !results.allPermissionsGranted {
-                        updateOnMain {
-                            appState.permissionsOkay = false
-                        }
-                    }
-                }
+//                checkAllPermissions(appState: appState) { results in
+//                    appState.permissionResults = results
+//                    if !results.allPermissionsGranted {
+//                        updateOnMain {
+//                            appState.permissionsOkay = false
+//                        }
+//                    }
+//                }
                 printOS("Trash Error: \(error)")
                 DispatchQueue.main.async {
                     completion(false)  // Indicate failure
@@ -261,14 +262,14 @@ func undoTrash(appState: AppState, completion: @escaping () -> Void = {}) {
         if let scriptObject = NSAppleScript(source: scriptSource) {
             let output: NSAppleEventDescriptor = scriptObject.executeAndReturnError(&error)
             if let error = error {
-                checkAllPermissions(appState: appState) { results in
-                    appState.permissionResults = results
-                    if !results.allPermissionsGranted {
-                        updateOnMain {
-                            appState.permissionsOkay = false
-                        }
-                    }
-                }
+//                checkAllPermissions(appState: appState) { results in
+//                    appState.permissionResults = results
+//                    if !results.allPermissionsGranted {
+//                        updateOnMain {
+//                            appState.permissionsOkay = false
+//                        }
+//                    }
+//                }
                 printOS("Undo Trash Error: \(error)")
             } else if let outputString = output.stringValue {
                 printOS(outputString)

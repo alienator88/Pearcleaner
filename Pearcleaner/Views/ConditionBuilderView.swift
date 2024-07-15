@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import AlinFoundation
 
 struct ConditionBuilderView: View {
     @Binding var showAlert:Bool

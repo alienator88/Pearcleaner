@@ -22,15 +22,14 @@ class AppState: ObservableObject {
     @Published var currentView = CurrentDetailsView.empty
     @Published var showAlert: Bool = false
     @Published var sidebar: Bool = true
-    @Published var releases = [Release]()
     @Published var progressBar: (String, Double) = ("Ready", 0.0)
     @Published var reload: Bool = false
     @Published var showProgress: Bool = false
     @Published var finderExtensionEnabled: Bool = false
-    @Published var updateAvailable: Bool = false
+//    @Published var updateAvailable: Bool = false
     @Published var featureAvailable: Bool = false
-    @Published var permissionsOkay: Bool = true
-    @Published var permissionResults: PermissionsCheckResults?
+//    @Published var permissionsOkay: Bool = true
+//    @Published var permissionResults: PermissionsCheckResults?
     @Published var showUninstallAlert: Bool = false
     @Published var oneShotMode: Bool = false
     @Published var showConditionBuilder: Bool = false
@@ -182,8 +181,6 @@ enum CurrentDetailsView:Int
 
 enum NewWindow:Int
 {
-    case update
-    case no_update
     case perm
     case feature
 }

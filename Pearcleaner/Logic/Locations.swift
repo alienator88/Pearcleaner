@@ -26,7 +26,7 @@ class Locations: ObservableObject {
         self.tempDir = tempDir
         
         self.apps = Category(name: "Apps", paths: [
-            "\(home)",
+//            "\(home)", //MARK: Disable searching for files in user's home folder
             "\(home)/Library",
             "\(home)/Library/Application Scripts",
             "\(home)/Library/Application Support",

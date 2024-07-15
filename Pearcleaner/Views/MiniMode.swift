@@ -8,10 +8,11 @@
 
 import Foundation
 import SwiftUI
+import AlinFoundation
 
 struct MiniMode: View {
     @EnvironmentObject var appState: AppState
-    @EnvironmentObject var themeSettings: ThemeSettings
+    @EnvironmentObject var themeManager: ThemeManager
     @Binding var search: String
     @State private var showSys: Bool = true
     @State private var showUsr: Bool = true
@@ -38,7 +39,7 @@ struct MiniMode: View {
         }
         .frame(minWidth: 300, minHeight: 345)
         .edgesIgnoringSafeArea(.all)
-        .background(backgroundView(themeSettings: themeSettings, glass: glass))
+        .background(backgroundView(themeManager: themeManager, glass: glass))
         
     }
 }
@@ -151,7 +152,7 @@ struct MiniAppView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
-    @EnvironmentObject var themeSettings: ThemeSettings
+    @EnvironmentObject var themeManager: ThemeManager
 //    @State private var animateGradient: Bool = false
     @Binding var search: String
     @State private var showSys: Bool = true
@@ -176,7 +177,7 @@ struct MiniAppView: View {
                     ProgressView() {
                         Text("Gathering app details")
                             .font(.callout)
-                            .foregroundStyle(Color("mode").opacity(0.5))
+                            .foregroundStyle(.primary.opacity(0.5))
                             .padding(5)
                     }
                     Spacer()
@@ -190,7 +191,7 @@ struct MiniAppView: View {
         .transition(.opacity)
         .frame(minWidth: 300, minHeight: 370)
         .edgesIgnoringSafeArea(.all)
-        .background(backgroundView(themeSettings: themeSettings, glass: glass).padding(-80))
+        .background(backgroundView(themeManager: themeManager, glass: glass).padding(-80))
         .transition(.opacity)
         .popover(isPresented: $showPopover, arrowEdge: .trailing) {
             VStack {
@@ -204,7 +205,7 @@ struct MiniAppView: View {
 
             }
             .interactiveDismissDisabled(popoverStay)
-            .background(backgroundView(themeSettings: themeSettings, glass: glass).padding(-80))
+            .background(backgroundView(themeManager: themeManager, glass: glass).padding(-80))
             .frame(width: 650, height: 500)
 
         }

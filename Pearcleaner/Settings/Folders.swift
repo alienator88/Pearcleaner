@@ -15,12 +15,13 @@
 import Foundation
 import SwiftUI
 import AppKit
+import AlinFoundation
 
 struct FolderSettingsTab: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
     @EnvironmentObject var fsm: FolderSettingsManager
-    @EnvironmentObject var themeSettings: ThemeSettings
+    @EnvironmentObject var themeManager: ThemeManager
     @State private var isHovered = false
 
     var body: some View {
@@ -82,8 +83,9 @@ struct FolderSettingsTab: View {
                 }
                 .scrollIndicators(.automatic)
                 .padding()
-//                .background(Color("mode").opacity(0.05))
-                .background(backgroundView(themeSettings: themeSettings, darker: true))
+                .frame(height: 200)
+//                .background(.primary.opacity(0.05))
+                .background(backgroundView(themeManager: themeManager, darker: true))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 .onDrop(of: ["public.file-url"], isTargeted: nil) { providers -> Bool in
                     providers.forEach { provider in
@@ -175,8 +177,9 @@ struct FolderSettingsTab: View {
                 }
                 .scrollIndicators(.automatic)
                 .padding()
-                .background(backgroundView(themeSettings: themeSettings, darker: true))
-//                .background(Color("mode").opacity(0.05))
+                .frame(height: 200)
+                .background(backgroundView(themeManager: themeManager, darker: true))
+//                .background(.primary.opacity(0.05))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 .onDrop(of: ["public.file-url"], isTargeted: nil) { providers -> Bool in
                     providers.forEach { provider in
@@ -200,15 +203,11 @@ struct FolderSettingsTab: View {
                     Spacer()
                 }
                 .padding(.top, 5)
-
-
-                Spacer()
             }
-
 
         }
         .padding(20)
-        .frame(width: 500, height: 600)
+        .frame(width: 500)//, height: 600)
 
     }
 

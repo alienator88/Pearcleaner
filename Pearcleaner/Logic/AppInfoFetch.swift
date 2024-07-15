@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import AlinFoundation
 
 class AppInfoFetcher {
     static let fileManager = FileManager.default

@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import AlinFoundation
 
 class DeeplinkManager {
     @Binding var showPopover: Bool

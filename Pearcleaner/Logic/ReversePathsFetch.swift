@@ -7,6 +7,7 @@
 
 import Foundation
 import AppKit
+import AlinFoundation
 
 class ReversePathsSearcher {
     private let appState: AppState

@@ -8,10 +8,11 @@
 
 import SwiftUI
 import Foundation
+import AlinFoundation
 
 struct TipsSettingsTab: View {
     @EnvironmentObject var appState: AppState
-    @EnvironmentObject var themeSettings: ThemeSettings
+    @EnvironmentObject var themeManager: ThemeManager
 
     var body: some View {
         VStack {
@@ -37,16 +38,16 @@ struct TipsSettingsTab: View {
                 .padding()
             }
             .scrollIndicators(.visible)
-            .frame(minHeight: 0, maxHeight: .infinity)
+            .frame(minHeight: 0, maxHeight: 500)
             .frame(minWidth: 0, maxWidth: .infinity)
-            .background(backgroundView(themeSettings: themeSettings, darker: true))
+            .background(backgroundView(themeManager: themeManager, darker: true))
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .padding(.bottom)
 
 
         }
         .padding(20)
-        .frame(width: 500, height: 520)
+        .frame(width: 500)//, height: 520)
     }
 
 }

@@ -6,11 +6,17 @@
 //
 
 import SwiftUI
+import AlinFoundation
 
 struct AboutSettingsTab: View {
     @EnvironmentObject var appState: AppState
+    @State private var disclose = false
+    @State private var discloseCredits = false
 
     var body: some View {
+
+        let sponsors = Sponsor.sponsors
+        let credits = Credit.credits
 
         VStack(alignment: .center) {
 
@@ -39,7 +45,7 @@ struct AboutSettingsTab: View {
                         Text("GitHub")
                         Text("Submit a bug or feature request via the repo")
                             .font(.callout)
-                            .foregroundStyle(Color("mode").opacity(0.5))
+                            .foregroundStyle(.primary.opacity(0.5))
 
                     }
                     Spacer()
@@ -53,133 +59,92 @@ struct AboutSettingsTab: View {
                 .padding(.leading)
                 .padding(.top, 5)
 
-
-                Divider()
-                    .padding()
-
             }
 
-            VStack(alignment: .leading) {
+            Divider()
 
-                HStack() {
-                    Text("Credits").font(.title2)
-                    Spacer()
-                }
-                .padding(.leading)
-                .padding(.bottom)
+            HStack{
+                Image(systemName: "dollarsign.circle")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 20, height: 20)
+                    .padding(.trailing)
 
-                HStack{
-                    Image(systemName: "paintbrush.pointed")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 20, height: 20)
-                        .padding(.trailing)
-
-                    VStack(alignment: .leading){
-                        Text("Microsoft Designer")
-                        Text("Application icon resource")
-                            .font(.callout)
-                            .foregroundStyle(Color("mode").opacity(0.5))
-
+                DisclosureGroup(isExpanded: $disclose, content: {
+                    ScrollView {
+                        LazyVStack(alignment: .leading, spacing: 0) {
+                            ForEach(sponsors) { sponsor in
+                                HStack() {
+                                    Text(sponsor.name)
+                                    Spacer()
+                                    Button(""){
+                                        NSWorkspace.shared.open(sponsor.url)
+                                    }
+                                    .buttonStyle(SimpleButtonStyle(icon: "link", help: "View", padding: 5))
+                                }
+                            }
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
-                    Spacer()
-                    Button(""){
-                        NSWorkspace.shared.open(URL(string: "https://designer.microsoft.com/image-creator")!)
-                    }
-                    .buttonStyle(SimpleButtonStyle(icon: "link", help: "View"))
-
-                }
-                .padding(5)
-                .padding(.leading)
+                    .frame(height: 100)
+                    .padding(5)
+                }, label: {
+                    Text("GitHub Sponsors")
+                        .font(.title2)
+                })
 
 
-
-                HStack{
-                    Image(systemName: "applescript")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 20, height: 20)
-                        .padding(.trailing)
-
-                    VStack(alignment: .leading){
-                        Text("Privacy Guides")
-                        Text("Inspired by open-source appcleaner script from Sun Knudsen")
-                            .font(.callout)
-                            .foregroundStyle(Color("mode").opacity(0.5))
-                            .lineLimit(2)
-
-                    }
-                    Spacer()
-
-                    Button("") {
-                        NSWorkspace.shared.open(URL(string: "https://sunknudsen.com/privacy-guides/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative")!)
-                    }
-                    .buttonStyle(SimpleButtonStyle(icon: "link", help: "View"))
-
-                }
-                .padding(5)
-                .padding(.leading)
-
-
-                HStack{
-                    Image(systemName: "trash")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 20, height: 20)
-                        .padding(.trailing)
-
-                    VStack(alignment: .leading){
-                        Text("AppCleaner")
-                        Text("Inspired by AppCleaner from Freemacsoft")
-                            .font(.callout)
-                            .foregroundStyle(Color("mode").opacity(0.5))
-
-                    }
-                    Spacer()
-                    Button(""){
-                        NSWorkspace.shared.open(URL(string: "https://freemacsoft.net/appcleaner/")!)
-                    }
-                    .buttonStyle(SimpleButtonStyle(icon: "link", help: "View"))
-
-                }
-                .padding(5)
-                .padding(.leading)
-
-
-                HStack{
-                    Image(systemName: "dollarsign.circle.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 20, height: 20)
-                        .padding(.trailing)
-
-                    VStack(alignment: .leading){
-                        Text("Apple Developer Account Sponsor")
-                        Text("Many thanks to user DharsanB")
-                            .font(.callout)
-                            .foregroundStyle(Color("mode").opacity(0.5))
-
-                    }
-                    Spacer()
-                    Button(""){
-                        NSWorkspace.shared.open(URL(string: "https://github.com/dharsanb")!)
-                    }
-                    .buttonStyle(SimpleButtonStyle(icon: "link", help: "View"))
-
-                }
-                .padding(5)
-                .padding(.leading)
-
-                Spacer()
 
             }
+            .padding(5)
+            .padding(.leading)
 
-            Spacer()
+            Divider()
+
+            HStack{
+                Image(systemName: "info.circle")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 20, height: 20)
+                    .padding(.trailing)
+
+                DisclosureGroup(isExpanded: $discloseCredits, content: {
+                    VStack(alignment: .leading) {
+
+                        ForEach(credits) { credit in
+                            HStack{
+                                VStack(alignment: .leading){
+                                    Text(credit.name)
+                                    Text(credit.description)
+                                        .font(.callout)
+                                        .foregroundStyle(.primary.opacity(0.5))
+
+                                }
+                                Spacer()
+                                Button(""){
+                                    NSWorkspace.shared.open(credit.url)
+                                }
+                                .buttonStyle(SimpleButtonStyle(icon: "link", help: "View"))
+
+                            }
+                        }
+                    }
+                    .padding(5)
+                }, label: {
+                    Text("Credits")
+                        .font(.title2)
+                })
+
+
+
+            }
+            .padding(5)
+            .padding(.leading)
 
             Text("Made with ❤️ by Alin Lupascu").font(.footnote).padding(.bottom)
         }
         .padding(20)
-        .frame(width: 500, height: 600)
+        .frame(width: 500)
 
     }
 }
@@ -205,5 +170,34 @@ extension Bundle {
         infoDictionary?["CFBundleVersion"] as? String ?? "N/A"
     }
 
+}
+
+//MARK: Sponsors
+struct Sponsor: Identifiable {
+    let id = UUID()
+    let name: String
+    let url: URL
+
+    static let sponsors: [Sponsor] = [
+        Sponsor(name: "DharsanB", url: URL(string: "https://github.com/dharsanb")!),
+        Sponsor(name: "MadMacMad", url: URL(string: "https://github.com/MadMacMad")!),
+        Sponsor(name: "Butterdawgs", url: URL(string: "https://github.com/butterdawgs")!),
+        Sponsor(name: "y-u-s-u-f", url: URL(string: "https://github.com/y-u-s-u-f")!)
+    ]
+}
+
+//MARK: Credits
+struct Credit: Identifiable {
+    let id = UUID()
+//    let icon: String
+    let name: String
+    let description: String
+    let url: URL
+
+    static let credits: [Credit] = [
+        Credit(name: "Microsoft Designer", description: "Application icon resource", url: URL(string: "https://designer.microsoft.com/image-creator")!),
+        Credit(name: "Privacy Guides", description: "Inspired by open-source appcleaner script from Sun Knudsen", url: URL(string: "https://sunknudsen.com/privacy-guides/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative")!),
+        Credit(name: "AppCleaner", description: "Inspired by AppCleaner from Freemacsoft", url: URL(string: "https://freemacsoft.net/appcleaner/")!)
+    ]
 }
 

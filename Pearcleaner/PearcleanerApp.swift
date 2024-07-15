@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AppKit
+import AlinFoundation
 
 @main
 struct PearcleanerApp: App {
@@ -14,10 +15,11 @@ struct PearcleanerApp: App {
     @StateObject var appState = AppState()
     @StateObject var locations = Locations()
     @StateObject var fsm = FolderSettingsManager()
+    @StateObject private var updater = Updater(owner: "alienator88", repo: "Pearcleaner")
+    @StateObject private var themeManager = ThemeManager.shared
+    @StateObject private var permissionManager = PermissionManager.shared
     @State private var windowSettings = WindowSettings()
-    @AppStorage("settings.updater.updateFrequency") private var updateFrequency: UpdateFrequency = .daily
     @AppStorage("settings.permissions.hasLaunched") private var hasLaunched: Bool = false
-    @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.general.miniview") private var miniView: Bool = true
     @AppStorage("settings.general.features") private var features: String = ""
@@ -42,8 +44,10 @@ struct PearcleanerApp: App {
             .environmentObject(appState)
             .environmentObject(locations)
             .environmentObject(fsm)
-            .environmentObject(ThemeSettings.shared)
-            .preferredColorScheme(displayMode.colorScheme)
+            .environmentObject(themeManager)
+            .environmentObject(updater)
+            .environmentObject(permissionManager)
+            .preferredColorScheme(themeManager.displayMode.colorScheme)
             .handlesExternalEvents(preferring: Set(arrayLiteral: "pear"), allowing: Set(arrayLiteral: "*"))
             .onOpenURL(perform: { url in
                 let deeplinkManager = DeeplinkManager(showPopover: $showPopover)
@@ -76,6 +80,11 @@ struct PearcleanerApp: App {
                     secondaryButton: .cancel()
                 )
             }
+            .sheet(isPresented: $updater.showSheet, content: {
+                /// This will show the update sheet based on the frequency check function only
+                updater.getUpdateView()
+                    .environmentObject(themeManager)
+            })
             .onAppear {
 
                 if miniView {
@@ -98,38 +107,25 @@ struct PearcleanerApp: App {
                             .environmentObject(locations)
                             .environmentObject(appState)
                             .environmentObject(fsm)
-                            .environmentObject(ThemeSettings.shared)
-                            .preferredColorScheme(displayMode.colorScheme)
+                            .environmentObject(themeManager)
+                            .environmentObject(permissionManager)
+                            .preferredColorScheme(themeManager.displayMode.colorScheme)
                     }, icon: selectedMenubarIcon)
                 }
-
+                
 
 #if !DEBUG
                 Task {
 
+                    /// This will check for updates on load based on the update frequency
+                    updater.checkAndUpdateIfNeeded()
+
+                    /// Get new features
+                    getFeatures(appState: appState, features: $features)
 
                     // Make sure App Support folder exists in the future if needed for storage
                     //MARK: This is not needed any longer as the update file is stored in /tmp directory. Use in the future for any local db functions the app might need
-//                    ensureApplicationSupportFolderExists(appState: appState)
-
-                    // Check for updates after app launch
-                    checkAllPermissions(appState: appState) { results in
-                        appState.permissionResults = results
-                        if results.allPermissionsGranted {
-                            // Get GH releases
-                            loadGithubReleases(appState: appState, releaseOnly: true)
-                            
-                            if updateFrequency != .none {
-                                // Update checker
-                                checkAndUpdateIfNeeded(appState: appState)
-                            }
-                            // Get new features
-                            getFeatures(appState: appState, features: $features)
-
-                        }
-                    }
-
-
+                    //                    ensureApplicationSupportFolderExists(appState: appState)
 
                 }
 
@@ -140,7 +136,7 @@ struct PearcleanerApp: App {
         .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentMinSize)
         .commands {
-            AppCommands(appState: appState, locations: locations, fsm: fsm)
+            AppCommands(appState: appState, locations: locations, fsm: fsm, updater: updater, themeManager: themeManager)
 //            CommandGroup(replacing: .newItem, addition: { })
             
         }
@@ -153,9 +149,11 @@ struct PearcleanerApp: App {
                 .environmentObject(appState)
                 .environmentObject(locations)
                 .environmentObject(fsm)
-                .environmentObject(ThemeSettings.shared)
+                .environmentObject(themeManager)
+                .environmentObject(updater)
+                .environmentObject(permissionManager)
                 .toolbarBackground(.clear)
-                .preferredColorScheme(displayMode.colorScheme)
+                .preferredColorScheme(themeManager.displayMode.colorScheme)
         }
     }
 }
@@ -164,8 +162,8 @@ struct PearcleanerApp: App {
 
 
 class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
-    var observer: NSObjectProtocol?
     var windowSettings = WindowSettings()
+    var themeManager = ThemeManager.shared
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         let menubarEnabled = UserDefaults.standard.bool(forKey: "settings.menubar.enabled")
@@ -178,72 +176,20 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
         findAndSetWindowFrame(named: ["Pearcleaner"], windowSettings: windowSettings)
         
-        self.appearanceCheck()
+        themeManager.setupAppearance()
 
         if menubarEnabled {
             findAndHideWindows(named: ["Pearcleaner"])
             NSApplication.shared.setActivationPolicy(.accessory)
         }
 
-        // Start observing the appearance change
-        observer = DistributedNotificationCenter.default().addObserver(forName: NSNotification.Name(rawValue: "AppleInterfaceThemeChangedNotification"), object: nil, queue: OperationQueue.main) { [weak self] _ in
-            let themeMode = UserDefaults.standard.string(forKey: "settings.general.selectedTheme")
-            let themesEnabled = UserDefaults.standard.bool(forKey: "settings.interface.themesEnabled")
-            if themeMode == "Auto" && !themesEnabled {
-                self?.appearanceCheck(reset: true)
-            }
-        }
-
     }
 
 
-    func appearanceCheck(reset: Bool = false) {
-
-        let themesEnabled = UserDefaults.standard.bool(forKey: "settings.interface.themesEnabled")
-        let themeMode = UserDefaults.standard.string(forKey: "settings.general.selectedTheme")
-
-        if themesEnabled {
-            // Custom theming is enabled; user's manual settings take priority.
-        } else {
-            switch themeMode {
-            case "Auto":
-                // Auto mode: adjust theme based on system appearance.
-                ThemeSettings.shared.setupInitialColor()
-                updateDisplayModeBasedOnThemeColor()
-            case "Light", "Dark":
-                // Specific mode set: ensure theme color matches the display mode.
-                ThemeSettings.shared.setupInitialColor(forcedDarkMode: themeMode == "Dark")
-                UserDefaults.standard.set(themeMode == "Dark" ? DisplayMode.dark.rawValue : DisplayMode.light.rawValue, forKey: "displayMode")
-            default:
-                // No specific handling needed or unrecognized mode; fall back to default behavior.
-                printOS("No specific theme mode set or unrecognized value.")
-            }
-        }
-
-        if reset && themeMode == "Auto" {
-            let dark = isDarkMode()
-            ThemeSettings.shared.resetToDefault(dark: dark)
-        }
-
-    }
-
-    func updateDisplayModeBasedOnThemeColor() {
-        let themeColor = ThemeSettings.shared.themeColor
-        if let isLightColor = themeColor.isLight() {
-            let shouldUseDarkMode = !isLightColor
-            UserDefaults.standard.set(shouldUseDarkMode ? DisplayMode.dark.rawValue : DisplayMode.light.rawValue, forKey: "displayMode")
-        } else {
-            // Default to system preference if brightness cannot be determined.
-            let dark = isDarkMode()
-            UserDefaults.standard.set(dark ? DisplayMode.dark.rawValue : DisplayMode.light.rawValue, forKey: "displayMode")
-        }
-    }
 
     func applicationWillTerminate(_ notification: Notification) {
-        // Stop observing the appearance change
-        if let observer = observer {
-            DistributedNotificationCenter.default().removeObserver(observer)
-        }
+        // Perform actions on app termination here
+
     }
 
 
@@ -255,10 +201,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             for window in sender.windows {
                 window.title = "Pearcleaner"
                 window.makeKeyAndOrderFront(self)
-                print(windowSettings.loadWindowSettings())
                 updateOnMain(after: 0.1, {
                     resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")
-                    print(window.title)
                 })
             }
             return true // Indicates you've handled the re-open

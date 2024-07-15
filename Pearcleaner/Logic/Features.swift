@@ -7,6 +7,8 @@
 
 import Foundation
 import SwiftUI
+import AlinFoundation
+
 
 func getFeatures(appState: AppState, features: Binding<String>) {
     let url = URL(string: "https://api.github.com/repos/alienator88/Pearcleaner/contents/features.json")!
@@ -78,7 +80,7 @@ struct FeatureNotificationView: View {
                     .foregroundStyle(.white)
 
 
-                Text("Show")
+                Text("Check")
                     .foregroundStyle(.white)
 
             }
@@ -103,7 +105,7 @@ struct FeatureNotificationView: View {
         }
         .frame(height: 30)
         .padding(5)
-        .background(Color("mode").opacity(0.05))
+        .background(.primary.opacity(0.05))
         .clipShape(RoundedRectangle(cornerRadius: 6))
         .padding(.horizontal)
         .padding(.bottom)

@@ -39,10 +39,10 @@ struct PermView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 20, height: 20)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(.primary.opacity(0.5))
                     Text("Full Disk Access permission to find and delete files in system paths")
                         .font(.callout)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(.primary.opacity(0.5))
                 }
 
                 HStack(alignment: .top, spacing: 20) {
@@ -50,10 +50,10 @@ struct PermView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 20, height: 20)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(.primary.opacity(0.5))
                     Text("Accessibility permission to delete files via Finder")
                         .font(.callout)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(.primary.opacity(0.5))
                 }
 
                 HStack(alignment: .top, spacing: 20) {
@@ -61,10 +61,10 @@ struct PermView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 20, height: 20)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(.primary.opacity(0.5))
                     Text("Automation permission to perform extension actions via Finder")
                         .font(.callout)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(.primary.opacity(0.5))
                 }
 
                 HStack(alignment: .top, spacing: 20) {
@@ -72,10 +72,10 @@ struct PermView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 20, height: 20)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(.primary.opacity(0.5))
                     Text("Reminders permission to find and delete some reminder files that certain apps cache")
                         .font(.callout)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(.primary.opacity(0.5))
                 }
 
                 HStack(alignment: .top, spacing: 20) {
@@ -83,10 +83,10 @@ struct PermView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 20, height: 20)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(.primary.opacity(0.5))
                     Text("Add Pearcleaner in both Privacy panes via the + or by dragging the app over the pane. If the app is already pre-populated in the list, just toggle On if neeeded. Restart app when both permissions are granted")
                         .font(.callout)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(.primary.opacity(0.5))
                 }
             }
             .padding(.horizontal, 20)
@@ -97,7 +97,7 @@ struct PermView: View {
                 
                 if #available(macOS 14.0, *) {
                     SettingsLink {}
-                        .buttonStyle(SimpleButtonBrightStyle(icon: "gear", label: "Settings", help: "Check permissions in Settings", color: Color("mode")))
+                        .buttonStyle(SimpleButtonBrightStyle(icon: "gear", label: "Settings", help: "Check permissions in Settings", color: .primary))
                 } else {
                     Button("Settings") {
                         if #available(macOS 13.0, *) {

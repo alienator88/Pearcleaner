@@ -8,82 +8,34 @@
 
 import SwiftUI
 import Foundation
+import AlinFoundation
 
 struct UpdateSettingsTab: View {
     @EnvironmentObject var appState: AppState
-    @EnvironmentObject var themeSettings: ThemeSettings
+    @EnvironmentObject var themeManager: ThemeManager
+    @EnvironmentObject var updater: Updater
     @State private var showAlert = false
     @State private var showDone = false
-    @AppStorage("settings.updater.nextUpdateDate") private var nextUpdateDate = Date.now.timeIntervalSinceReferenceDate
-    @AppStorage("settings.updater.updateFrequency") private var updateFrequency: UpdateFrequency = .daily
 
     var body: some View {
         VStack {
 
-                VStack {
-                    HStack(spacing: 0) {
-
-                        Text("Pearcleaner will check for updates")
-                            .font(.callout)
-                            .foregroundStyle(Color("mode").opacity(0.5))
-
-                        Spacer()
-
-                        Picker("", selection: $updateFrequency) {
-                            ForEach(UpdateFrequency.allCases, id: \.self) { frequency in
-                                Text(frequency.rawValue).tag(frequency)
-                            }
-                        }
-                        .onChange(of: updateFrequency) { frequency in
-                            frequency.updateNextUpdateDate()
-                        }
-                        .pickerStyle(themeSettings: themeSettings)
-                    }
-
-                    if updateFrequency != .none {
-                        HStack {
-                            Text("Next update check: \(formattedDate(Date(timeIntervalSinceReferenceDate: nextUpdateDate)))")
-                                .font(.footnote)
-                                .foregroundStyle(Color("mode").opacity(0.3))
-                            Spacer()
-                        }
-                    }
-                }
+            FrequencyView(updater: updater)
                 .padding(5)
                 .padding(.horizontal)
 
-            ScrollView {
-                VStack() {
-                    ForEach(appState.releases, id: \.id) { release in
-                        VStack(alignment: .leading) {
-                            LabeledDivider(label: "\(release.tag_name)")
-                            Text(release.modifiedBody)
-                        }
-                        
-                    }
-                }
-                .padding()
-            }
-            .frame(minHeight: 0, maxHeight: .infinity)
-            .frame(minWidth: 0, maxWidth: .infinity)
-//            .background(Color("mode").opacity(0.05))
-            .background(backgroundView(themeSettings: themeSettings, darker: true))
-            .clipShape(RoundedRectangle(cornerRadius: 8))
-            .padding(.bottom)
-
-            Text("Showing last 3 releases")
-                .font(.callout)
-                .foregroundStyle(Color("mode").opacity(0.5))
-
+            ReleasesView(updater: updater)
+                .frame(maxWidth: .infinity, maxHeight: 400)
+                .backgroundAF(opacity: 0.5)
             
             
             HStack(alignment: .center, spacing: 20) {
                 Spacer()
                 
                 Button(""){
-                    loadGithubReleases(appState: appState)
+                    updater.checkForUpdates(showSheet: false)
                 }
-                .buttonStyle(SimpleButtonStyle(icon: "arrow.uturn.left.circle", help: "Reload release notes"))
+                .buttonStyle(SimpleButtonStyle(icon: "arrow.uturn.left.circle", help: "Refresh updater"))
 
                 Spacer()
 
@@ -94,12 +46,12 @@ struct UpdateSettingsTab: View {
 
                 Spacer()
 
-                Button(""){
-                    loadGithubReleases(appState: appState, manual: true)
-                }
-                .buttonStyle(SimpleButtonStyle(icon: "arrow.down.square", help: "Check for updates"))
-
-                Spacer()
+//                Button(""){
+//                    updater.checkForUpdates(showSheet: true)
+//                }
+//                .buttonStyle(SimpleButtonStyle(icon: "arrow.down.square", help: "Check for updates"))
+//
+//                Spacer()
 
                 Button(""){
                     NSWorkspace.shared.open(URL(string: "https://github.com/alienator88/Pearcleaner/releases")!)
@@ -110,11 +62,9 @@ struct UpdateSettingsTab: View {
             }
             .padding()
             
-            
-            
         }
         .padding(20)
-        .frame(width: 500, height: 520)
+        .frame(width: 500)//, height: 520)
     }
     
 }

@@ -7,10 +7,11 @@
 
 import Foundation
 import SwiftUI
+import AlinFoundation
 
 struct AppListItems: View {
     @EnvironmentObject var appState: AppState
-    @EnvironmentObject var themeSettings: ThemeSettings
+    @EnvironmentObject var themeManager: ThemeManager
     @Binding var search: String
     @State private var isHovered = false
     @State private var windowSettings = WindowSettings()
@@ -60,21 +61,21 @@ struct AppListItems: View {
                 if appInfo.webApp {
                     Text("web")
                         .font(.footnote)
-                        .foregroundStyle(Color("mode").opacity(0.3))
+                        .foregroundStyle(.primary.opacity(0.3))
                         .frame(minWidth: 30, minHeight: 15)
                         .padding(2)
                         .background(
-                            Capsule().strokeBorder(Color("mode").opacity(0.3), lineWidth: 1)
+                            Capsule().strokeBorder(.primary.opacity(0.3), lineWidth: 1)
                         )
                 }
                 if appInfo.wrapped {
                     Text("iOS")
                         .font(.footnote)
-                        .foregroundStyle(Color("mode").opacity(0.3))
+                        .foregroundStyle(.primary.opacity(0.3))
                         .frame(minWidth: 30, minHeight: 15)
                         .padding(2)
                         .background(
-                            Capsule().strokeBorder(Color("mode").opacity(0.3), lineWidth: 1)
+                            Capsule().strokeBorder(.primary.opacity(0.3), lineWidth: 1)
                         )
                 }
 
@@ -83,7 +84,7 @@ struct AppListItems: View {
                 } else {
                     Text("\(isHovered ? "v\(appInfo.appVersion)" : formatByte(size: bundleSize).human)")
                         .font(.system(size: (isHovered || isSelected) ? 12 : 10))
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(.primary.opacity(0.5))
                 }
             }
 
@@ -112,14 +113,14 @@ struct AppListItems: View {
         }
         .background{
             Rectangle()
-                .fill(isSelected && !glass ? themeSettings.themeColor : .clear)
+                .fill(isSelected && !glass ? themeManager.pickerColor : .clear)
         }
         .overlay{
             if (isHovered || isSelected) {
                 HStack {
                     Spacer()
                     RoundedRectangle(cornerRadius: 50)
-                        .fill(isSelected ? Color("pear") : Color("mode").opacity(0.5))
+                        .fill(isSelected ? Color("pear") : .primary.opacity(0.5))
                         .frame(width: isSelected ? 4 : 2, height: 25)
                         .padding(.trailing, 5)
                 }

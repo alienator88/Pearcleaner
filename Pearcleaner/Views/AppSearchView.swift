@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import AlinFoundation
 
 struct AppSearchView: View {
     @EnvironmentObject var appState: AppState
-    @EnvironmentObject var themeSettings: ThemeSettings
+    @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var locations: Locations
     @EnvironmentObject var fsm: FolderSettingsManager
+    @EnvironmentObject var updater: Updater
+    @EnvironmentObject var permissionManager: PermissionManager
     var glass: Bool
     var sidebarWidth: Double
     var menubarEnabled: Bool
@@ -21,6 +24,7 @@ struct AppSearchView: View {
     @State private var showMenu = false
     @State private var showSys: Bool = true
     @State private var showUsr: Bool = true
+    @State private var showFeatures: Bool = false
     @Binding var isMenuBar: Bool
     @AppStorage("settings.general.selectedSortAppsList") var selectedSortAlpha: Bool = true
     @State private var progress: Double = 0.0
@@ -32,13 +36,24 @@ struct AppSearchView: View {
                 .frame(height: 10)
                 .padding(.top, !isMenuBar ? 25 : 0)
 
-            if appState.updateAvailable {
-                UpdateNotificationView(appState: appState)
-            } else if !appState.permissionsOkay {
-                PermissionsNotificationView(appState: appState)
+            if updater.updateAvailable {
+                UpdateButton(updater: updater, dark: false, opacity: 1)
+                    .padding(.horizontal)
+            } else if let _ = permissionManager.results, !permissionManager.allPermissionsGranted {
+                PermissionsView(dark: false, opacity: 1)
+                    .padding(.horizontal)
             } else if appState.featureAvailable {
-                FeatureNotificationView(appState: appState)
+                AlertNotification(label: "New Message!", icon: "star", buttonAction: {
+                    showFeatures.toggle()
+                }, btnColor: Color.blue, opacity: 1, themeManager: themeManager)
+                .padding(.horizontal)
+                .sheet(isPresented: $showFeatures, content: {
+                    FeatureView()
+                        .environmentObject(themeManager)
+                })
             }
+
+
 
             AppsListView(search: $search, showPopover: $showPopover, filteredApps: filteredApps)
 
@@ -137,7 +152,7 @@ struct AppSearchView: View {
 
                         }
                         .padding()
-                        .background(backgroundView(themeSettings: themeSettings, glass: glass).padding(-80))
+                        .background(backgroundView(themeManager: themeManager, glass: glass).padding(-80))
 
                     }
                 }
@@ -148,6 +163,7 @@ struct AppSearchView: View {
             .padding(.horizontal, search.isEmpty ? 10 : 5)
             .padding(.vertical, 5)
         }
+
     }
 
     private var filteredApps: [AppInfo] {
@@ -181,7 +197,7 @@ struct SimpleSearchStyle: TextFieldStyle {
     @State var padding: CGFloat = 5
     @State var sidebar: Bool = true
     @EnvironmentObject var appState: AppState
-    @EnvironmentObject var themeSettings: ThemeSettings
+    @EnvironmentObject var themeManager: ThemeManager
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
 
@@ -189,7 +205,7 @@ struct SimpleSearchStyle: TextFieldStyle {
 
         ZStack {
             RoundedRectangle(cornerRadius: 8)
-                .fill(darker ? themeSettings.themeColor.darker(by: 5) : themeSettings.themeColor)
+                .fill(darker ? themeManager.pickerColor.adjustBrightness(5) : themeManager.pickerColor)
                 .allowsHitTesting(false)
                 .frame(height: 30)
                 .opacity((glass && (sidebar || !mini && !menubarEnabled)) || mini || menubarEnabled ? 0.0 : 1.0)
@@ -201,7 +217,7 @@ struct SimpleSearchStyle: TextFieldStyle {
                         Spacer()
                         Text(isFocused ? "Type to search" : "Click to search")
                             .font(.subheadline)
-                            .foregroundColor(Color("mode").opacity(0.2))
+                            .foregroundColor(.primary.opacity(0.2))
                         Spacer()
                     }
                 }
@@ -243,7 +259,7 @@ struct SimpleSearchStyle: TextFieldStyle {
 extension NSTextView {
     open override var frame: CGRect {
         didSet {
-            insertionPointColor = NSColor(Color("mode").opacity(0.2))//.clear
+            insertionPointColor = NSColor(.primary.opacity(0.2))//.clear
         }
     }
 }

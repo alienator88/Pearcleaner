@@ -9,24 +9,25 @@
 import Foundation
 import SwiftUI
 import ServiceManagement
+import AlinFoundation
 
 struct InterfaceSettingsTab: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
     @EnvironmentObject var fsm: FolderSettingsManager
-    @EnvironmentObject var themeSettings: ThemeSettings
+    @EnvironmentObject var themeManager: ThemeManager
     @State private var windowSettings = WindowSettings()
     @Environment(\.colorScheme) var colorScheme: ColorScheme
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
-    @AppStorage("displayMode") var displayMode: DisplayMode = .system
-    @AppStorage("settings.general.selectedTab") private var selectedTab: CurrentTabView = .general
+//    @AppStorage("displayMode") var displayMode: DisplayMode = .system
+//    @AppStorage("settings.general.selectedTab") private var selectedTab: CurrentTabView = .general
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.general.dark") var isDark: Bool = true
-    @AppStorage("settings.interface.themesEnabled") var themesEnabled: Bool = false
+//    @AppStorage("settings.interface.themesEnabled") var themesEnabled: Bool = false
     @AppStorage("settings.general.popover") private var popoverStay: Bool = true
     @AppStorage("settings.general.miniview") private var miniView: Bool = true
-    @AppStorage("settings.general.selectedTheme") var selectedTheme: String = "Auto"
+//    @AppStorage("settings.general.selectedTheme") var selectedTheme: String = "Auto"
     @AppStorage("settings.interface.selectedMenubarIcon") var selectedMenubarIcon: String = "pear-4"
     @State private var isLaunchAtLoginEnabled: Bool = false
     @Binding var showPopover: Bool
@@ -51,11 +52,11 @@ struct InterfaceSettingsTab: View {
                         .scaledToFit()
                         .frame(width: 20, height: 20)
                         .padding(.trailing)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(.primary.opacity(0.5))
                     VStack(alignment: .leading, spacing: 5) {
                         Text("\(glass ? "Transparent material enabled" : "Transparent material disabled")")
                             .font(.callout)
-                            .foregroundStyle(Color("mode").opacity(0.5))
+                            .foregroundStyle(.primary.opacity(0.5))
                     }
                     Spacer()
                     Toggle(isOn: $glass, label: {
@@ -69,191 +70,213 @@ struct InterfaceSettingsTab: View {
                 .padding(.leading)
 
 
-
                 HStack(spacing: 0) {
-                    Image(systemName: themesEnabled ? "paintpalette.fill" : "paintpalette")
+                    Image(systemName: "paintbrush")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 20, height: 20)
                         .padding(.trailing)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(.primary.opacity(0.5))
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("\(themesEnabled ? "Custom theming is enabled" : "Custom theming is disabled")")
+                        Text("Theme Mode")
                             .font(.callout)
-                            .foregroundStyle(Color("mode").opacity(0.5))
+                            .foregroundStyle(.primary.opacity(0.5))
                     }
                     Spacer()
-                    Toggle(isOn: $themesEnabled, label: {
-                    })
-                    .toggleStyle(.switch)
-                    .onChange(of: themesEnabled) { newVal in
-                        themeSettings.resetToDefault(dark: isDarkMode())
-                        if isDarkMode() {
-                            displayMode.colorScheme = .dark
-                        } else {
-                            displayMode.colorScheme = .light
+                    ThemeSettingsView(opacity: 1)
+                        .onChange(of: themeManager.displayMode) { _ in
+                            MenuBarExtraManager.shared.restartMenuBarExtra()
                         }
-                        if newVal {
-                            selectedTheme = isDarkMode() ? "Dark" : "Light"
-                        } else {
-                            selectedTheme = "Auto"
-                        }
-                    }
                 }
                 .padding(5)
                 .padding(.leading)
 
 
-                /// Show theme color selector if theming is enabled
-                if themesEnabled {
-                    HStack(spacing: 0) {
-                        Image(systemName: "paintbrush")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 20, height: 20)
-                            .padding(.trailing)
-                            .foregroundStyle(Color("mode").opacity(0.5))
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text("Application theme color")
-                                .font(.callout)
-                                .foregroundStyle(Color("mode").opacity(0.5))
-                        }
 
-                        Spacer()
+//                HStack(spacing: 0) {
+//                    Image(systemName: themesEnabled ? "paintpalette.fill" : "paintpalette")
+//                        .resizable()
+//                        .scaledToFit()
+//                        .frame(width: 20, height: 20)
+//                        .padding(.trailing)
+//                        .foregroundStyle(.primary.opacity(0.5))
+//                    VStack(alignment: .leading, spacing: 5) {
+//                        Text("\(themesEnabled ? "Custom theming is enabled" : "Custom theming is disabled")")
+//                            .font(.callout)
+//                            .foregroundStyle(.primary.opacity(0.5))
+//                    }
+//                    Spacer()
+//                    Toggle(isOn: $themesEnabled, label: {
+//                    })
+//                    .toggleStyle(.switch)
+//                    .onChange(of: themesEnabled) { newVal in
+//                        themeManager.resetToDefault(dark: isDarkMode())
+//                        if isDarkMode() {
+//                            displayMode.colorScheme = .dark
+//                        } else {
+//                            displayMode.colorScheme = .light
+//                        }
+//                        if newVal {
+//                            selectedTheme = isDarkMode() ? "Dark" : "Light"
+//                        } else {
+//                            selectedTheme = "Auto"
+//                        }
+//                    }
+//                }
+//                .padding(5)
+//                .padding(.leading)
+//
+//
+//                /// Show theme color selector if theming is enabled
+//                if themesEnabled {
+//                    HStack(spacing: 0) {
+//                        Image(systemName: "paintbrush")
+//                            .resizable()
+//                            .scaledToFit()
+//                            .frame(width: 20, height: 20)
+//                            .padding(.trailing)
+//                            .foregroundStyle(.primary.opacity(0.5))
+//                        VStack(alignment: .leading, spacing: 5) {
+//                            Text("Application theme color")
+//                                .font(.callout)
+//                                .foregroundStyle(.primary.opacity(0.5))
+//                        }
+//
+//                        Spacer()
+//
+//
+//                        HStack(spacing: 10) {
+//                            Button("") {
+//                                themeManager.setPreset(preset: "pearcleaner", colorScheme: displayMode)
+//                            }
+////                            .buttonStyle(PresetColor(fillColor: themeManager.getColorForPreset(preset: "pearcleaner", colorScheme: displayMode), label: "Pearcleaner"))
+//
+//                            Button("") {
+//                                themeManager.setPreset(preset: "dracula", colorScheme: displayMode)
+//                            }
+////                            .buttonStyle(PresetColor(fillColor: themeManager.getColorForPreset(preset: "dracula", colorScheme: displayMode), label: "Dracula"))
+//
+//                            Button("") {
+//                                themeManager.setPreset(preset: "solarized", colorScheme: displayMode)
+//                            }
+////                            .buttonStyle(PresetColor(fillColor: themeManager.getColorForPreset(preset: "solarized", colorScheme: displayMode), label: "Solarized"))
+//
+//                            Button("") {
+//                                themeManager.setPreset(preset: "macOS", colorScheme: displayMode)
+//                            }
+////                            .buttonStyle(PresetColor(fillColor: themeManager.getColorForPreset(preset: "macOS", colorScheme: displayMode), label: "macOS"))
+//                        }
+//
+//
+//
+//
+//                        Spacer()
+//
+//                        ColorPicker("", selection: $themeManager.themeColor, supportsOpacity: false)
+//                            .onChange(of: themeManager.themeColor) { newValue in
+//                                themeManager.saveThemeColor()
+//                            }
+//                            .padding(.horizontal, 5)
+//
+//                        Button("") {
+//                            themeManager.resetToDefault(dark: isDarkMode())
+//                            if isDarkMode() {
+//                                displayMode.colorScheme = .dark
+//                            } else {
+//                                displayMode.colorScheme = .light
+//                            }
+//                            selectedTheme = isDarkMode() ? "Dark" : "Light"
+//                        }
+//                        .buttonStyle(SimpleButtonStyle(icon: "arrow.uturn.left.circle", help: "Reset color to default"))
+//
+//                    }
+//                    .padding(5)
+//                    .padding(.leading)
+//                }
 
 
-                        HStack(spacing: 10) {
-                            Button("") {
-                                themeSettings.setPreset(preset: "pearcleaner", colorScheme: displayMode)
-                            }
-                            .buttonStyle(PresetColor(fillColor: themeSettings.getColorForPreset(preset: "pearcleaner", colorScheme: displayMode), label: "Pearcleaner"))
 
-                            Button("") {
-                                themeSettings.setPreset(preset: "dracula", colorScheme: displayMode)
-                            }
-                            .buttonStyle(PresetColor(fillColor: themeSettings.getColorForPreset(preset: "dracula", colorScheme: displayMode), label: "Dracula"))
-
-                            Button("") {
-                                themeSettings.setPreset(preset: "solarized", colorScheme: displayMode)
-                            }
-                            .buttonStyle(PresetColor(fillColor: themeSettings.getColorForPreset(preset: "solarized", colorScheme: displayMode), label: "Solarized"))
-
-                            Button("") {
-                                themeSettings.setPreset(preset: "macOS", colorScheme: displayMode)
-                            }
-                            .buttonStyle(PresetColor(fillColor: themeSettings.getColorForPreset(preset: "macOS", colorScheme: displayMode), label: "macOS"))
-                        }
-
-
-
-
-                        Spacer()
-
-                        ColorPicker("", selection: $themeSettings.themeColor, supportsOpacity: false)
-                            .onChange(of: themeSettings.themeColor) { newValue in
-                                themeSettings.saveThemeColor()
-                            }
-                            .padding(.horizontal, 5)
-
-                        Button("") {
-                            themeSettings.resetToDefault(dark: isDarkMode())
-                            if isDarkMode() {
-                                displayMode.colorScheme = .dark
-                            } else {
-                                displayMode.colorScheme = .light
-                            }
-                            selectedTheme = isDarkMode() ? "Dark" : "Light"
-                        }
-                        .buttonStyle(SimpleButtonStyle(icon: "arrow.uturn.left.circle", help: "Reset color to default"))
-
-                    }
-                    .padding(5)
-                    .padding(.leading)
-                }
-
-
-
-                HStack(spacing: 0) {
-                    Image(systemName: {
-                        switch displayMode {
-                        case .dark:
-                            return "moon.fill"
-                        case .light:
-                            return "sun.max.fill"
-                        case .system:
-                            return "circle.righthalf.filled"
-                        }
-                    }())
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 20, height: 20)
-                        .padding(.trailing)
-                        .foregroundStyle(Color("mode").opacity(0.5))
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text(themesEnabled ? "Application font color" : "Application color mode")
-                            .font(.callout)
-                            .foregroundStyle(Color("mode").opacity(0.5))
-                    }
-                    InfoButton(text: "When custom theming is disabled, you can set the application color mode to follow the operating system using Auto. Or manually set it to Light or Dark. When custom theming is enabled, this selector acts mainly as a font color picker between light or dark to match your custom theme color.")
-                    Spacer()
-                    Picker("", selection: $selectedTheme) {
-                        if !themesEnabled {
-                            Text("Auto")
-                                .tag("Auto")
-                        }
-                        Text(themesEnabled ? "Light" : "Dark")
-                            .tag("Dark")
-                        Text(themesEnabled ? "Dark" : "Light")
-                            .tag("Light")
-                    }
-                    .pickerStyle(themeSettings: themeSettings)
-                    .onChange(of: selectedTheme) { newTheme in
-                        switch newTheme {
-                        case "Auto":
-                            if isDarkMode() {
-                                displayMode.colorScheme = .dark
-                            } else {
-                                displayMode.colorScheme = .light
-                            }
-                            if !themesEnabled {
-                                themeSettings.resetToDefault(dark: isDarkMode())
-                            }
-                            // Refresh foreground colors
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                self.selectedTab = .interface
-                            }
-                            if menubarEnabled{
-                                MenuBarExtraManager.shared.restartMenuBarExtra()
-                            }
-                        case "Dark":
-                            displayMode.colorScheme = .dark
-                            if !themesEnabled {
-                                themeSettings.resetToDefault(dark: true)
-                            }
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                self.selectedTab = .interface
-                            }
-                            if menubarEnabled{
-                                MenuBarExtraManager.shared.restartMenuBarExtra()
-                            }
-                        case "Light":
-                            displayMode.colorScheme = .light
-                            if !themesEnabled {
-                                themeSettings.resetToDefault(dark: false)
-                            }
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                self.selectedTab = .interface
-                            }
-                            if menubarEnabled{
-                                MenuBarExtraManager.shared.restartMenuBarExtra()
-                            }
-                        default:
-                            break
-                        }
-                    }
-                }
-                .padding(5)
-                .padding(.leading)
+//                HStack(spacing: 0) {
+//                    Image(systemName: {
+//                        switch displayMode {
+//                        case .dark:
+//                            return "moon.fill"
+//                        case .light:
+//                            return "sun.max.fill"
+//                        case .system:
+//                            return "circle.righthalf.filled"
+//                        }
+//                    }())
+//                        .resizable()
+//                        .scaledToFit()
+//                        .frame(width: 20, height: 20)
+//                        .padding(.trailing)
+//                        .foregroundStyle(.primary.opacity(0.5))
+//                    VStack(alignment: .leading, spacing: 5) {
+//                        Text(themesEnabled ? "Application font color" : "Application color mode")
+//                            .font(.callout)
+//                            .foregroundStyle(.primary.opacity(0.5))
+//                    }
+//                    InfoButton(text: "When custom theming is disabled, you can set the application color mode to follow the operating system using Auto. Or manually set it to Light or Dark. When custom theming is enabled, this selector acts mainly as a font color picker between light or dark to match your custom theme color.")
+//                    Spacer()
+//                    Picker("", selection: $selectedTheme) {
+//                        if !themesEnabled {
+//                            Text("Auto")
+//                                .tag("Auto")
+//                        }
+//                        Text(themesEnabled ? "Light" : "Dark")
+//                            .tag("Dark")
+//                        Text(themesEnabled ? "Dark" : "Light")
+//                            .tag("Light")
+//                    }
+//                    .buttonStyle(.borderless)
+//                    .onChange(of: selectedTheme) { newTheme in
+//                        switch newTheme {
+//                        case "Auto":
+//                            if isDarkMode() {
+//                                displayMode.colorScheme = .dark
+//                            } else {
+//                                displayMode.colorScheme = .light
+//                            }
+//                            if !themesEnabled {
+//                                themeManager.resetToDefault(dark: isDarkMode())
+//                            }
+//                            // Refresh foreground colors
+//                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+//                                self.selectedTab = .interface
+//                            }
+//                            if menubarEnabled{
+//                                MenuBarExtraManager.shared.restartMenuBarExtra()
+//                            }
+//                        case "Dark":
+//                            displayMode.colorScheme = .dark
+//                            if !themesEnabled {
+//                                themeManager.resetToDefault(dark: true)
+//                            }
+//                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+//                                self.selectedTab = .interface
+//                            }
+//                            if menubarEnabled{
+//                                MenuBarExtraManager.shared.restartMenuBarExtra()
+//                            }
+//                        case "Light":
+//                            displayMode.colorScheme = .light
+//                            if !themesEnabled {
+//                                themeManager.resetToDefault(dark: false)
+//                            }
+//                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+//                                self.selectedTab = .interface
+//                            }
+//                            if menubarEnabled{
+//                                MenuBarExtraManager.shared.restartMenuBarExtra()
+//                            }
+//                        default:
+//                            break
+//                        }
+//                    }
+//                }
+//                .padding(5)
+//                .padding(.leading)
 
 
                 
@@ -271,16 +294,16 @@ struct InterfaceSettingsTab: View {
                 .padding(.leading)
 
                 HStack(spacing: 0) {
-                    Image(systemName: isMacOS14OrHigher() ? "square.resize.up" : "macwindow.on.rectangle")
+                    Image(systemName: isVersionOrHigher(version: 14) ? "square.resize.up" : "macwindow.on.rectangle")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 20, height: 20)
                         .padding(.trailing)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(.primary.opacity(0.5))
                     VStack(alignment: .leading, spacing: 5) {
                         Text("\(mini ? "Mini window mode" : "Full size window mode")")
                             .font(.callout)
-                            .foregroundStyle(Color("mode").opacity(0.5))
+                            .foregroundStyle(.primary.opacity(0.5))
                     }
                     Spacer()
                     Toggle(isOn: $mini, label: {
@@ -297,8 +320,8 @@ struct InterfaceSettingsTab: View {
                                         .environmentObject(locations)
                                         .environmentObject(appState)
                                         .environmentObject(fsm)
-                                        .environmentObject(ThemeSettings.shared)
-                                        .preferredColorScheme(displayMode.colorScheme)
+                                        .environmentObject(themeManager)
+                                        .preferredColorScheme(themeManager.displayMode.colorScheme)
                                 }) {
                                     resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")
                                 }
@@ -313,8 +336,8 @@ struct InterfaceSettingsTab: View {
                                         .environmentObject(locations)
                                         .environmentObject(appState)
                                         .environmentObject(fsm)
-                                        .environmentObject(ThemeSettings.shared)
-                                        .preferredColorScheme(displayMode.colorScheme)
+                                        .environmentObject(themeManager)
+                                        .preferredColorScheme(themeManager.displayMode.colorScheme)
                                 }
                                 ) {
                                     resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")
@@ -334,11 +357,11 @@ struct InterfaceSettingsTab: View {
                         .scaledToFit()
                         .frame(width: 20, height: 20)
                         .padding(.trailing)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(.primary.opacity(0.5))
                     VStack(alignment: .leading, spacing: 5) {
                         Text("\(miniView ? "Show apps list on startup" : "Show drop target on startup")")
                             .font(.callout)
-                            .foregroundStyle(Color("mode").opacity(0.5))
+                            .foregroundStyle(.primary.opacity(0.5))
                     }
 
                     InfoButton(text: "In mini window mode, you can have Pearcleaner startup to the Apps List view or the Drop Target view.")
@@ -361,11 +384,11 @@ struct InterfaceSettingsTab: View {
                         .scaledToFit()
                         .frame(width: 20, height: 20)
                         .padding(.trailing)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(.primary.opacity(0.5))
                     VStack(alignment: .leading, spacing: 5) {
                         Text("\(popoverStay ? "Popover window will stay on top" : "Popover window will not stay on top")")
                             .font(.callout)
-                            .foregroundStyle(Color("mode").opacity(0.5))
+                            .foregroundStyle(.primary.opacity(0.5))
                     }
 
                     InfoButton(text: "In mini window mode, if you pin the Files popover on top, clicking away from the window will not dismiss it. Otherwise, it will dismiss by clicking anywhere outside the popover.")
@@ -397,11 +420,11 @@ struct InterfaceSettingsTab: View {
                         .scaledToFit()
                         .frame(width: 20, height: 20)
                         .padding(.trailing)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(.primary.opacity(0.5))
                     VStack(alignment: .leading, spacing: 5) {
                         Text("\(menubarEnabled ? "Menubar icon enabled" : "Menubar icon disabled")")
                             .font(.callout)
-                            .foregroundStyle(Color("mode").opacity(0.5))
+                            .foregroundStyle(.primary.opacity(0.5))
                     }
                     InfoButton(text: "When menubar icon is enabled, the main app window and dock icon will be disabled since the app will be put in accessory mode.")
                     Spacer()
@@ -415,8 +438,8 @@ struct InterfaceSettingsTab: View {
                                     .environmentObject(locations)
                                     .environmentObject(appState)
                                     .environmentObject(fsm)
-                                    .environmentObject(ThemeSettings.shared)
-                                    .preferredColorScheme(displayMode.colorScheme)
+                                    .environmentObject(themeManager)
+                                    .preferredColorScheme(themeManager.displayMode.colorScheme)
                             }, icon: selectedMenubarIcon)
                             NSApplication.shared.setActivationPolicy(.accessory)
                             findAndHideWindows(named: ["Pearcleaner"])
@@ -431,8 +454,8 @@ struct InterfaceSettingsTab: View {
                                             .environmentObject(locations)
                                             .environmentObject(appState)
                                             .environmentObject(fsm)
-                                            .environmentObject(ThemeSettings.shared)
-                                            .preferredColorScheme(displayMode.colorScheme)
+                                            .environmentObject(themeManager)
+                                            .preferredColorScheme(themeManager.displayMode.colorScheme)
                                     }) {
                                         resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")
                                     }
@@ -442,8 +465,8 @@ struct InterfaceSettingsTab: View {
                                             .environmentObject(locations)
                                             .environmentObject(appState)
                                             .environmentObject(fsm)
-                                            .environmentObject(ThemeSettings.shared)
-                                            .preferredColorScheme(displayMode.colorScheme)
+                                            .environmentObject(themeManager)
+                                            .preferredColorScheme(themeManager.displayMode.colorScheme)
                                     }) {
                                         resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")
                                     }
@@ -464,11 +487,11 @@ struct InterfaceSettingsTab: View {
                         .scaledToFit()
                         .frame(width: 20, height: 20)
                         .padding(.trailing)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(.primary.opacity(0.5))
                     VStack(alignment: .leading, spacing: 5) {
                         Text("\(isLaunchAtLoginEnabled ? "Launch at login enabled" : "Launch at login disabled")")
                             .font(.callout)
-                            .foregroundStyle(Color("mode").opacity(0.5))
+                            .foregroundStyle(.primary.opacity(0.5))
                     }
                     InfoButton(text: "This setting will affect Pearcleaner whether you're running in menubar mode or regular mode. If you disable menubar icon, you might want to disable this as well so Pearcleaner doesn't start on login.")
                     Spacer()
@@ -505,11 +528,11 @@ struct InterfaceSettingsTab: View {
                         .scaledToFit()
                         .frame(width: 20, height: 20)
                         .padding(.trailing)
-                        .foregroundStyle(Color("mode").opacity(0.5))
+                        .foregroundStyle(.primary.opacity(0.5))
                     VStack(alignment: .leading, spacing: 5) {
                         Text("Menubar icon")
                             .font(.callout)
-                            .foregroundStyle(Color("mode").opacity(0.5))
+                            .foregroundStyle(.primary.opacity(0.5))
                     }
                     Spacer()
                     Picker("", selection: $selectedMenubarIcon) {
@@ -533,19 +556,18 @@ struct InterfaceSettingsTab: View {
                     .onChange(of: selectedMenubarIcon) { newValue in
                         MenuBarExtraManager.shared.swapMenuBarIcon(icon: newValue)
                     }
-                    .pickerStyle(themeSettings: themeSettings)
-
+                    .buttonStyle(.borderless)
 
                 }
                 .padding(5)
                 .padding(.leading)
 
-                Spacer()
+//                Spacer()
             }
 
         }
         .padding(20)
-        .frame(width: 500, height: themesEnabled ? 600 : 580)
+        .frame(width: 500)//, height: themesEnabled ? 600 : 580)
 
     }
 

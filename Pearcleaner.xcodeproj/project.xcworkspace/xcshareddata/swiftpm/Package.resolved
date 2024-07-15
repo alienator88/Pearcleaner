@@ -1,4 +1,5 @@
 {
+  "originHash" : "2070782a951fcb2eef783fefb42bac8d9dafc68491164378649d1525b43cbc83",
   "pins" : [
     {
       "identity" : "filewatcher",
@@ -10,5 +11,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

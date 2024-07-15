@@ -6,11 +6,13 @@
 //
 
 import SwiftUI
+import AlinFoundation
 
 struct SettingsView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var fsm: FolderSettingsManager
-    @EnvironmentObject var themeSettings: ThemeSettings
+    @EnvironmentObject var themeManager: ThemeManager
+    @EnvironmentObject var updater: Updater
     @Binding var showPopover: Bool
     @Binding var search: String
     @AppStorage("settings.general.glass") private var glass: Bool = false
@@ -42,6 +44,7 @@ struct SettingsView: View {
                     Label(CurrentTabView.update.title, systemImage: "cloud")
                 }
                 .tag(CurrentTabView.update)
+                .environmentObject(themeManager)
 
             TipsSettingsTab()
                 .tabItem {
@@ -55,7 +58,7 @@ struct SettingsView: View {
                 }
                 .tag(CurrentTabView.about)
         }
-        .background(backgroundView(themeSettings: themeSettings, glass: glass))
+        .background(backgroundView(themeManager: themeManager, glass: glass))
 
     }
 
