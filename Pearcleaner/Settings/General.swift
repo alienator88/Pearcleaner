@@ -15,24 +15,11 @@ struct GeneralSettingsTab: View {
     @EnvironmentObject var locations: Locations
     @EnvironmentObject var themeManager: ThemeManager
     @State private var windowSettings = WindowSettings()
-    @AppStorage("settings.general.glass") private var glass: Bool = true
-    @AppStorage("settings.general.mini") private var mini: Bool = false
-    @AppStorage("settings.general.dark") var isDark: Bool = true
-    @AppStorage("settings.general.popover") private var popoverStay: Bool = true
-    @AppStorage("settings.general.miniview") private var miniView: Bool = true
-    @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 280
-    @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.general.brew") private var brew: Bool = false
     @AppStorage("settings.general.oneshot") private var oneShotMode: Bool = false
     @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
-    @State private var diskStatus: Bool = false
-    @State private var accessStatus: Bool = false
-    @State private var autoStatus: Bool = false
-    @Binding var showPopover: Bool
-    @Binding var search: String
-    @State var selectedIndex: Int?
     @State private var isResetting = false
 
     var body: some View {
@@ -149,121 +136,6 @@ struct GeneralSettingsTab: View {
                 .padding(.leading)
 
 
-                // === Perms ================================================================================================
-
-
-//                Divider()
-//                    .padding()
-
-
-//                HStack() {
-//                    Text("Permissions").font(.title2)
-//
-////                    InfoButtonPerms()
-//
-//                    Spacer()
-//
-//                    Button("Refresh") {
-//                        checkAllPermissions(appState: appState) { results in
-//                            updateOnMain {
-//                                appState.permissionResults = results
-//                            }
-//                            diskStatus = results.fullDiskAccess
-//                            accessStatus = results.accessibility
-//                            autoStatus = results.automation
-//                            if results.allPermissionsGranted {
-//                                updateOnMain {
-//                                    appState.permissionsOkay = true
-//                                }
-//                            }
-//                        }
-//                    }
-//                    .buttonStyle(SimpleButtonStyle(icon: "arrow.triangle.2.circlepath", label: "Refresh", help: "Refresh permissions"))
-//                    .padding(.trailing, 5)
-//
-//                }
-//                .padding(.leading)
-
-
-//                HStack(spacing: 0) {
-//                    Image(systemName: "externaldrive")
-//                        .resizable()
-//                        .scaledToFit()
-//                        .frame(width: 20, height: 20)
-//                        .padding(.trailing)
-//                        .foregroundStyle(diskStatus ? .green : .red)
-//                        .saturation(displayMode.colorScheme == .dark ? 0.8 : 1)
-//                    Text(diskStatus ? "Full Disk permission granted" : "Full Disk permission not granted")
-//                        .font(.callout)
-//                        .foregroundStyle(.primary.opacity(0.5))
-//
-//                    Spacer()
-//
-//                    Button("") {
-//                        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles") {
-//                            NSWorkspace.shared.open(url)
-//                        }
-//                    }
-//                    .buttonStyle(SimpleButtonStyle(icon: "folder", help: "View disk permissions pane"))
-//
-//                }
-//                .padding(5)
-//                .padding(.leading)
-//
-//
-//
-//                HStack(spacing: 0) {
-//                    Image(systemName: isVersionOrHigher(version: 14) ? "accessibility" : "figure.arms.open")
-//                        .resizable()
-//                        .scaledToFit()
-//                        .frame(width: 20, height: 20)
-//                        .padding(.trailing)
-//                        .foregroundStyle(accessStatus ? .green : .red)
-//                        .saturation(displayMode.colorScheme == .dark ? 0.8 : 1)
-//                    Text(accessStatus ? "Accessibility permission granted" : "Accessibility permission not granted")
-//                        .font(.callout)
-//                        .foregroundStyle(.primary.opacity(0.5))
-//
-//                    Spacer()
-//
-//                    Button("") {
-//                        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
-//                            NSWorkspace.shared.open(url)
-//                        }
-//                    }
-//                    .buttonStyle(SimpleButtonStyle(icon: "folder", help: "View accessibility permissions pane"))
-//
-//                }
-//                .padding(5)
-//                .padding(.leading)
-//
-//
-//                HStack(spacing: 0) {
-//                    Image(systemName: "gearshape.2")
-//                        .resizable()
-//                        .scaledToFit()
-//                        .frame(width: 20, height: 20)
-//                        .padding(.trailing)
-//                        .foregroundStyle(autoStatus ? .green : .red)
-//                        .saturation(displayMode.colorScheme == .dark ? 0.8 : 1)
-//                    Text(autoStatus ? "Automation permission granted" : "Automation permission not granted")
-//                        .font(.callout)
-//                        .foregroundStyle(.primary.opacity(0.5))
-//
-//                    Spacer()
-//
-//                    Button("") {
-//                        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Automation") {
-//                            NSWorkspace.shared.open(url)
-//                        }
-//                    }
-//                    .buttonStyle(SimpleButtonStyle(icon: "folder", help: "View automation permissions pane"))
-//
-//                }
-//                .padding(5)
-//                .padding(.leading)
-
-
 
                 // === Sentinel =============================================================================================
 
@@ -283,7 +155,7 @@ struct GeneralSettingsTab: View {
                         .frame(width: 20, height: 20)
                         .padding(.trailing)
                         .foregroundStyle(sentinel ? .green : .red)
-                        .saturation(displayMode.colorScheme == .dark ? 0.8 : 1)
+                        .saturation(themeManager.displayMode.colorScheme == .dark ? 0.8 : 1)
                     Text(sentinel ? "Detecting when apps are moved to Trash" : "**NOT** detecting when apps are moved to Trash")
                         .font(.callout)
                         .foregroundStyle(.primary.opacity(0.5))
@@ -324,7 +196,7 @@ struct GeneralSettingsTab: View {
                         .frame(width: 20, height: 20)
                         .padding(.trailing)
                         .foregroundStyle(appState.finderExtensionEnabled ? .green : .red)
-                        .saturation(displayMode.colorScheme == .dark ? 0.8 : 1)
+                        .saturation(themeManager.displayMode.colorScheme == .dark ? 0.8 : 1)
                     Text(appState.finderExtensionEnabled ? "Context menu extension for Finder is enabled" : "Context menu extension for Finder is disabled")
                         .font(.callout)
                         .foregroundStyle(.primary.opacity(0.5))

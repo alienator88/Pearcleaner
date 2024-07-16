@@ -22,7 +22,6 @@ struct PearcleanerApp: App {
     @AppStorage("settings.permissions.hasLaunched") private var hasLaunched: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.general.miniview") private var miniView: Bool = true
-    @AppStorage("settings.general.features") private var features: String = ""
     @AppStorage("settings.general.brew") private var brew: Bool = false
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     @AppStorage("settings.menubar.mainWin") private var mainWinEnabled: Bool = false
@@ -112,7 +111,7 @@ struct PearcleanerApp: App {
                             .preferredColorScheme(themeManager.displayMode.colorScheme)
                     }, icon: selectedMenubarIcon)
                 }
-                
+
 
 #if !DEBUG
                 Task {
@@ -121,10 +120,9 @@ struct PearcleanerApp: App {
                     updater.checkAndUpdateIfNeeded()
 
                     /// Get new features
-                    getFeatures(appState: appState, features: $features)
+                    updater.checkForAnnouncement()
 
                     // Make sure App Support folder exists in the future if needed for storage
-                    //MARK: This is not needed any longer as the update file is stored in /tmp directory. Use in the future for any local db functions the app might need
                     //                    ensureApplicationSupportFolderExists(appState: appState)
 
                 }

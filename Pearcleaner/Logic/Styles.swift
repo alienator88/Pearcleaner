@@ -146,59 +146,6 @@ struct RescanButton: ButtonStyle {
 
 
 
-public struct NewFeatureView: View {
-    var text: String
-    var mini: Bool
-    @Binding var showFeature: Bool
-
-    public var body: some View {
-        VStack {
-            HStack {
-                Image(systemName: "star")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 20, height: 20)
-                Text("New features for v\((Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String)!)!")
-                    .font(.headline).bold()
-                Spacer()
-                Button("") {
-                    withAnimation(Animation.easeInOut(duration: 0.5)) {
-                        showFeature = false
-                    }
-                }
-                .buttonStyle(SimpleButtonStyle(icon: "x.circle.fill", help: "Close", color: (.primary.opacity(0.5))))
-                .onHover { isHovered in
-                    if isHovered {
-                        NSCursor.pointingHand.push()
-                    } else {
-                        NSCursor.pop()
-                    }
-                }
-            }
-            .padding()
-
-            ScrollView() {
-                Text(text)
-                    .font(.callout)
-                    .multilineTextAlignment(.leading)
-                    .padding(.trailing)
-            }
-            .padding(.horizontal)
-            .padding(.bottom)
-
-        }
-        .frame(maxWidth: mini ? 200 : 400, maxHeight: mini ? 300 : 250)
-        .background(.ultraThinMaterial)
-        .cornerRadius(10)
-        .overlay(
-            RoundedRectangle(cornerRadius: 10)
-                .strokeBorder(.primary.opacity(0.2), lineWidth: 0.6)
-        )
-        .padding()
-    }
-}
-
-
 public struct SlideableDivider: View {
     @EnvironmentObject private var themeManager: ThemeManager
     @Binding var dimension: Double

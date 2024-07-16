@@ -38,8 +38,8 @@ struct TipsSettingsTab: View {
                 .padding()
             }
             .scrollIndicators(.visible)
-            .frame(minHeight: 0, maxHeight: 500)
-            .frame(minWidth: 0, maxWidth: .infinity)
+            .frame(height: 500)
+            .frame(maxWidth: .infinity)
             .background(backgroundView(themeManager: themeManager, darker: true))
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .padding(.bottom)
@@ -47,7 +47,7 @@ struct TipsSettingsTab: View {
 
         }
         .padding(20)
-        .frame(width: 500)//, height: 520)
+        .frame(width: 500)
     }
 
 }

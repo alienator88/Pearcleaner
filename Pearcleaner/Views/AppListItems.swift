@@ -120,7 +120,7 @@ struct AppListItems: View {
                 HStack {
                     Spacer()
                     RoundedRectangle(cornerRadius: 50)
-                        .fill(isSelected ? Color("pear") : .primary.opacity(0.5))
+                        .fill(isSelected ? Color("AccentColor") : .primary.opacity(0.5))
                         .frame(width: isSelected ? 4 : 2, height: 25)
                         .padding(.trailing, 5)
                 }

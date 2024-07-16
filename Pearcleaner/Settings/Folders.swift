@@ -5,12 +5,6 @@
 //  Created by Alin Lupascu on 3/20/24.
 //
 
-//
-//  General.swift
-//  Pearcleaner
-//
-//  Created by Alin Lupascu on 11/5/23.
-//
 
 import Foundation
 import SwiftUI

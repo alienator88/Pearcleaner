@@ -141,7 +141,7 @@ struct AboutSettingsTab: View {
             .padding(5)
             .padding(.leading)
 
-            Text("Made with ❤️ by Alin Lupascu").font(.footnote).padding(.bottom)
+            Text("Made with ❤️ by Alin Lupascu").font(.footnote)//.padding(.bottom)
         }
         .padding(20)
         .frame(width: 500)
@@ -150,27 +150,6 @@ struct AboutSettingsTab: View {
 }
 
 
-
-extension Bundle {
-
-    var name: String {
-        func string(for key: String) -> String? {
-            object(forInfoDictionaryKey: key) as? String
-        }
-        return string(for: "CFBundleDisplayName")
-        ?? string(for: "CFBundleName")
-        ?? "N/A"
-    }
-
-    var version: String {
-        infoDictionary?["CFBundleShortVersionString"] as? String ?? "N/A"
-    }
-
-    var buildVersion: String {
-        infoDictionary?["CFBundleVersion"] as? String ?? "N/A"
-    }
-
-}
 
 //MARK: Sponsors
 struct Sponsor: Identifiable {

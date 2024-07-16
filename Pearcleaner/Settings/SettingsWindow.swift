@@ -21,7 +21,7 @@ struct SettingsView: View {
     var body: some View {
         
         TabView(selection: $selectedTab) {
-            GeneralSettingsTab(showPopover: $showPopover, search: $search)
+            GeneralSettingsTab()
                 .tabItem {
                     Label(CurrentTabView.general.title, systemImage: "gear")
                 }

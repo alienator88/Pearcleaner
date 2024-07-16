@@ -45,7 +45,7 @@ struct RegularMode: View {
                     .frame(width: sidebarWidth)
                     .padding(.vertical)
                 } else {
-                    AppSearchView(glass: glass, sidebarWidth: sidebarWidth, menubarEnabled: menubarEnabled, mini: mini, search: $search, showPopover: $showPopover, isMenuBar: $isMenuBar)
+                    AppSearchView(glass: glass, menubarEnabled: menubarEnabled, mini: mini, search: $search, showPopover: $showPopover, isMenuBar: $isMenuBar)
                         .frame(width: sidebarWidth)
                 }
 

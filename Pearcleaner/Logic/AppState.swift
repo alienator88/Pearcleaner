@@ -18,18 +18,12 @@ class AppState: ObservableObject {
     @Published var zombieFile: ZombieFile
     @Published var sortedApps: [AppInfo] = []
     @Published var selectedItems = Set<URL>()
-    @Published var alertType = AlertType.off
     @Published var currentView = CurrentDetailsView.empty
     @Published var showAlert: Bool = false
     @Published var sidebar: Bool = true
-    @Published var progressBar: (String, Double) = ("Ready", 0.0)
     @Published var reload: Bool = false
     @Published var showProgress: Bool = false
     @Published var finderExtensionEnabled: Bool = false
-//    @Published var updateAvailable: Bool = false
-    @Published var featureAvailable: Bool = false
-//    @Published var permissionsOkay: Bool = true
-//    @Published var permissionResults: PermissionsCheckResults?
     @Published var showUninstallAlert: Bool = false
     @Published var oneShotMode: Bool = false
     @Published var showConditionBuilder: Bool = false
@@ -177,56 +171,4 @@ enum CurrentDetailsView:Int
     case files
     case apps
     case zombie
-}
-
-enum NewWindow:Int
-{
-    case perm
-    case feature
-}
-
-
-enum AlertType:Int
-{
-    case diskAccess
-    case update
-    case no_update
-    case restartApp
-    case off
-}
-
-
-
-enum DisplayMode: Int, CaseIterable {
-    case system, dark, light
-    
-    var colorScheme: ColorScheme? {
-        get {
-            switch self {
-            case .system: return nil
-            case .dark: return ColorScheme.dark
-            case .light: return ColorScheme.light
-            }
-        }
-        set {
-            switch newValue {
-            case .none:
-                self = .system
-            case .dark?:
-                self = .dark
-            case .light?:
-                self = .light
-            default:
-                break
-            }
-        }
-    }
-    
-    var description: String {
-        switch self {
-        case .system: return "System"
-        case .dark: return "Dark"
-        case .light: return "Light"
-        }
-    }
 }

@@ -42,7 +42,7 @@ This project was born out of wanting to learn more on how macOS deals with app i
 ## Features
 - Signed/notarized
 - Swift/SwiftUI
-- Small app size (~3MB)
+- Small app size (~4MB)
 - Leftover file search for finding remaining files from previously uninstalled applications
 - Sentinel monitor helper that can be enabled to watch Trash folder for deleted apps to cleanup after the fact(Extremely small (210KB) and uses ~2mb of ram to run in the background and file watch)
 - Mini mode which can be enabled from Settings

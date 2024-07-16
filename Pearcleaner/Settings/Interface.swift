@@ -17,17 +17,11 @@ struct InterfaceSettingsTab: View {
     @EnvironmentObject var fsm: FolderSettingsManager
     @EnvironmentObject var themeManager: ThemeManager
     @State private var windowSettings = WindowSettings()
-    @Environment(\.colorScheme) var colorScheme: ColorScheme
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
-//    @AppStorage("displayMode") var displayMode: DisplayMode = .system
-//    @AppStorage("settings.general.selectedTab") private var selectedTab: CurrentTabView = .general
     @AppStorage("settings.general.glass") private var glass: Bool = false
-    @AppStorage("settings.general.dark") var isDark: Bool = true
-//    @AppStorage("settings.interface.themesEnabled") var themesEnabled: Bool = false
     @AppStorage("settings.general.popover") private var popoverStay: Bool = true
     @AppStorage("settings.general.miniview") private var miniView: Bool = true
-//    @AppStorage("settings.general.selectedTheme") var selectedTheme: String = "Auto"
     @AppStorage("settings.interface.selectedMenubarIcon") var selectedMenubarIcon: String = "pear-4"
     @State private var isLaunchAtLoginEnabled: Bool = false
     @Binding var showPopover: Bool

@@ -16,18 +16,13 @@ struct AppSearchView: View {
     @EnvironmentObject var updater: Updater
     @EnvironmentObject var permissionManager: PermissionManager
     var glass: Bool
-    var sidebarWidth: Double
     var menubarEnabled: Bool
     var mini: Bool
     @Binding var search: String
     @Binding var showPopover: Bool
     @State private var showMenu = false
-    @State private var showSys: Bool = true
-    @State private var showUsr: Bool = true
-    @State private var showFeatures: Bool = false
     @Binding var isMenuBar: Bool
     @AppStorage("settings.general.selectedSortAppsList") var selectedSortAlpha: Bool = true
-    @State private var progress: Double = 0.0
 
 
     var body: some View {
@@ -37,22 +32,15 @@ struct AppSearchView: View {
                 .padding(.top, !isMenuBar ? 25 : 0)
 
             if updater.updateAvailable {
-                UpdateButton(updater: updater, dark: false, opacity: 1)
+                UpdateBadge(updater: updater)
                     .padding(.horizontal)
             } else if let _ = permissionManager.results, !permissionManager.allPermissionsGranted {
-                PermissionsView(dark: false, opacity: 1)
+                PermissionsBadge()
                     .padding(.horizontal)
-            } else if appState.featureAvailable {
-                AlertNotification(label: "New Message!", icon: "star", buttonAction: {
-                    showFeatures.toggle()
-                }, btnColor: Color.blue, opacity: 1, themeManager: themeManager)
-                .padding(.horizontal)
-                .sheet(isPresented: $showFeatures, content: {
-                    FeatureView()
-                        .environmentObject(themeManager)
-                })
+            } else if updater.announcementAvailable {
+                    FeatureBadge(updater: updater)
+                    .padding(.horizontal)
             }
-
 
 
             AppsListView(search: $search, showPopover: $showPopover, filteredApps: filteredApps)
