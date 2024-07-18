@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -20,6 +20,7 @@
 		C76D08512AF850F300D07867 /* About.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08502AF850F300D07867 /* About.swift */; };
 		C76D08552AF89CDE00D07867 /* RegularMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08542AF89CDE00D07867 /* RegularMode.swift */; };
 		C76EDCD62C45DC82000CF29D /* AlinFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = C76EDCD52C45DC82000CF29D /* AlinFoundation */; };
+		C7736E4F2C49A44200917293 /* AlinFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = C7736E4E2C49A44200917293 /* AlinFoundation */; };
 		C77B90042AF18E2E009CC655 /* PearcleanerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90032AF18E2E009CC655 /* PearcleanerApp.swift */; };
 		C77B90082AF18E2F009CC655 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C77B90072AF18E2F009CC655 /* Assets.xcassets */; };
 		C77B90162AF19377009CC655 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90152AF19377009CC655 /* AppState.swift */; };
@@ -150,6 +151,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C76EDCD62C45DC82000CF29D /* AlinFoundation in Frameworks */,
+				C7736E4F2C49A44200917293 /* AlinFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -325,6 +327,7 @@
 			name = Pearcleaner;
 			packageProductDependencies = (
 				C76EDCD52C45DC82000CF29D /* AlinFoundation */,
+				C7736E4E2C49A44200917293 /* AlinFoundation */,
 			);
 			productName = PeakPurge;
 			productReference = C77B90002AF18E2E009CC655 /* Pearcleaner.app */;
@@ -379,7 +382,7 @@
 			mainGroup = C77B8FF72AF18E2E009CC655;
 			packageReferences = (
 				C7A2AE5B2B9644DA00161540 /* XCRemoteSwiftPackageReference "FileWatcher" */,
-				C76EDCD42C45DC82000CF29D /* XCLocalSwiftPackageReference "../AlinFoundation" */,
+				C7736E4D2C49A44200917293 /* XCRemoteSwiftPackageReference "AlinFoundation" */,
 			);
 			productRefGroup = C77B90012AF18E2E009CC655 /* Products */;
 			projectDirPath = "";
@@ -526,8 +529,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 54;
-				APP_VERSION = 3.8.0;
+				APP_BUILD = 55;
+				APP_VERSION = 3.8.1;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -596,8 +599,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 54;
-				APP_VERSION = 3.8.0;
+				APP_BUILD = 55;
+				APP_VERSION = 3.8.1;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -848,14 +851,15 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		C76EDCD42C45DC82000CF29D /* XCLocalSwiftPackageReference "../AlinFoundation" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../AlinFoundation;
-		};
-/* End XCLocalSwiftPackageReference section */
-
 /* Begin XCRemoteSwiftPackageReference section */
+		C7736E4D2C49A44200917293 /* XCRemoteSwiftPackageReference "AlinFoundation" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/alienator88/AlinFoundation";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		C7A2AE5B2B9644DA00161540 /* XCRemoteSwiftPackageReference "FileWatcher" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/eonist/FileWatcher.git";
@@ -869,6 +873,11 @@
 /* Begin XCSwiftPackageProductDependency section */
 		C76EDCD52C45DC82000CF29D /* AlinFoundation */ = {
 			isa = XCSwiftPackageProductDependency;
+			productName = AlinFoundation;
+		};
+		C7736E4E2C49A44200917293 /* AlinFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C7736E4D2C49A44200917293 /* XCRemoteSwiftPackageReference "AlinFoundation" */;
 			productName = AlinFoundation;
 		};
 		C7A2AE5C2B9644F300161540 /* FileWatcher */ = {
