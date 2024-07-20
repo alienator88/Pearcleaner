@@ -103,10 +103,11 @@ struct PearcleanerApp: App {
                 if menubarEnabled {
                     MenuBarExtraManager.shared.addMenuBarExtra(withView: {
                         MiniAppView(search: $search, showPopover: $showPopover, isMenuBar: true)
-                            .environmentObject(locations)
                             .environmentObject(appState)
+                            .environmentObject(locations)
                             .environmentObject(fsm)
                             .environmentObject(themeManager)
+                            .environmentObject(updater)
                             .environmentObject(permissionManager)
                             .preferredColorScheme(themeManager.displayMode.colorScheme)
                     }, icon: selectedMenubarIcon)

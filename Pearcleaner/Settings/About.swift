@@ -24,7 +24,7 @@ struct AboutSettingsTab: View {
 
             VStack(alignment: .center, spacing: 10) {
                 Image(nsImage: NSApp.applicationIconImage)
-                    .padding(.top, 30)
+//                    .padding(.top, 20)
                 Text(Bundle.main.name)
                     .font(.title)
                     .bold()
@@ -141,10 +141,12 @@ struct AboutSettingsTab: View {
             .padding(5)
             .padding(.leading)
 
+            Spacer()
+
             Text("Made with ❤️ by Alin Lupascu").font(.footnote)//.padding(.bottom)
         }
         .padding(20)
-        .frame(width: 500)
+        .frame(width: 500, height: 500)
 
     }
 }

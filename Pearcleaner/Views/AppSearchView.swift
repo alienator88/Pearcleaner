@@ -192,11 +192,11 @@ struct SimpleSearchStyle: TextFieldStyle {
     func _body(configuration: TextField<Self._Label>) -> some View {
 
         ZStack {
-            RoundedRectangle(cornerRadius: 8)
-                .fill(darker ? themeManager.pickerColor.adjustBrightness(5) : themeManager.pickerColor)
-                .allowsHitTesting(false)
-                .frame(height: 30)
-                .opacity((glass && (sidebar || !mini && !menubarEnabled)) || mini || menubarEnabled ? 0.0 : 1.0)
+//            RoundedRectangle(cornerRadius: 8)
+//                .fill(darker ? themeManager.pickerColor.adjustBrightness(5) : themeManager.pickerColor)
+//                .allowsHitTesting(false)
+//                .frame(height: 30)
+//                .opacity((glass && (sidebar || !mini && !menubarEnabled)) || mini || menubarEnabled ? 0.0 : 1.0)
 
 
             ZStack {

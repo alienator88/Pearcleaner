@@ -12,7 +12,6 @@ class MenuBarExtraManager {
     static let shared = MenuBarExtraManager()
     private var statusItem: NSStatusItem?
     private var popover = NSPopover()
-    // Store the last view and icon for restart
     private var lastView: (() -> AnyView)?
     private var lastIcon: String?
 
@@ -28,12 +27,7 @@ class MenuBarExtraManager {
 
         // Set up the status item's button
         if let button = statusItem?.button{
-            if NSImage(systemSymbolName: icon, accessibilityDescription: nil) != nil {
-                button.image = NSImage(systemSymbolName: icon, accessibilityDescription: "Pearcleaner")
-            } else {
-                button.image = NSImage(named: icon)
-
-            }
+            button.image = NSImage(systemSymbolName: icon, accessibilityDescription: "Pearcleaner")
             button.action = #selector(togglePopover(_:))
             button.target = self
             button.sendAction(on: [.leftMouseDown, .rightMouseDown])

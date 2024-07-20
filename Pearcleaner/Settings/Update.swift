@@ -14,6 +14,7 @@ struct UpdateSettingsTab: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var updater: Updater
+    @AppStorage("settings.general.glass") private var glass: Bool = false
 
     var body: some View {
         VStack {
@@ -25,8 +26,9 @@ struct UpdateSettingsTab: View {
             ReleasesView(updater: updater)
                 .frame(height: 400)
                 .frame(maxWidth: .infinity)
-                .backgroundAF(opacity: 0.5)
-            
+                .background(backgroundView(themeManager: themeManager, darker: true, glass: glass))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+
             
             HStack(alignment: .center, spacing: 20) {
 
@@ -48,11 +50,14 @@ struct UpdateSettingsTab: View {
                 .buttonStyle(SimpleButtonStyle(icon: "link", label: "Releases", help: "View releases on GitHub"))
 
             }
-            .padding()
-            
+            .padding(.top, 5)
+
+            Spacer()
+
         }
         .padding(20)
-        .frame(width: 500)
+        .frame(width: 500, height: 540)
+
     }
     
 }

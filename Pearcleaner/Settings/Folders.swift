@@ -17,6 +17,8 @@ struct FolderSettingsTab: View {
     @EnvironmentObject var fsm: FolderSettingsManager
     @EnvironmentObject var themeManager: ThemeManager
     @State private var isHovered = false
+    @AppStorage("settings.general.glass") private var glass: Bool = false
+
 
     var body: some View {
         Form {
@@ -79,7 +81,7 @@ struct FolderSettingsTab: View {
                 .padding()
                 .frame(height: 200)
 //                .background(.primary.opacity(0.05))
-                .background(backgroundView(themeManager: themeManager, darker: true))
+                .background(backgroundView(themeManager: themeManager, darker: true, glass: glass))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 .onDrop(of: ["public.file-url"], isTargeted: nil) { providers -> Bool in
                     providers.forEach { provider in
@@ -172,7 +174,7 @@ struct FolderSettingsTab: View {
                 .scrollIndicators(.automatic)
                 .padding()
                 .frame(height: 200)
-                .background(backgroundView(themeManager: themeManager, darker: true))
+                .background(backgroundView(themeManager: themeManager, darker: true, glass: glass))
 //                .background(.primary.opacity(0.05))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 .onDrop(of: ["public.file-url"], isTargeted: nil) { providers -> Bool in
@@ -199,9 +201,11 @@ struct FolderSettingsTab: View {
                 .padding(.top, 5)
             }
 
+            Spacer()
+
         }
         .padding(20)
-        .frame(width: 500)//, height: 600)
+        .frame(width: 500, height: 580)
 
     }
 

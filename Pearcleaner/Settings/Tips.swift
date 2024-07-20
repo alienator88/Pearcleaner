@@ -13,6 +13,7 @@ import AlinFoundation
 struct TipsSettingsTab: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var themeManager: ThemeManager
+    @AppStorage("settings.general.glass") private var glass: Bool = false
 
     var body: some View {
         VStack {
@@ -40,14 +41,15 @@ struct TipsSettingsTab: View {
             .scrollIndicators(.visible)
             .frame(height: 500)
             .frame(maxWidth: .infinity)
-            .background(backgroundView(themeManager: themeManager, darker: true))
+            .background(backgroundView(themeManager: themeManager, darker: true, glass: glass))
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .padding(.bottom)
 
+            Spacer()
 
         }
         .padding(20)
-        .frame(width: 500)
+        .frame(width: 500, height: 550)
     }
 
 }

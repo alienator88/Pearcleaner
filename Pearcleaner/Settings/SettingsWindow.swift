@@ -32,12 +32,14 @@ struct SettingsView: View {
                     Label(CurrentTabView.interface.title, systemImage: "macwindow")
                 }
                 .tag(CurrentTabView.interface)
+                .environmentObject(themeManager)
 
             FolderSettingsTab()
                 .tabItem {
                     Label(CurrentTabView.folders.title, systemImage: "folder")
                 }
                 .tag(CurrentTabView.folders)
+                .environmentObject(themeManager)
 
             UpdateSettingsTab()
                 .tabItem {
