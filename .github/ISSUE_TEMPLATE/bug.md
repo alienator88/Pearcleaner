@@ -25,7 +25,7 @@ A clear and concise description of what you expected to happen.
 
 **Console Logs (For app crashes):**
  - Open the Console.app on your mac
- - Enter `com.alienator88.Pearcleaner` in the search box and set filter to subsystem ![image](https://github.com/alienator88/Pearcleaner/assets/6263626/c2f646a9-feec-4e04-a13d-ccacff2329fb)
+ - Enter `Pearcleaner` in the search box and hit Enter
  - Click Start to record logs ![image](https://github.com/alienator88/Pearcleaner/assets/6263626/dc706fa1-0800-4eaf-aee6-8516da83fcff)
  - Reproduce the issue you're experiencing in Pearcleaner
  - Click Pause <br> ![image](https://github.com/alienator88/Pearcleaner/assets/6263626/826962a1-4212-4b64-a24a-ea6663defb46)
