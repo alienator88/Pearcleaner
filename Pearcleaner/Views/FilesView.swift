@@ -24,9 +24,8 @@ struct FilesView: View {
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
     @Binding var search: String
-    @State private var elapsedTime = 0
-    @State private var timer: Timer? = nil
-    @State private var isShowingInspector = false
+//    @State private var elapsedTime = 0
+//    @State private var timer: Timer? = nil
 
     var body: some View {
 
@@ -51,35 +50,42 @@ struct FilesView: View {
             if appState.showProgress {
                 VStack {
                     Spacer()
-                    Text("Searching the file system").font(.title3)
-                        .foregroundStyle((.primary.opacity(0.5)))
 
-                    ProgressView()
-                        .progressViewStyle(.linear)
-                        .frame(width: 400, height: 10)
+                    HStack(spacing: 10) {
+                        Text("Searching the file system").font(.title3)
+                            .foregroundStyle(.primary.opacity(0.5))
+                        ProgressView().controlSize(.small)
+                    }
 
-                    Text("\(elapsedTime)")
-                        .font(.title).monospacedDigit()
-                        .foregroundStyle((.primary.opacity(0.5)))
-                        .opacity(elapsedTime == 0 ? 0 : 1)
-                        .contentTransition(.numericText())
+//                    Text("Searching the file system").font(.title3)
+//                        .foregroundStyle((.primary.opacity(0.5)))
+//
+//                    ProgressView()
+//                        .progressViewStyle(.linear)
+//                        .frame(width: 400, height: 10)
+//
+//                    Text("\(elapsedTime)")
+//                        .font(.title).monospacedDigit()
+//                        .foregroundStyle((.primary.opacity(0.5)))
+//                        .opacity(elapsedTime == 0 ? 0 : 1)
+//                        .contentTransition(.numericText())
 
                     Spacer()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .transition(.opacity)
-                .onAppear {
-                    self.timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-                        withAnimation {
-                            self.elapsedTime += 1
-                        }
-                    }
-                }
-                .onDisappear {
-                    self.timer?.invalidate()
-                    self.timer = nil
-                    self.elapsedTime = 0
-                }
+//                .onAppear {
+//                    self.timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+//                        withAnimation {
+//                            self.elapsedTime += 1
+//                        }
+//                    }
+//                }
+//                .onDisappear {
+//                    self.timer?.invalidate()
+//                    self.timer = nil
+//                    self.elapsedTime = 0
+//                }
             } else {
                 // Titlebar
                 HStack(spacing: 0) {
@@ -355,9 +361,9 @@ struct FilesView: View {
                                             appState.trashedFiles.append(appState.appInfo)
 
                                             // Clear out appInfoStore object (Used for leftover file search)
-                                            if let index = appState.appInfoStore.firstIndex(where: { $0.path == appState.appInfo.path }) {
-                                                appState.appInfoStore[index] = .empty
-                                            }
+//                                            if let index = appState.appInfoStore.firstIndex(where: { $0.path == appState.appInfo.path }) {
+//                                                appState.appInfoStore[index] = .empty
+//                                            }
 
                                             updateOnMain {
                                                 // Remove items from the list

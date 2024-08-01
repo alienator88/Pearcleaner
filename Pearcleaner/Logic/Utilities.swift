@@ -208,9 +208,9 @@ func removeApp(appState: AppState, withPath path: URL) {
 //            return // Exit the function if the app was found and removed
         }
         // Remove from appInfoStore if found
-        if let index = appState.appInfoStore.firstIndex(where: { $0.path == path }) {
-            appState.appInfoStore.remove(at: index)
-        }
+//        if let index = appState.appInfoStore.firstIndex(where: { $0.path == path }) {
+//            appState.appInfoStore.remove(at: index)
+//        }
         // Brew cleanup if enabled
         if brew {
             caskCleanup(app: appState.appInfo.appName)

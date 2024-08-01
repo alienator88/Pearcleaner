@@ -25,7 +25,6 @@ struct PearcleanerApp: App {
     @AppStorage("settings.general.brew") private var brew: Bool = false
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     @AppStorage("settings.menubar.mainWin") private var mainWinEnabled: Bool = false
-    @AppStorage("settings.interface.selectedMenubarIcon") var selectedMenubarIcon: String = "trash"
     @State private var search = ""
     @State private var showPopover: Bool = false
     let conditionManager = ConditionManager.shared
@@ -34,11 +33,11 @@ struct PearcleanerApp: App {
     var body: some Scene {
         WindowGroup {
             Group {
-                    if !mini {
-                        RegularMode(search: $search, showPopover: $showPopover)
-                    } else {
-                        MiniMode(search: $search, showPopover: $showPopover)
-                    }
+                if mini {
+                    MiniMode(search: $search, showPopover: $showPopover)
+                } else {
+                    RegularMode(search: $search, showPopover: $showPopover)
+                }
             }
             .environmentObject(appState)
             .environmentObject(locations)
@@ -92,12 +91,12 @@ struct PearcleanerApp: App {
                     appState.currentView = .empty
                 }
 
+
                 // Disable tabbing
                 NSWindow.allowsAutomaticWindowTabbing = false
 
                 // Load apps list on startup
                 reloadAppsList(appState: appState, fsm: fsm)
-
 
                 // Enable menubar item
                 if menubarEnabled {
@@ -110,18 +109,12 @@ struct PearcleanerApp: App {
                             .environmentObject(updater)
                             .environmentObject(permissionManager)
                             .preferredColorScheme(themeManager.displayMode.colorScheme)
-                    }, icon: selectedMenubarIcon)
+                    })
                 }
 
 
 #if !DEBUG
                 Task {
-
-                    /// This will check for updates on load based on the update frequency
-                    updater.checkAndUpdateIfNeeded()
-
-                    /// Get new features
-                    updater.checkForAnnouncement()
 
                     // Make sure App Support folder exists in the future if needed for storage
                     //                    ensureApplicationSupportFolderExists(appState: appState)
@@ -135,9 +128,7 @@ struct PearcleanerApp: App {
         .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentMinSize)
         .commands {
-            AppCommands(appState: appState, locations: locations, fsm: fsm, updater: updater, themeManager: themeManager)
-//            CommandGroup(replacing: .newItem, addition: { })
-            
+            AppCommands(appState: appState, locations: locations, fsm: fsm, updater: updater, themeManager: themeManager)            
         }
 
 
@@ -174,7 +165,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 //        UserDefaults.standard.register(defaults: ["NSQuitAlwaysKeepsWindows" : false])
 
         findAndSetWindowFrame(named: ["Pearcleaner"], windowSettings: windowSettings)
-        
+
         themeManager.setupAppearance()
 
         if menubarEnabled {

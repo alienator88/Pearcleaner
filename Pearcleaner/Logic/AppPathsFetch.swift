@@ -15,18 +15,18 @@ class AppPathFinder {
     private var appState: AppState
     private var locations: Locations
     private var backgroundRun: Bool
-    private var reverseAddon: Bool
+//    private var reverseAddon: Bool
     private var undo: Bool
     private var completion: () -> Void = {}
     private var collection: [URL] = []
     private let collectionAccessQueue = DispatchQueue(label: "com.alienator88.Pearcleaner.appPathFinder.collectionAccess")
 
-    init(appInfo: AppInfo = .empty, appState: AppState, locations: Locations, backgroundRun: Bool = false, reverseAddon: Bool = false, undo: Bool = false, completion: @escaping () -> Void = {}) {
+    init(appInfo: AppInfo = .empty, appState: AppState, locations: Locations, backgroundRun: Bool = false, undo: Bool = false, completion: @escaping () -> Void = {}) {
         self.appInfo = appInfo
         self.appState = appState
         self.locations = locations
         self.backgroundRun = backgroundRun
-        self.reverseAddon = reverseAddon
+//        self.reverseAddon = reverseAddon
         self.undo = undo
         self.completion = completion
     }
@@ -338,9 +338,9 @@ class AppPathFinder {
             }
 
             // Append object to store if running reverse search with empty store
-            if self.reverseAddon {
-                self.appState.appInfoStore.append(self.appInfo)
-            }
+//            if self.reverseAddon {
+//                self.appState.appInfoStore.append(self.appInfo)
+//            }
 
             self.completion()
         }

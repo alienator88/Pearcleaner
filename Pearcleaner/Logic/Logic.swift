@@ -109,45 +109,108 @@ func listAppSupportDirectories() -> [String] {
 
 
 // Load app paths on launch
-func reversePreloader(allApps: [AppInfo], appState: AppState, locations: Locations, fsm: FolderSettingsManager, reverseAddon: Bool = false, completion: @escaping () -> Void = {}) {
-    let dispatchGroup = DispatchGroup()
-    appState.appInfoStore.removeAll()
+func reversePreloader(allApps: [AppInfo], appState: AppState, locations: Locations, fsm: FolderSettingsManager, completion: @escaping () -> Void = {}) {
+//    appState.operationQueueLeftover.maxConcurrentOperationCount = 10 // Adjust this value as needed
+//    appState.shouldCancelOperations = false
+//    appState.appInfoStore.removeAll()
+//    let sortedAllApps = allApps.sorted { $0.appName.localizedCompare($1.appName) == .orderedAscending }
 
-    for app in allApps {
-        dispatchGroup.enter()
-        DispatchQueue.global(qos: .background).async {
-            AppPathFinder(appInfo: app, appState: appState, locations: locations, backgroundRun: true, reverseAddon: reverseAddon).findPaths()
-            dispatchGroup.leave()
-        }
+    updateOnMain {
+        appState.leftoverProgress.0 = "Finding leftover files, please wait..."
     }
-
-    dispatchGroup.notify(queue: DispatchQueue.global(qos: .background)) {
-
-        func checkAllAppsProcessed(retryCount: Int = 0, maxRetry: Int = 120) {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                if appState.appInfoStore.count == allApps.count {
-                    ReversePathsSearcher(appState: appState, locations: locations, fsm: fsm).reversePathsSearch() {
-                        updateOnMain {
-                            appState.showProgress = false
-                        }
-                    }
-                    completion()
-                } else if retryCount < maxRetry {
-                    checkAllAppsProcessed(retryCount: retryCount + 1, maxRetry: maxRetry)
-                } else {
-                    // Reset progress values to 0
-                    updateOnMain {
-                        appState.showProgress = false
-                    }
-                    printOS("loadAllPaths - Retry limit reached. Not all paths were loaded.")
-                    completion()
-                }
+    ReversePathsSearcher(appState: appState, locations: locations, fsm: fsm, sortedApps: allApps).reversePathsSearch {
+        updateOnMain {
+            printOS("Reverse search processed successfully")
+            appState.showProgress = false
+            withAnimation {
+                appState.leftoverProgress.1 = 0.0
             }
+            appState.leftoverProgress.0 = "Reverse search completed successfully"
         }
-
-        checkAllAppsProcessed()
-
+        completion()
     }
+
+//    let totalApps = sortedAllApps.count
+//    var processedApps = 0
+//
+//    DispatchQueue.global(qos: .userInitiated).async {
+//        for (index, app) in sortedAllApps.enumerated() {
+//            autoreleasepool {
+//                if appState.shouldCancelOperations {
+//                    printOS("Operations cancelled.") // Debug print
+//                    return
+//                }
+//                printOS("Processing app \(index + 1) of \(totalApps): \(app.appName)")
+//
+//                let semaphore = DispatchSemaphore(value: 0)
+//                appState.operationQueueLeftover.addOperation {
+//                    if appState.shouldCancelOperations {
+//                        printOS("Operations cancelled.") // Debug print
+//                        return
+//                    }
+//                    let pathFinder = AppPathFinder(
+//                        appInfo: app,
+//                        appState: appState,
+//                        locations: locations,
+//                        backgroundRun: true,
+//                        reverseAddon: reverseAddon,
+//                        completion: {
+//                            semaphore.signal()
+//                        }
+//                    )
+//                    pathFinder.findPaths()
+//                }
+//
+//                semaphore.wait()
+//
+//                DispatchQueue.main.async {
+//                    processedApps += 1
+//                    let progress = Double(processedApps) / Double(totalApps)
+//                    withAnimation {
+//                        appState.leftoverProgress.1 = progress
+//                    }
+//                    appState.leftoverProgress.0 = "Excluding application files for \(app.appName)"
+//                    printOS("Progress: \(Int(progress * 100))%") // Debug print
+//                }
+//            }
+//
+//        }
+//
+//        appState.operationQueueLeftover.waitUntilAllOperationsAreFinished()
+//
+//        DispatchQueue.main.async {
+//            if appState.shouldCancelOperations {
+//                completion()
+//                return
+//            }
+//
+//            if appState.appInfoStore.count == sortedAllApps.count {
+//                printOS("All apps processed successfully")
+//                appState.leftoverProgress.0 = "Finding leftover files, please wait..."
+//                ReversePathsSearcher(appState: appState, locations: locations, fsm: fsm, sortedApps: sortedAllApps).reversePathsSearch {
+//                    updateOnMain {
+//                        printOS("Reverse search processed successfully")
+//                        appState.showProgress = false
+//                        withAnimation {
+//                            appState.leftoverProgress.1 = 0.0
+//                        }
+//                        appState.leftoverProgress.0 = "Reverse search completed successfully"
+//                    }
+//                    completion()
+//                }
+//            } else {
+//                printOS("reversePreloader - Not all paths were loaded. Expected: \(sortedAllApps.count), Actual: \(appState.appInfoStore.count)")
+//                updateOnMain {
+//                    appState.showProgress = false
+//                    withAnimation {
+//                        appState.leftoverProgress.1 = 0.0
+//                    }
+//                    appState.leftoverProgress.0 = "Reverse search failed to process existing application files (\(sortedAllApps.count)/\(appState.appInfoStore.count))"
+//                }
+//                completion()
+//            }
+//        }
+//    }
 }
 
 
@@ -161,37 +224,56 @@ func showAppInFiles(appInfo: AppInfo, appState: AppState, locations: Locations, 
         appState.appInfo = .empty
         appState.selectedItems = []
 
-        // Check if the appInfo exists in the appState.appInfoStore
-        if let storedAppInfo = appState.appInfoStore.first(where: { $0.path == appInfo.path }) {
-            // Update appState with the stored app info and selected items.
-            appState.appInfo = storedAppInfo
-            appState.selectedItems = Set(storedAppInfo.files)
+        // When the appInfo is not found, show progress, and search for paths.
+        appState.showProgress = true
 
-            // Trigger the animation for changing views and showing the popover.
-            withAnimation(Animation.easeIn(duration: 0.4)) {
-                appState.currentView = .files
-                showPopover.wrappedValue.toggle()
+        // Initialize the path finder and execute its search.
+        AppPathFinder(appInfo: appInfo, appState: appState, locations: locations) {
+            updateOnMain {
+                // Update the progress indicator on the main thread once the search completes.
+                appState.showProgress = false
             }
-        } else {
-            // When the appInfo is not found, show progress, and search for paths.
-            appState.showProgress = true
+        }.findPaths()
 
-            // Initialize the path finder and execute its search.
-            AppPathFinder(appInfo: appInfo, appState: appState, locations: locations) {
-                updateOnMain {
-                    // Update the progress indicator on the main thread once the search completes.
-                    appState.showProgress = false
-                }
-            }.findPaths()
+        appState.appInfo = appInfo
 
-            appState.appInfo = appInfo
-
-            // Animate the view change and popover display.
-            withAnimation(Animation.easeIn(duration: 0.4)) {
-                appState.currentView = .files
-                showPopover.wrappedValue.toggle()
-            }
+        // Animate the view change and popover display.
+        withAnimation(Animation.easeIn(duration: 0.4)) {
+            appState.currentView = .files
+            showPopover.wrappedValue.toggle()
         }
+        
+        // Check if the appInfo exists in the appState.appInfoStore
+//        if let storedAppInfo = appState.appInfoStore.first(where: { $0.path == appInfo.path }) {
+//            // Update appState with the stored app info and selected items.
+//            appState.appInfo = storedAppInfo
+//            appState.selectedItems = Set(storedAppInfo.files)
+//
+//            // Trigger the animation for changing views and showing the popover.
+//            withAnimation(Animation.easeIn(duration: 0.4)) {
+//                appState.currentView = .files
+//                showPopover.wrappedValue.toggle()
+//            }
+//        } else {
+//            // When the appInfo is not found, show progress, and search for paths.
+//            appState.showProgress = true
+//
+//            // Initialize the path finder and execute its search.
+//            AppPathFinder(appInfo: appInfo, appState: appState, locations: locations) {
+//                updateOnMain {
+//                    // Update the progress indicator on the main thread once the search completes.
+//                    appState.showProgress = false
+//                }
+//            }.findPaths()
+//
+//            appState.appInfo = appInfo
+//
+//            // Animate the view change and popover display.
+//            withAnimation(Animation.easeIn(duration: 0.4)) {
+//                appState.currentView = .files
+//                showPopover.wrappedValue.toggle()
+//            }
+//        }
     }
 }
 

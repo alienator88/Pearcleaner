@@ -19,14 +19,14 @@ class ReversePathsSearcher {
     private var fileSizeLogical: [URL: Int64] = [:]
     private var fileIcon: [URL: NSImage?] = [:]
     private let dispatchGroup = DispatchGroup()
+    private let sortedApps: [AppInfo]
 
-    init(appState: AppState, locations: Locations, fsm: FolderSettingsManager) {
+    init(appState: AppState, locations: Locations, fsm: FolderSettingsManager, sortedApps: [AppInfo]) {
         self.appState = appState
         self.locations = locations
         self.fsm = fsm
+        self.sortedApps = sortedApps
     }
-
-    
 
     func reversePathsSearch(completion: @escaping () -> Void = {}) {
         Task(priority: .high) {
@@ -38,49 +38,72 @@ class ReversePathsSearcher {
     }
 
     private func processLocations() {
-        let allPaths = appState.appInfoStore.flatMap { $0.fileSize.keys.map { $0.path.pearFormat() } }
-        let allNames = appState.appInfoStore.map { $0.appName.pearFormat() }
 
         for location in locations.reverse.paths where fileManager.fileExists(atPath: location) {
 
             dispatchGroup.enter()
-            processLocation(location, allPaths: allPaths, allNames: allNames)
+            processLocation(location)
             dispatchGroup.leave()
 
         }
     }
 
-    private func processLocation(_ location: String, allPaths: [String], allNames: [String]) {
+    private func processLocation(_ location: String) {
 
         do {
             let contents = try fileManager.contentsOfDirectory(atPath: location)
             contents.forEach { itemName in
                 let itemURL = URL(fileURLWithPath: location).appendingPathComponent(itemName)
-                processItem(itemName, itemURL: itemURL, allPaths: allPaths, allNames: allNames)
+                processItem(itemName, itemURL: itemURL)
             }
         } catch {
             printOS("Error processing location: \(location), error: \(error)")
         }
     }
 
-    private func processItem(_ itemName: String, itemURL: URL, allPaths: [String], allNames: [String]) {
-        let formattedItemName = itemName.pearFormat()
+    private func processItem(_ itemName: String, itemURL: URL) {
         let itemPath = itemURL.path.pearFormat()
-        let itemLastPathComponent = itemURL.lastPathComponent.pearFormat()
         let exclusionList = fsm.fileFolderPathsZ.map { $0.pearFormat() }
 
         if exclusionList.contains(itemPath) || itemPath.contains("dsstore") || itemPath.contains("daemonnameoridentifierhere") {
             return
         }
 
-        guard !skipReverse.contains(where: { formattedItemName.contains($0) }),
-              !allPaths.contains(where: { $0 == itemPath || $0.hasSuffix("/\(itemLastPathComponent)") }),
-              !allNames.contains(formattedItemName),
-              isSupportedFileType(at: itemURL.path) else {
+        guard !skipReverse.contains(where: { itemName.pearFormat().contains($0) }),
+              isSupportedFileType(at: itemURL.path),
+        !isRelatedToInstalledApp(itemPath: itemPath),
+        !isExcludedByConditions(itemPath: itemPath) else {
+
             return
         }
 
         collection.append(itemURL)
+    }
+
+    private func isRelatedToInstalledApp(itemPath: String) -> Bool {
+        for app in sortedApps {
+            if itemPath.contains(app.bundleIdentifier.pearFormat()) || itemPath.contains(app.appName.pearFormat()) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private func isExcludedByConditions(itemPath: String) -> Bool {
+
+        for condition in conditions {
+            // Include keywords
+            if condition.include.contains(where: { itemPath.contains($0.pearFormat()) }) {
+                return true
+            }
+            // Include force
+            if let includeForce = condition.includeForce,
+               includeForce.contains(where: { itemPath.contains($0.path.pearFormat()) }) {
+                return true
+            }
+        }
+
+        return false
     }
 
     private func calculateFileDetails() {
@@ -104,3 +127,5 @@ class ReversePathsSearcher {
     }
 
 }
+
+

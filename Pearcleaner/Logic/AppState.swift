@@ -13,7 +13,7 @@ let home = FileManager.default.homeDirectoryForCurrentUser.path
 
 class AppState: ObservableObject {
     @Published var appInfo: AppInfo
-    @Published var appInfoStore: [AppInfo] = []
+//    @Published var appInfoStore: [AppInfo] = []
     @Published var trashedFiles: [AppInfo] = []
     @Published var zombieFile: ZombieFile
     @Published var sortedApps: [AppInfo] = []
@@ -23,12 +23,24 @@ class AppState: ObservableObject {
     @Published var sidebar: Bool = true
     @Published var reload: Bool = false
     @Published var showProgress: Bool = false
+    @Published var leftoverProgress: (String, Double) = ("", 0.0)
     @Published var finderExtensionEnabled: Bool = false
     @Published var showUninstallAlert: Bool = false
     @Published var oneShotMode: Bool = false
     @Published var showConditionBuilder: Bool = false
 
+    var operationQueueLeftover = OperationQueue()
+    @Published var shouldCancelOperations = false
 
+    func cancelQueueOperations() {
+        operationQueueLeftover.cancelAllOperations()
+        shouldCancelOperations = true
+        DispatchQueue.main.async {
+            self.leftoverProgress = ("Search canceled", 0.0)
+            self.showProgress = false
+            self.currentView = .empty
+        }
+    }
 
     init() {
         self.appInfo = AppInfo(

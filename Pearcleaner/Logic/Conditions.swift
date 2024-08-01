@@ -52,53 +52,62 @@ var conditions: [Condition] = [
     Condition(
         bundle_id: "com.robotsandpencils.xcodesapp",
         include: [],
-        exclude: ["com.apple.dt.xcode", "com.oneminutegames.xcodecleaner", "io.hyperapp.xcodecleaner"]
+        exclude: ["com.apple.dt.xcode", "com.oneminutegames.xcodecleaner", "io.hyperapp.xcodecleaner"],
+        includeForce: nil
     ),
     Condition(
         bundle_id: "io.hyperapp.xcodecleaner",
         include: [],
-        exclude: ["com.robotsandpencils.xcodesapp", "com.oneminutegames.xcodecleaner", "com.apple.dt.xcode", "xcodes.json"]
+        exclude: ["com.robotsandpencils.xcodesapp", "com.oneminutegames.xcodecleaner", "com.apple.dt.xcode", "xcodes.json"],
+        includeForce: nil
     ),
     Condition(
         bundle_id: "us.zoom.xos",
         include: ["zoom"],
-        exclude: []
+        exclude: [],
+        includeForce: nil
     ),
     Condition(
         bundle_id: "com.brave.browser",
         include: ["brave"],
-        exclude: []
+        exclude: [],
+        includeForce: nil
     ),
     Condition(
         bundle_id: "com.okta.mobile",
         include: ["okta"],
-        exclude: []
+        exclude: [],
+        includeForce: nil
     ),
     Condition(
         bundle_id: "com.google.chrome",
         include: ["google", "chrome"],
-        exclude: ["iterm", "chromefeaturestate"]
+        exclude: ["iterm", "chromefeaturestate"],
+        includeForce: nil
     ),
     Condition(
         bundle_id: "com.microsoft.edgemac",
         include: ["microsoft"],
-        exclude: ["vscode", "rdc", "appcenter", "office", "oneauth"]
+        exclude: ["vscode", "rdc", "appcenter", "office", "oneauth"],
+        includeForce: nil
     ),
     Condition(
         bundle_id: "org.mozilla.firefox",
         include: ["mozilla", "firefox"],
-        exclude: []
+        exclude: [],
+        includeForce: nil
     ),
     Condition(
         bundle_id: "org.mozilla.firefox.nightly",
         include: ["mozilla", "firefox"],
-        exclude: []
+        exclude: [],
+        includeForce: nil
     ),
     Condition(
         bundle_id: "com.logi.optionsplus",
         include: ["logi"],
         exclude: ["login", "logic"],
-        includeForce: []
+        includeForce: nil
     ),
     Condition(
         bundle_id: "com.microsoft.vscode",
@@ -109,17 +118,20 @@ var conditions: [Condition] = [
     Condition(
         bundle_id: "com.facebook.archon.developerid",
         include: ["archon.loginhelper"],
-        exclude: []
+        exclude: [],
+        includeForce: nil
     ),
     Condition(
         bundle_id: "eu.exelban.stats",
         include: [],
-        exclude: ["video"]
+        exclude: ["video"],
+        includeForce: nil
     ),
     Condition(
         bundle_id: "jetbrains",
         include: ["jetbrains", "jcef"],
-        exclude: []
+        exclude: [],
+        includeForce: nil
     ),
 ]
 

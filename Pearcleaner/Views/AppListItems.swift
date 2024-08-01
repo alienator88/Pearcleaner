@@ -14,7 +14,6 @@ struct AppListItems: View {
     @EnvironmentObject var themeManager: ThemeManager
     @Binding var search: String
     @State private var isHovered = false
-    @State private var windowSettings = WindowSettings()
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("displayMode") var displayMode: DisplayMode = .system
     @AppStorage("settings.general.miniview") private var miniView: Bool = true
@@ -79,13 +78,10 @@ struct AppListItems: View {
                         )
                 }
 
-                if bundleSize == 0 {
-                    ProgressView().controlSize(.mini).padding(.leading, 5)
-                } else {
-                    Text("\(isHovered ? "v\(appInfo.appVersion)" : formatByte(size: bundleSize).human)")
-                        .font(.system(size: (isHovered || isSelected) ? 12 : 10))
-                        .foregroundStyle(.primary.opacity(0.5))
-                }
+                Text(bundleSize == 0 ? "v\(appInfo.appVersion)" : (isHovered ? "v\(appInfo.appVersion)" : formatByte(size: bundleSize).human))
+                    .font(.system(size: (isHovered || isSelected) ? 12 : 10))
+                    .foregroundStyle(.primary.opacity(0.5))
+
             }
 
         }

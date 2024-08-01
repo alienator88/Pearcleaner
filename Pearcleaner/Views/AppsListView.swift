@@ -46,13 +46,11 @@ struct SectionView: View {
     @Binding var showPopover: Bool
 
     var body: some View {
-        VStack(spacing: 0) {
+        LazyVStack(spacing: 0) {
             Header(title: title, count: count, showPopover: $showPopover)
                 .padding(.leading, 5)
             ForEach(apps, id: \.self) { appInfo in
                 AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
-                if appInfo != apps.last {
-                }
             }
         }
     }

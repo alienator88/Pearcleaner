@@ -14,7 +14,6 @@ struct GeneralSettingsTab: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
     @EnvironmentObject var themeManager: ThemeManager
-    @State private var windowSettings = WindowSettings()
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.general.brew") private var brew: Bool = false
     @AppStorage("settings.general.oneshot") private var oneShotMode: Bool = false

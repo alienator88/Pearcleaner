@@ -7,6 +7,8 @@
 
 import SwiftUI
 import AlinFoundation
+import Combine
+
 
 class WindowSettings {
     private let windowWidthKey = "windowWidthKey"
@@ -76,7 +78,7 @@ class WindowSettings {
     }
 
     // Launch new app windows on demand
-    func newWindow<V: View>(withView view: @escaping () -> V, completion: @escaping () -> Void = {}) {
+    func newWindow<V: View>(withView view: @escaping () -> V) {
         findAndHideWindows(named: ["Pearcleaner"])
         let contentView = view
         let frame = self.loadWindowSettings()
@@ -94,26 +96,6 @@ class WindowSettings {
         newWindow.contentView = NSHostingView(rootView: contentView())
         self.windows.append(newWindow)
         newWindow.makeKeyAndOrderFront(nil)
-        completion()
+        resizeWindowAuto(windowSettings: self, title: "Pearcleaner")
     }
 }
-
-
-
-//struct WillRestore: ViewModifier {
-//    let restore: Bool
-//
-//    func body(content: Content) -> some View {
-//        content
-//            .onReceive(NotificationCenter.default.publisher(for: NSWindow.didBecomeKeyNotification), perform: { output in
-//                let window = output.object as! NSWindow
-//                window.isRestorable = false
-//            })
-//    }
-//}
-//
-//extension View {
-//    func willRestore(_ restoreState: Bool = true) -> some View {
-//        modifier(WillRestore(restore: restoreState))
-//    }
-//}

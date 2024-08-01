@@ -105,7 +105,7 @@ struct AppSearchView: View {
                                         appState.currentView = .zombie
                                         appState.showProgress.toggle()
                                         showPopover.toggle()
-                                        reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, fsm: fsm, reverseAddon: true)
+                                        reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, fsm: fsm)
                                     } else {
                                         appState.currentView = .zombie
                                         showPopover.toggle()

@@ -24,7 +24,7 @@ struct InterfaceSettingsTab: View {
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.general.popover") private var popoverStay: Bool = true
     @AppStorage("settings.general.miniview") private var miniView: Bool = true
-    @AppStorage("settings.interface.selectedMenubarIcon") var selectedMenubarIcon: String = "bubbles.and.sparkles"
+    @AppStorage("settings.interface.selectedMenubarIcon") var selectedMenubarIcon: String = "bubbles.and.sparkles.fill"
     @State private var isLaunchAtLoginEnabled: Bool = false
     @Binding var showPopover: Bool
     @Binding var search: String
@@ -143,9 +143,7 @@ struct InterfaceSettingsTab: View {
                                 .environmentObject(updater)
                                 .environmentObject(permissionManager)
                                 .preferredColorScheme(themeManager.displayMode.colorScheme)
-                        }) {
-                            resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")
-                        }
+                        })
                     } else {
                         if appState.appInfo.appName.isEmpty {
                             appState.currentView = .empty
@@ -162,9 +160,7 @@ struct InterfaceSettingsTab: View {
                                 .environmentObject(permissionManager)
                                 .preferredColorScheme(themeManager.displayMode.colorScheme)
                         }
-                        ) {
-                            resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")
-                        }
+                        )
                     }
 
 
@@ -265,10 +261,9 @@ struct InterfaceSettingsTab: View {
                                 .environmentObject(updater)
                                 .environmentObject(permissionManager)
                                 .preferredColorScheme(themeManager.displayMode.colorScheme)
-                        }, icon: selectedMenubarIcon)
+                        })
                         NSApplication.shared.setActivationPolicy(.accessory)
                         findAndHideWindows(named: ["Pearcleaner"])
-                        //                            findAndShowWindows(named: ["Pearcleaner", "Interface"])
                     } else {
                         MenuBarExtraManager.shared.removeMenuBarExtra()
                         NSApplication.shared.setActivationPolicy(.regular)
@@ -283,9 +278,7 @@ struct InterfaceSettingsTab: View {
                                         .environmentObject(updater)
                                         .environmentObject(permissionManager)
                                         .preferredColorScheme(themeManager.displayMode.colorScheme)
-                                }) {
-                                    resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")
-                                }
+                                })
                             } else {
                                 windowSettings.newWindow(withView: {
                                     RegularMode(search: $search, showPopover: $showPopover)
@@ -296,9 +289,7 @@ struct InterfaceSettingsTab: View {
                                         .environmentObject(updater)
                                         .environmentObject(permissionManager)
                                         .preferredColorScheme(themeManager.displayMode.colorScheme)
-                                }) {
-                                    resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")
-                                }
+                                })
                             }
                         }
 
