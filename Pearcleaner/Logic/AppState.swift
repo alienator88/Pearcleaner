@@ -65,7 +65,8 @@ class AppState: ObservableObject {
             id: UUID(),
             fileSize: [:],
             fileSizeLogical: [:],
-            fileIcon: [:]
+            fileIcon: [:], 
+            isDirectory: [:]
         )
 
         updateExtensionStatus()
@@ -133,6 +134,7 @@ struct ZombieFile: Identifiable, Equatable, Hashable {
     var fileSize: [URL:Int64]
     var fileSizeLogical: [URL:Int64]
     var fileIcon: [URL:NSImage?]
+    var isDirectory: [URL:Bool]
     var totalSize: Int64
     {
         return fileSize.values.reduce(0, +)
@@ -143,8 +145,28 @@ struct ZombieFile: Identifiable, Equatable, Hashable {
     }
 
 
-    static let empty = ZombieFile(id: UUID(), fileSize: [:], fileSizeLogical: [:], fileIcon: [:])
+    static let empty = ZombieFile(id: UUID(), fileSize: [:], fileSizeLogical: [:], fileIcon: [:], isDirectory: [:])
 
+}
+
+extension ZombieFile {
+    /// Converts the data in ZombieFile into a list of Item instances.
+    func toItems() -> [Item] {
+        var items = [Item]()
+
+        // Iterate over each URL in fileSize to get corresponding properties
+        for (url, size) in fileSize {
+            let name = url.lastPathComponent
+            let isDir = isDirectory[url] ?? false
+            let parent = url.deletingLastPathComponent()
+
+            // Create an Item instance for each URL
+            let item = Item(url: url, name: name, size: size, isDirectory: isDir, parentURL: parent)
+            items.append(item)
+        }
+
+        return items//.sorted { $0.size > $1.size }
+    }
 }
 
 

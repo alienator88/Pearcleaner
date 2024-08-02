@@ -13,6 +13,7 @@
 		C72893122AFD51EA00C8C1CD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72893112AFD51EA00C8C1CD /* main.swift */; };
 		C736E7652C2DF1C9009EDB6A /* AppPathsFetch-Async.swift in Sources */ = {isa = PBXBuildFile; fileRef = C736E7642C2DF1C9009EDB6A /* AppPathsFetch-Async.swift */; };
 		C74412C72BBF249000DDFCA8 /* AppPathsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74412C62BBF249000DDFCA8 /* AppPathsFetch.swift */; };
+		C74D76B72C5C4ABC00748DD1 /* TreeMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74D76B62C5C4ABC00748DD1 /* TreeMap.swift */; };
 		C74FDC632BCD833D00B8960F /* Conditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74FDC622BCD833D00B8960F /* Conditions.swift */; };
 		C7575D392B0182DE006A600A /* PearcleanerSentinel in CopyFiles */ = {isa = PBXBuildFile; fileRef = C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C76D08482AF83C3F00D07867 /* Update.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08472AF83C3F00D07867 /* Update.swift */; };
@@ -99,6 +100,7 @@
 		C72893112AFD51EA00C8C1CD /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		C736E7642C2DF1C9009EDB6A /* AppPathsFetch-Async.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppPathsFetch-Async.swift"; sourceTree = "<group>"; };
 		C74412C62BBF249000DDFCA8 /* AppPathsFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPathsFetch.swift; sourceTree = "<group>"; };
+		C74D76B62C5C4ABC00748DD1 /* TreeMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeMap.swift; sourceTree = "<group>"; };
 		C74FDC622BCD833D00B8960F /* Conditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conditions.swift; sourceTree = "<group>"; };
 		C76D08472AF83C3F00D07867 /* Update.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Update.swift; sourceTree = "<group>"; };
 		C76D08492AF83C6E00D07867 /* General.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = General.swift; sourceTree = "<group>"; };
@@ -180,6 +182,8 @@
 				C77B901B2AF193A3009CC655 /* Styles.swift */,
 				C7D31D502AFF00F300C7ED9E /* Locations.swift */,
 				C74FDC622BCD833D00B8960F /* Conditions.swift */,
+				C7DE672A2BA6343D00EB1633 /* MenuBarItem.swift */,
+				C7CF47232B3B3F1700979C5F /* WindowSettings.swift */,
 			);
 			path = Logic;
 			sourceTree = "<group>";
@@ -270,8 +274,7 @@
 				C7FEBA102BDC422200AE195F /* AppSearchView.swift */,
 				C7D31D492AFEB26700C7ED9E /* AppListItems.swift */,
 				C7EA06322C1CBE2000F872FC /* ConditionBuilderView.swift */,
-				C7DE672A2BA6343D00EB1633 /* MenuBarItem.swift */,
-				C7CF47232B3B3F1700979C5F /* WindowSettings.swift */,
+				C74D76B62C5C4ABC00748DD1 /* TreeMap.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -432,6 +435,7 @@
 				C76D08482AF83C3F00D07867 /* Update.swift in Sources */,
 				C7FB173B2B96321300B96F9A /* AppsListView.swift in Sources */,
 				C77B90162AF19377009CC655 /* AppState.swift in Sources */,
+				C74D76B72C5C4ABC00748DD1 /* TreeMap.swift in Sources */,
 				C7DD49EE2BAB7F6000CCBA16 /* ReversePathsFetch.swift in Sources */,
 				C7EA06332C1CBE2000F872FC /* ConditionBuilderView.swift in Sources */,
 				C7DD49F02BABA14400CCBA16 /* Folders.swift in Sources */,
