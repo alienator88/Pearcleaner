@@ -4,7 +4,7 @@
    <br />
    <strong>Status: </strong>Maintained 
    <br />
-   <strong>Version: </strong>3.8.2
+   <strong>Version: </strong>3.8.3
    <br />
    <a href="https://github.com/alienator88/Pearcleaner/releases"><strong>Download</strong></a>
     · 
@@ -15,15 +15,6 @@
   </p>
 </p>
 </br>
-
-> [!NOTE]
-> Pearcleaner is now signed/notarized with an Apple Developer account.
->
-> ### <ins>Updating Pearcleaner to the signed/notarized version</ins>
-> Any app on version `v3.7.6 and below` that used the old unsigned certificate had its authorization revoked when I switched to signing/notarizing the app with a valid apple certificate. With this in mind, the auto-updater built-in to the app and homebrew updating will likely not work. This will require you to manually remove the old app and download the latest version from GitHub to get to the signed version successfully.
->
-> ### <ins>Permissions alert on the signed/notarized version</ins>
-> You might need to fully remove and re-add Pearcleaner in the Accessibility and Full Disk Access permissions panes using the -/+ buttons if you get a permissions error on launch. Toggling the permission off and on doesn't register unfortunately as macOS sees these as two separate apps now since the certificates are different. Use the permissions checker in the Pearcleaner general settings tab to navigate to these locations quickly to make these changes.
 
 
 A free, source-available and fair-code licensed mac app cleaner inspired by [Freemacsoft's AppCleaner](https://freemacsoft.net/appcleaner/) and [Sun Knudsen's Privacy Guides](https://sunknudsen.com/privacy-guides/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative) post on his app-cleaner script.
@@ -42,8 +33,8 @@ This project was born out of wanting to learn more on how macOS deals with app i
 ## Features
 - Signed/notarized
 - Swift/SwiftUI
-- Small app size (~4MB)
-- Leftover file search for finding remaining files from previously uninstalled applications
+- Small app size
+- Leftover file search for finding remaining files from previously uninstalled applications, almost instant search (~1 second)
 - Sentinel monitor helper that can be enabled to watch Trash folder for deleted apps to cleanup after the fact(Extremely small (210KB) and uses ~2mb of ram to run in the background and file watch)
 - Mini mode which can be enabled from Settings
 - Menubar icon option
