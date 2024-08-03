@@ -9,23 +9,7 @@ import Foundation
 import SwiftUI
 import AlinFoundation
 
-final class Item: Identifiable {
-    let url: URL
-    let name: String
-    var size: Int64
-    let isDirectory: Bool
-    let parentURL: URL?
-    let timestamp: Date
 
-    init(url: URL, name: String, size: Int64, isDirectory: Bool, parentURL: URL? = nil) {
-        self.url = url
-        self.name = name
-        self.size = size
-        self.isDirectory = isDirectory
-        self.parentURL = parentURL
-        self.timestamp = Date()
-    }
-}
 
 struct TreeMapChart: View {
     let items: [Item]
@@ -33,7 +17,7 @@ struct TreeMapChart: View {
     @Binding var hoveredItem: Item?
 
     var displayedItems: [Item] {
-        items.filter { $0.size >= 1_048_576 } // Filter to keep only items with size >= 1MB
+        items//.filter { $0.size >= 1_048_576 } // Filter to keep only items with size >= 1MB
             .sorted(by: { $0.size > $1.size }) // Then sort the remaining items by size
     }
 
@@ -91,7 +75,7 @@ struct TreeMapView: View {
     private var content: some View {
         ForEach(0..<ld.content.count, id: \.self) { i in
             let file = items[ld.content[i].index]
-            let maxDimension = max(ld.content[i].w, ld.content[i].h) / 5
+//            let maxDimension = max(ld.content[i].w, ld.content[i].h) / 5
 
             ZStack {
                 Rectangle()
@@ -121,12 +105,6 @@ struct TreeMapView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                             .zIndex(1)
 
-                        } else {
-//                            Image(systemName: file.isDirectory ? "folder.fill" : "doc.fill")
-//                                .resizable()
-//                                .aspectRatio(contentMode: .fit)
-//                                .frame(width: maxDimension, height: maxDimension)
-//                                .foregroundStyle(.primary.opacity(0.5))
                         }
                     }
             }
@@ -140,20 +118,25 @@ struct TreeMapView: View {
         }
     }
 
-    private func colorForItem(_ item: Item) -> Color {
-        item.isDirectory ? .blue : .gray
-    }
+//    private func colorForItem(_ item: Item) -> Color {
+//        item.isDirectory ? .blue : .gray
+//    }
 
     private func gradientForItem(_ item: Item) -> LinearGradient {
-        item.isDirectory ? LinearGradient(
+        LinearGradient(
             gradient: Gradient(colors: [Color.cyan, Color.blue]),
             startPoint: .topLeading,
             endPoint: .bottomTrailing
-        ) : LinearGradient(
-            gradient: Gradient(colors: [Color.pink, Color.orange]),
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
         )
+//        item.isDirectory ? LinearGradient(
+//            gradient: Gradient(colors: [Color.cyan, Color.blue]),
+//            startPoint: .topLeading,
+//            endPoint: .bottomTrailing
+//        ) : LinearGradient(
+//            gradient: Gradient(colors: [Color.pink, Color.orange]),
+//            startPoint: .topLeading,
+//            endPoint: .bottomTrailing
+//        )
     }
 
 }
@@ -172,7 +155,23 @@ func randomColor() -> Color {
           brightness: Double.random(in: 0.90...1.0))
 }
 
-//MARK: ===================================================================================================================
+final class Item: Identifiable {
+    let url: URL
+    let name: String
+    var size: Int64
+    let isDirectory: Bool?
+//    let parentURL: URL?
+//    let timestamp: Date
+
+    init(url: URL, name: String, size: Int64, isDirectory: Bool = false) {
+        self.url = url
+        self.name = name
+        self.size = size
+        self.isDirectory = isDirectory
+    }
+}
+
+//MARK: Layout Generator ============================================================================================================
 
 // Layout
 enum Direction {

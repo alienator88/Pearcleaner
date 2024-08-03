@@ -18,7 +18,6 @@ class ReversePathsSearcher {
     private var fileSize: [URL: Int64] = [:]
     private var fileSizeLogical: [URL: Int64] = [:]
     private var fileIcon: [URL: NSImage?] = [:]
-    private var isDirectory: [URL: Bool] = [:]
     private let dispatchGroup = DispatchGroup()
     private let sortedApps: [AppInfo]
 
@@ -113,7 +112,6 @@ class ReversePathsSearcher {
             fileSize[path] = size.real
             fileSizeLogical[path] = size.logical
             fileIcon[path] = getIconForFileOrFolderNS(atPath: path)
-            isDirectory[path] = path.hasDirectoryPath
         }
     }
 
@@ -123,7 +121,6 @@ class ReversePathsSearcher {
             updatedZombieFile.fileSize = self.fileSize
             updatedZombieFile.fileSizeLogical = self.fileSizeLogical
             updatedZombieFile.fileIcon = self.fileIcon
-            updatedZombieFile.isDirectory = self.isDirectory
             self.appState.zombieFile = updatedZombieFile
             self.appState.showProgress = false
         }

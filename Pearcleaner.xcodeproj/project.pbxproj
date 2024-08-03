@@ -14,6 +14,10 @@
 		C736E7652C2DF1C9009EDB6A /* AppPathsFetch-Async.swift in Sources */ = {isa = PBXBuildFile; fileRef = C736E7642C2DF1C9009EDB6A /* AppPathsFetch-Async.swift */; };
 		C74412C72BBF249000DDFCA8 /* AppPathsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74412C62BBF249000DDFCA8 /* AppPathsFetch.swift */; };
 		C74D76B72C5C4ABC00748DD1 /* TreeMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74D76B62C5C4ABC00748DD1 /* TreeMap.swift */; };
+		C74D76BD2C5D2DF300748DD1 /* FileSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74D76B92C5D2DF300748DD1 /* FileSearch.swift */; };
+		C74D76BE2C5D2DF300748DD1 /* PearDiskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74D76BA2C5D2DF300748DD1 /* PearDiskView.swift */; };
+		C74D76BF2C5D2DF300748DD1 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74D76BB2C5D2DF300748DD1 /* Data.swift */; };
+		C74D76C02C5D2DF300748DD1 /* FolderDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74D76BC2C5D2DF300748DD1 /* FolderDetail.swift */; };
 		C74FDC632BCD833D00B8960F /* Conditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74FDC622BCD833D00B8960F /* Conditions.swift */; };
 		C7575D392B0182DE006A600A /* PearcleanerSentinel in CopyFiles */ = {isa = PBXBuildFile; fileRef = C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C76D08482AF83C3F00D07867 /* Update.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08472AF83C3F00D07867 /* Update.swift */; };
@@ -101,6 +105,10 @@
 		C736E7642C2DF1C9009EDB6A /* AppPathsFetch-Async.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppPathsFetch-Async.swift"; sourceTree = "<group>"; };
 		C74412C62BBF249000DDFCA8 /* AppPathsFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPathsFetch.swift; sourceTree = "<group>"; };
 		C74D76B62C5C4ABC00748DD1 /* TreeMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeMap.swift; sourceTree = "<group>"; };
+		C74D76B92C5D2DF300748DD1 /* FileSearch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileSearch.swift; sourceTree = "<group>"; };
+		C74D76BA2C5D2DF300748DD1 /* PearDiskView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PearDiskView.swift; sourceTree = "<group>"; };
+		C74D76BB2C5D2DF300748DD1 /* Data.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
+		C74D76BC2C5D2DF300748DD1 /* FolderDetail.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FolderDetail.swift; sourceTree = "<group>"; };
 		C74FDC622BCD833D00B8960F /* Conditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conditions.swift; sourceTree = "<group>"; };
 		C76D08472AF83C3F00D07867 /* Update.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Update.swift; sourceTree = "<group>"; };
 		C76D08492AF83C6E00D07867 /* General.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = General.swift; sourceTree = "<group>"; };
@@ -204,6 +212,18 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		C74D76B82C5D2D7900748DD1 /* PearDisk */ = {
+			isa = PBXGroup;
+			children = (
+				C74D76BA2C5D2DF300748DD1 /* PearDiskView.swift */,
+				C74D76BB2C5D2DF300748DD1 /* Data.swift */,
+				C74D76B92C5D2DF300748DD1 /* FileSearch.swift */,
+				C74D76B62C5C4ABC00748DD1 /* TreeMap.swift */,
+				C74D76BC2C5D2DF300748DD1 /* FolderDetail.swift */,
+			);
+			path = PearDisk;
+			sourceTree = "<group>";
+		};
 		C76D08462AF83C2F00D07867 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -257,6 +277,7 @@
 				C786F1A72C29E599001B3800 /* Builds */,
 				C76D084F2AF84E0100D07867 /* Resources */,
 				C76D08462AF83C2F00D07867 /* Settings */,
+				C74D76B82C5D2D7900748DD1 /* PearDisk */,
 				C77B901F2AF1B390009CC655 /* Views */,
 				C72893072AFD442600C8C1CD /* Logic */,
 			);
@@ -274,7 +295,6 @@
 				C7FEBA102BDC422200AE195F /* AppSearchView.swift */,
 				C7D31D492AFEB26700C7ED9E /* AppListItems.swift */,
 				C7EA06322C1CBE2000F872FC /* ConditionBuilderView.swift */,
-				C74D76B62C5C4ABC00748DD1 /* TreeMap.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -431,17 +451,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				C7DD49EA2BAB4D8100CCBA16 /* AppInfoFetch.swift in Sources */,
+				C74D76BD2C5D2DF300748DD1 /* FileSearch.swift in Sources */,
 				C79947962C34A794007279CC /* Tips.swift in Sources */,
 				C76D08482AF83C3F00D07867 /* Update.swift in Sources */,
 				C7FB173B2B96321300B96F9A /* AppsListView.swift in Sources */,
 				C77B90162AF19377009CC655 /* AppState.swift in Sources */,
 				C74D76B72C5C4ABC00748DD1 /* TreeMap.swift in Sources */,
+				C74D76C02C5D2DF300748DD1 /* FolderDetail.swift in Sources */,
 				C7DD49EE2BAB7F6000CCBA16 /* ReversePathsFetch.swift in Sources */,
 				C7EA06332C1CBE2000F872FC /* ConditionBuilderView.swift in Sources */,
 				C7DD49F02BABA14400CCBA16 /* Folders.swift in Sources */,
 				C7D31D512AFF00F300C7ED9E /* Locations.swift in Sources */,
 				C77B901A2AF1938F009CC655 /* Logic.swift in Sources */,
 				C77B901C2AF193A3009CC655 /* Styles.swift in Sources */,
+				C74D76BF2C5D2DF300748DD1 /* Data.swift in Sources */,
 				C7045A282B03E71D00376976 /* MiniMode.swift in Sources */,
 				C7ED86B12BA8A35500F13DE4 /* Interface.swift in Sources */,
 				C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */,
@@ -452,6 +475,7 @@
 				C77B90042AF18E2E009CC655 /* PearcleanerApp.swift in Sources */,
 				C76D08512AF850F300D07867 /* About.swift in Sources */,
 				C77B90182AF19382009CC655 /* AppCommands.swift in Sources */,
+				C74D76BE2C5D2DF300748DD1 /* PearDiskView.swift in Sources */,
 				C7D31D4A2AFEB26700C7ED9E /* AppListItems.swift in Sources */,
 				C77B901E2AF1A9DB009CC655 /* SettingsWindow.swift in Sources */,
 				C74412C72BBF249000DDFCA8 /* AppPathsFetch.swift in Sources */,
@@ -533,8 +557,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 56;
-				APP_VERSION = 3.8.2;
+				APP_BUILD = 57;
+				APP_VERSION = 3.8.3;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -603,8 +627,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 56;
-				APP_VERSION = 3.8.2;
+				APP_BUILD = 57;
+				APP_VERSION = 3.8.3;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;

@@ -36,8 +36,6 @@ struct ZombieView: View {
     @State private var totalRealSizeUninstallBtn: String = ""
     @State private var totalLogicalSizeUninstallBtn: String = ""
     @State private var totalFinderSizeUninstallBtn: String = ""
-    @State private var isTreeMap: Bool = false
-    @State private var hoveredItem: Item?
 
     var body: some View {
 
@@ -172,108 +170,87 @@ struct ZombieView: View {
                         .padding(.top, 0)
                     }
 
-                    Toggle("Tree Map View", isOn: $isTreeMap)
 
-
-                    if isTreeMap {
-                        TreeMapChart(items: appState.zombieFile.toItems(), onItemSelected: { selectedItem in
-                            //                            if selectedItem.isDirectory {
-                            //                                drillDown(to: selectedItem)
-                            //                            } else {
-                            //                                NSWorkspace.shared.selectFile(selectedItem.url.path, inFileViewerRootedAtPath: selectedItem.url.deletingLastPathComponent().path)
-                            //                            }
-                        }, hoveredItem: $hoveredItem)
-                    } else {
-                        // Item selection and sorting toolbar
-                        HStack {
-                            Toggle("", isOn: Binding(
-                                get: {
+                    // Item selection and sorting toolbar
+                    HStack {
+                        Toggle("", isOn: Binding(
+                            get: {
+                                if searchZ.isEmpty {
+                                    // All items are selected if no filter is applied and all items are selected
+                                    return selectedZombieItemsLocal.count == appState.zombieFile.fileSize.count
+                                } else {
+                                    // All currently filtered files are selected when a filter is applied
+                                    return Set(memoizedFiles).isSubset(of: selectedZombieItemsLocal) && selectedZombieItemsLocal.count == memoizedFiles.count
+                                }
+                            },
+                            set: { newValue in
+                                if newValue {
                                     if searchZ.isEmpty {
-                                        // All items are selected if no filter is applied and all items are selected
-                                        return selectedZombieItemsLocal.count == appState.zombieFile.fileSize.count
+                                        // Select all files if no filter is applied
+                                        selectedZombieItemsLocal = Set(appState.zombieFile.fileSize.keys)
                                     } else {
-                                        // All currently filtered files are selected when a filter is applied
-                                        return Set(memoizedFiles).isSubset(of: selectedZombieItemsLocal) && selectedZombieItemsLocal.count == memoizedFiles.count
+                                        // Select only filtered files if a filter is applied
+                                        selectedZombieItemsLocal.formUnion(memoizedFiles)
                                     }
-                                },
-                                set: { newValue in
-                                    if newValue {
-                                        if searchZ.isEmpty {
-                                            // Select all files if no filter is applied
-                                            selectedZombieItemsLocal = Set(appState.zombieFile.fileSize.keys)
-                                        } else {
-                                            // Select only filtered files if a filter is applied
-                                            selectedZombieItemsLocal.formUnion(memoizedFiles)
-                                        }
+                                } else {
+                                    if searchZ.isEmpty {
+                                        // Deselect all files if no filter is applied
+                                        selectedZombieItemsLocal.removeAll()
                                     } else {
-                                        if searchZ.isEmpty {
-                                            // Deselect all files if no filter is applied
-                                            selectedZombieItemsLocal.removeAll()
-                                        } else {
-                                            // Deselect only filtered files if a filter is applied
-                                            selectedZombieItemsLocal.subtract(memoizedFiles)
-                                        }
+                                        // Deselect only filtered files if a filter is applied
+                                        selectedZombieItemsLocal.subtract(memoizedFiles)
                                     }
-
-                                    updateTotalSizes()
-                                }
-                            ))
-                            .toggleStyle(SimpleCheckboxToggleStyle())
-                            .help("All checkboxes")
-
-
-                            SearchBar(search: $searchZ, darker: true, glass: glass, sidebar: false)
-                                .padding(.horizontal)
-                                .onChange(of: searchZ) { newValue in
-                                    updateMemoizedFiles(for: newValue, sizeType: sizeType, selectedSortAlpha: selectedSortAlpha)
                                 }
 
-
-
-                            Button("") {
-                                selectedSortAlpha.toggle()
-                                updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSortAlpha: selectedSortAlpha, force: true)
+                                updateTotalSizes()
                             }
-                            .buttonStyle(SimpleButtonStyle(icon: selectedSortAlpha ? "textformat.abc" : "textformat.123", help: selectedSortAlpha ? "Sorted alphabetically" : "Sorted by size"))
+                        ))
+                        .toggleStyle(SimpleCheckboxToggleStyle())
+                        .help("All checkboxes")
 
 
-                        }
-                        .padding(.horizontal)
-                        .padding(.vertical)
-
-
-                        Divider()
+                        SearchBar(search: $searchZ, darker: true, glass: glass, sidebar: false)
                             .padding(.horizontal)
+                            .onChange(of: searchZ) { newValue in
+                                updateMemoizedFiles(for: newValue, sizeType: sizeType, selectedSortAlpha: selectedSortAlpha)
+                            }
 
 
-                        ScrollView() {
-                            LazyVStack {
-                                ForEach(memoizedFiles, id: \.self) { file in
-                                    if let fileSize = appState.zombieFile.fileSize[file], let fileSizeL = appState.zombieFile.fileSizeLogical[file], let fileIcon = appState.zombieFile.fileIcon[file], let iconImage = fileIcon.map(Image.init(nsImage:)) {
-                                        VStack {
-                                            ZombieFileDetailsItem(size: fileSize, sizeL: fileSizeL, icon: iconImage, path: file, isSelected: self.binding(for: file))
-                                                .padding(.vertical, 5)
-                                        }
+
+                        Button("") {
+                            selectedSortAlpha.toggle()
+                            updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSortAlpha: selectedSortAlpha, force: true)
+                        }
+                        .buttonStyle(SimpleButtonStyle(icon: selectedSortAlpha ? "textformat.abc" : "textformat.123", help: selectedSortAlpha ? "Sorted alphabetically" : "Sorted by size"))
+
+
+                    }
+                    .padding(.horizontal)
+                    .padding(.vertical)
+
+
+                    Divider()
+                        .padding(.horizontal)
+
+
+                    ScrollView() {
+                        LazyVStack {
+                            ForEach(memoizedFiles, id: \.self) { file in
+                                if let fileSize = appState.zombieFile.fileSize[file], let fileSizeL = appState.zombieFile.fileSizeLogical[file], let fileIcon = appState.zombieFile.fileIcon[file], let iconImage = fileIcon.map(Image.init(nsImage:)) {
+                                    VStack {
+                                        ZombieFileDetailsItem(size: fileSize, sizeL: fileSizeL, icon: iconImage, path: file, isSelected: self.binding(for: file))
+                                            .padding(.vertical, 5)
                                     }
                                 }
-
                             }
-                            .padding()
+
                         }
+                        .padding()
                     }
-
-
-
-
-
-
-
 
                     Spacer()
 
                     HStack() {
-
-                        Text(hoveredItem?.name ?? "")
 
                         Spacer()
 
