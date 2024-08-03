@@ -14,6 +14,8 @@ struct ResetSettingsButtonStyle: ButtonStyle {
     let label: String
     let help: String
     @State private var hovered = false
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+
 
     func makeBody(configuration: Configuration) -> some View {
         HStack(alignment: .center) {
@@ -35,7 +37,7 @@ struct ResetSettingsButtonStyle: ButtonStyle {
         .scaleEffect(configuration.isPressed ? 0.95 : 1)
         .animation(.easeOut(duration: 0.2), value: configuration.isPressed)
         .onHover { hovering in
-            withAnimation(Animation.easeIn(duration: 0.15)) {
+            withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                 hovered = hovering
             }
         }
@@ -52,6 +54,7 @@ struct ResetSettingsButtonStyle: ButtonStyle {
 struct SimpleCheckboxToggleStyle: ToggleStyle {
     @EnvironmentObject private var themeManager: ThemeManager
     @State private var isHovered: Bool = false
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
     func makeBody(configuration: Configuration) -> some View {
         HStack {
@@ -66,7 +69,7 @@ struct SimpleCheckboxToggleStyle: ToggleStyle {
                     }
                 }
                 .onTapGesture {
-                    withAnimation(.smooth()) {
+                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                         configuration.isOn.toggle()
                     }
                 }
@@ -240,6 +243,7 @@ struct GlassEffect: NSViewRepresentable {
 
 
 struct SimpleButtonBrightStyle: ButtonStyle {
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @State private var hovered = false
     let icon: String
     let label: String
@@ -266,7 +270,7 @@ struct SimpleButtonBrightStyle: ButtonStyle {
         }
         .padding(5)
         .onHover { hovering in
-            withAnimation() {
+            withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                 hovered = hovering
             }
         }

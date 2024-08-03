@@ -18,6 +18,7 @@ struct FolderSettingsTab: View {
     @EnvironmentObject var themeManager: ThemeManager
     @State private var isHovered = false
     @AppStorage("settings.general.glass") private var glass: Bool = false
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
 
     var body: some View {
@@ -54,7 +55,7 @@ struct FolderSettingsTab: View {
                             }
                             .disabled(fsm.defaultPaths.contains(fsm.folderPaths[index]))
                             .onHover { hovering in
-                                withAnimation(Animation.easeInOut(duration: 0.4)) {
+                                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                                     isHovered = hovering
                                 }
                                 if isHovered && !fsm.defaultPaths.contains(fsm.folderPaths[index]) {
@@ -150,7 +151,7 @@ struct FolderSettingsTab: View {
                                 Spacer()
                             }
                             .onHover { hovering in
-                                withAnimation(Animation.easeInOut(duration: 0.4)) {
+                                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                                     isHovered = hovering
                                 }
                                 if isHovered {

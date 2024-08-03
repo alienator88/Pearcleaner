@@ -24,6 +24,8 @@ struct InterfaceSettingsTab: View {
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.general.popover") private var popoverStay: Bool = true
     @AppStorage("settings.general.miniview") private var miniView: Bool = true
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+    @AppStorage("settings.interface.minimalist") private var minimalEnabled: Bool = true
     @AppStorage("settings.interface.selectedMenubarIcon") var selectedMenubarIcon: String = "bubbles.and.sparkles.fill"
     @State private var isLaunchAtLoginEnabled: Bool = false
     @Binding var showPopover: Bool
@@ -71,6 +73,48 @@ struct InterfaceSettingsTab: View {
                 .onChange(of: glass) { newVal in
                     MenuBarExtraManager.shared.restartMenuBarExtra()
                 }
+            }
+            .padding(5)
+            .padding(.leading)
+
+
+            HStack(spacing: 0) {
+                Image(systemName: animationEnabled ? "play" : "play.slash")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 20, height: 20)
+                    .padding(.trailing)
+                    .foregroundStyle(.primary.opacity(0.5))
+                VStack(alignment: .leading, spacing: 5) {
+                    Text("\(animationEnabled ? "Animations enabled" : "Animations disabled")")
+                        .font(.callout)
+                        .foregroundStyle(.primary.opacity(0.5))
+                }
+                Spacer()
+                Toggle(isOn: $animationEnabled, label: {
+                })
+                .toggleStyle(.switch)
+            }
+            .padding(5)
+            .padding(.leading)
+
+
+            HStack(spacing: 0) {
+                Image(systemName: minimalEnabled ? "list.dash.header.rectangle" : "list.bullet.rectangle")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 20, height: 20)
+                    .padding(.trailing)
+                    .foregroundStyle(.primary.opacity(0.5))
+                VStack(alignment: .leading, spacing: 5) {
+                    Text("\(minimalEnabled ? "Minimalist app list rows enabled" : "Minimalist app list rows disabled")")
+                        .font(.callout)
+                        .foregroundStyle(.primary.opacity(0.5))
+                }
+                Spacer()
+                Toggle(isOn: $minimalEnabled, label: {
+                })
+                .toggleStyle(.switch)
             }
             .padding(5)
             .padding(.leading)
@@ -380,7 +424,7 @@ struct InterfaceSettingsTab: View {
 
         }
         .padding(20)
-        .frame(width: 500, height: 540)
+        .frame(width: 500, height: 600)
 
     }
 

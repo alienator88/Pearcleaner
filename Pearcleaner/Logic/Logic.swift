@@ -110,6 +110,7 @@ func listAppSupportDirectories() -> [String] {
 
 // Load app paths on launch
 func reversePreloader(allApps: [AppInfo], appState: AppState, locations: Locations, fsm: FolderSettingsManager, completion: @escaping () -> Void = {}) {
+    @AppStorage("settings.interface.animationEnabled") var animationEnabled: Bool = true
 //    appState.operationQueueLeftover.maxConcurrentOperationCount = 10 // Adjust this value as needed
 //    appState.shouldCancelOperations = false
 //    appState.appInfoStore.removeAll()
@@ -122,7 +123,7 @@ func reversePreloader(allApps: [AppInfo], appState: AppState, locations: Locatio
         updateOnMain {
             printOS("Reverse search processed successfully")
             appState.showProgress = false
-            withAnimation {
+            withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                 appState.leftoverProgress.1 = 0.0
             }
             appState.leftoverProgress.0 = "Reverse search completed successfully"
@@ -218,6 +219,8 @@ func reversePreloader(allApps: [AppInfo], appState: AppState, locations: Locatio
 
 // Load item in Files view
 func showAppInFiles(appInfo: AppInfo, appState: AppState, locations: Locations, showPopover: Binding<Bool>) {
+    @AppStorage("settings.interface.animationEnabled") var animationEnabled: Bool = true
+
     showPopover.wrappedValue = false
 
     updateOnMain {
@@ -238,7 +241,7 @@ func showAppInFiles(appInfo: AppInfo, appState: AppState, locations: Locations, 
         appState.appInfo = appInfo
 
         // Animate the view change and popover display.
-        withAnimation(Animation.easeIn(duration: 0.4)) {
+        withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
             appState.currentView = .files
             showPopover.wrappedValue.toggle()
         }

@@ -20,6 +20,8 @@ struct FilesView: View {
     @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @AppStorage("settings.general.filesWarning") private var warning: Bool = false
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+    @AppStorage("settings.general.confirmAlert") private var confirmAlert: Bool = false
     @State private var showAlert = false
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
@@ -299,86 +301,88 @@ struct FilesView: View {
 
                         Spacer()
 
-
                         InfoButton(text: "Always double-check the files/folders marked for removal. In some rare cases, Pearcleaner may find some unrelated files when app names are too similar.", color: .primary.opacity(0.5), warning: true, edge: .top)
                             .padding(.top)
 
 
                         Button("\(sizeType == "Logical" ? totalSelectedSize.logical : sizeType == "Finder" ? totalSelectedSize.finder : totalSelectedSize.real)") {
-                            Task {
+                            showCustomAlert(enabled: confirmAlert, title: "Warning", message: "Are you sure you want to remove these files?", style: .warning, onOk: {
+                                Task {
 
-                                let selectedItemsArray = Array(appState.selectedItems)
+                                    let selectedItemsArray = Array(appState.selectedItems)
 
-                                killApp(appId: appState.appInfo.bundleIdentifier) {
-                                    
-                                    moveFilesToTrash(appState: appState, at: selectedItemsArray) { success in
+                                    killApp(appId: appState.appInfo.bundleIdentifier) {
 
-                                        // Send Sentinel FileWatcher start notification
-                                        sendStartNotificationFW()
+                                        moveFilesToTrash(appState: appState, at: selectedItemsArray) { success in
 
-                                        guard success else {
-                                            return
-                                        }
+                                            // Send Sentinel FileWatcher start notification
+                                            sendStartNotificationFW()
 
-                                        if appState.selectedItems.count == appState.appInfo.fileSize.keys.count {
-                                            updateOnMain {
-                                                search = ""
-                                                withAnimation {
-                                                    if mini || menubarEnabled {
-                                                        appState.currentView = .apps
-                                                        showPopover = false
-                                                    } else {
-                                                        appState.currentView = .empty
+                                            guard success else {
+                                                return
+                                            }
+
+                                            if appState.selectedItems.count == appState.appInfo.fileSize.keys.count {
+                                                updateOnMain {
+                                                    search = ""
+                                                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                                                        if mini || menubarEnabled {
+                                                            appState.currentView = .apps
+                                                            showPopover = false
+                                                        } else {
+                                                            appState.currentView = .empty
+                                                        }
                                                     }
                                                 }
                                             }
-                                        }
 
-                                        // Remove app from app list if main app bundle is removed for regular and wrapped apps
-                                        if (appState.appInfo.wrapped && selectedItemsArray.contains(where: { $0.absoluteString == appState.appInfo.path.deletingLastPathComponent().deletingLastPathComponent().absoluteString })) ||
-                                            (!appState.appInfo.wrapped && selectedItemsArray.contains(where: { $0.absoluteString == appState.appInfo.path.absoluteString })) {
-                                            // Change view back to empty/apps if main app bundle is removed
-                                            updateOnMain {
-                                                search = ""
-                                                withAnimation {
-                                                    if mini || menubarEnabled {
-                                                        appState.currentView = .apps
-                                                        showPopover = false
-                                                    } else {
-                                                        appState.currentView = .empty
+                                            // Remove app from app list if main app bundle is removed for regular and wrapped apps
+                                            if (appState.appInfo.wrapped && selectedItemsArray.contains(where: { $0.absoluteString == appState.appInfo.path.deletingLastPathComponent().deletingLastPathComponent().absoluteString })) ||
+                                                (!appState.appInfo.wrapped && selectedItemsArray.contains(where: { $0.absoluteString == appState.appInfo.path.absoluteString })) {
+                                                // Change view back to empty/apps if main app bundle is removed
+                                                updateOnMain {
+                                                    search = ""
+                                                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                                                        if mini || menubarEnabled {
+                                                            appState.currentView = .apps
+                                                            showPopover = false
+                                                        } else {
+                                                            appState.currentView = .empty
+                                                        }
                                                     }
                                                 }
-                                            }
-                                            // Match found, remove the app
-                                            removeApp(appState: appState, withPath: appState.appInfo.path)
+                                                // Match found, remove the app
+                                                removeApp(appState: appState, withPath: appState.appInfo.path)
 
-                                            if appState.oneShotMode {
-                                                NSApp.terminate(nil)
-                                            }
-
-                                        } else {
-                                            // Add deleted appInfo object to trashed array
-                                            appState.trashedFiles.append(appState.appInfo)
-
-                                            // Clear out appInfoStore object (Used for leftover file search)
-//                                            if let index = appState.appInfoStore.firstIndex(where: { $0.path == appState.appInfo.path }) {
-//                                                appState.appInfoStore[index] = .empty
-//                                            }
-
-                                            updateOnMain {
-                                                // Remove items from the list
-                                                appState.appInfo.fileSize = appState.appInfo.fileSize.filter { !appState.selectedItems.contains($0.key) }
-                                                // Update the selectedFiles to remove references that are no longer present
-                                                appState.selectedItems.removeAll()
                                                 if appState.oneShotMode {
                                                     NSApp.terminate(nil)
+                                                }
+
+                                            } else {
+                                                // Add deleted appInfo object to trashed array
+                                                appState.trashedFiles.append(appState.appInfo)
+
+                                                // Clear out appInfoStore object (Used for leftover file search)
+                                                //                                            if let index = appState.appInfoStore.firstIndex(where: { $0.path == appState.appInfo.path }) {
+                                                //                                                appState.appInfoStore[index] = .empty
+                                                //                                            }
+
+                                                updateOnMain {
+                                                    // Remove items from the list
+                                                    appState.appInfo.fileSize = appState.appInfo.fileSize.filter { !appState.selectedItems.contains($0.key) }
+                                                    // Update the selectedFiles to remove references that are no longer present
+                                                    appState.selectedItems.removeAll()
+                                                    if appState.oneShotMode {
+                                                        NSApp.terminate(nil)
+                                                    }
                                                 }
                                             }
                                         }
                                     }
-                                }
 
-                            }
+                                }
+                            })
+
 
                         }
                         .buttonStyle(UninstallButton(isEnabled: !appState.selectedItems.isEmpty))
@@ -434,6 +438,7 @@ struct FileDetailsItem: View {
     @EnvironmentObject var appState: AppState
     @State private var isHovered = false
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     let size: Int64?
     let sizeL: Int64?
     let icon: Image?
@@ -505,7 +510,7 @@ struct FileDetailsItem: View {
                 NSWorkspace.shared.selectFile(path.path, inFileViewerRootedAtPath: path.deletingLastPathComponent().path)
             }
             .onHover { hovering in
-                withAnimation(Animation.easeIn(duration: 0.2)) {
+                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                     self.isHovered = hovering
                 }
             }

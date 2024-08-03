@@ -15,6 +15,7 @@ struct TreeMapChart: View {
     let items: [Item]
     var onItemSelected: (Item) -> Void
     @Binding var hoveredItem: Item?
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
     var displayedItems: [Item] {
         items//.filter { $0.size >= 1_048_576 } // Filter to keep only items with size >= 1MB
@@ -46,6 +47,7 @@ struct TreeMapView: View {
     var onItemSelected: (Item) -> Void
     @Binding var hoveredItem: Item?
     @State private var hoveredIndex: Int?
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
     var body: some View {
         Group {
@@ -109,7 +111,7 @@ struct TreeMapView: View {
                     }
             }
             .onHover { isHovering in
-                withAnimation {
+                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                     hoveredIndex = isHovering ? i : nil
                     hoveredItem = isHovering ? file : nil
                 }
@@ -160,8 +162,6 @@ final class Item: Identifiable {
     let name: String
     var size: Int64
     let isDirectory: Bool?
-//    let parentURL: URL?
-//    let timestamp: Date
 
     init(url: URL, name: String, size: Int64, isDirectory: Bool = false) {
         self.url = url

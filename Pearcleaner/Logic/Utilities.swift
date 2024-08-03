@@ -124,7 +124,6 @@ func saveURLsToFile(urls: Set<URL>, appState: AppState) {
 }
 
 
-
 // Open trash folder
 func openTrash() {
     if let trashURL = try? FileManager.default.url(for: .trashDirectory, in: .userDomainMask, appropriateFor: nil, create: false) {
@@ -238,6 +237,83 @@ func showLocalized(url: URL) -> String {
     }
     // Return the last path component as a fallback
     return url.lastPathComponent
+}
+
+extension URL {
+    func localizedName() -> String? {
+        do {
+            let resourceValues = try self.resourceValues(forKeys: [.localizedNameKey])
+            return resourceValues.localizedName
+        } catch {
+            print("Error getting localized name: \(error)")
+            return nil
+        }
+    }
+}
+
+extension String {
+    func localizedName() -> String? {
+        let url = URL(fileURLWithPath: self)
+        do {
+            let resourceValues = try url.resourceValues(forKeys: [.localizedNameKey])
+            return resourceValues.localizedName
+        } catch {
+            print("Error getting localized name: \(error)")
+            return nil
+        }
+    }
+}
+
+extension URL {
+    /// Returns the bundle name of the container by its UUID if found.
+    func containerNameByUUID() -> String {
+        // Extract the last path component, which should be the UUID
+        let uuid = self.lastPathComponent
+
+        // Ensure the UUID matches the expected pattern.
+        let uuidRegex = try! NSRegularExpression(
+            pattern: "^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$",
+            options: .caseInsensitive
+        )
+        let range = NSRange(location: 0, length: uuid.utf16.count)
+        guard uuidRegex.firstMatch(in: uuid, options: [], range: range) != nil else {
+//            print("The URL does not point to a valid UUID container.")
+            return ""
+        }
+
+        // Path to the Containers directory.
+        let containersPath = FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent("Library/Containers")
+
+        do {
+            // List all directories in the Containers folder.
+            let containerDirectories = try FileManager.default.contentsOfDirectory(
+                at: containersPath,
+                includingPropertiesForKeys: nil,
+                options: .skipsHiddenFiles
+            )
+
+            // Iterate over each directory to find a match with the UUID.
+            for directory in containerDirectories {
+                let directoryName = directory.lastPathComponent
+
+                if directoryName == uuid {
+                    // Attempt to read the metadata plist file.
+                    let metadataPlistURL = directory.appendingPathComponent(".com.apple.containermanagerd.metadata.plist")
+
+                    if let metadataDict = NSDictionary(contentsOf: metadataPlistURL),
+                       let applicationBundleID = metadataDict["MCMMetadataIdentifier"] as? String {
+                        return applicationBundleID
+                    }
+                }
+            }
+        } catch {
+            print("Error accessing the Containers directory: \(error)")
+        }
+
+        // Return nil if no matching UUID is found.
+        return ""
+    }
 }
 
 // Return image for different folders

@@ -57,7 +57,8 @@ struct SidebarView: View {
         let basePaths = [
             URL(fileURLWithPath: "/Volumes"),
             URL(fileURLWithPath: "/Users"),
-            URL(fileURLWithPath: "/Users/alin"),
+//            URL(fileURLWithPath: "/Users/alin"),
+            URL(fileURLWithPath: "/"),
         ]
 
         for basePath in basePaths {

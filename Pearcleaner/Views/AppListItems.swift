@@ -20,6 +20,8 @@ struct AppListItems: View {
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.general.glass") private var glass: Bool = true
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+    @AppStorage("settings.interface.minimalist") private var minimalEnabled: Bool = true
     @Binding var showPopover: Bool
     @EnvironmentObject var locations: Locations
     let itemId = UUID()
@@ -30,7 +32,7 @@ struct AppListItems: View {
 
     var body: some View {
 
-        ZStack() {
+        VStack() {
 
             HStack(alignment: .center) {
 
@@ -45,14 +47,39 @@ struct AppListItems: View {
 
                 }
 
-                VStack(alignment: .leading, spacing: 5) {
+                if minimalEnabled {
                     Text(appInfo.appName)
-                        .font(.system(size: (isHovered || isSelected) ? 14 : 12))
+                        .font(.system(size: (isSelected) ? 14 : 12))
                         .lineLimit(1)
                         .truncationMode(.tail)
-                        .padding(.horizontal, 5)
-                }
+                } else {
+                    VStack(alignment: .center, spacing: 2) {
+                        HStack {
+                            Text(appInfo.appName)
+                                .font(.system(size: (isSelected) ? 14 : 12))
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+                            Spacer()
+                        }
 
+                        HStack(spacing: 5) {
+                            Text("v\(appInfo.appVersion)")
+                                .font(.footnote)
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+                                .opacity(0.5)
+                            Text("•").font(.footnote).opacity(0.5)
+
+                            Text(bundleSize == 0 ? "calculating" : "\(formatByte(size: bundleSize).human)")
+                                .font(.footnote)
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+                                .opacity(0.5)
+                            Spacer()
+                        }
+
+                    }
+                }
 
 
                 Spacer()
@@ -78,9 +105,13 @@ struct AppListItems: View {
                         )
                 }
 
-                Text(bundleSize == 0 ? "v\(appInfo.appVersion)" : (isHovered ? "v\(appInfo.appVersion)" : formatByte(size: bundleSize).human))
-                    .font(.system(size: (isHovered || isSelected) ? 12 : 10))
-                    .foregroundStyle(.primary.opacity(0.5))
+                if minimalEnabled {
+                    Text(bundleSize == 0 ? "v\(appInfo.appVersion)" : (isHovered ? "v\(appInfo.appVersion)" : formatByte(size: bundleSize).human))
+                        .font(.system(size: (isHovered || isSelected) ? 12 : 10))
+                        .foregroundStyle(.primary.opacity(0.5))
+                }
+
+
 
             }
 
@@ -90,13 +121,13 @@ struct AppListItems: View {
         .padding(.vertical, 5)
         .help(appInfo.appName)
         .onHover { hovering in
-            withAnimation(Animation.easeIn(duration: 0.3)) {
+            withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                 self.isHovered = hovering
                 self.hoveredItemPath = isHovered ? appInfo.path : nil
             }
         }
         .onTapGesture {
-            withAnimation(Animation.easeInOut(duration: 0.4)) {
+            withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                 if isSelected {
                     appState.appInfo = .empty
                     appState.selectedItems = []

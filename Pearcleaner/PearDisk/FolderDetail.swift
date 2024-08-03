@@ -182,6 +182,7 @@ struct FolderDetailView: View {
                 self.childItems = items
                 self.currentPath = url
                 self.currentItem = Item(url: url, name: url.lastPathComponent, size: items.reduce(0) { $0 + $1.size })
+                print("Items loaded")
             case .failure(let error):
                 self.errorMessage = "Error loading contents: \(error.localizedDescription)"
                 print("Error loading contents: \(error)")

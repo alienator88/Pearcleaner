@@ -71,7 +71,7 @@ class ReversePathsSearcher {
 
         guard !skipReverse.contains(where: { itemName.pearFormat().contains($0) }),
               isSupportedFileType(at: itemURL.path),
-        !isRelatedToInstalledApp(itemPath: itemPath),
+        !isRelatedToInstalledApp(itemPath: itemPath, itemPathOG: itemURL),
         !isExcludedByConditions(itemPath: itemPath) else {
 
             return
@@ -80,9 +80,9 @@ class ReversePathsSearcher {
         collection.append(itemURL)
     }
 
-    private func isRelatedToInstalledApp(itemPath: String) -> Bool {
+    private func isRelatedToInstalledApp(itemPath: String, itemPathOG: URL) -> Bool {
         for app in sortedApps {
-            if itemPath.contains(app.bundleIdentifier.pearFormat()) || itemPath.contains(app.appName.pearFormat()) {
+            if itemPath.contains(app.bundleIdentifier.pearFormat()) || itemPath.contains(app.appName.pearFormat()) || itemPathOG.containerNameByUUID().pearFormat().contains(app.bundleIdentifier.pearFormat()) {
                 return true
             }
         }

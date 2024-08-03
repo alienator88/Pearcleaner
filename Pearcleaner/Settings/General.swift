@@ -17,6 +17,7 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.general.brew") private var brew: Bool = false
     @AppStorage("settings.general.oneshot") private var oneShotMode: Bool = false
+    @AppStorage("settings.general.confirmAlert") private var confirmAlert: Bool = false
     @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @State private var isResetting = false
@@ -48,6 +49,30 @@ struct GeneralSettingsTab: View {
 
                 Spacer()
                 Toggle(isOn: $brew, label: {
+                })
+                .toggleStyle(.switch)
+            }
+            .padding(5)
+            .padding(.leading)
+
+
+            HStack(spacing: 0) {
+                Image(systemName: confirmAlert ? "exclamationmark.triangle.fill" : "exclamationmark.triangle")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 20, height: 20)
+                    .padding(.trailing)
+                    .foregroundStyle(.primary.opacity(0.5))
+                VStack(alignment: .leading, spacing: 5) {
+                    Text("\(confirmAlert ? "Confirmation alerts enabled" : "Confirmation alerts disabled")")
+                        .font(.callout)
+                        .foregroundStyle(.primary.opacity(0.5))
+                }
+
+                InfoButton(text: "When deleting files using the Trash button, you can prevent accidental deletions by showing an alert before proceeding with the action")
+
+                Spacer()
+                Toggle(isOn: $confirmAlert, label: {
                 })
                 .toggleStyle(.switch)
             }
@@ -234,7 +259,7 @@ struct GeneralSettingsTab: View {
             appState.updateExtensionStatus()
         }
         .padding(20)
-        .frame(width: 500, height: 500)
+        .frame(width: 500, height: 520)
 
     }
 

@@ -20,8 +20,10 @@ struct ZombieView: View {
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
+    @AppStorage("settings.general.confirmAlert") private var confirmAlert: Bool = false
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
     @Binding var search: String
@@ -266,9 +268,8 @@ struct ZombieView: View {
                         .buttonStyle(RescanButton())
 
                         Button("\(sizeType == "Logical" ? totalLogicalSizeUninstallBtn : sizeType == "Finder" ? totalFinderSizeUninstallBtn : totalRealSizeUninstallBtn)") {
+                            showCustomAlert(enabled: confirmAlert, title: "Warning", message: "Are you sure you want to remove these files?", style: .warning, onOk: {
                                 Task {
-
-
 
                                     let selectedItemsArray = Array(selectedZombieItemsLocal)
 
@@ -283,7 +284,7 @@ struct ZombieView: View {
                                                 appState.zombieFile = .empty
                                                 search = ""
                                                 searchZ = ""
-                                                withAnimation {
+                                                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                                                     if mini || menubarEnabled {
                                                         appState.currentView = .apps
                                                         showPopover = false
@@ -306,20 +307,11 @@ struct ZombieView: View {
                                             updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSortAlpha: selectedSortAlpha, force: true)
                                         }
 
-//                                        updateOnMain {
-//                                            // Remove items from the list
-//                                            appState.zombieFile.fileSize = appState.zombieFile.fileSize.filter { !selectedZombieItemsLocal.contains($0.key) }
-//                                            // Update the selectedZombieFiles to remove references that are no longer present
-//                                            selectedZombieItemsLocal.removeAll()
-//                                            updateTotalSizes()
-//
-//                                        }
-
                                     }
 
-//                                    updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSortAlpha: selectedSortAlpha, force: true)
-
                                 }
+
+                            })
 
                             }
                             .buttonStyle(UninstallButton(isEnabled: !selectedZombieItemsLocal.isEmpty))
@@ -472,6 +464,7 @@ struct ZombieFileDetailsItem: View {
     @EnvironmentObject var appState: AppState
     @State private var isHovered = false
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     let size: Int64?
     let sizeL: Int64?
     let icon: Image?
@@ -527,7 +520,7 @@ struct ZombieFileDetailsItem: View {
                     .help(path.path)
             }
             .onHover { hovering in
-                withAnimation(Animation.easeIn(duration: 0.2)) {
+                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                     self.isHovered = hovering
                 }
             }

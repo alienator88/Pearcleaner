@@ -18,6 +18,7 @@ struct MiniMode: View {
     @State private var showUsr: Bool = true
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.general.popover") private var popoverStay: Bool = true
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @Binding var showPopover: Bool
     
     
@@ -54,6 +55,7 @@ struct MiniEmptyView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
     @AppStorage("settings.general.mini") private var mini: Bool = false
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @Binding var showPopover: Bool
 
     var body: some View {
@@ -86,7 +88,7 @@ struct MiniEmptyView: View {
             
         }
         .onTapGesture {
-            withAnimation(.easeInOut(duration: 0.5)) {
+            withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                 appState.currentView = .apps
             }
         }

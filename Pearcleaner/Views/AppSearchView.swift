@@ -23,6 +23,7 @@ struct AppSearchView: View {
     @State private var showMenu = false
     @Binding var isMenuBar: Bool
     @AppStorage("settings.general.selectedSortAppsList") var selectedSortAlpha: Bool = true
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
 
     var body: some View {
@@ -58,7 +59,7 @@ struct AppSearchView: View {
 
                 if search.isEmpty {
                     Button("Refresh") {
-                        withAnimation {
+                        withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                             showPopover = false
                             reloadAppsList(appState: appState, fsm: fsm)
                         }
@@ -78,7 +79,7 @@ struct AppSearchView: View {
                         VStack(alignment: .leading) {
 
                             Button("") {
-                                withAnimation(.easeInOut(duration: 0.5)) {
+                                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                                     selectedSortAlpha.toggle()
                                 }
                             }
@@ -86,7 +87,7 @@ struct AppSearchView: View {
 
                             if mini && !menubarEnabled {
                                 Button("") {
-                                    withAnimation(.easeInOut(duration: 0.5)) {
+                                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                                         appState.currentView = .empty
                                         appState.appInfo = AppInfo.empty
                                         showPopover = false
@@ -98,7 +99,7 @@ struct AppSearchView: View {
 
                             Button("Leftover Files") {
                                 showMenu = false
-                                withAnimation(.easeInOut(duration: 0.5)) {
+                                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                                     showPopover = false
                                     appState.appInfo = .empty
                                     if appState.zombieFile.fileSize.keys.isEmpty {
@@ -188,6 +189,7 @@ struct SimpleSearchStyle: TextFieldStyle {
     @EnvironmentObject var themeManager: ThemeManager
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
     func _body(configuration: TextField<Self._Label>) -> some View {
 
@@ -229,7 +231,7 @@ struct SimpleSearchStyle: TextFieldStyle {
 
         }
         .onHover { hovering in
-            withAnimation(Animation.easeInOut(duration: 0.15)) {
+            withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                 self.isHovered = hovering
                 self.isFocused = true
             }

@@ -15,6 +15,7 @@ struct AppCommands: Commands {
     let fsm: FolderSettingsManager
     let updater: Updater
     let themeManager: ThemeManager
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
     init(appState: AppState, locations: Locations, fsm: FolderSettingsManager, updater: Updater, themeManager: ThemeManager) {
         self.appState = appState
@@ -37,7 +38,7 @@ struct AppCommands: Commands {
             .keyboardShortcut("u", modifiers: .command)
             
             Button {
-                withAnimation(.easeInOut(duration: 0.5)) {
+                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                     reloadAppsList(appState: appState, fsm: fsm)
                 }
             } label: {
