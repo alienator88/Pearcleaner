@@ -140,9 +140,9 @@ Pre-compiled, always up-to-date versions are available from my [releases](https:
 <details>
   <summary>Homebrew</summary>
 
-You can add the app via Homebrew by tapping my homebrew repo directly:
+You can add the app via Homebrew:
 ```
-brew install alienator88/homebrew-cask/pearcleaner
+brew install pearcleaner
 ```
 </details>
 
