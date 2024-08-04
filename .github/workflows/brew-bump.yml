@@ -1,4 +1,4 @@
-name: bump-ham-casks
+name: brew-bump
 on:
   # schedule:
   #   # Time is UTC, so below is running everyday at 8AM and 8PM PST
