@@ -1,0 +1,22 @@
+name: bump-ham-casks
+on:
+  # schedule:
+  #   # Time is UTC, so below is running everyday at 8AM and 8PM PST
+  #   - cron:  '0 4,16 * * *'
+  # # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  bump-casks:
+    runs-on: macos-latest
+    steps:
+    - uses: macauley/action-homebrew-bump-cask@v1
+      with:
+        # Required, custom GitHub access token with only the 'public_repo' scope enabled
+        token: ${{secrets.BUMP_CASK_TOKEN}}
+        # Bump all outdated casks in this tap
+        tap: Homebrew/homebrew-cask
+        # Bump only these casks if outdated
+        cask: pearcleaner
+        livecheck: false
+        dryrun: false
