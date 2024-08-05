@@ -71,7 +71,7 @@ class ReversePathsSearcher {
 
         guard !skipReverse.contains(where: { itemName.pearFormat().contains($0) }),
               isSupportedFileType(at: itemURL.path),
-        !isRelatedToInstalledApp(itemPath: itemPath, itemPathOG: itemURL),
+              !isRelatedToInstalledApp(itemURL: itemURL),
         !isExcludedByConditions(itemPath: itemPath) else {
 
             return
@@ -80,10 +80,21 @@ class ReversePathsSearcher {
         collection.append(itemURL)
     }
 
-    private func isRelatedToInstalledApp(itemPath: String, itemPathOG: URL) -> Bool {
+    private func isRelatedToInstalledApp(itemURL: URL) -> Bool {
+        let itemPath = itemURL.path.pearFormat()
+
         for app in sortedApps {
-            if itemPath.contains(app.bundleIdentifier.pearFormat()) || itemPath.contains(app.appName.pearFormat()) || itemPathOG.containerNameByUUID().pearFormat().contains(app.bundleIdentifier.pearFormat()) {
+            if itemPath.contains(app.bundleIdentifier.pearFormat()) || 
+                itemPath.contains(app.appName.pearFormat()) {
                 return true
+            }
+
+            // Check if the path contains /Containers or /Group Containers
+            if itemURL.path.contains("/Containers/") {
+                let containerName = itemURL.containerNameByUUID().pearFormat()
+                if containerName.contains(app.bundleIdentifier.pearFormat()) {
+                    return true
+                }
             }
         }
         return false

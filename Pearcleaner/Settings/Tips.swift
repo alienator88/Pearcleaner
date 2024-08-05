@@ -26,7 +26,7 @@ struct TipsSettingsTab: View {
                     Text("4. After deletion, you can hit CMD + Z to undo while Pearcleaner or Finder is focused")
                     Text("5. While on the Files view for an app, you can open the Condition Builder with CMD + B or from the Tools menubar item Instructions on using Condition Builder are available on the popup sheet")
                     Text("6. On the Files view again, you can hit CMD + E to export a list of the found files or from the Tools menubar item")
-                    Text("7. CMD + U will launch the updater")
+                    Text("7. CMD + U will check for updates manually")
                     Text("8. CMD + R will refresh the app list. This can also be done from the refresh button in the search bar")
                     Text("9. In the search bar menu button, you will also find Leftover Files which will find files leftover by previously uninstalled applications")
                     Text("10. You can enable a menubar icon from Settings")
@@ -35,6 +35,7 @@ struct TipsSettingsTab: View {
                     Text("13. You can enable Homebrew cleanup from Settings")
                     Text("14. You can change the app theme colors from Settings")
                     Text("15. When there's new features available, a new features badge will show at the top of the app list. Same for app updates or missing permissions")
+                    Text("16. You can disable animations in the Settings Interface tab plus a few more other options like confirmation dialog when removing files")
                 }
                 .padding()
             }
