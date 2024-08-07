@@ -111,10 +111,6 @@ func listAppSupportDirectories() -> [String] {
 // Load app paths on launch
 func reversePreloader(allApps: [AppInfo], appState: AppState, locations: Locations, fsm: FolderSettingsManager, completion: @escaping () -> Void = {}) {
     @AppStorage("settings.interface.animationEnabled") var animationEnabled: Bool = true
-//    appState.operationQueueLeftover.maxConcurrentOperationCount = 10 // Adjust this value as needed
-//    appState.shouldCancelOperations = false
-//    appState.appInfoStore.removeAll()
-//    let sortedAllApps = allApps.sorted { $0.appName.localizedCompare($1.appName) == .orderedAscending }
 
     updateOnMain {
         appState.leftoverProgress.0 = "Finding leftover files, please wait..."
@@ -130,88 +126,6 @@ func reversePreloader(allApps: [AppInfo], appState: AppState, locations: Locatio
         }
         completion()
     }
-
-//    let totalApps = sortedAllApps.count
-//    var processedApps = 0
-//
-//    DispatchQueue.global(qos: .userInitiated).async {
-//        for (index, app) in sortedAllApps.enumerated() {
-//            autoreleasepool {
-//                if appState.shouldCancelOperations {
-//                    printOS("Operations cancelled.") // Debug print
-//                    return
-//                }
-//                printOS("Processing app \(index + 1) of \(totalApps): \(app.appName)")
-//
-//                let semaphore = DispatchSemaphore(value: 0)
-//                appState.operationQueueLeftover.addOperation {
-//                    if appState.shouldCancelOperations {
-//                        printOS("Operations cancelled.") // Debug print
-//                        return
-//                    }
-//                    let pathFinder = AppPathFinder(
-//                        appInfo: app,
-//                        appState: appState,
-//                        locations: locations,
-//                        backgroundRun: true,
-//                        reverseAddon: reverseAddon,
-//                        completion: {
-//                            semaphore.signal()
-//                        }
-//                    )
-//                    pathFinder.findPaths()
-//                }
-//
-//                semaphore.wait()
-//
-//                DispatchQueue.main.async {
-//                    processedApps += 1
-//                    let progress = Double(processedApps) / Double(totalApps)
-//                    withAnimation {
-//                        appState.leftoverProgress.1 = progress
-//                    }
-//                    appState.leftoverProgress.0 = "Excluding application files for \(app.appName)"
-//                    printOS("Progress: \(Int(progress * 100))%") // Debug print
-//                }
-//            }
-//
-//        }
-//
-//        appState.operationQueueLeftover.waitUntilAllOperationsAreFinished()
-//
-//        DispatchQueue.main.async {
-//            if appState.shouldCancelOperations {
-//                completion()
-//                return
-//            }
-//
-//            if appState.appInfoStore.count == sortedAllApps.count {
-//                printOS("All apps processed successfully")
-//                appState.leftoverProgress.0 = "Finding leftover files, please wait..."
-//                ReversePathsSearcher(appState: appState, locations: locations, fsm: fsm, sortedApps: sortedAllApps).reversePathsSearch {
-//                    updateOnMain {
-//                        printOS("Reverse search processed successfully")
-//                        appState.showProgress = false
-//                        withAnimation {
-//                            appState.leftoverProgress.1 = 0.0
-//                        }
-//                        appState.leftoverProgress.0 = "Reverse search completed successfully"
-//                    }
-//                    completion()
-//                }
-//            } else {
-//                printOS("reversePreloader - Not all paths were loaded. Expected: \(sortedAllApps.count), Actual: \(appState.appInfoStore.count)")
-//                updateOnMain {
-//                    appState.showProgress = false
-//                    withAnimation {
-//                        appState.leftoverProgress.1 = 0.0
-//                    }
-//                    appState.leftoverProgress.0 = "Reverse search failed to process existing application files (\(sortedAllApps.count)/\(appState.appInfoStore.count))"
-//                }
-//                completion()
-//            }
-//        }
-//    }
 }
 
 
@@ -245,38 +159,6 @@ func showAppInFiles(appInfo: AppInfo, appState: AppState, locations: Locations, 
             appState.currentView = .files
             showPopover.wrappedValue.toggle()
         }
-        
-        // Check if the appInfo exists in the appState.appInfoStore
-//        if let storedAppInfo = appState.appInfoStore.first(where: { $0.path == appInfo.path }) {
-//            // Update appState with the stored app info and selected items.
-//            appState.appInfo = storedAppInfo
-//            appState.selectedItems = Set(storedAppInfo.files)
-//
-//            // Trigger the animation for changing views and showing the popover.
-//            withAnimation(Animation.easeIn(duration: 0.4)) {
-//                appState.currentView = .files
-//                showPopover.wrappedValue.toggle()
-//            }
-//        } else {
-//            // When the appInfo is not found, show progress, and search for paths.
-//            appState.showProgress = true
-//
-//            // Initialize the path finder and execute its search.
-//            AppPathFinder(appInfo: appInfo, appState: appState, locations: locations) {
-//                updateOnMain {
-//                    // Update the progress indicator on the main thread once the search completes.
-//                    appState.showProgress = false
-//                }
-//            }.findPaths()
-//
-//            appState.appInfo = appInfo
-//
-//            // Animate the view change and popover display.
-//            withAnimation(Animation.easeIn(duration: 0.4)) {
-//                appState.currentView = .files
-//                showPopover.wrappedValue.toggle()
-//            }
-//        }
     }
 }
 
@@ -297,23 +179,28 @@ func moveFilesToTrash(appState: AppState, at fileURLs: [URL], completion: @escap
         var error: NSDictionary?
         if let scriptObject = NSAppleScript(source: scriptSource) {
             let output: NSAppleEventDescriptor = scriptObject.executeAndReturnError(&error)
+
+            // Handle any AppleScript errors
             if let error = error {
-//                checkAllPermissions(appState: appState) { results in
-//                    appState.permissionResults = results
-//                    if !results.allPermissionsGranted {
-//                        updateOnMain {
-//                            appState.permissionsOkay = false
-//                        }
-//                    }
-//                }
-                printOS("Trash Error: \(error)")
                 DispatchQueue.main.async {
+                    printOS("Trash Error: \(error)")
                     completion(false)  // Indicate failure
                 }
                 return
             }
+
+            // Check if output is null, indicating the user canceled the operation
+            if output.descriptorType == typeNull {
+                DispatchQueue.main.async {
+                    printOS("Trash Error: operation canceled by the user")
+                    completion(false)  // Indicate failure due to cancellation
+                }
+                return
+            }
+
+            // Process output if it exists
             if let outputString = output.stringValue {
-                printOS(outputString)
+                printOS("Trash: \(outputString)")
             }
         }
         DispatchQueue.main.async {
@@ -347,14 +234,6 @@ func undoTrash(appState: AppState, completion: @escaping () -> Void = {}) {
         if let scriptObject = NSAppleScript(source: scriptSource) {
             let output: NSAppleEventDescriptor = scriptObject.executeAndReturnError(&error)
             if let error = error {
-//                checkAllPermissions(appState: appState) { results in
-//                    appState.permissionResults = results
-//                    if !results.allPermissionsGranted {
-//                        updateOnMain {
-//                            appState.permissionsOkay = false
-//                        }
-//                    }
-//                }
                 printOS("Undo Trash Error: \(error)")
             } else if let outputString = output.stringValue {
                 printOS(outputString)

@@ -240,7 +240,7 @@ struct ZombieView: View {
                             ForEach(memoizedFiles, id: \.self) { file in
                                 if let fileSize = appState.zombieFile.fileSize[file], let fileSizeL = appState.zombieFile.fileSizeLogical[file], let fileIcon = appState.zombieFile.fileIcon[file], let iconImage = fileIcon.map(Image.init(nsImage:)) {
                                     VStack {
-                                        ZombieFileDetailsItem(size: fileSize, sizeL: fileSizeL, icon: iconImage, path: file, isSelected: self.binding(for: file))
+                                        ZombieFileDetailsItem(size: fileSize, sizeL: fileSizeL, icon: iconImage, path: file, memoizedFiles: $memoizedFiles, isSelected: self.binding(for: file))
                                             .padding(.vertical, 5)
                                     }
                                 }
@@ -462,6 +462,7 @@ struct ZombieView: View {
 
 struct ZombieFileDetailsItem: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var fsm: FolderSettingsManager
     @State private var isHovered = false
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
@@ -469,6 +470,8 @@ struct ZombieFileDetailsItem: View {
     let sizeL: Int64?
     let icon: Image?
     let path: URL
+    @Binding var memoizedFiles: [URL]
+
     @Binding var isSelected: Bool
 
     var body: some View {
@@ -550,6 +553,12 @@ struct ZombieFileDetailsItem: View {
             Button("View in Finder") {
                 NSWorkspace.shared.selectFile(path.path, inFileViewerRootedAtPath: path.deletingLastPathComponent().path)
             }
+            Divider()
+            Button("Exclude") {
+                fsm.addPathZ(path.path)
+                memoizedFiles.removeAll { $0 == path }
+            }
+            .help("This adds the file/folder to the Exclusions list. Edit the exclusions list from Settings > Folders tab")
         }
     }
 }

@@ -15,10 +15,10 @@ class AppPathFinder {
     private var appState: AppState
     private var locations: Locations
     private var backgroundRun: Bool
-//    private var reverseAddon: Bool
     private var undo: Bool
     private var completion: () -> Void = {}
     private var collection: [URL] = []
+    private var containerCollection: [URL] = []
     private let collectionAccessQueue = DispatchQueue(label: "com.alienator88.Pearcleaner.appPathFinder.collectionAccess")
 
     init(appInfo: AppInfo = .empty, appState: AppState, locations: Locations, backgroundRun: Bool = false, undo: Bool = false, completion: @escaping () -> Void = {}) {
@@ -26,7 +26,6 @@ class AppPathFinder {
         self.appState = appState
         self.locations = locations
         self.backgroundRun = backgroundRun
-//        self.reverseAddon = reverseAddon
         self.undo = undo
         self.completion = completion
     }
@@ -34,9 +33,11 @@ class AppPathFinder {
     func findPaths() {
         Task(priority: .background) {
             if self.appInfo.webApp {
+                containerCollection = self.getAllContainers(bundleURL: self.appInfo.path)
                 self.initialURLProcessing()
                 self.finalizeCollection()
             } else {
+                containerCollection = self.getAllContainers(bundleURL: self.appInfo.path)
                 self.initialURLProcessing()
                 self.collectDirectories()
                 self.collectFiles()
@@ -268,14 +269,14 @@ class AppPathFinder {
 
     private func finalizeCollection() {
         DispatchQueue.global(qos: .userInitiated).async {
-            let allContainers = self.getAllContainers(bundleURL: self.appInfo.path)
+//            let allContainers = self.getAllContainers(bundleURL: self.appInfo.path)
             let outliers = self.handleOutliers()
             let outliersEx = self.handleOutliers(include: false)
             var tempCollection: [URL] = []
             self.collectionAccessQueue.sync {
                 tempCollection = self.collection
             }
-            tempCollection.append(contentsOf: allContainers)
+            tempCollection.append(contentsOf: self.containerCollection)
             tempCollection.append(contentsOf: outliers)
 
             // Remove URLs based on outliersExcludes
