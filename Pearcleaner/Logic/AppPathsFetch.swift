@@ -156,6 +156,8 @@ class AppPathFinder {
         let bundleComponents = self.appInfo.bundleIdentifier.components(separatedBy: ".").compactMap { $0 != "-" ? $0.lowercased() : nil }
         let bundle = bundleComponents.suffix(2).joined()
         let nameL = self.appInfo.appName.pearFormat()
+        let nameLFiltered = nameL.filter { $0.isLetter }
+
         let nameP = self.appInfo.path.lastPathComponent.replacingOccurrences(of: ".app", with: "")
 
         for condition in conditions {
@@ -178,7 +180,7 @@ class AppPathFinder {
             return itemL.contains(bundleIdentifierL)
         }
 
-        return itemL.contains(bundleIdentifierL) || itemL.contains(bundle) || (nameL.count > 3 && itemL.contains(nameL)) || (nameP.count > 3 && itemL.contains(nameP))
+        return itemL.contains(bundleIdentifierL) || itemL.contains(bundle) || (nameL.count > 3 && itemL.contains(nameL)) || (nameP.count > 3 && itemL.contains(nameP) || (nameLFiltered.count > 3 && itemL.contains(nameLFiltered)))
 
     }
 

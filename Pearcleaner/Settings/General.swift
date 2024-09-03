@@ -45,7 +45,7 @@ struct GeneralSettingsTab: View {
                         .foregroundStyle(.primary.opacity(0.5))
                 }
 
-                InfoButton(text: "When homebrew cleanup is enabled, Pearcleaner will check if the app you are removing was installed via homebrew and execute a brew uninstall and brew cleanup command as well to let homebrew know that the app is removed. This way your homebrew list will be synced up correctly and caching will be removed.\n\nNOTE: If you undo the file delete with CMD+Z, the files will be put back but homebrew will not be aware of it. To get the homebrew list back in sync you'd need to run:\n brew install APPNAME --force")
+                InfoButton(text: "When homebrew cleanup is enabled, Pearcleaner will check if the app you are removing was installed via homebrew and launch Terminal.app to execute a brew uninstall and cleanup command to let homebrew know that the app is removed. This way your homebrew list will be synced up correctly and caching will be removed. Terminal is required since some apps need sudo permissions to remove services and files placed in system folders.\n\nNOTE: If you undo the file delete with CMD+Z, the files will be put back but homebrew will not be aware of it. To get the homebrew list back in sync you'd need to run:\n brew install APPNAME --force")
 
                 Spacer()
                 Toggle(isOn: $brew, label: {

@@ -109,9 +109,19 @@ struct AppCommands: Commands {
                     saveURLsToFile(urls: appState.selectedItems, appState: appState)
                 }
             } label: {
-                Label("Export Files", systemImage: "square.and.arrow.up")
+                Label("Export File Paths", systemImage: "square.and.arrow.up")
             }
             .keyboardShortcut("e", modifiers: .command)
+
+            Button
+            {
+                if !appState.appInfo.bundleIdentifier.isEmpty {
+                    saveURLsToFile(urls: appState.selectedItems, appState: appState, copy: true)
+                }
+            } label: {
+                Label("Copy File Paths", systemImage: "square.and.arrow.up")
+            }
+            .keyboardShortcut("c", modifiers: [.command, .option])
 
 
         }

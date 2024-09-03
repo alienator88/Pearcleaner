@@ -61,66 +61,90 @@ func findAndSetWindowFrame(named titles: [String], windowSettings: WindowSetting
 // Brew cleanup
 func caskCleanup(app: String) {
     Task(priority: .high) {
-        let process = Process()
+        let formattedApp = app.lowercased().replacingOccurrences(of: " ", with: "-")
+        print(formattedApp)
+
 #if arch(x86_64)
         let cmd = "/usr/local/bin/brew"
 #elseif arch(arm64)
         let cmd = "/opt/homebrew/bin/brew"
 #endif
-        let formattedApp = app.lowercased().replacingOccurrences(of: " ", with: "-")
-        process.executableURL = URL(fileURLWithPath: "/bin/zsh")
-//        process.arguments = ["-c", "\(cmd) uninstall --cask \"\(formattedApp)\" --force; \(cmd) cleanup"]
-        process.arguments = ["-c", """
-        found_cask=$(\(cmd) list --cask | grep "\(formattedApp)")
-        if [ -n "$found_cask" ]; then
-            \(cmd) uninstall --cask "$found_cask" --force;
-            \(cmd) cleanup;
-        else
-            echo "Cask not found for \(formattedApp)";
-        fi
-        """]
-        let pipe = Pipe()
-        process.standardOutput = pipe
-        process.standardError = pipe
-        try? process.run()
-        process.waitUntilExit() // Ensure the process completes
-        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-        let output = (String(data: data, encoding: .utf8) ?? "") as String
-        printOS(output)
+
+        let script = """
+        tell application "Terminal"
+            activate
+            do script "
+            found_cask=$(\(cmd) list --cask | grep '\(formattedApp)');
+            if [ -n \\"$found_cask\\" ]; then
+                clear;
+                \(cmd) uninstall --cask \\"$found_cask\\" --force;
+                \(cmd) cleanup;
+            else
+                echo \\"Cask not found for \(formattedApp)\\";
+            fi"
+        end tell
+        """
+
+        var error: NSDictionary?
+        if let appleScript = NSAppleScript(source: script) {
+            appleScript.executeAndReturnError(&error)
+        }
+
+        if let error = error {
+            print("AppleScript Error: \(error)")
+        }
     }
 }
 
 
-// Print list of files locally
-func saveURLsToFile(urls: Set<URL>, appState: AppState) {
-    let panel = NSOpenPanel()
-    panel.canChooseFiles = false
-    panel.canChooseDirectories = true
-    panel.allowsMultipleSelection = false
-    panel.prompt = "Select Folder"
 
-    if panel.runModal() == .OK, let selectedFolder = panel.url {
-        let filePath = selectedFolder.appendingPathComponent("Export-\(appState.appInfo.appName)(v\(appState.appInfo.appVersion)).txt")
+
+// Print list of files locally
+func saveURLsToFile(urls: Set<URL>, appState: AppState, copy: Bool = false) {
+
+    if copy {
+        let homeDirectory = FileManager.default.homeDirectoryForCurrentUser.path
         var fileContent = ""
-        var count = 1
         let sortedUrls = urls.sorted { $0.path < $1.path }
 
         for url in sortedUrls {
-            fileContent += "[\(count)] - \(url.path)\n"
-            count += 1
+            let pathWithTilde = url.path.replacingOccurrences(of: homeDirectory, with: "~")
+            fileContent += "\(pathWithTilde)\n"
         }
-
-        do {
-            try fileContent.write(to: filePath, atomically: true, encoding: .utf8)
-            printOS("File saved successfully at \(filePath.path)")
-            // Open Finder and select the file
-            NSWorkspace.shared.selectFile(filePath.path, inFileViewerRootedAtPath: filePath.deletingLastPathComponent().path)
-        } catch {
-            printOS("Error saving file: \(error)")
-        }
+        copyToClipboard(fileContent)
     } else {
-        printOS("Folder selection was canceled.")
+        let panel = NSOpenPanel()
+        panel.canChooseFiles = false
+        panel.canChooseDirectories = true
+        panel.allowsMultipleSelection = false
+        panel.prompt = "Select Folder"
+
+        if panel.runModal() == .OK, let selectedFolder = panel.url {
+            let filePath = selectedFolder.appendingPathComponent("Export-\(appState.appInfo.appName)(v\(appState.appInfo.appVersion)).txt")
+            let homeDirectory = FileManager.default.homeDirectoryForCurrentUser.path
+            var fileContent = ""
+            let sortedUrls = urls.sorted { $0.path < $1.path }
+
+            for url in sortedUrls {
+                let pathWithTilde = url.path.replacingOccurrences(of: homeDirectory, with: "~")
+                fileContent += "\(pathWithTilde)\n"
+            }
+
+            do {
+                try fileContent.write(to: filePath, atomically: true, encoding: .utf8)
+                printOS("File saved successfully at \(filePath.path)")
+                // Open Finder and select the file
+                NSWorkspace.shared.selectFile(filePath.path, inFileViewerRootedAtPath: filePath.deletingLastPathComponent().path)
+            } catch {
+                printOS("Error saving file: \(error)")
+            }
+
+        } else {
+            printOS("Folder selection was canceled.")
+        }
     }
+
+
 }
 
 
