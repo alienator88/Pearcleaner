@@ -5,7 +5,7 @@
    <strong>Status: </strong>Maintained
    <br /><br />Updates may be a bit slower at the moment due to some ongoing home-related tasks
    <br /><br />
-   <strong>Version: </strong>3.8.5
+   <strong>Version: </strong>3.8.6
    <br />
    <a href="https://github.com/alienator88/Pearcleaner/releases"><strong>Download</strong></a>
     · 
