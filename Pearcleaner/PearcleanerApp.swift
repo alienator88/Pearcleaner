@@ -29,6 +29,23 @@ struct PearcleanerApp: App {
     @State private var showPopover: Bool = false
     let conditionManager = ConditionManager.shared
 
+    init() {
+        let arguments = CommandLine.arguments
+        let filteredArguments = arguments.filter { !["-NSDocumentRevisionsDebugMode", "YES"].contains($0) }
+        let isRunningInTerminal = isatty(STDIN_FILENO) != 0
+
+        // If running from terminal and no arguments are provided
+        if isRunningInTerminal && arguments.count == 1 {
+            displayHelp()
+            exit(0)  // Exit without launching the GUI
+        }
+
+        // The first argument is always the binary path, so check if there are more than 1 arguments
+        if filteredArguments.count > 1 {
+            // Process the CLI options
+            processCLI(arguments: arguments, appState: appState, locations: locations)
+        }
+    }
 
     var body: some Scene {
         WindowGroup {

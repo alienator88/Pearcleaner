@@ -44,14 +44,26 @@ struct SectionView: View {
     var apps: [AppInfo]
     @Binding var search: String
     @Binding var showPopover: Bool
+    @State private var showItems: Bool = true
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
     var body: some View {
         LazyVStack(spacing: 0) {
             Header(title: title, count: count, showPopover: $showPopover)
                 .padding(.leading, 5)
-            ForEach(apps, id: \.self) { appInfo in
-                AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
+                .onTapGesture {
+                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                        showItems.toggle()
+                    }
+                }
+            
+            if showItems {
+                ForEach(apps, id: \.self) { appInfo in
+                    AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
+                        .transition(.opacity)
+                }
             }
+
         }
     }
 }
@@ -66,7 +78,7 @@ struct Header: View {
     @EnvironmentObject var fsm: FolderSettingsManager
     @Binding var showPopover: Bool
     @AppStorage("settings.general.glass") private var glass: Bool = true
-    @AppStorage("settings.general.selectedSortAppsList") var selectedSortAlpha: Bool = true
+//    @AppStorage("settings.general.selectedSortAppsList") var selectedSortAlpha: Bool = true
 
 
     var body: some View {
@@ -87,9 +99,9 @@ struct Header: View {
         .frame(minHeight: 20)
         .padding(5)
         .help("Click header to change sorting order")
-        .onTapGesture {
-            selectedSortAlpha.toggle()
-        }
+//        .onTapGesture {
+//            selectedSortAlpha.toggle()
+//        }
     }
 }
 

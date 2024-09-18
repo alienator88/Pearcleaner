@@ -65,7 +65,7 @@ struct AppCommands: Commands {
                     undoTrash(appState: appState) {
                         reloadAppsList(appState: appState, fsm: fsm)
                         for app in appState.trashedFiles {
-                            AppPathFinder(appInfo: app, appState: appState, locations: locations, undo: true).findPaths()
+                            AppPathFinder(appInfo: app, locations: locations, appState: appState, undo: true).findPaths()
                         }
                     }
                 }

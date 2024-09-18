@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import FinderSync
 import AlinFoundation
+import UniformTypeIdentifiers
 
 struct GeneralSettingsTab: View {
     @EnvironmentObject var appState: AppState
@@ -20,7 +21,9 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.confirmAlert") private var confirmAlert: Bool = false
     @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
+//    @AppStorage("settings.general.brewTerminal") var brewTerm: String = "Terminal"
     @State private var isResetting = false
+    @State private var isCLISymlinked = false
 
     var body: some View {
         VStack() {
@@ -39,13 +42,33 @@ struct GeneralSettingsTab: View {
                     .frame(width: 20, height: 20)
                     .padding(.trailing)
                     .foregroundStyle(.primary.opacity(0.5))
-                VStack(alignment: .leading, spacing: 5) {
-                    Text("\(brew ? "Homebrew cleanup is enabled" : "Homebrew cleanup is disabled")")
-                        .font(.callout)
-                        .foregroundStyle(.primary.opacity(0.5))
+                VStack(alignment: .leading, spacing: 0) {
+                    HStack(spacing: 0) {
+                        Text("\(brew ? "Homebrew cleanup is enabled" : "Homebrew cleanup is disabled")")
+                            .font(.callout)
+                            .foregroundStyle(.primary.opacity(0.5))
+                        InfoButton(text: "When homebrew cleanup is enabled, Pearcleaner will check if the app you are removing was installed via homebrew and launch Terminal.app to execute a brew uninstall and cleanup command to let homebrew know that the app is removed. This way your homebrew list will be synced up correctly and caching will be removed. Terminal.app is required since some apps need sudo permissions to remove services and files placed in system folders. Since other terminal apps don't support applescript and/or the 'do script' command, I opted to use the default macOS Terminal app for this.\n\nNOTE: If you undo the file delete with CMD+Z, the files will be put back but homebrew will not be aware of it. To get the homebrew list back in sync you'd need to run:\n brew install APPNAME --force")
+                    }
+
+//                    HStack(spacing: 0) {
+//                        Text("Cleanup application: \(brewTerm)")
+//                            .font(.footnote)
+//                            .foregroundStyle(.primary.opacity(0.4))
+//
+//                        Button("") {
+//                            selectBrewTerm()
+//                        }
+//                        .buttonStyle(SimpleButtonStyle(icon: "gear", help: "Set terminal application, right click to Reset", size: 14))
+//                        .contextMenu{
+//                            Button("Reset") {
+//                                brewTerm = "Terminal"
+//                            }
+//                        }
+//                    }
+
                 }
 
-                InfoButton(text: "When homebrew cleanup is enabled, Pearcleaner will check if the app you are removing was installed via homebrew and launch Terminal.app to execute a brew uninstall and cleanup command to let homebrew know that the app is removed. This way your homebrew list will be synced up correctly and caching will be removed. Terminal is required since some apps need sudo permissions to remove services and files placed in system folders.\n\nNOTE: If you undo the file delete with CMD+Z, the files will be put back but homebrew will not be aware of it. To get the homebrew list back in sync you'd need to run:\n brew install APPNAME --force")
+
 
                 Spacer()
                 Toggle(isOn: $brew, label: {
@@ -116,12 +139,12 @@ struct GeneralSettingsTab: View {
                         .font(.callout)
                         .foregroundStyle(.primary.opacity(0.5))
                 }
-                InfoButton(text: "When searching for app files or leftover files, the list will be sorted either alphabetically or by size(large to small)")
+//                InfoButton(text: "When searching for app files or leftover files, the list will be sorted either alphabetically or by size(large to small)")
                 Spacer()
                 Picker("", selection: $selectedSortAlpha) {
-                    Text("Alpha")
+                    Text("Alphabetical")
                         .tag(true)
-                    Text("Size")
+                    Text("File Size")
                         .tag(false)
                 }
                 .buttonStyle(.borderless)
@@ -237,6 +260,50 @@ struct GeneralSettingsTab: View {
             .padding(5)
             .padding(.leading)
 
+
+            // === CLI =============================================================================================
+
+            Divider()
+                .padding()
+
+            HStack() {
+                Text("Command Line").font(.title2)
+                Spacer()
+            }
+            .padding(.leading)
+
+            HStack(spacing: 0) {
+                Image(systemName: "terminal")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 20, height: 20)
+                    .padding(.trailing)
+                    .foregroundStyle(isCLISymlinked ? .green : .red)
+                    .saturation(themeManager.displayMode.colorScheme == .dark ? 0.8 : 1)
+                Text(isCLISymlinked ? "Pearcleaner CLI is installed" : "Pearcleaner CLI is **not** installed")
+                    .font(.callout)
+                    .foregroundStyle(.primary.opacity(0.5))
+                InfoButton(text: "Enabling the CLI will allow you to execute Pearcleaner actions from the Terminal. This will add pearcleaner command into /usr/local/bin so it's available directly from your PATH environment variable. Try it after enabling:\n\n > pearcleaner --help")
+                Spacer()
+
+                Toggle(isOn: $isCLISymlinked, label: {
+                })
+                .toggleStyle(.switch)
+                .onChange(of: isCLISymlinked) { newValue in
+                    if newValue {
+                        manageSymlink(install: true)
+                    } else {
+                        manageSymlink(install: false)
+                    }
+                }
+
+            }
+            .padding(5)
+            .padding(.leading)
+
+
+
+
             // === Reset Settings =============================================================================================
 
             HStack() {
@@ -250,16 +317,17 @@ struct GeneralSettingsTab: View {
 
                 Spacer()
             }
-            .padding(.vertical, 5)
+            .padding(.vertical, 10)
 
             Spacer()
 
         }
         .onAppear {
             appState.updateExtensionStatus()
+            isCLISymlinked = checkCLISymlink()
         }
         .padding(20)
-        .frame(width: 500, height: 520)
+        .frame(width: 500, height: 640)
 
     }
 
@@ -272,6 +340,20 @@ struct GeneralSettingsTab: View {
             }
         }
     }
+
+//    private func selectBrewTerm() {
+//        let dialog = NSOpenPanel()
+//        dialog.title = "Select a Terminal application"
+//        dialog.allowedContentTypes = [UTType("com.apple.application-bundle")!] // Limit to .app bundles
+//        dialog.allowsMultipleSelection = false
+//        dialog.canChooseFiles = true
+//        dialog.canChooseDirectories = false
+//
+//        if dialog.runModal() == .OK, let url = dialog.url {
+//            let appNameWithExtension = url.lastPathComponent
+//            brewTerm = appNameWithExtension.replacingOccurrences(of: ".app", with: "")
+//        }
+//    }
 
 }
 

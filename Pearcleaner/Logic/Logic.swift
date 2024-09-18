@@ -145,7 +145,7 @@ func showAppInFiles(appInfo: AppInfo, appState: AppState, locations: Locations, 
         appState.showProgress = true
 
         // Initialize the path finder and execute its search.
-        AppPathFinder(appInfo: appInfo, appState: appState, locations: locations) {
+        AppPathFinder(appInfo: appInfo, locations: locations, appState: appState) {
             updateOnMain {
                 // Update the progress indicator on the main thread once the search completes.
                 appState.showProgress = false
@@ -210,7 +210,42 @@ func moveFilesToTrash(appState: AppState, at fileURLs: [URL], completion: @escap
 
 }
 
+func moveFilesToTrashCLI(at fileURLs: [URL]) -> Bool {
+    // Stop Sentinel FileWatcher momentarily to ignore .app bundle being sent to Trash
+    sendStopNotificationFW()
 
+    // Create the AppleScript for moving files to the Trash
+    let posixFiles = fileURLs.map { item in
+        return "POSIX file \"\(item.path)\"" + (item == fileURLs.last ? "" : ", ")}.joined()
+
+    let scriptSource = """
+    tell application \"Finder\" to delete { \(posixFiles) }
+    """
+
+    var error: NSDictionary?
+    if let scriptObject = NSAppleScript(source: scriptSource) {
+        let output: NSAppleEventDescriptor = scriptObject.executeAndReturnError(&error)
+
+        // Handle any AppleScript errors
+        if let error = error {
+            print("Trash Error: \(error)")  // Synchronous error reporting
+            return false  // Indicate failure
+        }
+
+        // Check if output is null, indicating the user canceled the operation
+        if output.descriptorType == typeNull {
+            print("Trash Error: operation canceled by the user")  // Synchronous cancellation reporting
+            return false  // Indicate failure due to cancellation
+        }
+
+        // Process output if it exists
+        if let outputString = output.stringValue {
+            print("Trash: \(outputString)")
+        }
+    }
+
+    return true  // Indicate success
+}
 
 
 // Undo trash action

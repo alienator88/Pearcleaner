@@ -12,7 +12,6 @@
 		C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72893042AFD42E600C8C1CD /* DeepLink.swift */; };
 		C72893122AFD51EA00C8C1CD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72893112AFD51EA00C8C1CD /* main.swift */; };
 		C72F4B6C2C5DF4ED00B04F60 /* SunburstChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72F4B6B2C5DF4ED00B04F60 /* SunburstChart.swift */; };
-		C736E7652C2DF1C9009EDB6A /* AppPathsFetch-Async.swift in Sources */ = {isa = PBXBuildFile; fileRef = C736E7642C2DF1C9009EDB6A /* AppPathsFetch-Async.swift */; };
 		C74412C72BBF249000DDFCA8 /* AppPathsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74412C62BBF249000DDFCA8 /* AppPathsFetch.swift */; };
 		C74D76B72C5C4ABC00748DD1 /* TreeMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74D76B62C5C4ABC00748DD1 /* TreeMap.swift */; };
 		C74D76BD2C5D2DF300748DD1 /* FileSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74D76B92C5D2DF300748DD1 /* FileSearch.swift */; };
@@ -104,7 +103,6 @@
 		C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PearcleanerSentinel; sourceTree = BUILT_PRODUCTS_DIR; };
 		C72893112AFD51EA00C8C1CD /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		C72F4B6B2C5DF4ED00B04F60 /* SunburstChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SunburstChart.swift; sourceTree = "<group>"; };
-		C736E7642C2DF1C9009EDB6A /* AppPathsFetch-Async.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppPathsFetch-Async.swift"; sourceTree = "<group>"; };
 		C74412C62BBF249000DDFCA8 /* AppPathsFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPathsFetch.swift; sourceTree = "<group>"; };
 		C74D76B62C5C4ABC00748DD1 /* TreeMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeMap.swift; sourceTree = "<group>"; };
 		C74D76B92C5D2DF300748DD1 /* FileSearch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileSearch.swift; sourceTree = "<group>"; };
@@ -183,7 +181,6 @@
 				C77B90192AF1938F009CC655 /* Logic.swift */,
 				C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */,
 				C74412C62BBF249000DDFCA8 /* AppPathsFetch.swift */,
-				C736E7642C2DF1C9009EDB6A /* AppPathsFetch-Async.swift */,
 				C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */,
 				C77B90172AF19382009CC655 /* AppCommands.swift */,
 				C77B90152AF19377009CC655 /* AppState.swift */,
@@ -384,7 +381,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1530;
-				LastUpgradeCheck = 1510;
+				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					C728930E2AFD51EA00C8C1CD = {
 						CreatedOnToolsVersion = 15.0.1;
@@ -472,7 +469,6 @@
 				C7045A282B03E71D00376976 /* MiniMode.swift in Sources */,
 				C7ED86B12BA8A35500F13DE4 /* Interface.swift in Sources */,
 				C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */,
-				C736E7652C2DF1C9009EDB6A /* AppPathsFetch-Async.swift in Sources */,
 				C71848442B8D2D600046CB13 /* ZombieView.swift in Sources */,
 				C7DE672B2BA6343D00EB1633 /* MenuBarItem.swift in Sources */,
 				C76D084A2AF83C6E00D07867 /* General.swift in Sources */,
@@ -561,8 +557,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 60;
-				APP_VERSION = 3.8.6;
+				APP_BUILD = 61;
+				APP_VERSION = 3.8.7;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -631,8 +627,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 60;
-				APP_VERSION = 3.8.6;
+				APP_BUILD = 61;
+				APP_VERSION = 3.8.7;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -693,7 +689,6 @@
 		C77B90102AF18E2F009CC655 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				APP_BUILD = "$(APP_BUILD)";
 				APP_VERSION = "$(APP_VERSION)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -733,7 +728,6 @@
 		C77B90112AF18E2F009CC655 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				APP_BUILD = "$(APP_BUILD)";
 				APP_VERSION = "$(APP_VERSION)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;

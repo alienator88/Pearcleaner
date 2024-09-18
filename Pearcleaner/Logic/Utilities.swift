@@ -56,13 +56,215 @@ func findAndSetWindowFrame(named titles: [String], windowSettings: WindowSetting
 }
 
 
+// Process CLI // ========================================================================================================
+func processCLI(arguments: [String], appState: AppState, locations: Locations) {
+    let options = Array(arguments.dropFirst()) // Remove the first argument (binary path)
+
+    // Private function to list files for uninstall, using the provided path
+    func listFiles(at path: String) {
+        // Convert the provided string path to a URL
+        let url = URL(fileURLWithPath: path)
+
+//        print("[BETA] Pearcleaner CLI | List Files:\n")
+
+        // Fetch the app info and safely unwrap
+        guard let appInfo = AppInfoFetcher.getAppInfo(atPath: url) else {
+            print("Error: Invalid path or unable to fetch app info at path: \(path)")
+            exit(1)  // Exit with non-zero code to indicate failure
+        }
+
+        // Use the AppPathFinderCLI to find paths synchronously
+        let appPathFinder = AppPathFinder(appInfo: appInfo, locations: locations)
+
+        // Call findPaths to get the Set of URLs
+        let foundPaths = appPathFinder.findPathsCLI()
+
+        // Print each path in the Set to the console
+        for path in foundPaths {
+            print(path.path)
+        }
+    }
+
+    // Private function to uninstall the application bundle at a given path
+    func uninstallApp(at path: String) {
+        // Convert the provided string path to a URL
+        let url = URL(fileURLWithPath: path)
+        print("[BETA] Pearcleaner CLI | Uninstall Application:\n")
+
+        // Fetch the app info and safely unwrap
+        guard let appInfo = AppInfoFetcher.getAppInfo(atPath: url) else {
+            print("Error: Invalid path or unable to fetch app info at path: \(path)")
+            exit(1)  // Exit with non-zero code to indicate failure
+        }
+
+        killApp(appId: appInfo.bundleIdentifier) {
+            let success =  moveFilesToTrashCLI(at: [appInfo.path])
+            if success {
+                print("Application moved to the trash successfully.")
+                exit(0)
+            } else {
+                print("Failed to move application to trash.")
+                exit(1)
+            }
+        }
+    }
+
+    // Private function to uninstall the application and all related files at a given path
+    func uninstallAll(at path: String) {
+        // Convert the provided string path to a URL
+        let url = URL(fileURLWithPath: path)
+        print("[BETA] Pearcleaner CLI | Uninstall Application + Related Files:\n")
+
+        // Fetch the app info and safely unwrap
+        guard let appInfo = AppInfoFetcher.getAppInfo(atPath: url) else {
+            print("Error: Invalid path or unable to fetch app info at path: \(path)")
+            exit(1)  // Exit with non-zero code to indicate failure
+        }
+
+        // Use the AppPathFinderCLI to find paths synchronously
+        let appPathFinder = AppPathFinder(appInfo: appInfo, locations: locations)
+
+        // Call findPaths to get the Set of URLs
+        let foundPaths = appPathFinder.findPathsCLI()
+
+        killApp(appId: appInfo.bundleIdentifier) {
+            let success =  moveFilesToTrashCLI(at: Array(foundPaths))
+            if success {
+                print("The following files have been moved to the trash successfully:\n")
+                // Print each path in the Set to the console
+                for path in foundPaths {
+                    print(path.path)
+                }
+                exit(0)
+            } else {
+                print("Failed to move application and related files to trash.")
+                exit(1)
+            }
+        }
+    }
+
+    // Handle help option (-h or --help)
+    if options.contains("-h") || options.contains("--help") {
+        displayHelp()
+        exit(0)
+    }
+
+    // Handle --list or -l option with a path argument
+    if let listIndex = options.firstIndex(where: { $0 == "--list" || $0 == "-l" }), listIndex + 1 < options.count {
+        let path = options[listIndex + 1] // Path provided after --list or -l
+        listFiles(at: path)
+        exit(0)
+    }
+
+    // Handle --uninstall or -u option with a path argument
+    if let uninstallIndex = options.firstIndex(where: { $0 == "--uninstall" || $0 == "-u" }), uninstallIndex + 1 < options.count {
+        let path = options[uninstallIndex + 1] // Path provided after --uninstall or -u
+        uninstallApp(at: path)
+        exit(0)
+    }
+
+    // Handle --uninstall-all or -ua option with a path argument
+    if let uninstallAllIndex = options.firstIndex(where: { $0 == "--uninstall-all" || $0 == "-ua" }), uninstallAllIndex + 1 < options.count {
+        let path = options[uninstallAllIndex + 1] // Path provided after --uninstall-all or -ua
+        uninstallAll(at: path)
+        exit(0)
+    }
+
+    // If no valid option was provided, show the help menu by default
+    displayHelp()
+    exit(0)
+}
+
+// Private function to display help message
+func displayHelp() {
+    print("""
+            
+            [BETA] Pearcleaner CLI | Usage:
+            
+            --list <path>, -l <path>             Find application files available for uninstall at the specified path
+            --uninstall <path>, -u <path>        Remove only the application bundle at the specified path
+            --uninstall-all <path>, -ua <path>   Remove the application bundle and all related files at the specified path
+            --help, -h                           Show this help message
+            
+            """)
+}
+
+
+// Check if pearcleaner symlink exists
+func checkCLISymlink() -> Bool {
+    let filePath = "/usr/local/bin/pearcleaner"
+    let fileManager = FileManager.default
+
+    // Check if the file exists at the given path
+    return fileManager.fileExists(atPath: filePath)
+}
+
+// Install/uninstall symlink for CLI
+func manageSymlink(install: Bool) {
+    // Get the current running application's bundle binary path
+    guard let appPath = Bundle.main.executablePath else {
+        printOS("Error: Unable to get the executable path.")
+        return
+    }
+
+    // Path where the symlink should be created
+    let symlinkPath = "/usr/local/bin/pearcleaner"
+
+    // Check if the symlink already exists
+    let symlinkExists = checkCLISymlink()
+
+    // If we are installing the symlink and it already exists, skip creating it
+    if install && symlinkExists {
+        printOS("Symlink already exists at \(symlinkPath). No action needed.")
+        return
+    }
+
+    // If we are uninstalling the symlink and it doesn't exist, skip removing it
+    if !install && !symlinkExists {
+        printOS("Symlink does not exist at \(symlinkPath). No action needed.")
+        return
+    }
+
+    // Create AppleScript commands for installing or uninstalling the symlink
+    let script: String
+
+    if install {
+        // AppleScript to create a symlink with admin privileges
+        script = """
+        do shell script "ln -s '\(appPath)' '\(symlinkPath)'" with administrator privileges
+        """
+    } else {
+        // AppleScript to remove the symlink with admin privileges
+        script = """
+        do shell script "rm '\(symlinkPath)'" with administrator privileges
+        """
+    }
+
+    // Execute the AppleScript
+    var error: NSDictionary?
+    if let scriptObject = NSAppleScript(source: script) {
+        scriptObject.executeAndReturnError(&error)
+
+        if let error = error {
+            printOS("AppleScript Error: \(error)")
+        } else {
+            if install {
+                printOS("Symlink created successfully at \(symlinkPath).")
+            } else {
+                printOS("Symlink removed successfully from \(symlinkPath).")
+            }
+        }
+    } else {
+        printOS("Error: Unable to create the AppleScript object.")
+    }
+}
+
 
 
 // Brew cleanup
 func caskCleanup(app: String) {
     Task(priority: .high) {
         let formattedApp = app.lowercased().replacingOccurrences(of: " ", with: "-")
-        print(formattedApp)
 
 #if arch(x86_64)
         let cmd = "/usr/local/bin/brew"
@@ -85,6 +287,8 @@ func caskCleanup(app: String) {
         end tell
         """
 
+        print(script)
+
         var error: NSDictionary?
         if let appleScript = NSAppleScript(source: script) {
             appleScript.executeAndReturnError(&error)
@@ -95,7 +299,6 @@ func caskCleanup(app: String) {
         }
     }
 }
-
 
 
 
@@ -426,7 +629,7 @@ func uninstallPearcleaner(appState: AppState, locations: Locations) {
     let appInfo = AppInfoFetcher.getAppInfo(atPath: Bundle.main.bundleURL)
 
     // Find application files for Pearcleaner
-    AppPathFinder(appInfo: appInfo!, appState: appState, locations: locations, completion: {
+    AppPathFinder(appInfo: appInfo!, locations: locations, appState: appState, completion: {
         // Kill Pearcleaner and tell Finder to trash the files
         let selectedItemsArray = Array(appState.selectedItems).filter { !$0.path.contains(".Trash") }
         let posixFiles = selectedItemsArray.map { item in
