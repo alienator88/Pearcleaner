@@ -3,9 +3,9 @@
    <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/165f6961-f4fc-4199-bc68-580bacff6eaf" align="center" width="128" height="128" />
    <br />
    <strong>Status: </strong>Maintained
-   <br />(Updates may be a bit slower at the moment due to some ongoing home-related tasks)
-   <br />
-   <strong>Version: </strong>3.8.5
+   <br /><br />Updates may be a bit slower at the moment due to some ongoing home-related tasks
+   <br /><br />
+   <strong>Version: </strong>3.8.6
    <br />
    <a href="https://github.com/alienator88/Pearcleaner/releases"><strong>Download</strong></a>
     · 
@@ -13,6 +13,8 @@
    <br />
    <br />
    <a href="https://www.producthunt.com/posts/pearcleaner?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-pearcleaner" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=439875&theme=neutral" alt="Pearcleaner - An&#0032;open&#0045;source&#0032;mac&#0032;app&#0032;cleaner | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+   <br />
+   <a href="https://hellogithub.com/repository/7d671653eec144ea99bd2317db267e06" target="_blank"><img src="https://abroad.hellogithub.com/v1/widgets/recommend.svg?rid=7d671653eec144ea99bd2317db267e06&claim_uid=stBZ5iURuDKgFbV" alt="Featured｜HelloGitHub" style="width: 250px; height: 54px;" width="250" height="54" /></a>
   </p>
 </p>
 </br>
