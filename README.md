@@ -3,9 +3,9 @@
    <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/165f6961-f4fc-4199-bc68-580bacff6eaf" align="center" width="128" height="128" />
    <br />
    <strong>Status: </strong>Maintained
-   <br /><br />Updates may be a bit slower at the moment due to some ongoing home-related tasks
+   <br /><br />Updates may be a bit slower at the moment due to work
    <br /><br />
-   <strong>Version: </strong>3.8.6
+   <strong>Version: </strong>3.8.7
    <br />
    <a href="https://github.com/alienator88/Pearcleaner/releases"><strong>Download</strong></a>
     · 
@@ -42,6 +42,7 @@ This project was born out of wanting to learn more on how macOS deals with app i
 - Mini mode which can be enabled from Settings
 - Menubar icon option
 - One-Shot Mode
+- CLI support
 - Can drop apps to uninstall directly on the Pearcleaner Dock icon or the app window
 - Optional Finder Extension which allows you to uninstall an app directly from Finder by `right click > Pearcleaner Uninstall`
 - Theme System available with custom color selector
