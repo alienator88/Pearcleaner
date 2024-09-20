@@ -27,10 +27,12 @@ func reloadAppsList(appState: AppState, fsm: FolderSettingsManager) {
 
 func resizeWindowAuto(windowSettings: WindowSettings, title: String) {
     if let window = NSApplication.shared.windows.first(where: { $0.title == title }) {
+        print(windowSettings.loadWindowSettings())
         let newSize = NSSize(width: windowSettings.loadWindowSettings().width, height: windowSettings.loadWindowSettings().height)
         window.setContentSize(newSize)
     }
 }
+
 
 
 // Check if Pearcleaner has any windows open
@@ -257,6 +259,18 @@ func manageSymlink(install: Bool) {
     } else {
         printOS("Error: Unable to create the AppleScript object.")
     }
+}
+
+
+// FinderExtension Sequoia Fix
+func manageFinderPlugin(install: Bool) {
+    let task = Process()
+    task.launchPath = "/usr/bin/pluginkit"
+
+    task.arguments = ["-e", "\(install ? "use" : "ignore")", "-i", "com.alienator88.Pearcleaner"]
+
+    task.launch()
+    task.waitUntilExit()
 }
 
 

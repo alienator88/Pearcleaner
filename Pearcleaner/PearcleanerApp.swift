@@ -80,11 +80,11 @@ struct PearcleanerApp: App {
                 return true
             }
             // Save window size on window dimension change
-            .onChange(of: NSApplication.shared.windows.first?.frame) { newFrame in
-                if let newFrame = newFrame {
-                    windowSettings.saveWindowSettings(frame: newFrame)
-                }
-            }
+//            .onChange(of: NSApplication.shared.windows.first?.frame) { newFrame in
+//                if let newFrame = newFrame {
+//                    windowSettings.saveWindowSettings(frame: newFrame)
+//                }
+//            }
             .alert(isPresented: $appState.showUninstallAlert) {
                 Alert(
                     title: Text("Warning!"),
@@ -128,7 +128,7 @@ struct PearcleanerApp: App {
                             .preferredColorScheme(themeManager.displayMode.colorScheme)
                     })
                 }
-
+                
 
 #if !DEBUG
                 Task {
@@ -141,7 +141,6 @@ struct PearcleanerApp: App {
 #endif
             }
         }
-        
         .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentMinSize)
         .commands {
@@ -171,6 +170,8 @@ struct PearcleanerApp: App {
 class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     var windowSettings = WindowSettings()
     var themeManager = ThemeManager.shared
+    var windowCloseObserver: NSObjectProtocol?
+    var windowFrameObserver: NSObjectProtocol?
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         let menubarEnabled = UserDefaults.standard.bool(forKey: "settings.menubar.enabled")
@@ -190,14 +191,35 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             NSApplication.shared.setActivationPolicy(.accessory)
         }
 
+        windowFrameObserver = NotificationCenter.default.addObserver(forName: nil, object: nil, queue: nil) { notification in
+            if let window = notification.object as? NSWindow, window.title == "Pearcleaner" {
+                if notification.name == NSWindow.didEndLiveResizeNotification || notification.name == NSWindow.didMoveNotification {
+                    self.windowSettings.saveWindowSettings(frame: window.frame)
+                }
+            }
+        }
+
+        windowCloseObserver = NotificationCenter.default.addObserver(forName: NSWindow.willCloseNotification, object: nil, queue: nil) { notification in
+            if let window = notification.object as? NSWindow, window.title == "Pearcleaner" {
+                self.windowSettings.saveWindowSettings(frame: window.frame)
+            }
+        }
+
     }
 
 
 
     func applicationWillTerminate(_ notification: Notification) {
-        // Perform actions on app termination here
+        // Remove the observers
+        if let observer = windowCloseObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
 
+        if let observer = windowFrameObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
     }
+
 
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {

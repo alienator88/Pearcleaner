@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftUI
-import FinderSync
+//import FinderSync
 import AlinFoundation
 import UniformTypeIdentifiers
 
@@ -92,7 +92,7 @@ struct GeneralSettingsTab: View {
                         .foregroundStyle(.primary.opacity(0.5))
                 }
 
-                InfoButton(text: "When deleting files using the Trash button, you can prevent accidental deletions by showing an alert before proceeding with the action")
+                InfoButton(text: "When deleting files using the Trash button, you can prevent accidental deletions by showing an alert before proceeding with the action. Unrelated to the password prompt alert when deleting files in system folders.")
 
                 Spacer()
                 Toggle(isOn: $confirmAlert, label: {
@@ -250,10 +250,21 @@ struct GeneralSettingsTab: View {
 
                 Spacer()
 
-                Button("Extensions") {
-                    FIFinderSyncController.showExtensionManagementInterface()
+//                Button("Extensions") {
+//                    FIFinderSyncController.showExtensionManagementInterface()
+//                }
+//                .buttonStyle(SimpleButtonStyle(icon: "folder", help: "Show Extensions Pane"))
+
+                Toggle(isOn: $appState.finderExtensionEnabled, label: {
+                })
+                .toggleStyle(.switch)
+                .onChange(of: appState.finderExtensionEnabled) { newValue in
+                    if newValue {
+                        manageFinderPlugin(install: true)
+                    } else {
+                        manageFinderPlugin(install: false)
+                    }
                 }
-                .buttonStyle(SimpleButtonStyle(icon: "folder", help: "Show Extensions Pane"))
 
 
             }

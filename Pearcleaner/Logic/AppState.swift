@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftUI
-import FinderSync
+//import FinderSync
 
 let home = FileManager.default.homeDirectoryForCurrentUser.path
 
@@ -79,10 +79,28 @@ class AppState: ObservableObject {
     }
 
     @objc func updateExtensionStatus() {
-        let extensionStatus = FIFinderSyncController.isExtensionEnabled
-        DispatchQueue.main.async {
-            self.finderExtensionEnabled = extensionStatus
+        let task = Process()
+        let pipe = Pipe()
+
+        task.launchPath = "/bin/zsh"
+        task.arguments = ["-c", "pluginkit -m -i com.alienator88.Pearcleaner"]
+        task.standardOutput = pipe
+        task.launch()
+
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        task.waitUntilExit()
+
+        if let output = String(data: data, encoding: .utf8) {
+            // Check if the output starts with a '+' indicating it's enabled
+            let extensionStatus = output.contains("+")
+            DispatchQueue.main.async {
+                self.finderExtensionEnabled = extensionStatus
+            }
         }
+//        let extensionStatus = FIFinderSyncController.isExtensionEnabled
+//        DispatchQueue.main.async {
+//            self.finderExtensionEnabled = extensionStatus
+//        }
     }
 
     func triggerUninstallAlert() {

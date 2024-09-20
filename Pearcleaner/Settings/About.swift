@@ -160,6 +160,7 @@ struct Sponsor: Identifiable {
     let url: URL
 
     static let sponsors: [Sponsor] = [
+        Sponsor(name: "chris3ware", url: URL(string: "https://github.com/chris3ware")!),
         Sponsor(name: "fpuhan", url: URL(string: "https://github.com/fpuhan")!),
         Sponsor(name: "HungThinhIT", url: URL(string: "https://github.com/HungThinhIT")!),
         Sponsor(name: "DharsanB", url: URL(string: "https://github.com/dharsanb")!),

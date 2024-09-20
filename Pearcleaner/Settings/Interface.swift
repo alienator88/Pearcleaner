@@ -164,10 +164,11 @@ struct InterfaceSettingsTab: View {
                     .padding(.trailing)
                     .foregroundStyle(.primary.opacity(0.5))
                 VStack(alignment: .leading, spacing: 5) {
-                    Text("\(mini ? "Mini window mode" : "Full size window mode")")
+                    Text("\(mini ? "Mini window mode enabled" : "Mini window mode disabled")")
                         .font(.callout)
                         .foregroundStyle(.primary.opacity(0.5))
                 }
+                InfoButton(text: "Toggling between modes will reset the window frames to their default size/position")
                 Spacer()
                 Toggle(isOn: $mini, label: {
                 })
@@ -178,7 +179,7 @@ struct InterfaceSettingsTab: View {
                     if mini {
                         appState.currentView = miniView ? .apps : .empty
                         showPopover = false
-                        windowSettings.newWindow(withView: {
+                        windowSettings.newWindow(mini: true, withView: {
                             MiniMode(search: $search, showPopover: $showPopover)
                                 .environmentObject(appState)
                                 .environmentObject(locations)
@@ -194,7 +195,7 @@ struct InterfaceSettingsTab: View {
                         } else {
                             appState.currentView = .files
                         }
-                        windowSettings.newWindow(withView: {
+                        windowSettings.newWindow(mini: false, withView: {
                             RegularMode(search: $search, showPopover: $showPopover)
                                 .environmentObject(appState)
                                 .environmentObject(locations)
@@ -313,7 +314,7 @@ struct InterfaceSettingsTab: View {
                         NSApplication.shared.setActivationPolicy(.regular)
                         if !hasWindowOpen() {
                             if mini {
-                                windowSettings.newWindow(withView: {
+                                windowSettings.newWindow(mini: true, withView: {
                                     MiniMode(search: $search, showPopover: $showPopover)
                                         .environmentObject(appState)
                                         .environmentObject(locations)
@@ -324,7 +325,7 @@ struct InterfaceSettingsTab: View {
                                         .preferredColorScheme(themeManager.displayMode.colorScheme)
                                 })
                             } else {
-                                windowSettings.newWindow(withView: {
+                                windowSettings.newWindow(mini: false, withView: {
                                     RegularMode(search: $search, showPopover: $showPopover)
                                         .environmentObject(appState)
                                         .environmentObject(locations)
