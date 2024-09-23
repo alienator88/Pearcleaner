@@ -22,6 +22,7 @@ class DeeplinkManager {
         static let scheme = "pear"
         static let host = "com.alienator88.Pearcleaner"
         static let query = "path"
+        static let brew = "brew"
     }
     
     func manage(url: URL, appState: AppState, locations: Locations) {
@@ -37,11 +38,19 @@ class DeeplinkManager {
                 let pathURL = URL(fileURLWithPath: path)
                 let appInfo = AppInfoFetcher.getAppInfo(atPath: pathURL)
                 showAppInFiles(appInfo: appInfo!, appState: appState, locations: locations, showPopover: $showPopover)
+                // Check if the 'trash' parameter is set to true
+                if let brewValue = queryItems.first(where: { $0.name == DeepLinkConstants.brew })?.value, brewValue == "true" {
+                    updateOnMain {
+                        appState.sentinelMode = true
+                    }
+                }
+
                 if oneShotMode {
                     updateOnMain {
                         appState.oneShotMode = true
                     }
                 }
+
             } else {
                 printOS("No path query parameter found in the URL")
             }

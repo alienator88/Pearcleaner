@@ -10,7 +10,7 @@ import AppKit
 import AlinFoundation
 
 class ReversePathsSearcher {
-    private let appState: AppState
+    private let appState: AppState?
     private let locations: Locations
     private let fsm: FolderSettingsManager
     private let fileManager = FileManager.default
@@ -21,7 +21,7 @@ class ReversePathsSearcher {
     private let dispatchGroup = DispatchGroup()
     private let sortedApps: [AppInfo]
 
-    init(appState: AppState, locations: Locations, fsm: FolderSettingsManager, sortedApps: [AppInfo]) {
+    init(appState: AppState? = nil, locations: Locations, fsm: FolderSettingsManager, sortedApps: [AppInfo]) {
         self.appState = appState
         self.locations = locations
         self.fsm = fsm
@@ -37,14 +37,22 @@ class ReversePathsSearcher {
         }
     }
 
+    func reversePathsSearchCLI() -> [URL] {
+            self.processLocationsCLI()
+        return collection
+    }
+
     private func processLocations() {
-
         for location in locations.reverse.paths where fileManager.fileExists(atPath: location) {
-
             dispatchGroup.enter()
             processLocation(location)
             dispatchGroup.leave()
+        }
+    }
 
+    private func processLocationsCLI() {
+        for location in locations.reverse.paths where fileManager.fileExists(atPath: location) {
+            processLocation(location)
         }
     }
 
@@ -132,8 +140,8 @@ class ReversePathsSearcher {
             updatedZombieFile.fileSize = self.fileSize
             updatedZombieFile.fileSizeLogical = self.fileSizeLogical
             updatedZombieFile.fileIcon = self.fileIcon
-            self.appState.zombieFile = updatedZombieFile
-            self.appState.showProgress = false
+            self.appState?.zombieFile = updatedZombieFile
+            self.appState?.showProgress = false
         }
     }
 

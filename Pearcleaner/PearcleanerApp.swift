@@ -43,7 +43,7 @@ struct PearcleanerApp: App {
         // The first argument is always the binary path, so check if there are more than 1 arguments
         if filteredArguments.count > 1 {
             // Process the CLI options
-            processCLI(arguments: arguments, appState: appState, locations: locations)
+            processCLI(arguments: arguments, appState: appState, locations: locations, fsm: fsm)
         }
     }
 
@@ -128,7 +128,7 @@ struct PearcleanerApp: App {
                             .preferredColorScheme(themeManager.displayMode.colorScheme)
                     })
                 }
-                
+
 
 #if !DEBUG
                 Task {

@@ -47,7 +47,7 @@ class AppInfoFetcher {
             return nil
         }
 
-        let appName = wrapped ? path.deletingLastPathComponent().deletingLastPathComponent().deletingPathExtension().lastPathComponent.capitalizingFirstLetter() : path.deletingPathExtension().lastPathComponent.capitalizingFirstLetter()
+        let appName = wrapped ? path.deletingLastPathComponent().deletingLastPathComponent().deletingPathExtension().lastPathComponent.capitalizingFirstLetter() : path.localizedName().capitalizingFirstLetter()
 
         let appVersion = (bundle.infoDictionary?["CFBundleShortVersionString"] as? String)?.isEmpty ?? true
         ? bundle.infoDictionary?["CFBundleVersion"] as? String ?? ""

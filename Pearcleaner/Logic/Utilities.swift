@@ -14,7 +14,7 @@ import AppKit
 func reloadAppsList(appState: AppState, fsm: FolderSettingsManager) {
     appState.reload = true
     updateOnBackground {
-        let sortedApps = getSortedApps(paths: fsm.folderPaths, appState: appState)
+        let sortedApps = getSortedApps(paths: fsm.folderPaths)
         // Update UI on the main thread
         updateOnMain {
             appState.sortedApps = sortedApps
@@ -59,7 +59,7 @@ func findAndSetWindowFrame(named titles: [String], windowSettings: WindowSetting
 
 
 // Process CLI // ========================================================================================================
-func processCLI(arguments: [String], appState: AppState, locations: Locations) {
+func processCLI(arguments: [String], appState: AppState, locations: Locations, fsm: FolderSettingsManager) {
     let options = Array(arguments.dropFirst()) // Remove the first argument (binary path)
 
     // Private function to list files for uninstall, using the provided path
@@ -67,11 +67,11 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations) {
         // Convert the provided string path to a URL
         let url = URL(fileURLWithPath: path)
 
-//        print("[BETA] Pearcleaner CLI | List Files:\n")
+        print("[BETA] Pearcleaner CLI | List Application Files:\n")
 
         // Fetch the app info and safely unwrap
         guard let appInfo = AppInfoFetcher.getAppInfo(atPath: url) else {
-            print("Error: Invalid path or unable to fetch app info at path: \(path)")
+            print("Error: Invalid path or unable to fetch app info at path: \(path)\n")
             exit(1)  // Exit with non-zero code to indicate failure
         }
 
@@ -85,6 +85,27 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations) {
         for path in foundPaths {
             print(path.path)
         }
+
+        print("\nFound \(foundPaths.count) application files.\n")
+
+    }
+
+    // Private function to list leftover files for uninstall, using the provided path
+    func listLeftoverFiles() {
+        print("[BETA] Pearcleaner CLI | List Leftover Files:\n")
+
+        // Get installed apps for filtering
+        let sortedApps = getSortedApps(paths: fsm.folderPaths)
+
+        // Find leftover files
+        let foundPaths = ReversePathsSearcher(locations: locations, fsm: fsm, sortedApps: sortedApps)
+            .reversePathsSearchCLI()
+
+        // Print each path in the array to the console
+        for path in foundPaths {
+            print(path.path)
+        }
+        print("\nFound \(foundPaths.count) leftover files.\n")
     }
 
     // Private function to uninstall the application bundle at a given path
@@ -95,17 +116,17 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations) {
 
         // Fetch the app info and safely unwrap
         guard let appInfo = AppInfoFetcher.getAppInfo(atPath: url) else {
-            print("Error: Invalid path or unable to fetch app info at path: \(path)")
+            print("Error: Invalid path or unable to fetch app info at path: \(path)\n")
             exit(1)  // Exit with non-zero code to indicate failure
         }
 
         killApp(appId: appInfo.bundleIdentifier) {
             let success =  moveFilesToTrashCLI(at: [appInfo.path])
             if success {
-                print("Application moved to the trash successfully.")
+                print("Application moved to the trash successfully.\n")
                 exit(0)
             } else {
-                print("Failed to move application to trash.")
+                print("Failed to move application to trash.\n")
                 exit(1)
             }
         }
@@ -115,7 +136,7 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations) {
     func uninstallAll(at path: String) {
         // Convert the provided string path to a URL
         let url = URL(fileURLWithPath: path)
-        print("[BETA] Pearcleaner CLI | Uninstall Application + Related Files:\n")
+        print("[BETA] Pearcleaner CLI | Uninstall Application & Related Files:\n")
 
         // Fetch the app info and safely unwrap
         guard let appInfo = AppInfoFetcher.getAppInfo(atPath: url) else {
@@ -132,16 +153,33 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations) {
         killApp(appId: appInfo.bundleIdentifier) {
             let success =  moveFilesToTrashCLI(at: Array(foundPaths))
             if success {
-                print("The following files have been moved to the trash successfully:\n")
-                // Print each path in the Set to the console
-                for path in foundPaths {
-                    print(path.path)
-                }
+                print("The application and related files have been moved to the trash successfully.\n")
                 exit(0)
             } else {
-                print("Failed to move application and related files to trash.")
+                print("Failed to move application and related files to trash.\n")
                 exit(1)
             }
+        }
+    }
+
+    // Private function to remove the leftover files
+    func removeLeftoverFiles() {
+        print("[BETA] Pearcleaner CLI | Remove Leftover Files:\n")
+
+        // Get installed apps for filtering
+        let sortedApps = getSortedApps(paths: fsm.folderPaths)
+
+        // Find leftover files
+        let foundPaths = ReversePathsSearcher(locations: locations, fsm: fsm, sortedApps: sortedApps)
+            .reversePathsSearchCLI()
+
+        let success =  moveFilesToTrashCLI(at: foundPaths)
+        if success {
+            print("Leftover files have been moved to the trash successfully.\n")
+            exit(0)
+        } else {
+            print("Failed to move leftover files to trash.\n")
+            exit(1)
         }
     }
 
@@ -151,24 +189,36 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations) {
         exit(0)
     }
 
-    // Handle --list or -l option with a path argument
+    // Handle --list or -l option with a path argument for listing app bundle files
     if let listIndex = options.firstIndex(where: { $0 == "--list" || $0 == "-l" }), listIndex + 1 < options.count {
         let path = options[listIndex + 1] // Path provided after --list or -l
         listFiles(at: path)
         exit(0)
     }
 
-    // Handle --uninstall or -u option with a path argument
+    // Handle --listlf or -lf option with a path argument for listing leftover files
+    if options.contains("--list-leftover") || options.contains("-lf") {
+        listLeftoverFiles()
+        exit(0)
+    }
+
+    // Handle --uninstall or -u option with a path argument to uninstall app bundle only
     if let uninstallIndex = options.firstIndex(where: { $0 == "--uninstall" || $0 == "-u" }), uninstallIndex + 1 < options.count {
         let path = options[uninstallIndex + 1] // Path provided after --uninstall or -u
         uninstallApp(at: path)
         exit(0)
     }
 
-    // Handle --uninstall-all or -ua option with a path argument
+    // Handle --uninstall-all or -ua option with a path argument to uninstall app bundle and related files
     if let uninstallAllIndex = options.firstIndex(where: { $0 == "--uninstall-all" || $0 == "-ua" }), uninstallAllIndex + 1 < options.count {
         let path = options[uninstallAllIndex + 1] // Path provided after --uninstall-all or -ua
         uninstallAll(at: path)
+        exit(0)
+    }
+
+    // Handle --uninstall-lf or -ulf option with a path argument for listing leftover files
+    if options.contains("--remove-leftover") || options.contains("-rl") {
+        removeLeftoverFiles()
         exit(0)
     }
 
@@ -183,9 +233,11 @@ func displayHelp() {
             
             [BETA] Pearcleaner CLI | Usage:
             
-            --list <path>, -l <path>             Find application files available for uninstall at the specified path
-            --uninstall <path>, -u <path>        Remove only the application bundle at the specified path
-            --uninstall-all <path>, -ua <path>   Remove the application bundle and all related files at the specified path
+            --list <path>, -l <path>             List application files available for uninstall at the specified path
+            --list-leftover, -lf                 List leftover files available for removal
+            --uninstall <path>, -u <path>        Uninstall only the application bundle at the specified path
+            --uninstall-all <path>, -ua <path>   Uninstall application bundle and ALL related files at the specified path
+            --remove-leftover, -rl               Remove ALL leftover files (To ignore files, add them to the exception list within Pearcleaner settings)
             --help, -h                           Show this help message
             
             """)
@@ -197,8 +249,16 @@ func checkCLISymlink() -> Bool {
     let filePath = "/usr/local/bin/pearcleaner"
     let fileManager = FileManager.default
 
-    // Check if the file exists at the given path
-    return fileManager.fileExists(atPath: filePath)
+    // Check if the file exists and is a symlink
+    guard fileManager.fileExists(atPath: filePath) else { return false }
+
+    // Check if the symlink points to the correct path
+    do {
+        let destination = try fileManager.destinationOfSymbolicLink(atPath: filePath)
+        return destination == Bundle.main.executablePath
+    } catch {
+        return false
+    }
 }
 
 // Install/uninstall symlink for CLI
@@ -278,6 +338,93 @@ func manageFinderPlugin(install: Bool) {
 // Brew cleanup
 func caskCleanup(app: String) {
     Task(priority: .high) {
+
+#if arch(x86_64)
+        let cmd = "/usr/local/bin/brew"
+#elseif arch(arm64)
+        let cmd = "/opt/homebrew/bin/brew"
+#endif
+
+        if let formattedApp = getCaskIdentifier(for: app) {
+            // App found, proceed with cleanup
+            let script = """
+            tell application "Terminal"
+                activate
+                do script "/bin/bash --noprofile --norc -c '
+                clear;
+                echo \\"[Pearcleaner] Homebrew cleanup for \(app):\n\\";
+                \(cmd) uninstall --cask \(formattedApp) --force;
+                \(cmd) cleanup;
+                killall Terminal;
+                '" in front window
+            end tell
+            """
+
+            var error: NSDictionary?
+            if let appleScript = NSAppleScript(source: script) {
+                appleScript.executeAndReturnError(&error)
+            }
+
+            if let error = error {
+                printOS("AppleScript Error: \(error)")
+            }
+        } else {
+            printOS("Brew cleanup: No cask found for \(app).")
+        }
+    }
+}
+
+
+func getCaskIdentifier(for appName: String) -> String? {
+
+#if arch(x86_64)
+    let caskroomPath = "/usr/local/Caskroom/"
+#elseif arch(arm64)
+    let caskroomPath = "/opt/homebrew/Caskroom/"
+#endif
+
+    let fileManager = FileManager.default
+    let lowercasedAppName = appName.lowercased()
+
+    do {
+        // Get all cask directories from Caskroom, ignoring hidden files
+        let casks = try fileManager.contentsOfDirectory(atPath: caskroomPath).filter { !$0.hasPrefix(".") }
+
+        for cask in casks {
+            // Construct the path to the cask directory
+            let caskSubPath = caskroomPath + cask
+
+            // Get all version directories for this cask, ignoring hidden files
+            let versions = try fileManager.contentsOfDirectory(atPath: caskSubPath).filter { !$0.hasPrefix(".") }
+
+            // Only check the first valid version directory to improve efficiency
+            if let latestVersion = versions.first {
+                let appDirectory = "\(caskSubPath)/\(latestVersion)/"
+
+                // List all files in the version directory and check for .app file
+                let appsInDir = try fileManager.contentsOfDirectory(atPath: appDirectory).filter { !$0.hasPrefix(".") }
+
+                if let appFile = appsInDir.first(where: { $0.hasSuffix(".app") }) {
+                    let realAppName = appFile.replacingOccurrences(of: ".app", with: "").lowercased()
+
+                    // Compare the lowercased app names for case-insensitive match
+                    if realAppName == lowercasedAppName {
+                        return realAppName.replacingOccurrences(of: " ", with: "-").lowercased()
+                    }
+                }
+            }
+        }
+    } catch {
+        print("Error reading cask metadata: \(error)")
+    }
+
+    // If no match is found, return nil
+    return nil
+}
+
+
+func caskCleanup2(app: String) {
+    Task(priority: .high) {
         let formattedApp = app.lowercased().replacingOccurrences(of: " ", with: "-")
 
 #if arch(x86_64)
@@ -289,19 +436,22 @@ func caskCleanup(app: String) {
         let script = """
         tell application "Terminal"
             activate
-            do script "
+            do script "/bin/bash --noprofile --norc -c '
             found_cask=$(\(cmd) list --cask | grep '\(formattedApp)');
             if [ -n \\"$found_cask\\" ]; then
                 clear;
+                echo \\"[Pearcleaner] Homebrew cleanup for \(formattedApp):\n\\";
                 \(cmd) uninstall --cask \\"$found_cask\\" --force;
                 \(cmd) cleanup;
+                killall Terminal;
             else
-                echo \\"Cask not found for \(formattedApp)\\";
-            fi"
+                clear;
+                echo \\"[Pearcleaner] \(formattedApp) cask not found for homebrew cleanup!\nClosing window in 5 seconds..\\";
+                sleep 5;
+                killall Terminal;
+            fi'" in front window
         end tell
         """
-
-        print(script)
 
         var error: NSDictionary?
         if let appleScript = NSAppleScript(source: script) {
@@ -313,7 +463,6 @@ func caskCleanup(app: String) {
         }
     }
 }
-
 
 
 // Print list of files locally
@@ -447,10 +596,7 @@ func removeApp(appState: AppState, withPath path: URL) {
             appState.sortedApps.remove(at: index)
 //            return // Exit the function if the app was found and removed
         }
-        // Remove from appInfoStore if found
-//        if let index = appState.appInfoStore.firstIndex(where: { $0.path == path }) {
-//            appState.appInfoStore.remove(at: index)
-//        }
+
         // Brew cleanup if enabled
         if brew {
             caskCleanup(app: appState.appInfo.appName)
@@ -481,26 +627,26 @@ func showLocalized(url: URL) -> String {
 }
 
 extension URL {
-    func localizedName() -> String? {
+    func localizedName() -> String {
         do {
             let resourceValues = try self.resourceValues(forKeys: [.localizedNameKey])
-            return resourceValues.localizedName
+            return resourceValues.localizedName?.replacingOccurrences(of: ".app", with: "") ?? self.lastPathComponent.replacingOccurrences(of: ".app", with: "")
         } catch {
             print("Error getting localized name: \(error)")
-            return nil
+            return self.lastPathComponent.replacingOccurrences(of: ".app", with: "")
         }
     }
 }
 
 extension String {
-    func localizedName() -> String? {
+    func localizedName() -> String {
         let url = URL(fileURLWithPath: self)
         do {
             let resourceValues = try url.resourceValues(forKeys: [.localizedNameKey])
-            return resourceValues.localizedName
+            return resourceValues.localizedName?.replacingOccurrences(of: ".app", with: "") ?? self
         } catch {
             print("Error getting localized name: \(error)")
-            return nil
+            return self
         }
     }
 }

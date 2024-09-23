@@ -359,19 +359,20 @@ struct FilesView: View {
                                                 }
 
                                             } else {
+                                                // Run brew cleanup if sent from Sentinel
+                                                if brew && appState.sentinelMode {
+                                                    caskCleanup(app: appState.appInfo.appName)
+                                                }
+
                                                 // Add deleted appInfo object to trashed array
                                                 appState.trashedFiles.append(appState.appInfo)
-
-                                                // Clear out appInfoStore object (Used for leftover file search)
-                                                //                                            if let index = appState.appInfoStore.firstIndex(where: { $0.path == appState.appInfo.path }) {
-                                                //                                                appState.appInfoStore[index] = .empty
-                                                //                                            }
 
                                                 updateOnMain {
                                                     // Remove items from the list
                                                     appState.appInfo.fileSize = appState.appInfo.fileSize.filter { !appState.selectedItems.contains($0.key) }
                                                     // Update the selectedFiles to remove references that are no longer present
                                                     appState.selectedItems.removeAll()
+                                                    appState.sentinelMode = false
                                                     if appState.oneShotMode {
                                                         NSApp.terminate(nil)
                                                     }

@@ -56,7 +56,7 @@ func checkApp(file: String) {
                 return
             } else {
                 if FileManager.default.isInTrash(app) {
-                    NSWorkspace.shared.open(URL(string: "pear://com.alienator88.Pearcleaner?path=\(file)")!)
+                    NSWorkspace.shared.open(URL(string: "pear://com.alienator88.Pearcleaner?path=\(file)&brew=true")!)
                 }
             }
         } else {

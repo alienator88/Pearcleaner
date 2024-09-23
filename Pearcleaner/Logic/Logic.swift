@@ -11,7 +11,7 @@ import AlinFoundation
 
 
 // Get all apps from /Applications and ~/Applications
-func getSortedApps(paths: [String], appState: AppState) -> [AppInfo] {
+func getSortedApps(paths: [String]) -> [AppInfo] {
     let fileManager = FileManager.default
     var apps: [URL] = []
 

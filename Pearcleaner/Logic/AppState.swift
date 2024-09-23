@@ -27,6 +27,7 @@ class AppState: ObservableObject {
     @Published var finderExtensionEnabled: Bool = false
     @Published var showUninstallAlert: Bool = false
     @Published var oneShotMode: Bool = false
+    @Published var sentinelMode: Bool = false
     @Published var showConditionBuilder: Bool = false
 
     var operationQueueLeftover = OperationQueue()
