@@ -155,14 +155,15 @@ struct AppListItems: View {
             }
         }
         .onAppear {
-            DispatchQueue.global(qos: .userInitiated).async {
-                let size = totalSizeOnDisk(for: appInfo.path).logical
-                DispatchQueue.main.async {
-                    self.bundleSize = size
-
-                    // Optionally, update the appInfo in the appState array
-                    if let index = appState.sortedApps.firstIndex(where: { $0.path == appInfo.path }) {
-                        appState.sortedApps[index].bundleSize = size
+            if self.bundleSize == 0 {
+                DispatchQueue.global(qos: .userInitiated).async {
+                    let size = totalSizeOnDisk(for: appInfo.path).logical
+                    DispatchQueue.main.async {
+                        self.bundleSize = size
+                        // Update the appInfo in the appState array
+                        if let index = appState.sortedApps.firstIndex(where: { $0.path == appInfo.path }) {
+                            appState.sortedApps[index].bundleSize = size
+                        }
                     }
                 }
             }

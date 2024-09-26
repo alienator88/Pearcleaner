@@ -13,7 +13,6 @@ let home = FileManager.default.homeDirectoryForCurrentUser.path
 
 class AppState: ObservableObject {
     @Published var appInfo: AppInfo
-//    @Published var appInfoStore: [AppInfo] = []
     @Published var trashedFiles: [AppInfo] = []
     @Published var zombieFile: ZombieFile
     @Published var sortedApps: [AppInfo] = []
@@ -165,28 +164,6 @@ struct ZombieFile: Identifiable, Equatable, Hashable {
     static let empty = ZombieFile(id: UUID(), fileSize: [:], fileSizeLogical: [:], fileIcon: [:])
 
 }
-
-//extension ZombieFile {
-//    func toItems() -> [Item] {
-//        var items: [Item] = []
-//
-//        for (url, size) in self.fileSize {
-//            let name = url.lastPathComponent
-//            let isDirectory = url.hasDirectoryPath
-//
-//            let item = Item(
-//                url: url,
-//                name: name,
-//                size: size,
-//                isDirectory: isDirectory
-//            )
-//
-//            items.append(item)
-//        }
-//
-//        return items
-//    }
-//}
 
 
 enum Arch {
