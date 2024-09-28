@@ -123,8 +123,7 @@ struct AppSearchView: View {
                                 Button("Settings") {
                                     if #available(macOS 13.0, *) {
                                         NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
-                                    }
-                                    else {
+                                    } else {
                                         NSApp.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
                                     }
                                     showMenu = false

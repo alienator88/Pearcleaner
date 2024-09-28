@@ -14,6 +14,7 @@
 		C74412C72BBF249000DDFCA8 /* AppPathsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74412C62BBF249000DDFCA8 /* AppPathsFetch.swift */; };
 		C74FDC632BCD833D00B8960F /* Conditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74FDC622BCD833D00B8960F /* Conditions.swift */; };
 		C7575D392B0182DE006A600A /* PearcleanerSentinel in CopyFiles */ = {isa = PBXBuildFile; fileRef = C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		C764680F2CA7790200DC72DF /* PearGroupBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = C764680E2CA778FB00DC72DF /* PearGroupBox.swift */; };
 		C76D08482AF83C3F00D07867 /* Update.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08472AF83C3F00D07867 /* Update.swift */; };
 		C76D084A2AF83C6E00D07867 /* General.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08492AF83C6E00D07867 /* General.swift */; };
 		C76D08512AF850F300D07867 /* About.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08502AF850F300D07867 /* About.swift */; };
@@ -99,6 +100,7 @@
 		C72893112AFD51EA00C8C1CD /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		C74412C62BBF249000DDFCA8 /* AppPathsFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPathsFetch.swift; sourceTree = "<group>"; };
 		C74FDC622BCD833D00B8960F /* Conditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conditions.swift; sourceTree = "<group>"; };
+		C764680E2CA778FB00DC72DF /* PearGroupBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PearGroupBox.swift; sourceTree = "<group>"; };
 		C76D08472AF83C3F00D07867 /* Update.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Update.swift; sourceTree = "<group>"; };
 		C76D08492AF83C6E00D07867 /* General.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = General.swift; sourceTree = "<group>"; };
 		C76D08502AF850F300D07867 /* About.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = About.swift; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 				C7F539372AF60865007DF1B2 /* Utilities.swift */,
 				C72893042AFD42E600C8C1CD /* DeepLink.swift */,
 				C77B901B2AF193A3009CC655 /* Styles.swift */,
+				C764680E2CA778FB00DC72DF /* PearGroupBox.swift */,
 				C7D31D502AFF00F300C7ED9E /* Locations.swift */,
 				C74FDC622BCD833D00B8960F /* Conditions.swift */,
 				C7DE672A2BA6343D00EB1633 /* MenuBarItem.swift */,
@@ -429,6 +432,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C7DD49EA2BAB4D8100CCBA16 /* AppInfoFetch.swift in Sources */,
+				C764680F2CA7790200DC72DF /* PearGroupBox.swift in Sources */,
 				C79947962C34A794007279CC /* Tips.swift in Sources */,
 				C76D08482AF83C3F00D07867 /* Update.swift in Sources */,
 				C7FB173B2B96321300B96F9A /* AppsListView.swift in Sources */,
@@ -683,6 +687,7 @@
 				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Pearcleaner needs to send apple events to FInder to delete files";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSSystemAdministrationUsageDescription = "Pearcleaner requires full disk access to be able to delete files in locations with no permission";
+				INFOPLIST_KEY_NSSystemExtensionUsageDescription = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -722,6 +727,7 @@
 				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Pearcleaner needs to send apple events to FInder to delete files";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSSystemAdministrationUsageDescription = "Pearcleaner requires full disk access to be able to delete files in locations with no permission";
+				INFOPLIST_KEY_NSSystemExtensionUsageDescription = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",

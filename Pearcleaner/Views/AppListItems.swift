@@ -159,6 +159,7 @@ struct AppListItems: View {
                 DispatchQueue.global(qos: .userInitiated).async {
                     let size = totalSizeOnDisk(for: appInfo.path).logical
                     DispatchQueue.main.async {
+                        print("Sizing up")
                         self.bundleSize = size
                         // Update the appInfo in the appState array
                         if let index = appState.sortedApps.firstIndex(where: { $0.path == appInfo.path }) {

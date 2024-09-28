@@ -151,16 +151,18 @@ struct PearcleanerApp: App {
 
         
         Settings {
-            SettingsView(showPopover: $showPopover, search: $search)
-                .environmentObject(appState)
-                .environmentObject(locations)
-                .environmentObject(fsm)
-                .environmentObject(themeManager)
-                .environmentObject(updater)
-                .environmentObject(permissionManager)
-                .toolbarBackground(.clear)
-                .preferredColorScheme(themeManager.displayMode.colorScheme)
+                SettingsView(showPopover: $showPopover, search: $search)
+                    .environmentObject(appState)
+                    .environmentObject(locations)
+                    .environmentObject(fsm)
+                    .environmentObject(themeManager)
+                    .environmentObject(updater)
+                    .environmentObject(permissionManager)
+                    .preferredColorScheme(themeManager.displayMode.colorScheme)
+                    .toolbarBackground(.clear)
+                    .movableByWindowBackground()
         }
+
     }
 }
 

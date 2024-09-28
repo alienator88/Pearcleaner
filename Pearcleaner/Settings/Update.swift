@@ -17,23 +17,26 @@ struct UpdateSettingsTab: View {
     @AppStorage("settings.general.glass") private var glass: Bool = false
 
     var body: some View {
-        VStack {
+        VStack(spacing: 20) {
 
-            FrequencyView(updater: updater)
-                .padding(5)
-                .padding(.horizontal)
+            // === Frequency ============================================================================================
+            PearGroupBox(header: { Text("Update Frequency").font(.title2) }, content: {
+                FrequencyView(updater: updater)
+            })
 
-            ReleasesView(updater: updater)
-                .frame(height: 400)
-                .frame(maxWidth: .infinity)
-                .background(backgroundView(themeManager: themeManager, darker: true, glass: glass))
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+            // === Release Notes ========================================================================================
+            PearGroupBox(header: { Text("Release Notes").font(.title2) }, content: {
+                ReleasesView(updater: updater)
+                    .frame(height: 380)
+                    .frame(maxWidth: .infinity)
+            })
 
-            
+            // === Buttons ==============================================================================================
+
             HStack(alignment: .center, spacing: 20) {
 
                 Button(""){
-                    updater.checkForUpdates(showSheet: false)
+                    updater.checkForUpdatesForce(showSheet: false)
                 }
                 .buttonStyle(SimpleButtonStyle(icon: "arrow.uturn.left.circle", label: "Refresh", help: "Refresh updater"))
 
@@ -50,13 +53,8 @@ struct UpdateSettingsTab: View {
                 .buttonStyle(SimpleButtonStyle(icon: "link", label: "Releases", help: "View releases on GitHub"))
 
             }
-            .padding(.top, 5)
-
-            Spacer()
 
         }
-        .padding(20)
-        .frame(width: 500, height: 540)
 
     }
     

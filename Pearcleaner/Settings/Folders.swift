@@ -22,191 +22,178 @@ struct FolderSettingsTab: View {
 
 
     var body: some View {
-        Form {
-            VStack(spacing: 0) {
+        VStack(spacing: 20) {
 
-                HStack(spacing: 0) {
-                    Text("Application Folders").font(.title2)
-                    InfoButton(text: "Locations that will be searched for .app files. Click a non-default path to remove it. Add new folders using the + button or drag/drop over the list. Non-default paths can't be removed.")
+            // === Application Folders============================================================================================
+            PearGroupBox(header: {
+                HStack(alignment: .center, spacing: 0) {
+                    Text("Search these folders for applications").font(.title2)
+                    InfoButton(text: "Locations that will be searched for .app files. Click a non-default path to remove it. Default paths can't be removed.")
                         .padding(.leading, 5)
                     Spacer()
-
-                    Button("") {
-                        selectFolder()
-                    }
-                    .buttonStyle(SimpleButtonStyle(icon: "plus.circle", help: "Add folder", size: 16, rotate: true))
-
                 }
-                .padding(.bottom, 5)
+            }, content: {
+                VStack {
+                    ScrollView {
+                        VStack(spacing: 5) {
+                            ForEach(fsm.folderPaths.indices, id: \.self) { index in
+                                HStack {
 
-
-                ScrollView {
-                    VStack(spacing: 5) {
-                        ForEach(fsm.folderPaths.indices, id: \.self) { index in
-                            HStack {
-
-                                Text(fsm.folderPaths[index])
-                                    .font(.callout)
-                                    .lineLimit(1)
-                                    .truncationMode(.tail)
-                                    .opacity(fsm.defaultPaths.contains(fsm.folderPaths[index]) ? 0.5 : 1)
-                                    .padding(5)
-                                Spacer()
-                            }
-                            .disabled(fsm.defaultPaths.contains(fsm.folderPaths[index]))
-                            .onHover { hovering in
-                                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                                    isHovered = hovering
+                                    Text(fsm.folderPaths[index])
+                                        .font(.callout)
+                                        .lineLimit(1)
+                                        .truncationMode(.tail)
+                                        .opacity(fsm.defaultPaths.contains(fsm.folderPaths[index]) ? 0.5 : 1)
+                                        .padding(5)
+                                    Spacer()
                                 }
-                                if isHovered && !fsm.defaultPaths.contains(fsm.folderPaths[index]) {
-                                    NSCursor.disappearingItem.push()
-                                } else {
-                                    NSCursor.pop()
+                                .disabled(fsm.defaultPaths.contains(fsm.folderPaths[index]))
+                                .onHover { hovering in
+                                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                                        isHovered = hovering
+                                    }
+                                    if isHovered && !fsm.defaultPaths.contains(fsm.folderPaths[index]) {
+                                        NSCursor.disappearingItem.push()
+                                    } else {
+                                        NSCursor.pop()
+                                    }
                                 }
-                            }
-                            .onTapGesture {
-                                if !fsm.defaultPaths.contains(fsm.folderPaths[index]) {
-                                    fsm.removePath(at: index)
+                                .onTapGesture {
+                                    if !fsm.defaultPaths.contains(fsm.folderPaths[index]) {
+                                        fsm.removePath(at: index)
+                                    }
+                                }
+
+                                if index != fsm.folderPaths.indices.last {
+                                    Divider().opacity(0.5)
                                 }
                             }
 
-                            if index != fsm.folderPaths.indices.last {
-                                Divider().opacity(0.5)
-                            }
                         }
 
                     }
-
-                }
-                .scrollIndicators(.automatic)
-                .padding()
-                .frame(height: 200)
-//                .background(.primary.opacity(0.05))
-                .background(backgroundView(themeManager: themeManager, darker: true, glass: glass))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-                .onDrop(of: ["public.file-url"], isTargeted: nil) { providers -> Bool in
-                    providers.forEach { provider in
-                        provider.loadDataRepresentation(forTypeIdentifier: "public.file-url") { (data, error) in
-                            guard let data = data, error == nil,
-                                  let url = URL(dataRepresentation: data, relativeTo: nil),
-                                  url.hasDirectoryPath else {
-                                printOS("FSM: Failed to load URL or the item is not a folder")
-                                return
-                            }
-                            updateOnMain {
-                                fsm.addPath(url.path)
+                    .scrollIndicators(.automatic)
+                    .padding()
+                    .frame(height: 200)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .onDrop(of: ["public.file-url"], isTargeted: nil) { providers -> Bool in
+                        providers.forEach { provider in
+                            provider.loadDataRepresentation(forTypeIdentifier: "public.file-url") { (data, error) in
+                                guard let data = data, error == nil,
+                                      let url = URL(dataRepresentation: data, relativeTo: nil),
+                                      url.hasDirectoryPath else {
+                                    printOS("FSM: Failed to load URL or the item is not a folder")
+                                    return
+                                }
+                                updateOnMain {
+                                    fsm.addPath(url.path)
+                                }
                             }
                         }
+                        return true
                     }
-                    return true
+
+                    HStack {
+                        Spacer()
+                        Text("Drop folders above or click to add").opacity(0.5)
+                        Button("") {
+                            selectFolder()
+                        }
+                        .buttonStyle(SimpleButtonStyle(icon: "plus.circle", help: "Add folder", size: 16, rotate: true))
+                        Spacer()
+                    }
                 }
+            })
 
-                HStack {
-                    Spacer()
-                    Text("Drop folders here").opacity(0.5)
-                    Spacer()
-                }
-                .padding(.top, 5)
+            // === Leftover Folders============================================================================================
 
-
-                Divider()
-                    .padding(.vertical)
-
-                // === LEFTOVER FILES ================================================================================================
-
+            PearGroupBox(header: {
                 HStack(spacing: 0) {
-                    Text("Leftover Files Exclusions").font(.title2)
-                    InfoButton(text: "Add files or folders that will be ignored when searching for leftover files. Click a path to remove it from the list. Add new files/folders using the + button or drag/drop over the list.")
+                    Text("Exclude these files and folders from leftover search").font(.title2)
+                    InfoButton(text: "Add files or folders that will be ignored when searching for leftover files. Click a path to remove it from the list.")
                         .padding(.leading, 5)
                     Spacer()
-
-                    Button("") {
-                        selectFilesFoldersZ()
-                    }
-                    .buttonStyle(SimpleButtonStyle(icon: "plus.circle", help: "Add file/folder", size: 16, rotate: true))
                 }
-                .padding(.bottom, 5)
-
-
-                ScrollView {
-                    VStack(spacing: 5) {
-                        if fsm.fileFolderPathsZ.count == 0 {
-                            HStack {
-                                Text("No files or folders added")
-                                    .font(.callout)
-                                    .opacity(0.5)
-                                    .padding(5)
-                                Spacer()
-                            }
-                            .disabled(true)
-                        }
-                        ForEach(fsm.fileFolderPathsZ.indices, id: \.self) { index in
-                            HStack {
-
-                                Text(fsm.fileFolderPathsZ[index])
-                                    .font(.callout)
-                                    .lineLimit(1)
-                                    .truncationMode(.tail)
-                                    .padding(5)
-                                Spacer()
-                            }
-                            .onHover { hovering in
-                                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                                    isHovered = hovering
+            }, content: {
+                VStack {
+                    ScrollView {
+                        VStack(spacing: 5) {
+                            if fsm.fileFolderPathsZ.count == 0 {
+                                HStack {
+                                    Text("No files or folders added")
+                                        .font(.callout)
+                                        .opacity(0.5)
+                                        .padding(5)
+                                    Spacer()
                                 }
-                                if isHovered {
-                                    NSCursor.disappearingItem.push()
-                                } else {
-                                    NSCursor.pop()
+                                .disabled(true)
+                            }
+                            ForEach(fsm.fileFolderPathsZ.indices, id: \.self) { index in
+                                HStack {
+
+                                    Text(fsm.fileFolderPathsZ[index])
+                                        .font(.callout)
+                                        .lineLimit(1)
+                                        .truncationMode(.tail)
+                                        .padding(5)
+                                    Spacer()
+                                }
+                                .onHover { hovering in
+                                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                                        isHovered = hovering
+                                    }
+                                    if isHovered {
+                                        NSCursor.disappearingItem.push()
+                                    } else {
+                                        NSCursor.pop()
+                                    }
+                                }
+                                .onTapGesture {
+                                    fsm.removePathZ(at: index)
+                                }
+
+                                if index != fsm.fileFolderPathsZ.indices.last {
+                                    Divider().opacity(0.5)
                                 }
                             }
-                            .onTapGesture {
-                                fsm.removePathZ(at: index)
-                            }
 
-                            if index != fsm.fileFolderPathsZ.indices.last {
-                                Divider().opacity(0.5)
-                            }
                         }
 
                     }
-
-                }
-                .scrollIndicators(.automatic)
-                .padding()
-                .frame(height: 200)
-                .background(backgroundView(themeManager: themeManager, darker: true, glass: glass))
-//                .background(.primary.opacity(0.05))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-                .onDrop(of: ["public.file-url"], isTargeted: nil) { providers -> Bool in
-                    providers.forEach { provider in
-                        provider.loadDataRepresentation(forTypeIdentifier: "public.file-url") { (data, error) in
-                            guard let data = data, error == nil,
-                                  let url = URL(dataRepresentation: data, relativeTo: nil) else {
-                                printOS("FSM: Failed to load URL")
-                                return
-                            }
-                            updateOnMain {
-                                fsm.addPathZ(url.path)
+                    .scrollIndicators(.automatic)
+                    .padding()
+                    .frame(height: 200)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .onDrop(of: ["public.file-url"], isTargeted: nil) { providers -> Bool in
+                        providers.forEach { provider in
+                            provider.loadDataRepresentation(forTypeIdentifier: "public.file-url") { (data, error) in
+                                guard let data = data, error == nil,
+                                      let url = URL(dataRepresentation: data, relativeTo: nil) else {
+                                    printOS("FSM: Failed to load URL")
+                                    return
+                                }
+                                updateOnMain {
+                                    fsm.addPathZ(url.path)
+                                }
                             }
                         }
+                        return true
                     }
-                    return true
-                }
 
-                HStack {
-                    Spacer()
-                    Text("Drop files/folders here").opacity(0.5)
-                    Spacer()
+                    HStack {
+                        Spacer()
+                        Text("Drop files or folders above or click to add").opacity(0.5)
+                        Button("") {
+                            selectFilesFoldersZ()
+                        }
+                        .buttonStyle(SimpleButtonStyle(icon: "plus.circle", help: "Add file/folder", size: 16, rotate: true))
+                        Spacer()
+                    }
                 }
-                .padding(.top, 5)
-            }
-
-            Spacer()
+            })
 
         }
-        .padding(20)
-        .frame(width: 500, height: 580)
+
 
     }
 

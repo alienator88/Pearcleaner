@@ -703,6 +703,45 @@ extension URL {
     }
 }
 
+// Removes the sidebar toggle button from the toolbar, if running on macOS 14.0 or newer.
+extension View {
+    @ViewBuilder
+    func removeSidebarToggle() -> some View {
+        if #available(macOS 14.0, *) {
+            self.toolbar(removing: .sidebarToggle)
+        } else {
+            self
+        }
+    }
+}
+
+// Drag window by background
+extension View {
+    // Helper function to apply the movable background window
+    func movableByWindowBackground() -> some View {
+        self.background(MovableWindowAccessor())
+    }
+}
+
+// Custom NSWindow accessor to modify window properties
+struct MovableWindowAccessor: NSViewRepresentable {
+    func makeNSView(context: Context) -> NSView {
+        let nsView = NSView()
+
+        DispatchQueue.main.async {
+            if let window = nsView.window {
+                // Enable dragging by the window's background
+                window.isMovableByWindowBackground = true
+            }
+        }
+
+        return nsView
+    }
+
+    func updateNSView(_ nsView: NSView, context: Context) {}
+}
+
+
 // Return image for different folders
 func folderImages(for path: String) -> AnyView? {
     if path.contains("/Library/Containers/") || path.contains("/Library/Group Containers/") {

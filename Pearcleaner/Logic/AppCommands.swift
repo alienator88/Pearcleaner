@@ -31,7 +31,7 @@ struct AppCommands: Commands {
         CommandGroup(replacing: .appInfo) {
 
             Button {
-                updater.checkForUpdates()
+                updater.checkForUpdatesForce(showSheet: true)
             } label: {
                 Text("Check for Updates")
             }

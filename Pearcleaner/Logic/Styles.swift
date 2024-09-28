@@ -282,12 +282,37 @@ struct SimpleButtonBrightStyle: ButtonStyle {
 
 
 struct PearDropView: View {
+    var multiplier: CGFloat = 1.0 // Multiplier parameter with a default value
 
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
             HStack(spacing: 0) {
                 LinearGradient(gradient: Gradient(colors: [.green, .orange]), startPoint: .leading, endPoint: .trailing)
-                    .frame(width: 220)
+                    .frame(width: 220 * multiplier) // Adjust the width based on the multiplier
+                LinearGradient(gradient: Gradient(colors: [.orange, .primary.opacity(0.5)]), startPoint: .leading, endPoint: .trailing)
+                    .frame(width: 10 * multiplier) // Adjust the width based on the multiplier
+                LinearGradient(gradient: Gradient(colors: [.primary.opacity(0.5), .primary.opacity(0.5)]), startPoint: .leading, endPoint: .trailing)
+                    .frame(width: 300 * multiplier) // Adjust the width based on the multiplier
+            }
+            .mask(
+                Image("logo_text_small")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 500 * multiplier) // Scale the mask image width
+                    .padding()
+            )
+        }
+        .frame(height: 120 * multiplier) // Adjust the height of the VStack based on the multiplier
+    }
+}
+
+struct PearDropViewSmall: View {
+
+    var body: some View {
+        VStack(alignment: .center, spacing: 0) {
+            HStack(spacing: 0) {
+                LinearGradient(gradient: Gradient(colors: [.green, .orange]), startPoint: .leading, endPoint: .trailing)
+                    .frame(width: 260)
                 LinearGradient(gradient: Gradient(colors: [.orange, .primary.opacity(0.5)]), startPoint: .leading, endPoint: .trailing)
                     .frame(width: 10)
                 LinearGradient(gradient: Gradient(colors: [.primary.opacity(0.5), .primary.opacity(0.5)]), startPoint: .leading, endPoint: .trailing)
@@ -297,13 +322,10 @@ struct PearDropView: View {
                 Image("logo_text_small")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 500)
-                    .padding()
+                    .frame(width: 180)
             )
-
         }
-        .frame(height: 120)
-
+        .frame(height: 50)
     }
 }
 
