@@ -2,7 +2,7 @@
 //  IceGroupBox.swift
 //  Pearcleaner
 //
-//  Created by Jordan Baird (Ice), modified for Pearcleaner usage by Alin Lupascu on 9/27/24.
+//  Created by Jordan Baird (Ice), slightly altered for Pearcleaner usage by Alin Lupascu on 9/27/24.
 //
 import SwiftUI
 
