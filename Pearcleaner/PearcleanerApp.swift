@@ -104,6 +104,9 @@ struct PearcleanerApp: App {
                     appState.currentView = .empty
                 }
 
+                // Track main window within windowSettings class
+                windowSettings.trackMainWindow()
+
                 // Disable tabbing
                 NSWindow.allowsAutomaticWindowTabbing = false
 
@@ -128,16 +131,6 @@ struct PearcleanerApp: App {
 
                 }
 
-
-#if !DEBUG
-                Task {
-
-                    // Make sure App Support folder exists in the future if needed for storage
-                    //                    ensureApplicationSupportFolderExists(appState: appState)
-
-                }
-
-#endif
             }
         }
         .windowStyle(.hiddenTitleBar)
@@ -188,11 +181,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
 
         themeManager.setupAppearance()
-
-//        if menubarEnabled {
-//            findAndHideWindows(named: ["Pearcleaner"])
-//            NSApplication.shared.setActivationPolicy(.accessory)
-//        }
 
         windowFrameObserver = NotificationCenter.default.addObserver(forName: nil, object: nil, queue: nil) { notification in
             if let window = notification.object as? NSWindow, window.title == "Pearcleaner" {

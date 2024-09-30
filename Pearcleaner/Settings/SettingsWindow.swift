@@ -42,6 +42,7 @@ struct SettingsView: View {
 
             Divider()
                 .padding(.bottom, 8)
+                .padding(.horizontal, 9)
 
             SidebarItemView(title: "General", systemImage: "gear", isSelected: selectedTab == .general) {
                 selectedTab = .general

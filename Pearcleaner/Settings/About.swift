@@ -16,23 +16,48 @@ struct AboutSettingsTab: View {
     var body: some View {
 
         let sponsors = Sponsor.sponsors
-        let credits = Credit.credits
+//        let credits = Credit.credits
 
         VStack(alignment: .center) {
-            Image(nsImage: NSApp.applicationIconImage)
-            Text(Bundle.main.name)
-                .font(.title)
-                .bold()
+
             HStack {
-                Text("Version \(Bundle.main.version)")
-                Text("(Build \(Bundle.main.buildVersion))").font(.footnote)
+                Spacer()
+                Button(action: {
+                    NSWorkspace.shared.open(URL(string: "https://github.com/sponsors/alienator88")!)
+                }, label: {
+                    HStack(alignment: .center, spacing: 8) {
+                        Image(systemName: "heart")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 16, height: 16)
+                            .foregroundStyle(.pink)
+
+                        Text("Sponsor")
+                            .font(.body)
+                            .bold()
+                    }
+                    .padding(5)
+                })
             }
 
-            Text("Made with ❤️ by Alin Lupascu").font(.footnote)
+            VStack(spacing: 10) {
+                Image(nsImage: NSApp.applicationIconImage)
+                Text(Bundle.main.name)
+                    .font(.title)
+                    .bold()
+                HStack {
+                    Text("Version \(Bundle.main.version)")
+                    Text("(Build \(Bundle.main.buildVersion))").font(.footnote)
+                }
+
+                Text("Made with ❤️ by Alin Lupascu").font(.footnote)
+            }
+            .padding(.vertical, 50)
+
 
             VStack(spacing: 20) {
                 // GitHub
-                PearGroupBox(header: { Text("GitHub Issues").font(.title2) }, content: {
+                PearGroupBox(header: { Text("Support").font(.title2) }, content: {
                     HStack{
                         Image(systemName: "star")
                             .resizable()
@@ -41,7 +66,7 @@ struct AboutSettingsTab: View {
                             .padding(.trailing)
 
                         VStack(alignment: .leading){
-                            Text("Submit a bug or feature request via the repo")
+                            Text("Submit a bug or feature request")
                                 .font(.callout)
                                 .foregroundStyle(.primary)
 
@@ -50,7 +75,7 @@ struct AboutSettingsTab: View {
                         Button(""){
                             NSWorkspace.shared.open(URL(string: "https://github.com/alienator88/Pearcleaner/issues/new/choose")!)
                         }
-                        .buttonStyle(SimpleButtonStyle(icon: "link", help: "View"))
+                        .buttonStyle(SimpleButtonStyle(icon: "paperplane", help: "View"))
 
                     }
 
@@ -84,50 +109,67 @@ struct AboutSettingsTab: View {
                                 }
                                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                             }
-                            .frame(height: 100)
+                            .frame(height: 45)
                             .padding(5)
                         })
+
+//                        Button(action: {
+//                            NSWorkspace.shared.open(URL(string: "https://github.com/sponsors/alienator88")!)
+//                        }, label: {
+//                            HStack(alignment: .center, spacing: 8) {
+//                                Image(systemName: "heart")
+//                                    .resizable()
+//                                    .scaledToFit()
+//                                    .frame(width: 20, height: 20)
+//                                    .foregroundStyle(.pink)
+//
+//                                Text("Sponsor")
+//                                    .font(.title3)
+//                                    .bold()
+//                            }
+//                            .padding(5)
+//                        })
                     }
                 })
 
                 // Credits
-                PearGroupBox(header: { Text("Credits").font(.title2) }, content: {
-                    HStack{
-                        Image(systemName: "info.circle")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 20, height: 20)
-                            .padding(.trailing)
-
-                        Text("View project resources")
-
-                        DisclosureGroup("", isExpanded: $discloseCredits, content: {
-                            VStack(alignment: .leading) {
-
-                                ForEach(credits) { credit in
-                                    HStack{
-                                        VStack(alignment: .leading){
-                                            Text(credit.name)
-                                            Text(credit.description)
-                                                .font(.callout)
-                                                .foregroundStyle(.primary.opacity(0.5))
-
-                                        }
-                                        Spacer()
-                                        Button(""){
-                                            NSWorkspace.shared.open(credit.url)
-                                        }
-                                        .buttonStyle(SimpleButtonStyle(icon: "link", help: "View"))
-                                        .padding(.trailing)
-
-                                    }
-                                }
-                            }
-                            .padding(5)
-                        })
-                    }
-
-                })
+//                PearGroupBox(header: { Text("Credits").font(.title2) }, content: {
+//                    HStack{
+//                        Image(systemName: "info.circle")
+//                            .resizable()
+//                            .scaledToFit()
+//                            .frame(width: 20, height: 20)
+//                            .padding(.trailing)
+//
+//                        Text("View project resources")
+//
+//                        DisclosureGroup("", isExpanded: $discloseCredits, content: {
+//                            VStack(alignment: .leading) {
+//
+//                                ForEach(credits) { credit in
+//                                    HStack{
+//                                        VStack(alignment: .leading){
+//                                            Text(credit.name)
+//                                            Text(credit.description)
+//                                                .font(.callout)
+//                                                .foregroundStyle(.primary.opacity(0.5))
+//
+//                                        }
+//                                        Spacer()
+//                                        Button(""){
+//                                            NSWorkspace.shared.open(credit.url)
+//                                        }
+//                                        .buttonStyle(SimpleButtonStyle(icon: "link", help: "View"))
+//                                        .padding(.trailing)
+//
+//                                    }
+//                                }
+//                            }
+//                            .padding(5)
+//                        })
+//                    }
+//
+//                })
 
             }
 

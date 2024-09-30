@@ -7,27 +7,27 @@
 
 import SwiftUI
 import AlinFoundation
-import Combine
 
 class WindowSettings: ObservableObject {
     static let shared = WindowSettings()
-    
+    let menubarEnabled = UserDefaults.standard.bool(forKey: "settings.menubar.enabled")
+
     private let windowWidthKey = "windowWidthKey"
     private let windowHeightKey = "windowHeightKey"
     private let windowXKey = "windowXKey"
     private let windowYKey = "windowYKey"
-    var windows: [NSWindow] = []
     var windowRef: NSWindow?
 
     init() {
-        trackMainWindow()
         registerDefaultWindowSettings()
     }
 
     func trackMainWindow() {
         if let mainWindow = NSApplication.shared.windows.first(where: { $0.title == "Pearcleaner" }) {
             windowRef = mainWindow
-            print("Main window detected and tracked: \(mainWindow.title)")
+//            print("Main window detected and tracked")
+        } else {
+            print("No main Pearcleaner window detected")
         }
     }
 
@@ -35,7 +35,7 @@ class WindowSettings: ObservableObject {
     func newWindow<V: View>(mini: Bool, withView view: @escaping () -> V) {
         let frame = self.resetWindowSettings(mini: mini)
 
-        if windowRef == nil {
+        if menubarEnabled {
             windowRef = NSWindow(
                 contentRect: .zero,
                 styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
@@ -51,41 +51,6 @@ class WindowSettings: ObservableObject {
         windowRef?.titleVisibility = .hidden
         windowRef?.makeKeyAndOrderFront(nil)
         windowRef?.isReleasedWhenClosed = false
-//        if let curWindow = windowRef {
-//            print("Window exists, reopening...")
-//            let frame = self.resetWindowSettings(mini: mini)
-//            curWindow.contentView = NSHostingView(rootView: view())
-//            curWindow.setFrame(frame, display: true, animate: true)
-//            curWindow.titlebarAppearsTransparent = true
-//            curWindow.isMovableByWindowBackground = true
-//            curWindow.title = "Pearcleaner"
-//            curWindow.isRestorable = false
-//            curWindow.titleVisibility = .hidden
-//            curWindow.makeKeyAndOrderFront(nil)
-//            curWindow.isReleasedWhenClosed = false
-//            return
-//        }
-//        print("Window doesn't exist, creating...")
-//
-//        // Close existing window
-//        findAndHideWindows(named: ["Pearcleaner"])
-//        // Create new window using defaults
-//        let frame = self.resetWindowSettings(mini: mini)
-//        let newWindow = NSWindow(
-//            contentRect: .zero,
-//            styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
-//            backing: .buffered, defer: false)
-//        newWindow.contentView = NSHostingView(rootView: view())
-//        newWindow.setFrame(frame, display: true, animate: true)
-//        newWindow.titlebarAppearsTransparent = true
-//        newWindow.isMovableByWindowBackground = true
-//        newWindow.title = "Pearcleaner"
-//        newWindow.isRestorable = false
-////        self.windows.append(newWindow)
-//        newWindow.titleVisibility = .hidden
-//        newWindow.makeKeyAndOrderFront(nil)
-//        newWindow.isReleasedWhenClosed = false
-//        windowRef = newWindow
     }
 
     // Register default sizes if the AppStorage keys are invalid
