@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import AlinFoundation
 //import FinderSync
 
 let home = FileManager.default.homeDirectoryForCurrentUser.path
@@ -29,16 +30,27 @@ class AppState: ObservableObject {
     @Published var sentinelMode: Bool = false
     @Published var showConditionBuilder: Bool = false
 
-    var operationQueueLeftover = OperationQueue()
-    @Published var shouldCancelOperations = false
+    func getBundleSize(for appInfo: AppInfo, updateState: @escaping (Int64) -> Void) {
+        // Step 1: Check if the size is available and not 0 in the sortedApps cache
+        if let existingAppInfo = sortedApps.first(where: { $0.path == appInfo.path }),
+           existingAppInfo.bundleSize != 0 {
+            // Size is available in the cache, update the state
+            DispatchQueue.main.async {
+                updateState(existingAppInfo.bundleSize)
+            }
+            return
+        }
 
-    func cancelQueueOperations() {
-        operationQueueLeftover.cancelAllOperations()
-        shouldCancelOperations = true
-        DispatchQueue.main.async {
-            self.leftoverProgress = ("Search canceled", 0.0)
-            self.showProgress = false
-            self.currentView = .empty
+        // Step 2: If we reach here, we need to calculate the size
+        DispatchQueue.global(qos: .userInitiated).async {
+            let calculatedSize = totalSizeOnDisk(for: appInfo.path).logical
+            DispatchQueue.main.async {
+                // Update the state and the array
+                updateState(calculatedSize)
+                if let index = self.sortedApps.firstIndex(where: { $0.path == appInfo.path }) {
+                    self.sortedApps[index].bundleSize = calculatedSize
+                }
+            }
         }
     }
 

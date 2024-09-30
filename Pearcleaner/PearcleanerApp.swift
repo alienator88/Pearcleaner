@@ -18,7 +18,7 @@ struct PearcleanerApp: App {
     @StateObject private var updater = Updater(owner: "alienator88", repo: "Pearcleaner")
     @StateObject private var themeManager = ThemeManager.shared
     @StateObject private var permissionManager = PermissionManager.shared
-    @State private var windowSettings = WindowSettings()
+    @StateObject private var windowSettings = WindowSettings.shared
     @AppStorage("settings.permissions.hasLaunched") private var hasLaunched: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.general.miniview") private var miniView: Bool = true
@@ -48,6 +48,8 @@ struct PearcleanerApp: App {
     }
 
     var body: some Scene {
+
+        
         WindowGroup {
             Group {
                 if mini {
@@ -79,12 +81,6 @@ struct PearcleanerApp: App {
                 }
                 return true
             }
-            // Save window size on window dimension change
-//            .onChange(of: NSApplication.shared.windows.first?.frame) { newFrame in
-//                if let newFrame = newFrame {
-//                    windowSettings.saveWindowSettings(frame: newFrame)
-//                }
-//            }
             .alert(isPresented: $appState.showUninstallAlert) {
                 Alert(
                     title: Text("Warning!"),
@@ -108,7 +104,6 @@ struct PearcleanerApp: App {
                     appState.currentView = .empty
                 }
 
-
                 // Disable tabbing
                 NSWindow.allowsAutomaticWindowTabbing = false
 
@@ -127,6 +122,10 @@ struct PearcleanerApp: App {
                             .environmentObject(permissionManager)
                             .preferredColorScheme(themeManager.displayMode.colorScheme)
                     })
+
+                    findAndHideWindows(named: ["Pearcleaner"])
+                    NSApplication.shared.setActivationPolicy(.accessory)
+
                 }
 
 
@@ -158,6 +157,7 @@ struct PearcleanerApp: App {
                     .environmentObject(themeManager)
                     .environmentObject(updater)
                     .environmentObject(permissionManager)
+                    .environmentObject(windowSettings)
                     .preferredColorScheme(themeManager.displayMode.colorScheme)
                     .toolbarBackground(.clear)
                     .movableByWindowBackground()
@@ -170,7 +170,7 @@ struct PearcleanerApp: App {
 
 
 class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
-    var windowSettings = WindowSettings()
+    let windowSettings = WindowSettings.shared
     var themeManager = ThemeManager.shared
     var windowCloseObserver: NSObjectProtocol?
     var windowFrameObserver: NSObjectProtocol?
@@ -182,16 +182,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         let menubarEnabled = UserDefaults.standard.bool(forKey: "settings.menubar.enabled")
-//        UserDefaults.standard.register(defaults: ["NSQuitAlwaysKeepsWindows" : false])
 
-        findAndSetWindowFrame(named: ["Pearcleaner"], windowSettings: windowSettings)
+        if !menubarEnabled {
+            findAndSetWindowFrame(named: ["Pearcleaner"], windowSettings: windowSettings)
+        }
 
         themeManager.setupAppearance()
 
-        if menubarEnabled {
-            findAndHideWindows(named: ["Pearcleaner"])
-            NSApplication.shared.setActivationPolicy(.accessory)
-        }
+//        if menubarEnabled {
+//            findAndHideWindows(named: ["Pearcleaner"])
+//            NSApplication.shared.setActivationPolicy(.accessory)
+//        }
 
         windowFrameObserver = NotificationCenter.default.addObserver(forName: nil, object: nil, queue: nil) { notification in
             if let window = notification.object as? NSWindow, window.title == "Pearcleaner" {
@@ -203,6 +204,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
         windowCloseObserver = NotificationCenter.default.addObserver(forName: NSWindow.willCloseNotification, object: nil, queue: nil) { notification in
             if let window = notification.object as? NSWindow, window.title == "Pearcleaner" {
+                // Save window settings before removal (existing logic)
                 self.windowSettings.saveWindowSettings(frame: window.frame)
             }
         }
@@ -225,16 +227,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        let windowSettings = WindowSettings()
+        let windowSettings = WindowSettings.shared
 
         if !flag {
             // No visible windows, so let's open a new one
             for window in sender.windows {
                 window.title = "Pearcleaner"
                 window.makeKeyAndOrderFront(self)
-                updateOnMain(after: 0.1, {
-                    resizeWindowAuto(windowSettings: windowSettings, title: "Pearcleaner")
-                })
+                window.setFrame(windowSettings.loadWindowSettings(), display: true, animate: true)
             }
             return true // Indicates you've handled the re-open
         }

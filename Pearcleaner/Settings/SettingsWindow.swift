@@ -13,6 +13,7 @@ struct SettingsView: View {
     @EnvironmentObject var fsm: FolderSettingsManager
     @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var updater: Updater
+    @EnvironmentObject var windowSettings: WindowSettings
     @Binding var showPopover: Bool
     @Binding var search: String
     @AppStorage("settings.general.glass") private var glass: Bool = false
@@ -93,6 +94,7 @@ struct SettingsView: View {
             case .interface:
                 InterfaceSettingsTab(showPopover: $showPopover, search: $search)
                     .environmentObject(themeManager)
+                    .environmentObject(windowSettings)
             case .folders:
                 FolderSettingsTab()
                     .environmentObject(themeManager)

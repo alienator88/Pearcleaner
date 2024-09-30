@@ -28,8 +28,6 @@ struct ZombieView: View {
     @Binding var showPopover: Bool
     @Binding var search: String
     @State private var searchZ: String = ""
-//    @State private var elapsedTime = 0
-//    @State private var timer: Timer? = nil
     @State private var selectedZombieItemsLocal: Set<URL> = []
     @State private var memoizedFiles: [URL] = []
     @State private var lastSearchTermUsed: String? = nil
@@ -53,67 +51,14 @@ struct ZombieView: View {
                             ProgressView().controlSize(.small)
                         }
 
-
-//                        ProgressView()
-//                            .progressViewStyle(.linear)
-//                            .frame(width: 400, height: 10)
-
-
-//                        Text("\(elapsedTime)")
-//                            .font(.title).monospacedDigit()
-//                            .foregroundStyle(.primary.opacity(0.5))
-//                            .opacity(elapsedTime == 0 ? 0 : 1)
-//                            .contentTransition(.numericText())
-
-
                         Spacer()
                     }
                     .transition(.opacity)
-//                    Spacer()
-//
-//                    HStack {
-//                        Text("\(appState.leftoverProgress.0)").font(.title3)
-//                            .foregroundStyle(.primary.opacity(0.5))
-//                        Spacer()
-//                    }
-//
-//                    HStack {
-//                        ProgressView(value: appState.leftoverProgress.1, total: 1.0)
-//                            .progressViewStyle(.linear)
-//                        Button("Cancel") {
-//                            updateOnMain {
-//                                appState.cancelQueueOperations()
-//                            }
-//                        }
-//                        .buttonStyle(SimpleButtonBrightStyle(icon: "x.circle", help: "Cancel search", color: .primary))
-//                    }
-//
-//
-//
-//                    Text("\(Int(appState.leftoverProgress.1 * 100)) %")
-//                        .font(.title).monospacedDigit()
-//                        .foregroundStyle(.primary.opacity(0.5))
-//                        .contentTransition(.numericText())
-//
-//
-//                    Spacer()
 
                 }
                 .padding(50)
                 .transition(.opacity)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-//                .onAppear {
-//                    self.timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-//                        withAnimation {
-//                            self.elapsedTime += 1
-//                        }
-//                    }
-//                }
-//                .onDisappear {
-//                    self.timer?.invalidate()
-//                    self.timer = nil
-//                    self.elapsedTime = 0
-//                }
             } else {
                 // Titlebar
                 HStack(spacing: 0) {

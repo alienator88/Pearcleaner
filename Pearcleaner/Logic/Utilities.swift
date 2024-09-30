@@ -50,8 +50,9 @@ func findAndSetWindowFrame(named titles: [String], windowSettings: WindowSetting
         for title in titles {
             if let window = NSApp.windows.first(where: { $0.title == title }) {
                 window.isRestorable = false
+                window.isReleasedWhenClosed = false
                 let frame = windowSettings.loadWindowSettings()
-                window.setFrame(frame, display: true)
+                window.setFrame(frame, display: true, animate: true)
             }
         }
     }

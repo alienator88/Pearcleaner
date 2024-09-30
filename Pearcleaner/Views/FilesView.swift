@@ -407,7 +407,7 @@ struct FilesView: View {
                     .font(.headline)
                 Divider()
                 Spacer()
-                Text("Always double-check the files/folders marked for removal. In some rare cases, Pearcleaner may find some unrelated files when app names are too similar.")
+                Text("Always confirm the files marked for removal. In rare cases, unrelated files may be found when app names are too similar.\n\nNOTE: Pearcleaner uses AppleScript to remove files. Currently macOS does not allow AppleScript to authenticate using the fingerprint sensor, only password authentication is supported.")
                     .font(.subheadline)
                 Spacer()
                 Button("Close") {
@@ -415,10 +415,10 @@ struct FilesView: View {
                     showAlert = false
                 }
                 .buttonStyle(SimpleButtonStyle(icon: "x.circle.fill", label: "Close", help: "Dismiss"))
-                Spacer()
+//                Spacer()
             }
             .padding(15)
-            .frame(width: 400, height: 220)
+            .frame(width: 400, height: 250)
             .background(GlassEffect(material: .hudWindow, blendingMode: .behindWindow))
         })
         .sheet(isPresented: $appState.showConditionBuilder, content: {

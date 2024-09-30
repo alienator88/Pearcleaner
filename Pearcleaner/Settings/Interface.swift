@@ -18,7 +18,7 @@ struct InterfaceSettingsTab: View {
     @EnvironmentObject var permissionManager: PermissionManager
     @EnvironmentObject var fsm: FolderSettingsManager
     @EnvironmentObject var themeManager: ThemeManager
-    @State private var windowSettings = WindowSettings()
+    @EnvironmentObject var windowSettings: WindowSettings
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.general.glass") private var glass: Bool = false
@@ -287,30 +287,29 @@ struct InterfaceSettingsTab: View {
                             } else {
                                 MenuBarExtraManager.shared.removeMenuBarExtra()
                                 NSApplication.shared.setActivationPolicy(.regular)
-                                if !hasWindowOpen() {
-                                    if mini {
-                                        windowSettings.newWindow(mini: true, withView: {
-                                            MiniMode(search: $search, showPopover: $showPopover)
-                                                .environmentObject(appState)
-                                                .environmentObject(locations)
-                                                .environmentObject(fsm)
-                                                .environmentObject(themeManager)
-                                                .environmentObject(updater)
-                                                .environmentObject(permissionManager)
-                                                .preferredColorScheme(themeManager.displayMode.colorScheme)
-                                        })
-                                    } else {
-                                        windowSettings.newWindow(mini: false, withView: {
-                                            RegularMode(search: $search, showPopover: $showPopover)
-                                                .environmentObject(appState)
-                                                .environmentObject(locations)
-                                                .environmentObject(fsm)
-                                                .environmentObject(themeManager)
-                                                .environmentObject(updater)
-                                                .environmentObject(permissionManager)
-                                                .preferredColorScheme(themeManager.displayMode.colorScheme)
-                                        })
-                                    }
+
+                                if mini {
+                                    windowSettings.newWindow(mini: true, withView: {
+                                        MiniMode(search: $search, showPopover: $showPopover)
+                                            .environmentObject(appState)
+                                            .environmentObject(locations)
+                                            .environmentObject(fsm)
+                                            .environmentObject(themeManager)
+                                            .environmentObject(updater)
+                                            .environmentObject(permissionManager)
+                                            .preferredColorScheme(themeManager.displayMode.colorScheme)
+                                    })
+                                } else {
+                                    windowSettings.newWindow(mini: false, withView: {
+                                        RegularMode(search: $search, showPopover: $showPopover)
+                                            .environmentObject(appState)
+                                            .environmentObject(locations)
+                                            .environmentObject(fsm)
+                                            .environmentObject(themeManager)
+                                            .environmentObject(updater)
+                                            .environmentObject(permissionManager)
+                                            .preferredColorScheme(themeManager.displayMode.colorScheme)
+                                    })
                                 }
 
                             }
