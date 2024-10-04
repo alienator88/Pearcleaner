@@ -283,7 +283,7 @@ struct InterfaceSettingsTab: View {
                                         .preferredColorScheme(themeManager.displayMode.colorScheme)
                                 })
                                 NSApplication.shared.setActivationPolicy(.accessory)
-                                findAndHideWindows(named: ["Pearcleaner"])
+                                findAndHideWindows(named: ["Pearcleaner", ""])
                             } else {
                                 MenuBarExtraManager.shared.removeMenuBarExtra()
                                 NSApplication.shared.setActivationPolicy(.regular)

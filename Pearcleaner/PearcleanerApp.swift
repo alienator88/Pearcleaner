@@ -98,21 +98,6 @@ struct PearcleanerApp: App {
             })
             .onAppear {
 
-                if miniView {
-                    appState.currentView = .apps
-                } else {
-                    appState.currentView = .empty
-                }
-
-                // Track main window within windowSettings class
-                windowSettings.trackMainWindow()
-
-                // Disable tabbing
-                NSWindow.allowsAutomaticWindowTabbing = false
-
-                // Load apps list on startup
-                reloadAppsList(appState: appState, fsm: fsm)
-
                 // Enable menubar item
                 if menubarEnabled {
                     MenuBarExtraManager.shared.addMenuBarExtra(withView: {
@@ -125,11 +110,35 @@ struct PearcleanerApp: App {
                             .environmentObject(permissionManager)
                             .preferredColorScheme(themeManager.displayMode.colorScheme)
                     })
-
-                    findAndHideWindows(named: ["Pearcleaner"])
                     NSApplication.shared.setActivationPolicy(.accessory)
-
+                    windowSettings.trackMainWindow()
+                    findAndHideWindows(named: ["Pearcleaner", ""])
+                    // Catch windows in case something gets opened from SwiftUI lifecycle
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+                        findAndHideWindows(named: ["Pearcleaner", ""])
+                    })
                 }
+
+                // Set mini view
+                if mini && miniView {
+                    appState.currentView = .apps
+                } else {
+                    appState.currentView = .empty
+                }
+
+                // Disable tabbing
+                NSWindow.allowsAutomaticWindowTabbing = false
+
+                // Load apps list on startup
+                reloadAppsList(appState: appState, fsm: fsm)
+
+                if !menubarEnabled {
+                    Task {
+                        // Track main window within windowSettings class
+                        windowSettings.trackMainWindow()
+                    }
+                }
+
 
             }
         }
@@ -196,6 +205,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                 self.windowSettings.saveWindowSettings(frame: window.frame)
             }
         }
+
 
     }
 

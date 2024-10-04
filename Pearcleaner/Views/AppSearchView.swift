@@ -28,23 +28,14 @@ struct AppSearchView: View {
 
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
+
             Spacer()
-                .frame(height: 10)
-                .padding(.top, !isMenuBar ? 25 : 0)
-
-            if updater.updateAvailable {
-                UpdateBadge(updater: updater)
-                    .padding(.horizontal)
-            } else if let _ = permissionManager.results, !permissionManager.allPermissionsGranted {
-                PermissionsBadge()
-                    .padding(.horizontal)
-            } else if updater.announcementAvailable {
-                    FeatureBadge(updater: updater)
-                    .padding(.horizontal)
-            }
+                .frame(height: !isMenuBar ? 30 : 10)
 
 
-            AppsListView(search: $search, showPopover: $showPopover, filteredApps: filteredApps)
+            searchBarComponent
+                .padding(.horizontal, search.isEmpty ? 10 : 5)
+                .padding(.bottom, 5)
 
             Divider()
 
@@ -55,104 +46,124 @@ struct AppSearchView: View {
 
 #endif
 
-            HStack(spacing: 10) {
+            AppsListView(search: $search, showPopover: $showPopover, filteredApps: filteredApps)
+                .padding(.vertical, 4)
 
-                if search.isEmpty {
-                    Button("Refresh") {
-                        withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                            showPopover = false
-                            reloadAppsList(appState: appState, fsm: fsm)
-                        }
-                    }
-                    .buttonStyle(SimpleButtonStyle(icon: "arrow.counterclockwise.circle", help: "Refresh apps (⌘+R)", size: 16))
-                }
-
-                SearchBar(search: $search, darker: (mini || menubarEnabled) ? false : true, glass: glass)
-
-
-                if search.isEmpty {
-                    Button("More") {
-                        self.showMenu.toggle()
-                    }
-                    .buttonStyle(SimpleButtonStyle(icon: "ellipsis.circle", help: "More", size: 16, rotate: true))
-                    .popover(isPresented: $showMenu) {
-                        VStack(alignment: .leading) {
-
-                            Button("") {
-                                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                                    selectedSortAlpha.toggle()
-                                }
-                            }
-                            .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Sorting: \(selectedSortAlpha ? "ABC" : "123")", help: "Can also click on User/System headers to toggle this", size: 5))
-
-                            if mini && !menubarEnabled {
-                                Button("") {
-                                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                                        appState.currentView = .empty
-                                        appState.appInfo = AppInfo.empty
-                                        showPopover = false
-                                    }
-                                }
-                                .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Drop Target", help: "Drop Target", size: 5))
-                            }
-
-
-                            Button("Leftover Files") {
-                                showMenu = false
-                                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                                    showPopover = false
-                                    appState.appInfo = .empty
-                                    if appState.zombieFile.fileSize.keys.isEmpty {
-                                        appState.currentView = .zombie
-                                        appState.showProgress.toggle()
-                                        showPopover.toggle()
-                                        reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, fsm: fsm)
-                                    } else {
-                                        appState.currentView = .zombie
-                                        showPopover.toggle()
-                                    }
-                                }
-                            }
-                            .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Leftover Files", help: "Leftover Files", size: 5))
-
-
-                            if #available(macOS 14.0, *) {
-                                SettingsLink {}
-                                    .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Settings", help: "Settings", size: 5))
-                            } else {
-                                Button("Settings") {
-                                    if #available(macOS 13.0, *) {
-                                        NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
-                                    } else {
-                                        NSApp.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
-                                    }
-                                    showMenu = false
-                                }
-                                .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Settings", help: "Settings", size: 5))
-                            }
-
-                            if menubarEnabled {
-                                Button("Quit") {
-                                    NSApp.terminate(nil)
-                                }
-                                .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Quit Pearcleaner", help: "Quit Pearcleaner", size: 5))
-                            }
-
-                        }
-                        .padding()
-                        .background(backgroundView(themeManager: themeManager, glass: glass).padding(-80))
-
-                    }
-                }
-
-
-
+            if updater.updateAvailable {
+                Divider()
+                UpdateBadge(updater: updater)
+                    .padding(8)
+            } else if let _ = permissionManager.results, !permissionManager.allPermissionsGranted {
+                Divider()
+                PermissionsBadge()
+                    .padding(8)
+            } else if updater.announcementAvailable {
+                Divider()
+                FeatureBadge(updater: updater)
+                    .padding(8)
             }
-            .padding(.horizontal, search.isEmpty ? 10 : 5)
-            .padding(.vertical, 5)
+
         }
 
     }
+
+
+    private var searchBarComponent: some View {
+        HStack(spacing: 10) {
+
+            if search.isEmpty {
+                Button("Refresh") {
+                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                        showPopover = false
+                        reloadAppsList(appState: appState, fsm: fsm)
+                    }
+                }
+                .buttonStyle(SimpleButtonStyle(icon: "arrow.counterclockwise.circle", help: "Refresh apps (⌘+R)", size: 16))
+            }
+
+            SearchBar(search: $search, darker: (mini || menubarEnabled) ? false : true, glass: glass)
+
+
+            if search.isEmpty {
+                Button("More") {
+                    self.showMenu.toggle()
+                }
+                .buttonStyle(SimpleButtonStyle(icon: "ellipsis.circle", help: "More", size: 16, rotate: true))
+                .popover(isPresented: $showMenu) {
+                    VStack(alignment: .leading) {
+
+                        Button("") {
+                            withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                                selectedSortAlpha.toggle()
+                            }
+                        }
+                        .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Sorting: \(selectedSortAlpha ? "ABC" : "123")", help: "Can also click on User/System headers to toggle this", size: 5))
+
+                        if mini && !menubarEnabled {
+                            Button("") {
+                                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                                    appState.currentView = .empty
+                                    appState.appInfo = AppInfo.empty
+                                    showPopover = false
+                                }
+                            }
+                            .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Drop Target", help: "Drop Target", size: 5))
+                        }
+
+
+                        Button("Leftover Files") {
+                            showMenu = false
+                            withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                                showPopover = false
+                                appState.appInfo = .empty
+                                if appState.zombieFile.fileSize.keys.isEmpty {
+                                    appState.currentView = .zombie
+                                    appState.showProgress.toggle()
+                                    showPopover.toggle()
+                                    reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, fsm: fsm)
+                                } else {
+                                    appState.currentView = .zombie
+                                    showPopover.toggle()
+                                }
+                            }
+                        }
+                        .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Leftover Files", help: "Leftover Files", size: 5))
+
+
+                        if #available(macOS 14.0, *) {
+                            SettingsLink {}
+                                .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Settings", help: "Settings", size: 5))
+                        } else {
+                            Button("Settings") {
+                                if #available(macOS 13.0, *) {
+                                    NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+                                } else {
+                                    NSApp.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
+                                }
+                                showMenu = false
+                            }
+                            .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Settings", help: "Settings", size: 5))
+                        }
+
+                        if menubarEnabled {
+                            Button("Quit") {
+                                NSApp.terminate(nil)
+                            }
+                            .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Quit Pearcleaner", help: "Quit Pearcleaner", size: 5))
+                        }
+
+                    }
+                    .padding()
+                    .background(backgroundView(themeManager: themeManager, glass: glass).padding(-80))
+
+                }
+            }
+
+
+
+        }
+    }
+
 
     private var filteredApps: [AppInfo] {
         let apps: [AppInfo]

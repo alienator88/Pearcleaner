@@ -18,7 +18,7 @@ struct AppsListView: View {
 
     var body: some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
+            VStack(alignment: .leading, spacing: 0) {
                 let filteredUserApps = filteredApps.filter { !$0.system }
                 let filteredSystemApps = filteredApps.filter { $0.system }
 
@@ -48,7 +48,7 @@ struct SectionView: View {
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
     var body: some View {
-        LazyVStack(spacing: 0) {
+        VStack(spacing: 0) {
             Header(title: title, count: count, showPopover: $showPopover)
                 .padding(.leading, 5)
                 .onTapGesture {

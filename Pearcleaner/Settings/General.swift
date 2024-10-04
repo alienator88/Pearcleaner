@@ -272,8 +272,11 @@ struct GeneralSettingsTab: View {
 
         }
         .onAppear {
-            appState.updateExtensionStatus()
-            isCLISymlinked = checkCLISymlink()
+            Task {
+                appState.updateExtensionStatus()
+                isCLISymlinked = checkCLISymlink()
+            }
+
         }
 
     }

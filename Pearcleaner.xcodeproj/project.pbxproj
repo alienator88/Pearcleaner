@@ -42,6 +42,7 @@
 		C7DD49EE2BAB7F6000CCBA16 /* ReversePathsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */; };
 		C7DD49F02BABA14400CCBA16 /* Folders.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD49EF2BABA14400CCBA16 /* Folders.swift */; };
 		C7DE672B2BA6343D00EB1633 /* MenuBarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DE672A2BA6343D00EB1633 /* MenuBarItem.swift */; };
+		C7DFBDE72CAF5AD30013C825 /* CustomTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DFBDE62CAF5ACB0013C825 /* CustomTabView.swift */; };
 		C7EA06332C1CBE2000F872FC /* ConditionBuilderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7EA06322C1CBE2000F872FC /* ConditionBuilderView.swift */; };
 		C7ED86B12BA8A35500F13DE4 /* Interface.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7ED86B02BA8A35500F13DE4 /* Interface.swift */; };
 		C7F539382AF60865007DF1B2 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F539372AF60865007DF1B2 /* Utilities.swift */; };
@@ -132,6 +133,7 @@
 		C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReversePathsFetch.swift; sourceTree = "<group>"; };
 		C7DD49EF2BABA14400CCBA16 /* Folders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Folders.swift; sourceTree = "<group>"; };
 		C7DE672A2BA6343D00EB1633 /* MenuBarItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarItem.swift; sourceTree = "<group>"; };
+		C7DFBDE62CAF5ACB0013C825 /* CustomTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabView.swift; sourceTree = "<group>"; };
 		C7EA06322C1CBE2000F872FC /* ConditionBuilderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionBuilderView.swift; sourceTree = "<group>"; };
 		C7ED86B02BA8A35500F13DE4 /* Interface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interface.swift; sourceTree = "<group>"; };
 		C7F539372AF60865007DF1B2 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
@@ -266,6 +268,7 @@
 		C77B901F2AF1B390009CC655 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				C7DFBDE62CAF5ACB0013C825 /* CustomTabView.swift */,
 				C77B90222AF2D616009CC655 /* FilesView.swift */,
 				C71848432B8D2D600046CB13 /* ZombieView.swift */,
 				C76D08542AF89CDE00D07867 /* RegularMode.swift */,
@@ -435,6 +438,7 @@
 				C764680F2CA7790200DC72DF /* PearGroupBox.swift in Sources */,
 				C79947962C34A794007279CC /* Tips.swift in Sources */,
 				C76D08482AF83C3F00D07867 /* Update.swift in Sources */,
+				C7DFBDE72CAF5AD30013C825 /* CustomTabView.swift in Sources */,
 				C7FB173B2B96321300B96F9A /* AppsListView.swift in Sources */,
 				C77B90162AF19377009CC655 /* AppState.swift in Sources */,
 				C7DD49EE2BAB7F6000CCBA16 /* ReversePathsFetch.swift in Sources */,
@@ -791,6 +795,7 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = BK8443AXLU;
 				ENABLE_HARDENED_RUNTIME = YES;
+				GCC_OPTIMIZATION_LEVEL = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FinderOpen/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = FinderOpen;

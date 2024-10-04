@@ -303,23 +303,26 @@ func manageSymlink(install: Bool) {
         """
     }
 
-    // Execute the AppleScript
-    var error: NSDictionary?
-    if let scriptObject = NSAppleScript(source: script) {
-        scriptObject.executeAndReturnError(&error)
+    updateOnMain {
+        // Execute the AppleScript
+        var error: NSDictionary?
+        if let scriptObject = NSAppleScript(source: script) {
+            scriptObject.executeAndReturnError(&error)
 
-        if let error = error {
-            printOS("AppleScript Error: \(error)")
-        } else {
-            if install {
-                printOS("Symlink created successfully at \(symlinkPath).")
+            if let error = error {
+                printOS("AppleScript Error: \(error)")
             } else {
-                printOS("Symlink removed successfully from \(symlinkPath).")
+                if install {
+                    printOS("Symlink created successfully at \(symlinkPath).")
+                } else {
+                    printOS("Symlink removed successfully from \(symlinkPath).")
+                }
             }
+        } else {
+            printOS("Error: Unable to create the AppleScript object.")
         }
-    } else {
-        printOS("Error: Unable to create the AppleScript object.")
     }
+
 }
 
 
@@ -361,14 +364,17 @@ func caskCleanup(app: String) {
             end tell
             """
 
-            var error: NSDictionary?
-            if let appleScript = NSAppleScript(source: script) {
-                appleScript.executeAndReturnError(&error)
+            updateOnMain {
+                var error: NSDictionary?
+                if let appleScript = NSAppleScript(source: script) {
+                    appleScript.executeAndReturnError(&error)
+                }
+
+                if let error = error {
+                    printOS("AppleScript Error: \(error)")
+                }
             }
 
-            if let error = error {
-                printOS("AppleScript Error: \(error)")
-            }
         } else {
             printOS("Brew cleanup: No cask found for \(app).")
         }
@@ -453,15 +459,17 @@ func caskCleanup2(app: String) {
             fi'" in front window
         end tell
         """
+        updateOnMain {
+            var error: NSDictionary?
+            if let appleScript = NSAppleScript(source: script) {
+                appleScript.executeAndReturnError(&error)
+            }
 
-        var error: NSDictionary?
-        if let appleScript = NSAppleScript(source: script) {
-            appleScript.executeAndReturnError(&error)
+            if let error = error {
+                print("AppleScript Error: \(error)")
+            }
         }
 
-        if let error = error {
-            print("AppleScript Error: \(error)")
-        }
     }
 }
 
@@ -793,6 +801,15 @@ func isNested(path: URL) -> Bool {
 
     // Check if the parent directory is not directly /Applications or ~/Applications
     return parentDirectory != applicationsPath && parentDirectory != homeApplicationsPath
+}
+
+
+// Date formatter for metadata
+func formattedMDDate(from date: Date) -> String {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yyyy-MM-dd HH:mm zzz"
+    formatter.timeZone = .current // Use the current timezone
+    return formatter.string(from: date)
 }
 
 

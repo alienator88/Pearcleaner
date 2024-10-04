@@ -37,9 +37,40 @@ func getSortedApps(paths: [String]) -> [AppInfo] {
     // Collect system applications
     paths.forEach { collectAppPaths(at: $0) }
 
+//    let startTime = Date()
+
+    // Convert collected paths to string format for metadata query
+    let combinedPaths = apps.map { $0.path }
+
+    // Get metadata for all collected app paths
+    var metadataDictionary: [String: [String: Any]] = [:]
+    if let metadata = getMDLSMetadataAsPlist(for: combinedPaths) {
+        metadataDictionary = metadata
+    }
+
+    // Process each app path and construct AppInfo using metadata first, then fallback if necessary
+    let appInfos: [AppInfo] = apps.compactMap { appURL in
+        let appPath = appURL.path
+
+        if let appMetadata = metadataDictionary[appPath] {
+            // Use `MetadataAppInfoFetcher` first
+            return MetadataAppInfoFetcher.getAppInfo(fromMetadata: appMetadata, atPath: appURL)
+        } else {
+            // Fallback to `AppInfoFetcher` if no metadata found
+            return AppInfoFetcher.getAppInfo(atPath: appURL)
+        }
+    }
+
+    // Sort apps by display name
+    let sortedApps = appInfos.sorted { $0.appName.lowercased() < $1.appName.lowercased() }
+
     // Get app info and sort
-    let sortedApps = apps
-        .compactMap { AppInfoFetcher.getAppInfo(atPath: $0) }
+//    let sortedApps = apps
+//        .compactMap { AppInfoFetcher.getAppInfo(atPath: $0) }
+
+
+//    let elapsedTime = Date().timeIntervalSince(startTime)
+//    print("Time taken for mdls metadata extraction: \(elapsedTime) seconds")
 
     return sortedApps
 }
@@ -169,7 +200,7 @@ func moveFilesToTrash(appState: AppState, at fileURLs: [URL], completion: @escap
     // Stop Sentinel FileWatcher momentarily to ignore .app bundle being sent to Trash
     sendStopNotificationFW()
 
-    updateOnBackground {
+    updateOnMain {
         let posixFiles = fileURLs.map { item in
             return "POSIX file \"\(item.path)\"" + (item == fileURLs.last ? "" : ", ")}.joined()
         let scriptSource = """
@@ -182,19 +213,15 @@ func moveFilesToTrash(appState: AppState, at fileURLs: [URL], completion: @escap
 
             // Handle any AppleScript errors
             if let error = error {
-                DispatchQueue.main.async {
-                    printOS("Trash Error: \(error)")
-                    completion(false)  // Indicate failure
-                }
+                printOS("Trash Error: \(error)")
+                completion(false)  // Indicate failure
                 return
             }
 
             // Check if output is null, indicating the user canceled the operation
             if output.descriptorType == typeNull {
-                DispatchQueue.main.async {
-                    printOS("Trash Error: operation canceled by the user")
-                    completion(false)  // Indicate failure due to cancellation
-                }
+                printOS("Trash Error: operation canceled by the user")
+                completion(false)  // Indicate failure due to cancellation
                 return
             }
 
@@ -203,9 +230,7 @@ func moveFilesToTrash(appState: AppState, at fileURLs: [URL], completion: @escap
                 printOS("Trash: \(outputString)")
             }
         }
-        DispatchQueue.main.async {
-            completion(true)  // Indicate success
-        }
+        completion(true)  // Indicate success
     }
 
 }
@@ -265,7 +290,7 @@ func undoTrash(appState: AppState, completion: @escaping () -> Void = {}) {
     """
     var error: NSDictionary?
     
-    updateOnBackground {
+    updateOnMain {
         if let scriptObject = NSAppleScript(source: scriptSource) {
             let output: NSAppleEventDescriptor = scriptObject.executeAndReturnError(&error)
             if let error = error {
@@ -274,9 +299,7 @@ func undoTrash(appState: AppState, completion: @escaping () -> Void = {}) {
                 printOS(outputString)
             }
         }
-        DispatchQueue.main.async {
-            completion()
-        }
+        completion()
     }
 }
 

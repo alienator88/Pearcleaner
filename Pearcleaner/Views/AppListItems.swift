@@ -82,31 +82,29 @@ struct AppListItems: View {
                 }
 
 
-                Spacer()
-
                 if appInfo.webApp {
-                    Text("web")
-                        .font(.footnote)
+                    Image(systemName: "safari")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 16, height: 16)
                         .foregroundStyle(.primary.opacity(0.3))
-                        .frame(minWidth: 30, minHeight: 15)
-                        .padding(2)
-                        .background(
-                            Capsule().strokeBorder(.primary.opacity(0.3), lineWidth: 1)
-                        )
+                        .symbolRenderingMode(.monochrome)
+                        .help("Web app")
                 }
                 if appInfo.wrapped {
-                    Text("iOS")
-                        .font(.footnote)
+                    Image(systemName: "iphone")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 16, height: 16)
                         .foregroundStyle(.primary.opacity(0.3))
-                        .frame(minWidth: 30, minHeight: 15)
-                        .padding(2)
-                        .background(
-                            Capsule().strokeBorder(.primary.opacity(0.3), lineWidth: 1)
-                        )
+                        .symbolRenderingMode(.monochrome)
+                        .help("iOS app")
                 }
 
+                Spacer()
+
                 if minimalEnabled {
-                    Text(bundleSize == 0 ? "v\(appInfo.appVersion)" : (isHovered ? "v\(appInfo.appVersion)" : formatByte(size: bundleSize).human))
+                    Text(appInfo.bundleSize == 0 ? "v\(appInfo.appVersion)" : (isHovered ? "v\(appInfo.appVersion)" : formatByte(size: appInfo.bundleSize).human))
                         .font(.system(size: (isHovered || isSelected) ? 12 : 10))
                         .foregroundStyle(.primary.opacity(0.5))
                 }
@@ -119,7 +117,7 @@ struct AppListItems: View {
         .frame(height: 35)
         .padding(.horizontal)
         .padding(.vertical, 5)
-        .help(appInfo.appName)
+//        .help(appInfo.appName)
         .onHover { hovering in
             withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                 self.isHovered = hovering
@@ -155,9 +153,10 @@ struct AppListItems: View {
             }
         }
         .onAppear {
-            if self.bundleSize == 0 {
+            if appInfo.bundleSize == 0 {
                 appState.getBundleSize(for: appInfo) { size in
-                    self.bundleSize = size
+//                    print("Getting size for: \(appInfo.appName)")
+//                    appInfo.bundleSize = size
                 }
             }
         }

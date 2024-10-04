@@ -19,6 +19,7 @@ class AppState: ObservableObject {
     @Published var sortedApps: [AppInfo] = []
     @Published var selectedItems = Set<URL>()
     @Published var currentView = CurrentDetailsView.empty
+    @Published var currentPage = CurrentPage.installed
     @Published var showAlert: Bool = false
     @Published var sidebar: Bool = true
     @Published var reload: Bool = false
@@ -67,10 +68,13 @@ class AppState: ObservableObject {
             system: false,
             arch: .empty,
             bundleSize: 0,
-            files: [],
+//            files: [],
             fileSize: [:],
             fileSizeLogical: [:],
-            fileIcon: [:]
+            fileIcon: [:],
+            creationDate: nil,
+            contentChangeDate: nil,
+            lastUsedDate: nil
         )
 
         self.zombieFile = ZombieFile(
@@ -137,12 +141,15 @@ struct AppInfo: Identifiable, Equatable, Hashable {
     let wrapped: Bool
     let system: Bool
     var arch: Arch
-    var bundleSize: Int64
-    var files: [URL]
+    var bundleSize: Int64 // Only used in the app list view
+//    var files: [URL]
     var fileSize: [URL:Int64]
     var fileSizeLogical: [URL:Int64]
     var fileIcon: [URL:NSImage?]
-    var totalSize: Int64 
+    let creationDate: Date?
+    let contentChangeDate: Date?
+    let lastUsedDate: Date?
+    var totalSize: Int64
     {
         return fileSize.values.reduce(0, +)
     }
@@ -150,9 +157,10 @@ struct AppInfo: Identifiable, Equatable, Hashable {
     {
         return fileSizeLogical.values.reduce(0, +)
     }
+    
 
 
-    static let empty = AppInfo(id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "", appVersion: "", appIcon: nil, webApp: false, wrapped: false, system: false, arch: .empty, bundleSize: 0, files: [], fileSize: [:], fileSizeLogical: [:], fileIcon: [:])
+    static let empty = AppInfo(id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "", appVersion: "", appIcon: nil, webApp: false, wrapped: false, system: false, arch: .empty, bundleSize: 0, fileSize: [:], fileSizeLogical: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil)
 
 }
 
@@ -183,6 +191,19 @@ enum Arch {
     case intel
     case universal
     case empty
+}
+
+enum CurrentPage:Int
+{
+    case installed
+    case uninstalled
+
+    var title: String {
+        switch self {
+        case .installed: return "Installed"
+        case .uninstalled: return "Uninstalled"
+        }
+    }
 }
 
 

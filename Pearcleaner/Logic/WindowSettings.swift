@@ -35,12 +35,12 @@ class WindowSettings: ObservableObject {
     func newWindow<V: View>(mini: Bool, withView view: @escaping () -> V) {
         let frame = self.resetWindowSettings(mini: mini)
 
-        if menubarEnabled {
-            windowRef = NSWindow(
-                contentRect: .zero,
-                styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
-                backing: .buffered, defer: false)
-        }
+//        if menubarEnabled {
+//            windowRef = NSWindow(
+//                contentRect: .zero,
+//                styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
+//                backing: .buffered, defer: false)
+//        }
         // Update the existing windowRef with all desired settings
         windowRef?.contentView = NSHostingView(rootView: view())
         windowRef?.setFrame(frame, display: true, animate: true)

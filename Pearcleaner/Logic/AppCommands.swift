@@ -36,15 +36,6 @@ struct AppCommands: Commands {
                 Text("Check for Updates")
             }
             .keyboardShortcut("u", modifiers: .command)
-            
-            Button {
-                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                    reloadAppsList(appState: appState, fsm: fsm)
-                }
-            } label: {
-                Text("Refresh Apps")
-            }
-            .keyboardShortcut("r", modifiers: .command)
 
             Button {
                 appState.triggerUninstallAlert()
@@ -92,6 +83,15 @@ struct AppCommands: Commands {
 
         // Tools Menu
         CommandMenu(Text("Tools", comment: "Tools Menu")) {
+
+            Button {
+                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                    reloadAppsList(appState: appState, fsm: fsm)
+                }
+            } label: {
+                Text("Refresh Apps")
+            }
+            .keyboardShortcut("r", modifiers: .command)
 
             Button
             {
