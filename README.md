@@ -3,9 +3,8 @@
    <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/165f6961-f4fc-4199-bc68-580bacff6eaf" align="center" width="128" height="128" />
    <br />
    <strong>Status: </strong>Maintained
-   <br /><br />Updates may be a bit slower at the moment due to work
-   <br /><br />
-   <strong>Version: </strong>3.8.7
+   <br />
+   <strong>Version: </strong>3.9.0
    <br />
    <a href="https://github.com/alienator88/Pearcleaner/releases"><strong>Download</strong></a>
     · 
@@ -41,7 +40,6 @@ This project was born out of wanting to learn more on how macOS deals with app i
 - Sentinel monitor helper that can be enabled to watch Trash folder for deleted apps to cleanup after the fact(Extremely small (210KB) and uses ~2mb of ram to run in the background and file watch)
 - Mini mode which can be enabled from Settings
 - Menubar icon option
-- One-Shot Mode
 - CLI support
 - Can drop apps to uninstall directly on the Pearcleaner Dock icon or the app window
 - Optional Finder Extension which allows you to uninstall an app directly from Finder by `right click > Pearcleaner Uninstall`
@@ -122,14 +120,16 @@ This project was born out of wanting to learn more on how macOS deals with app i
 ## Issues
 > [!WARNING]
 > - When submitting issues, please use the appropriate issue template corresponding with your problem [HERE](https://github.com/alienator88/Pearcleaner/issues/new/choose)
-> - For issues with unrelated files being found or not enough files being found, try the new Condition Builder (Hammer icon next to uninstall button) before submitting an APP bug
-> - Templates not filled out with the requested details will be closed. Unfortunately I don't have the time to act as help desk support asking for all the missing information. Help me help you 🙂
+> - Issue templates not filled out with the requested details will be closed.
+> - Beta versions of macOS will not be supported until general release
 
 
 ## Requirements
 > [!NOTE]
-> - MacOS 13.0+ (Most functions might work on a Beta OS, but I will not support bugs for these until they are out of Beta channel.)
-> - Full Disk permission to search for files and also Accessibility permission to delete/restore files
+> - MacOS 13.0+ [Non-beta releases]
+> - Full Disk permission to search for files
+> - Accessibility permission to delete/restore files
+> - Automation permission to control Finder
 
 
 
