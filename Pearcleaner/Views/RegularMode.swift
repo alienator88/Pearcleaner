@@ -29,88 +29,101 @@ struct RegularMode: View {
     var body: some View {
 
         // Main App Window
-        VStack(spacing: 0) {
+        ZStack() {
 
-            // Tab View
-            CustomTabView(content: [
-                (
-                    title: "Installed",
-                    icon: "externaldrive",
-                    view: AnyView (
-                        HStack(alignment: .center, spacing: 0) {
+            if appState.currentPage == .applications {
+                HStack(alignment: .center, spacing: 0) {
 
-                            // App List
-                            HStack(spacing: 0){
+                    // App List
+                    HStack(spacing: 0){
 
-                                if appState.reload {
-                                    VStack {
-                                        Spacer()
-                                        ProgressView() {
-                                            Text("Gathering app details")
-                                                .font(.callout)
-                                                .foregroundStyle(.primary.opacity(0.5))
-                                                .padding(5)
-                                        }
-                                        Spacer()
-                                    }
-                                    .frame(width: sidebarWidth)
-                                    .padding(.vertical)
-                                } else {
-                                    AppSearchView(glass: glass, menubarEnabled: menubarEnabled, mini: mini, search: $search, showPopover: $showPopover, isMenuBar: $isMenuBar)
-                                        .frame(width: sidebarWidth)
-
-                                }
-
-                            }
-                            .background(backgroundView(themeManager: themeManager, darker: true, glass: glass))
-                            .transition(.opacity)
-
-                            SlideableDivider(dimension: $sidebarWidth)
-                                .background(backgroundView(themeManager: themeManager))
-                                .zIndex(3)
-
-
-                            // Details View
-                            HStack(spacing: 0) {
+                        if appState.reload {
+                            VStack {
                                 Spacer()
-                                Group {
-                                    if appState.currentView == .empty || appState.currentView == .apps {
-                                        AppDetailsEmptyView(showPopover: $showPopover)
-                                    } else if appState.currentView == .files {
-                                        FilesView(showPopover: $showPopover, search: $search)
-                                            .id(appState.appInfo.id)
-                                    } else if appState.currentView == .zombie {
-                                        ZombieView(showPopover: $showPopover, search: $search)
-                                            .id(appState.appInfo.id)
-                                    }
+                                ProgressView() {
+                                    Text("Gathering app details")
+                                        .font(.callout)
+                                        .foregroundStyle(.primary.opacity(0.5))
+                                        .padding(5)
                                 }
-                                .transition(.opacity)
                                 Spacer()
                             }
-                            .zIndex(2)
-                            .background(backgroundView(themeManager: themeManager))
+                            .frame(width: sidebarWidth)
+                            .padding(.vertical)
+                        } else {
+                            AppSearchView(glass: glass, menubarEnabled: menubarEnabled, mini: mini, search: $search, showPopover: $showPopover, isMenuBar: $isMenuBar)
+                                .frame(width: sidebarWidth)
+
                         }
-                    )
-                ),
-                (
-                    title: "Uninstalled",
-                    icon: "externaldrive.badge.minus",
-                    view: AnyView(
-                        ZombieView(showPopover: $showPopover, search: $search)
-                            .background(backgroundView(themeManager: themeManager))
-                            .onAppear {
-                                if appState.zombieFile.fileSize.keys.isEmpty {
-                                    appState.showProgress.toggle()
-                                }
-                                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                                    if appState.zombieFile.fileSize.keys.isEmpty {
-                                        reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, fsm: fsm)
-                                    }
-                                }
+
+                    }
+                    .background(backgroundView(themeManager: themeManager, darker: true, glass: glass))
+                    .transition(.opacity)
+
+                    SlideableDivider(dimension: $sidebarWidth)
+                        .background(backgroundView(themeManager: themeManager))
+                        .zIndex(3)
+
+
+                    // Details View
+                    HStack(spacing: 0) {
+                        Spacer()
+                        Group {
+                            if appState.currentView == .empty || appState.currentView == .apps {
+                                AppDetailsEmptyView(showPopover: $showPopover)
+                            } else if appState.currentView == .files {
+                                FilesView(showPopover: $showPopover, search: $search)
+                                    .id(appState.appInfo.id)
+                            } else if appState.currentView == .zombie {
+                                ZombieView(showPopover: $showPopover, search: $search)
+                                    .id(appState.appInfo.id)
                             }
-                    )
-                ),
-            ])
+                        }
+                        .transition(.opacity)
+                        Spacer()
+                    }
+                    .zIndex(2)
+                    .background(backgroundView(themeManager: themeManager))
+                }
+
+            } else if appState.currentPage == .orphans {
+                ZombieView(showPopover: $showPopover, search: $search)
+                    .background(backgroundView(themeManager: themeManager))
+                    .onAppear {
+                        if appState.zombieFile.fileSize.keys.isEmpty {
+                            appState.showProgress.toggle()
+                        }
+                        withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                            if appState.zombieFile.fileSize.keys.isEmpty {
+                                reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, fsm: fsm)
+                            }
+                        }
+                    }
+            }
+
+            VStack(spacing: 0) {
+                HStack {
+                    Spacer()
+                    Picker("", selection: $appState.currentPage) {
+                        ForEach(CurrentPage.allCases) { page in
+                            Text(page.title)
+                                .font(.title3)
+                                .tag(page)
+                        }
+                    }
+                    .buttonStyle(.borderless)
+                    .padding(2)
+                    .padding(.vertical, 2)
+                    .background {
+                        RoundedRectangle(cornerRadius: 8)
+                            .strokeBorder(.secondary.opacity(0.5), lineWidth: 1)
+                    }
+                }
+                .padding(6)
+
+
+                Spacer()
+            }
 
         }
         .frame(minWidth: 900, minHeight: 600)

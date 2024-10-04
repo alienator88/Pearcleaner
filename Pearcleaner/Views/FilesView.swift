@@ -26,8 +26,6 @@ struct FilesView: View {
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
     @Binding var search: String
-//    @State private var elapsedTime = 0
-//    @State private var timer: Timer? = nil
 
     var body: some View {
 
@@ -59,52 +57,32 @@ struct FilesView: View {
                         ProgressView().controlSize(.small)
                     }
 
-//                    Text("Searching the file system").font(.title3)
-//                        .foregroundStyle((.primary.opacity(0.5)))
-//
-//                    ProgressView()
-//                        .progressViewStyle(.linear)
-//                        .frame(width: 400, height: 10)
-//
-//                    Text("\(elapsedTime)")
-//                        .font(.title).monospacedDigit()
-//                        .foregroundStyle((.primary.opacity(0.5)))
-//                        .opacity(elapsedTime == 0 ? 0 : 1)
-//                        .contentTransition(.numericText())
-
                     Spacer()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .transition(.opacity)
-//                .onAppear {
-//                    self.timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-//                        withAnimation {
-//                            self.elapsedTime += 1
-//                        }
-//                    }
-//                }
-//                .onDisappear {
-//                    self.timer?.invalidate()
-//                    self.timer = nil
-//                    self.elapsedTime = 0
-//                }
             } else {
+
                 // Titlebar
                 HStack(spacing: 0) {
 
                     Spacer()
 
-                    Button("Close") {
-                        updateOnMain {
-                            appState.appInfo = AppInfo.empty
-                            search = ""
-                            appState.currentView = .apps
-                            showPopover = false
+                    if mini || menubarEnabled {
+                        Button("Close") {
+                            updateOnMain {
+                                appState.appInfo = AppInfo.empty
+                                search = ""
+                                appState.currentView = .apps
+                                showPopover = false
+                            }
                         }
+                        .buttonStyle(SimpleButtonStyle(icon: "x.circle", iconFlip: "x.circle.fill", help: "Close"))
                     }
-                    .buttonStyle(SimpleButtonStyle(icon: "x.circle", iconFlip: "x.circle.fill", help: "Close"))
+
+
                 }
-                .padding(.top, 6)
+                .padding(.top, (mini || menubarEnabled) ? 6 : 30)
                 .padding(.trailing, (mini || menubarEnabled) ? 6 : 0)
 
                 VStack(spacing: 0) {

@@ -144,7 +144,7 @@ func reversePreloader(allApps: [AppInfo], appState: AppState, locations: Locatio
     @AppStorage("settings.interface.animationEnabled") var animationEnabled: Bool = true
 
     updateOnMain {
-        appState.leftoverProgress.0 = "Finding leftover files, please wait..."
+        appState.leftoverProgress.0 = "Finding orphaned files, please wait..."
     }
     ReversePathsSearcher(appState: appState, locations: locations, fsm: fsm, sortedApps: allApps).reversePathsSearch {
         updateOnMain {

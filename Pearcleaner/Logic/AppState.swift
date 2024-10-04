@@ -19,7 +19,7 @@ class AppState: ObservableObject {
     @Published var sortedApps: [AppInfo] = []
     @Published var selectedItems = Set<URL>()
     @Published var currentView = CurrentDetailsView.empty
-    @Published var currentPage = CurrentPage.installed
+    @Published var currentPage = CurrentPage.applications
     @Published var showAlert: Bool = false
     @Published var sidebar: Bool = true
     @Published var reload: Bool = false
@@ -193,15 +193,17 @@ enum Arch {
     case empty
 }
 
-enum CurrentPage:Int
+enum CurrentPage:Int, CaseIterable, Identifiable
 {
-    case installed
-    case uninstalled
+    case applications
+    case orphans
+
+    var id: Int { rawValue }
 
     var title: String {
         switch self {
-        case .installed: return "Installed"
-        case .uninstalled: return "Uninstalled"
+        case .applications: return "Applications"
+        case .orphans: return "Orphaned Files"
         }
     }
 }

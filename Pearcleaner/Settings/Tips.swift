@@ -29,7 +29,7 @@ struct TipsSettingsTab: View {
                         Text("6. On the Files view again, you can hit CMD + E to export a list of the found files or from the Tools menubar item")
                         Text("7. CMD + U will check for updates manually")
                         Text("8. CMD + R will refresh the app list. This can also be done from the refresh button in the search bar")
-                        Text("9. In the search bar menu button, you will also find Leftover Files which will find files leftover by previously uninstalled applications")
+                        Text("9. In the search bar menu button, you will also find Orphaned Files which will find files leftover by previously uninstalled applications")
                         Text("10. You can enable a menubar icon from Settings")
                         Text("11. You can enable mini mode version of the UI from Settings")
                         Text("12. You can enable a Finder extension from Settings which allows you to uninstall apps by right clicking them in Finder")

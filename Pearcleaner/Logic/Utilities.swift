@@ -91,14 +91,14 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
 
     }
 
-    // Private function to list leftover files for uninstall, using the provided path
+    // Private function to list orphaned files for uninstall, using the provided path
     func listLeftoverFiles() {
-        print("[BETA] Pearcleaner CLI | List Leftover Files:\n")
+        print("[BETA] Pearcleaner CLI | List Orphaned Files:\n")
 
         // Get installed apps for filtering
         let sortedApps = getSortedApps(paths: fsm.folderPaths)
 
-        // Find leftover files
+        // Find orphaned files
         let foundPaths = ReversePathsSearcher(locations: locations, fsm: fsm, sortedApps: sortedApps)
             .reversePathsSearchCLI()
 
@@ -106,7 +106,7 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
         for path in foundPaths {
             print(path.path)
         }
-        print("\nFound \(foundPaths.count) leftover files.\n")
+        print("\nFound \(foundPaths.count) orphaned files.\n")
     }
 
     // Private function to uninstall the application bundle at a given path
@@ -163,23 +163,23 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
         }
     }
 
-    // Private function to remove the leftover files
+    // Private function to remove the orphaned files
     func removeLeftoverFiles() {
-        print("[BETA] Pearcleaner CLI | Remove Leftover Files:\n")
+        print("[BETA] Pearcleaner CLI | Remove Orphaned Files:\n")
 
         // Get installed apps for filtering
         let sortedApps = getSortedApps(paths: fsm.folderPaths)
 
-        // Find leftover files
+        // Find orphaned files
         let foundPaths = ReversePathsSearcher(locations: locations, fsm: fsm, sortedApps: sortedApps)
             .reversePathsSearchCLI()
 
         let success =  moveFilesToTrashCLI(at: foundPaths)
         if success {
-            print("Leftover files have been moved to the trash successfully.\n")
+            print("Orphaned files have been moved to the trash successfully.\n")
             exit(0)
         } else {
-            print("Failed to move leftover files to trash.\n")
+            print("Failed to move orphaned files to trash.\n")
             exit(1)
         }
     }
@@ -197,8 +197,8 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
         exit(0)
     }
 
-    // Handle --listlf or -lf option with a path argument for listing leftover files
-    if options.contains("--list-leftover") || options.contains("-lf") {
+    // Handle --listlf or -lf option with a path argument for listing orphaned files
+    if options.contains("--list-orphaned") || options.contains("-lo") {
         listLeftoverFiles()
         exit(0)
     }
@@ -217,8 +217,8 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
         exit(0)
     }
 
-    // Handle --uninstall-lf or -ulf option with a path argument for listing leftover files
-    if options.contains("--remove-leftover") || options.contains("-rl") {
+    // Handle --uninstall-lf or -ulf option with a path argument for listing orphaned files
+    if options.contains("--remove-orphaned") || options.contains("-ro") {
         removeLeftoverFiles()
         exit(0)
     }
@@ -235,10 +235,10 @@ func displayHelp() {
             [BETA] Pearcleaner CLI | Usage:
             
             --list <path>, -l <path>             List application files available for uninstall at the specified path
-            --list-leftover, -lf                 List leftover files available for removal
+            --list-orphaned, -lo                 List orphaned files available for removal
             --uninstall <path>, -u <path>        Uninstall only the application bundle at the specified path
             --uninstall-all <path>, -ua <path>   Uninstall application bundle and ALL related files at the specified path
-            --remove-leftover, -rl               Remove ALL leftover files (To ignore files, add them to the exception list within Pearcleaner settings)
+            --remove-orphaned, -ro               Remove ALL orphaned files (To ignore files, add them to the exception list within Pearcleaner settings)
             --help, -h                           Show this help message
             
             """)

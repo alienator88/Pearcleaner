@@ -110,7 +110,7 @@ struct FolderSettingsTab: View {
             PearGroupBox(header: {
                 HStack(spacing: 0) {
                     Text("Exclude these files and folders from leftover search").font(.title2)
-                    InfoButton(text: "Add files or folders that will be ignored when searching for leftover files. Click a path to remove it from the list.")
+                    InfoButton(text: "Add files or folders that will be ignored when searching for orphaned files. Click a path to remove it from the list.")
                         .padding(.leading, 5)
                     Spacer()
                 }
@@ -287,7 +287,7 @@ class FolderSettingsManager: ObservableObject {
 
 
 
-    // Leftover files //////////////////////////////////////////////////////////////////////////////////
+    // Orphaned files //////////////////////////////////////////////////////////////////////////////////
     func addPathZ(_ path: String) {
         let sanitizedPath = path.hasPrefix("/private") ? String(path.dropFirst(8)) : path
 

@@ -64,17 +64,19 @@ struct ZombieView: View {
                 HStack(spacing: 0) {
                     Spacer()
 
-                    Button("Close") {
-                        updateOnMain {
-                            appState.appInfo = AppInfo.empty
-                            search = ""
-                            appState.currentView = .apps
-                            showPopover = false
+                    if mini || menubarEnabled {
+                        Button("Close") {
+                            updateOnMain {
+                                appState.appInfo = AppInfo.empty
+                                search = ""
+                                appState.currentView = .apps
+                                showPopover = false
+                            }
                         }
+                        .buttonStyle(SimpleButtonStyle(icon: "x.circle", iconFlip: "x.circle.fill", help: "Close"))
                     }
-                    .buttonStyle(SimpleButtonStyle(icon: "x.circle", iconFlip: "x.circle.fill", help: "Close"))
                 }
-                .padding(.top, 6)
+                .padding(.top, (mini || menubarEnabled) ? 6 : 30)
                 .padding(.trailing, (mini || menubarEnabled) ? 6 : 0)
 
 
@@ -94,7 +96,7 @@ struct ZombieView: View {
 
                                 VStack(alignment: .leading, spacing: 10){
                                     HStack {
-                                        Text("Leftover Files").font(.title).fontWeight(.bold)
+                                        Text("Orphaned Files").font(.title).fontWeight(.bold)
                                         Spacer()
                                     }
                                     Text("Remaining files and folders from previous applications")

@@ -88,7 +88,7 @@ struct AppSearchView: View {
                 Button("More") {
                     self.showMenu.toggle()
                 }
-                .buttonStyle(SimpleButtonStyle(icon: "ellipsis.circle", help: "More", size: 16, rotate: true))
+                .buttonStyle(SimpleButtonStyle(icon: "ellipsis.circle", help: "More", size: 16, rotate: false))
                 .popover(isPresented: $showMenu) {
                     VStack(alignment: .leading) {
 
@@ -97,7 +97,7 @@ struct AppSearchView: View {
                                 selectedSortAlpha.toggle()
                             }
                         }
-                        .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Sorting: \(selectedSortAlpha ? "ABC" : "123")", help: "Can also click on User/System headers to toggle this", size: 5))
+                        .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Sorting: \(selectedSortAlpha ? "Name" : "Size")", help: "Sort app list alphabetically by name or by size", size: 5))
 
                         if mini && !menubarEnabled {
                             Button("") {
@@ -111,7 +111,7 @@ struct AppSearchView: View {
                         }
 
 
-                        Button("Leftover Files") {
+                        Button("Orphaned Files") {
                             showMenu = false
                             withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                                 showPopover = false
@@ -127,7 +127,7 @@ struct AppSearchView: View {
                                 }
                             }
                         }
-                        .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Leftover Files", help: "Leftover Files", size: 5))
+                        .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Orphaned Files", help: "Orphaned Files", size: 5))
 
 
                         if #available(macOS 14.0, *) {
@@ -155,6 +155,7 @@ struct AppSearchView: View {
                     }
                     .padding()
                     .background(backgroundView(themeManager: themeManager, glass: glass).padding(-80))
+                    .frame(width: 150)
 
                 }
             }
