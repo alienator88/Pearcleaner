@@ -208,6 +208,21 @@ enum CurrentPage:Int, CaseIterable, Identifiable
     }
 }
 
+enum SortOption:Int, CaseIterable, Identifiable {
+    case alphabetical
+    case size
+    case creationDate
+    case contentChangeDate
+    case lastUsedDate
+
+    var id: Int { rawValue }
+
+    var title: String {
+        let titles: [String] = ["App Name", "App Size", "Install Date", "Modified Date", "Last Used Date"]
+        return titles[rawValue]
+    }
+}
+
 
 enum CurrentTabView:Int
 {

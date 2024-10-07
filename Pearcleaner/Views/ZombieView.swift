@@ -35,7 +35,6 @@ struct ZombieView: View {
     @State private var totalLogicalSize: Int64 = 0
     @State private var totalRealSizeUninstallBtn: String = ""
     @State private var totalLogicalSizeUninstallBtn: String = ""
-    @State private var totalFinderSizeUninstallBtn: String = ""
 
     var body: some View {
 
@@ -80,39 +79,45 @@ struct ZombieView: View {
                 .padding(.trailing, (mini || menubarEnabled) ? 6 : 0)
 
 
-                VStack() {
+                VStack(spacing: 0) {
+
                     // Main Group
-                    HStack() {
+                    HStack(alignment: .center) {
 
-                        VStack(alignment: .center) {
+                        VStack(alignment: .leading, spacing: 5){
 
-                            HStack(alignment: .center) {
-                                Image(systemName: "doc.badge.clock.fill")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 50, height: 50)
-                                    .symbolRenderingMode(.hierarchical)
-                                    .padding(.trailing)
+                            PearGroupBox(header: {
+                                HStack(alignment: .center, spacing: 15) {
+                                    Image(systemName: "doc.badge.clock.fill")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 50, height: 50)
+                                        .symbolRenderingMode(.hierarchical)
 
-                                VStack(alignment: .leading, spacing: 10){
-                                    HStack {
+                                    VStack(alignment: .leading){
                                         Text("Orphaned Files").font(.title).fontWeight(.bold)
-                                        Spacer()
+                                        Text("Remaining files and folders from previous applications")
+                                            .font(.callout).foregroundStyle(.primary.opacity(0.5))
                                     }
-                                    Text("Remaining files and folders from previous applications")
-                                        .font(.callout).foregroundStyle(.primary.opacity(0.5))
                                 }
+                            }, content: {
+                                HStack(spacing: 20) {
+                                    VStack(alignment: .leading, spacing: 5) {
+                                        Text("Total size of files:")
+                                            .font(.callout).fontWeight(.bold)
+                                        Text("")
+                                            .font(.footnote)
+                                    }
+                                    Spacer()
+                                    VStack(alignment: .trailing, spacing: 5) {
+                                        Text("\(displaySizeTotal)").font(.callout).fontWeight(.bold)//.help("Total size on disk")
 
-                                Spacer()
+                                        Text("\(selectedZombieItemsLocal.count) of \(searchZ.isEmpty ? appState.zombieFile.fileSize.count : memoizedFiles.count) \(appState.zombieFile.fileSize.count == 1 ? "item" : "items")")
+                                            .font(.footnote).foregroundStyle(.secondary)
+                                    }
 
-                                VStack(alignment: .trailing, spacing: 5) {
-                                    Text("\(displaySizeTotal)").font(.title).fontWeight(.bold).help("Total size on disk")
-
-                                    Text("\(selectedZombieItemsLocal.count) / \(searchZ.isEmpty ? appState.zombieFile.fileSize.count : memoizedFiles.count) \(appState.zombieFile.fileSize.count == 1 ? "item" : "items")")
-                                        .font(.callout).foregroundStyle(.primary.opacity(0.5))
                                 }
-
-                            }
+                            })
 
                         }
                         .padding(.horizontal, 20)
@@ -157,7 +162,6 @@ struct ZombieView: View {
                         .toggleStyle(SimpleCheckboxToggleStyle())
                         .help("All checkboxes")
 
-
                         SearchBar(search: $searchZ, darker: true, glass: glass, sidebar: false)
                             .padding(.horizontal)
                             .onChange(of: searchZ) { newValue in
@@ -170,7 +174,7 @@ struct ZombieView: View {
                             selectedSortAlpha.toggle()
                             updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSortAlpha: selectedSortAlpha, force: true)
                         }
-                        .buttonStyle(SimpleButtonStyle(icon: selectedSortAlpha ? "textformat.abc" : "textformat.123", help: selectedSortAlpha ? "Sorted alphabetically" : "Sorted by size"))
+                        .buttonStyle(SimpleButtonStyle(icon: "line.3.horizontal.decrease.circle", label: selectedSortAlpha ? "Name" : "Size", help: selectedSortAlpha ? "Sorted alphabetically" : "Sorted by size", size: 16))
 
 
                     }
@@ -203,7 +207,7 @@ struct ZombieView: View {
 
                         Spacer()
 
-                        InfoButton(text: "Leftover file search is not 100% accurate as it doesn't have any uninstalled app bundles to check against for file exclusion. This does a best guess search for files/folders and excludes the ones that have overlap with your currently installed applications. Please confirm files marked for deletion really do belong to uninstalled applications.", color: .orange, warning: true, edge: .top)
+//                        InfoButton(text: "Leftover file search is not 100% accurate as it doesn't have any uninstalled app bundles to check against for file exclusion. This does a best guess search for files/folders and excludes the ones that have overlap with your currently installed applications. Please confirm files marked for deletion really do belong to uninstalled applications.", color: .orange, warning: true, edge: .top)
 
                         Button("Rescan") {
                             updateOnMain {
@@ -214,7 +218,7 @@ struct ZombieView: View {
                         }
                         .buttonStyle(RescanButton())
 
-                        Button("\(sizeType == "Logical" ? totalLogicalSizeUninstallBtn : sizeType == "Finder" ? totalFinderSizeUninstallBtn : totalRealSizeUninstallBtn)") {
+                        Button("\(sizeType == "Logical" ? totalLogicalSizeUninstallBtn : totalRealSizeUninstallBtn)") {
                             showCustomAlert(enabled: confirmAlert, title: "Warning", message: "Are you sure you want to remove these files?", style: .warning, onOk: {
                                 Task {
 
@@ -342,7 +346,7 @@ struct ZombieView: View {
         let filteredFilesReal = fileSizeReal.filter { url, _ in searchTerm.isEmpty || url.lastPathComponent.localizedCaseInsensitiveContains(searchTerm) }
         let filteredFilesLogical = fileSizeLogical.filter { url, _ in searchTerm.isEmpty || url.lastPathComponent.localizedCaseInsensitiveContains(searchTerm) }
 
-        let filesToSort = sizeType == "Real" || sizeType == "Finder" ? filteredFilesReal : filteredFilesLogical
+        let filesToSort = sizeType == "Real" ? filteredFilesReal : filteredFilesLogical
         let sortedFilteredFiles = filesToSort.sorted { (left, right) -> Bool in
             if selectedSortAlpha {
                 return left.key.lastPathComponent.pearFormat() < right.key.lastPathComponent.pearFormat()
@@ -377,15 +381,14 @@ struct ZombieView: View {
         let sizes = calculateTotalSelectedZombieSize()
         totalRealSizeUninstallBtn = sizes.real
         totalLogicalSizeUninstallBtn = sizes.logical
-        totalFinderSizeUninstallBtn = "\(sizes.logical) (\(sizes.real))"
     }
 
     private var displaySizeText: String {
         switch sizeType {
         case "Logical":
             return totalLogicalSizeUninstallBtn
-        case "Finder":
-            return totalFinderSizeUninstallBtn
+        case "Real":
+            return totalRealSizeUninstallBtn
         default:
             return totalRealSizeUninstallBtn
         }
@@ -481,8 +484,7 @@ struct ZombieFileDetailsItem: View {
             Spacer()
 
             let displaySize = sizeType == "Real" ? formatByte(size: size!).human :
-            sizeType == "Logical" ? formatByte(size: sizeL!).human :
-            "\(formatByte(size: sizeL!).byte) (\(formatByte(size: size!).human))"
+            formatByte(size: sizeL!).human
 
             Text("\(displaySize)")
 

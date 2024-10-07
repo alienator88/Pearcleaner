@@ -22,7 +22,7 @@ struct AppSearchView: View {
     @Binding var showPopover: Bool
     @State private var showMenu = false
     @Binding var isMenuBar: Bool
-    @AppStorage("settings.general.selectedSortAppsList") var selectedSortAlpha: Bool = true
+    @AppStorage("settings.general.selectedSortAppsList") var selectedSortOption: SortOption = .alphabetical
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
 
@@ -81,10 +81,10 @@ struct AppSearchView: View {
                 .buttonStyle(SimpleButtonStyle(icon: "arrow.counterclockwise.circle", help: "Refresh apps (⌘+R)", size: 16))
             }
 
-            SearchBar(search: $search, darker: (mini || menubarEnabled) ? false : true, glass: glass)
+            SearchBar(search: $search, darker: (mini || menubarEnabled) ? false : true, glass: glass, sidebar: false)
 
 
-            if search.isEmpty {
+            if search.isEmpty && (mini || menubarEnabled) {
                 Button("More") {
                     self.showMenu.toggle()
                 }
@@ -94,10 +94,19 @@ struct AppSearchView: View {
 
                         Button("") {
                             withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                                selectedSortAlpha.toggle()
+                                // Cycle through all enum cases using `CaseIterable`
+                                if let nextSortOption = SortOption(rawValue: selectedSortOption.rawValue + 1) {
+                                    selectedSortOption = nextSortOption
+                                    showPopover = false
+                                    showMenu = false
+                                } else {
+                                    selectedSortOption = .alphabetical
+                                    showPopover = false
+                                    showMenu = false
+                                }
                             }
                         }
-                        .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Sorting: \(selectedSortAlpha ? "Name" : "Size")", help: "Sort app list alphabetically by name or by size", size: 5))
+                        .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Sorting: \(selectedSortOption.title)", help: "Sort app list alphabetically by name or by size", size: 5))
 
                         if mini && !menubarEnabled {
                             Button("") {
@@ -149,15 +158,48 @@ struct AppSearchView: View {
                             Button("Quit") {
                                 NSApp.terminate(nil)
                             }
-                            .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Quit Pearcleaner", help: "Quit Pearcleaner", size: 5))
+                            .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Quit", help: "Quit Pearcleaner", size: 5))
                         }
 
                     }
                     .padding()
                     .background(backgroundView(themeManager: themeManager, glass: glass).padding(-80))
-                    .frame(width: 150)
+//                    .frame(width: 200)
 
                 }
+            } else if search.isEmpty && (!mini || !menubarEnabled) {
+
+                Button("") {
+                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                        showMenu.toggle()
+                    }
+                }
+                .buttonStyle(SimpleButtonStyle(icon: "line.3.horizontal.decrease.circle", help: selectedSortOption.title, size: 16))
+                .popover(isPresented: $showMenu, arrowEdge: .bottom) {
+                    VStack(alignment: .leading, spacing: 10) {
+                        HStack {
+                            Spacer()
+                            Text("Sorting Options").font(.subheadline).foregroundStyle(.secondary)
+                            Spacer()
+                        }
+                        Divider()
+                        ForEach(SortOption.allCases) { option in
+                            Button("") {
+                                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                                    selectedSortOption = option
+                                    showMenu = false
+                                }
+                            }
+                            .buttonStyle(SimpleButtonStyle(icon: selectedSortOption == option ? "circle.inset.filled" : "circle", label: option.title, help: "", size: 5))
+
+
+                        }
+                    }
+                    .padding()
+                    .background(backgroundView(themeManager: themeManager, glass: glass).padding(-80))
+//                    .frame(width: 160)
+                }
+
             }
 
 
@@ -174,12 +216,28 @@ struct AppSearchView: View {
             apps = appState.sortedApps.filter { $0.appName.localizedCaseInsensitiveContains(search) }
         }
 
-        switch selectedSortAlpha {
-        case true:
-            return apps.sorted { $0.appName.replacingOccurrences(of: ".", with: "").lowercased() < $1.appName.replacingOccurrences(of: ".", with: "").lowercased() }
-        case false:
+        // Sort based on the selected option
+        switch selectedSortOption {
+        case .alphabetical:
+            return apps.sorted {
+                $0.appName.replacingOccurrences(of: ".", with: "").lowercased() < $1.appName.replacingOccurrences(of: ".", with: "").lowercased()
+            }
+        case .size:
             return apps.sorted { $0.bundleSize > $1.bundleSize }
+        case .creationDate:
+            return apps.sorted { ($0.creationDate ?? Date.distantPast) > ($1.creationDate ?? Date.distantPast) }
+        case .contentChangeDate:
+            return apps.sorted { ($0.contentChangeDate ?? Date.distantPast) > ($1.contentChangeDate ?? Date.distantPast) }
+        case .lastUsedDate:
+            return apps.sorted { ($0.lastUsedDate ?? Date.distantPast) > ($1.lastUsedDate ?? Date.distantPast) }
         }
+
+//        switch selectedSortAlpha {
+//        case true:
+//            return apps.sorted { $0.appName.replacingOccurrences(of: ".", with: "").lowercased() < $1.appName.replacingOccurrences(of: ".", with: "").lowercased() }
+//        case false:
+//            return apps.sorted { $0.bundleSize > $1.bundleSize }
+//        }
     }
     
 }
@@ -218,7 +276,7 @@ struct SimpleSearchStyle: TextFieldStyle {
                         Spacer()
                         Text(isFocused ? "Type to search" : "Click to search")
                             .font(.subheadline)
-                            .foregroundColor(.primary.opacity(0.2))
+                            .foregroundColor(.secondary)
                         Spacer()
                     }
                 }

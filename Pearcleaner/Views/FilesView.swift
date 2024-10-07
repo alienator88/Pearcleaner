@@ -22,6 +22,7 @@ struct FilesView: View {
     @AppStorage("settings.general.filesWarning") private var warning: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.general.confirmAlert") private var confirmAlert: Bool = false
+    @AppStorage("settings.interface.details") private var detailsEnabled: Bool = true
     @State private var showAlert = false
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
@@ -30,7 +31,7 @@ struct FilesView: View {
     var body: some View {
 
 
-        var totalSelectedSize: (real: String, logical: String, finder: String) {
+        var totalSelectedSize: (real: String, logical: String) {
             var totalReal: Int64 = 0
             var totalLogical: Int64 = 0
             for url in appState.selectedItems {
@@ -39,12 +40,11 @@ struct FilesView: View {
                 totalReal += realSize
                 totalLogical += logicalSize
             }
-            return (real: formatByte(size: totalReal).human, logical: formatByte(size: totalLogical).human, finder: "\(formatByte(size: totalLogical).byte) (\(formatByte(size: totalReal).human))")
+            return (real: formatByte(size: totalReal).human, logical: formatByte(size: totalLogical).human)
         }
 
         let displaySizeTotal = sizeType == "Real" ? formatByte(size: appState.appInfo.totalSize).human :
-        sizeType == "Logical" ? formatByte(size: appState.appInfo.totalSizeLogical).human :
-        "\(formatByte(size: appState.appInfo.totalSizeLogical).byte) (\(formatByte(size: appState.appInfo.totalSize).human))"
+        formatByte(size: appState.appInfo.totalSizeLogical).human
 
         VStack(alignment: .center) {
             if appState.showProgress {
@@ -91,64 +91,111 @@ struct FilesView: View {
                     HStack(alignment: .center) {
 
                         //app icon, title, size and items
-                        VStack(alignment: .center) {
-                            HStack(alignment: .center) {
-                                if let appIcon = appState.appInfo.appIcon {
-                                    Image(nsImage: appIcon)
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 50, height: 50)
-                                        .padding()
-                                        .background{
-                                            RoundedRectangle(cornerRadius: 16)
-                                                .fill(Color((appState.appInfo.appIcon?.averageColor)!))
+                        VStack(alignment: .leading, spacing: 5){
+                            PearGroupBox(header: {
+                                HStack(alignment: .center, spacing: 15) {
+                                    if let appIcon = appState.appInfo.appIcon {
+                                        Image(nsImage: appIcon)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 50, height: 50)
+                                            .padding(5)
+                                            .background{
+                                                RoundedRectangle(cornerRadius: 10)
+                                                    .fill(Color((appState.appInfo.appIcon?.averageColor)!))
+
+                                            }
+                                    }
+                                    VStack(alignment: .leading) {
+                                        HStack(alignment: .center) {
+                                            Text("\(appState.appInfo.appName)").font(.title).fontWeight(.bold).lineLimit(1)
+                                            Image(systemName: "circle.fill").foregroundStyle(Color("AccentColor")).font(.system(size: 5))
+                                            Text("\(appState.appInfo.appVersion)").font(.title3)
 
                                         }
-                                }
-
-                                VStack(alignment: .leading, spacing: 5){
-                                    HStack {
-                                        Text("\(appState.appInfo.appName)").font(.title).fontWeight(.bold).lineLimit(1)
-                                        Text("•").foregroundStyle(Color("AccentColor"))
-                                        Text("v\(appState.appInfo.appVersion)").font(.title3)
-
+                                        Text("\(appState.appInfo.bundleIdentifier)")
+                                            .lineLimit(1)
+                                            .font(.title3)
+                                            .foregroundStyle((.primary.opacity(0.5)))
                                     }
-                                    Text("\(appState.appInfo.bundleIdentifier)")
-                                        .lineLimit(1)
-                                        .font(.title3)
-                                        .foregroundStyle((.primary.opacity(0.5)))
+                                    Spacer()
 
-                                    if let creationDate = appState.appInfo.creationDate {
-                                        Text("Installed: \(formattedMDDate(from: creationDate))")
-                                            .font(.footnote)
-                                    }
-                                    if let modificationDate = appState.appInfo.contentChangeDate {
-                                        Text("Modified: \(formattedMDDate(from: modificationDate))")
-                                            .font(.footnote)
-                                    }
-                                    if let lastUsedDate = appState.appInfo.lastUsedDate {
-                                        Text("Last Used: \(formattedMDDate(from: lastUsedDate))")
-                                            .font(.footnote)
+                                    Button("\(detailsEnabled ? "Hide Details" : "Show Details")") {
+                                        withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                                            detailsEnabled.toggle()
+                                        }
                                     }
                                 }
-                                .padding(.leading)
 
-                                Spacer()
+                            }, content: {
 
-                                VStack(alignment: .trailing, spacing: 5) {
+                                if detailsEnabled {
+                                    HStack(spacing: 20) {
+                                        VStack(alignment: .leading, spacing: 5) {
+                                            Text("Total size of files:")
+                                                .font(.callout).fontWeight(.bold)
+                                            Text("")
+                                                .font(.footnote)
+                                            Text("Installed Date:")
+                                                .font(.footnote)
+                                            Text("Modified Date:")
+                                                .font(.footnote)
+                                            Text("Last Used Date:")
+                                                .font(.footnote)
 
-                                    Text("\(displaySizeTotal)").font(.title).fontWeight(.bold).help("Total size on disk")
-                                    Text("\(appState.appInfo.fileSize.count == 1 ? "\(appState.selectedItems.count) / \(appState.appInfo.fileSize.count) item" : "\(appState.selectedItems.count) / \(appState.appInfo.fileSize.count) items")")
-                                        .font(.callout).foregroundStyle((.primary.opacity(0.5)))
+                                        }
+                                        Spacer()
+                                        VStack(alignment: .trailing, spacing: 5) {
+                                            Text("\(displaySizeTotal)").font(.callout).fontWeight(.bold)//.help("Total size on disk")
 
+                                            Text("\(appState.appInfo.fileSize.count == 1 ? "\(appState.selectedItems.count) of  \(appState.appInfo.fileSize.count) item" : "\(appState.selectedItems.count) of \(appState.appInfo.fileSize.count) items")")
+                                                .font(.footnote)
+
+                                            if let creationDate = appState.appInfo.creationDate {
+                                                Text(formattedMDDate(from: creationDate))
+                                                    .font(.footnote)
+                                                    .foregroundStyle(.secondary)
+                                            } else {
+                                                Text("Not available")
+                                                    .font(.footnote)
+                                                    .foregroundStyle(.secondary)
+                                            }
+
+                                            if let modificationDate = appState.appInfo.contentChangeDate {
+                                                Text(formattedMDDate(from: modificationDate))
+                                                    .font(.footnote)
+                                                    .foregroundStyle(.secondary)
+                                            } else {
+                                                Text("Not available")
+                                                    .font(.footnote)
+                                                    .foregroundStyle(.secondary)
+                                            }
+
+                                            if let lastUsedDate = appState.appInfo.lastUsedDate {
+                                                Text(formattedMDDate(from: lastUsedDate))
+                                                    .font(.footnote)
+                                                    .foregroundStyle(.secondary)
+                                            } else {
+                                                Text("Not available")
+                                                    .font(.footnote)
+                                                    .foregroundStyle(.secondary)
+                                            }
+
+
+
+                                        }
+
+                                    }
 
                                 }
 
-                            }
+                            })
+
 
                         }
                         .padding(.horizontal, 20)
                         .padding(.top, 0)
+
 
                     }
 
@@ -165,7 +212,6 @@ struct FilesView: View {
                         ))
                         .toggleStyle(SimpleCheckboxToggleStyle())
                         .help("All checkboxes")
-
 
                         Spacer()
 
@@ -228,7 +274,7 @@ struct FilesView: View {
                         Button("") {
                             selectedSortAlpha.toggle()
                         }
-                        .buttonStyle(SimpleButtonStyle(icon: selectedSortAlpha ? "textformat.abc" : "textformat.123", help: selectedSortAlpha ? "Sorted alphabetically" : "Sorted by size"))
+                        .buttonStyle(SimpleButtonStyle(icon: "line.3.horizontal.decrease.circle", label: selectedSortAlpha ? "Name" : "Size", help: selectedSortAlpha ? "Sorted alphabetically" : "Sorted by size", size: 16))
 
                     }
                     .padding()
@@ -290,11 +336,11 @@ struct FilesView: View {
 
                         Spacer()
 
-                        InfoButton(text: "Always double-check the files/folders marked for removal. In some rare cases, Pearcleaner may find some unrelated files when app names are too similar.", color: .primary.opacity(0.5), warning: true, edge: .top)
-                            .padding(.top)
+//                        InfoButton(text: "Always double-check the files/folders marked for removal. In some rare cases, Pearcleaner may find some unrelated files when app names are too similar.", color: .primary.opacity(0.5), warning: true, edge: .top)
+//                            .padding(.top)
 
 
-                        Button("\(sizeType == "Logical" ? totalSelectedSize.logical : sizeType == "Finder" ? totalSelectedSize.finder : totalSelectedSize.real)") {
+                        Button("\(sizeType == "Logical" ? totalSelectedSize.logical : totalSelectedSize.real)") {
                             showCustomAlert(enabled: confirmAlert, title: "Warning", message: "Are you sure you want to remove these files?", style: .warning, onOk: {
                                 Task {
 
@@ -377,7 +423,7 @@ struct FilesView: View {
                         }
                         .buttonStyle(UninstallButton(isEnabled: !appState.selectedItems.isEmpty))
                         .disabled(appState.selectedItems.isEmpty)
-                        .padding(.top)
+                        .padding(.top, 5)
 
 
                     }
@@ -509,9 +555,7 @@ struct FileDetailsItem: View {
             Spacer()
 
             let displaySize = sizeType == "Real" ? formatByte(size: size!).human :
-            sizeType == "Logical" ? formatByte(size: sizeL!).human :
-            "\(formatByte(size: sizeL!).byte) (\(formatByte(size: size!).human))"
-
+            formatByte(size: sizeL!).human
             Text("\(displaySize)")
 
         }

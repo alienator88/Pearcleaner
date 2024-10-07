@@ -14,7 +14,8 @@ import AlinFoundation
 class MetadataAppInfoFetcher {
     static func getAppInfo(fromMetadata metadata: [String: Any], atPath path: URL) -> AppInfo? {
         // Extract metadata attributes for known fields
-        let displayName = metadata["kMDItemDisplayName"] as? String ?? ""
+        var displayName = metadata["kMDItemDisplayName"] as? String ?? ""
+        displayName = displayName.replacingOccurrences(of: ".app", with: "").capitalizingFirstLetter()
         let fsName = metadata["kMDItemFSName"] as? String ?? path.lastPathComponent
         let appName = displayName.isEmpty ? fsName : displayName
 
@@ -152,7 +153,7 @@ class AppInfoUtils {
     static func fetchAppIcon(for path: URL, wrapped: Bool, md: Bool = false) -> NSImage? {
         let iconPath = wrapped ? (md ? path : path.deletingLastPathComponent().deletingLastPathComponent()) : path
         if let appIcon = getIconForFileOrFolderNS(atPath: iconPath) {
-            return convertICNSToPNG(icon: appIcon, size: NSSize(width: 100, height: 100))
+            return convertICNSToPNG(icon: appIcon, size: NSSize(width: 50, height: 50))
         } else {
             printOS("App Icon not found for app at path: \(path)")
             return nil

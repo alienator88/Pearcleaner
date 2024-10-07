@@ -19,7 +19,7 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.brew") private var brew: Bool = false
     @AppStorage("settings.general.oneshot") private var oneShotMode: Bool = false
     @AppStorage("settings.general.confirmAlert") private var confirmAlert: Bool = false
-    @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
+//    @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @State private var isCLISymlinked = false
 
@@ -107,28 +107,28 @@ struct GeneralSettingsTab: View {
 
 
 
-                        HStack(spacing: 0) {
-                            Image(systemName: selectedSortAlpha ? "textformat.abc" : "textformat.123")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 20, height: 20)
-                                .padding(.trailing)
-                                .foregroundStyle(.primary)
-                            VStack(alignment: .leading, spacing: 5) {
-                                Text("File list sorting order")
-                                    .font(.callout)
-                                    .foregroundStyle(.primary)
-                            }
-                            Spacer()
-                            Picker("", selection: $selectedSortAlpha) {
-                                Text("Alphabetical")
-                                    .tag(true)
-                                Text("File Size")
-                                    .tag(false)
-                            }
-                            .buttonStyle(.borderless)
-                        }
-                        .padding(5)
+//                        HStack(spacing: 0) {
+//                            Image(systemName: selectedSortAlpha ? "textformat.abc" : "textformat.123")
+//                                .resizable()
+//                                .scaledToFit()
+//                                .frame(width: 20, height: 20)
+//                                .padding(.trailing)
+//                                .foregroundStyle(.primary)
+//                            VStack(alignment: .leading, spacing: 5) {
+//                                Text("File list sorting order")
+//                                    .font(.callout)
+//                                    .foregroundStyle(.primary)
+//                            }
+//                            Spacer()
+//                            Picker("", selection: $selectedSortAlpha) {
+//                                Text("Alphabetical")
+//                                    .tag(true)
+//                                Text("File Size")
+//                                    .tag(false)
+//                            }
+//                            .buttonStyle(.borderless)
+//                        }
+//                        .padding(5)
 
 
 
@@ -151,8 +151,8 @@ struct GeneralSettingsTab: View {
                                     .tag("Real")
                                 Text("Logical")
                                     .tag("Logical")
-                                Text("Finder")
-                                    .tag("Finder")
+//                                Text("Finder")
+//                                    .tag("Finder")
                             }
                             .buttonStyle(.borderless)
 

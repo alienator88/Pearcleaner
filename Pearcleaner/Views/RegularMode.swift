@@ -114,10 +114,10 @@ struct RegularMode: View {
                     .buttonStyle(.borderless)
                     .padding(2)
                     .padding(.vertical, 2)
-                    .background {
-                        RoundedRectangle(cornerRadius: 8)
-                            .strokeBorder(.secondary.opacity(0.5), lineWidth: 1)
-                    }
+//                    .background {
+//                        RoundedRectangle(cornerRadius: 8)
+//                            .strokeBorder(.secondary.opacity(0.5), lineWidth: 1)
+//                    }
                 }
                 .padding(6)
 
@@ -126,7 +126,7 @@ struct RegularMode: View {
             }
 
         }
-        .frame(minWidth: 900, minHeight: 600)
+        .frame(minWidth: appState.currentPage == .orphans ? 700 : 900, minHeight: 600)
         .edgesIgnoringSafeArea(.all)
 
 
