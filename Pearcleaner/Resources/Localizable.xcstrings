@@ -2,6 +2,14 @@
   "sourceLanguage" : "en",
   "strings" : {
     "" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ""
+          }
+        }
+      },
       "shouldTranslate" : false
     },
     "(Build %@)" : {
@@ -28,7 +36,20 @@
       "shouldTranslate" : false
     },
     "•" : {
-      "shouldTranslate" : false
+      "localizations" : {
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "•"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "•"
+          }
+        }
+      }
     },
     "About" : {
 
