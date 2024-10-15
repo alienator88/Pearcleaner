@@ -144,7 +144,7 @@ func reversePreloader(allApps: [AppInfo], appState: AppState, locations: Locatio
     @AppStorage("settings.interface.animationEnabled") var animationEnabled: Bool = true
 
     updateOnMain {
-        appState.leftoverProgress.0 = "Finding orphaned files, please wait..."
+        appState.leftoverProgress.0 = String(localized: "Finding orphaned files, please wait...")
     }
     ReversePathsSearcher(appState: appState, locations: locations, fsm: fsm, sortedApps: allApps).reversePathsSearch {
         updateOnMain {
@@ -153,7 +153,7 @@ func reversePreloader(allApps: [AppInfo], appState: AppState, locations: Locatio
             withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                 appState.leftoverProgress.1 = 0.0
             }
-            appState.leftoverProgress.0 = "Reverse search completed successfully"
+            appState.leftoverProgress.0 = String(localized: "Reverse search completed successfully")
         }
         completion()
     }

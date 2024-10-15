@@ -38,20 +38,19 @@ struct UpdateSettingsTab: View {
                 Button(""){
                     updater.checkForUpdatesForce(showSheet: false)
                 }
-                .buttonStyle(SimpleButtonStyle(icon: "arrow.uturn.left.circle", label: "Refresh", help: "Refresh updater"))
+                .buttonStyle(SimpleButtonStyle(icon: "arrow.uturn.left.circle", label: String(localized: "Refresh"), help: String(localized: "Refresh updater")))
 
 
                 Button(""){
                     updater.resetAnnouncementAlert()
                 }
-                .buttonStyle(SimpleButtonStyle(icon: "star", label: "Announcement", help: "Show announcements badge again"))
+                .buttonStyle(SimpleButtonStyle(icon: "star", label: String(localized: "Announcement"), help: String(localized: "Show announcements badge again")))
 
 
                 Button(""){
                     NSWorkspace.shared.open(URL(string: "https://github.com/alienator88/Pearcleaner/releases")!)
                 }
-                .buttonStyle(SimpleButtonStyle(icon: "link", label: "Releases", help: "View releases on GitHub"))
-
+                .buttonStyle(SimpleButtonStyle(icon: "link", label: String(localized: "Releases"), help: String(localized: "View releases on GitHub")))
             }
 
         }

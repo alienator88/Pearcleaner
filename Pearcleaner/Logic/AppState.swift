@@ -27,7 +27,6 @@ class AppState: ObservableObject {
     @Published var leftoverProgress: (String, Double) = ("", 0.0)
     @Published var finderExtensionEnabled: Bool = false
     @Published var showUninstallAlert: Bool = false
-    @Published var oneShotMode: Bool = false
     @Published var sentinelMode: Bool = false
     @Published var showConditionBuilder: Bool = false
 
@@ -202,8 +201,8 @@ enum CurrentPage:Int, CaseIterable, Identifiable
 
     var title: String {
         switch self {
-        case .applications: return "Applications"
-        case .orphans: return "Orphaned Files"
+        case .applications: return String(localized: "Applications")
+        case .orphans: return String(localized: "Orphaned Files")
         }
     }
 }
@@ -218,7 +217,13 @@ enum SortOption:Int, CaseIterable, Identifiable {
     var id: Int { rawValue }
 
     var title: String {
-        let titles: [String] = ["App Name", "App Size", "Install Date", "Modified Date", "Last Used Date"]
+        let titles: [String] = [
+            String(localized: "App Name"),
+            String(localized: "App Size"),
+            String(localized: "Install Date"),
+            String(localized: "Modified Date"),
+            String(localized: "Last Used Date")
+        ]
         return titles[rawValue]
     }
 }
@@ -230,17 +235,16 @@ enum CurrentTabView:Int
     case interface
     case folders
     case update
-    case tips
+//    case tips
     case about
     
     var title: String {
         switch self {
-        case .general: return "General"
-        case .interface: return "Interface"
-        case .folders: return "Folders"
-        case .update: return "Update"
-        case .tips: return "Tips"
-        case .about: return "About"
+        case .general: return String(localized: "General")
+        case .interface: return String(localized: "Interface")
+        case .folders: return String(localized: "Folders")
+        case .update: return String(localized: "Update")
+        case .about: return String(localized: "About")
         }
     }
 }

@@ -83,8 +83,7 @@ struct InterfaceSettingsTab: View {
                             .padding(.trailing)
                             .foregroundStyle(.primary)
                         VStack(alignment: .leading, spacing: 5) {
-                            Text("\(animationEnabled ? "Animations enabled" : "Animations disabled")")
-                                .font(.callout)
+                            Text(animationEnabled ? String(localized: "Animations enabled") : String(localized: "Animations disabled"))         .font(.callout)
                                 .foregroundStyle(.primary)
                         }
                         Spacer()
@@ -103,7 +102,7 @@ struct InterfaceSettingsTab: View {
                             .padding(.trailing)
                             .foregroundStyle(.primary)
                         VStack(alignment: .leading, spacing: 5) {
-                            Text("\(minimalEnabled ? "Minimalist app list rows enabled" : "Minimalist app list rows disabled")")
+                            Text(minimalEnabled ? String(localized: "Minimalist app list rows enabled") : String(localized: "Minimalist app list rows disabled"))
                                 .font(.callout)
                                 .foregroundStyle(.primary)
                         }
@@ -153,13 +152,13 @@ struct InterfaceSettingsTab: View {
                                 .font(.callout)
                                 .foregroundStyle(.primary)
                         }
-                        InfoButton(text: "Toggling between modes will reset the window frames to their default size/position")
+                        InfoButton(text: String(localized: "Toggling between modes will reset the window frames to their default size/position"))
                         Spacer()
                         Toggle(isOn: $mini, label: {
                         })
                         .toggleStyle(.switch)
                         .disabled(menubarEnabled)
-                        .help(menubarEnabled ? "Disabled when menubar icon is enabled" : "")
+                        .help(menubarEnabled ? String(localized: "Disabled when menubar icon is enabled") : String(localized: ""))
                         .onChange(of: mini) { newVal in
                             if mini {
                                 appState.currentView = miniView ? .apps : .empty
@@ -212,7 +211,7 @@ struct InterfaceSettingsTab: View {
                                 .foregroundStyle(.primary)
                         }
 
-                        InfoButton(text: "In mini window mode, you can have Pearcleaner startup to the Apps List view or the Drop Target view.")
+                        InfoButton(text: String(localized: "In mini window mode, you can have Pearcleaner startup to the Apps List view or the Drop Target view."))
 
                         Spacer()
                         Toggle(isOn: $miniView, label: {
@@ -238,7 +237,7 @@ struct InterfaceSettingsTab: View {
                                 .foregroundStyle(.primary)
                         }
 
-                        InfoButton(text: "In mini window mode, if you pin the Files popover on top, clicking away from the window will not dismiss it. Otherwise, it will dismiss by clicking anywhere outside the app.")
+                        InfoButton(text: String(localized: "In mini window mode, if you pin the Files popover on top, clicking away from the window will not dismiss it. Otherwise, it will dismiss by clicking anywhere outside the app."))
 
                         Spacer()
                         Toggle(isOn: $popoverStay, label: {
@@ -265,7 +264,7 @@ struct InterfaceSettingsTab: View {
                                 .font(.callout)
                                 .foregroundStyle(.primary)
                         }
-                        InfoButton(text: "When menubar icon is enabled, the main app window and dock icon will be disabled since the app will be put in accessory mode.")
+                        InfoButton(text: String(localized: "When menubar icon is enabled, the main app window and dock icon will be disabled since the app will be put in accessory mode."))
                         Spacer()
                         Toggle(isOn: $menubarEnabled, label: {
                         })
@@ -331,7 +330,7 @@ struct InterfaceSettingsTab: View {
                                 .font(.callout)
                                 .foregroundStyle(.primary)
                         }
-                        InfoButton(text: "This setting will affect Pearcleaner whether you're running in menubar mode or regular mode. If you disable menubar icon, you might want to disable this as well so Pearcleaner doesn't start on login.")
+                        InfoButton(text: String(localized: "This setting will affect Pearcleaner whether you're running in menubar mode or regular mode. If you disable menubar icon, you might want to disable this as well so Pearcleaner doesn't start on login."))
                         Spacer()
                         Toggle(isOn: $isLaunchAtLoginEnabled, label: {
                         })

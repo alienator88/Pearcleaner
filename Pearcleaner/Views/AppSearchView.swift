@@ -78,7 +78,7 @@ struct AppSearchView: View {
                         reloadAppsList(appState: appState, fsm: fsm)
                     }
                 }
-                .buttonStyle(SimpleButtonStyle(icon: "arrow.counterclockwise.circle", help: "Refresh apps (⌘+R)", size: 16))
+                .buttonStyle(SimpleButtonStyle(icon: "arrow.counterclockwise.circle", help: String(localized: "Refresh apps (⌘+R)"), size: 16))
             }
 
             SearchBar(search: $search, darker: (mini || menubarEnabled) ? false : true, glass: glass, sidebar: false)
@@ -88,7 +88,7 @@ struct AppSearchView: View {
                 Button("More") {
                     self.showMenu.toggle()
                 }
-                .buttonStyle(SimpleButtonStyle(icon: "ellipsis.circle", help: "More", size: 16, rotate: false))
+                .buttonStyle(SimpleButtonStyle(icon: "ellipsis.circle", help: String(localized: "More"), size: 16, rotate: false))
                 .popover(isPresented: $showMenu) {
                     VStack(alignment: .leading) {
 
@@ -136,7 +136,7 @@ struct AppSearchView: View {
                                 }
                             }
                         }
-                        .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Orphaned Files", help: "Orphaned Files", size: 5))
+                        .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: String(localized: "Orphaned Files"), help: String(localized: "Orphaned Files"), size: 5))
 
 
                         if #available(macOS 14.0, *) {
@@ -151,15 +151,14 @@ struct AppSearchView: View {
                                 }
                                 showMenu = false
                             }
-                            .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Settings", help: "Settings", size: 5))
+                            .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: String(localized: "Settings"), help: String(localized: "Settings"), size: 5))
                         }
 
                         if menubarEnabled {
                             Button("Quit") {
                                 NSApp.terminate(nil)
                             }
-                            .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Quit", help: "Quit Pearcleaner", size: 5))
-                        }
+                            .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: String(localized: "Quit"), help: String(localized: "Quit Pearcleaner"), size: 5))                        }
 
                     }
                     .padding()
@@ -274,7 +273,7 @@ struct SimpleSearchStyle: TextFieldStyle {
                 if text.isEmpty {
                     HStack {
                         Spacer()
-                        Text(isFocused ? "Type to search" : "Click to search")
+                        Text(isFocused ? String(localized: "Type to search") : String(localized: "Click to search"))
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                         Spacer()
@@ -291,7 +290,7 @@ struct SimpleSearchStyle: TextFieldStyle {
                         Button("") {
                             text = ""
                         }
-                        .buttonStyle(SimpleButtonStyle(icon: "delete.left.fill", help: "Clear text", size: 14, padding: padding))
+                        .buttonStyle(SimpleButtonStyle(icon: "delete.left.fill", help: String(localized: "Clear text"), size: 14, padding: padding))
                     }
                 }
 

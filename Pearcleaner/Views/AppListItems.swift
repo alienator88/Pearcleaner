@@ -28,7 +28,6 @@ struct AppListItems: View {
     let appInfo: AppInfo
     var isSelected: Bool { appState.appInfo.path == appInfo.path }
     @State private var hoveredItemPath: URL? = nil
-    @State private var bundleSize: Int64 = 0
 
     var body: some View {
 
@@ -70,7 +69,7 @@ struct AppListItems: View {
                                 .opacity(0.5)
                             Text("•").font(.footnote).opacity(0.5)
 
-                            Text(bundleSize == 0 ? "calculating" : "\(formatByte(size: bundleSize).human)")
+                            Text(appInfo.bundleSize == 0 ? String(localized: "calculating") : "\(formatByte(size: appInfo.bundleSize).human)")
                                 .font(.footnote)
                                 .lineLimit(1)
                                 .truncationMode(.tail)
@@ -109,6 +108,20 @@ struct AppListItems: View {
                         .foregroundStyle(.primary.opacity(0.5))
                 }
 
+                if isSelected && !(mini || menubarEnabled) {
+                    Button("Close") {
+                        withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                            updateOnMain {
+                                appState.appInfo = .empty
+                                appState.selectedItems = []
+                                appState.currentView = miniView ? .apps : .empty
+                                showPopover = false
+                            }
+                        }
+
+                    }
+                    .buttonStyle(SimpleButtonStyle(icon: "x.circle", iconFlip: "x.circle.fill", help: String(localized: "Close"), size: 16))
+                }
 
 
             }
@@ -117,7 +130,6 @@ struct AppListItems: View {
         .frame(height: 35)
         .padding(.horizontal)
         .padding(.vertical, 5)
-//        .help(appInfo.appName)
         .onHover { hovering in
             withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                 self.isHovered = hovering

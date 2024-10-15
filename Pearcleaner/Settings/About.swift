@@ -75,7 +75,7 @@ struct AboutSettingsTab: View {
                         Button(""){
                             NSWorkspace.shared.open(URL(string: "https://github.com/alienator88/Pearcleaner/issues/new/choose")!)
                         }
-                        .buttonStyle(SimpleButtonStyle(icon: "paperplane", help: "View"))
+                        .buttonStyle(SimpleButtonStyle(icon: "paperplane", help: String(localized: "View")))
 
                     }
 
@@ -102,7 +102,7 @@ struct AboutSettingsTab: View {
                                             Button(""){
                                                 NSWorkspace.shared.open(sponsor.url)
                                             }
-                                            .buttonStyle(SimpleButtonStyle(icon: "link", help: "View", padding: 5))
+                                            .buttonStyle(SimpleButtonStyle(icon: "link", help: String(localized: "View")))
                                             .padding(.trailing)
                                         }
                                     }

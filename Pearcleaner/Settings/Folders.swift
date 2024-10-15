@@ -28,7 +28,7 @@ struct FolderSettingsTab: View {
             PearGroupBox(header: {
                 HStack(alignment: .center, spacing: 0) {
                     Text("Search these folders for applications").font(.title2)
-                    InfoButton(text: "Locations that will be searched for .app files. Click a non-default path to remove it. Default paths can't be removed.")
+                    InfoButton(text: String(localized: "Locations that will be searched for .app files. Click a non-default path to remove it. Default paths can't be removed."))
                         .padding(.leading, 5)
                     Spacer()
                 }
@@ -99,18 +99,18 @@ struct FolderSettingsTab: View {
                         Button("") {
                             selectFolder()
                         }
-                        .buttonStyle(SimpleButtonStyle(icon: "plus.circle", help: "Add folder", size: 16, rotate: true))
+                        .buttonStyle(SimpleButtonStyle(icon: "plus.circle", help: String(localized: "Add folder"), size: 16, rotate: true))
                         Spacer()
                     }
                 }
             })
 
-            // === Leftover Folders============================================================================================
+            // === Orphaned Folders============================================================================================
 
             PearGroupBox(header: {
                 HStack(spacing: 0) {
-                    Text("Exclude these files and folders from leftover search").font(.title2)
-                    InfoButton(text: "Add files or folders that will be ignored when searching for orphaned files. Click a path to remove it from the list.")
+                    Text("Exclude these files and folders from orphaned file search").font(.title2)
+                    InfoButton(text: String(localized: "Add files or folders that will be ignored when searching for orphaned files. Click a path to remove it from the list."))
                         .padding(.leading, 5)
                     Spacer()
                 }
@@ -186,7 +186,7 @@ struct FolderSettingsTab: View {
                         Button("") {
                             selectFilesFoldersZ()
                         }
-                        .buttonStyle(SimpleButtonStyle(icon: "plus.circle", help: "Add file/folder", size: 16, rotate: true))
+                        .buttonStyle(SimpleButtonStyle(icon: "plus.circle", help: String(localized: "Add file/folder"), size: 16, rotate: true))
                         Spacer()
                     }
                 }

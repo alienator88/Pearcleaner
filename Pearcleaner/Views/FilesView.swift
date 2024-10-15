@@ -23,6 +23,7 @@ struct FilesView: View {
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.general.confirmAlert") private var confirmAlert: Bool = false
     @AppStorage("settings.interface.details") private var detailsEnabled: Bool = true
+    @AppStorage("settings.general.oneshot") private var oneShotMode: Bool = false
     @State private var showAlert = false
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
@@ -77,7 +78,7 @@ struct FilesView: View {
                                 showPopover = false
                             }
                         }
-                        .buttonStyle(SimpleButtonStyle(icon: "x.circle", iconFlip: "x.circle.fill", help: "Close"))
+                        .buttonStyle(SimpleButtonStyle(icon: "x.circle", iconFlip: "x.circle.fill", help: String(localized: "Close")))
                     }
 
 
@@ -120,7 +121,7 @@ struct FilesView: View {
                                     }
                                     Spacer()
 
-                                    Button("\(detailsEnabled ? "Hide Details" : "Show Details")") {
+                                    Button("\(detailsEnabled ? String(localized: "Hide Details") : String(localized: "Show Details"))") {
                                         withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                                             detailsEnabled.toggle()
                                         }
@@ -148,7 +149,7 @@ struct FilesView: View {
                                         VStack(alignment: .trailing, spacing: 5) {
                                             Text("\(displaySizeTotal)").font(.callout).fontWeight(.bold)//.help("Total size on disk")
 
-                                            Text("\(appState.appInfo.fileSize.count == 1 ? "\(appState.selectedItems.count) of  \(appState.appInfo.fileSize.count) item" : "\(appState.selectedItems.count) of \(appState.appInfo.fileSize.count) items")")
+                                            Text("\(appState.appInfo.fileSize.count == 1 ? "\(appState.selectedItems.count) \(String(localized: "of"))  \(appState.appInfo.fileSize.count) \(String(localized: "item"))" : "\(appState.selectedItems.count) \(String(localized: "of")) \(appState.appInfo.fileSize.count) \(String(localized: "items"))")")
                                                 .font(.footnote)
 
                                             if let creationDate = appState.appInfo.creationDate {
@@ -274,7 +275,7 @@ struct FilesView: View {
                         Button("") {
                             selectedSortAlpha.toggle()
                         }
-                        .buttonStyle(SimpleButtonStyle(icon: "line.3.horizontal.decrease.circle", label: selectedSortAlpha ? "Name" : "Size", help: selectedSortAlpha ? "Sorted alphabetically" : "Sorted by size", size: 16))
+                        .buttonStyle(SimpleButtonStyle(icon: "line.3.horizontal.decrease.circle", label: String(localized: selectedSortAlpha ? "Name" : "Size"), help: String(localized: selectedSortAlpha ? "Sorted alphabetically" : "Sorted by size"), size: 16))
 
                     }
                     .padding()
@@ -341,7 +342,7 @@ struct FilesView: View {
 
 
                         Button("\(sizeType == "Logical" ? totalSelectedSize.logical : totalSelectedSize.real)") {
-                            showCustomAlert(enabled: confirmAlert, title: "Warning", message: "Are you sure you want to remove these files?", style: .warning, onOk: {
+                            showCustomAlert(enabled: confirmAlert, title: String(localized: "Warning"), message: String(localized: "Are you sure you want to remove these files?"), style: .warning, onOk: {
                                 Task {
 
                                     let selectedItemsArray = Array(appState.selectedItems)
@@ -389,7 +390,7 @@ struct FilesView: View {
                                                 // Match found, remove the app
                                                 removeApp(appState: appState, withPath: appState.appInfo.path)
 
-                                                if appState.oneShotMode {
+                                                if oneShotMode {
                                                     NSApp.terminate(nil)
                                                 }
 
@@ -408,7 +409,7 @@ struct FilesView: View {
                                                     // Update the selectedFiles to remove references that are no longer present
                                                     appState.selectedItems.removeAll()
                                                     appState.sentinelMode = false
-                                                    if appState.oneShotMode {
+                                                    if oneShotMode {
                                                         NSApp.terminate(nil)
                                                     }
                                                 }
@@ -449,8 +450,7 @@ struct FilesView: View {
                     warning = true
                     showAlert = false
                 }
-                .buttonStyle(SimpleButtonStyle(icon: "x.circle.fill", label: "Close", help: "Dismiss"))
-//                Spacer()
+                .buttonStyle(SimpleButtonStyle(icon: "x.circle.fill", label: String(localized: "Close"), help: String(localized: "Dismiss")))//                Spacer()
             }
             .padding(15)
             .frame(width: 400, height: 250)
@@ -526,8 +526,7 @@ struct FileDetailsItem: View {
                         }
 
                     if isNested(path: path) {
-                        InfoButton(text: "Application file is nested within subdirectories. To prevent deleting incorrect folders, Pearcleaner will leave these alone. You may manually delete the remaining folders if required.")
-                    }
+                        InfoButton(text: String(localized: "Application file is nested within subdirectories. To prevent deleting incorrect folders, Pearcleaner will leave these alone. You may manually delete the remaining folders if required."))                    }
 
                     if let imageView = folderImages(for: path.path) {
                         imageView

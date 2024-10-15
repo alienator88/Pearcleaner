@@ -1,0 +1,549 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "" : {
+      "shouldTranslate" : false
+    },
+    "(Build %@)" : {
+
+    },
+    "/Full/Path/example-1.txt, /Full/Path/example-2.txt" : {
+
+    },
+    "%@" : {
+      "shouldTranslate" : false
+    },
+    "%lld" : {
+      "shouldTranslate" : false
+    },
+    "%lld %@ %lld %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld %2$@ %3$lld %4$@"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "•" : {
+      "shouldTranslate" : false
+    },
+    "About" : {
+
+    },
+    "Add" : {
+
+    },
+    "Add Direct Paths:" : {
+
+    },
+    "Add file/folder" : {
+
+    },
+    "Add files or folders that will be ignored when searching for orphaned files. Click a path to remove it from the list." : {
+
+    },
+    "Add folder" : {
+
+    },
+    "Add/Save" : {
+
+    },
+    "All checkboxes" : {
+
+    },
+    "Always confirm the files marked for removal. In rare cases, unrelated files may be found when app names are too similar.\n\nNOTE: Pearcleaner uses AppleScript to remove files. Currently macOS does not allow AppleScript to authenticate using the fingerprint sensor, only password authentication is supported." : {
+
+    },
+    "Animations disabled" : {
+
+    },
+    "Animations enabled" : {
+
+    },
+    "Announcement" : {
+
+    },
+    "App Name" : {
+
+    },
+    "App Size" : {
+
+    },
+    "Appearance" : {
+
+    },
+    "Application file is nested within subdirectories. To prevent deleting incorrect folders, Pearcleaner will leave these alone. You may manually delete the remaining folders if required." : {
+
+    },
+    "Application Script" : {
+
+    },
+    "Applications" : {
+
+    },
+    "Are you sure you want to remove these files?" : {
+
+    },
+    "calculating" : {
+
+    },
+    "Check for Updates" : {
+
+    },
+    "Clear" : {
+
+    },
+    "Clear text" : {
+
+    },
+    "Click for apps list" : {
+
+    },
+    "Click header to change sorting order" : {
+
+    },
+    "Click to search" : {
+
+    },
+    "Close" : {
+
+    },
+    "Close after uninstall" : {
+
+    },
+    "Command Line" : {
+
+    },
+    "Condition Builder" : {
+
+    },
+    "Container" : {
+
+    },
+    "Copy File Paths" : {
+
+    },
+    "Copy Path" : {
+
+    },
+    "Detect when apps are moved to Trash" : {
+
+    },
+    "Disabled when menubar icon is enabled" : {
+
+    },
+    "Dismiss" : {
+
+    },
+    "Drop an app here" : {
+
+    },
+    "Drop files or folders above or click to add" : {
+
+    },
+    "Drop folders above or click to add" : {
+
+    },
+    "Enable context menu extension for Finder" : {
+
+    },
+    "Enabling the CLI will allow you to execute Pearcleaner actions from the Terminal. This will add pearcleaner command into /usr/local/bin so it's available directly from your PATH environment variable. Try it after enabling:\n\n> pearcleaner --help" : {
+
+    },
+    "Enabling this extension will allow you to right click apps in Finder to quickly uninstall them with Pearcleaner" : {
+
+    },
+    "Exclude" : {
+
+    },
+    "Exclude Keywords:" : {
+
+    },
+    "Exclude these files and folders from orphaned file search" : {
+
+    },
+    "Export File Paths" : {
+
+    },
+    "File size display options" : {
+
+    },
+    "Finder Extension" : {
+
+    },
+    "Finding orphaned files, please wait..." : {
+
+    },
+    "Folders" : {
+
+    },
+    "Functionality" : {
+
+    },
+    "Gathering app details" : {
+
+    },
+    "General" : {
+
+    },
+    "GitHub" : {
+      "comment" : "Github Repo",
+      "shouldTranslate" : false
+    },
+    "GitHub Sponsors" : {
+
+    },
+    "Hide Details" : {
+
+    },
+    "Homebrew cleanup after uninstall" : {
+
+    },
+    "Important" : {
+
+    },
+    "In mini window mode, if you pin the Files popover on top, clicking away from the window will not dismiss it. Otherwise, it will dismiss by clicking anywhere outside the app." : {
+
+    },
+    "In mini window mode, you can have Pearcleaner startup to the Apps List view or the Drop Target view." : {
+
+    },
+    "Include Keywords:" : {
+
+    },
+    "Install Date" : {
+
+    },
+    "Installed Date:" : {
+
+    },
+    "Instructions" : {
+
+    },
+    "Interface" : {
+
+    },
+    "iOS" : {
+
+    },
+    "iOS app" : {
+
+    },
+    "item" : {
+
+    },
+    "items" : {
+
+    },
+    "keyword-1, keyword-2" : {
+
+    },
+    "Last Used Date" : {
+
+    },
+    "Last Used Date:" : {
+
+    },
+    "Launch Pearcleaner at login" : {
+
+    },
+    "Locations that will be searched for .app files. Click a non-default path to remove it. Default paths can't be removed." : {
+
+    },
+    "Logical" : {
+
+    },
+    "Made with ❤️ by Alin Lupascu" : {
+
+    },
+    "Menubar" : {
+
+    },
+    "Menubar icon mode" : {
+
+    },
+    "Menubar icon preference" : {
+
+    },
+    "Mini Configuration" : {
+
+    },
+    "Mini window mode" : {
+
+    },
+    "Minimalist app list rows disabled" : {
+
+    },
+    "Minimalist app list rows enabled" : {
+
+    },
+    "Modified Date" : {
+
+    },
+    "Modified Date:" : {
+
+    },
+    "More" : {
+
+    },
+    "No files or folders added" : {
+
+    },
+    "Not available" : {
+
+    },
+    "of" : {
+
+    },
+    "Open %@" : {
+
+    },
+    "Orphaned file search is not 100% accurate as it doesn't have any uninstalled app bundles to check against for file exclusion. This does a best guess search for files/folders and excludes the ones that have overlap with your currently installed applications. Please confirm files marked for deletion really do belong to uninstalled applications." : {
+
+    },
+    "Orphaned Files" : {
+
+    },
+    "Pearcleaner and all of its files will be cleanly removed, are you sure?" : {
+
+    },
+    "Pearcleaner CLI support" : {
+
+    },
+    "Pin popover window on top" : {
+
+    },
+    "Plist File" : {
+
+    },
+    "Quit" : {
+
+    },
+    "Quit Pearcleaner" : {
+
+    },
+    "Real" : {
+
+    },
+    "Real size type will show how much actual allocated space the file has on disk.\n\nLogical type shows the binary size. The filesystem can compress and deduplicate sectors on disk, so real size is sometimes smaller(or bigger) than logical size.\n\nFinder size is similar to if you right click > Get Info on a file in Finder, which will show both the logical and real sizes together." : {
+
+    },
+    "Refresh" : {
+
+    },
+    "Refresh Apps" : {
+
+    },
+    "Refresh apps (⌘+R)" : {
+
+    },
+    "Refresh updater" : {
+
+    },
+    "Release Notes" : {
+
+    },
+    "Releases" : {
+
+    },
+    "Remaining files and folders from previous applications" : {
+
+    },
+    "Remove" : {
+
+    },
+    "Remove Direct Paths:" : {
+
+    },
+    "Remove the condition from this application" : {
+
+    },
+    "Rescan" : {
+
+    },
+    "Reset all settings to default" : {
+
+    },
+    "Reset Settings" : {
+
+    },
+    "Reset Size" : {
+
+    },
+    "Reverse search completed successfully" : {
+
+    },
+    "Right click to reset size" : {
+
+    },
+    "Save" : {
+
+    },
+    "Save the condition for this application" : {
+
+    },
+    "Search these folders for applications" : {
+
+    },
+    "Searching the file system" : {
+
+    },
+    "Sentinel Monitor" : {
+
+    },
+    "Sentinel Monitor found no other files to remove" : {
+
+    },
+    "Settings" : {
+
+    },
+    "Show announcements badge again" : {
+
+    },
+    "Show apps list on startup" : {
+
+    },
+    "Show Details" : {
+
+    },
+    "Some files/folders are not similar to the app name or bundle id, causing Pearcleaner to either not find them or find unrelated files. \nTo combat this, you may create a custom condition for each application bundle using keywords or direct paths. \n\n- Can add file/folder keywords that you want to either include or exclude in fuzzy searches. \n\n- Can explicitly add or remove a full Finder path to search results if you want a direct search." : {
+
+    },
+    "Sorting Options" : {
+
+    },
+    "Sponsor" : {
+
+    },
+    "Submit a bug or feature request" : {
+
+    },
+    "Submit New Issue" : {
+
+    },
+    "Support" : {
+
+    },
+    "system" : {
+
+    },
+    "System" : {
+
+    },
+    "Theme Mode" : {
+
+    },
+    "This adds the file/folder to the Exclusions list. Edit the exclusions list from Settings > Folders tab" : {
+
+    },
+    "This app is located in %@" : {
+
+    },
+    "This is a web app" : {
+
+    },
+    "This is a wrapped iOS app" : {
+
+    },
+    "This setting will affect Pearcleaner whether you're running in menubar mode or regular mode. If you disable menubar icon, you might want to disable this as well so Pearcleaner doesn't start on login." : {
+
+    },
+    "Toggling between modes will reset the window frames to their default size/position" : {
+
+    },
+    "Tools" : {
+      "comment" : "Tools Menu"
+    },
+    "Total size of files:" : {
+
+    },
+    "Transparent material" : {
+
+    },
+    "Type to search" : {
+
+    },
+    "Undo Removal" : {
+
+    },
+    "Uninstall" : {
+
+    },
+    "Uninstall confirmation alerts" : {
+
+    },
+    "Uninstall Pearcleaner" : {
+
+    },
+    "Update" : {
+
+    },
+    "Update Frequency" : {
+
+    },
+    "user" : {
+
+    },
+    "User" : {
+
+    },
+    "v%@" : {
+      "shouldTranslate" : false
+    },
+    "Version %@" : {
+
+    },
+    "View" : {
+
+    },
+    "View in Finder" : {
+
+    },
+    "View Issues" : {
+
+    },
+    "View project contributors" : {
+
+    },
+    "View Releases" : {
+
+    },
+    "View releases on GitHub" : {
+
+    },
+    "View Repository" : {
+
+    },
+    "Warning" : {
+
+    },
+    "Warning!" : {
+
+    },
+    "web" : {
+
+    },
+    "Web app" : {
+
+    },
+    "When applications are moved to Trash, Pearcleaner will launch and find related files and folders for deletion." : {
+
+    },
+    "When deleting files using the Trash button, you can prevent accidental deletions by showing an alert before proceeding with the action." : {
+
+    },
+    "When homebrew cleanup is enabled, Pearcleaner will check if the app you are removing was installed via homebrew and launch Terminal.app to execute a brew uninstall and cleanup command to let homebrew know that the app is removed. This way your homebrew list will be synced up correctly and caching will be removed. Terminal.app is required since some apps need sudo permissions to remove services and files placed in system folders. Since other terminal apps don't support applescript and/or the 'do script' command, I opted to use the default macOS Terminal app for this.\n\nNOTE: If you undo the file delete with CMD+Z, the files will be put back but homebrew will not be aware of it. To get the homebrew list back in sync you'd need to run:\n\n> brew install APPNAME --force" : {
+
+    },
+    "When menubar icon is enabled, the main app window and dock icon will be disabled since the app will be put in accessory mode." : {
+
+    },
+    "When this mode is enabled, clicking the Uninstall button to remove an app will also close Pearcleaner right after.\nThis only affects Pearcleaner when it is opened via external means, like Sentinel Trash Monitor, Finder extension or a Deep Link.\nThis allows for single use of the app for a quick uninstall. When Pearcleaner is opened normally, this setting is ignored and will work as usual." : {
+
+    }
+  },
+  "version" : "1.0"
+}

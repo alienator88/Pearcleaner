@@ -63,6 +63,11 @@ func findAndSetWindowFrame(named titles: [String], windowSettings: WindowSetting
 func processCLI(arguments: [String], appState: AppState, locations: Locations, fsm: FolderSettingsManager) {
     let options = Array(arguments.dropFirst()) // Remove the first argument (binary path)
 
+    // Launch app in terminal for debugging purposes
+    func debugLaunch() {
+        print("[BETA] Pearcleaner CLI | Launching App For Debugging:\n")
+    }
+
     // Private function to list files for uninstall, using the provided path
     func listFiles(at path: String) {
         // Convert the provided string path to a URL
@@ -92,7 +97,7 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
     }
 
     // Private function to list orphaned files for uninstall, using the provided path
-    func listLeftoverFiles() {
+    func listOrphanedFiles() {
         print("[BETA] Pearcleaner CLI | List Orphaned Files:\n")
 
         // Get installed apps for filtering
@@ -164,7 +169,7 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
     }
 
     // Private function to remove the orphaned files
-    func removeLeftoverFiles() {
+    func removeOrphanedFiles() {
         print("[BETA] Pearcleaner CLI | Remove Orphaned Files:\n")
 
         // Get installed apps for filtering
@@ -184,6 +189,12 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
         }
     }
 
+    // Handle run option (-r or --run)
+    if options.contains("-r") || options.contains("--run") {
+        debugLaunch()
+        return
+    }
+
     // Handle help option (-h or --help)
     if options.contains("-h") || options.contains("--help") {
         displayHelp()
@@ -199,7 +210,7 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
 
     // Handle --listlf or -lf option with a path argument for listing orphaned files
     if options.contains("--list-orphaned") || options.contains("-lo") {
-        listLeftoverFiles()
+        listOrphanedFiles()
         exit(0)
     }
 
@@ -219,7 +230,7 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
 
     // Handle --uninstall-lf or -ulf option with a path argument for listing orphaned files
     if options.contains("--remove-orphaned") || options.contains("-ro") {
-        removeLeftoverFiles()
+        removeOrphanedFiles()
         exit(0)
     }
 
@@ -234,6 +245,7 @@ func displayHelp() {
             
             [BETA] Pearcleaner CLI | Usage:
             
+            --run, -r                            Launch Pearcleaner in Debug mode to see console logs
             --list <path>, -l <path>             List application files available for uninstall at the specified path
             --list-orphaned, -lo                 List orphaned files available for removal
             --uninstall <path>, -u <path>        Uninstall only the application bundle at the specified path

@@ -44,22 +44,22 @@ struct SettingsView: View {
                 .padding(.bottom, 8)
                 .padding(.horizontal, 9)
 
-            SidebarItemView(title: "General", systemImage: "gear", isSelected: selectedTab == .general) {
+            SidebarItemView(title: CurrentTabView.general.title, systemImage: "gear", isSelected: selectedTab == .general) {
                 selectedTab = .general
             }
-            SidebarItemView(title: "Interface", systemImage: "macwindow", isSelected: selectedTab == .interface) {
+            SidebarItemView(title: CurrentTabView.interface.title, systemImage: "macwindow", isSelected: selectedTab == .interface) {
                 selectedTab = .interface
             }
-            SidebarItemView(title: "Folders", systemImage: "folder", isSelected: selectedTab == .folders) {
+            SidebarItemView(title: CurrentTabView.folders.title, systemImage: "folder", isSelected: selectedTab == .folders) {
                 selectedTab = .folders
             }
-            SidebarItemView(title: "Update", systemImage: "cloud", isSelected: selectedTab == .update) {
+            SidebarItemView(title: CurrentTabView.update.title, systemImage: "cloud", isSelected: selectedTab == .update) {
                 selectedTab = .update
             }
-            SidebarItemView(title: "Tips", systemImage: "star", isSelected: selectedTab == .tips) {
-                selectedTab = .tips
-            }
-            SidebarItemView(title: "About", systemImage: "info.circle", isSelected: selectedTab == .about) {
+            // SidebarItemView(title: CurrentTabView.tips.title, systemImage: "star", isSelected: selectedTab == .tips) {
+            //     selectedTab = .tips
+            // }
+            SidebarItemView(title: CurrentTabView.about.title, systemImage: "info.circle", isSelected: selectedTab == .about) {
                 selectedTab = .about
             }
 
@@ -71,7 +71,7 @@ struct SettingsView: View {
             Button("") {
                 resetUserDefaults()
             }
-            .buttonStyle(ResetSettingsButtonStyle(isResetting: $isResetting, label: "Reset Settings", help: "Reset all settings to default"))
+            .buttonStyle(ResetSettingsButtonStyle(isResetting: $isResetting, label: String(localized: "Reset Settings"), help: String(localized: "Reset all settings to default")))
             .disabled(isResetting)
 
 
@@ -102,8 +102,8 @@ struct SettingsView: View {
             case .update:
                 UpdateSettingsTab()
                     .environmentObject(updater)
-            case .tips:
-                TipsSettingsTab()
+//            case .tips:
+//                TipsSettingsTab()
             case .about:
                 AboutSettingsTab()
             }

@@ -23,13 +23,12 @@ struct AppsListView: View {
                 let filteredSystemApps = filteredApps.filter { $0.system }
 
                 if !filteredUserApps.isEmpty {
-                    SectionView(title: "User", count: filteredUserApps.count, apps: filteredUserApps, search: $search, showPopover: $showPopover)
+                    SectionView(title: String(localized: "User"), count: filteredUserApps.count, apps: filteredUserApps, search: $search, showPopover: $showPopover)
                 }
 
 
                 if !filteredSystemApps.isEmpty {
-                    SectionView(title: "System", count: filteredSystemApps.count, apps: filteredSystemApps, search: $search, showPopover: $showPopover)
-                }
+                    SectionView(title: String(localized: "System"), count: filteredSystemApps.count, apps: filteredSystemApps, search: $search, showPopover: $showPopover)                }
             }
             .padding(.top, !mini ? 4 : 0)
         }

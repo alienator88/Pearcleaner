@@ -161,10 +161,3 @@ struct MiniAppView: View {
         }
     }
 }
-
-
-
-
-
-
-

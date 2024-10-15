@@ -45,12 +45,6 @@ class DeeplinkManager {
                     }
                 }
 
-                if oneShotMode {
-                    updateOnMain {
-                        appState.oneShotMode = true
-                    }
-                }
-
             } else {
                 printOS("No path query parameter found in the URL")
             }
@@ -63,12 +57,6 @@ class DeeplinkManager {
     func handleAppBundle(url: URL, appState: AppState, locations: Locations) {
         let appInfo = AppInfoFetcher.getAppInfo(atPath: url)
         showAppInFiles(appInfo: appInfo!, appState: appState, locations: locations, showPopover: $showPopover)
-        // Even if enabled, disable one-shot mode for app drops
-        if oneShotMode {
-            updateOnMain {
-                appState.oneShotMode = false
-            }
-        }
     }
     
 }

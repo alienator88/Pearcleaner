@@ -72,7 +72,7 @@ struct ZombieView: View {
                                 showPopover = false
                             }
                         }
-                        .buttonStyle(SimpleButtonStyle(icon: "x.circle", iconFlip: "x.circle.fill", help: "Close"))
+                        .buttonStyle(SimpleButtonStyle(icon: "x.circle", iconFlip: "x.circle.fill", help: String(localized: "Close")))
                     }
                 }
                 .padding(.top, (mini || menubarEnabled) ? 6 : 30)
@@ -112,7 +112,7 @@ struct ZombieView: View {
                                     VStack(alignment: .trailing, spacing: 5) {
                                         Text("\(displaySizeTotal)").font(.callout).fontWeight(.bold)//.help("Total size on disk")
 
-                                        Text("\(selectedZombieItemsLocal.count) of \(searchZ.isEmpty ? appState.zombieFile.fileSize.count : memoizedFiles.count) \(appState.zombieFile.fileSize.count == 1 ? "item" : "items")")
+                                        Text("\(selectedZombieItemsLocal.count) \(String(localized: "of")) \(searchZ.isEmpty ? appState.zombieFile.fileSize.count : memoizedFiles.count) \(appState.zombieFile.fileSize.count == 1 ? "\(String(localized: "item"))" : "\(String(localized: "items"))")")
                                             .font(.footnote).foregroundStyle(.secondary)
                                     }
 
@@ -174,7 +174,7 @@ struct ZombieView: View {
                             selectedSortAlpha.toggle()
                             updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSortAlpha: selectedSortAlpha, force: true)
                         }
-                        .buttonStyle(SimpleButtonStyle(icon: "line.3.horizontal.decrease.circle", label: selectedSortAlpha ? "Name" : "Size", help: selectedSortAlpha ? "Sorted alphabetically" : "Sorted by size", size: 16))
+                        .buttonStyle(SimpleButtonStyle(icon: "line.3.horizontal.decrease.circle", label: String(localized: selectedSortAlpha ? "Name" : "Size"), help: String(localized: selectedSortAlpha ? "Sorted alphabetically" : "Sorted by size"), size: 16))
 
 
                     }
@@ -219,7 +219,7 @@ struct ZombieView: View {
                         .buttonStyle(RescanButton())
 
                         Button("\(sizeType == "Logical" ? totalLogicalSizeUninstallBtn : totalRealSizeUninstallBtn)") {
-                            showCustomAlert(enabled: confirmAlert, title: "Warning", message: "Are you sure you want to remove these files?", style: .warning, onOk: {
+                            showCustomAlert(enabled: confirmAlert, title: String(localized: "Warning"), message: String(localized: "Are you sure you want to remove these files?"), style: .warning, onOk: {
                                 Task {
 
                                     let selectedItemsArray = Array(selectedZombieItemsLocal)
@@ -284,14 +284,14 @@ struct ZombieView: View {
                                 .font(.headline)
                             Divider()
                             Spacer()
-                            Text("Leftover file search is not 100% accurate as it doesn't have any uninstalled app bundles to check against for file exclusion. This does a best guess search for files/folders and excludes the ones that have overlap with your currently installed applications. Please confirm files marked for deletion really do belong to uninstalled applications.")
+                            Text("Orphaned file search is not 100% accurate as it doesn't have any uninstalled app bundles to check against for file exclusion. This does a best guess search for files/folders and excludes the ones that have overlap with your currently installed applications. Please confirm files marked for deletion really do belong to uninstalled applications.")
                                 .font(.subheadline)
                             Spacer()
                             Button("Close") {
                                 warning = true
                                 showAlert = false
                             }
-                            .buttonStyle(SimpleButtonStyle(icon: "x.circle.fill", label: "Close", help: "Dismiss"))
+                            .buttonStyle(SimpleButtonStyle(icon: "x.circle.fill", label: String(localized: "Close"), help: String(localized: "Dismiss")))
                             Spacer()
                         }
                         .padding(15)

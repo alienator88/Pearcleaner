@@ -43,7 +43,7 @@ struct GeneralSettingsTab: View {
                                     Text("Homebrew cleanup after uninstall")
                                         .font(.callout)
                                         .foregroundStyle(.primary.opacity(1))
-                                    InfoButton(text: "When homebrew cleanup is enabled, Pearcleaner will check if the app you are removing was installed via homebrew and launch Terminal.app to execute a brew uninstall and cleanup command to let homebrew know that the app is removed. This way your homebrew list will be synced up correctly and caching will be removed. Terminal.app is required since some apps need sudo permissions to remove services and files placed in system folders. Since other terminal apps don't support applescript and/or the 'do script' command, I opted to use the default macOS Terminal app for this.\n\nNOTE: If you undo the file delete with CMD+Z, the files will be put back but homebrew will not be aware of it. To get the homebrew list back in sync you'd need to run:\n\n> brew install APPNAME --force")
+                                    InfoButton(text: String(localized: "When homebrew cleanup is enabled, Pearcleaner will check if the app you are removing was installed via homebrew and launch Terminal.app to execute a brew uninstall and cleanup command to let homebrew know that the app is removed. This way your homebrew list will be synced up correctly and caching will be removed. Terminal.app is required since some apps need sudo permissions to remove services and files placed in system folders. Since other terminal apps don't support applescript and/or the 'do script' command, I opted to use the default macOS Terminal app for this.\n\nNOTE: If you undo the file delete with CMD+Z, the files will be put back but homebrew will not be aware of it. To get the homebrew list back in sync you'd need to run:\n\n> brew install APPNAME --force"))
                                 }
 
                             }
@@ -72,7 +72,7 @@ struct GeneralSettingsTab: View {
                                     .foregroundStyle(.primary)
                             }
 
-                            InfoButton(text: "When deleting files using the Trash button, you can prevent accidental deletions by showing an alert before proceeding with the action.")
+                            InfoButton(text: String(localized: "When deleting files using the Trash button, you can prevent accidental deletions by showing an alert before proceeding with the action."))
 
                             Spacer()
                             Toggle(isOn: $confirmAlert, label: {
@@ -96,7 +96,7 @@ struct GeneralSettingsTab: View {
                                     .foregroundStyle(.primary)
                             }
 
-                            InfoButton(text: "When this mode is enabled, clicking the Uninstall button to remove an app will also close Pearcleaner right after.\nThis only affects Pearcleaner when it is opened via external means, like Sentinel Trash Monitor, Finder extension or a Deep Link.\nThis allows for single use of the app for a quick uninstall. When Pearcleaner is opened normally, this setting is ignored and will work as usual.")
+                            InfoButton(text: String(localized: "When this mode is enabled, clicking the Uninstall button to remove an app will also close Pearcleaner right after.\nThis only affects Pearcleaner when it is opened via external means, like Sentinel Trash Monitor, Finder extension or a Deep Link.\nThis allows for single use of the app for a quick uninstall. When Pearcleaner is opened normally, this setting is ignored and will work as usual."))
 
                             Spacer()
                             Toggle(isOn: $oneShotMode, label: {
@@ -144,7 +144,7 @@ struct GeneralSettingsTab: View {
                                     .font(.callout)
                                     .foregroundStyle(.primary)
                             }
-                            InfoButton(text: "Real size type will show how much actual allocated space the file has on disk.\n\nLogical type shows the binary size. The filesystem can compress and deduplicate sectors on disk, so real size is sometimes smaller(or bigger) than logical size.\n\nFinder size is similar to if you right click > Get Info on a file in Finder, which will show both the logical and real sizes together.")
+                            InfoButton(text: String(localized: "Real size type will show how much actual allocated space the file has on disk.\n\nLogical type shows the binary size. The filesystem can compress and deduplicate sectors on disk, so real size is sometimes smaller(or bigger) than logical size.\n\nFinder size is similar to if you right click > Get Info on a file in Finder, which will show both the logical and real sizes together."))
                             Spacer()
                             Picker("", selection: $sizeType) {
                                 Text("Real")
@@ -179,7 +179,7 @@ struct GeneralSettingsTab: View {
                         Text("Detect when apps are moved to Trash")
                             .font(.callout)
                             .foregroundStyle(.primary)
-                        InfoButton(text: "When applications are moved to Trash, Pearcleaner will launch and find related files and folders for deletion.")
+                        InfoButton(text: String(localized: "When applications are moved to Trash, Pearcleaner will launch and find related files and folders for deletion."))
                         Spacer()
 
                         Toggle(isOn: $sentinel, label: {
@@ -212,7 +212,7 @@ struct GeneralSettingsTab: View {
                         Text("Enable context menu extension for Finder")
                             .font(.callout)
                             .foregroundStyle(.primary)
-                        InfoButton(text: "Enabling this extension will allow you to right click apps in Finder to quickly uninstall them with Pearcleaner")
+                        InfoButton(text: String(localized: "Enabling this extension will allow you to right click apps in Finder to quickly uninstall them with Pearcleaner"))
 
                         Spacer()
 
@@ -252,7 +252,7 @@ struct GeneralSettingsTab: View {
                         Text("Pearcleaner CLI support")
                             .font(.callout)
                             .foregroundStyle(.primary)
-                        InfoButton(text: "Enabling the CLI will allow you to execute Pearcleaner actions from the Terminal. This will add pearcleaner command into /usr/local/bin so it's available directly from your PATH environment variable. Try it after enabling:\n\n> pearcleaner --help")
+                        InfoButton(text: String(localized: "Enabling the CLI will allow you to execute Pearcleaner actions from the Terminal. This will add pearcleaner command into /usr/local/bin so it's available directly from your PATH environment variable. Try it after enabling:\n\n> pearcleaner --help"))
                         Spacer()
 
                         Toggle(isOn: $isCLISymlinked, label: {
