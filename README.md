@@ -31,6 +31,9 @@ This project was born out of wanting to learn more on how macOS deals with app i
 ## Poll
 If you have the time, please vote in this poll to help me make some future changes to the app: https://github.com/alienator88/Pearcleaner/discussions/120
 
+## Translations
+If you are able to contribute to translations for the app, please see issue: https://github.com/alienator88/Pearcleaner/issues/83
+
 ## License
 > [!IMPORTANT]
 > Pearcleaner is licensed under Apache 2.0 with [Commons Clause](https://commonsclause.com/). This means that you can do anything you'd like with the source, modify it, contribute to it, etc., but the license explicitly prohibits any form of monetization for Pearcleaner or any modified versions of it. See full license [HERE](https://github.com/alienator88/Pearcleaner/blob/main/LICENSE.md)
