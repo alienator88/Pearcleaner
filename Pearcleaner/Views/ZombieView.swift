@@ -105,14 +105,14 @@ struct ZombieView: View {
                                     VStack(alignment: .leading, spacing: 5) {
                                         Text("Total size of files:")
                                             .font(.callout).fontWeight(.bold)
-                                        Text("")
+                                        Text(verbatim: "")
                                             .font(.footnote)
                                     }
                                     Spacer()
                                     VStack(alignment: .trailing, spacing: 5) {
-                                        Text("\(displaySizeTotal)").font(.callout).fontWeight(.bold)//.help("Total size on disk")
+                                        Text(verbatim: "\(displaySizeTotal)").font(.callout).fontWeight(.bold)//.help("Total size on disk")
 
-                                        Text("\(selectedZombieItemsLocal.count) \(String(localized: "of")) \(searchZ.isEmpty ? appState.zombieFile.fileSize.count : memoizedFiles.count) \(appState.zombieFile.fileSize.count == 1 ? "\(String(localized: "item"))" : "\(String(localized: "items"))")")
+                                        Text(verbatim: "\(selectedZombieItemsLocal.count) \(String(localized: "of")) \(searchZ.isEmpty ? appState.zombieFile.fileSize.count : memoizedFiles.count) \(appState.zombieFile.fileSize.count == 1 ? "\(String(localized: "item"))" : "\(String(localized: "items"))")")
                                             .font(.footnote).foregroundStyle(.secondary)
                                     }
 
@@ -218,7 +218,7 @@ struct ZombieView: View {
                         }
                         .buttonStyle(RescanButton())
 
-                        Button("\(sizeType == "Logical" ? totalLogicalSizeUninstallBtn : totalRealSizeUninstallBtn)") {
+                        Button {
                             showCustomAlert(enabled: confirmAlert, title: String(localized: "Warning"), message: String(localized: "Are you sure you want to remove these files?"), style: .warning, onOk: {
                                 Task {
 
@@ -264,7 +264,7 @@ struct ZombieView: View {
 
                             })
 
-                            }
+                        } label: { Text(verbatim: "\(sizeType == "Logical" ? totalLogicalSizeUninstallBtn : totalRealSizeUninstallBtn)") }
                             .buttonStyle(UninstallButton(isEnabled: !selectedZombieItemsLocal.isEmpty))
                             .disabled(selectedZombieItemsLocal.isEmpty)
 
@@ -486,7 +486,7 @@ struct ZombieFileDetailsItem: View {
             let displaySize = sizeType == "Real" ? formatByte(size: size!).human :
             formatByte(size: sizeL!).human
 
-            Text("\(displaySize)")
+            Text(verbatim: "\(displaySize)")
 
         }
         .contextMenu {

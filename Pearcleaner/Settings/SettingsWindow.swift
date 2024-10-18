@@ -28,7 +28,7 @@ struct SettingsView: View {
                 detailView
             }
         }
-        .navigationTitle("")
+        .navigationTitle(Text(verbatim: ""))
         .frame(width: 750, height: 620)
     }
 

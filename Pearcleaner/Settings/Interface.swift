@@ -158,7 +158,7 @@ struct InterfaceSettingsTab: View {
                         })
                         .toggleStyle(.switch)
                         .disabled(menubarEnabled)
-                        .help(menubarEnabled ? String(localized: "Disabled when menubar icon is enabled") : String(localized: ""))
+                        .help(menubarEnabled ? String(localized: "Disabled when menubar icon is enabled") : "")
                         .onChange(of: mini) { newVal in
                             if mini {
                                 appState.currentView = miniView ? .apps : .empty
