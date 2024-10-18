@@ -371,7 +371,7 @@ struct InterfaceSettingsTab: View {
                                 .foregroundStyle(.primary)
                         }
                         Spacer()
-                        Picker("", selection: $selectedMenubarIcon) {
+                        Picker(selection: $selectedMenubarIcon) {
                             ForEach(icons, id: \.self) { icon in
                                 HStack {
                                     Image(systemName: icon)
@@ -381,7 +381,7 @@ struct InterfaceSettingsTab: View {
                                 .tag(icon)
 
                             }
-                        }
+                        } label: { EmptyView() }
                         .frame(width: 60)
                         .onChange(of: selectedMenubarIcon) { newValue in
                             MenuBarExtraManager.shared.swapMenuBarIcon(icon: newValue)

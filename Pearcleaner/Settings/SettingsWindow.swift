@@ -68,9 +68,9 @@ struct SettingsView: View {
             Text("v\(Bundle.main.version)").foregroundStyle(.secondary)
                 .padding(.bottom, 4)
 
-            Button("") {
+            Button {
                 resetUserDefaults()
-            }
+            } label: { EmptyView() }
             .buttonStyle(ResetSettingsButtonStyle(isResetting: $isResetting, label: String(localized: "Reset Settings"), help: String(localized: "Reset all settings to default")))
             .disabled(isResetting)
 

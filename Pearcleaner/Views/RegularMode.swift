@@ -104,13 +104,13 @@ struct RegularMode: View {
             VStack(spacing: 0) {
                 HStack {
                     Spacer()
-                    Picker("", selection: $appState.currentPage) {
+                    Picker(selection: $appState.currentPage) {
                         ForEach(CurrentPage.allCases) { page in
                             Text(page.title)
                                 .font(.title3)
                                 .tag(page)
                         }
-                    }
+                    } label: { EmptyView() }
                     .buttonStyle(.borderless)
                     .padding(2)
                     .padding(.vertical, 2)

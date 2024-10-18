@@ -203,14 +203,14 @@ struct FilesView: View {
 
                     // Item selection and sorting toolbar
                     HStack() {
-                        Toggle("", isOn: Binding(
+                        Toggle(isOn: Binding(
                             get: { self.appState.selectedItems.count == self.appState.appInfo.fileSize.keys.count },
                             set: { newValue in
                                 updateOnMain {
                                     self.appState.selectedItems = newValue ? Set(self.appState.appInfo.fileSize.keys) : []
                                 }
                             }
-                        ))
+                        )) { EmptyView() }
                         .toggleStyle(SimpleCheckboxToggleStyle())
                         .help("All checkboxes")
 
@@ -272,9 +272,9 @@ struct FilesView: View {
 
                         Spacer()
 
-                        Button("") {
+                        Button {
                             selectedSortAlpha.toggle()
-                        }
+                        } label: { EmptyView() }
                         .buttonStyle(SimpleButtonStyle(icon: "line.3.horizontal.decrease.circle", label: String(localized: selectedSortAlpha ? "Name" : "Size"), help: String(localized: selectedSortAlpha ? "Sorted alphabetically" : "Sorted by size"), size: 16))
 
                     }
@@ -483,7 +483,7 @@ struct FileDetailsItem: View {
     var body: some View {
 
         HStack(alignment: .center, spacing: 20) {
-            Toggle("", isOn: Binding(
+            Toggle(isOn: Binding(
                 get: { self.appState.selectedItems.contains(self.path) },
                 set: { isChecked in
                     if isChecked {
@@ -492,7 +492,7 @@ struct FileDetailsItem: View {
                         self.appState.selectedItems.remove(self.path)
                     }
                 }
-            ))
+            )) { EmptyView() }
             .toggleStyle(SimpleCheckboxToggleStyle())
             .disabled(self.path.path.contains(".Trash"))
 

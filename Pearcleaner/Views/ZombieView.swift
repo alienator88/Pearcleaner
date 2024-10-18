@@ -127,7 +127,7 @@ struct ZombieView: View {
 
                     // Item selection and sorting toolbar
                     HStack {
-                        Toggle("", isOn: Binding(
+                        Toggle(isOn: Binding(
                             get: {
                                 if searchZ.isEmpty {
                                     // All items are selected if no filter is applied and all items are selected
@@ -158,7 +158,7 @@ struct ZombieView: View {
 
                                 updateTotalSizes()
                             }
-                        ))
+                        )) { EmptyView() }
                         .toggleStyle(SimpleCheckboxToggleStyle())
                         .help("All checkboxes")
 
@@ -170,10 +170,10 @@ struct ZombieView: View {
 
 
 
-                        Button("") {
+                        Button {
                             selectedSortAlpha.toggle()
                             updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSortAlpha: selectedSortAlpha, force: true)
-                        }
+                        } label: { EmptyView() }
                         .buttonStyle(SimpleButtonStyle(icon: "line.3.horizontal.decrease.circle", label: String(localized: selectedSortAlpha ? "Name" : "Size"), help: String(localized: selectedSortAlpha ? "Sorted alphabetically" : "Sorted by size"), size: 16))
 
 
@@ -427,7 +427,7 @@ struct ZombieFileDetailsItem: View {
     var body: some View {
 
         HStack(alignment: .center, spacing: 20) {
-            Toggle("", isOn: $isSelected)
+            Toggle(isOn: $isSelected) { EmptyView() }
             .toggleStyle(SimpleCheckboxToggleStyle())
 
             if let appIcon = icon {
