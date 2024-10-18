@@ -341,3 +341,51 @@ func backgroundView(themeManager: ThemeManager = ThemeManager.shared, darker: Bo
     }
 }
 
+
+
+struct GlowGradientButton: View {
+    // Define gradient colors for the button
+    let gradientColors = Gradient(colors: [.blue,.purple,.pink,.red,.blue])
+
+    // State variables to control animation and press state
+    @State var isAnimating = false
+    @State var isPressed = false
+
+    var body: some View {
+        ZStack{
+            // Background of the button with stroke, blur, and offset effects
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(AngularGradient(gradient: gradientColors, center: .center, angle: .degrees(isAnimating ? 360 : 0)), lineWidth: 10)
+                .blur(radius: 30)
+            //                .offset(y: 30) // Move the glow up or down
+                .frame(width: 230, height: 30)
+
+            // Text label for the button
+            Text(verbatim: "Hello")
+                .font(.system(size: 24))
+                .frame(width: 280, height: 60)
+                .background(.quinary.opacity(0.2), in: RoundedRectangle(cornerRadius: 20))
+                .foregroundStyle(.white)
+                .overlay(
+                    // Overlay to create glow effect
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(AngularGradient(gradient: gradientColors, center: .center, angle: .degrees(isAnimating ? 360 : 0)), lineWidth: 2)
+                )
+        }
+        // Scale effect when pressed
+        .scaleEffect(isPressed ? 0.95 : 1)
+        .animation(.easeInOut(duration: 0.2), value: isPressed)
+        .onAppear() {
+            // Animation to rotate gradient colors infinitely
+            withAnimation(.linear(duration: 3).repeatForever(autoreverses: false)) {
+                isAnimating = true
+            }
+        }
+        // Gesture to detect button press
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged({_ in isPressed = true})
+                .onEnded({_ in isPressed = false})
+        )
+    }
+}

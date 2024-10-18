@@ -70,7 +70,7 @@ struct RegularMode: View {
                         Spacer()
                         Group {
                             if appState.currentView == .empty || appState.currentView == .apps {
-                                AppDetailsEmptyView(showPopover: $showPopover)
+                                AppDetailsEmptyView()
                             } else if appState.currentView == .files {
                                 FilesView(showPopover: $showPopover, search: $search)
                                     .id(appState.appInfo.id)
@@ -139,12 +139,10 @@ struct RegularMode: View {
 
 
 struct AppDetailsEmptyView: View {
-    @Environment(\.colorScheme) var colorScheme
-    @EnvironmentObject var appState: AppState
-    @EnvironmentObject var locations: Locations
-    //    @AppStorage("settings.general.animateLogo") private var animateLogo: Bool = true
-    @Binding var showPopover: Bool
-    //    @State private var animationStart = false
+//    @Environment(\.colorScheme) var colorScheme
+//    @EnvironmentObject var appState: AppState
+//    @EnvironmentObject var locations: Locations
+//    @Binding var showPopover: Bool
 
     var body: some View {
         VStack(alignment: .center) {
@@ -152,34 +150,12 @@ struct AppDetailsEmptyView: View {
             Spacer()
 
             PearDropView()
-            //            if #available(macOS 14, *) {
-            //                if animateLogo && animationStart {
-            //                    PearDropView()
-            //                        .phaseAnimator([false, true]) { wwdc24, chromaRotate in
-            //                            wwdc24
-            //                                .hueRotation(.degrees(chromaRotate ? 420 : 0))
-            //                        } animation: { chromaRotate in
-            //                                .easeInOut(duration: 6)
-            //                        }
-            //                } else {
-            //                    PearDropView()
-            //                }
-            //
-            //            } else {
-            //                PearDropView()
-            //            }
+
+//            GlowGradientButton()
 
             Spacer()
 
-            //            Text("Drop an app here")
-            //                .font(.title3)
-            //                .padding(.bottom, 25)
-            //                .opacity(0.5)
         }
-        //        .onAppear {
-        //            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-        //                animationStart = true
-        //            }
-        //        }
+
     }
 }
