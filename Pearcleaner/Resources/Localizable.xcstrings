@@ -1,39 +1,11 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : ""
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
     "(Build %@)" : {
 
     },
     "/Full/Path/example-1.txt, /Full/Path/example-2.txt" : {
 
-    },
-    "%@" : {
-      "shouldTranslate" : false
-    },
-    "%lld" : {
-      "shouldTranslate" : false
-    },
-    "%lld %@ %lld %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$lld %2$@ %3$lld %4$@"
-          }
-        }
-      },
-      "shouldTranslate" : false
     },
     "•" : {
       "localizations" : {

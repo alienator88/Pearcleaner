@@ -82,9 +82,9 @@ struct Header: View {
 
     var body: some View {
         HStack {
-            Text("\(title)").foregroundStyle(.primary).opacity(0.5)
+            Text(verbatim: "\(title)").foregroundStyle(.primary).opacity(0.5)
 
-            Text("\(count)")
+            Text(verbatim: "\(count)")
                 .font(.system(size: 10))
                 .monospacedDigit()
                 .frame(minWidth: count > 99 ? 30 : 24, minHeight: 17)

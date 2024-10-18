@@ -72,9 +72,9 @@ struct AboutSettingsTab: View {
 
                         }
                         Spacer()
-                        Button(""){
+                        Button {
                             NSWorkspace.shared.open(URL(string: "https://github.com/alienator88/Pearcleaner/issues/new/choose")!)
-                        }
+                        } label: { EmptyView() }
                         .buttonStyle(SimpleButtonStyle(icon: "paperplane", help: String(localized: "View")))
 
                     }
@@ -92,16 +92,16 @@ struct AboutSettingsTab: View {
 
                         Text("View project contributors")
 
-                        DisclosureGroup("", isExpanded: $disclose, content: {
+                        DisclosureGroup(isExpanded: $disclose) {
                             ScrollView {
                                 LazyVStack(alignment: .leading, spacing: 0) {
                                     ForEach(sponsors) { sponsor in
                                         HStack() {
                                             Text(sponsor.name)
                                             Spacer()
-                                            Button(""){
+                                            Button {
                                                 NSWorkspace.shared.open(sponsor.url)
-                                            }
+                                            } label: { EmptyView() }
                                             .buttonStyle(SimpleButtonStyle(icon: "link", help: String(localized: "View")))
                                             .padding(.trailing)
                                         }
@@ -111,7 +111,7 @@ struct AboutSettingsTab: View {
                             }
                             .frame(height: 45)
                             .padding(5)
-                        })
+                        } label: { EmptyView() }
 
 //                        Button(action: {
 //                            NSWorkspace.shared.open(URL(string: "https://github.com/sponsors/alienator88")!)

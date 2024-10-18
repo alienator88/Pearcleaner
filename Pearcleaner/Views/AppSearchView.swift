@@ -92,7 +92,7 @@ struct AppSearchView: View {
                 .popover(isPresented: $showMenu) {
                     VStack(alignment: .leading) {
 
-                        Button("") {
+                        Button {
                             withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                                 // Cycle through all enum cases using `CaseIterable`
                                 if let nextSortOption = SortOption(rawValue: selectedSortOption.rawValue + 1) {
@@ -105,17 +105,17 @@ struct AppSearchView: View {
                                     showMenu = false
                                 }
                             }
-                        }
+                        } label: { EmptyView() }
                         .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Sorting: \(selectedSortOption.title)", help: "Sort app list alphabetically by name or by size", size: 5))
 
                         if mini && !menubarEnabled {
-                            Button("") {
+                            Button {
                                 withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                                     appState.currentView = .empty
                                     appState.appInfo = AppInfo.empty
                                     showPopover = false
                                 }
-                            }
+                            } label: { EmptyView() }
                             .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Drop Target", help: "Drop Target", size: 5))
                         }
 
@@ -168,11 +168,11 @@ struct AppSearchView: View {
                 }
             } else if search.isEmpty && (!mini || !menubarEnabled) {
 
-                Button("") {
+                Button {
                     withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                         showMenu.toggle()
                     }
-                }
+                } label: { EmptyView() }
                 .buttonStyle(SimpleButtonStyle(icon: "line.3.horizontal.decrease.circle", help: selectedSortOption.title, size: 16))
                 .popover(isPresented: $showMenu, arrowEdge: .bottom) {
                     VStack(alignment: .leading, spacing: 10) {
@@ -183,12 +183,12 @@ struct AppSearchView: View {
                         }
                         Divider()
                         ForEach(SortOption.allCases) { option in
-                            Button("") {
+                            Button {
                                 withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                                     selectedSortOption = option
                                     showMenu = false
                                 }
-                            }
+                            } label: { EmptyView() }
                             .buttonStyle(SimpleButtonStyle(icon: selectedSortOption == option ? "circle.inset.filled" : "circle", label: option.title, help: "", size: 5))
 
 
@@ -287,9 +287,9 @@ struct SimpleSearchStyle: TextFieldStyle {
                     Spacer()
 
                     if trash && text != "" {
-                        Button("") {
+                        Button {
                             text = ""
-                        }
+                        } label: { EmptyView() }
                         .buttonStyle(SimpleButtonStyle(icon: "delete.left.fill", help: String(localized: "Clear text"), size: 14, padding: padding))
                     }
                 }
@@ -332,7 +332,7 @@ struct SearchBar: View {
 
     var body: some View {
         HStack {
-            TextField("", text: $search)
+            TextField(text: $search) { EmptyView() }
                 .textFieldStyle(SimpleSearchStyle(trash: true, text: $search, darker: darker, glass: glass, padding: padding, sidebar: sidebar))
         }
     }

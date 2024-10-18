@@ -109,19 +109,19 @@ struct FilesView: View {
                                     }
                                     VStack(alignment: .leading) {
                                         HStack(alignment: .center) {
-                                            Text("\(appState.appInfo.appName)").font(.title).fontWeight(.bold).lineLimit(1)
+                                            Text(verbatim: "\(appState.appInfo.appName)").font(.title).fontWeight(.bold).lineLimit(1)
                                             Image(systemName: "circle.fill").foregroundStyle(Color("AccentColor")).font(.system(size: 5))
-                                            Text("\(appState.appInfo.appVersion)").font(.title3)
+                                            Text(verbatim: "\(appState.appInfo.appVersion)").font(.title3)
 
                                         }
-                                        Text("\(appState.appInfo.bundleIdentifier)")
+                                        Text(verbatim: "\(appState.appInfo.bundleIdentifier)")
                                             .lineLimit(1)
                                             .font(.title3)
                                             .foregroundStyle((.primary.opacity(0.5)))
                                     }
                                     Spacer()
 
-                                    Button("\(detailsEnabled ? String(localized: "Hide Details") : String(localized: "Show Details"))") {
+                                    Button(detailsEnabled ? "Hide Details" : "Show Details") {
                                         withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                                             detailsEnabled.toggle()
                                         }
@@ -135,7 +135,7 @@ struct FilesView: View {
                                         VStack(alignment: .leading, spacing: 5) {
                                             Text("Total size of files:")
                                                 .font(.callout).fontWeight(.bold)
-                                            Text("")
+                                            Text(verbatim: "")
                                                 .font(.footnote)
                                             Text("Installed Date:")
                                                 .font(.footnote)
@@ -147,9 +147,9 @@ struct FilesView: View {
                                         }
                                         Spacer()
                                         VStack(alignment: .trailing, spacing: 5) {
-                                            Text("\(displaySizeTotal)").font(.callout).fontWeight(.bold)//.help("Total size on disk")
+                                            Text(verbatim: "\(displaySizeTotal)").font(.callout).fontWeight(.bold)//.help("Total size on disk")
 
-                                            Text("\(appState.appInfo.fileSize.count == 1 ? "\(appState.selectedItems.count) \(String(localized: "of"))  \(appState.appInfo.fileSize.count) \(String(localized: "item"))" : "\(appState.selectedItems.count) \(String(localized: "of")) \(appState.appInfo.fileSize.count) \(String(localized: "items"))")")
+                                            Text(verbatim: "\(appState.appInfo.fileSize.count == 1 ? "\(appState.selectedItems.count) \(String(localized: "of"))  \(appState.appInfo.fileSize.count) \(String(localized: "item"))" : "\(appState.selectedItems.count) \(String(localized: "of")) \(appState.appInfo.fileSize.count) \(String(localized: "items"))")")
                                                 .font(.footnote)
 
                                             if let creationDate = appState.appInfo.creationDate {
@@ -203,14 +203,14 @@ struct FilesView: View {
 
                     // Item selection and sorting toolbar
                     HStack() {
-                        Toggle("", isOn: Binding(
+                        Toggle(isOn: Binding(
                             get: { self.appState.selectedItems.count == self.appState.appInfo.fileSize.keys.count },
                             set: { newValue in
                                 updateOnMain {
                                     self.appState.selectedItems = newValue ? Set(self.appState.appInfo.fileSize.keys) : []
                                 }
                             }
-                        ))
+                        )) { EmptyView() }
                         .toggleStyle(SimpleCheckboxToggleStyle())
                         .help("All checkboxes")
 
@@ -272,9 +272,9 @@ struct FilesView: View {
 
                         Spacer()
 
-                        Button("") {
+                        Button {
                             selectedSortAlpha.toggle()
-                        }
+                        } label: { EmptyView() }
                         .buttonStyle(SimpleButtonStyle(icon: "line.3.horizontal.decrease.circle", label: String(localized: selectedSortAlpha ? "Name" : "Size"), help: String(localized: selectedSortAlpha ? "Sorted alphabetically" : "Sorted by size"), size: 16))
 
                     }
@@ -341,7 +341,7 @@ struct FilesView: View {
 //                            .padding(.top)
 
 
-                        Button("\(sizeType == "Logical" ? totalSelectedSize.logical : totalSelectedSize.real)") {
+                        Button {
                             showCustomAlert(enabled: confirmAlert, title: String(localized: "Warning"), message: String(localized: "Are you sure you want to remove these files?"), style: .warning, onOk: {
                                 Task {
 
@@ -419,8 +419,8 @@ struct FilesView: View {
 
                                 }
                             })
-
-
+                        } label: {
+                            Text(verbatim: "\(sizeType == "Logical" ? totalSelectedSize.logical : totalSelectedSize.real)")
                         }
                         .buttonStyle(UninstallButton(isEnabled: !appState.selectedItems.isEmpty))
                         .disabled(appState.selectedItems.isEmpty)
@@ -483,7 +483,7 @@ struct FileDetailsItem: View {
     var body: some View {
 
         HStack(alignment: .center, spacing: 20) {
-            Toggle("", isOn: Binding(
+            Toggle(isOn: Binding(
                 get: { self.appState.selectedItems.contains(self.path) },
                 set: { isChecked in
                     if isChecked {
@@ -492,7 +492,7 @@ struct FileDetailsItem: View {
                         self.appState.selectedItems.remove(self.path)
                     }
                 }
-            ))
+            )) { EmptyView() }
             .toggleStyle(SimpleCheckboxToggleStyle())
             .disabled(self.path.path.contains(".Trash"))
 
@@ -555,7 +555,7 @@ struct FileDetailsItem: View {
 
             let displaySize = sizeType == "Real" ? formatByte(size: size!).human :
             formatByte(size: sizeL!).human
-            Text("\(displaySize)")
+            Text(verbatim: "\(displaySize)")
 
         }
         .contextMenu {

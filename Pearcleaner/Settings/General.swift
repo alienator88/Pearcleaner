@@ -146,14 +146,14 @@ struct GeneralSettingsTab: View {
                             }
                             InfoButton(text: String(localized: "Real size type will show how much actual allocated space the file has on disk.\n\nLogical type shows the binary size. The filesystem can compress and deduplicate sectors on disk, so real size is sometimes smaller(or bigger) than logical size.\n\nFinder size is similar to if you right click > Get Info on a file in Finder, which will show both the logical and real sizes together."))
                             Spacer()
-                            Picker("", selection: $sizeType) {
+                            Picker(selection: $sizeType) {
                                 Text("Real")
                                     .tag("Real")
                                 Text("Logical")
                                     .tag("Logical")
 //                                Text("Finder")
 //                                    .tag("Finder")
-                            }
+                            } label: { EmptyView() }
                             .buttonStyle(.borderless)
 
                         }

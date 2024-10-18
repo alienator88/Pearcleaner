@@ -96,9 +96,9 @@ struct FolderSettingsTab: View {
                     HStack {
                         Spacer()
                         Text("Drop folders above or click to add").opacity(0.5)
-                        Button("") {
+                        Button {
                             selectFolder()
-                        }
+                        } label: { EmptyView() }
                         .buttonStyle(SimpleButtonStyle(icon: "plus.circle", help: String(localized: "Add folder"), size: 16, rotate: true))
                         Spacer()
                     }
@@ -183,9 +183,9 @@ struct FolderSettingsTab: View {
                     HStack {
                         Spacer()
                         Text("Drop files or folders above or click to add").opacity(0.5)
-                        Button("") {
+                        Button {
                             selectFilesFoldersZ()
-                        }
+                        } label: { EmptyView() }
                         .buttonStyle(SimpleButtonStyle(icon: "plus.circle", help: String(localized: "Add file/folder"), size: 16, rotate: true))
                         Spacer()
                     }
