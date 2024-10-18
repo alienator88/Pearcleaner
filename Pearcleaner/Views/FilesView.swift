@@ -119,13 +119,19 @@ struct FilesView: View {
                                             .font(.title3)
                                             .foregroundStyle((.primary.opacity(0.5)))
                                     }
-                                    Spacer()
 
-                                    Button(detailsEnabled ? "Hide Details" : "Show Details") {
+                                    Button() {
                                         withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                                             detailsEnabled.toggle()
                                         }
+                                    } label: {
+                                        Text(detailsEnabled ? "Hide Details" : "Show Details")
                                     }
+                                    .buttonStyle(.bordered)
+                                    .padding()
+
+                                    Spacer()
+
                                 }
 
                             }, content: {
