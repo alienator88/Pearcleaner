@@ -19,6 +19,7 @@ struct SettingsView: View {
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.general.selectedTab") private var selectedTab: CurrentTabView = .general
     @State private var isResetting = false
+    @State private var showPerms = false
 
     var body: some View {
 
@@ -65,8 +66,24 @@ struct SettingsView: View {
 
             Spacer()
 
-            Text("v\(Bundle.main.version)").foregroundStyle(.secondary)
-                .padding(.bottom, 4)
+            HStack {
+                Text(verbatim: "v\(Bundle.main.version)").font(.footnote).foregroundStyle(.secondary)
+                Text(verbatim: "|").font(.footnote).foregroundStyle(.secondary)
+
+                Button() {
+                    showPerms.toggle()
+                } label: {
+                    Text(String(localized: "Permissions").uppercased())
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+                .sheet(isPresented: $showPerms, content: {
+                    PermissionsListView()
+                })
+            }
+            .padding(.bottom, 4)
+
 
             Button {
                 resetUserDefaults()

@@ -309,6 +309,9 @@
     "Pearcleaner Uninstall" : {
       "comment" : "Right click context menu item when using the Finder extension to uninstall using Pearcleaner"
     },
+    "Permissions" : {
+
+    },
     "Pin popover window on top" : {
 
     },
