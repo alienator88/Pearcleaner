@@ -34,8 +34,7 @@ struct AppSearchView: View {
 
 
             searchBarComponent
-                .padding(.horizontal, search.isEmpty ? 10 : 5)
-                .padding(.bottom, 5)
+                .padding(8)
 
             Divider()
 
@@ -52,15 +51,15 @@ struct AppSearchView: View {
             if updater.updateAvailable {
                 Divider()
                 UpdateBadge(updater: updater)
-                    .padding(8)
+                    .padding()
             } else if let _ = permissionManager.results, !permissionManager.allPermissionsGranted {
                 Divider()
                 PermissionsBadge()
-                    .padding(8)
+                    .padding()
             } else if updater.announcementAvailable {
                 Divider()
                 FeatureBadge(updater: updater)
-                    .padding(8)
+                    .padding()
             }
 
         }
@@ -81,6 +80,7 @@ struct AppSearchView: View {
                 .buttonStyle(SimpleButtonStyle(icon: "arrow.counterclockwise.circle", help: String(localized: "Refresh apps (⌘+R)"), size: 16))
             }
 
+
             SearchBar(search: $search, darker: (mini || menubarEnabled) ? false : true, glass: glass, sidebar: false)
 
 
@@ -91,6 +91,14 @@ struct AppSearchView: View {
                 .buttonStyle(SimpleButtonStyle(icon: "ellipsis.circle", help: String(localized: "More"), size: 16, rotate: false))
                 .popover(isPresented: $showMenu) {
                     VStack(alignment: .leading) {
+
+//                        Button("Refresh") {
+//                            withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+//                                showPopover = false
+//                                reloadAppsList(appState: appState, fsm: fsm)
+//                            }
+//                        }
+//                        .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Refresh List", help: String(localized: "Refresh apps (⌘+R)"), size: 5))
 
                         Button {
                             withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
@@ -204,6 +212,8 @@ struct AppSearchView: View {
 
 
         }
+        .frame(minHeight: 30)
+
     }
 
 
@@ -290,12 +300,12 @@ struct SimpleSearchStyle: TextFieldStyle {
                         Button {
                             text = ""
                         } label: { EmptyView() }
-                        .buttonStyle(SimpleButtonStyle(icon: "delete.left.fill", help: String(localized: "Clear text"), size: 14, padding: padding))
+                        .buttonStyle(SimpleButtonStyle(icon: "delete.left.fill", help: String(localized: "Clear text"), size: 16, padding: 0))
                     }
                 }
 
             }
-            .padding(.horizontal, 8)
+            .padding(.horizontal, 5)
 
         }
         .onHover { hovering in

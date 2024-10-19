@@ -39,6 +39,11 @@ struct UpdateSettingsTab: View {
                     updater.checkForUpdatesForce(showSheet: false)
                 } label: { EmptyView() }
                 .buttonStyle(SimpleButtonStyle(icon: "arrow.uturn.left.circle", label: String(localized: "Refresh"), help: String(localized: "Refresh updater")))
+                .contextMenu {
+                    Button("Force Refresh") {
+                        updater.checkForUpdatesForce(showSheet: true)
+                    }
+                }
 
 
                 Button {
