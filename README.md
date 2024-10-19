@@ -39,7 +39,6 @@ If you are able to contribute to translations for the app, please see issue: htt
 > Pearcleaner is licensed under Apache 2.0 with [Commons Clause](https://commonsclause.com/). This means that you can do anything you'd like with the source, modify it, contribute to it, etc., but the license explicitly prohibits any form of monetization for Pearcleaner or any modified versions of it. See full license [HERE](https://github.com/alienator88/Pearcleaner/blob/main/LICENSE.md)
 
 ## Features
-- Signed/notarized
 - Swift/SwiftUI
 - Small app size
 - Orphaned file search for finding remaining files from previously uninstalled applications
@@ -52,7 +51,7 @@ If you are able to contribute to translations for the app, please see issue: htt
 - Theme System available with custom color selector
 - Differentiate between regular, Safari web-apps and mobile apps with badges like **web** and **iOS**
 - Has clean uninstall menu option for the Pearcleaner app itself if you want to stop using it and get rid of all files and launch items
-- New feature alert on app startup
+- New announcements badge
 - Condition builder to easily include or exclude files from searches when file names don't match the app name/bundle id very well
 - Export app file list search results
 - Optional Homebrew cleanup
