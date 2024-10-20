@@ -19,7 +19,7 @@
 </br>
 
 
-A free, source-available and fair-code licensed mac app cleaner inspired by [Freemacsoft's AppCleaner](https://freemacsoft.net/appcleaner/) and [Sun Knudsen's Privacy Guides](https://sunknudsen.com/privacy-guides/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative) post on his app-cleaner script.
+A free, source-available and fair-code licensed Mac app cleaner inspired by [Freemacsoft's AppCleaner](https://freemacsoft.net/appcleaner/) and [Sun Knudsen's Privacy Guides](https://sunknudsen.com/privacy-guides/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative) post on his app-cleaner script.
 This project was born out of wanting to learn more on how macOS deals with app installation/uninstallation and getting more Swift experience. If you have suggestions I'm open to hearing them, submit a feature request!
 
 
@@ -158,12 +158,12 @@ brew install pearcleaner
 ## Thanks
 
 - Much appreciation to [Freemacsoft's AppCleaner](https://freemacsoft.net/appcleaner/) and [Sun Knudsen's app-cleaner script](https://sunknudsen.com/privacy-guides/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative)
-- [DharsanB](https://github.com/dharsanb) for sponsoring my apple developer account
+- [DharsanB](https://github.com/dharsanb) for sponsoring my Apple Developer account
 
 ## Other Apps
 
 [Pearcleaner](https://github.com/alienator88/Pearcleaner) - An opensource app cleaner with privacy in mind
 
-[Sentinel](https://github.com/alienator88/Sentinel) - A GUI for controlling gatekeeper status on your mac
+[Sentinel](https://github.com/alienator88/Sentinel) - A GUI for controlling gatekeeper status on your Mac
 
 [Viz](https://github.com/alienator88/Viz) - Utility for extracting text from images, videos, qr/barcodes

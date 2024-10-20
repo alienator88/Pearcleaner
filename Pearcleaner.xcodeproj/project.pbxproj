@@ -694,7 +694,7 @@
 				INFOPLIST_FILE = Pearcleaner/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Pearcleaner;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Pearcleaner needs to send apple events to FInder to delete files";
+				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Pearcleaner needs to send Apple Events to Finder to delete files";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSSystemAdministrationUsageDescription = "Pearcleaner requires full disk access to be able to delete files in locations with no permission";
 				INFOPLIST_KEY_NSSystemExtensionUsageDescription = "";
@@ -734,7 +734,7 @@
 				INFOPLIST_FILE = Pearcleaner/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Pearcleaner;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Pearcleaner needs to send apple events to FInder to delete files";
+				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Pearcleaner needs to send Apple Events to Finder to delete files";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSSystemAdministrationUsageDescription = "Pearcleaner requires full disk access to be able to delete files in locations with no permission";
 				INFOPLIST_KEY_NSSystemExtensionUsageDescription = "";
