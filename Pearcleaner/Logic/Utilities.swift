@@ -465,7 +465,7 @@ func caskCleanup2(app: String) {
                 killall Terminal;
             else
                 clear;
-                echo \\"[Pearcleaner] \(formattedApp) cask not found for homebrew cleanup!\nClosing window in 5 seconds..\\";
+                echo \\"[Pearcleaner] \(formattedApp) cask not found for Homebrew cleanup!\nClosing window in 5 seconds..\\";
                 sleep 5;
                 killall Terminal;
             fi'" in front window
