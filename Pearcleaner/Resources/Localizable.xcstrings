@@ -84,7 +84,14 @@
       }
     },
     "Add files or folders that will be ignored when searching for orphaned files. Click a path to remove it from the list." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加入搜尋單獨檔案時會忽略的檔案或資料夾。按一下路徑以將其從列表中移除。"
+          }
+        }
+      }
     },
     "Add folder" : {
       "localizations" : {
@@ -187,7 +194,14 @@
       }
     },
     "Application file is nested within subdirectories. To prevent deleting incorrect folders, Pearcleaner will leave these alone. You may manually delete the remaining folders if required." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "應用程式檔案包藏在子目錄中。為了避免刪除不正確的資料夾，Pearcleaner 會保留這些。如有要求，你可以手動刪除剩餘的資料夾。"
+          }
+        }
+      }
     },
     "Application Script" : {
       "localizations" : {
@@ -400,10 +414,24 @@
       }
     },
     "Drop files or folders above or click to add" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拖放檔案或資料夾到上方，或按一下以加入"
+          }
+        }
+      }
     },
     "Drop folders above or click to add" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拖放資料夾到上方，或按一下以加入"
+          }
+        }
+      }
     },
     "Enable context menu extension for Finder" : {
       "localizations" : {
@@ -456,7 +484,14 @@
       }
     },
     "Exclude these files and folders from orphaned file search" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "從單獨檔案搜尋中排除這些檔案與資料夾"
+          }
+        }
+      }
     },
     "Export File Paths" : {
       "localizations" : {
@@ -601,14 +636,21 @@
       }
     },
     "In mini window mode, if you pin the Files popover on top, clicking away from the window will not dismiss it. Otherwise, it will dismiss by clicking anywhere outside the app." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在迷你視窗模式下，如你固定檔案彈出式視窗於最上方，離開視窗按一下不會忽略。否則應用程式以外的任何位置按一下都會忽略。"
+          }
+        }
+      }
     },
     "In mini window mode, you can have Pearcleaner startup to the Apps List view or the Drop Target view." : {
       "localizations" : {
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在迷你視窗模式下，你可以讓 Pearcleaner 以應用程式列表檢視或 Drop Target 檢視方式啟動。"
+            "value" : "在迷你視窗模式下，你可以讓 Pearcleaner 以應用程式列表檢視或拖放目標檢視方式啟動。"
           }
         }
       }
@@ -744,7 +786,14 @@
       }
     },
     "Locations that will be searched for .app files. Click a non-default path to remove it. Default paths can't be removed." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "將會搜尋 .app 檔案的位置。按一下非預設的路徑以移除它。無法移除預設路徑。"
+          }
+        }
+      }
     },
     "Logical" : {
       "localizations" : {
@@ -887,7 +936,14 @@
       }
     },
     "of" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "/"
+          }
+        }
+      }
     },
     "Open %@" : {
       "localizations" : {
@@ -900,7 +956,14 @@
       }
     },
     "Orphaned file search is not 100% accurate as it doesn't have any uninstalled app bundles to check against for file exclusion. This does a best guess search for files/folders and excludes the ones that have overlap with your currently installed applications. Please confirm files marked for deletion really do belong to uninstalled applications." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "單獨檔案搜尋並非 100% 準確，因為它沒有任何解除安裝的應用程式套件來檢查檔案排除。這會以最佳猜測搜尋檔案/資料夾，並排除與你現時安裝的應用程式重疊的檔案/資料夾。請確認標記為移除的檔案確實屬於已解除安裝的應用程式。"
+          }
+        }
+      }
     },
     "Orphaned Files" : {
       "localizations" : {
@@ -954,7 +1017,14 @@
       }
     },
     "Pin popover window on top" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "固定彈出式視窗於最上方"
+          }
+        }
+      }
     },
     "Plist File" : {
       "localizations" : {
@@ -997,7 +1067,14 @@
       }
     },
     "Real size type will show how much actual allocated space the file has on disk.\n\nLogical type shows the binary size. The filesystem can compress and deduplicate sectors on disk, so real size is sometimes smaller(or bigger) than logical size.\n\nFinder size is similar to if you right click > Get Info on a file in Finder, which will show both the logical and real sizes together." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「實際大小」種類顯示檔案在磁碟上實際分配了多少空間。\n\n「邏輯」種類顯示檔案的二進位大小。二進位檔案系統可以在磁碟上壓縮並减少重複的磁區，因此實際大小有時會比邏輯大小更小（或更大）。\n\n「Finder 大小」與你在 Finder 中點按右鍵 > 取得資料的動作類似，這會將邏輯大小與實際大小在一起顯示。"
+          }
+        }
+      }
     },
     "Refresh" : {
       "localizations" : {
@@ -1060,7 +1137,14 @@
       }
     },
     "Remaining files and folders from previous applications" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "之前應用程式的剩餘檔案和資料夾"
+          }
+        }
+      }
     },
     "Remove" : {
       "localizations" : {
@@ -1253,7 +1337,14 @@
       }
     },
     "Some files/folders are not similar to the app name or bundle id, causing Pearcleaner to either not find them or find unrelated files. \nTo combat this, you may create a custom condition for each application bundle using keywords or direct paths. \n\n- Can add file/folder keywords that you want to either include or exclude in fuzzy searches. \n\n- Can explicitly add or remove a full Finder path to search results if you want a direct search." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一些檔案/資料夾與應用程式名稱或套件識別碼不相似，引致 Pearcleaner 無法找到它們，或找到了不相關的檔案。\n為了解決這個問題，你可以使用關鍵字或直接路徑為每一個應用程式套件製作自訂條件。\n\n- 可以加入你要在模糊搜尋中包括或排除的檔案/資料夾關鍵字。\n\n- 如你要直接搜尋，可以明確向搜尋結果加入或移除完整的 Finder 路徑。"
+          }
+        }
+      }
     },
     "Sorting Options" : {
       "localizations" : {
@@ -1376,10 +1467,24 @@
       }
     },
     "This setting will affect Pearcleaner whether you're running in menubar mode or regular mode. If you disable menubar icon, you might want to disable this as well so Pearcleaner doesn't start on login." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不論你在選單列模式下或常規模式下執行，此設定都會影響 Pearcleaner。如你停用了選單列圖示，你亦可以停用此設定，這樣 Pearcleaner 就不會在登入時開啟。"
+          }
+        }
+      }
     },
     "Toggling between modes will reset the window frames to their default size/position" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在模式之間切換會重設視窗頁框為預設大小/位置"
+          }
+        }
+      }
     },
     "Tools" : {
       "comment" : "Tools Menu",
@@ -1634,13 +1739,34 @@
       }
     },
     "When applications are moved to Trash, Pearcleaner will launch and find related files and folders for deletion." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當應用程式丟到垃圾桶時，Pearcleaner 會啟動並尋找要刪除的相關檔案和資料夾。"
+          }
+        }
+      }
     },
     "When deleting files using the Trash button, you can prevent accidental deletions by showing an alert before proceeding with the action." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用「垃圾桶」按鈕刪除檔案時，你可以在繼續動作前顯示警告以避免意外刪除。"
+          }
+        }
+      }
     },
     "When Homebrew cleanup is enabled, Pearcleaner will check if the app you are removing was installed via Homebrew and launch Terminal.app to execute a brew uninstall and cleanup command to let Homebrew know that the app is removed. This way your Homebrew list will be synced up correctly and caching will be removed. Terminal.app is required since some apps need sudo permissions to remove services and files placed in system folders. Since other terminal apps don't support AppleScript and/or the 'do script' command, I opted to use the default macOS Terminal app for this.\n\nNOTE: If you undo the file delete with CMD+Z, the files will be put back but Homebrew will not be aware of it. To get the Homebrew list back in sync you'd need to run:\n\n> brew install APPNAME --force" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啟用 Homebrew 清理時，Pearcleaner 會檢查你要移除的應用程式是否透過 Homebrew 安裝，並啟動「終端機.app」以執行 brew 解除安裝和清理命令，讓 Homebrew 知道此應用程式已移除。這樣你的 Homebrew 列表會正確同步，並移除快取檔案。這需要「終端機.app」，因為一些應用程式需要 sudo 權限才能移除系統資料夾中的服務和檔案。由於其他終端機應用程式不支援 AppleScript 和/或「do script」命令，因此使用預設的 macOS 終端機應用程式。\n\n注意：如你使用 ⌘+Z 還原刪除檔案，檔案將會放回，但 Homebrew 並不會注意到這一點。如要重新同步 Homebrew 列表，你需要執行：\n\n> brew install APPNAME --force"
+          }
+        }
+      }
     },
     "When menubar icon is enabled, the main app window and dock icon will be disabled since the app will be put in accessory mode." : {
       "localizations" : {
@@ -1653,7 +1779,14 @@
       }
     },
     "When this mode is enabled, clicking the Uninstall button to remove an app will also close Pearcleaner right after.\nThis only affects Pearcleaner when it is opened via external means, like Sentinel Trash Monitor, Finder extension or a Deep Link.\nThis allows for single use of the app for a quick uninstall. When Pearcleaner is opened normally, this setting is ignored and will work as usual." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啟用此模式時，按一下「解除安裝」按鈕移除應用程式之後亦會立即關閉 Pearcleaner。\n這只會影響 Pearcleaner 透過外部方式開啟󠄁，例如哨兵垃圾監視器、Finder 延伸功能或深連結（Deep Link）。\n這可讓你一次性使用此應用程式以快速解除安裝。如 Pearcleaner 正常開啟，此設定將會忽略，並繼續如常工作。"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

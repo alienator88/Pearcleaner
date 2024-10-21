@@ -58,6 +58,12 @@
             "state" : "new",
             "value" : "Pearcleaner needs to send Apple Events to Finder to delete files"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner 需要將 Apple Event 傳送至 Finder 以刪除檔案"
+          }
         }
       }
     },
