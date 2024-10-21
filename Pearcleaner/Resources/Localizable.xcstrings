@@ -7,6 +7,12 @@
     "/Full/Path/example-1.txt, /Full/Path/example-2.txt" : {
 
     },
+    "%@ is already on the latest release available" : {
+      "extractionState" : "manual"
+    },
+    "%@ will check for updates" : {
+      "extractionState" : "manual"
+    },
     "•" : {
       "localizations" : {
         "ro" : {
@@ -25,6 +31,9 @@
     },
     "About" : {
 
+    },
+    "Accessibility" : {
+      "extractionState" : "manual"
     },
     "Add" : {
 
@@ -80,6 +89,9 @@
     "Are you sure you want to remove these files?" : {
 
     },
+    "Automation" : {
+      "extractionState" : "manual"
+    },
     "calculating" : {
 
     },
@@ -110,6 +122,9 @@
     "Command Line" : {
 
     },
+    "Completed 🚀" : {
+      "extractionState" : "manual"
+    },
     "Condition Builder" : {
 
     },
@@ -121,6 +136,9 @@
     },
     "Copy Path" : {
 
+    },
+    "Daily" : {
+      "extractionState" : "manual"
     },
     "Detect when apps are moved to Trash" : {
 
@@ -161,6 +179,9 @@
     "Export File Paths" : {
 
     },
+    "Failed to display release notes" : {
+      "extractionState" : "manual"
+    },
     "File size display options" : {
 
     },
@@ -175,6 +196,9 @@
     },
     "Force Refresh" : {
 
+    },
+    "Full Disk Access" : {
+      "extractionState" : "manual"
     },
     "Functionality" : {
 
@@ -191,6 +215,9 @@
     },
     "GitHub Sponsors" : {
 
+    },
+    "GitHub: v%@" : {
+      "extractionState" : "manual"
     },
     "Hide Details" : {
 
@@ -215,6 +242,9 @@
     },
     "Installed Date:" : {
 
+    },
+    "Installed: v%@" : {
+      "extractionState" : "manual"
     },
     "Instructions" : {
 
@@ -276,11 +306,17 @@
     "Minimalist app list rows enabled" : {
 
     },
+    "Missing Permissions" : {
+      "extractionState" : "manual"
+    },
     "Modified Date" : {
 
     },
     "Modified Date:" : {
 
+    },
+    "Monthly" : {
+      "extractionState" : "manual"
     },
     "More" : {
 
@@ -288,8 +324,26 @@
     "Name" : {
 
     },
+    "Never" : {
+      "extractionState" : "manual"
+    },
+    "New Announcement" : {
+      "extractionState" : "manual"
+    },
+    "Next update check: %@" : {
+      "extractionState" : "manual"
+    },
     "No files or folders added" : {
 
+    },
+    "No New Announcement" : {
+      "extractionState" : "manual"
+    },
+    "No releases to display" : {
+      "extractionState" : "manual"
+    },
+    "No Update 😌" : {
+      "extractionState" : "manual"
     },
     "Not available" : {
 
@@ -314,6 +368,9 @@
     },
     "Pearcleaner Uninstall" : {
       "comment" : "Right click context menu item when using the Finder extension to uninstall using Pearcleaner"
+    },
+    "Permission Status" : {
+      "extractionState" : "manual"
     },
     "Permissions" : {
 
@@ -378,6 +435,12 @@
     "Reset Size" : {
 
     },
+    "Restart" : {
+      "extractionState" : "manual"
+    },
+    "Restart %@ for changes to take effect" : {
+      "extractionState" : "manual"
+    },
     "Reverse search completed successfully" : {
 
     },
@@ -413,6 +476,9 @@
     },
     "Show Details" : {
 
+    },
+    "Showing last 3 releases" : {
+      "extractionState" : "manual"
     },
     "Size" : {
 
@@ -495,8 +561,17 @@
     "Update" : {
 
     },
+    "Update Available 🥳" : {
+      "extractionState" : "manual"
+    },
     "Update Frequency" : {
 
+    },
+    "Updater frequency is set to Never" : {
+      "extractionState" : "manual"
+    },
+    "Updates Disabled" : {
+      "extractionState" : "manual"
     },
     "user" : {
 
@@ -542,6 +617,9 @@
     },
     "Web app" : {
 
+    },
+    "Weekly" : {
+      "extractionState" : "manual"
     },
     "When applications are moved to Trash, Pearcleaner will launch and find related files and folders for deletion." : {
 
