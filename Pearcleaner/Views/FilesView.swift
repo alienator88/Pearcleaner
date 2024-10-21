@@ -281,7 +281,7 @@ struct FilesView: View {
                         Button {
                             selectedSortAlpha.toggle()
                         } label: { EmptyView() }
-                        .buttonStyle(SimpleButtonStyle(icon: "line.3.horizontal.decrease.circle", label: String(localized: selectedSortAlpha ? "Name" : "Size"), help: String(localized: selectedSortAlpha ? "Sorted alphabetically" : "Sorted by size"), size: 16))
+                            .buttonStyle(SimpleButtonStyle(icon: "line.3.horizontal.decrease.circle", label: selectedSortAlpha ? String(localized: "Name") : String(localized: "Size"), help: selectedSortAlpha ? String(localized: "Sorted by Name") : String(localized: "Sorted by Size"), size: 16))
 
                     }
                     .padding()

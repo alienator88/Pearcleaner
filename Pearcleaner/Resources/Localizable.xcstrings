@@ -285,6 +285,9 @@
     "More" : {
 
     },
+    "Name" : {
+
+    },
     "No files or folders added" : {
 
     },
@@ -411,7 +414,16 @@
     "Show Details" : {
 
     },
+    "Size" : {
+
+    },
     "Some files/folders are not similar to the app name or bundle id, causing Pearcleaner to either not find them or find unrelated files. \nTo combat this, you may create a custom condition for each application bundle using keywords or direct paths. \n\n- Can add file/folder keywords that you want to either include or exclude in fuzzy searches. \n\n- Can explicitly add or remove a full Finder path to search results if you want a direct search." : {
+
+    },
+    "Sorted by Name" : {
+
+    },
+    "Sorted by Size" : {
 
     },
     "Sorting Options" : {
