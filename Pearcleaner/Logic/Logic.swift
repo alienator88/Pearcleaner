@@ -195,7 +195,7 @@ func showAppInFiles(appInfo: AppInfo, appState: AppState, locations: Locations, 
 
 
 
-// Move files to trash using applescript/Finder so it asks for user password if needed
+// Move files to trash using AppleScript/Finder so it asks for user password if needed
 func moveFilesToTrash(appState: AppState, at fileURLs: [URL], completion: @escaping (Bool) -> Void = {_ in }) {
     // Stop Sentinel FileWatcher momentarily to ignore .app bundle being sent to Trash
     sendStopNotificationFW()
