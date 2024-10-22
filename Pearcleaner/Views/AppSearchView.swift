@@ -114,7 +114,7 @@ struct AppSearchView: View {
                                 }
                             }
                         } label: { EmptyView() }
-                        .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Sorting: \(selectedSortOption.title)", help: "Sort app list alphabetically by name or by size", size: 5))
+                            .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: String(localized:"Sorting: \(selectedSortOption.title)"), help: String(localized: "Sort app list alphabetically by name or by size"), size: 5))
 
                         if mini && !menubarEnabled {
                             Button {
@@ -124,7 +124,7 @@ struct AppSearchView: View {
                                     showPopover = false
                                 }
                             } label: { EmptyView() }
-                            .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Drop Target", help: "Drop Target", size: 5))
+                                .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: String(localized: "Drop Target"), help: String(localized: "Drop Target"), size: 5))
                         }
 
 
@@ -149,7 +149,7 @@ struct AppSearchView: View {
 
                         if #available(macOS 14.0, *) {
                             SettingsLink {}
-                                .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Settings", help: "Settings", size: 5))
+                                .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: String(localized: "Settings"), help: String(localized: "Settings"), size: 5))
                         } else {
                             Button("Settings") {
                                 if #available(macOS 13.0, *) {
