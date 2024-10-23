@@ -1214,7 +1214,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "不可用"
+            "value" : "未能获取"
           }
         }
       }
