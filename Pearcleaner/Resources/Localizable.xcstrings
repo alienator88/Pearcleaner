@@ -6,7 +6,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "(构建 %@)"
+            "value" : "(Build %@)"
           }
         }
       }
@@ -168,7 +168,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "请始终确认标记为删除的文件。某些情况下，当应用名称过于相似时，可能会找到无关的文件。\n\n注意：Pearcleaner 使用 AppleScript 删除文件。目前 macOS 不允许 AppleScript 使用指纹传感器进行身份验证，仅支持密码验证。"
+            "value" : "请始终确认标记为删除的文件。某些情况下,当应用名称过于相似时,可能会找到无关的文件。\n\n注意：Pearcleaner 使用 AppleScript 删除文件。目前 macOS 不允许 AppleScript 使用指纹传感器进行身份验证,仅支持密码验证。"
           }
         }
       }
@@ -242,7 +242,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "应用程序文件嵌套在子目录中。为了防止删除错误的文件夹，Pearcleaner 将保留这些文件夹。如果需要，您可以手动删除剩余的文件夹。"
+            "value" : "应用程序文件嵌套在子目录中。为了防止删除错误的文件夹,Pearcleaner 将保留这些文件夹。如果需要,您可以手动删除剩余的文件夹。"
           }
         }
       }
@@ -377,88 +377,312 @@
       }
     },
     "Close after uninstall" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "卸载后关闭"
+          }
+        }
+      }
     },
     "Command Line" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "命令行"
+          }
+        }
+      }
     },
     "Completed 🚀" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已完成 🚀"
+          }
+        }
+      }
     },
     "Condition Builder" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "条件构建器"
+          }
+        }
+      }
     },
     "Container" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "容器"
+          }
+        }
+      }
     },
     "Copy File Paths" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制文件路径"
+          }
+        }
+      }
     },
     "Copy Path" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制路径"
+          }
+        }
+      }
     },
     "Daily" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每天"
+          }
+        }
+      }
     },
     "Detect when apps are moved to Trash" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检测应用何时被移动到废纸篓"
+          }
+        }
+      }
     },
     "Disabled when menubar icon is enabled" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启用菜单栏图标时禁用"
+          }
+        }
+      }
     },
     "Dismiss" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭"
+          }
+        }
+      }
     },
     "Drop an app here" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将应用拖到此处"
+          }
+        }
+      }
     },
     "Drop files or folders above or click to add" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将文件或文件夹拖到上方或点击添加"
+          }
+        }
+      }
     },
     "Drop folders above or click to add" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将文件夹拖到上方或点击添加"
+          }
+        }
+      }
     },
     "Drop Target" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拖放目标"
+          }
+        }
+      }
     },
     "Enable context menu extension for Finder" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为 Finder 启用上下文菜单扩展"
+          }
+        }
+      }
     },
     "Enabling the CLI will allow you to execute Pearcleaner actions from the Terminal. This will add pearcleaner command into /usr/local/bin so it's available directly from your PATH environment variable. Try it after enabling:\n\n> pearcleaner --help" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启用 CLI 后,您可以从终端执行 Pearcleaner 操作。这将把 pearcleaner 命令添加到 /usr/local/bin 中,使其可以直接从 PATH 环境变量中访问。启用后尝试：\n\n> pearcleaner --help"
+          }
+        }
+      }
     },
     "Enabling this extension will allow you to right click apps in Finder to quickly uninstall them with Pearcleaner" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启用此扩展后,您可以在 Finder 中右键点击应用,使用 Pearcleaner 快速卸载它们"
+          }
+        }
+      }
     },
     "Exclude" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "排除"
+          }
+        }
+      }
     },
     "Exclude Keywords:" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "排除关键字："
+          }
+        }
+      }
     },
     "Exclude these files and folders from orphaned file search" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在孤立文件搜索中排除这些文件和文件夹"
+          }
+        }
+      }
     },
     "Export File Paths" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导出文件路径"
+          }
+        }
+      }
     },
     "Failed to display release notes" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法显示更新日志"
+          }
+        }
+      }
     },
     "File size display options" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件大小显示选项"
+          }
+        }
+      }
     },
     "Finder Extension" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder 扩展"
+          }
+        }
+      }
     },
     "Finding orphaned files, please wait..." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在查找孤立文件,请稍候..."
+          }
+        }
+      }
     },
     "Folders" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件夹"
+          }
+        }
+      }
     },
     "Force Refresh" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "强制刷新"
+          }
+        }
+      }
     },
     "Full Disk Access" : {
       "extractionState" : "manual",
@@ -472,23 +696,63 @@
       }
     },
     "Functionality" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "功能"
+          }
+        }
+      }
     },
     "Gathering app details" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在收集应用详情"
+          }
+        }
+      }
     },
     "General" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通用"
+          }
+        }
+      }
     },
     "GitHub" : {
       "comment" : "Github Repo",
       "shouldTranslate" : false
     },
     "GitHub Sponsors" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub 赞助者"
+          }
+        }
+      }
     },
     "GitHub: v%@" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub：v%@"
+          }
+        }
+      }
     },
     "Hide Details" : {
       "localizations" : {
@@ -501,19 +765,59 @@
       }
     },
     "Homebrew cleanup after uninstall" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "卸载后清理 Homebrew"
+          }
+        }
+      }
     },
     "Important" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重要"
+          }
+        }
+      }
     },
     "In mini window mode, if you pin the Files popover on top, clicking away from the window will not dismiss it. Otherwise, it will dismiss by clicking anywhere outside the app." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在迷你窗口模式下,如果您将文件弹出框固定在顶部,点击窗口外部不会关闭它。否则,点击应用程序外部的任何地方将会关闭它。"
+          }
+        }
+      }
     },
     "In mini window mode, you can have Pearcleaner startup to the Apps List view or the Drop Target view." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在迷你窗口模式下,您可以选择 Pearcleaner 启动到应用列表视图或拖放目标视图。"
+          }
+        }
+      }
     },
     "Include Keywords:" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "包含关键字："
+          }
+        }
+      }
     },
     "Install Date" : {
       "localizations" : {
@@ -536,28 +840,91 @@
       }
     },
     "Installed: v%@" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已安装：v%@"
+          }
+        }
+      }
     },
     "Instructions" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "说明"
+          }
+        }
+      }
     },
     "Interface" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "界面"
+          }
+        }
+      }
     },
     "iOS" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS"
+          }
+        }
+      }
     },
     "iOS app" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS 应用"
+          }
+        }
+      }
     },
     "item" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "项目"
+          }
+        }
+      }
     },
     "items" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "项目"
+          }
+        }
+      }
     },
     "keyword-1, keyword-2" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关键字-1, 关键字-2"
+          }
+        }
+      }
     },
     "Last Used Date" : {
       "localizations" : {
@@ -580,37 +947,125 @@
       }
     },
     "Launch Pearcleaner at login" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在登录时启动 Pearcleaner"
+          }
+        }
+      }
     },
     "Locations that will be searched for .app files. Click a non-default path to remove it. Default paths can't be removed." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将搜索 .app 文件的位置。点击非默认路径以移除。默认路径无法移除。"
+          }
+        }
+      }
     },
     "Logical" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "逻辑大小"
+          }
+        }
+      }
     },
     "Made with ❤️ by Alin Lupascu" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用 ❤️ 制作 by Alin Lupascu"
+          }
+        }
+      }
     },
     "Menubar" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "菜单栏"
+          }
+        }
+      }
     },
     "Menubar icon mode" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "菜单栏图标模式"
+          }
+        }
+      }
     },
     "Menubar icon preference" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "菜单栏图标偏好设置"
+          }
+        }
+      }
     },
     "Mini Configuration" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "迷你配置"
+          }
+        }
+      }
     },
     "Mini window mode" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "迷你窗口模式"
+          }
+        }
+      }
     },
     "Minimalist app list rows disabled" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "极简应用列表行已禁用"
+          }
+        }
+      }
     },
     "Minimalist app list rows enabled" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "极简应用列表行已启用"
+          }
+        }
+      }
     },
     "Missing Permissions" : {
       "extractionState" : "manual",
@@ -644,58 +1099,203 @@
       }
     },
     "Monthly" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每月"
+          }
+        }
+      }
     },
     "More" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更多"
+          }
+        }
+      }
     },
     "Name" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "名称"
+          }
+        }
+      }
     },
     "Never" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从不"
+          }
+        }
+      }
     },
     "New Announcement" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新公告"
+          }
+        }
+      }
     },
     "Next update check: %@" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下次更新检查：%@"
+          }
+        }
+      }
     },
     "No files or folders added" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有添加文件或文件夹"
+          }
+        }
+      }
     },
     "No New Announcement" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有新公告"
+          }
+        }
+      }
     },
     "No releases to display" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有可显示的版本"
+          }
+        }
+      }
     },
     "No Update 😌" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有更新 😌"
+          }
+        }
+      }
     },
     "Not available" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不可用"
+          }
+        }
+      }
     },
     "of" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "的"
+          }
+        }
+      }
     },
     "Open %@" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开 %@"
+          }
+        }
+      }
     },
     "Orphaned file search is not 100% accurate as it doesn't have any uninstalled app bundles to check against for file exclusion. This does a best guess search for files/folders and excludes the ones that have overlap with your currently installed applications. Please confirm files marked for deletion really do belong to uninstalled applications." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "孤立文件搜索并不 100% 准确,因为没有可供检查的已卸载应用程序包以进行文件排除。这是对文件/文件夹的最佳猜测搜索,并排除了与您当前安装的应用程序重叠的文件。请确认标记为删除的文件确实属于已卸载的应用程序。"
+          }
+        }
+      }
     },
     "Orphaned Files" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "孤立文件"
+          }
+        }
+      }
     },
     "Pearcleaner and all of its files will be cleanly removed, are you sure?" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner 及其所有文件将被干净地移除,您确定吗？"
+          }
+        }
+      }
     },
     "Pearcleaner CLI support" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner CLI 支持"
+          }
+        }
+      }
     },
     "Pearcleaner Uninstall" : {
-      "comment" : "Right click context menu item when using the Finder extension to uninstall using Pearcleaner"
+      "comment" : "Right click context menu item when using the Finder extension to uninstall using Pearcleaner",
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner 卸载"
+          }
+        }
+      }
     },
     "Permission Status" : {
       "extractionState" : "manual",
@@ -709,67 +1309,234 @@
       }
     },
     "Permissions" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "权限"
+          }
+        }
+      }
     },
     "Pin popover window on top" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将弹出窗口固定在顶部"
+          }
+        }
+      }
     },
     "Plist File" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plist 文件"
+          }
+        }
+      }
     },
     "Quit" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退出"
+          }
+        }
+      }
     },
     "Quit Pearcleaner" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退出 Pearcleaner"
+          }
+        }
+      }
     },
     "Real" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "真实大小"
+          }
+        }
+      }
     },
     "Real size type will show how much actual allocated space the file has on disk.\n\nLogical type shows the binary size. The filesystem can compress and deduplicate sectors on disk, so real size is sometimes smaller(or bigger) than logical size.\n\nFinder size is similar to if you right click > Get Info on a file in Finder, which will show both the logical and real sizes together." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "真实大小类型将显示文件在磁盘上实际分配的空间大小。\n\n逻辑类型显示二进制大小。文件系统可以压缩和去重磁盘上的扇区,因此真实大小有时小于（或大于）逻辑大小。\n\nFinder大小类似于在Finder中右键单击 > 获取信息,这将同时显示逻辑和真实大小。"
+          }
+        }
+      }
     },
     "Refresh" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刷新"
+          }
+        }
+      }
     },
     "Refresh Apps" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刷新应用"
+          }
+        }
+      }
     },
     "Refresh apps (⌘+R)" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刷新应用 (⌘+R)"
+          }
+        }
+      }
     },
     "Refresh updater" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刷新更新程序"
+          }
+        }
+      }
     },
     "Release Notes" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新日志"
+          }
+        }
+      }
     },
     "Releases" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发布"
+          }
+        }
+      }
     },
     "Remaining files and folders from previous applications" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "来自先前应用程序的剩余文件和文件夹"
+          }
+        }
+      }
     },
     "Remove" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除"
+          }
+        }
+      }
     },
     "Remove Direct Paths:" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除直接路径："
+          }
+        }
+      }
     },
     "Remove the condition from this application" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从此应用程序中移除该条件"
+          }
+        }
+      }
     },
     "Rescan" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新扫描"
+          }
+        }
+      }
     },
     "Reset all settings to default" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重置所有设置为默认"
+          }
+        }
+      }
     },
     "Reset Settings" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重置设置"
+          }
+        }
+      }
     },
     "Reset Size" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重置大小"
+          }
+        }
+      }
     },
     "Restart" : {
       "extractionState" : "manual",
@@ -794,19 +1561,59 @@
       }
     },
     "Reverse search completed successfully" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "反向搜索成功完成"
+          }
+        }
+      }
     },
     "Right click to reset size" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "右键单击以重置大小"
+          }
+        }
+      }
     },
     "Save" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存"
+          }
+        }
+      }
     },
     "Save the condition for this application" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存此应用程序的条件"
+          }
+        }
+      }
     },
     "Search these folders for applications" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在这些文件夹中搜索应用程序"
+          }
+        }
+      }
     },
     "Searching the file system" : {
       "localizations" : {
@@ -819,19 +1626,59 @@
       }
     },
     "Sentinel Monitor" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "哨兵监视器"
+          }
+        }
+      }
     },
     "Sentinel Monitor found no other files to remove" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "哨兵监视器未找到其他要移除的文件"
+          }
+        }
+      }
     },
     "Settings" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置"
+          }
+        }
+      }
     },
     "Show announcements badge again" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再次显示公告角标"
+          }
+        }
+      }
     },
     "Show apps list on startup" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启动时显示应用列表"
+          }
+        }
+      }
     },
     "Show Details" : {
       "localizations" : {
@@ -844,22 +1691,70 @@
       }
     },
     "Showing last 3 releases" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示近期的 3 次更新"
+          }
+        }
+      }
     },
     "Size" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "大小"
+          }
+        }
+      }
     },
     "Some files/folders are not similar to the app name or bundle id, causing Pearcleaner to either not find them or find unrelated files. \nTo combat this, you may create a custom condition for each application bundle using keywords or direct paths. \n\n- Can add file/folder keywords that you want to either include or exclude in fuzzy searches. \n\n- Can explicitly add or remove a full Finder path to search results if you want a direct search." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "某些文件/文件夹与应用名称或捆绑 ID 不相似,导致 Pearcleaner 无法找到它们或找到无关文件。\n为了解决这个问题,您可以使用关键字或直接路径为每个应用程序捆绑创建自定义条件。\n\n- 可以添加您希望在模糊搜索中包括或排除的文件/文件夹关键字。\n\n- 可以显式添加或移除完整的 Finder 路径,以便进行直接搜索。"
+          }
+        }
+      }
     },
     "Sort app list alphabetically by name or by size" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按名称或大小按字母顺序排序应用列表"
+          }
+        }
+      }
     },
     "Sorted by Name" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按名称排序"
+          }
+        }
+      }
     },
     "Sorted by Size" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按大小排序"
+          }
+        }
+      }
     },
     "Sorting Options" : {
       "localizations" : {
@@ -872,22 +1767,70 @@
       }
     },
     "Sorting: %@" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正以 %@ 排序"
+          }
+        }
+      }
     },
     "Sponsor" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "赞助"
+          }
+        }
+      }
     },
     "Submit a bug or feature request" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提交错误或功能请求"
+          }
+        }
+      }
     },
     "Submit New Issue" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提交新问题"
+          }
+        }
+      }
     },
     "Support" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "支持"
+          }
+        }
+      }
     },
     "system" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系统"
+          }
+        }
+      }
     },
     "System" : {
       "localizations" : {
@@ -900,28 +1843,93 @@
       }
     },
     "Theme Mode" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "主题模式"
+          }
+        }
+      }
     },
     "This adds the file/folder to the Exclusions list. Edit the exclusions list from Settings > Folders tab" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这将文件/文件夹添加到排除列表。请从设置 > 文件夹标签中编辑排除列表"
+          }
+        }
+      }
     },
     "This app is located in %@" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此应用程序位于 %@"
+          }
+        }
+      }
     },
     "This is a web app" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这是一个网络应用程序"
+          }
+        }
+      }
     },
     "This is a wrapped iOS app" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这是一个封装的 iOS 应用程序"
+          }
+        }
+      }
     },
     "This setting will affect Pearcleaner whether you're running in menubar mode or regular mode. If you disable menubar icon, you might want to disable this as well so Pearcleaner doesn't start on login." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此设置将影响 Pearcleaner，无论您是在菜单栏模式还是常规模式下运行。如果您禁用菜单栏图标，您可能还想禁用此选项，以便 Pearcleaner 不在登录时启动。"
+          }
+        }
+      }
     },
     "Toggling between modes will reset the window frames to their default size/position" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在模式之间切换将重置窗口框架为其默认大小/位置"
+          }
+        }
+      }
     },
     "Tools" : {
-      "comment" : "Tools Menu"
+      "comment" : "工具菜单",
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "工具"
+          }
+        }
+      }
     },
     "Total size of files:" : {
       "localizations" : {
@@ -934,7 +1942,15 @@
       }
     },
     "Transparent material" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "透明质感"
+          }
+        }
+      }
     },
     "Type to search" : {
       "localizations" : {
@@ -947,31 +1963,101 @@
       }
     },
     "Undo Removal" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "撤销删除"
+          }
+        }
+      }
     },
     "Uninstall" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "卸载"
+          }
+        }
+      }
     },
     "Uninstall confirmation alerts" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "卸载确认警报"
+          }
+        }
+      }
     },
     "Uninstall Pearcleaner" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "卸载 Pearcleaner"
+          }
+        }
+      }
     },
     "Update" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新"
+          }
+        }
+      }
     },
     "Update Available 🥳" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有可用更新 🥳"
+          }
+        }
+      }
     },
     "Update Frequency" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新频率"
+          }
+        }
+      }
     },
     "Updater frequency is set to Never" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新频率已设置为从不"
+          }
+        }
+      }
     },
     "Updates Disabled" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新已禁用"
+          }
+        }
+      }
     },
     "user" : {
       "localizations" : {
@@ -997,7 +2083,14 @@
       "shouldTranslate" : false
     },
     "Version %@" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version %@"
+          }
+        }
+      }
     },
     "View" : {
       "localizations" : {
@@ -1010,52 +2103,179 @@
       }
     },
     "View in Finder" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Finder 中查看"
+          }
+        }
+      }
     },
     "View Issues" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看问题"
+          }
+        }
+      }
     },
     "View project contributors" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看项目贡献者"
+          }
+        }
+      }
     },
     "View Releases" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看发布"
+          }
+        }
+      }
     },
     "View releases on GitHub" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Github 上查看发布版本"
+          }
+        }
+      }
     },
     "View Repository" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看仓库"
+          }
+        }
+      }
     },
     "Warning" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "警告"
+          }
+        }
+      }
     },
     "Warning!" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "警告！"
+          }
+        }
+      }
     },
     "web" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "网络"
+          }
+        }
+      }
     },
     "Web app" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "网页应用"
+          }
+        }
+      }
     },
     "Weekly" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每周"
+          }
+        }
+      }
     },
     "When applications are moved to Trash, Pearcleaner will launch and find related files and folders for deletion." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当应用程序被移动到废纸篓时，Pearcleaner 将启动并查找相关的文件和文件夹以进行删除。"
+          }
+        }
+      }
     },
     "When deleting files using the Trash button, you can prevent accidental deletions by showing an alert before proceeding with the action." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用废纸篓按钮删除文件时，可以通过在执行操作之前显示警报来防止意外删除。"
+          }
+        }
+      }
     },
     "When Homebrew cleanup is enabled, Pearcleaner will check if the app you are removing was installed via Homebrew and launch Terminal.app to execute a brew uninstall and cleanup command to let Homebrew know that the app is removed. This way your Homebrew list will be synced up correctly and caching will be removed. Terminal.app is required since some apps need sudo permissions to remove services and files placed in system folders. Since other terminal apps don't support AppleScript and/or the 'do script' command, I opted to use the default macOS Terminal app for this.\n\nNOTE: If you undo the file delete with CMD+Z, the files will be put back but Homebrew will not be aware of it. To get the Homebrew list back in sync you'd need to run:\n\n> brew install APPNAME --force" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当启用 Homebrew 清理时，Pearcleaner 将检查您要删除的应用程序是否通过 Homebrew 安装，并启动 Terminal.app 执行 brew uninstall 和清理命令，以便让 Homebrew 知道该应用程序已被删除。这样可以确保您的 Homebrew 列表正确同步，并且缓存将被删除。需要 Terminal.app，因为某些应用程序需要 sudo 权限才能删除服务和放置在系统文件夹中的文件。由于其他终端应用程序不支持 AppleScript 和/或 'do script' 命令，因此我选择使用默认的 macOS Terminal 应用程序。\n\n注意：如果您使用 CMD+Z 撤销文件删除，文件将被恢复，但 Homebrew 将不会意识到这一点。要使 Homebrew 列表重新同步，您需要运行：\n\n> brew install APPNAME --force"
+          }
+        }
+      }
     },
     "When menubar icon is enabled, the main app window and dock icon will be disabled since the app will be put in accessory mode." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当菜单栏图标启用时，主应用窗口和 dock 图标将被禁用，因为应用程序将处于附加模式。"
+          }
+        }
+      }
     },
     "When this mode is enabled, clicking the Uninstall button to remove an app will also close Pearcleaner right after.\nThis only affects Pearcleaner when it is opened via external means, like Sentinel Trash Monitor, Finder extension or a Deep Link.\nThis allows for single use of the app for a quick uninstall. When Pearcleaner is opened normally, this setting is ignored and will work as usual." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当启用此模式时，单击卸载按钮以移除应用程序将立即关闭 Pearcleaner。\n这仅影响通过外部方式打开的 Pearcleaner，例如 Sentinel 垃圾监视器、Finder 扩展或深度链接。\n这允许应用程序单次使用以快速卸载。当 Pearcleaner 正常打开时，此设置将被忽略，仍然按常规方式工作。"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
