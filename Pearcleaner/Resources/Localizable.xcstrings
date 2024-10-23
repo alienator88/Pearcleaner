@@ -168,7 +168,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "请始终确认标记为删除的文件。某些情况下,当应用名称过于相似时,可能会找到无关的文件。\n\n注意：Pearcleaner 使用 AppleScript 删除文件。目前 macOS 不允许 AppleScript 使用指纹传感器进行身份验证,仅支持密码验证。"
+            "value" : "请始终确认标记为删除的文件。某些情况下,当应用名称过于相似时，可能会找到无关的文件。\n\n注意：Pearcleaner 使用 AppleScript 删除文件。目前 macOS 不允许 AppleScript 使用指纹传感器进行身份验证，仅支持密码验证。"
           }
         }
       }
@@ -242,7 +242,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "应用程序文件嵌套在子目录中。为了防止删除错误的文件夹,Pearcleaner 将保留这些文件夹。如果需要,您可以手动删除剩余的文件夹。"
+            "value" : "应用程序文件嵌套在子目录中。为了防止删除错误的文件夹，Pearcleaner 将保留这些文件夹。如果需要，您可以手动删除剩余的文件夹。"
           }
         }
       }
@@ -558,7 +558,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "启用 CLI 后,您可以从终端执行 Pearcleaner 操作。这将把 pearcleaner 命令添加到 /usr/local/bin 中,使其可以直接从 PATH 环境变量中访问。启用后尝试：\n\n> pearcleaner --help"
+            "value" : "启用 CLI 后,您可以从终端执行 Pearcleaner 操作。这将把 pearcleaner 命令添加到 /usr/local/bin 中，使其可以直接从 PATH 环境变量中访问。启用后尝试：\n\n> pearcleaner --help"
           }
         }
       }
@@ -569,7 +569,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "启用此扩展后,您可以在 Finder 中右键点击应用,使用 Pearcleaner 快速卸载它们"
+            "value" : "启用此扩展后，您可以在 Finder 中右键点击应用,使用 Pearcleaner 快速卸载它们"
           }
         }
       }
@@ -657,7 +657,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正在查找孤立文件,请稍候..."
+            "value" : "正在查找孤立文件，请稍候..."
           }
         }
       }
@@ -792,7 +792,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在迷你窗口模式下,如果您将文件弹出框固定在顶部,点击窗口外部不会关闭它。否则,点击应用程序外部的任何地方将会关闭它。"
+            "value" : "在迷你窗口模式下，如果您将文件弹出框固定在顶部，点击窗口外部不会关闭它。否则，点击应用程序外部的任何地方将会关闭它。"
           }
         }
       }
@@ -803,7 +803,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在迷你窗口模式下,您可以选择 Pearcleaner 启动到应用列表视图或拖放目标视图。"
+            "value" : "在迷你窗口模式下，您可以选择 Pearcleaner 启动到应用列表视图或拖放目标视图。"
           }
         }
       }
@@ -1247,7 +1247,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "孤立文件搜索并不 100% 准确,因为没有可供检查的已卸载应用程序包以进行文件排除。这是对文件/文件夹的最佳猜测搜索,并排除了与您当前安装的应用程序重叠的文件。请确认标记为删除的文件确实属于已卸载的应用程序。"
+            "value" : "孤立文件搜索并不 100% 准确，因为没有可供检查的已卸载应用程序包以进行文件排除。这是对文件/文件夹的最佳猜测搜索，并排除了与您当前安装的应用程序重叠的文件。请确认标记为删除的文件确实属于已卸载的应用程序。"
           }
         }
       }
@@ -1269,7 +1269,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pearcleaner 及其所有文件将被干净地移除,您确定吗？"
+            "value" : "Pearcleaner 及其所有文件将被干净地移除，您确定吗？"
           }
         }
       }
@@ -1380,7 +1380,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "真实大小类型将显示文件在磁盘上实际分配的空间大小。\n\n逻辑类型显示二进制大小。文件系统可以压缩和去重磁盘上的扇区,因此真实大小有时小于（或大于）逻辑大小。\n\nFinder大小类似于在Finder中右键单击 > 获取信息,这将同时显示逻辑和真实大小。"
+            "value" : "真实大小类型将显示文件在磁盘上实际分配的空间大小。\n\n逻辑类型显示二进制大小。文件系统可以压缩和去重磁盘上的扇区,因此真实大小有时小于（或大于）逻辑大小。\n\nFinder大小类似于在Finder中右键单击 > 获取信息，这将同时显示逻辑和真实大小。"
           }
         }
       }
@@ -1718,7 +1718,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "某些文件/文件夹与应用名称或捆绑 ID 不相似,导致 Pearcleaner 无法找到它们或找到无关文件。\n为了解决这个问题,您可以使用关键字或直接路径为每个应用程序捆绑创建自定义条件。\n\n- 可以添加您希望在模糊搜索中包括或排除的文件/文件夹关键字。\n\n- 可以显式添加或移除完整的 Finder 路径,以便进行直接搜索。"
+            "value" : "某些文件/文件夹与应用名称或捆绑 ID 不相似，导致 Pearcleaner 无法找到它们或找到无关文件。\n为了解决这个问题，您可以使用关键字或直接路径为每个应用程序捆绑创建自定义条件。\n\n- 可以添加您希望在模糊搜索中包括或排除的文件/文件夹关键字。\n\n- 可以显式添加或移除完整的 Finder 路径，以便进行直接搜索。"
           }
         }
       }
