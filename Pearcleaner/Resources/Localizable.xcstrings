@@ -2,16 +2,46 @@
   "sourceLanguage" : "en",
   "strings" : {
     "(Build %@)" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(构建 %@)"
+          }
+        }
+      }
     },
     "/Full/Path/example-1.txt, /Full/Path/example-2.txt" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "/Full/Path/example-1.txt, /Full/Path/example-2.txt"
+          }
+        }
+      }
     },
     "%@ is already on the latest release available" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 已经是最新版本"
+          }
+        }
+      }
     },
     "%@ will check for updates" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 将检查更新"
+          }
+        }
+      }
     },
     "•" : {
       "localizations" : {
@@ -26,95 +56,325 @@
             "state" : "translated",
             "value" : "•"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "•"
+          }
         }
       }
     },
     "About" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关于"
+          }
+        }
+      }
     },
     "Accessibility" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "辅助功能"
+          }
+        }
+      }
     },
     "Add" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加"
+          }
+        }
+      }
     },
     "Add Direct Paths:" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加直接路径："
+          }
+        }
+      }
     },
     "Add file/folder" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加文件/文件夹"
+          }
+        }
+      }
     },
     "Add files or folders that will be ignored when searching for orphaned files. Click a path to remove it from the list." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加在搜索孤立文件时将被忽略的文件或文件夹。点击路径将其从列表中移除。"
+          }
+        }
+      }
     },
     "Add folder" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加文件夹"
+          }
+        }
+      }
     },
     "Add/Save" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加/保存"
+          }
+        }
+      }
     },
     "All checkboxes" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所有复选框"
+          }
+        }
+      }
     },
     "Always confirm the files marked for removal. In rare cases, unrelated files may be found when app names are too similar.\n\nNOTE: Pearcleaner uses AppleScript to remove files. Currently macOS does not allow AppleScript to authenticate using the fingerprint sensor, only password authentication is supported." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请始终确认标记为删除的文件。某些情况下，当应用名称过于相似时，可能会找到无关的文件。\n\n注意：Pearcleaner 使用 AppleScript 删除文件。目前 macOS 不允许 AppleScript 使用指纹传感器进行身份验证，仅支持密码验证。"
+          }
+        }
+      }
     },
     "Animations disabled" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "动画已禁用"
+          }
+        }
+      }
     },
     "Animations enabled" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "动画已启用"
+          }
+        }
+      }
     },
     "Announcement" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "公告"
+          }
+        }
+      }
     },
     "App Name" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "应用名"
+          }
+        }
+      }
     },
     "App Size" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "应用大小"
+          }
+        }
+      }
     },
     "Appearance" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "外观"
+          }
+        }
+      }
     },
     "Application file is nested within subdirectories. To prevent deleting incorrect folders, Pearcleaner will leave these alone. You may manually delete the remaining folders if required." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "应用程序文件嵌套在子目录中。为了防止删除错误的文件夹，Pearcleaner 将保留这些文件夹。如果需要，您可以手动删除剩余的文件夹。"
+          }
+        }
+      }
     },
     "Application Script" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "应用脚本"
+          }
+        }
+      }
     },
     "Applications" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "应用程序"
+          }
+        }
+      }
     },
     "Are you sure you want to remove these files?" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "您是否确认想要删除这些文件？"
+          }
+        }
+      }
     },
     "Automation" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动化"
+          }
+        }
+      }
     },
     "calculating" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在计算"
+          }
+        }
+      }
     },
     "Check for Updates" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检查更新"
+          }
+        }
+      }
     },
     "Clear" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除"
+          }
+        }
+      }
     },
     "Clear text" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除文本"
+          }
+        }
+      }
     },
     "Click for apps list" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点击查看应用列表"
+          }
+        }
+      }
     },
     "Click header to change sorting order" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点击标题更改排序顺序"
+          }
+        }
+      }
     },
     "Click to search" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点击以搜索"
+          }
+        }
+      }
     },
     "Close" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭"
+          }
+        }
+      }
     },
     "Close after uninstall" : {
 
@@ -201,7 +461,15 @@
 
     },
     "Full Disk Access" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完全磁盘访问权限"
+          }
+        }
+      }
     },
     "Functionality" : {
 
@@ -223,7 +491,14 @@
       "extractionState" : "manual"
     },
     "Hide Details" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐藏详细"
+          }
+        }
+      }
     },
     "Homebrew cleanup after uninstall" : {
 
@@ -241,10 +516,24 @@
 
     },
     "Install Date" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安装日期"
+          }
+        }
+      }
     },
     "Installed Date:" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安装日期："
+          }
+        }
+      }
     },
     "Installed: v%@" : {
       "extractionState" : "manual"
@@ -271,10 +560,24 @@
 
     },
     "Last Used Date" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上次使用日期"
+          }
+        }
+      }
     },
     "Last Used Date:" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上次使用日期："
+          }
+        }
+      }
     },
     "Launch Pearcleaner at login" : {
 
@@ -310,13 +613,35 @@
 
     },
     "Missing Permissions" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缺少权限"
+          }
+        }
+      }
     },
     "Modified Date" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "修改日期"
+          }
+        }
+      }
     },
     "Modified Date:" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "修改日期："
+          }
+        }
+      }
     },
     "Monthly" : {
       "extractionState" : "manual"
@@ -373,7 +698,15 @@
       "comment" : "Right click context menu item when using the Finder extension to uninstall using Pearcleaner"
     },
     "Permission Status" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "权限状态"
+          }
+        }
+      }
     },
     "Permissions" : {
 
@@ -439,10 +772,26 @@
 
     },
     "Restart" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新启动"
+          }
+        }
+      }
     },
     "Restart %@ for changes to take effect" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新启动 %@ 以使变更生效"
+          }
+        }
+      }
     },
     "Reverse search completed successfully" : {
 
@@ -460,7 +809,14 @@
 
     },
     "Searching the file system" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在系统中搜索文件"
+          }
+        }
+      }
     },
     "Sentinel Monitor" : {
 
@@ -478,7 +834,14 @@
 
     },
     "Show Details" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示详细"
+          }
+        }
+      }
     },
     "Showing last 3 releases" : {
       "extractionState" : "manual"
@@ -499,7 +862,14 @@
 
     },
     "Sorting Options" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "排序选项"
+          }
+        }
+      }
     },
     "Sorting: %@" : {
 
@@ -520,7 +890,14 @@
 
     },
     "System" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系统"
+          }
+        }
+      }
     },
     "Theme Mode" : {
 
@@ -547,13 +924,27 @@
       "comment" : "Tools Menu"
     },
     "Total size of files:" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件总大小："
+          }
+        }
+      }
     },
     "Transparent material" : {
 
     },
     "Type to search" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "输入以搜索"
+          }
+        }
+      }
     },
     "Undo Removal" : {
 
@@ -583,10 +974,24 @@
       "extractionState" : "manual"
     },
     "user" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "user"
+          }
+        }
+      }
     },
     "User" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用户"
+          }
+        }
+      }
     },
     "v%@" : {
       "shouldTranslate" : false
@@ -595,7 +1000,14 @@
 
     },
     "View" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看"
+          }
+        }
+      }
     },
     "View in Finder" : {
 
