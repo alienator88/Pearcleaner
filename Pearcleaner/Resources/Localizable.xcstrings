@@ -910,7 +910,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "项目"
+            "value" : "项"
           }
         }
       }
@@ -1225,7 +1225,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "的"
+            "value" : "/"
           }
         }
       }
@@ -1314,7 +1314,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "权限"
+            "value" : "查看权限"
           }
         }
       }
@@ -1827,7 +1827,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "系统"
+            "value" : "system"
           }
         }
       }
