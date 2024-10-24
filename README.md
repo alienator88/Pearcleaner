@@ -24,15 +24,12 @@ This project was born out of wanting to learn more on how macOS deals with app i
 
 
 ### Table of Contents:
-[License](#license) | [Features](#features) | [Screenshots](#screenshots) | [Issues](#issues) | [Requirements](#requirements) | [Download](#getting-pearcleaner) | [Thanks](#thanks) | [Other Apps](#other-apps)
+[Translations](#translations) | [License](#license) | [Features](#features) | [Screenshots](#screenshots) | [Issues](#issues) | [Requirements](#requirements) | [Download](#getting-pearcleaner) | [Thanks](#thanks) | [Other Apps](#other-apps)
 
 <br>
 
-## Poll
-If you have the time, please vote in this poll to help me make some future changes to the app: https://github.com/alienator88/Pearcleaner/discussions/120
-
 ## Translations
-If you are able to contribute to translations for the app, please see issue: https://github.com/alienator88/Pearcleaner/issues/83
+If you are able to contribute to translations for the app, please see this discussion: https://github.com/alienator88/Pearcleaner/discussions/137
 
 ## License
 > [!IMPORTANT]
