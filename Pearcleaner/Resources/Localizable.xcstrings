@@ -1631,7 +1631,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "哨兵监视器"
+            "value" : "Sentinel 垃圾监视器"
           }
         }
       }
@@ -1642,7 +1642,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "哨兵监视器未找到其他要移除的文件"
+            "value" : "Sentinel 垃圾监视器未找到其他要移除的文件"
           }
         }
       }
@@ -1772,7 +1772,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正以 %@ 排序"
+            "value" : "按 %@ 排序"
           }
         }
       }
