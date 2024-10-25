@@ -49,8 +49,6 @@
 		C7F8436C2CBF066F00E3E30A /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C7F8436A2CBF066F00E3E30A /* Localizable.xcstrings */; };
 		C7FB173B2B96321300B96F9A /* AppsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7FB173A2B96321300B96F9A /* AppsListView.swift */; };
 		C7FEBA112BDC422200AE195F /* AppSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7FEBA102BDC422200AE195F /* AppSearchView.swift */; };
-		F61C77662CCB014B0046F758 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = F61C77652CCB014B0046F758 /* InfoPlist.xcstrings */; };
-		F61C77682CCB014B0046F758 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = F61C77672CCB014B0046F758 /* InfoPlist.xcstrings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -142,8 +140,6 @@
 		C7F8436A2CBF066F00E3E30A /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		C7FB173A2B96321300B96F9A /* AppsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsListView.swift; sourceTree = "<group>"; };
 		C7FEBA102BDC422200AE195F /* AppSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSearchView.swift; sourceTree = "<group>"; };
-		F61C77652CCB014B0046F758 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
-		F61C77672CCB014B0046F758 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -233,7 +229,6 @@
 				C77B90242AF2D796009CC655 /* Pearcleaner.entitlements */,
 				C77B90072AF18E2F009CC655 /* Assets.xcassets */,
 				C7F8436A2CBF066F00E3E30A /* Localizable.xcstrings */,
-				F61C77672CCB014B0046F758 /* InfoPlist.xcstrings */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -290,7 +285,6 @@
 		C78121642BC892A000BE06BD /* FinderOpen */ = {
 			isa = PBXGroup;
 			children = (
-				F61C77652CCB014B0046F758 /* InfoPlist.xcstrings */,
 				C78121652BC892A000BE06BD /* FinderOpen.swift */,
 				C78121672BC892A000BE06BD /* Info.plist */,
 				C78121682BC892A000BE06BD /* FinderOpen.entitlements */,
@@ -390,10 +384,10 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
-				Base,
 				ro,
 				sk,
 				"zh-HK",
+				Base,
 			);
 			mainGroup = C77B8FF72AF18E2E009CC655;
 			packageReferences = (
@@ -418,7 +412,6 @@
 			files = (
 				C77B90082AF18E2F009CC655 /* Assets.xcassets in Resources */,
 				C7A27E812AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist in Resources */,
-				F61C77682CCB014B0046F758 /* InfoPlist.xcstrings in Resources */,
 				C7F8436B2CBF066F00E3E30A /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -427,7 +420,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F61C77662CCB014B0046F758 /* InfoPlist.xcstrings in Resources */,
 				C7F8436C2CBF066F00E3E30A /* Localizable.xcstrings in Resources */,
 				C7A6DBF12C9DD27200CFA042 /* Assets.xcassets in Resources */,
 			);
