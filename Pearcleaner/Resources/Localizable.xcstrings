@@ -3,6 +3,12 @@
   "strings" : {
     "(Build %@)" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(Сборка %@)"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -19,6 +25,12 @@
     },
     "/Full/Path/example-1.txt, /Full/Path/example-2.txt" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "/Полный/Путь/пример-1.txt, /Полный/Путь/пример-2.txt"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -36,6 +48,12 @@
     "%@ is already on the latest release available" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ уже на последней доступной версии"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -53,6 +71,12 @@
     "%@ will check for updates" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ проверит наличие обновлений"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -70,6 +94,12 @@
     "•" : {
       "localizations" : {
         "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "•"
+          }
+        },
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "•"
@@ -97,6 +127,12 @@
     },
     "About" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "О приложении"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -114,6 +150,12 @@
     "Accessibility" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Специальные возможности"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -130,6 +172,12 @@
     },
     "Add" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -147,6 +195,12 @@
     "Add Direct Paths:" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить прямые пути:"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -164,6 +218,12 @@
     "Add file/folder" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить файл/папку"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -181,6 +241,12 @@
     "Add files or folders that will be ignored when searching for orphaned files. Click a path to remove it from the list." : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавьте файлы или папки, которые будут игнорироваться при поиске потерянных файлов. Щелкните на путь, чтобы убрать его из списка."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -198,6 +264,12 @@
     "Add folder" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить папку"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -215,6 +287,12 @@
     "Add/Save" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить/Сохранить"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -232,6 +310,12 @@
     "All checkboxes" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Все флажки"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -249,6 +333,12 @@
     "Always confirm the files marked for removal. In rare cases, unrelated files may be found when app names are too similar.\n\nNOTE: Pearcleaner uses AppleScript to remove files. Currently macOS does not allow AppleScript to authenticate using the fingerprint sensor, only password authentication is supported." : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Всегда проверяйте файлы, помеченные для удаления. В редких случаях могут быть обнаружены несвязанные файлы, если названия приложений слишком похожи.\n\nПРИМЕЧАНИЕ: Pearcleaner использует AppleScript для удаления файлов. В настоящее время macOS не позволяет AppleScript проходить аутентификацию с помощью отпечатка пальцев, поддерживается только пароль."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -266,6 +356,12 @@
     "Animations disabled" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Анимации отключены"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -283,6 +379,12 @@
     "Animations enabled" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Анимации включены"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -300,6 +402,12 @@
     "Announcement" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Объявление"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -316,6 +424,12 @@
     },
     "App Name" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Название приложения"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -332,6 +446,12 @@
     },
     "App Size" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вес приложения"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -349,6 +469,12 @@
     "Appearance" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вид"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -365,6 +491,12 @@
     },
     "Application file is nested within subdirectories. To prevent deleting incorrect folders, Pearcleaner will leave these alone. You may manually delete the remaining folders if required." : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Файлы приложения вложены в подкаталоги. Чтобы предотвратить удаление неправильных папок, Pearcleaner оставит их в покое. При необходимости вы можете вручную удалить остальные папки."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -382,6 +514,12 @@
     "Application Script" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скрипт приложения"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -398,6 +536,12 @@
     },
     "Applications" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приложения"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -414,6 +558,12 @@
     },
     "Are you sure you want to remove these files?" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вы уверены, что хотите удалить эти файлы?"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -431,6 +581,12 @@
     "Automation" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автоматизация"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -448,6 +604,12 @@
     "calculating" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "вычисление"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -465,6 +627,12 @@
     "Check for Updates" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Проверить на обновления"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -482,6 +650,12 @@
     "Clear" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очистить"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -499,6 +673,12 @@
     "Clear text" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очистить текст"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -516,6 +696,12 @@
     "Click for apps list" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажмите, чтобы перейти к списку приложений"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -533,6 +719,12 @@
     "Click header to change sorting order" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажмите на заголовок, чтобы изменить порядок сортировки"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -550,6 +742,12 @@
     "Click to search" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажмите, чтобы найти"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -566,6 +764,12 @@
     },
     "Close" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрыть"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -583,6 +787,12 @@
     "Close after uninstall" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрыть после удаления"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -600,6 +810,12 @@
     "Command Line" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Командная строка"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -617,6 +833,12 @@
     "Completed 🚀" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завершено 🚀"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -634,6 +856,12 @@
     "Condition Builder" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Конструктор условий"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -651,6 +879,12 @@
     "Container" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Контейнер"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -668,6 +902,12 @@
     "Copy File Paths" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скопировать путь файлов"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -685,6 +925,12 @@
     "Copy Path" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скопировать путь"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -702,6 +948,12 @@
     "Daily" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ежедневно"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -719,6 +971,12 @@
     "Detect when apps are moved to Trash" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обнаруживать, когда приложения перемещаются в корзину"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -736,6 +994,12 @@
     "Disabled when menubar icon is enabled" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отключено, когда включен значок на панели меню"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -753,6 +1017,12 @@
     "Dismiss" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отклонить"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -770,6 +1040,12 @@
     "Drop an app here" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перетащите приложение сюда"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -787,6 +1063,12 @@
     "Drop files or folders above or click to add" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перетащите файлы/папки выше или нажмите, чтобы выбрать"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -804,6 +1086,12 @@
     "Drop folders above or click to add" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перетащите папки выше или нажмите, чтобы выбрать"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -821,6 +1109,12 @@
     "Drop Target" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сбросить цель"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -838,6 +1132,12 @@
     "Enable context menu extension for Finder" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Включить расширение для контекстного меню Finder"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -855,6 +1155,12 @@
     "Enabling the CLI will allow you to execute Pearcleaner actions from the Terminal. This will add pearcleaner command into /usr/local/bin so it's available directly from your PATH environment variable. Try it after enabling:\n\n> pearcleaner --help" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Включение CLI позволит вам выполнять действия с Pearcleaner из терминала. Это добавит команду pearcleaner в /usr/local/bin, чтобы она была доступна непосредственно из вашей переменной окружения PATH. Попробуйте ее после включения:\n\n> pearcleaner —help"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -872,6 +1178,12 @@
     "Enabling this extension will allow you to right click apps in Finder to quickly uninstall them with Pearcleaner" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Включение этого расширения позволит вам щелкать правой кнопкой мыши приложения в Finder, чтобы быстро удалить их с помощью Pearcleaner"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -889,6 +1201,12 @@
     "Exclude" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Исключить"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -906,6 +1224,12 @@
     "Exclude Keywords:" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Исключить ключевые слова:"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -923,6 +1247,12 @@
     "Exclude these files and folders from orphaned file search" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Исключите эти файлы и папки из поиска потерянных файлов"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -940,6 +1270,12 @@
     "Export File Paths" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Экспортировать пути файлов"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -957,6 +1293,12 @@
     "Failed to display release notes" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось отобразить примечания к выпуску"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -974,6 +1316,12 @@
     "File size display options" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Параметры отображения размера файла"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -991,6 +1339,12 @@
     "Finder Extension" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Расширение для Finder"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1008,6 +1362,12 @@
     "Finding orphaned files, please wait..." : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поиск потерянных файлы, пожалуйста, подождите..."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1025,6 +1385,12 @@
     "Folders" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Папки"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1042,6 +1408,12 @@
     "Force Refresh" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Принудительное обновление"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1059,6 +1431,12 @@
     "Full Disk Access" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Полный доступ к диску"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1076,6 +1454,12 @@
     "Functionality" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Функциональность"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1093,6 +1477,12 @@
     "Gathering app details" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Получение данных о приложении"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1110,6 +1500,12 @@
     "General" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Основные"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1139,6 +1535,12 @@
     "GitHub Sponsors" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Спонсоры GitHub"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1156,6 +1558,12 @@
     "GitHub: v%@" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub: v%@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1172,6 +1580,12 @@
     },
     "Hide Details" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скрыть детали"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1189,6 +1603,12 @@
     "Homebrew cleanup after uninstall" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очистка Homebrew после удаления"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1206,6 +1626,12 @@
     "Important" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Важно"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1223,6 +1649,12 @@
     "In mini window mode, if you pin the Files popover on top, clicking away from the window will not dismiss it. Otherwise, it will dismiss by clicking anywhere outside the app." : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В режиме мини-окна, если вы закрепите всплывающее окно \"Файлы\" сверху, щелчок в сторону от окна не приведет к его закрытию. В противном случае оно будет закрыто щелчком в любом месте за пределами приложения."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1240,6 +1672,12 @@
     "In mini window mode, you can have Pearcleaner startup to the Apps List view or the Drop Target view." : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В режиме мини-окна вы можете запустить Pearcleaner в режиме просмотра списка приложений или в режиме удаления целевых объектов."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1257,6 +1695,12 @@
     "Include Keywords:" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Включать ключевые слова:"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1273,6 +1717,12 @@
     },
     "Install Date" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дата установки"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1289,6 +1739,12 @@
     },
     "Installed Date:" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дата установки:"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1306,6 +1762,12 @@
     "Installed: v%@" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Установлено: v%@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1323,6 +1785,12 @@
     "Instructions" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Инструкции"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1339,6 +1807,12 @@
     },
     "Interface" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Интерфейс"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1356,6 +1830,12 @@
     "iOS" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1373,6 +1853,12 @@
     "iOS app" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS приложение"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1390,6 +1876,12 @@
     "item" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "предмет"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1407,6 +1899,12 @@
     "items" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "предметы"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1424,6 +1922,12 @@
     "keyword-1, keyword-2" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ключевое_слово-1, ключевое_слово-2"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1440,6 +1944,12 @@
     },
     "Last Used Date" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дата последнего использования"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1456,6 +1966,12 @@
     },
     "Last Used Date:" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дата последнего использования:"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1473,6 +1989,12 @@
     "Launch Pearcleaner at login" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запускать Pearcleaner при входе в систему"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1490,6 +2012,12 @@
     "Locations that will be searched for .app files. Click a non-default path to remove it. Default paths can't be removed." : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Местоположения, в которых будет производиться поиск файлов .app. Щёлкните, чтобы выбрать путь, который не соответствует по умолчанию, чтобы удалить его. Пути по умолчанию удалить невозможно."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1507,6 +2035,12 @@
     "Logical" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Логически"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1524,6 +2058,12 @@
     "Made with ❤️ by Alin Lupascu" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сделано с ❤️ от Alin Lupascu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1541,6 +2081,12 @@
     "Menubar" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Строка меню"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1558,6 +2104,12 @@
     "Menubar icon mode" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Режим отображения значков на панели меню"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1575,6 +2127,12 @@
     "Menubar icon preference" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настройки значка в строке меню"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1592,6 +2150,12 @@
     "Mini Configuration" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Мини-конфигурация"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1609,6 +2173,12 @@
     "Mini window mode" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Режим мини-окна"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1626,6 +2196,12 @@
     "Minimalist app list rows disabled" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Строки списка минималистичных приложений отключены"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1643,6 +2219,12 @@
     "Minimalist app list rows enabled" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Строки списка минималистичных приложений включены"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1660,6 +2242,12 @@
     "Missing Permissions" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отсутствуют права"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1676,6 +2264,12 @@
     },
     "Modified Date" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дата изменения"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1692,6 +2286,12 @@
     },
     "Modified Date:" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дата изменения:"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1709,6 +2309,12 @@
     "Monthly" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ежемесячно"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1726,6 +2332,12 @@
     "More" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Больше"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1743,6 +2355,12 @@
     "Name" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Название"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1760,6 +2378,12 @@
     "Never" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Никогда"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1777,6 +2401,12 @@
     "New Announcement" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новое объявление"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1794,6 +2424,12 @@
     "Next update check: %@" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Следующая проверка обновления: %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1811,6 +2447,12 @@
     "No files or folders added" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Файлы или папки не выбраны"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1828,6 +2470,12 @@
     "No New Announcement" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет новых объявлений"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1845,6 +2493,12 @@
     "No releases to display" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет выпусков для отображения"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1862,6 +2516,12 @@
     "No Update 😌" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет обновлений 😌"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1879,6 +2539,12 @@
     "Not available" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не доступен"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1896,6 +2562,12 @@
     "of" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "из"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1913,6 +2585,12 @@
     "Open %@" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открыть %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1930,6 +2608,12 @@
     "Orphaned file search is not 100% accurate as it doesn't have any uninstalled app bundles to check against for file exclusion. This does a best guess search for files/folders and excludes the ones that have overlap with your currently installed applications. Please confirm files marked for deletion really do belong to uninstalled applications." : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поиск потерянных файлов не является точным на 100%, поскольку в нем нет пакетов удаленных приложений, которые можно было бы проверить на предмет исключения файлов. Поиск файлов/папок выполняется на основе наилучшего предположения и исключает те, которые пересекаются с вашими текущими установленными приложениями. Пожалуйста, подтвердите, что файлы, помеченные для удаления, действительно принадлежат удаленным приложениям."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1947,6 +2631,12 @@
     "Orphaned Files" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Потерянные файлы"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1964,6 +2654,12 @@
     "Pearcleaner and all of its files will be cleanly removed, are you sure?" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вы уверены, что хотите удалить Pearcleaner и все её файлы?"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1981,6 +2677,12 @@
     "Pearcleaner CLI support" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поддержка CLI Pearcleaner"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1999,6 +2701,12 @@
       "comment" : "Right click context menu item when using the Finder extension to uninstall using Pearcleaner",
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить через Pearcleaner"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2016,6 +2724,12 @@
     "Permission Status" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Статус прав"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2033,6 +2747,12 @@
     "Permissions" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Права"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2050,6 +2770,12 @@
     "Pin popover window on top" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрепить всплывающее окно сверху"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2067,6 +2793,12 @@
     "Plist File" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Файл Plist"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2084,6 +2816,12 @@
     "Quit" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выйти"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2101,6 +2839,12 @@
     "Quit Pearcleaner" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выйти из Pearcleaer"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2118,6 +2862,12 @@
     "Real" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Реальный"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2135,6 +2885,12 @@
     "Real size type will show how much actual allocated space the file has on disk.\n\nLogical type shows the binary size. The filesystem can compress and deduplicate sectors on disk, so real size is sometimes smaller(or bigger) than logical size.\n\nFinder size is similar to if you right click > Get Info on a file in Finder, which will show both the logical and real sizes together." : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тип реального размера показывает, сколько места на диске занимает файл.\n\nЛогический тип показывает двоичный размер. Файловая система может сжимать и дедуплицировать сектора на диске, поэтому реальный размер иногда меньше (или больше) логического размера.\n\nРазмер файла в Finder аналогичен тому, который отображается, если щелкнуть правой кнопкой мыши > Получить информацию о файле в Finder, который покажет как логический, так и реальный размеры вместе."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2152,6 +2908,12 @@
     "Refresh" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обновить"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2169,6 +2931,12 @@
     "Refresh Apps" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обновить приложения"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2186,6 +2954,12 @@
     "Refresh apps (⌘+R)" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обновить приложения (⌘+R)"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2203,6 +2977,12 @@
     "Refresh updater" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обновить обновитель"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2219,6 +2999,12 @@
     },
     "Release Notes" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Примечания к выпуску"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2236,6 +3022,12 @@
     "Releases" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выпуски"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2253,6 +3045,12 @@
     "Remaining files and folders from previous applications" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оставшиеся файлы и папки из предыдущих приложений"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2270,6 +3068,12 @@
     "Remove" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Убрать"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2287,6 +3091,12 @@
     "Remove Direct Paths:" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Убрать прямые пути:"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2304,6 +3114,12 @@
     "Remove the condition from this application" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить это условие из этого приложения"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2321,6 +3137,12 @@
     "Rescan" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Повторное сканирование"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2338,6 +3160,12 @@
     "Reset all settings to default" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сбросить все настройки до заводских"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2355,6 +3183,12 @@
     "Reset Settings" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сбросить настройки"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2372,6 +3206,12 @@
     "Reset Size" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сбросить размер"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2389,6 +3229,12 @@
     "Restart" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перезапустить"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2406,6 +3252,12 @@
     "Restart %@ for changes to take effect" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перезапустите %@, чтобы изменения вступили в силу"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2423,6 +3275,12 @@
     "Reverse search completed successfully" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обратный поиск успешно завершен"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2440,6 +3298,12 @@
     "Right click to reset size" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Щелкните правой кнопкой мыши, чтобы сбросить размер"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2457,6 +3321,12 @@
     "Save" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сохранить"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2474,6 +3344,12 @@
     "Save the condition for this application" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сохраните условие для этого приложения"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2491,6 +3367,12 @@
     "Search these folders for applications" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Искать эти папки в приложениях"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2507,6 +3389,12 @@
     },
     "Searching the file system" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поиск в файловой системе"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2524,6 +3412,12 @@
     "Sentinel Monitor" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Мониторинг удалений"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2541,6 +3435,12 @@
     "Sentinel Monitor found no other files to remove" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Мониторинг удалений не обнаружил других файлов для удаления"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2558,6 +3458,12 @@
     "Settings" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настройки"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2575,6 +3481,12 @@
     "Show announcements badge again" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Снова показать значок с объявлениями"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2592,6 +3504,12 @@
     "Show apps list on startup" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показывать список приложений при запуске"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2608,6 +3526,12 @@
     },
     "Show Details" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показать детали"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2625,6 +3549,12 @@
     "Showing last 3 releases" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показаны последние 3 выпуска"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2642,6 +3572,12 @@
     "Size" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Размер"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2659,6 +3595,12 @@
     "Some files/folders are not similar to the app name or bundle id, causing Pearcleaner to either not find them or find unrelated files. \nTo combat this, you may create a custom condition for each application bundle using keywords or direct paths. \n\n- Can add file/folder keywords that you want to either include or exclude in fuzzy searches. \n\n- Can explicitly add or remove a full Finder path to search results if you want a direct search." : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Некоторые файлы/папки не совпадают с названием приложения или идентификатором пакета, в результате чего Pearcleaner либо не находит их, либо находит несвязанные файлы. \nЧтобы избежать этого, вы можете создать пользовательское условие для каждого пакета приложений, используя ключевые слова или прямые пути. \n\n- Можно добавлять ключевые слова для файлов/папок, которые вы хотите включить или исключить в нечеткий поиск. \n\n- Можно явно добавлять или удалять полный путь Finder к результатам поиска, если вам нужен прямой поиск."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2676,6 +3618,12 @@
     "Sort app list alphabetically by name or by size" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отсортировать список приложений в алфавитном порядке по названию или размеру"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2693,6 +3641,12 @@
     "Sorted by Name" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отсортировано по названию"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2710,6 +3664,12 @@
     "Sorted by Size" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отсортировано по размеру"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2726,6 +3686,12 @@
     },
     "Sorting Options" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Опции сортировки"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2743,6 +3709,12 @@
     "Sorting: %@" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сортировка: %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2760,6 +3732,12 @@
     "Sponsor" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Спонсор"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2777,6 +3755,12 @@
     "Submit a bug or feature request" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сообщить об ошибке или предложить функцию"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2794,6 +3778,12 @@
     "Submit New Issue" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сообщить о новой проблеме"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2811,6 +3801,12 @@
     "Support" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поддержка"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2828,6 +3824,12 @@
     "system" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "система"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2844,6 +3846,12 @@
     },
     "System" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Система"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2861,6 +3869,12 @@
     "Theme Mode" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Режим темы"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2878,6 +3892,12 @@
     "This adds the file/folder to the Exclusions list. Edit the exclusions list from Settings > Folders tab" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это добавит файл/папку в список исключений. Отредактируйте список исключений на вкладке \"Настройки\" > \"Папки\"."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2895,6 +3915,12 @@
     "This app is located in %@" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это приложение находится в %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2912,6 +3938,12 @@
     "This is a web app" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это веб-приложение"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2929,6 +3961,12 @@
     "This is a wrapped iOS app" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это приложение создано для iOS"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2946,6 +3984,12 @@
     "This setting will affect Pearcleaner whether you're running in menubar mode or regular mode. If you disable menubar icon, you might want to disable this as well so Pearcleaner doesn't start on login." : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Этот параметр повлияет на работу Pearcleaner независимо от того, запущен ли он в режиме панели меню или в обычном режиме. Если вы отключили значок панели меню, возможно, вы захотите отключить и этот параметр, чтобы Pearcleaner не запускался при входе в систему."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2963,6 +4007,12 @@
     "Toggling between modes will reset the window frames to their default size/position" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переключение между режимами приведет к возврату окон к их размеру/положению по умолчанию"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2981,6 +4031,12 @@
       "comment" : "工具菜单",
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Утилиты"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2997,6 +4053,12 @@
     },
     "Total size of files:" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Общий размер файлов:"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3014,6 +4076,12 @@
     "Transparent material" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прозрачный материал"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3030,6 +4098,12 @@
     },
     "Type to search" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажмите, чтобы искать"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3047,6 +4121,12 @@
     "Undo Removal" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отменить удаление"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3064,6 +4144,12 @@
     "Uninstall" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3081,6 +4167,12 @@
     "Uninstall confirmation alerts" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Предупреждения о подтверждении удаления"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3098,6 +4190,12 @@
     "Uninstall Pearcleaner" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить Pearcleaner"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3114,6 +4212,12 @@
     },
     "Update" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обновить"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3131,6 +4235,12 @@
     "Update Available 🥳" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доступно обновление 🥳"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3147,6 +4257,12 @@
     },
     "Update Frequency" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Частота обновления"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3164,6 +4280,12 @@
     "Updater frequency is set to Never" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Частота обновления установлена на значение Никогда"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3181,6 +4303,12 @@
     "Updates Disabled" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обновления отключены"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3197,6 +4325,12 @@
     },
     "user" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "пользователь"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3213,6 +4347,12 @@
     },
     "User" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пользователь"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3240,6 +4380,12 @@
     },
     "Version %@" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версия %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3256,6 +4402,12 @@
     },
     "View" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вид"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3273,6 +4425,12 @@
     "View in Finder" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Посмотреть в Finder"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3290,6 +4448,12 @@
     "View Issues" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Просмотр проблем"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3307,6 +4471,12 @@
     "View project contributors" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Посмотреть участников проекта"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3324,6 +4494,12 @@
     "View Releases" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Посмотреть выпуски"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3340,6 +4516,12 @@
     },
     "View releases on GitHub" : {
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Посмотреть выпуск в GitHub"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3357,6 +4539,12 @@
     "View Repository" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Посмотреть репозиторий"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3374,6 +4562,12 @@
     "Warning" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Предупреждение"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3391,6 +4585,12 @@
     "Warning!" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Предупреждение!"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3408,6 +4608,12 @@
     "web" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "веб"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3425,6 +4631,12 @@
     "Web app" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Веб-приложение"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3442,6 +4654,12 @@
     "Weekly" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Еженедельно"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3459,6 +4677,12 @@
     "When applications are moved to Trash, Pearcleaner will launch and find related files and folders for deletion." : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Когда приложения будут перемещены в корзину, запустится программа Pearcleaner и найдет соответствующие файлы и папки для удаления."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3476,6 +4700,12 @@
     "When deleting files using the Trash button, you can prevent accidental deletions by showing an alert before proceeding with the action." : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "При удалении файлов с помощью кнопки \"Удалить\" вы можете предотвратить случайное удаление, показав предупреждение перед выполнением действия."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3493,6 +4723,12 @@
     "When Homebrew cleanup is enabled, Pearcleaner will check if the app you are removing was installed via Homebrew and launch Terminal.app to execute a brew uninstall and cleanup command to let Homebrew know that the app is removed. This way your Homebrew list will be synced up correctly and caching will be removed. Terminal.app is required since some apps need sudo permissions to remove services and files placed in system folders. Since other terminal apps don't support AppleScript and/or the 'do script' command, I opted to use the default macOS Terminal app for this.\n\nNOTE: If you undo the file delete with CMD+Z, the files will be put back but Homebrew will not be aware of it. To get the Homebrew list back in sync you'd need to run:\n\n> brew install APPNAME --force" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Когда функция Homebrew cleanup включена, Pearcleaner проверит, было ли приложение, которое вы удаляете, установлено через Homebrew, и запустит Terminal.app, чтобы выполнить команду удаления и очистки brew, чтобы сообщить Homebrew, что приложение удалено. Таким образом, ваш список доморощенных файлов будет правильно синхронизирован, а кэширование будет удалено. Terminal.app необходим, поскольку некоторым приложениям требуются разрешения sudo для удаления служб и файлов, размещенных в системных папках. Поскольку другие терминальные приложения не поддерживают AppleScript и/или команду \"do script\", я решил использовать для этого приложение macOS Terminal по умолчанию.\n\nПРИМЕЧАНИЕ: Если вы отмените удаление файла с помощью CMD+Z, файлы будут восстановлены, но Homebrew не узнает об этом. Чтобы снова синхронизировать список Homebrew, вам нужно запустить:\n\n> brew install APPNAME —force"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3510,6 +4746,12 @@
     "When menubar icon is enabled, the main app window and dock icon will be disabled since the app will be put in accessory mode." : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Когда значок панели меню включен, главное окно приложения и значок док-станции будут отключены, так как приложение будет переведено в дополнительный режим."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3527,6 +4769,12 @@
     "When this mode is enabled, clicking the Uninstall button to remove an app will also close Pearcleaner right after.\nThis only affects Pearcleaner when it is opened via external means, like Sentinel Trash Monitor, Finder extension or a Deep Link.\nThis allows for single use of the app for a quick uninstall. When Pearcleaner is opened normally, this setting is ignored and will work as usual." : {
       "extractionState" : "manual",
       "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Когда этот режим включен, нажатие кнопки \"Удалить\" для удаления приложения также приведет к немедленному закрытию Pearcleaner.\nЭто влияет на Pearcleaner только в том случае, если оно открыто с помощью внешних средств, таких как Sentinel Trash Monitor, расширение Finder или дополнительная ссылка.\nЭто позволяет использовать приложение один раз для быстрого удаления. При обычном запуске Pearcleaner эта настройка игнорируется и будет работать как обычно."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
