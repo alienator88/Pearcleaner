@@ -133,6 +133,12 @@ var conditions: [Condition] = [
         exclude: [],
         includeForce: nil
     ),
+    Condition(
+        bundle_id: "company.thebrowser.Browser",
+        include: ["firestore"],
+        exclude: [],
+        includeForce: ["\(home)/Library/Application Support/Arc/", "\(home)/Library/Caches/Arc/"]
+    ),
 ]
 
 
