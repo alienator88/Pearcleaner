@@ -122,7 +122,6 @@ If you are able to contribute to translations for the app, please see this discu
 ## Issues
 > [!WARNING]
 > - When submitting issues, please use the appropriate issue template corresponding with your problem [HERE](https://github.com/alienator88/Pearcleaner/issues/new/choose)
-> - Issue templates not filled out with the requested details will be closed.
 > - Beta versions of macOS will not be supported until general release
 
 
