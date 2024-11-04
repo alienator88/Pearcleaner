@@ -9,6 +9,12 @@
             "value" : "(Сборка %@)"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(Verzia %@)"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -29,6 +35,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "/Полный/Путь/пример-1.txt, /Полный/Путь/пример-2.txt"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "/Full/Path/priklad-1.txt, /Full/Path/priklad-2.txt"
           }
         },
         "zh-Hans" : {
@@ -54,6 +66,12 @@
             "value" : "%@ уже на последней доступной версии"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ je už na najnovšej dostupnej verzii"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -75,6 +93,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ проверит наличие обновлений"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ skontroluje aktualizácie"
           }
         },
         "zh-Hans" : {
@@ -133,6 +157,12 @@
             "value" : "О приложении"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O aplikácii"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -156,6 +186,12 @@
             "value" : "Специальные возможности"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prístupnosť"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -176,6 +212,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Добавить"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pridať"
           }
         },
         "zh-Hans" : {
@@ -201,6 +243,12 @@
             "value" : "Добавить прямые пути:"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pridať priame cesty:"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -222,6 +270,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Добавить файл/папку"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pridať súbor/priečinok"
           }
         },
         "zh-Hans" : {
@@ -247,6 +301,12 @@
             "value" : "Добавьте файлы или папки, которые будут игнорироваться при поиске потерянных файлов. Щелкните на путь, чтобы убрать его из списка."
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pridaj súbory alebo priečinky, ktoré sa pri hľadaní osamelých súborov budú ignorovať. Kliknutím na cestu ju odstrániš zo zoznamu."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -268,6 +328,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Добавить папку"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pridať priečinok"
           }
         },
         "zh-Hans" : {
@@ -293,6 +359,12 @@
             "value" : "Добавить/Сохранить"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pridať/Uložiť"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -314,6 +386,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Все флажки"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Všetky zaškrtávacie políčka"
           }
         },
         "zh-Hans" : {
@@ -339,6 +417,12 @@
             "value" : "Всегда проверяйте файлы, помеченные для удаления. В редких случаях могут быть обнаружены несвязанные файлы, если названия приложений слишком похожи.\n\nПРИМЕЧАНИЕ: Pearcleaner использует AppleScript для удаления файлов. В настоящее время macOS не позволяет AppleScript проходить аутентификацию с помощью отпечатка пальцев, поддерживается только пароль."
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vždy potvrď súbory označené na odstránenie. V zriedkavých prípadoch sa môžu nájsť nesúvisiace súbory, keď sú názvy aplikácií príliš podobné.\n\nPOZNÁMKA: Pearcleaner používa na odstránenie súborov AppleScript. V súčasnosti macOS neumožňuje AppleScriptu autentifikovať pomocou snímača odtlačkov prstov, podporované je iba overenie heslom."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -360,6 +444,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Анимации отключены"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animácie vypnuté"
           }
         },
         "zh-Hans" : {
@@ -385,6 +475,12 @@
             "value" : "Анимации включены"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animácie zapnuté"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -406,6 +502,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Объявление"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oznámenie"
           }
         },
         "zh-Hans" : {
@@ -430,6 +532,12 @@
             "value" : "Название приложения"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Názov aplikácie"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -450,6 +558,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Вес приложения"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veľkosť aplikácie"
           }
         },
         "zh-Hans" : {
@@ -475,6 +589,12 @@
             "value" : "Вид"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vzhľad"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -495,6 +615,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Файлы приложения вложены в подкаталоги. Чтобы предотвратить удаление неправильных папок, Pearcleaner оставит их в покое. При необходимости вы можете вручную удалить остальные папки."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Súbor aplikácie je vnorený do podadresárov. Aby sa predišlo odstráneniu nesprávnych priečinkov, Pearcleaner ich nechá tak. V prípade potreby môžeš zostávajúce priečinky manuálne odstrániť."
           }
         },
         "zh-Hans" : {
@@ -520,6 +646,12 @@
             "value" : "Скрипт приложения"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skript aplikácie"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -542,6 +674,12 @@
             "value" : "Приложения"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplikácie"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -562,6 +700,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Вы уверены, что хотите удалить эти файлы?"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naozaj chceš tieto súbory odstrániť?"
           }
         },
         "zh-Hans" : {
@@ -587,6 +731,12 @@
             "value" : "Автоматизация"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatizácia"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -608,6 +758,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "вычисление"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "vypočítavanie"
           }
         },
         "zh-Hans" : {
@@ -633,6 +789,12 @@
             "value" : "Проверить на обновления"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skontrolovať aktualizácie"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -654,6 +816,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Очистить"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyčistiť"
           }
         },
         "zh-Hans" : {
@@ -679,6 +847,12 @@
             "value" : "Очистить текст"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyčistiť text"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -700,6 +874,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Нажмите, чтобы перейти к списку приложений"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klikni pre zoznam aplikácií"
           }
         },
         "zh-Hans" : {
@@ -725,6 +905,12 @@
             "value" : "Нажмите на заголовок, чтобы изменить порядок сортировки"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kliknutím na hlavičku zmeň poradie zoradenia"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -748,6 +934,12 @@
             "value" : "Нажмите, чтобы найти"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klikni pre vyhľadávanie"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -768,6 +960,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Закрыть"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zatvoriť"
           }
         },
         "zh-Hans" : {
@@ -793,6 +991,12 @@
             "value" : "Закрыть после удаления"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zatvoriť po odinštalácii"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -814,6 +1018,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Командная строка"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Príkazový riadok"
           }
         },
         "zh-Hans" : {
@@ -839,6 +1049,12 @@
             "value" : "Завершено 🚀"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dokončené 🚀"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -860,6 +1076,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Конструктор условий"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vytvárač podmienok"
           }
         },
         "zh-Hans" : {
@@ -885,6 +1107,12 @@
             "value" : "Контейнер"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontajner"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -906,6 +1134,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Скопировать путь файлов"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopírovať umiestnenia súboru"
           }
         },
         "zh-Hans" : {
@@ -931,6 +1165,12 @@
             "value" : "Скопировать путь"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopírovať umiestnenie"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -952,6 +1192,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ежедневно"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denne"
           }
         },
         "zh-Hans" : {
@@ -977,6 +1223,12 @@
             "value" : "Обнаруживать, когда приложения перемещаются в корзину"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detekovať presunutie aplikácií do Koša"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -998,6 +1250,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Отключено, когда включен значок на панели меню"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vypnuté pri zapnutej ikone v lište"
           }
         },
         "zh-Hans" : {
@@ -1023,6 +1281,12 @@
             "value" : "Отклонить"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zrušiť"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1044,6 +1308,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Перетащите приложение сюда"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem presuň aplikáciu"
           }
         },
         "zh-Hans" : {
@@ -1069,6 +1339,12 @@
             "value" : "Перетащите файлы/папки выше или нажмите, чтобы выбрать"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presuň súbory alebo priečinky vyššie alebo kliknutím pridaj"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1090,6 +1366,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Перетащите папки выше или нажмите, чтобы выбрать"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presuň priečinky vyššie alebo kliknutím pridaj"
           }
         },
         "zh-Hans" : {
@@ -1115,6 +1397,12 @@
             "value" : "Сбросить цель"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cieľ presunutia"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1136,6 +1424,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Включить расширение для контекстного меню Finder"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zapnúť rozšírenie kontextového menu pre Finder"
           }
         },
         "zh-Hans" : {
@@ -1161,6 +1455,12 @@
             "value" : "Включение CLI позволит вам выполнять действия с Pearcleaner из терминала. Это добавит команду pearcleaner в /usr/local/bin, чтобы она была доступна непосредственно из вашей переменной окружения PATH. Попробуйте ее после включения:\n\n> pearcleaner —help"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zapnutím CLI budeš môcť vykonávať akcie Pearcleaneru z terminálu. Tým sa pridá príkaz pearcleaner do priečinka /usr/local/bin, takže bude dostupný priamo z tvojej premennej prostredia PATH. Skús to po zapnutí:\n\n> pearcleaner --help"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1182,6 +1482,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Включение этого расширения позволит вам щелкать правой кнопкой мыши приложения в Finder, чтобы быстро удалить их с помощью Pearcleaner"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zapnutím tohto rozšírenia budeš môcť kliknúť pravým tlačidlom myši na aplikácie vo Finderi a rýchlo ich odinštalovať pomocou Pearcleaneru."
           }
         },
         "zh-Hans" : {
@@ -1207,6 +1513,12 @@
             "value" : "Исключить"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vylúčiť"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1228,6 +1540,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Исключить ключевые слова:"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vylúčiť kľúčové slová:"
           }
         },
         "zh-Hans" : {
@@ -1253,6 +1571,12 @@
             "value" : "Исключите эти файлы и папки из поиска потерянных файлов"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vylúčiť tieto súbory a priečinky z vyhľadávania osamelých súborov"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1274,6 +1598,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Экспортировать пути файлов"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportovať cesty k súborom"
           }
         },
         "zh-Hans" : {
@@ -1299,6 +1629,12 @@
             "value" : "Не удалось отобразить примечания к выпуску"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepodarilo sa zobraziť poznámky k vydaniu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1320,6 +1656,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Параметры отображения размера файла"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Možnosti zobrazenia veľkosti súborov"
           }
         },
         "zh-Hans" : {
@@ -1345,6 +1687,12 @@
             "value" : "Расширение для Finder"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder rozšírenie"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1366,6 +1714,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Поиск потерянных файлы, пожалуйста, подождите..."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hľadanie osamelých súborov, čakaj prosím..."
           }
         },
         "zh-Hans" : {
@@ -1391,6 +1745,12 @@
             "value" : "Папки"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Priečinky"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1412,6 +1772,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Принудительное обновление"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vynútiť obnovenie"
           }
         },
         "zh-Hans" : {
@@ -1437,6 +1803,12 @@
             "value" : "Полный доступ к диску"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plný prístup k disku"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1458,6 +1830,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Функциональность"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Funkcie"
           }
         },
         "zh-Hans" : {
@@ -1483,6 +1861,12 @@
             "value" : "Получение данных о приложении"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zhromažďovanie údajov o aplikácii"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1506,6 +1890,12 @@
             "value" : "Основные"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Všeobecné"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1523,6 +1913,12 @@
     "GitHub" : {
       "comment" : "Github Repo",
       "localizations" : {
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1539,6 +1935,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Спонсоры GitHub"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Github Sponzori"
           }
         },
         "zh-Hans" : {
@@ -1559,6 +1961,12 @@
       "extractionState" : "manual",
       "localizations" : {
         "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub: v%@"
+          }
+        },
+        "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "GitHub: v%@"
@@ -1586,6 +1994,12 @@
             "value" : "Скрыть детали"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skryť údaje"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1607,6 +2021,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Очистка Homebrew после удаления"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyčistiť Homebrew po odinštalácii"
           }
         },
         "zh-Hans" : {
@@ -1632,6 +2052,12 @@
             "value" : "Важно"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dôležité"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1653,6 +2079,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "В режиме мини-окна, если вы закрепите всплывающее окно \"Файлы\" сверху, щелчок в сторону от окна не приведет к его закрытию. В противном случае оно будет закрыто щелчком в любом месте за пределами приложения."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ak v režime mini okna pripneš vyskakovacie okno Súbory, kliknutím mimo okna ho nezatvoríš. V opačnom prípade sa zruší kliknutím kdekoľvek mimo aplikácie."
           }
         },
         "zh-Hans" : {
@@ -1678,6 +2110,12 @@
             "value" : "В режиме мини-окна вы можете запустить Pearcleaner в режиме просмотра списка приложений или в режиме удаления целевых объектов."
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "V režime mini okna môžeš spustiť Pearcleaner do zobrazenia Zoznamu aplikácií alebo do zobrazenia na presunutie do zóny."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1699,6 +2137,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Включать ключевые слова:"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zahrnúť kľúčové slová:"
           }
         },
         "zh-Hans" : {
@@ -1723,6 +2167,12 @@
             "value" : "Дата установки"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dátum inštalácie"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1743,6 +2193,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Дата установки:"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dátum inštalácie:"
           }
         },
         "zh-Hans" : {
@@ -1768,6 +2224,12 @@
             "value" : "Установлено: v%@"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nainštalované: v%@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1789,6 +2251,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Инструкции"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inštrukcie"
           }
         },
         "zh-Hans" : {
@@ -1813,6 +2281,12 @@
             "value" : "Интерфейс"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rozhranie"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1831,6 +2305,12 @@
       "extractionState" : "manual",
       "localizations" : {
         "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS"
+          }
+        },
+        "sk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "iOS"
@@ -1859,6 +2339,12 @@
             "value" : "iOS приложение"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "IOS aplikácia"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1880,6 +2366,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "предмет"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "položka"
           }
         },
         "zh-Hans" : {
@@ -1905,6 +2397,12 @@
             "value" : "предметы"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "položiek"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1926,6 +2424,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ключевое_слово-1, ключевое_слово-2"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kľúčovéslovo-1, kľúčovéslovo-2"
           }
         },
         "zh-Hans" : {
@@ -1950,6 +2454,12 @@
             "value" : "Дата последнего использования"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dátum posledného použitia"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1970,6 +2480,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Дата последнего использования:"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dátum posledného použitia:"
           }
         },
         "zh-Hans" : {
@@ -1995,6 +2511,12 @@
             "value" : "Запускать Pearcleaner при входе в систему"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spustiť Pearcleaner pri prihlásení"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2016,6 +2538,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Местоположения, в которых будет производиться поиск файлов .app. Щёлкните, чтобы выбрать путь, который не соответствует по умолчанию, чтобы удалить его. Пути по умолчанию удалить невозможно."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Umiestnenia, v ktorých sa budú vyhľadávať .app súbory. Kliknutím na inú ako predvolenú cestu ju odstrániš. Predvolené cesty nie je možné odstrániť."
           }
         },
         "zh-Hans" : {
@@ -2041,6 +2569,12 @@
             "value" : "Логически"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logická"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2062,6 +2596,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Сделано с ❤️ от Alin Lupascu"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vytvoril s ❤️ Alin Lupascu"
           }
         },
         "zh-Hans" : {
@@ -2087,6 +2627,12 @@
             "value" : "Строка меню"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lišta"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2108,6 +2654,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Режим отображения значков на панели меню"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Režim ikony v lište"
           }
         },
         "zh-Hans" : {
@@ -2133,6 +2685,12 @@
             "value" : "Настройки значка в строке меню"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nastavenia ikony v lište"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2154,6 +2712,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Мини-конфигурация"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mini konfigurácia"
           }
         },
         "zh-Hans" : {
@@ -2179,6 +2743,12 @@
             "value" : "Режим мини-окна"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Režim mini okna"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2200,6 +2770,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Строки списка минималистичных приложений отключены"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimalistický zoznam aplikácií v riadku vypnutý"
           }
         },
         "zh-Hans" : {
@@ -2225,6 +2801,12 @@
             "value" : "Строки списка минималистичных приложений включены"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimalistický zoznam aplikácií v riadku zapnutý"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2246,6 +2828,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Отсутствуют права"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chýbajúce povolenia"
           }
         },
         "zh-Hans" : {
@@ -2270,6 +2858,12 @@
             "value" : "Дата изменения"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dátum zmeny"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2290,6 +2884,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Дата изменения:"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dátum zmeny:"
           }
         },
         "zh-Hans" : {
@@ -2315,6 +2915,12 @@
             "value" : "Ежемесячно"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mesačne"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2336,6 +2942,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Больше"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viac"
           }
         },
         "zh-Hans" : {
@@ -2361,6 +2973,12 @@
             "value" : "Название"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Názov"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2382,6 +3000,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Никогда"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nikdy"
           }
         },
         "zh-Hans" : {
@@ -2407,6 +3031,12 @@
             "value" : "Новое объявление"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nové oznámenie"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2428,6 +3058,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Следующая проверка обновления: %@"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ďalšia kontrola aktualizácie: %@"
           }
         },
         "zh-Hans" : {
@@ -2453,6 +3089,12 @@
             "value" : "Файлы или папки не выбраны"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neboli pridané žiadne súbory ani priečinky"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2474,6 +3116,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Нет новых объявлений"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Žiadne nové oznámenie"
           }
         },
         "zh-Hans" : {
@@ -2499,6 +3147,12 @@
             "value" : "Нет выпусков для отображения"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Žiadne vydania na zobrazenie"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2520,6 +3174,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Нет обновлений 😌"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Žiadna aktualizácia 😌"
           }
         },
         "zh-Hans" : {
@@ -2545,6 +3205,12 @@
             "value" : "Не доступен"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie je k dispozícii"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2566,6 +3232,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "из"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "z"
           }
         },
         "zh-Hans" : {
@@ -2591,6 +3263,12 @@
             "value" : "Открыть %@"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otvoriť %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2612,6 +3290,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Поиск потерянных файлов не является точным на 100%, поскольку в нем нет пакетов удаленных приложений, которые можно было бы проверить на предмет исключения файлов. Поиск файлов/папок выполняется на основе наилучшего предположения и исключает те, которые пересекаются с вашими текущими установленными приложениями. Пожалуйста, подтвердите, что файлы, помеченные для удаления, действительно принадлежат удаленным приложениям."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyhľadávanie osamotených súborov nie je 100% presné, pretože neobsahuje žiadne balíky odinštalovaných aplikácií, ktoré by mohol použiť na vylúčenie súborov. Toto je len odhadované vyhľadávanie súborov/priečinkov a vylučuje tie, ktoré sa prekrývajú s aktuálne nainštalovanými aplikáciami. Prosím potvrď, že súbory označené na odstránenie naozaj patria k odinštalovaným aplikáciám."
           }
         },
         "zh-Hans" : {
@@ -2637,6 +3321,12 @@
             "value" : "Потерянные файлы"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Osamotené súbory"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2660,6 +3350,12 @@
             "value" : "Вы уверены, что хотите удалить Pearcleaner и все её файлы?"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner a všetky jeho súbory budú úplne odstránené, si si istý?"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2681,6 +3377,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Поддержка CLI Pearcleaner"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner CLI podpora"
           }
         },
         "zh-Hans" : {
@@ -2707,6 +3409,12 @@
             "value" : "Удалить через Pearcleaner"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odinštalovať Pearcleanerom"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2728,6 +3436,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Статус прав"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stav povolení"
           }
         },
         "zh-Hans" : {
@@ -2753,6 +3467,12 @@
             "value" : "Права"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Povolenia"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2774,6 +3494,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Закрепить всплывающее окно сверху"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pripnúť vyskakovacie okno na vrch"
           }
         },
         "zh-Hans" : {
@@ -2799,6 +3525,12 @@
             "value" : "Файл Plist"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plist súbor"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2820,6 +3552,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Выйти"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ukončiť"
           }
         },
         "zh-Hans" : {
@@ -2845,6 +3583,12 @@
             "value" : "Выйти из Pearcleaer"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ukončiť Pearcleaner"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2866,6 +3610,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Реальный"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reálna"
           }
         },
         "zh-Hans" : {
@@ -2891,6 +3641,12 @@
             "value" : "Тип реального размера показывает, сколько места на диске занимает файл.\n\nЛогический тип показывает двоичный размер. Файловая система может сжимать и дедуплицировать сектора на диске, поэтому реальный размер иногда меньше (или больше) логического размера.\n\nРазмер файла в Finder аналогичен тому, который отображается, если щелкнуть правой кнопкой мыши > Получить информацию о файле в Finder, который покажет как логический, так и реальный размеры вместе."
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reálna veľkosť zobrazí, koľko alokovaného miesta má súbor skutočne na disku.\n\nLogická veľkosť zobrazuje binárnu veľkosť. Súborový systém môže komprimovať a deduplikovať sektory na disku, takže reálna veľkosť je niekedy menšia (alebo väčšia) ako logická veľkosť.\n\nVeľkosť podľa Finderu je podobná, ako keď klikneš pravým tlačidlom myši na súbor vo Finderi a vyberieš možnosť \"Informácie\", čo zobrazí logickú aj reálnu veľkosť spolu."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2912,6 +3668,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Обновить"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obnoviť"
           }
         },
         "zh-Hans" : {
@@ -2937,6 +3699,12 @@
             "value" : "Обновить приложения"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obnoviť aplikácie"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2958,6 +3726,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Обновить приложения (⌘+R)"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obnoviť aplikácie (⌘+R)"
           }
         },
         "zh-Hans" : {
@@ -2983,6 +3757,12 @@
             "value" : "Обновить обновитель"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obnoviť aktualizátor"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3003,6 +3783,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Примечания к выпуску"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poznámky k vydaniu"
           }
         },
         "zh-Hans" : {
@@ -3028,6 +3814,12 @@
             "value" : "Выпуски"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vydania"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3049,6 +3841,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Оставшиеся файлы и папки из предыдущих приложений"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zostávajúce súbory a priečinky z predchádzajúcich aplikácií"
           }
         },
         "zh-Hans" : {
@@ -3074,6 +3872,12 @@
             "value" : "Убрать"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odstrániť"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3095,6 +3899,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Убрать прямые пути:"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odstrániť priame cesty:"
           }
         },
         "zh-Hans" : {
@@ -3120,6 +3930,12 @@
             "value" : "Удалить это условие из этого приложения"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odstrániť podmienku z tejto aplikácie"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3141,6 +3957,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Повторное сканирование"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Znova skenovať"
           }
         },
         "zh-Hans" : {
@@ -3166,6 +3988,12 @@
             "value" : "Сбросить все настройки до заводских"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obnoviť všetky nastavenia na pôvodné"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3187,6 +4015,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Сбросить настройки"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obnoviť nastavenia"
           }
         },
         "zh-Hans" : {
@@ -3212,6 +4046,12 @@
             "value" : "Сбросить размер"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obnoviť veľkosť"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3233,6 +4073,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Перезапустить"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reštartovať"
           }
         },
         "zh-Hans" : {
@@ -3258,6 +4104,12 @@
             "value" : "Перезапустите %@, чтобы изменения вступили в силу"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reštartuj %@ aby sa zmeny prejavili"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3279,6 +4131,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Обратный поиск успешно завершен"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reverzné vyhľadávanie úspešne dokončené"
           }
         },
         "zh-Hans" : {
@@ -3304,6 +4162,12 @@
             "value" : "Щелкните правой кнопкой мыши, чтобы сбросить размер"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pravým kliknutím obnoviť veľkosť"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3325,6 +4189,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Сохранить"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uložiť"
           }
         },
         "zh-Hans" : {
@@ -3350,6 +4220,12 @@
             "value" : "Сохраните условие для этого приложения"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uložiť podmienku pre túto aplikáciu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3373,6 +4249,12 @@
             "value" : "Искать эти папки в приложениях"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyhľadať aplikácie v týchto priečinkoch"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3393,6 +4275,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Поиск в файловой системе"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyhľadávanie v súborovom systéme"
           }
         },
         "zh-Hans" : {
@@ -3418,6 +4306,12 @@
             "value" : "Мониторинг удалений"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sentinel Monitor"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3439,6 +4333,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Мониторинг удалений не обнаружил других файлов для удаления"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sentinel Monitor nenašiel žiadne ďalšie súbory na odstránenie"
           }
         },
         "zh-Hans" : {
@@ -3464,6 +4364,12 @@
             "value" : "Настройки"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nastavenia"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3485,6 +4391,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Снова показать значок с объявлениями"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Znova zobraziť odznak oznámení"
           }
         },
         "zh-Hans" : {
@@ -3510,6 +4422,12 @@
             "value" : "Показывать список приложений при запуске"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobraziť zoznam aplikácií pri spustení"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3530,6 +4448,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Показать детали"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobraziť údaje"
           }
         },
         "zh-Hans" : {
@@ -3555,6 +4479,12 @@
             "value" : "Показаны последние 3 выпуска"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobrazujú sa posledné 3 verzie"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3576,6 +4506,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Размер"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veľkosť"
           }
         },
         "zh-Hans" : {
@@ -3601,6 +4537,12 @@
             "value" : "Некоторые файлы/папки не совпадают с названием приложения или идентификатором пакета, в результате чего Pearcleaner либо не находит их, либо находит несвязанные файлы. \nЧтобы избежать этого, вы можете создать пользовательское условие для каждого пакета приложений, используя ключевые слова или прямые пути. \n\n- Можно добавлять ключевые слова для файлов/папок, которые вы хотите включить или исключить в нечеткий поиск. \n\n- Можно явно добавлять или удалять полный путь Finder к результатам поиска, если вам нужен прямой поиск."
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Niektoré súbory/priečinky nie sú podobné názvu aplikácie alebo ID balíka, čo spôsobuje, že ich Pearcleaner buď nenájde, alebo nájde nesúvisiace súbory.\nPre zabránenie tomuto, môžeš vytvoriť vlastnú podmienku pre každý balík aplikácie pomocou kľúčových slov alebo priamych ciest.\n\n- Môže pridať kľúčové slová pre súbor/priečinok, ktoré chceš zahrnúť alebo vylúčiť z približného vyhľadávania.\n\n- Môže explicitne pridať alebo odstrániť úplnú Finder cestu do výsledkov vyhľadávania, ak chceš priame vyhľadávanie."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3622,6 +4564,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Отсортировать список приложений в алфавитном порядке по названию или размеру"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoradiť zoznam aplikácií abecedne podľa názvu alebo veľkosti"
           }
         },
         "zh-Hans" : {
@@ -3647,6 +4595,12 @@
             "value" : "Отсортировано по названию"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoradené podľa názvu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3670,6 +4624,12 @@
             "value" : "Отсортировано по размеру"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoradené podľa veľkosti"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3690,6 +4650,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Опции сортировки"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Možnosti zoradenia"
           }
         },
         "zh-Hans" : {
@@ -3715,6 +4681,12 @@
             "value" : "Сортировка: %@"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoradenie: %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3736,6 +4708,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Спонсор"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podporovateľ"
           }
         },
         "zh-Hans" : {
@@ -3761,6 +4739,12 @@
             "value" : "Сообщить об ошибке или предложить функцию"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nahlásiť chybu alebo požiadavku na funkciu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3782,6 +4766,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Сообщить о новой проблеме"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nahlásiť nový problém"
           }
         },
         "zh-Hans" : {
@@ -3807,6 +4797,12 @@
             "value" : "Поддержка"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podpora"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3830,6 +4826,12 @@
             "value" : "система"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "systém"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3850,6 +4852,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Система"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Systém"
           }
         },
         "zh-Hans" : {
@@ -3875,6 +4883,12 @@
             "value" : "Режим темы"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Téma vzhľadu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3896,6 +4910,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Это добавит файл/папку в список исключений. Отредактируйте список исключений на вкладке \"Настройки\" > \"Папки\"."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toto pridá súbor/priečinok do zoznamu výnimiek. Zoznam výnimiek môžeš upraviť v Nastaveniach > PriečinkyToto pridá súbor/priečinok do zoznamu výnimiek. Zoznam výnimiek môžeš upraviť v Nastaveniach > Priečinky"
           }
         },
         "zh-Hans" : {
@@ -3921,6 +4941,12 @@
             "value" : "Это приложение находится в %@"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Táto aplikácia sa nachádza v %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3942,6 +4968,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Это веб-приложение"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toto je webová aplikácia"
           }
         },
         "zh-Hans" : {
@@ -3967,6 +4999,12 @@
             "value" : "Это приложение создано для iOS"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toto je zabalená iOS aplikácia"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3990,6 +5028,12 @@
             "value" : "Этот параметр повлияет на работу Pearcleaner независимо от того, запущен ли он в режиме панели меню или в обычном режиме. Если вы отключили значок панели меню, возможно, вы захотите отключить и этот параметр, чтобы Pearcleaner не запускался при входе в систему."
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toto nastavenie bude mať vplyv na Pearcleaner, či už beží v lište alebo v štandardnom režime. Ak vypneš ikonu v lište, možno budeš chcieť vypnúť aj toto, aby sa Pearcleaner nespúšťal pri prihlásení."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4011,6 +5055,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Переключение между режимами приведет к возврату окон к их размеру/положению по умолчанию"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prepínanie medzi režimami obnoví okná na ich prednastavenú veľkosť/pozíciu"
           }
         },
         "zh-Hans" : {
@@ -4037,6 +5087,12 @@
             "value" : "Утилиты"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nástroje"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4057,6 +5113,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Общий размер файлов:"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Celková veľkosť súborov:"
           }
         },
         "zh-Hans" : {
@@ -4082,6 +5144,12 @@
             "value" : "Прозрачный материал"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Priehľadnosť"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4102,6 +5170,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Нажмите, чтобы искать"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Napíš pre vyhľadávanie"
           }
         },
         "zh-Hans" : {
@@ -4127,6 +5201,12 @@
             "value" : "Отменить удаление"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zrušiť odstránenie"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4148,6 +5228,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Удалить"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odinštalovať"
           }
         },
         "zh-Hans" : {
@@ -4173,6 +5259,12 @@
             "value" : "Предупреждения о подтверждении удаления"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Potvrdzovacie hlásenia pri odinštalácii"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4196,6 +5288,12 @@
             "value" : "Удалить Pearcleaner"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odinštalovať Pearcleaner"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4216,6 +5314,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Обновить"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualizovať"
           }
         },
         "zh-Hans" : {
@@ -4241,6 +5345,12 @@
             "value" : "Доступно обновление 🥳"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualizácia dostupná 🥳"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4261,6 +5371,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Частота обновления"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frekvencia aktualizácií"
           }
         },
         "zh-Hans" : {
@@ -4286,6 +5402,12 @@
             "value" : "Частота обновления установлена на значение Никогда"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frekvencia aktualizácií je nastavená na Nikdy"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4307,6 +5429,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Обновления отключены"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualizácie vypnuté"
           }
         },
         "zh-Hans" : {
@@ -4331,6 +5459,12 @@
             "value" : "пользователь"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "používateľ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4353,6 +5487,12 @@
             "value" : "Пользователь"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Používateľ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4369,6 +5509,12 @@
     },
     "v%@" : {
       "localizations" : {
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "v%@"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4384,6 +5530,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Версия %@"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verzia %@"
           }
         },
         "zh-Hans" : {
@@ -4406,6 +5558,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Вид"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobraziť"
           }
         },
         "zh-Hans" : {
@@ -4431,6 +5589,12 @@
             "value" : "Посмотреть в Finder"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobraziť vo Finderi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4452,6 +5616,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Просмотр проблем"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobraziť Problémy"
           }
         },
         "zh-Hans" : {
@@ -4477,6 +5647,12 @@
             "value" : "Посмотреть участников проекта"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobraziť prispievateľov projektu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4500,6 +5676,12 @@
             "value" : "Посмотреть выпуски"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobraziť verzie"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4520,6 +5702,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Посмотреть выпуск в GitHub"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobraziť verzie na Githube"
           }
         },
         "zh-Hans" : {
@@ -4545,6 +5733,12 @@
             "value" : "Посмотреть репозиторий"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobraziť Repozitár"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4566,6 +5760,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Предупреждение"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upozornenie"
           }
         },
         "zh-Hans" : {
@@ -4591,6 +5791,12 @@
             "value" : "Предупреждение!"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upozornenie!"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4612,6 +5818,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "веб"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "web"
           }
         },
         "zh-Hans" : {
@@ -4637,6 +5849,12 @@
             "value" : "Веб-приложение"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Webová aplikácia"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4658,6 +5876,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Еженедельно"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Týždenne"
           }
         },
         "zh-Hans" : {
@@ -4683,6 +5907,12 @@
             "value" : "Когда приложения будут перемещены в корзину, запустится программа Pearcleaner и найдет соответствующие файлы и папки для удаления."
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keď sa aplikácie presunú do koša, spustí sa Pearcleaner a nájde súvisiace súbory a priečinky na odstránenie."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4704,6 +5934,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "При удалении файлов с помощью кнопки \"Удалить\" вы можете предотвратить случайное удаление, показав предупреждение перед выполнением действия."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pri odstraňovaní súborov pomocou tlačidla Koš môžeš zabrániť nechcenému odstráneni tým, že sa zobrazí upozornenie pred pokračovaním v akcii."
           }
         },
         "zh-Hans" : {
@@ -4729,6 +5965,12 @@
             "value" : "Когда функция Homebrew cleanup включена, Pearcleaner проверит, было ли приложение, которое вы удаляете, установлено через Homebrew, и запустит Terminal.app, чтобы выполнить команду удаления и очистки brew, чтобы сообщить Homebrew, что приложение удалено. Таким образом, ваш список доморощенных файлов будет правильно синхронизирован, а кэширование будет удалено. Terminal.app необходим, поскольку некоторым приложениям требуются разрешения sudo для удаления служб и файлов, размещенных в системных папках. Поскольку другие терминальные приложения не поддерживают AppleScript и/или команду \"do script\", я решил использовать для этого приложение macOS Terminal по умолчанию.\n\nПРИМЕЧАНИЕ: Если вы отмените удаление файла с помощью CMD+Z, файлы будут восстановлены, но Homebrew не узнает об этом. Чтобы снова синхронизировать список Homebrew, вам нужно запустить:\n\n> brew install APPNAME —force"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Po zapnutí vyčistenia Homebrew, Pearcleaner skontroluje, či bola aplikácia, ktorú odstraňuješ nainštalovaná pomocou Homebrew. Následne spustí Terminal.app a vykoná príkaz brew uninstall a brew cleanup a informuje Homebrew o odstránení aplikácie. Takto sa Homebrew zoznam správne synchronizuje a vyrovnácia pamäť vyčistí. Terminal.app je potrebná, pretože niektoré aplikácie vyžadujú sudo oprávnenia na odstránenie služieb a súborov umiestnených v systémových priečinkoch. Keďže iné terminálové aplikácie nepodporujú AppleScript a/alebo do script príkaz, rozhodol som sa použiť predvolenú aplikáciu Terminal.\n\nUPOZORNENIE: Ak vrátiš späť odstránenie súborov pomocou CMD+Z, súbory sa obnovia, ale Homebrew o tom nebude vedieť. Na opätovné zosynchronizovanie zoznamu Homebrew budeš musieť spustiť príkaz:\n\n> brew install NAZOVAPLIKACIE --force"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4752,6 +5994,12 @@
             "value" : "Когда значок панели меню включен, главное окно приложения и значок док-станции будут отключены, так как приложение будет переведено в дополнительный режим."
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keď je ikona v lište zapnutá, hlavné okno aplikácie a ikona v Docku budú vypnuté, pretože aplikácia prejde do doplnkového režimu."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4773,6 +6021,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Когда этот режим включен, нажатие кнопки \"Удалить\" для удаления приложения также приведет к немедленному закрытию Pearcleaner.\nЭто влияет на Pearcleaner только в том случае, если оно открыто с помощью внешних средств, таких как Sentinel Trash Monitor, расширение Finder или дополнительная ссылка.\nЭто позволяет использовать приложение один раз для быстрого удаления. При обычном запуске Pearcleaner эта настройка игнорируется и будет работать как обычно."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keď je tento režim zapnutý, kliknutím na tlačidlo Odinštalovať sa odstránenia aplikácie a tiež okamžite zatvorí Pearcleaner. Toto platí pre Pearcleaner iba v prípade, keď sa otvorí nepriamo, napr. cez Sentinel Trash Monitor, Finder rozšírenie alebo Deep Link.\nTo umožňuje jednorazové použitie aplikácie pre rýchlu odinštaláciu. Keď sa Pearcleaner otvorí normálne, toto nastavenie sa ignoruje a bude fungovať ako obvykle."
           }
         },
         "zh-Hans" : {
