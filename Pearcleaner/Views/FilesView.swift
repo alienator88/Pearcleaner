@@ -332,20 +332,45 @@ struct FilesView: View {
 
                     HStack(alignment: .center) {
 
-                        Spacer()
-
                         if appState.appInfo.fileSize.keys.count == 0 {
                             Text("Sentinel Monitor found no other files to remove")
-                                .font(.title2)
+                                .font(.title3)
                                 .opacity(0.5)
-                                .padding(.top)
                         }
 
+                        if !appState.externalPaths.isEmpty {
+                            HStack {
+                                VStack {
+                                    Text("Queue:").font(.title3).opacity(0.5)
+                                    Text("⇧ + Scroll").font(.callout).foregroundStyle(.secondary).opacity(0.5)
+                                }
+
+                                ScrollView([.horizontal], showsIndicators: false) {
+                                    HStack(spacing: 10) {
+
+                                        ForEach(appState.externalPaths, id: \.self) { path in
+                                            HStack(spacing: 0) {
+                                                Button(path.deletingPathExtension().lastPathComponent) {
+                                                    let newApp = AppInfoFetcher.getAppInfo(atPath: path)!
+                                                    updateOnMain {
+                                                        appState.appInfo = newApp
+                                                    }
+                                                    showAppInFiles(appInfo: newApp, appState: appState, locations: locations, showPopover: $showPopover)
+                                                }
+                                                Button {
+                                                    removePath(path)
+                                                } label: { EmptyView() }
+                                                    .buttonStyle(SimpleButtonStyle(icon: "minus.circle", help: "Remove from queue", size: 14))
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+
+
                         Spacer()
-
-//                        InfoButton(text: "Always double-check the files/folders marked for removal. In some rare cases, Pearcleaner may find some unrelated files when app names are too similar.", color: .primary.opacity(0.5), warning: true, edge: .top)
-//                            .padding(.top)
-
 
                         Button {
                             showCustomAlert(enabled: confirmAlert, title: String(localized: "Warning"), message: String(localized: "Are you sure you want to remove these files?"), style: .warning, onOk: {
@@ -396,11 +421,49 @@ struct FilesView: View {
                                                 // Match found, remove the app
                                                 removeApp(appState: appState, withPath: appState.appInfo.path)
 
-                                                if oneShotMode {
-                                                    NSApp.terminate(nil)
+                                                // Remove the processed path first to avoid re-processing it
+                                                if !appState.externalPaths.isEmpty {
+                                                    appState.externalPaths.removeFirst()
+                                                }
+
+                                                // Check if there are more paths in externalPaths
+                                                if appState.externalPaths.isEmpty {
+                                                    // No more paths, terminate if oneShotMode is enabled
+                                                    if oneShotMode {
+                                                        NSApp.terminate(nil)
+                                                    }
+                                                } else if let nextPath = appState.externalPaths.first {
+                                                    // More paths exist; continue processing
+                                                    let nextApp = AppInfoFetcher.getAppInfo(atPath: nextPath)!
+
+                                                    updateOnMain {
+                                                        appState.appInfo = nextApp
+                                                    }
+                                                    showAppInFiles(appInfo: nextApp, appState: appState, locations: locations, showPopover: $showPopover)
                                                 }
 
                                             } else {
+                                                // Remove the processed path first to avoid re-processing it
+                                                if !appState.externalPaths.isEmpty {
+                                                    appState.externalPaths.removeFirst()
+                                                }
+
+                                                // Check if there are more paths in externalPaths
+                                                if appState.externalPaths.isEmpty {
+                                                    // No more paths, terminate if oneShotMode is enabled
+                                                    if oneShotMode {
+                                                        NSApp.terminate(nil)
+                                                    }
+                                                } else if let nextPath = appState.externalPaths.first {
+                                                    // More paths exist; continue processing
+                                                    let nextApp = AppInfoFetcher.getAppInfo(atPath: nextPath)!
+
+                                                    updateOnMain {
+                                                        appState.appInfo = nextApp
+                                                    }
+                                                    showAppInFiles(appInfo: nextApp, appState: appState, locations: locations, showPopover: $showPopover)
+                                                }
+
                                                 // Run brew cleanup if sent from Sentinel
                                                 if brew && appState.sentinelMode {
                                                     caskCleanup(app: appState.appInfo.appName)
@@ -415,9 +478,12 @@ struct FilesView: View {
                                                     // Update the selectedFiles to remove references that are no longer present
                                                     appState.selectedItems.removeAll()
                                                     appState.sentinelMode = false
-                                                    if oneShotMode {
+
+                                                    // Only terminate if there are no more paths and oneShotMode is enabled
+                                                    if oneShotMode && appState.externalPaths.isEmpty {
                                                         NSApp.terminate(nil)
                                                     }
+
                                                 }
                                             }
                                         }
@@ -468,6 +534,39 @@ struct FilesView: View {
         .onAppear {
             if !warning {
                 showAlert = true
+            }
+        }
+        
+    }
+
+    // Function to remove a path from externalPaths and update appInfo if necessary
+    private func removePath(_ path: URL) {
+        if let index = appState.externalPaths.firstIndex(of: path) {
+            appState.externalPaths.remove(at: index)
+            // Check if the removed path matches the current appInfo
+            if appState.appInfo.path == path {
+                // If there are more items in externalPaths, set appInfo to the next app
+                if let nextPath = appState.externalPaths.first {
+                    let nextApp = AppInfoFetcher.getAppInfo(atPath: nextPath)!
+                    updateOnMain {
+                        appState.appInfo = nextApp
+                    }
+                    showAppInFiles(appInfo: nextApp, appState: appState, locations: locations, showPopover: $showPopover)
+                } else {
+                    // If no more items are left, set appInfo to .empty and change page to default view
+                    updateOnMain {
+                        appState.appInfo = .empty
+                        search = ""
+                        withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                            if mini || menubarEnabled {
+                                appState.currentView = .apps
+                                showPopover = false
+                            } else {
+                                appState.currentView = .empty
+                            }
+                        }
+                    }
+                }
             }
         }
     }

@@ -149,6 +149,9 @@
         }
       }
     },
+    "⇧ + Scroll" : {
+
+    },
     "About" : {
       "localizations" : {
         "ru" : {
@@ -3544,6 +3547,9 @@
           }
         }
       }
+    },
+    "Queue:" : {
+
     },
     "Quit" : {
       "extractionState" : "manual",

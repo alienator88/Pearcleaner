@@ -29,6 +29,7 @@ class AppState: ObservableObject {
     @Published var showUninstallAlert: Bool = false
     @Published var sentinelMode: Bool = false
     @Published var showConditionBuilder: Bool = false
+    @Published var externalPaths: [URL] = [] // for handling multiple app from drops or deeplinks
 
     func getBundleSize(for appInfo: AppInfo, updateState: @escaping (Int64) -> Void) {
         // Step 1: Check if the size is available and not 0 in the sortedApps cache
@@ -156,8 +157,10 @@ struct AppInfo: Identifiable, Equatable, Hashable {
     {
         return fileSizeLogical.values.reduce(0, +)
     }
-    
 
+    var isEmpty: Bool {
+        return path == URL(fileURLWithPath: "./") && bundleIdentifier.isEmpty && appName.isEmpty
+    }
 
     static let empty = AppInfo(id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "", appVersion: "", appIcon: nil, webApp: false, wrapped: false, system: false, arch: .empty, bundleSize: 0, fileSize: [:], fileSizeLogical: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil)
 

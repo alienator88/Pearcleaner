@@ -82,7 +82,7 @@ var conditions: [Condition] = [
     Condition(
         bundle_id: "com.google.chrome",
         include: ["google", "chrome"],
-        exclude: ["iterm", "chromefeaturestate"],
+        exclude: ["iterm", "chromefeaturestate", "monochrome"],
         includeForce: nil
     ),
     Condition(

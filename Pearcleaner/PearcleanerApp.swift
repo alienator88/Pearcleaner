@@ -72,21 +72,34 @@ struct PearcleanerApp: App {
             .environmentObject(permissionManager)
             .preferredColorScheme(themeManager.displayMode.colorScheme)
             .handlesExternalEvents(preferring: Set(arrayLiteral: "pear"), allowing: Set(arrayLiteral: "*"))
+            .onDrop(of: ["public.file-url"], isTargeted: nil) { providers, _ in
+                var droppedURLs: [URL] = []
+                let dispatchGroup = DispatchGroup()
+
+                for provider in providers {
+                    dispatchGroup.enter()
+                    provider.loadItem(forTypeIdentifier: "public.file-url") { data, error in
+                        if let data = data as? Data, let url = URL(dataRepresentation: data, relativeTo: nil) {
+                            droppedURLs.append(url)
+                        }
+                        dispatchGroup.leave()
+                    }
+                }
+
+                dispatchGroup.notify(queue: .main) {
+                    let deeplinkManager = DeeplinkManager(showPopover: $showPopover)
+                    for url in droppedURLs {
+                        deeplinkManager.manage(url: url, appState: appState, locations: locations)
+                    }
+                }
+
+                return true
+            }
+
             .onOpenURL(perform: { url in
                 let deeplinkManager = DeeplinkManager(showPopover: $showPopover)
                 deeplinkManager.manage(url: url, appState: appState, locations: locations)
             })
-            .onDrop(of: ["public.file-url"], isTargeted: nil) { providers, _ in
-                for provider in providers {
-                    provider.loadItem(forTypeIdentifier: "public.file-url") { data, error in
-                        if let data = data as? Data, let url = URL(dataRepresentation: data, relativeTo: nil) {
-                            let deeplinkManager = DeeplinkManager(showPopover: $showPopover)
-                            deeplinkManager.manage(url: url, appState: appState, locations: locations)
-                        }
-                    }
-                }
-                return true
-            }
             .alert(isPresented: $appState.showUninstallAlert) {
                 Alert(
                     title: Text("Warning!"),
