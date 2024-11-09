@@ -345,9 +345,8 @@ struct FilesView: View {
                                     Text("⇧ + Scroll").font(.callout).foregroundStyle(.secondary).opacity(0.5)
                                 }
 
-                                ScrollView([.horizontal], showsIndicators: false) {
+                                ScrollView(.horizontal, showsIndicators: false) {
                                     HStack(spacing: 10) {
-
                                         ForEach(appState.externalPaths, id: \.self) { path in
                                             HStack(spacing: 0) {
                                                 Button(path.deletingPathExtension().lastPathComponent) {
@@ -364,7 +363,11 @@ struct FilesView: View {
                                             }
                                         }
                                     }
+
                                 }
+                                .frame(height: 120)
+
+
                             }
 
                         }

@@ -127,40 +127,9 @@ struct ZombieView: View {
 
                     // Item selection and sorting toolbar
                     HStack {
-                        Toggle(isOn: Binding(
-                            get: {
-                                if searchZ.isEmpty {
-                                    // All items are selected if no filter is applied and all items are selected
-                                    return selectedZombieItemsLocal.count == appState.zombieFile.fileSize.count
-                                } else {
-                                    // All currently filtered files are selected when a filter is applied
-                                    return Set(memoizedFiles).isSubset(of: selectedZombieItemsLocal) && selectedZombieItemsLocal.count == memoizedFiles.count
-                                }
-                            },
-                            set: { newValue in
-                                if newValue {
-                                    if searchZ.isEmpty {
-                                        // Select all files if no filter is applied
-                                        selectedZombieItemsLocal = Set(appState.zombieFile.fileSize.keys)
-                                    } else {
-                                        // Select only filtered files if a filter is applied
-                                        selectedZombieItemsLocal.formUnion(memoizedFiles)
-                                    }
-                                } else {
-                                    if searchZ.isEmpty {
-                                        // Deselect all files if no filter is applied
-                                        selectedZombieItemsLocal.removeAll()
-                                    } else {
-                                        // Deselect only filtered files if a filter is applied
-                                        selectedZombieItemsLocal.subtract(memoizedFiles)
-                                    }
-                                }
-
-                                updateTotalSizes()
-                            }
-                        )) { EmptyView() }
-                        .toggleStyle(SimpleCheckboxToggleStyle())
-                        .help("All checkboxes")
+                        Toggle(isOn: selectAllBinding) { EmptyView() }
+                            .toggleStyle(SimpleCheckboxToggleStyle())
+                            .help("All checkboxes")
 
                         SearchBar(search: $searchZ, darker: true, glass: glass, sidebar: false)
                             .padding(.horizontal)
@@ -206,8 +175,6 @@ struct ZombieView: View {
                     HStack() {
 
                         Spacer()
-
-//                        InfoButton(text: "Leftover file search is not 100% accurate as it doesn't have any uninstalled app bundles to check against for file exclusion. This does a best guess search for files/folders and excludes the ones that have overlap with your currently installed applications. Please confirm files marked for deletion really do belong to uninstalled applications.", color: .orange, warning: true, edge: .top)
 
                         Button("Rescan") {
                             updateOnMain {
@@ -311,12 +278,45 @@ struct ZombieView: View {
 
     private func binding(for file: URL) -> Binding<Bool> {
         Binding<Bool>(
-            get: { self.selectedZombieItemsLocal.contains(file) },
+            get: {
+                // Only return true if the file is both selected AND still in memoizedFiles
+                self.selectedZombieItemsLocal.contains(file) && memoizedFiles.contains(file)
+            },
             set: { isSelected in
                 if isSelected {
-                    self.selectedZombieItemsLocal.insert(file)
+                    // Only allow selection if the file is in memoizedFiles
+                    if memoizedFiles.contains(file) {
+                        self.selectedZombieItemsLocal.insert(file)
+                    }
                 } else {
                     self.selectedZombieItemsLocal.remove(file)
+                }
+                updateTotalSizes()
+            }
+        )
+    }
+
+    // The "Select All" toggle binding
+    private var selectAllBinding: Binding<Bool> {
+        Binding(
+            get: {
+                if searchZ.isEmpty {
+                    return selectedZombieItemsLocal.count == appState.zombieFile.fileSize.count
+                } else {
+                    // Only consider files that are currently in memoizedFiles
+                    let currentlyVisibleFiles = Set(memoizedFiles)
+                    let selectedVisibleFiles = selectedZombieItemsLocal.intersection(currentlyVisibleFiles)
+                    return !currentlyVisibleFiles.isEmpty && selectedVisibleFiles.count == currentlyVisibleFiles.count
+                }
+            },
+            set: { newValue in
+                if newValue {
+                    // Only select files that are currently in memoizedFiles
+                    selectedZombieItemsLocal = Set(memoizedFiles)
+                } else {
+                    // Only deselect files that are currently in memoizedFiles
+                    let filesToDeselect = Set(memoizedFiles)
+                    selectedZombieItemsLocal.subtract(filesToDeselect)
                 }
                 updateTotalSizes()
             }
@@ -505,7 +505,16 @@ struct ZombieFileDetailsItem: View {
             Divider()
             Button("Exclude") {
                 fsm.addPathZ(path.path)
+                // Remove from memoizedFiles
                 memoizedFiles.removeAll { $0 == path }
+                // Also remove from selectedZombieItemsLocal if it exists
+                appState.zombieFile.fileSize.removeValue(forKey: path)
+                appState.zombieFile.fileSizeLogical.removeValue(forKey: path)
+                appState.zombieFile.fileIcon.removeValue(forKey: path)
+                // Use @EnvironmentObject to access the parent's selectedZombieItemsLocal
+                if isSelected {
+                    isSelected = false
+                }
             }
             .help("This adds the file/folder to the Exclusions list. Edit the exclusions list from Settings > Folders tab")
         }
