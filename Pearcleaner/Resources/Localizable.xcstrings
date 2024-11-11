@@ -30,6 +30,12 @@
             "value" : "(Build %@)"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "（版號 %@）"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -56,6 +62,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "/Full/Path/example-1.txt, /Full/Path/example-2.txt"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "/完整/路徑/範例-1.txt, /完整/路徑/範例-2.txt"
           }
         },
         "zh-HK" : {
@@ -94,6 +106,12 @@
             "value" : "%@ 已经是最新版本"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 已經為最新版本"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -129,6 +147,12 @@
             "value" : "%@ 将检查更新"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 會檢查更新"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -161,6 +185,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "关于"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "關於"
           }
         },
         "zh-HK" : {
@@ -198,6 +228,12 @@
             "value" : "辅助功能"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "輔助使用"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -230,6 +266,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "添加"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加入"
           }
         },
         "zh-HK" : {
@@ -267,6 +309,12 @@
             "value" : "添加直接路径："
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加入直接路徑："
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -300,6 +348,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "添加文件/文件夹"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加入檔案/資料夾"
           }
         },
         "zh-HK" : {
@@ -337,6 +391,12 @@
             "value" : "添加在搜索孤立文件时将被忽略的文件或文件夹。点击路径将其从列表中移除。"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加入搜尋單獨檔案時會忽略的檔案或資料夾。按一下路徑以將其從列表中移除。"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -370,6 +430,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "添加文件夹"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加入資料夾"
           }
         },
         "zh-HK" : {
@@ -407,6 +473,12 @@
             "value" : "添加/保存"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加入/儲存"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -440,6 +512,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "所有复选框"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全部剔選框"
           }
         },
         "zh-HK" : {
@@ -477,6 +555,12 @@
             "value" : "请始终确认标记为删除的文件。某些情况下,当应用名称过于相似时，可能会找到无关的文件。\n\n注意：Pearcleaner 使用 AppleScript 删除文件。目前 macOS 不允许 AppleScript 使用指纹传感器进行身份验证，仅支持密码验证。"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "總是確認標記為移除的檔案。在少數個案中，當應用程式名稱太相似時，可能會找到不相關的檔案。\n\n注意：Pearcleaner 使用 AppleScript 來移除檔案。現時 macOS 不允許 AppleScript 使用指紋感應器進行身分認證，只支援密碼身分認證。"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -510,6 +594,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "动画已禁用"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停用動畫"
           }
         },
         "zh-HK" : {
@@ -547,6 +637,12 @@
             "value" : "动画已启用"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啟用動畫"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -580,6 +676,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "公告"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "宣佈"
           }
         },
         "zh-HK" : {
@@ -616,6 +718,12 @@
             "value" : "应用名"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App 名稱"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -648,6 +756,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "应用大小"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App 大小"
           }
         },
         "zh-HK" : {
@@ -685,6 +799,12 @@
             "value" : "外观"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "外觀"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -717,6 +837,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "应用程序文件嵌套在子目录中。为了防止删除错误的文件夹，Pearcleaner 将保留这些文件夹。如果需要，您可以手动删除剩余的文件夹。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "應用程式檔案包藏在子目錄中。為了避免刪除不正確的資料夾，Pearcleaner 會保留這些。如有要求，你可以手動刪除剩餘的資料夾。"
           }
         },
         "zh-HK" : {
@@ -754,6 +880,12 @@
             "value" : "应用脚本"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App 程式碼"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -788,6 +920,12 @@
             "value" : "应用程序"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "應用程式"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -820,6 +958,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "您是否确认想要删除这些文件？"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "確定要移除這些檔案嗎？"
           }
         },
         "zh-HK" : {
@@ -857,6 +1001,12 @@
             "value" : "自动化"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動化"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -890,6 +1040,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在计算"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在計算"
           }
         },
         "zh-HK" : {
@@ -956,6 +1112,12 @@
             "value" : "检查更新"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "檢查更新"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1004,6 +1166,12 @@
             "value" : "清除"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1037,6 +1205,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "清除文本"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除文字"
           }
         },
         "zh-HK" : {
@@ -1074,6 +1248,12 @@
             "value" : "点击查看应用列表"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按一下以取得 App 列表"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1107,6 +1287,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "点击标题更改排序顺序"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按一下標題以更改排列順序"
           }
         },
         "zh-HK" : {
@@ -1144,6 +1330,12 @@
             "value" : "点击以搜索"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按一下以搜尋"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1176,6 +1368,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "关闭"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "關閉"
           }
         },
         "zh-HK" : {
@@ -1213,6 +1411,12 @@
             "value" : "卸载后关闭"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "解除安裝後關閉"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1248,6 +1452,12 @@
             "value" : "命令行"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "命令列"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1278,6 +1488,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已完成 🚀"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "已完成 🚀"
@@ -1318,6 +1534,12 @@
             "value" : "条件构建器"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "條件建構器"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1348,6 +1570,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "容器"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "容器"
@@ -1388,6 +1616,12 @@
             "value" : "复制文件路径"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "複製檔案路徑"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1423,6 +1657,12 @@
             "value" : "复制路径"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "複製路徑"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1456,6 +1696,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "每天"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每日"
           }
         },
         "zh-HK" : {
@@ -1499,6 +1745,12 @@
             "value" : "检测应用何时被移动到废纸篓"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "偵測應用程式何時丟到垃圾桶"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1540,6 +1792,12 @@
             "value" : "启用菜单栏图标时禁用"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啟用選單列圖示時停用"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1573,6 +1831,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "关闭"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "關閉"
           }
         },
         "zh-HK" : {
@@ -1610,6 +1874,12 @@
             "value" : "将应用拖到此处"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拖放 App 到此處"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1643,6 +1913,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "将文件或文件夹拖到上方或点击添加"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拖放檔案或資料夾到上方，或按一下以加入"
           }
         },
         "zh-HK" : {
@@ -1680,6 +1956,12 @@
             "value" : "将文件夹拖到上方或点击添加"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拖放資料夾到上方，或按一下以加入"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1713,6 +1995,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "拖放目标"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拖放目標"
           }
         },
         "zh-HK" : {
@@ -1750,6 +2038,12 @@
             "value" : "为 Finder 启用上下文菜单扩展"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "為 Finder 啟用特色選單延伸功能"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1785,6 +2079,12 @@
             "value" : "启用 CLI 后,您可以从终端执行 Pearcleaner 操作。这将把 pearcleaner 命令添加到 /usr/local/bin 中，使其可以直接从 PATH 环境变量中访问。启用后尝试：\n\n> pearcleaner --help"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啟用命令列介面（CLI）會允許你透過終端機執行 Pearcleaner 動作。這樣會將 pearcleaner 命令加至 /usr/local/bin 下，以便直接從你的 PATH 環境變數使用。當你啟用之後，就可以嘗試它：\n\n> pearcleaner --help"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1818,6 +2118,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "启用此扩展后，您可以在 Finder 中右键点击应用,使用 Pearcleaner 快速卸载它们"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啟用此延伸功能可讓你在 Finder 中右鍵點按一下應用程式，以使用 Pearcleaner 快速解除安裝"
           }
         },
         "zh-HK" : {
@@ -1858,6 +2164,12 @@
             "value" : "排除"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "排除"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1891,6 +2203,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "排除关键字："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "排除關鍵字："
           }
         },
         "zh-HK" : {
@@ -1928,6 +2246,12 @@
             "value" : "在孤立文件搜索中排除这些文件和文件夹"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "從單獨檔案搜尋中排除這些檔案與資料夾"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1961,6 +2285,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "导出文件路径"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "輸出檔案路徑"
           }
         },
         "zh-HK" : {
@@ -1998,6 +2328,12 @@
             "value" : "无法显示更新日志"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法顯示版本備註"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2031,6 +2367,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "文件大小显示选项"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "檔案大小顯示方式選項"
           }
         },
         "zh-HK" : {
@@ -2068,6 +2410,12 @@
             "value" : "Finder 扩展"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder 延伸功能"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2101,6 +2449,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在查找孤立文件，请稍候..."
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在尋找單獨檔案，請稍候⋯"
           }
         },
         "zh-HK" : {
@@ -2138,6 +2492,12 @@
             "value" : "文件夹"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "資料夾"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2171,6 +2531,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "强制刷新"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "強制重新整理"
           }
         },
         "zh-HK" : {
@@ -2208,6 +2574,12 @@
             "value" : "完全磁盘访问权限"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完整磁碟取用"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2238,6 +2610,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "功能"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "功能"
@@ -2278,6 +2656,12 @@
             "value" : "正在收集应用详情"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在收集 App 詳細資料"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2311,6 +2695,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "通用"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一般"
           }
         },
         "zh-HK" : {
@@ -2372,6 +2762,12 @@
             "value" : "GitHub 赞助者"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub 贊助者"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2402,6 +2798,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub：v%@"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "GitHub：v%@"
@@ -2441,6 +2843,12 @@
             "value" : "隐藏详细"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隱藏詳細資料"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2476,6 +2884,12 @@
             "value" : "卸载后清理 Homebrew"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "解除安裝後執行 Homebrew 清理"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2506,6 +2920,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重要"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "重要"
@@ -2546,6 +2966,12 @@
             "value" : "在迷你窗口模式下，如果您将文件弹出框固定在顶部，点击窗口外部不会关闭它。否则，点击应用程序外部的任何地方将会关闭它。"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在迷你視窗模式下，如你固定檔案彈出式視窗於最上方，離開視窗點按不會忽略。否則應用程式以外任何位置的點按都會忽略。"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2579,6 +3005,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在迷你窗口模式下，您可以选择 Pearcleaner 启动到应用列表视图或拖放目标视图。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在迷你視窗模式下，你可以讓 Pearcleaner 以應用程式列表檢視或拖放目標檢視方式啟動。"
           }
         },
         "zh-HK" : {
@@ -2616,6 +3048,12 @@
             "value" : "包含关键字："
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "包括關鍵字："
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2650,6 +3088,12 @@
             "value" : "安装日期"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安裝日期"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2682,6 +3126,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "安装日期："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安裝日期："
           }
         },
         "zh-HK" : {
@@ -2719,6 +3169,12 @@
             "value" : "已安装：v%@"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已安裝：v%@"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2752,6 +3208,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "说明"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "指示"
           }
         },
         "zh-HK" : {
@@ -2788,6 +3250,12 @@
             "value" : "界面"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "介面"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2818,6 +3286,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "iOS"
@@ -2858,6 +3332,12 @@
             "value" : "iOS 应用"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS 應用程式"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2891,6 +3371,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "项目"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "項目"
           }
         },
         "zh-HK" : {
@@ -2928,6 +3414,12 @@
             "value" : "项"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "項目"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2961,6 +3453,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "关键字-1, 关键字-2"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "關鍵字-1, 關鍵字-2"
           }
         },
         "zh-HK" : {
@@ -2997,6 +3495,12 @@
             "value" : "上次使用日期"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上次使用日期"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3026,6 +3530,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上次使用日期："
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "上次使用日期："
@@ -3066,6 +3576,12 @@
             "value" : "在登录时启动 Pearcleaner"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登入時啟動 Pearcleaner"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3099,6 +3615,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "将搜索 .app 文件的位置。点击非默认路径以移除。默认路径无法移除。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "將會搜尋 .app 檔案的位置。按一下非預設的路徑以移除它。預設路徑無法移除。"
           }
         },
         "zh-HK" : {
@@ -3136,6 +3658,12 @@
             "value" : "逻辑大小"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "邏輯大小"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3169,6 +3697,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "用 ❤️ 制作 by Alin Lupascu"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "由 Alin Lupascu 用 ❤️ 製作"
           }
         },
         "zh-HK" : {
@@ -3206,6 +3740,12 @@
             "value" : "菜单栏"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選單列"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3239,6 +3779,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "菜单栏图标模式"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選單列圖示模式"
           }
         },
         "zh-HK" : {
@@ -3276,6 +3822,12 @@
             "value" : "菜单栏图标偏好设置"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選單列圖示偏好設定"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3309,6 +3861,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "迷你配置"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "迷你設定"
           }
         },
         "zh-HK" : {
@@ -3346,6 +3904,12 @@
             "value" : "迷你窗口模式"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "迷你視窗模式"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3379,6 +3943,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "极简应用列表行已禁用"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停用極簡的 App 列表列"
           }
         },
         "zh-HK" : {
@@ -3416,6 +3986,12 @@
             "value" : "极简应用列表行已启用"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啟用極簡的 App 列表列"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3451,6 +4027,12 @@
             "value" : "缺少权限"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "欠缺權限"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3480,6 +4062,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "修改日期"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "修改日期"
@@ -3519,6 +4107,12 @@
             "value" : "修改日期："
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "修改日期"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3549,6 +4143,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每月"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "每月"
@@ -3589,6 +4189,12 @@
             "value" : "更多"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更多"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3622,6 +4228,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "名称"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "名稱"
           }
         },
         "zh-HK" : {
@@ -3659,6 +4271,12 @@
             "value" : "从不"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "永不"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3692,6 +4310,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "新公告"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新宣佈"
           }
         },
         "zh-HK" : {
@@ -3729,6 +4353,12 @@
             "value" : "下次更新检查：%@"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下一個更新檢查：%@"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3762,6 +4392,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "没有添加文件或文件夹"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沒有加入檔案或資料夾"
           }
         },
         "zh-HK" : {
@@ -3799,6 +4435,12 @@
             "value" : "没有新公告"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有新宣佈"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3832,6 +4474,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "没有可显示的版本"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沒有要顯示的版本"
           }
         },
         "zh-HK" : {
@@ -3869,6 +4517,12 @@
             "value" : "没有更新 😌"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沒有更新 😌"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3904,6 +4558,12 @@
             "value" : "未能获取"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法使用"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3937,6 +4597,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "/"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "/"
@@ -4009,6 +4675,12 @@
             "value" : "打开 %@"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開啟 %@"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4042,6 +4714,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "孤立文件搜索并不 100% 准确，因为没有可供检查的已卸载应用程序包以进行文件排除。这是对文件/文件夹的最佳猜测搜索，并排除了与您当前安装的应用程序重叠的文件。请确认标记为删除的文件确实属于已卸载的应用程序。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "單獨檔案搜尋並非 100% 準確，因為它沒有任何解除安裝的應用程式套件來檢查檔案排除。這會以最佳猜測搜尋檔案/資料夾，並排除與你現時安裝的應用程式重疊的檔案/資料夾。請確認標記為移除的檔案確實屬於已解除安裝的應用程式。"
           }
         },
         "zh-HK" : {
@@ -4079,6 +4757,12 @@
             "value" : "孤立文件"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "單獨檔案"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4114,6 +4798,12 @@
             "value" : "Pearcleaner 及其所有文件将被干净地移除，您确定吗？"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner 及其所有檔案將會完全移除，你確定嗎？"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4147,6 +4837,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pearcleaner CLI 支持"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner 命令列介面（CLI）支援"
           }
         },
         "zh-HK" : {
@@ -4185,6 +4881,12 @@
             "value" : "Pearcleaner 卸载"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner 解除安裝"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4218,6 +4920,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "权限状态"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "權限狀態"
           }
         },
         "zh-HK" : {
@@ -4255,6 +4963,12 @@
             "value" : "查看权限"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "權限"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4290,6 +5004,12 @@
             "value" : "将弹出窗口固定在顶部"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "固定彈出式視窗於最上方"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4323,6 +5043,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Plist 文件"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PLIST 文件"
           }
         },
         "zh-HK" : {
@@ -4388,6 +5114,12 @@
             "value" : "退出"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "結束"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4421,6 +5153,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "退出 Pearcleaner"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "結束 Pearcleaner"
           }
         },
         "zh-HK" : {
@@ -4458,6 +5196,12 @@
             "value" : "真实大小"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "實際大小"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4491,6 +5235,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "真实大小类型将显示文件在磁盘上实际分配的空间大小。\n\n逻辑类型显示二进制大小。文件系统可以压缩和去重磁盘上的扇区,因此真实大小有时小于（或大于）逻辑大小。\n\nFinder大小类似于在Finder中右键单击 > 获取信息，这将同时显示逻辑和真实大小。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「實際大小」種類顯示檔案在磁碟上實際分配了多少空間。\n\n「邏輯大小」種類顯示檔案的二進位大小。二進位檔案系統可以在磁碟上壓縮並减少重複的磁區，因此實際大小有時會比邏輯大小更小（或更大）。\n\n「Finder 大小」與你在 Finder 中點按右鍵 > 取得資料的動作類似，這會讓邏輯大小與實際大小在一起顯示。"
           }
         },
         "zh-HK" : {
@@ -4528,6 +5278,12 @@
             "value" : "刷新"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新整理"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4561,6 +5317,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "刷新应用"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新整理 App"
           }
         },
         "zh-HK" : {
@@ -4598,6 +5360,12 @@
             "value" : "刷新应用 (⌘+R)"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新整理 App（⌘R）"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4633,6 +5401,12 @@
             "value" : "刷新更新程序"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新整理更新程式"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4665,6 +5439,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更新日志"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本備註"
           }
         },
         "zh-HK" : {
@@ -4702,6 +5482,12 @@
             "value" : "发布"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "發行版本"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4737,6 +5523,12 @@
             "value" : "来自先前应用程序的剩余文件和文件夹"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "之前應用程式的剩餘檔案和資料夾"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4767,6 +5559,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "移除"
@@ -4807,6 +5605,12 @@
             "value" : "移除直接路径："
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除直接路徑："
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4840,6 +5644,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "从此应用程序中移除该条件"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "從此應用程式中移除條件"
           }
         },
         "zh-HK" : {
@@ -4877,6 +5687,12 @@
             "value" : "重新扫描"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新掃描"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4910,6 +5726,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "重置所有设置为默认"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重設全部設定為預設值"
           }
         },
         "zh-HK" : {
@@ -4947,6 +5769,12 @@
             "value" : "重置设置"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新設定"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4980,6 +5808,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "重置大小"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重設大小"
           }
         },
         "zh-HK" : {
@@ -5017,6 +5851,12 @@
             "value" : "重新启动"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新啟動"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5050,6 +5890,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "重新启动 %@ 以使变更生效"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新啟動 %@ 來使變更生效"
           }
         },
         "zh-HK" : {
@@ -5087,6 +5933,12 @@
             "value" : "反向搜索成功完成"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已成功完成反向搜尋"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5120,6 +5972,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "右键单击以重置大小"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "點按右鍵來重設大小"
           }
         },
         "zh-HK" : {
@@ -5157,6 +6015,12 @@
             "value" : "保存"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "儲存"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5190,6 +6054,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "保存此应用程序的条件"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "為此應用程式儲存條件"
           }
         },
         "zh-HK" : {
@@ -5227,6 +6097,12 @@
             "value" : "在这些文件夹中搜索应用程序"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "為應用程式搜尋這些資料夾"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5259,6 +6135,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在系统中搜索文件"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在搜尋檔案系統"
           }
         },
         "zh-HK" : {
@@ -5302,6 +6184,12 @@
             "value" : "Sentinel 垃圾监视器"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sentinel 垃圾監視器"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5335,6 +6223,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sentinel 垃圾监视器未找到其他要移除的文件"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sentinel 垃圾監視器找不到其他要移除的檔案"
           }
         },
         "zh-HK" : {
@@ -5372,6 +6266,12 @@
             "value" : "设置"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5405,6 +6305,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "再次显示公告角标"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再次顯示宣佈標記"
           }
         },
         "zh-HK" : {
@@ -5442,6 +6348,12 @@
             "value" : "启动时显示应用列表"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啟動時顯示 App 列表"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5474,6 +6386,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "显示详细"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顯示詳細資料"
           }
         },
         "zh-HK" : {
@@ -5511,6 +6429,12 @@
             "value" : "显示近期的 3 次更新"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顯示最近 3 個版本"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5541,6 +6465,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "大小"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "大小"
@@ -5581,6 +6511,12 @@
             "value" : "某些文件/文件夹与应用名称或捆绑 ID 不相似，导致 Pearcleaner 无法找到它们或找到无关文件。\n为了解决这个问题，您可以使用关键字或直接路径为每个应用程序捆绑创建自定义条件。\n\n- 可以添加您希望在模糊搜索中包括或排除的文件/文件夹关键字。\n\n- 可以显式添加或移除完整的 Finder 路径，以便进行直接搜索。"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一些檔案/資料夾與應用程式名稱或套件識別碼不相似，引致 Pearcleaner 無法找到它們，或找到了不相關的檔案。\n為了解決這個問題，你可以使用關鍵字或直接路徑為每一個應用程式套件製作自訂條件。\n\n- 可以加入你要在模糊搜尋中包括或排除的檔案/資料夾關鍵字。\n\n- 如你要直接搜尋，可以明確向搜尋結果加入或移除完整的 Finder 路徑。"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5614,6 +6550,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "按名称或大小按字母顺序排序应用列表"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "依字母順序，按名稱或大小排序應用程式列表"
           }
         },
         "zh-HK" : {
@@ -5651,6 +6593,12 @@
             "value" : "按名称排序"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按照名稱排序"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5686,6 +6634,12 @@
             "value" : "按大小排序"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按照大小排序"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5718,6 +6672,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "排序选项"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "排序選項"
           }
         },
         "zh-HK" : {
@@ -5755,6 +6715,12 @@
             "value" : "按 %@ 排序"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "排序：%@"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5788,6 +6754,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "赞助"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "贊助"
           }
         },
         "zh-HK" : {
@@ -5825,6 +6797,12 @@
             "value" : "提交错误或功能请求"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "送出一个錯誤回報或功能要求"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5858,6 +6836,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "提交新问题"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "送出新 Issue"
           }
         },
         "zh-HK" : {
@@ -5895,6 +6879,12 @@
             "value" : "支持"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "支援"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5930,6 +6920,12 @@
             "value" : "system"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系統"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5962,6 +6958,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "系统"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系統"
           }
         },
         "zh-HK" : {
@@ -5999,6 +7001,12 @@
             "value" : "主题模式"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "主題模式"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6032,6 +7040,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "这将文件/文件夹添加到排除列表。请从设置 > 文件夹标签中编辑排除列表"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這樣會將檔案/資料夾加至排除列表中。前往「設定」>「資料夾」分頁編輯排除列表"
           }
         },
         "zh-HK" : {
@@ -6069,6 +7083,12 @@
             "value" : "此应用程序位于 %@"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 App 位於 %@ 中"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6102,6 +7122,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "这是一个网络应用程序"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此為一個網頁 App"
           }
         },
         "zh-HK" : {
@@ -6139,6 +7165,12 @@
             "value" : "这是一个封装的 iOS 应用程序"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此為一個已封裝的 iOS App"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6172,6 +7204,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "此设置将影响 Pearcleaner，无论您是在菜单栏模式还是常规模式下运行。如果您禁用菜单栏图标，您可能还想禁用此选项，以便 Pearcleaner 不在登录时启动。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不論你在選單列模式下或常規模式下執行，此設定都會影響 Pearcleaner。如你停用了選單列圖示，你亦可以停用此設定，這樣 Pearcleaner 就不會在登入時開啟。"
           }
         },
         "zh-HK" : {
@@ -6209,6 +7247,12 @@
             "value" : "在模式之间切换将重置窗口框架为其默认大小/位置"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在模式之間切換會重設視窗頁框為預設大小/位置"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6240,6 +7284,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "工具"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "工具"
@@ -6282,6 +7332,12 @@
             "value" : "文件总大小："
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "檔案大小總計："
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6317,6 +7373,12 @@
             "value" : "透明质感"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "透明材料"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6349,6 +7411,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "输入以搜索"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "輸入以搜尋"
           }
         },
         "zh-HK" : {
@@ -6386,6 +7454,12 @@
             "value" : "撤销删除"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "還原移除"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6419,6 +7493,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "卸载"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "解除安裝"
           }
         },
         "zh-HK" : {
@@ -6456,6 +7536,12 @@
             "value" : "卸载确认警报"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "解除安裝確認提示"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6491,6 +7577,12 @@
             "value" : "卸载 Pearcleaner"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "解除安裝 Pearcleaner"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6520,6 +7612,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "更新"
@@ -6560,6 +7658,12 @@
             "value" : "有可用更新 🥳"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有可用的更新 🥳"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6592,6 +7696,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更新频率"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新頻率"
           }
         },
         "zh-HK" : {
@@ -6629,6 +7739,12 @@
             "value" : "更新频率已设置为从不"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新頻率已設定為「永不」"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6662,6 +7778,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更新已禁用"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已停用更新"
           }
         },
         "zh-HK" : {
@@ -6698,6 +7820,12 @@
             "value" : "user"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用户"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6727,6 +7855,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用户"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "用户"
@@ -6766,6 +7900,12 @@
             "value" : "Version %@"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 %@"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6798,6 +7938,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "查看"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "檢視"
           }
         },
         "zh-HK" : {
@@ -6835,6 +7981,12 @@
             "value" : "在 Finder 中查看"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Finder 檢視"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6868,6 +8020,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "查看问题"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "檢視 Issue"
           }
         },
         "zh-HK" : {
@@ -6905,6 +8063,12 @@
             "value" : "查看项目贡献者"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "檢視計劃項目貢獻者"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6940,6 +8104,12 @@
             "value" : "查看发布"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "檢視發行版本"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6972,6 +8142,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在 Github 上查看发布版本"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 GitHub 中檢視發行版本"
           }
         },
         "zh-HK" : {
@@ -7009,6 +8185,12 @@
             "value" : "查看仓库"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "檢視原始碼 Repository"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7039,6 +8221,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "警告"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "警告"
@@ -7079,6 +8267,12 @@
             "value" : "警告！"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "警告！"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7112,6 +8306,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "网络"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "網頁"
           }
         },
         "zh-HK" : {
@@ -7149,6 +8349,12 @@
             "value" : "网页应用"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "網頁 App"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7182,6 +8388,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "每周"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每星期"
           }
         },
         "zh-HK" : {
@@ -7219,6 +8431,12 @@
             "value" : "当应用程序被移动到废纸篓时，Pearcleaner 将启动并查找相关的文件和文件夹以进行删除。"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當應用程式丟到垃圾桶時，Pearcleaner 會啟動並尋找要刪除的相關檔案和資料夾。"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7252,6 +8470,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "使用废纸篓按钮删除文件时，可以通过在执行操作之前显示警报来防止意外删除。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用「垃圾桶」按鈕刪除檔案時，你可以在繼續動作前顯示警告以避免意外刪除。"
           }
         },
         "zh-HK" : {
@@ -7289,6 +8513,12 @@
             "value" : "当启用 Homebrew 清理时，Pearcleaner 将检查您要删除的应用程序是否通过 Homebrew 安装，并启动 Terminal.app 执行 brew uninstall 和清理命令，以便让 Homebrew 知道该应用程序已被删除。这样可以确保您的 Homebrew 列表正确同步，并且缓存将被删除。需要 Terminal.app，因为某些应用程序需要 sudo 权限才能删除服务和放置在系统文件夹中的文件。由于其他终端应用程序不支持 AppleScript 和/或 'do script' 命令，因此我选择使用默认的 macOS Terminal 应用程序。\n\n注意：如果您使用 CMD+Z 撤销文件删除，文件将被恢复，但 Homebrew 将不会意识到这一点。要使 Homebrew 列表重新同步，您需要运行：\n\n> brew install APPNAME --force"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啟用 Homebrew 清理時，Pearcleaner 會檢查你要移除的應用程式是否透過 Homebrew 安裝，並啟動「終端機.app」以執行 brew 解除安裝和清理命令，讓 Homebrew 知道此應用程式已移除。這樣你的 Homebrew 列表會正確同步，並移除快取檔案。這需要「終端機.app」，因為一些應用程式需要 sudo 權限才能移除系統資料夾中的服務和檔案。由於其他終端機應用程式不支援 AppleScript 和/或「do script」命令，因此這裡使用預設的 macOS 終端機應用程式。\n\n注意：如你使用 ⌘Z 還原刪除檔案，檔案將會放回，但 Homebrew 並不會注意到這一點。如要重新同步 Homebrew 列表，你需要執行：\n\n> brew install APPNAME --force"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7324,6 +8554,12 @@
             "value" : "当菜单栏图标启用时，主应用窗口和 dock 图标将被禁用，因为应用程序将处于附加模式。"
           }
         },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啟用選單欄圖示時，主要應用程式視窗與 Dock 圖示將停用，因為應用程式將設定為「配件模式」。"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7357,6 +8593,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "当启用此模式时，单击卸载按钮以移除应用程序将立即关闭 Pearcleaner。\n这仅影响通过外部方式打开的 Pearcleaner，例如 Sentinel 垃圾监视器、Finder 扩展或深度链接。\n这允许应用程序单次使用以快速卸载。当 Pearcleaner 正常打开时，此设置将被忽略，仍然按常规方式工作。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啟用此模式時，按一下「解除安裝」按鈕移除應用程式之後亦會立即關閉 Pearcleaner。\n這只會影響 Pearcleaner 透過外部方式開啟󠄁，例如 Sentinel 垃圾監視器、Finder 延伸功能或深連結（Deep Link）。\n這可讓你一次性使用此應用程式以快速解除安裝。如 Pearcleaner 正常開啟，此設定將會忽略，並繼續如常工作。"
           }
         },
         "zh-HK" : {

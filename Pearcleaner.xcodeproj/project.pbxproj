@@ -391,6 +391,7 @@
 				sk,
 				"zh-HK",
 				Base,
+				"zh-Hant",
 				ru,
 				de,
 			);
