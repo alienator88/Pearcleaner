@@ -144,7 +144,14 @@
       }
     },
     "⇧ + Scroll" : {
-
+      "localizations" : {
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⇧ + Rolovanie"
+          }
+        }
+      }
     },
     "About" : {
       "localizations" : {
@@ -778,7 +785,15 @@
       }
     },
     "Cancel" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zrušiť"
+          }
+        }
+      }
     },
     "Check for Updates" : {
       "extractionState" : "manual",
@@ -3255,7 +3270,15 @@
       }
     },
     "Okay" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
     },
     "Open %@" : {
       "extractionState" : "manual",
@@ -3549,7 +3572,14 @@
       }
     },
     "Queue:" : {
-
+      "localizations" : {
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fronta:"
+          }
+        }
+      }
     },
     "Quit" : {
       "extractionState" : "manual",

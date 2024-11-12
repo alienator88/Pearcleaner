@@ -625,6 +625,8 @@ func removeApp(appState: AppState, withPath path: URL) {
 
         appState.appInfo = AppInfo.empty
 
+        
+
     }
 }
 
@@ -877,7 +879,24 @@ func uninstallPearcleaner(appState: AppState, locations: Locations) {
 
 // --- Load Plist file with launchctl ---
 func launchctl(load: Bool, completion: @escaping () -> Void = {}) {
+    let fileManager = FileManager.default
     let cmd = load ? "load" : "unload"
+
+    // Define the destination path in LaunchAgents
+    let launchAgentsURL = fileManager.homeDirectoryForCurrentUser
+        .appendingPathComponent("Library/LaunchAgents")
+    let destinationPlistURL = launchAgentsURL
+        .appendingPathComponent("com.alienator88.PearcleanerSentinel.plist")
+
+    // Check if LaunchAgents directory exists, and create it if not
+    if !fileManager.fileExists(atPath: launchAgentsURL.path) {
+        do {
+            try fileManager.createDirectory(at: launchAgentsURL, withIntermediateDirectories: true, attributes: nil)
+        } catch {
+            printOS("Error creating LaunchAgents directory: \(error)")
+            return
+        }
+    }
 
     if let plistPath = Bundle.main.path(forResource: "com.alienator88.PearcleanerSentinel", ofType: "plist") {
         var plistContent = try! String(contentsOfFile: plistPath)
@@ -886,22 +905,55 @@ func launchctl(load: Bool, completion: @escaping () -> Void = {}) {
         // Replace the placeholder with the actual executable path
         plistContent = plistContent.replacingOccurrences(of: "__EXECUTABLE_PATH__", with: executableURL.path)
 
-        // Create a temporary plist file with the updated content
-        let temporaryPlistURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("com.alienator88.PearcleanerSentinel.plist")
-
         do {
-            try plistContent.write(to: temporaryPlistURL, atomically: true, encoding: .utf8)
+            if load {
+                // Copy the plist content to LaunchAgents
+                try plistContent.write(to: destinationPlistURL, atomically: true, encoding: .utf8)
+            } else {
+                // Run the unload command first
+                let task = Process()
+                task.launchPath = "/bin/launchctl"
+                task.arguments = [cmd, destinationPlistURL.path]
+
+                let combinedPipe = Pipe()
+                task.standardOutput = combinedPipe
+                task.standardError = combinedPipe
+                task.launch()
+
+                // Capture and print combined output
+                let outputData = combinedPipe.fileHandleForReading.readDataToEndOfFile()
+                if let output = String(data: outputData, encoding: .utf8), !output.isEmpty {
+                    printOS("Output/Error: \(output)")
+                }
+
+                // Wait for the task to complete before deleting
+                task.waitUntilExit()
+
+                // Remove plist after unloading
+                try fileManager.removeItem(at: destinationPlistURL)
+            }
         } catch {
-            printOS("Error writing the temporary plist file: \(error)")
+            printOS("Error writing to LaunchAgents or removing plist: \(error)")
             return
         }
 
-        let task = Process()
-        task.launchPath = "/bin/launchctl"
-        task.arguments = [cmd, "-w", temporaryPlistURL.path]
-        task.standardOutput = FileHandle.nullDevice
-        task.standardError = FileHandle.nullDevice
-        task.launch()
+        // Only run the load command if loading
+        if load {
+            let task = Process()
+            task.launchPath = "/bin/launchctl"
+            task.arguments = [cmd, destinationPlistURL.path]
+
+            let combinedPipe = Pipe()
+            task.standardOutput = combinedPipe
+            task.standardError = combinedPipe
+            task.launch()
+
+            // Capture and print combined output
+            let outputData = combinedPipe.fileHandleForReading.readDataToEndOfFile()
+            if let output = String(data: outputData, encoding: .utf8), !output.isEmpty {
+                printOS("Output/Error: \(output)")
+            }
+        }
 
         completion()
     }
