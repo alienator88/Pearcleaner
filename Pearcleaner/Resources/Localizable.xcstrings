@@ -117,12 +117,6 @@
     },
     "•" : {
       "localizations" : {
-        "ro" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "•"
-          }
-        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -782,6 +776,9 @@
           }
         }
       }
+    },
+    "Cancel" : {
+      "extractionState" : "manual"
     },
     "Check for Updates" : {
       "extractionState" : "manual",
@@ -3256,6 +3253,9 @@
           }
         }
       }
+    },
+    "Okay" : {
+      "extractionState" : "manual"
     },
     "Open %@" : {
       "extractionState" : "manual",
