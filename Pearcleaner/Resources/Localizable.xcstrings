@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "" : {
+
+    },
     "(Build %@)" : {
       "localizations" : {
         "de" : {
@@ -133,6 +136,9 @@
           }
         }
       }
+    },
+    "%lld" : {
+
     },
     "•" : {
       "localizations" : {
@@ -1023,6 +1029,19 @@
         }
       }
     },
+    "Checked %lld paths for %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Checked %1$lld paths for %2$@"
+          }
+        }
+      }
+    },
+    "Clean stored files and cache for common development environments" : {
+
+    },
     "Clear" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1512,6 +1531,12 @@
         }
       }
     },
+    "Delete Contents" : {
+
+    },
+    "Delete Folder" : {
+
+    },
     "Detect when apps are moved to Trash" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1546,6 +1571,12 @@
           }
         }
       }
+    },
+    "Development" : {
+
+    },
+    "Development Environments" : {
+
     },
     "Disabled when menubar icon is enabled" : {
       "extractionState" : "manual",
@@ -1861,6 +1892,9 @@
           }
         }
       }
+    },
+    "Environment" : {
+
     },
     "Exclude" : {
       "extractionState" : "manual",
@@ -3943,6 +3977,9 @@
         }
       }
     },
+    "Not Found" : {
+
+    },
     "of" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4006,6 +4043,9 @@
           }
         }
       }
+    },
+    "Open" : {
+
     },
     "Open %@" : {
       "extractionState" : "manual",
@@ -5294,6 +5334,12 @@
         }
       }
     },
+    "Select an environment to view paths." : {
+
+    },
+    "Select One" : {
+
+    },
     "Sentinel Monitor" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6271,6 +6317,9 @@
           }
         }
       }
+    },
+    "Total environment paths available" : {
+
     },
     "Total size of files:" : {
       "localizations" : {

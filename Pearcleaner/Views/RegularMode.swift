@@ -99,6 +99,9 @@ struct RegularMode: View {
                             }
                         }
                     }
+            } else if appState.currentPage == .development {
+                EnvironmentCleanerView()
+                    .background(backgroundView(themeManager: themeManager))
             }
 
             VStack(spacing: 0) {

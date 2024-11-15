@@ -199,6 +199,7 @@ enum CurrentPage:Int, CaseIterable, Identifiable
 {
     case applications
     case orphans
+    case development
 
     var id: Int { rawValue }
 
@@ -206,6 +207,7 @@ enum CurrentPage:Int, CaseIterable, Identifiable
         switch self {
         case .applications: return String(localized: "Applications")
         case .orphans: return String(localized: "Orphaned Files")
+        case .development: return String(localized: "Development")
         }
     }
 }

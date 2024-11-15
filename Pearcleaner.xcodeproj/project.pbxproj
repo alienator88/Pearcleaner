@@ -20,6 +20,7 @@
 		C76D08512AF850F300D07867 /* About.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08502AF850F300D07867 /* About.swift */; };
 		C76D08552AF89CDE00D07867 /* RegularMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08542AF89CDE00D07867 /* RegularMode.swift */; };
 		C76EDCD62C45DC82000CF29D /* AlinFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = C76EDCD52C45DC82000CF29D /* AlinFoundation */; };
+		C770D7DB2CE7C9AD00B3492A /* DevelopmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C770D7DA2CE7C9A100B3492A /* DevelopmentView.swift */; };
 		C7736E4F2C49A44200917293 /* AlinFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = C7736E4E2C49A44200917293 /* AlinFoundation */; };
 		C77B90042AF18E2E009CC655 /* PearcleanerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90032AF18E2E009CC655 /* PearcleanerApp.swift */; };
 		C77B90082AF18E2F009CC655 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C77B90072AF18E2F009CC655 /* Assets.xcassets */; };
@@ -107,6 +108,7 @@
 		C76D08492AF83C6E00D07867 /* General.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = General.swift; sourceTree = "<group>"; };
 		C76D08502AF850F300D07867 /* About.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = About.swift; sourceTree = "<group>"; };
 		C76D08542AF89CDE00D07867 /* RegularMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularMode.swift; sourceTree = "<group>"; };
+		C770D7DA2CE7C9A100B3492A /* DevelopmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevelopmentView.swift; sourceTree = "<group>"; };
 		C77B90002AF18E2E009CC655 /* Pearcleaner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pearcleaner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C77B90032AF18E2E009CC655 /* PearcleanerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PearcleanerApp.swift; sourceTree = "<group>"; };
 		C77B90072AF18E2F009CC655 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -271,6 +273,7 @@
 			isa = PBXGroup;
 			children = (
 				C77B90222AF2D616009CC655 /* FilesView.swift */,
+				C770D7DA2CE7C9A100B3492A /* DevelopmentView.swift */,
 				C71848432B8D2D600046CB13 /* ZombieView.swift */,
 				C76D08542AF89CDE00D07867 /* RegularMode.swift */,
 				C7045A272B03E71D00376976 /* MiniMode.swift */,
@@ -454,6 +457,7 @@
 				C7D31D512AFF00F300C7ED9E /* Locations.swift in Sources */,
 				C77B901A2AF1938F009CC655 /* Logic.swift in Sources */,
 				C77B901C2AF193A3009CC655 /* Styles.swift in Sources */,
+				C770D7DB2CE7C9AD00B3492A /* DevelopmentView.swift in Sources */,
 				C7045A282B03E71D00376976 /* MiniMode.swift in Sources */,
 				C7ED86B12BA8A35500F13DE4 /* Interface.swift in Sources */,
 				C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */,
