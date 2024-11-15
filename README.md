@@ -2,7 +2,7 @@
 <p align="center">
    <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/165f6961-f4fc-4199-bc68-580bacff6eaf" align="center" width="128" height="128" />
    <br />
-   <strong>Status: </strong>Maintained
+   <strong>Status: </strong>Maintained (Bi-weekly release cadence)
    <br />
    <strong>Version: </strong>3.9.3
    <br />
