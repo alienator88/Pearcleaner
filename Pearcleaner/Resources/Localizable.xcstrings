@@ -1,9 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "" : {
-
-    },
     "(Build %@)" : {
       "localizations" : {
         "de" : {
@@ -56,18 +53,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "/Full/Path/priklad-1.txt, /Full/Path/priklad-2.txt"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "/Full/Path/example-1.txt, /Full/Path/example-2.txt"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "/完整/路徑/範例-1.txt, /完整/路徑/範例-2.txt"
           }
         },
         "zh-HK" : {
@@ -157,6 +142,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ 會檢查更新"
+          }
+        }
+      }
+    },
+    "⇧ + Scroll" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⇧ + 捲動"
           }
         }
       }
@@ -1082,6 +1077,12 @@
             "state" : "translated",
             "value" : "取消"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消"
+          }
         }
       }
     },
@@ -1133,11 +1134,24 @@
             "state" : "new",
             "value" : "Checked %1$lld paths for %2$@"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "檢查了%2$@個路徑中的%1$lld個"
+          }
         }
       }
     },
     "Clean stored files and cache for common development environments" : {
-
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除常見開發環境儲存的文件和快取"
+          }
+        }
+      }
     },
     "Clear" : {
       "extractionState" : "manual",
@@ -1713,10 +1727,24 @@
       }
     },
     "Delete Contents" : {
-
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刪除內容"
+          }
+        }
+      }
     },
     "Delete Folder" : {
-
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刪除資料夾"
+          }
+        }
+      }
     },
     "Detect when apps are moved to Trash" : {
       "extractionState" : "manual",
@@ -1760,10 +1788,24 @@
       }
     },
     "Development" : {
-
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開發"
+          }
+        }
+      }
     },
     "Development Environments" : {
-
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開發環境"
+          }
+        }
+      }
     },
     "Disabled when menubar icon is enabled" : {
       "extractionState" : "manual",
@@ -2135,7 +2177,14 @@
       }
     },
     "Environment" : {
-
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "環境"
+          }
+        }
+      }
     },
     "Exclude" : {
       "extractionState" : "manual",
@@ -4573,7 +4622,14 @@
       }
     },
     "Not Found" : {
-
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未找到"
+          }
+        }
+      }
     },
     "of" : {
       "extractionState" : "manual",
@@ -4642,11 +4698,24 @@
             "state" : "translated",
             "value" : "好的"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "好"
+          }
         }
       }
     },
     "Open" : {
-
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打開"
+          }
+        }
+      }
     },
     "Open %@" : {
       "extractionState" : "manual",
@@ -5083,6 +5152,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "队列:"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隊列："
           }
         }
       }
@@ -6152,10 +6227,24 @@
       }
     },
     "Select an environment to view paths." : {
-
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選擇一個環境查看包含的路徑"
+          }
+        }
+      }
     },
     "Select One" : {
-
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選擇一個"
+          }
+        }
+      }
     },
     "Sentinel Monitor" : {
       "extractionState" : "manual",
@@ -6800,7 +6889,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "送出一个錯誤回報或功能要求"
+            "value" : "提交一个錯誤回報或功能要求"
           }
         },
         "zh-HK" : {
@@ -7304,7 +7393,14 @@
       }
     },
     "Total environment paths available" : {
-
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完整環境路徑可用"
+          }
+        }
+      }
     },
     "Total size of files:" : {
       "localizations" : {
