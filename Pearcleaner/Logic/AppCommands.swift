@@ -128,7 +128,7 @@ struct AppCommands: Commands {
 
         
         // GitHub Menu
-        CommandMenu(Text("GitHub", comment: "Github Repo")) {
+        CommandMenu(Text(verbatim: "GitHub")) {
             Button
             {
                 NSWorkspace.shared.open(URL(string: "https://github.com/alienator88/Pearcleaner")!)

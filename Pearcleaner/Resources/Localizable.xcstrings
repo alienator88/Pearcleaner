@@ -61,8 +61,7 @@
             "value" : "/完整/路徑/範例-1.txt, /完整/路徑/範例-2.txt"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
     },
     "%@ is already on the latest release available" : {
       "extractionState" : "manual",
@@ -1161,13 +1160,13 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Checked %1$lld paths for %2$@"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "檢查了%2$@個路徑中的%1$lld個"
           }
         }
@@ -2789,30 +2788,6 @@
           }
         }
       }
-    },
-    "GitHub" : {
-      "comment" : "Github Repo",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GitHub"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GitHub"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "GitHub"
-          }
-        }
-      },
-      "shouldTranslate" : false
     },
     "GitHub Sponsors" : {
       "extractionState" : "manual",
