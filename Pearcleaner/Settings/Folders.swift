@@ -110,7 +110,7 @@ struct FolderSettingsTab: View {
                         Button {
                             clipboardAdd()
                         } label: { EmptyView() }
-                            .buttonStyle(SimpleButtonStyle(icon: "document.on.clipboard", help: String(localized: "Add folder from clipboard"), size: 16, rotate: false))
+                            .buttonStyle(SimpleButtonStyle(icon: "doc.on.clipboard", help: String(localized: "Add folder from clipboard"), size: 16, rotate: false))
 
                         Spacer()
                     }
@@ -203,7 +203,7 @@ struct FolderSettingsTab: View {
                         Button {
                             clipboardAdd(zombie: true)
                         } label: { EmptyView() }
-                            .buttonStyle(SimpleButtonStyle(icon: "document.on.clipboard", help: String(localized: "Add file/folder from clipboard"), size: 16, rotate: false))
+                            .buttonStyle(SimpleButtonStyle(icon: "doc.on.clipboard", help: String(localized: "Add file/folder from clipboard"), size: 16, rotate: false))
 
                         Spacer()
                     }
