@@ -62,12 +62,12 @@ struct AppListItems: View {
                         }
 
                         HStack(spacing: 5) {
-                            Text("v\(appInfo.appVersion)")
+                            Text(verbatim: "v\(appInfo.appVersion)")
                                 .font(.footnote)
                                 .lineLimit(1)
                                 .truncationMode(.tail)
                                 .opacity(0.5)
-                            Text("•").font(.footnote).opacity(0.5)
+                            Text(verbatim: "•").font(.footnote).opacity(0.5)
 
                             Text(appInfo.bundleSize == 0 ? String(localized: "calculating") : "\(formatByte(size: appInfo.bundleSize).human)")
                                 .font(.footnote)

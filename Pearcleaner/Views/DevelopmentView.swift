@@ -53,20 +53,20 @@ struct EnvironmentCleanerView: View {
                     Spacer()
 
                     VStack(alignment: .trailing, spacing: 5) {
-                        Picker("", selection: $selectedEnvironment) {
+                        Picker(selection: $selectedEnvironment) {
                             Text("Select One").tag(Path?.none)
                             ForEach(paths) { environment in
                                 Text(environment.name).tag(environment as Path?)
                             }
-                        }
+                        } label: { EmptyView() }
                         .pickerStyle(MenuPickerStyle())
                         .frame(maxWidth: 300)
 
                         if let selectedEnvironment = selectedEnvironment {
-                            Text("\(selectedEnvironment.paths.count)")
+                            Text(verbatim: "\(selectedEnvironment.paths.count)")
                                 .font(.footnote).foregroundStyle(.secondary)
                         } else {
-                            Text("\(paths.reduce(0) { $0 + $1.paths.count })")
+                            Text(verbatim: "\(paths.reduce(0) { $0 + $1.paths.count })")
                                 .font(.footnote).foregroundStyle(.secondary)
                         }
 
