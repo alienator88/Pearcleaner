@@ -148,7 +148,37 @@
     },
     "⇧ + Scroll" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⇧ + Scrollen"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⇧ + Прокрутка"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⇧ + Rolovanie"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⇧ + 滚动"
+          }
+        },
         "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⇧ + 捲動"
+          }
+        },
+        "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "⇧ + 捲動"
