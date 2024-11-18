@@ -80,13 +80,18 @@ struct FolderSettingsTab: View {
                         providers.forEach { provider in
                             provider.loadDataRepresentation(forTypeIdentifier: "public.file-url") { (data, error) in
                                 guard let data = data, error == nil,
-                                      let url = URL(dataRepresentation: data, relativeTo: nil),
-                                      url.hasDirectoryPath else {
-                                    printOS("FSM: Failed to load URL or the item is not a folder")
+                                      let url = URL(dataRepresentation: data, relativeTo: nil) else {
+                                    printOS("FSM: Failed to load URL")
                                     return
                                 }
-                                updateOnMain {
-                                    fsm.addPath(url.path)
+
+                                var isDirectory: ObjCBool = false
+                                if FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory), isDirectory.boolValue {
+                                    updateOnMain {
+                                        fsm.addPath(url.path)
+                                    }
+                                } else {
+                                    printOS("FSM: The URL is not a directory: \(url.path)")
                                 }
                             }
                         }
