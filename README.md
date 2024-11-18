@@ -4,7 +4,7 @@
    <br />
    <strong>Status: </strong>Maintained (Bi-weekly release cadence)
    <br />
-   <strong>Version: </strong>3.9.3
+   <strong>Version: </strong>4.0.0
    <br />
    <a href="https://github.com/alienator88/Pearcleaner/releases"><strong>Download</strong></a>
     · 
@@ -39,6 +39,7 @@ If you are able to contribute to translations for the app, please see this discu
 - Swift/SwiftUI
 - Small app size
 - Orphaned file search for finding remaining files from previously uninstalled applications
+- Development environments file/cache cleaning
 - Sentinel monitor helper that can be enabled to watch Trash folder for deleted apps to cleanup after the fact(Extremely small (210KB) and uses ~2mb of ram to run in the background and file watch)
 - Mini mode which can be enabled from Settings
 - Menubar icon option
