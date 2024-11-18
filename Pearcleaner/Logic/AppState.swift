@@ -203,13 +203,19 @@ enum CurrentPage:Int, CaseIterable, Identifiable
 
     var id: Int { rawValue }
 
-    var title: String {
+    var details: (title: String, icon: String) {
         switch self {
-        case .applications: return String(localized: "Applications")
-        case .orphans: return String(localized: "Orphaned Files")
-        case .development: return String(localized: "Development")
+        case .applications:
+            return (String(localized: "Applications"), "square.grid.3x3.fill.square")
+        case .orphans:
+            return (String(localized: "Orphaned Files"), "doc.text.magnifyingglass")
+        case .development:
+            return (String(localized: "Development"), "hammer.circle")
         }
     }
+
+    var title: String { details.title }
+    var icon: String { details.icon }
 }
 
 enum SortOption:Int, CaseIterable, Identifiable {

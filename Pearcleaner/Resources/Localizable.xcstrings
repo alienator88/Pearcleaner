@@ -388,6 +388,9 @@
         }
       }
     },
+    "Add file/folder from clipboard" : {
+
+    },
     "Add files or folders that will be ignored when searching for orphaned files. Click a path to remove it from the list." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -469,6 +472,9 @@
           }
         }
       }
+    },
+    "Add folder from clipboard" : {
+
     },
     "Add/Save" : {
       "extractionState" : "manual",
@@ -1827,6 +1833,7 @@
       }
     },
     "Development Environments" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hant" : {
           "stringUnit" : {
@@ -1835,6 +1842,9 @@
           }
         }
       }
+    },
+    "Development Environments (Beta)" : {
+
     },
     "Disabled when menubar icon is enabled" : {
       "extractionState" : "manual",

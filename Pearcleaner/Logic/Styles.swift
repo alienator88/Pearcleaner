@@ -389,3 +389,80 @@ struct GlowGradientButton: View {
         )
     }
 }
+
+
+
+struct CustomPickerButton: View {
+    // Selected option binding to allow external state management
+    @Binding var selectedOption: CurrentPage
+    @Binding var isExpanded: Bool
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+
+    // Options array with names and icons
+    let options: [CurrentPage]
+
+    // Action callback when an option is selected
+    var onSelect: ((String) -> Void)?
+
+//    @State private var isExpanded: Bool = false
+
+    var body: some View {
+        Button(action: {
+            withAnimation(Animation.spring(duration: animationEnabled ? 0.35 : 0)) {
+                isExpanded.toggle()
+            }
+        }) {
+            ZStack {
+                // Background and overlay styling
+                VStack {
+                    if isExpanded {
+                        // Expanded menu with selectable options
+                        VStack(alignment: .leading, spacing: 10) {
+                            ForEach(options, id: \.title) { option in
+                                Button(action: {
+                                    selectedOption = option // Update selected option
+                                    onSelect?(option.title) // Call the selection handler
+                                    withAnimation {
+                                        isExpanded = false
+                                    }
+                                }) {
+                                    HStack {
+                                        Image(systemName: option.icon)
+                                        Text(option.title)
+                                    }
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                    } else {
+                        // Display the selected option when collapsed
+                        HStack {
+                            Image(systemName: selectedOption.icon)
+                            Text(selectedOption.title)
+                        }
+                    }
+                }
+                .padding(isExpanded ? 10 : 8)
+//                .background(
+//                    ZStack {
+//                        LinearGradient(
+//                            colors: [Color.green, Color.orange],
+//                            startPoint: .topLeading,
+//                            endPoint: .bottomTrailing
+//                        ) // Gradient layer
+//                        .clipShape(RoundedRectangle(cornerRadius: 8)) // Match shape to material
+//                        .overlay(.ultraThinMaterial) // Translucent material over gradient
+//                    }
+//                )
+                .background(.ultraThinMaterial)
+                .cornerRadius(8)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .strokeBorder(Color.secondary.opacity(0.5), lineWidth: 0.6)
+                )
+                .transition(.scale)
+            }
+        }
+        .buttonStyle(.plain)
+    }
+}

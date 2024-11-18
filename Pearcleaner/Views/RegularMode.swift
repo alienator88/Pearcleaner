@@ -25,6 +25,7 @@ struct RegularMode: View {
     @Binding var showPopover: Bool
     @State private var showMenu = false
     @State var isMenuBar: Bool = false
+    @State private var isExpanded: Bool = false
 
     var body: some View {
 
@@ -107,20 +108,14 @@ struct RegularMode: View {
             VStack(spacing: 0) {
                 HStack {
                     Spacer()
-                    Picker(selection: $appState.currentPage) {
-                        ForEach(CurrentPage.allCases) { page in
-                            Text(page.title)
-                                .font(.title3)
-                                .tag(page)
-                        }
-                    } label: { EmptyView() }
-                    .buttonStyle(.borderless)
+                    CustomPickerButton(
+                        selectedOption: $appState.currentPage,
+                        isExpanded: $isExpanded,
+                        options: CurrentPage.allCases.sorted { $0.title < $1.title } // Sort by title
+                    )
                     .padding(2)
                     .padding(.vertical, 2)
-//                    .background {
-//                        RoundedRectangle(cornerRadius: 8)
-//                            .strokeBorder(.secondary.opacity(0.5), lineWidth: 1)
-//                    }
+
                 }
                 .padding(6)
 
@@ -131,6 +126,14 @@ struct RegularMode: View {
         }
         .frame(minWidth: appState.currentPage == .orphans ? 700 : 900, minHeight: 600)
         .edgesIgnoringSafeArea(.all)
+        .onTapGesture {
+            withAnimation(Animation.spring(duration: animationEnabled ? 0.35 : 0)) {
+                if isExpanded {
+                    isExpanded = false
+                }
+            }
+
+        }
 
 
     }
@@ -142,10 +145,6 @@ struct RegularMode: View {
 
 
 struct AppDetailsEmptyView: View {
-//    @Environment(\.colorScheme) var colorScheme
-//    @EnvironmentObject var appState: AppState
-//    @EnvironmentObject var locations: Locations
-//    @Binding var showPopover: Bool
 
     var body: some View {
         VStack(alignment: .center) {

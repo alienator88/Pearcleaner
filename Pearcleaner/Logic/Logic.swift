@@ -20,7 +20,8 @@ func getSortedApps(paths: [String]) -> [AppInfo] {
             let appURLs = try fileManager.contentsOfDirectory(at: URL(fileURLWithPath: directoryPath), includingPropertiesForKeys: nil, options: [])
             
             for appURL in appURLs {
-                if appURL.pathExtension == "app" && !isRestricted(atPath: appURL) {
+                if appURL.pathExtension == "app" && !isRestricted(atPath: appURL) &&
+                    !appURL.isSymlink() {
                     // Add the path to the array
                     apps.append(appURL)
                 } else if appURL.hasDirectoryPath {
@@ -36,8 +37,6 @@ func getSortedApps(paths: [String]) -> [AppInfo] {
 
     // Collect system applications
     paths.forEach { collectAppPaths(at: $0) }
-
-//    let startTime = Date()
 
     // Convert collected paths to string format for metadata query
     let combinedPaths = apps.map { $0.path }
@@ -63,14 +62,6 @@ func getSortedApps(paths: [String]) -> [AppInfo] {
 
     // Sort apps by display name
     let sortedApps = appInfos.sorted { $0.appName.lowercased() < $1.appName.lowercased() }
-
-    // Get app info and sort
-//    let sortedApps = apps
-//        .compactMap { AppInfoFetcher.getAppInfo(atPath: $0) }
-
-
-//    let elapsedTime = Date().timeIntervalSince(startTime)
-//    print("Time taken for mdls metadata extraction: \(elapsedTime) seconds")
 
     return sortedApps
 }

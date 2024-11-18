@@ -88,7 +88,7 @@ struct ZombieView: View {
 
                             PearGroupBox(header: {
                                 HStack(alignment: .center, spacing: 15) {
-                                    Image(systemName: "doc.badge.clock.fill")
+                                    Image(systemName: "doc.text.magnifyingglass")
                                         .resizable()
                                         .scaledToFit()
                                         .frame(width: 50, height: 50)

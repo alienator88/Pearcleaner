@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AlinFoundation
+import Fuse
 
 struct AppSearchView: View {
     @EnvironmentObject var appState: AppState
@@ -222,7 +223,15 @@ struct AppSearchView: View {
         if search.isEmpty {
             apps = appState.sortedApps
         } else {
-            apps = appState.sortedApps.filter { $0.appName.localizedCaseInsensitiveContains(search) }
+            let fuse = Fuse()
+            apps = appState.sortedApps.filter { app in
+                if app.appName.localizedCaseInsensitiveContains(search) {
+                    return true
+                }
+                let result = fuse.search(search, in: app.appName)
+                return result?.score ?? 1.0 < 0.5 // Adjust threshold as needed (lower = stricter)
+            }
+//            apps = appState.sortedApps.filter { $0.appName.localizedCaseInsensitiveContains(search) }
         }
 
         // Sort based on the selected option
@@ -241,12 +250,6 @@ struct AppSearchView: View {
             return apps.sorted { ($0.lastUsedDate ?? Date.distantPast) > ($1.lastUsedDate ?? Date.distantPast) }
         }
 
-//        switch selectedSortAlpha {
-//        case true:
-//            return apps.sorted { $0.appName.replacingOccurrences(of: ".", with: "").lowercased() < $1.appName.replacingOccurrences(of: ".", with: "").lowercased() }
-//        case false:
-//            return apps.sorted { $0.bundleSize > $1.bundleSize }
-//        }
     }
     
 }

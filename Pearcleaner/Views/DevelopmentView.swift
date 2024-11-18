@@ -22,14 +22,14 @@ struct EnvironmentCleanerView: View {
 
             PearGroupBox(header: {
                 HStack(alignment: .center, spacing: 15) {
-                    Image(systemName: "hammer.fill")
+                    Image(systemName: "hammer.circle")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 50, height: 50)
                         .symbolRenderingMode(.hierarchical)
 
                     VStack(alignment: .leading){
-                        Text("Development Environments").font(.title).fontWeight(.bold)
+                        Text("Development Environments (Beta)").font(.title).fontWeight(.bold)
                         Text("Clean stored files and cache for common development environments")
                             .font(.callout).foregroundStyle(.primary.opacity(0.5))
                     }

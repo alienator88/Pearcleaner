@@ -101,10 +101,17 @@ struct FolderSettingsTab: View {
                     HStack {
                         Spacer()
                         Text("Drop folders above or click to add").opacity(0.5)
+
                         Button {
                             selectFolder()
                         } label: { EmptyView() }
                         .buttonStyle(SimpleButtonStyle(icon: "plus.circle", help: String(localized: "Add folder"), size: 16, rotate: true))
+
+                        Button {
+                            clipboardAdd()
+                        } label: { EmptyView() }
+                            .buttonStyle(SimpleButtonStyle(icon: "document.on.clipboard", help: String(localized: "Add folder from clipboard"), size: 16, rotate: false))
+
                         Spacer()
                     }
                 }
@@ -192,6 +199,12 @@ struct FolderSettingsTab: View {
                             selectFilesFoldersZ()
                         } label: { EmptyView() }
                         .buttonStyle(SimpleButtonStyle(icon: "plus.circle", help: String(localized: "Add file/folder"), size: 16, rotate: true))
+
+                        Button {
+                            clipboardAdd(zombie: true)
+                        } label: { EmptyView() }
+                            .buttonStyle(SimpleButtonStyle(icon: "document.on.clipboard", help: String(localized: "Add file/folder from clipboard"), size: 16, rotate: false))
+
                         Spacer()
                     }
                 }
@@ -237,6 +250,38 @@ struct FolderSettingsTab: View {
             }
         } else {
             return
+        }
+    }
+
+    private func clipboardAdd(zombie: Bool = false) {
+        let pasteboard = NSPasteboard.general
+
+        // Check for file URL first
+        if let fileURL = pasteboard.propertyList(forType: .fileURL) as? String,
+           let folderURL = URL(string: fileURL) {
+            processClipboardPath(folderURL.path, zombie: zombie)
+        }
+        // Fallback to string-based path
+        else if let clipboardString = pasteboard.string(forType: .string) {
+            processClipboardPath(clipboardString, zombie: zombie)
+        } else {
+            printOS("FSM: Clipboard does not contain a valid path or file URL")
+        }
+    }
+
+    // Helper function to process the extracted path
+    private func processClipboardPath(_ path: String, zombie: Bool) {
+        let fileManager = FileManager.default
+        var isDir: ObjCBool = false
+
+        if fileManager.fileExists(atPath: path, isDirectory: &isDir) {
+            if zombie || isDir.boolValue {
+                zombie ? fsm.addPathZ(path) : fsm.addPath(path)
+            } else {
+                printOS("FSM: Clipboard content is not a directory and zombie mode is disabled")
+            }
+        } else {
+            printOS("FSM: Clipboard content is not a valid path")
         }
     }
 

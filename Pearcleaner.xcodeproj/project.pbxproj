@@ -35,6 +35,7 @@
 		C7A27E812AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist in Resources */ = {isa = PBXBuildFile; fileRef = C7A27E802AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist */; };
 		C7A2AE5D2B9644F300161540 /* FileWatcher in Frameworks */ = {isa = PBXBuildFile; productRef = C7A2AE5C2B9644F300161540 /* FileWatcher */; };
 		C7A6DBF12C9DD27200CFA042 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7A6DBF02C9DD27200CFA042 /* Assets.xcassets */; };
+		C7B0FE392CEBB14500083982 /* Fuse in Frameworks */ = {isa = PBXBuildFile; productRef = C7B0FE382CEBB14500083982 /* Fuse */; };
 		C7BE91A82C9E37AB009FA129 /* FinderOpen.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C78121632BC892A000BE06BD /* FinderOpen.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C7CF47242B3B3F1700979C5F /* WindowSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7CF47232B3B3F1700979C5F /* WindowSettings.swift */; };
 		C7D31D4A2AFEB26700C7ED9E /* AppListItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D492AFEB26700C7ED9E /* AppListItems.swift */; };
@@ -157,6 +158,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7B0FE392CEBB14500083982 /* Fuse in Frameworks */,
 				C76EDCD62C45DC82000CF29D /* AlinFoundation in Frameworks */,
 				C7736E4F2C49A44200917293 /* AlinFoundation in Frameworks */,
 			);
@@ -338,6 +340,7 @@
 			packageProductDependencies = (
 				C76EDCD52C45DC82000CF29D /* AlinFoundation */,
 				C7736E4E2C49A44200917293 /* AlinFoundation */,
+				C7B0FE382CEBB14500083982 /* Fuse */,
 			);
 			productName = PeakPurge;
 			productReference = C77B90002AF18E2E009CC655 /* Pearcleaner.app */;
@@ -399,6 +402,7 @@
 			packageReferences = (
 				C7A2AE5B2B9644DA00161540 /* XCRemoteSwiftPackageReference "FileWatcher" */,
 				C7736E4D2C49A44200917293 /* XCRemoteSwiftPackageReference "AlinFoundation" */,
+				C7B0FE372CEBB14500083982 /* XCRemoteSwiftPackageReference "fuse-swift" */,
 			);
 			productRefGroup = C77B90012AF18E2E009CC655 /* Products */;
 			projectDirPath = "";
@@ -549,8 +553,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 65;
-				APP_VERSION = 3.9.3;
+				APP_BUILD = 66;
+				APP_VERSION = 4.0.0;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -621,8 +625,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 65;
-				APP_VERSION = 3.9.3;
+				APP_BUILD = 66;
+				APP_VERSION = 4.0.0;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -893,6 +897,14 @@
 				minimumVersion = 0.2.3;
 			};
 		};
+		C7B0FE372CEBB14500083982 /* XCRemoteSwiftPackageReference "fuse-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/krisk/fuse-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.4.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -909,6 +921,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C7A2AE5B2B9644DA00161540 /* XCRemoteSwiftPackageReference "FileWatcher" */;
 			productName = FileWatcher;
+		};
+		C7B0FE382CEBB14500083982 /* Fuse */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C7B0FE372CEBB14500083982 /* XCRemoteSwiftPackageReference "fuse-swift" */;
+			productName = Fuse;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
