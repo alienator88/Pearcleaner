@@ -1,0 +1,4 @@
+files:
+  - source: /Pearcleaner/Resources/Localizable.xcstrings
+    translation: /Crowdin/
+    multilingual: 1
