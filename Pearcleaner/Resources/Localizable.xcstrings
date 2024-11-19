@@ -1227,7 +1227,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calcul en cours"
+            "value" : "calcul en cours"
           }
         },
         "ru" : {
@@ -8988,7 +8988,15 @@
       }
     },
     "Update completed" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mise à jour terminée"
+          }
+        }
+      }
     },
     "Update Frequency" : {
       "localizations" : {
@@ -9037,7 +9045,15 @@
       }
     },
     "Updated Available" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mise à jour disponible"
+          }
+        }
+      }
     },
     "Updater frequency is set to Never" : {
       "extractionState" : "manual",

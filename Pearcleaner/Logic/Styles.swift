@@ -458,7 +458,7 @@ struct CustomPickerButton: View {
                 .cornerRadius(8)
                 .overlay(
                     RoundedRectangle(cornerRadius: 8)
-                        .strokeBorder(Color.secondary.opacity(0.5), lineWidth: 0.6)
+                        .strokeBorder(Color.secondary.opacity(0.5), lineWidth: 0.8)
                 )
                 .transition(.scale)
             }
