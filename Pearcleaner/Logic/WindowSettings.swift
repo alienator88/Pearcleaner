@@ -115,6 +115,3 @@ class WindowSettings: ObservableObject {
     }
 
 }
-
-
-

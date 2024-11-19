@@ -9,6 +9,12 @@
             "value" : "(Build %@)"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(Version %@)"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -43,6 +49,12 @@
     },
     "/Full/Path/example-1.txt, /Full/Path/example-2.txt" : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "/Chemin/Complet/exemple-1.txt, /Chemin/Complet/exemple-2.txt"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -70,6 +82,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ ist bereits die neuesten Version"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ est déjà sur la dernière version disponible"
           }
         },
         "ru" : {
@@ -113,6 +131,12 @@
             "value" : "%@ wird nach Aktualisierungen suchen"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ va vérifier si une mise à jour est disponible"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -153,6 +177,12 @@
             "value" : "⇧ + Scrollen"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⇧ + Faire défiler"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -191,6 +221,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Über"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À propos"
           }
         },
         "ru" : {
@@ -234,6 +270,12 @@
             "value" : "Zugänglichkeit"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accessibilité"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -272,6 +314,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hinzufügen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter"
           }
         },
         "ru" : {
@@ -315,6 +363,12 @@
             "value" : "Direkte Pfade hinzufügen:"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter des chemins d’accès direct :"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -356,6 +410,12 @@
             "value" : "Ordner/Dateien hinzufügen"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter un fichier/dossier"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -389,7 +449,14 @@
       }
     },
     "Add file/folder from clipboard" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter un fichier/dossier provenant du presse-papiers"
+          }
+        }
+      }
     },
     "Add files or folders that will be ignored when searching for orphaned files. Click a path to remove it from the list." : {
       "extractionState" : "manual",
@@ -398,6 +465,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fügen Sie Dateien oder Verzeichnisse hinzu, die bei der Suche nach verwaisten Dateien ignoriert werden sollen. Klicken Sie auf einen Pfad, um ihn aus der Liste zu entfernen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter des fichiers ou dossiers qui seront ignorés lors de la recherche de fichiers résiduels. Cliquer sur un chemin d’accès pour le retire de la liste."
           }
         },
         "ru" : {
@@ -441,6 +514,12 @@
             "value" : "Ordner hinzufügen"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter un dossier"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -474,7 +553,14 @@
       }
     },
     "Add folder from clipboard" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter un dossier provenant du presse-papiers"
+          }
+        }
+      }
     },
     "Add/Save" : {
       "extractionState" : "manual",
@@ -483,6 +569,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hinzufügen/Sichern"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter/Sauvegarder"
           }
         },
         "ru" : {
@@ -526,6 +618,12 @@
             "value" : "Alle Checkboxen"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toutes les cases à cocher"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -565,6 +663,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bestätigen Sie markierten Dateien zum Entfernen. In seltenen Fällen können nicht verwandte Dateien gefunden werden, wenn die Namen der Anwendungen zu ähnlich sind.\n\nHINWEIS: Pearcleaner verwendet AppleScript, um Dateien zu entfernen. Derzeit erlaubt macOS nicht, dass AppleScript sich mit dem Fingerabdrucksensor authentifiziert, nur die Passwortauthentifizierung wird unterstützt."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirmez toujours les fichiers marqués pour suppression. Dans de rares cas, des fichiers sans rapport peuvent être trouvés lorsque les noms d'applications sont trop similaires.\n\nREMARQUE : Pearcleaner utilise AppleScript pour supprimer des fichiers. Actuellement, macOS ne permet pas à AppleScript de s'authentifier à l'aide du capteur d'empreintes digitales, seule l'authentification par mot de passe est prise en charge."
           }
         },
         "ru" : {
@@ -608,6 +712,12 @@
             "value" : "Animationen deaktiviert"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animations désactivées"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -647,6 +757,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Animationen aktiviert"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animations activées"
           }
         },
         "ru" : {
@@ -690,6 +806,12 @@
             "value" : "Ankündigung"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annonces"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -730,6 +852,12 @@
             "value" : "Programm Name"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nom de l’application"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -768,6 +896,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Programm Grösse"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taille de l’application"
           }
         },
         "ru" : {
@@ -811,6 +945,12 @@
             "value" : "Erscheinungsbild"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apparence"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -849,6 +989,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Die Anwendungsdatei ist in Unterverzeichnissen verschachtelt. Um zu verhindern, dass falsche Ordner gelöscht werden, lässt Pearcleaner diese aus. Sie können die übrigen Ordner bei Bedarf manuell löschen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le fichier d'application est imbriqué dans des sous-répertoires. Pour éviter de supprimer des dossiers incorrects, Pearcleaner les laissera seuls. Vous pouvez supprimer manuellement les dossiers restants si nécessaire."
           }
         },
         "ru" : {
@@ -892,6 +1038,12 @@
             "value" : "Programm Script"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Script d’application"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -932,6 +1084,12 @@
             "value" : "Programm"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applications"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -970,6 +1128,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sind Sie sicher, dass Sie diese Dateien entfernen möchten?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Êtes-vous sûr(e) de vouloir supprimer ces fichiers ?"
           }
         },
         "ru" : {
@@ -1013,6 +1177,12 @@
             "value" : "Automatisierung"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automation"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1052,6 +1222,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "berechnen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calcul en cours"
           }
         },
         "ru" : {
@@ -1095,6 +1271,12 @@
             "value" : "Abbrechen"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annuler"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1128,6 +1310,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Auf Updates überprüfen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifier les Mises à jour"
           }
         },
         "ru" : {
@@ -1170,9 +1358,15 @@
             "value" : "Checked %1$lld paths for %2$@"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifié %lld chemins pour %@"
+          }
+        },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "檢查了%2$@個路徑中的%1$lld個"
           }
         }
@@ -1180,6 +1374,12 @@
     },
     "Clean stored files and cache for common development environments" : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nettoyer les fichiers stockés et le cache pour les environnements de développement courants"
+          }
+        },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1195,6 +1395,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Löschen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effacer"
           }
         },
         "ru" : {
@@ -1238,6 +1444,12 @@
             "value" : "Text löschen"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effacer le texte"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1277,6 +1489,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Klicke für Programme"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cliquer pour voir la liste des applications"
           }
         },
         "ru" : {
@@ -1320,6 +1538,12 @@
             "value" : "Klicken Sie auf die Kopfzeile, um die Sortierreihenfolge zu ändern"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cliquez sur l'en-tête pour modifier l'ordre de tri"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1361,6 +1585,12 @@
             "value" : "Klicke für die Suche"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cliquer pour rechercher"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1399,6 +1629,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Schliessen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fermer"
           }
         },
         "ru" : {
@@ -1442,6 +1678,12 @@
             "value" : "Schliesse nach dem Entfernen"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fermer après désinstallation"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1481,6 +1723,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Befehlszeile"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ligne de commande"
           }
         },
         "ru" : {
@@ -1524,6 +1772,12 @@
             "value" : "Erledigt"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminé 🚀"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1563,6 +1817,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bedingungsgenerator"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Générateur de conditions"
           }
         },
         "ru" : {
@@ -1606,6 +1866,12 @@
             "value" : "Container"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conteneur"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1645,6 +1911,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kopiere Datei Pfad"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier les chemins d’accès du fichier"
           }
         },
         "ru" : {
@@ -1688,6 +1960,12 @@
             "value" : "Kopiere Pfad"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copier le chemin d’accès"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1729,6 +2007,12 @@
             "value" : "Täglich"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Journalier"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1763,6 +2047,12 @@
     },
     "Delete Contents" : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer le contenu"
+          }
+        },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1773,6 +2063,12 @@
     },
     "Delete Folder" : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer le dossier"
+          }
+        },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1788,6 +2084,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Erkennen, wenn Anwendungen in den Papierkorb verschoben werden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Détecter quand les applications sont déplacées vers la corbeille"
           }
         },
         "ru" : {
@@ -1824,6 +2126,12 @@
     },
     "Development" : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Développement"
+          }
+        },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1832,19 +2140,15 @@
         }
       }
     },
-    "Development Environments" : {
-      "extractionState" : "stale",
+    "Development Environments (Beta)" : {
       "localizations" : {
-        "zh-Hant" : {
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "開發環境"
+            "value" : "Environnements de développement (bêta)"
           }
         }
       }
-    },
-    "Development Environments (Beta)" : {
-
     },
     "Disabled when menubar icon is enabled" : {
       "extractionState" : "manual",
@@ -1853,6 +2157,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Deaktiviert, wenn das Menüleistensymbol aktiviert ist"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désactivé lorsque l'icône de la barre de menus est activée"
           }
         },
         "ru" : {
@@ -1896,6 +2206,12 @@
             "value" : "Ablehnen"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fermer"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1935,6 +2251,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ziehe ein Programm hierhin"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déposez une application ici"
           }
         },
         "ru" : {
@@ -1978,6 +2300,12 @@
             "value" : "Dateien oder Ordner oben ablegen oder zum Hinzufügen anklicken"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déposez des fichiers ou des dossiers ci-dessus ou cliquez pour ajouter"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2017,6 +2345,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ordner oben ablegen oder zum Hinzufügen anklicken"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déposez les dossiers ci-dessus ou cliquez pour ajouter"
           }
         },
         "ru" : {
@@ -2060,6 +2394,12 @@
             "value" : "Ziel hier ablegen"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cible de dépôt"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2099,6 +2439,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kontextmenü-Erweiterung für Finder aktivieren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activer l'extension du menu contextuel pour le Finder"
           }
         },
         "ru" : {
@@ -2142,6 +2488,12 @@
             "value" : "Wenn Sie die CLI aktivieren, können Sie Pearcleaner-Aktionen über das Terminal ausführen. Dies fügt den Befehl pearcleaner in /usr/local/bin ein, so dass er direkt über Ihre PATH-Umgebungsvariable verfügbar ist. Probieren Sie es nach der Aktivierung aus:\n\n> pearcleaner --help"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'activation de la CLI vous permettra d'exécuter des actions liées à Pearcleaner à partir du terminal. Cela ajoutera la commande pearcleaner dans /usr/local/bin afin qu'elle soit disponible directement à partir de votre variable d'environnement PATH. Essayez-la après avoir activé :\n\n> pearcleaner --help"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2183,6 +2535,12 @@
             "value" : "Wenn Sie diese Erweiterung aktivieren, können Sie Anwendungen im Finder mit der rechten Maustaste anklicken, um sie mit Pearcleaner zu deinstallieren"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'activation de cette extension vous permettra de cliquer avec le bouton droit sur les applications dans le Finder pour les désinstaller rapidement avec Pearcleaner."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2217,6 +2575,12 @@
     },
     "Environment" : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Environnement"
+          }
+        },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2232,6 +2596,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ausschliessen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exclure"
           }
         },
         "ru" : {
@@ -2275,6 +2645,12 @@
             "value" : "Ausschliessen Schlüsselwörter:"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exclure des mots clés :"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2314,6 +2690,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Diese Dateien und Ordner von der Suche nach verwaisten Dateien ausschließen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exclure ces fichiers et dossiers de la recherche de fichiers résiduels"
           }
         },
         "ru" : {
@@ -2357,6 +2739,12 @@
             "value" : "Pfad für den Export"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporter les chemins d’accès de fichiers"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2396,6 +2784,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Versionshinweise können nicht angezeigt werden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Échec de l'affichage des notes de version"
           }
         },
         "ru" : {
@@ -2439,6 +2833,12 @@
             "value" : "Optionen für die Anzeige der Dateigröße"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Options d'affichage de la taille du fichier"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2478,6 +2878,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Finder Erweiterung"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extension du Finder"
           }
         },
         "ru" : {
@@ -2521,6 +2927,12 @@
             "value" : "Suche nach verwaisten Dateien, bitte warten..."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recherche de fichiers résiduels, veuillez patienter..."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2560,6 +2972,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ordner"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dossiers"
           }
         },
         "ru" : {
@@ -2603,6 +3021,12 @@
             "value" : "Aktualisierung erzwingen"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forcer l'actualisation"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2642,6 +3066,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vollständiger Festplattenzugriff"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accès complet au disque"
           }
         },
         "ru" : {
@@ -2685,6 +3115,12 @@
             "value" : "Funktionsweise"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fonctionnalité"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2724,6 +3160,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sammeln von Programm Details"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Collecte des détails de l'application"
           }
         },
         "ru" : {
@@ -2767,6 +3209,12 @@
             "value" : "Allgemeine"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Général"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2806,6 +3254,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "GitHub Sponsoren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub Sponsors"
           }
         },
         "ru" : {
@@ -2849,6 +3303,12 @@
             "value" : "GitHub: v%@"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub : v%@"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2887,6 +3347,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Verstecke Details"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquer les détails"
           }
         },
         "ru" : {
@@ -2930,6 +3396,12 @@
             "value" : "Aufräumen von Homebrew nach der Deinstallation"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nettoyage Homebrew après la désinstallation"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2969,6 +3441,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wichtig"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Important"
           }
         },
         "ru" : {
@@ -3012,6 +3490,12 @@
             "value" : "Wenn Sie im Minifenstermodus das Popup-Fenster \"Dateien\" oben anheften, wird es nicht geschlossen, wenn Sie das Fenster weg klicken. Andernfalls wird es geschlossen, wenn Sie irgendwo außerhalb der App klicken."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En mode mini fenêtre, si vous épinglez la fenêtre contextuelle Fichiers en haut, cliquer en dehors de la fenêtre ne la fermera pas. Sinon, elle se fermera en cliquant n'importe où en dehors de l'application."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3051,6 +3535,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Im Minifenstermodus können Sie Pearcleaner in der Apps-Listenansicht oder in der Drop-Target-Ansicht starten lassen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En mode mini fenêtre, vous pouvez configurer Pearcleaner pour qu'il démarre sur la vue Liste des applications ou sur la vue Cible de dépôt.\n"
           }
         },
         "ru" : {
@@ -3094,6 +3584,12 @@
             "value" : "Schlüsselwörter einbeziehen:"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inclure des mots clés :"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3134,6 +3630,12 @@
             "value" : "Installations Datum"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date d’installation"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3172,6 +3674,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Installations Datum:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date d'installation :"
           }
         },
         "ru" : {
@@ -3215,6 +3723,12 @@
             "value" : "Installed: v%@"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installé : v%@"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3256,6 +3770,12 @@
             "value" : "Anleitung"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instructions"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3291,6 +3811,12 @@
     "Interface" : {
       "localizations" : {
         "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Interface"
+          }
+        },
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Interface"
@@ -3337,6 +3863,12 @@
             "value" : "iOS"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3376,6 +3908,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "iOS Programm"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Application iOS"
           }
         },
         "ru" : {
@@ -3419,6 +3957,12 @@
             "value" : "Item"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Objet"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3458,6 +4002,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Items"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Objets"
           }
         },
         "ru" : {
@@ -3501,6 +4051,12 @@
             "value" : "keyword-1, keyword-2"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mot-clé-1, mot-clé-2"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3541,6 +4097,12 @@
             "value" : "Zuletzt benutzt am"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date de dernière utilisation"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3579,6 +4141,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zuletzt benutzt am:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date de dernière utilisation :"
           }
         },
         "ru" : {
@@ -3622,6 +4190,12 @@
             "value" : "Starte Pearcleaner beim Start"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Démarrer Pearcleaner au démarrage "
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3661,6 +4235,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Orte in denen nach .app-Dateien gesucht werden soll. Klicken Sie auf einen Nicht-Standardpfad, um ihn zu entfernen. Standardpfade können nicht entfernt werden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Emplacements dans lesquels les fichiers .app seront recherchés. Cliquez sur un chemin autre que celui par défaut pour le supprimer. Les chemins par défaut ne peuvent pas être supprimés."
           }
         },
         "ru" : {
@@ -3704,6 +4284,12 @@
             "value" : "Logisch"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logique"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3743,6 +4329,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hergestellt mit ❤️ von Alin Lupascu"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fait avec ❤️ par Alin Lupascu"
           }
         },
         "ru" : {
@@ -3786,6 +4378,12 @@
             "value" : "Menübar"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Barre de menus"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3825,6 +4423,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Menübar Symbol Modus"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mode icône de la barre de menu"
           }
         },
         "ru" : {
@@ -3868,6 +4472,12 @@
             "value" : "Menübar Symbol Voreinstellung"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Préférence de l'icône de la barre de menu"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3907,6 +4517,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mini Konfiguration"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configuration Mini"
           }
         },
         "ru" : {
@@ -3950,6 +4566,12 @@
             "value" : "Mini Fenster Modus"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mode mini fenêtre"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3989,6 +4611,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Minimalistische Programm Zeilenliste deaktiviert"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lignes de la liste des applications minimalistes désactivées"
           }
         },
         "ru" : {
@@ -4032,6 +4660,12 @@
             "value" : "Minimalistische Programm Zeilenliste aktiviert"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lignes de la liste des applications minimalistes activées"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4071,6 +4705,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fehlende Berechtigungen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisations manquantes"
           }
         },
         "ru" : {
@@ -4113,6 +4753,12 @@
             "value" : "Verändert am"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date de modification"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4151,6 +4797,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Verändert am:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date de modification :"
           }
         },
         "ru" : {
@@ -4194,6 +4846,12 @@
             "value" : "Monatlich"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mensuel"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4233,6 +4891,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mehr"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus"
           }
         },
         "ru" : {
@@ -4276,6 +4940,12 @@
             "value" : "Name"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prénom"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4315,6 +4985,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nie"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jamais"
           }
         },
         "ru" : {
@@ -4358,6 +5034,12 @@
             "value" : "Neue Ankündigung"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nouvelle annonce"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4397,6 +5079,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nächstes Update am: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prochaine vérification des mises à jour : %@"
           }
         },
         "ru" : {
@@ -4440,6 +5128,12 @@
             "value" : "Keine Dateien oder Ordner hinzugefügt"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun fichier ou dossier ajouté"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4479,6 +5173,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Keine neuen Ankündigungen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas de nouvelle annonce"
           }
         },
         "ru" : {
@@ -4522,6 +5222,12 @@
             "value" : "Keine Version zum Anzeigen"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune version à afficher"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4561,6 +5267,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "kein Update 😌"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas de mise à jour 😌"
           }
         },
         "ru" : {
@@ -4604,6 +5316,12 @@
             "value" : "Nicht verfügbar"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non disponible"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4638,6 +5356,12 @@
     },
     "Not Found" : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non trouvé"
+          }
+        },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4653,6 +5377,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "von"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "de"
           }
         },
         "ru" : {
@@ -4696,6 +5426,12 @@
             "value" : "Okay"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Okay"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4724,6 +5460,12 @@
     },
     "Open" : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir"
+          }
+        },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4739,6 +5481,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Öffnen %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir %@"
           }
         },
         "ru" : {
@@ -4782,6 +5530,12 @@
             "value" : "Die Suche nach verwaisten Dateien ist nicht zu 100% genau, da sie keine deinstallierten Anwendungspakete findet, welche für den Dateiausschluss überprüfen werden können. Die Suche nach Dateien/Ordnern erfolgt nach bestem Wissen und Gewissen und schliesst diejenigen aus, die sich mit den derzeit installierten Anwendungen überschneiden. Bitte vergewissern Sie sich, dass die zum Löschen markierten Dateien wirklich zu deinstallierten Anwendungen gehören."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La recherche de fichiers résiduels n'est pas 100 % précise car elle ne dispose d'aucun paquet d'applications désinstallées pour vérifier l'exclusion des fichiers. Il s'agit d'une recherche approximative des fichiers/dossiers et exclut ceux qui chevauchent vos applications actuellement installées. Veuillez confirmer que les fichiers marqués pour suppression appartiennent bien à des applications désinstallées."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4821,6 +5575,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Verwaiste Dateien"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fichiers résiduels"
           }
         },
         "ru" : {
@@ -4864,6 +5624,12 @@
             "value" : "Pearcleaner und alle seine Dateien werden sauber entfernt, sind Sie sicher?"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner et tous ses fichiers seront supprimés proprement, êtes-vous sûr(e) ?"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4903,6 +5669,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pearcleaner CLI Unterstützung"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support CLI de Pearcleaner"
           }
         },
         "ru" : {
@@ -4947,6 +5719,12 @@
             "value" : "Pearcleaner Deinstallation"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désinstaller avec Pearcleaner"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4986,6 +5764,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Berechtigung Status"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Statut des autorisations"
           }
         },
         "ru" : {
@@ -5029,6 +5813,12 @@
             "value" : "Berechtigung"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permissions"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5068,6 +5858,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Popover-Fenster oben anheften"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Épingler la fenêtre contextuelle au-dessus"
           }
         },
         "ru" : {
@@ -5111,6 +5907,12 @@
             "value" : "Plist Datei"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fichier Plist"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5151,6 +5953,12 @@
             "value" : "Warteschlange:"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "File d'attente :"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5184,6 +5992,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Beenden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quitter"
           }
         },
         "ru" : {
@@ -5227,6 +6041,12 @@
             "value" : "Pearcleaner beenden"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quitter Pearcleaner"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5266,6 +6086,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Real"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réel"
           }
         },
         "ru" : {
@@ -5309,6 +6135,12 @@
             "value" : "Die tatsächliche Grösse gibt an, wie viel Platz die Datei auf der Festplatte belegt.\n\nDer logische Typ zeigt die binäre Grösse an. Das Dateisystem kann Sektoren auf der Festplatte komprimieren und deduplizieren, so dass die reale Grösse manchmal kleiner (oder größer) als die logische Grösse ist.\n\nDie Finder-Grösse ist vergleichbar mit einem Rechtsklick auf eine Datei im Finder, der sowohl die logische als auch die reale Grösse anzeigt."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le type de taille réelle indique l'espace réellement alloué au fichier sur le disque.\n\nLe type logique montre la taille binaire. Le système de fichiers peut compresser et dédupliquer les secteurs sur le disque, de sorte que la taille réelle est parfois plus petite (ou plus grande) que la taille logique.\n\nLa taille du Finder est similaire à celle que vous obtiendriez en faisant un clic droit > Lire les informations sur un fichier dans le Finder, qui affichera les tailles logique et réelle ensemble.\n"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5348,6 +6180,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Erneuern"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rafraîchir"
           }
         },
         "ru" : {
@@ -5391,6 +6229,12 @@
             "value" : "Erneuere Programme"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rafraîchir les applications"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5430,6 +6274,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Erneuere Programme (⌘+R)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rafraîchir les applications (⌘+R)"
           }
         },
         "ru" : {
@@ -5473,6 +6323,12 @@
             "value" : "Erneuere Updater"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rafraîchir le programme de mise à jour"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5511,6 +6367,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Versions Anmerkungen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notes de version"
           }
         },
         "ru" : {
@@ -5554,6 +6416,12 @@
             "value" : "Versionen"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versions"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5593,6 +6461,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Verbleibende Dateien und Ordner aus früheren Anwendungen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fichiers et dossiers restants des applications précédemment installées "
           }
         },
         "ru" : {
@@ -5636,6 +6510,12 @@
             "value" : "Entfernen"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5675,6 +6555,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Entfernen direkte Pfade:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer les chemins d'accès direct :"
           }
         },
         "ru" : {
@@ -5718,6 +6604,12 @@
             "value" : "Entfernen Sie die Bedingung aus dieser Anwendung"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer la condition de cette application"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5757,6 +6649,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Neu scannen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réanalyser"
           }
         },
         "ru" : {
@@ -5800,6 +6698,12 @@
             "value" : "Auf Standardeinstellungen zurücksetzten"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réinitialiser tous les paramètres par défaut"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5839,6 +6743,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Einstellungen zurücksetzten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réinitialiser les paramètres"
           }
         },
         "ru" : {
@@ -5882,6 +6792,12 @@
             "value" : "Grösse zurücksetzten"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réinitialiser la taille"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5921,6 +6837,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Neustart"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redémarrer"
           }
         },
         "ru" : {
@@ -5964,6 +6886,12 @@
             "value" : "Starten Sie %@ neu, damit die Änderungen wirksam werden"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redémarrez %@ pour que les modifications prennent effet"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6003,6 +6931,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rückwärtssuche erfolgreich abgeschlossen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recherche inversée terminée avec succès"
           }
         },
         "ru" : {
@@ -6046,6 +6980,12 @@
             "value" : "Rechtsklick zum Zurücksetzen der Grösse"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cliquez avec le bouton droit pour réinitialiser la taille"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6085,6 +7025,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sichern"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sauvegarder"
           }
         },
         "ru" : {
@@ -6128,6 +7074,12 @@
             "value" : "Speichern Sie die Bedingung für diese Anwendung"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrer la condition pour cette application"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6167,6 +7119,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Suche in diesen Ordnern nach Programmen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rechercher des applications dans ces dossiers"
           }
         },
         "ru" : {
@@ -6209,6 +7167,12 @@
             "value" : "Durchsuche das Datei System"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recherche du système de fichiers"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6243,6 +7207,12 @@
     },
     "Select an environment to view paths." : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sélectionnez un environnement pour afficher les chemins d’accès."
+          }
+        },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6253,6 +7223,12 @@
     },
     "Select One" : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sélectionnez-en un"
+          }
+        },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6265,6 +7241,12 @@
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sentinel Monitor"
+          }
+        },
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sentinel Monitor"
@@ -6311,6 +7293,12 @@
             "value" : "Sentinel Monitor hat keine anderen Dateien zum Entfernen gefunden"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sentinel Monitor n'a trouvé aucun autre fichier à supprimer\n"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6350,6 +7338,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Einstlelungen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paramètres"
           }
         },
         "ru" : {
@@ -6393,6 +7387,12 @@
             "value" : "zeige nochmals die Ankündigungsplakette"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher de nouveau le badge des annonces"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6434,6 +7434,12 @@
             "value" : "Zeige Programm Liste beim Start"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher la liste des applications au démarrage"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6472,6 +7478,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zeige Details"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher les détails"
           }
         },
         "ru" : {
@@ -6515,6 +7527,12 @@
             "value" : "Zeige die letzten 3 Versionen"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affichage des 3 dernières versions"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6554,6 +7572,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Grösse"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taille"
           }
         },
         "ru" : {
@@ -6597,6 +7621,12 @@
             "value" : "Einige Dateien/Ordner haben keine Ähnlichkeit mit dem Anwendungsnamen oder der Bundle-ID, was dazu führt, dass Pearcleaner sie entweder nicht findet oder nicht zugehörige Dateien findet.\nUm dies zu verhindern, können Sie eine benutzerdefinierte Bedingung für jedes Anwendungsbündel mit Schlüsselwörtern oder direkten Pfaden erstellen.\n\n- Sie können Schlüsselwörter für Dateien/Ordner hinzufügen, die Sie in die unscharfe Suche einbeziehen oder ausschliessen möchten.\n\n- Sie können explizit einen vollständigen Finder-Pfad zu den Suchergebnissen hinzufügen oder entfernen, wenn Sie eine direkte suchen wollen."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Certains fichiers/dossiers ne sont pas similaires au nom de l'application ou à l'identifiant du bundle, ce qui fait que Pearcleaner ne les trouve pas ou trouve des fichiers non liés.\nPour remédier à cela, vous pouvez créer une condition personnalisée pour chaque bundle d'application en utilisant des mots-clés ou des chemins d'accès directs.\n\n- Vous pouvez ajouter des mots-clés de fichiers/dossiers que vous souhaitez inclure ou exclure dans les recherches approximatives.\n\n- Vous pouvez ajouter ou supprimer explicitement un chemin d’accès complet dans Finder aux résultats de recherche si vous voulez une recherche directe.\n"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6636,6 +7666,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Programm-Liste alphabetisch nach Namen oder nach Grösse sortieren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trier la liste des applications par ordre alphabétique, par nom ou par taille"
           }
         },
         "ru" : {
@@ -6679,6 +7715,12 @@
             "value" : "Sortiert nach Namen"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trié par nom"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6720,6 +7762,12 @@
             "value" : "Sortiert nach Namen"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trié par taille"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6758,6 +7806,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sortier Optionen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Options de tri"
           }
         },
         "ru" : {
@@ -6801,6 +7855,12 @@
             "value" : "Sortierung: %@"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tri : %@"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6840,6 +7900,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sponsoren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sponsor"
           }
         },
         "ru" : {
@@ -6883,6 +7949,12 @@
             "value" : "Einen Fehler oder eine Funktionsanfrage einreichen"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soumettre un bug ou une demande de fonctionnalité"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6922,6 +7994,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Neuen Fehler einreichen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soumettre un nouveau problème"
           }
         },
         "ru" : {
@@ -6965,6 +8043,12 @@
             "value" : "Unterstützung"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7006,6 +8090,12 @@
             "value" : "system"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "système"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7044,6 +8134,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "System"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Système"
           }
         },
         "ru" : {
@@ -7087,6 +8183,12 @@
             "value" : "Themen Modus"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mode Thème"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7126,6 +8228,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hiermit werden Datei bzw. Ordner zur Ausschlussliste hinzugefügt. Bearbeiten Sie die Ausschlussliste unter Einstellungen > Registerkarte Ordner"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cela ajoute le fichier/dossier à la liste des exclusions. Modifiez la liste des exclusions depuis Paramètres > Onglet Dossiers"
           }
         },
         "ru" : {
@@ -7169,6 +8277,12 @@
             "value" : "Programm befindet sich in %@"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette application est située dans %@"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7208,6 +8322,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Das ist ein Web Programm"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ceci est une application web"
           }
         },
         "ru" : {
@@ -7251,6 +8371,12 @@
             "value" : "Das ist ein iOS Programm"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ceci est une application iOS encapsulée"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7292,6 +8418,12 @@
             "value" : "Diese Einstellung wirkt sich auf Pearcleaner aus in allen Modu aus. Wenn Sie das Menüleistensymbol deaktivieren, sollten Sie auch diese Einstellung deaktivieren, damit Pearcleaner beim Anmelden nicht gestartet wird."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce paramètre affectera Pearcleaner que vous soyez en mode barre de menus ou en mode normal. Si vous désactivez l'icône de la barre de menus, vous voudrez peut-être également désactiver ce paramètre pour que Pearcleaner ne démarre pas lors de la connexion."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7331,6 +8463,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Durch Umschalten zwischen den Modi werden die Fensterrahmen auf ihre Standardgrössen/-positionen zurückgesetzt."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le passage d'un mode à l'autre réinitialisera les cadres des fenêtres à leur taille/position par défaut."
           }
         },
         "ru" : {
@@ -7375,6 +8513,12 @@
             "value" : "Werkzeug"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outils"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7409,6 +8553,12 @@
     },
     "Total environment paths available" : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre total de chemins d'environnement disponibles"
+          }
+        },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7423,6 +8573,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gesamtgrösse der Dateien:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taille totale des fichiers :"
           }
         },
         "ru" : {
@@ -7466,6 +8622,12 @@
             "value" : "Durchscheinendes Material"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Matériel transparent"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7504,6 +8666,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tippe für die Suche"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tapez pour rechercher"
           }
         },
         "ru" : {
@@ -7547,6 +8715,12 @@
             "value" : "Entfernung rückgängig machen "
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annuler la suppression"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7586,6 +8760,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Deinstallieren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désinstaller"
           }
         },
         "ru" : {
@@ -7629,6 +8809,12 @@
             "value" : "Deinstallieren Warnung "
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alertes de confirmation de désinstallation"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7670,6 +8856,12 @@
             "value" : "Deinstallieren Pearcleaner"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désinstaller Pearcleaner"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7708,6 +8900,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Update"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mise à jour"
           }
         },
         "ru" : {
@@ -7751,6 +8949,12 @@
             "value" : "Update Available 🥳"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mise à jour disponible 🥳"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7783,12 +8987,21 @@
         }
       }
     },
+    "Update completed" : {
+      "extractionState" : "manual"
+    },
     "Update Frequency" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Update Frequenz"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fréquence des mises à jour"
           }
         },
         "ru" : {
@@ -7823,6 +9036,9 @@
         }
       }
     },
+    "Updated Available" : {
+      "extractionState" : "manual"
+    },
     "Updater frequency is set to Never" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7830,6 +9046,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Update Frequenz ist auf nie gesetzt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La fréquence de mise à jour est définie sur Jamais"
           }
         },
         "ru" : {
@@ -7873,6 +9095,12 @@
             "value" : "Updates ausgeschlatet"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mises à jour désactivées"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7911,6 +9139,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Benutzer"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "utilisateur"
           }
         },
         "ru" : {
@@ -7953,6 +9187,12 @@
             "value" : "Benutzer"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilisateur"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7988,6 +9228,12 @@
     "Version %@" : {
       "localizations" : {
         "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version %@"
+          }
+        },
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version %@"
@@ -8033,6 +9279,12 @@
             "value" : "Ansicht"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affichage"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8072,6 +9324,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Im Finder zeigen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher dans le Finder"
           }
         },
         "ru" : {
@@ -8115,6 +9373,12 @@
             "value" : "Zeige Probleme"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voir les problèmes"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8154,6 +9418,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zeige Projekt Mitarbeitende"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voir les contributeurs du projet"
           }
         },
         "ru" : {
@@ -8197,6 +9467,12 @@
             "value" : "Zeige Version"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voir les versions"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8235,6 +9511,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zeige Versionen auf GitHub"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voir les versions sur GitHub"
           }
         },
         "ru" : {
@@ -8278,6 +9560,12 @@
             "value" : "Repository anzeigen"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voir le dépôt GitHub"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8317,6 +9605,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Warnung"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avertissement"
           }
         },
         "ru" : {
@@ -8360,6 +9654,12 @@
             "value" : "Warnung!"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avertissement!"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8396,6 +9696,12 @@
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "web"
+          }
+        },
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "web"
@@ -8442,6 +9748,12 @@
             "value" : "Web Programm"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Application Web"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8481,6 +9793,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wöchentlich"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hebdomadaire"
           }
         },
         "ru" : {
@@ -8524,6 +9842,12 @@
             "value" : "Wenn Anwendungen in den Papierkorb verschoben werden, startet Pearcleaner und sucht nach zugehörigen Dateien und Ordnern, um diese zu löschen."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lorsque des applications sont déplacées dans la Corbeille, Pearcleaner se lance et trouve les fichiers et dossiers associés pour les supprimer."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8563,6 +9887,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zeige eine Warnung, damit vor dem versehentlich Löschen von Dateien im Papierkorb gewartet wird. "
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lorsque vous supprimez des fichiers en utilisant le bouton Corbeille, vous pouvez éviter les suppressions accidentelles en affichant une alerte avant de procéder à l'action."
           }
         },
         "ru" : {
@@ -8606,6 +9936,12 @@
             "value" : "Wenn die Homebrew-Bereinigung aktiviert ist, prüft Pearcleaner, ob die zu entfernende Anwendung über Homebrew installiert wurde und startet Terminal.app, um einen Befehl zum Deinstallieren und Bereinigen von Homebrew auszuführen, damit Homebrew weiss, dass die Anwendung entfernt wurde. Auf diese Weise wird Ihre Homebrew-Liste korrekt synchronisiert und die Zwischenspeicherung wird entfernt. Terminal.app ist erforderlich, da einige Anwendungen sudo-Berechtigungen benötigen, um Dienste und Dateien in Systemordnern zu entfernen. Da andere Terminal-Apps AppleScript und/oder den Befehl \"do script\" nicht unterstützen, habe ich mich dafür entschieden, die Standard macOS Terminal-App zu verwenden.\n\nHINWEIS: Wenn Sie das Löschen von Dateien mit CMD+Z rückgängig machen, werden die Dateien wiederhergestellt, aber Homebrew wird davon nichts mitbekommen. Um die Homebrew-Liste wieder zu synchronisieren, müssen Sie den Befehl ausführen:\n\n> brew install APPNAME --force"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lorsque le nettoyage Homebrew est activé, Pearcleaner vérifiera si l'application que vous supprimez a été installée via Homebrew et lancera Terminal.app pour exécuter une commande de désinstallation et de nettoyage brew afin de signaler à Homebrew que l'application a été supprimée. De cette façon, votre liste Homebrew sera correctement synchronisée et le cache sera supprimé. Terminal.app est requis car certaines applications nécessitent des autorisations sudo pour supprimer des services et des fichiers placés dans des dossiers système. Étant donné que d'autres applications de terminal ne prennent pas en charge AppleScript et/ou la commande 'do script', j'ai choisi d'utiliser l'application Terminal par défaut de macOS pour cela.\n\nNOTE : Si vous annulez la suppression du fichier avec ⌘+Z, les fichiers seront remis en place mais Homebrew ne sera pas au courant. Pour resynchroniser la liste Homebrew, vous devrez exécuter :\n \n> brew install APPNAME --force"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8647,6 +9983,12 @@
             "value" : "Wenn das Menüleistensymbol aktiviert ist, werden das Hauptfenster der Anwendung und das Docksymbol deaktiviert, da die Anwendung in den Zubehörmodus versetzt wird."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lorsque l'icône de la barre de menus est activée, la fenêtre principale de l'application et l'icône du dock seront désactivées car l'application sera mise en mode accessoire."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8686,6 +10028,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wenn dieser Modus aktiviert ist, wird Pearcleaner sofort geschlossen, wenn Sie auf die Schaltfläche Deinstallieren klicken, um eine Anwendung zu entfernen.\nDies wirkt sich nur auf Pearcleaner aus, wenn es über externe Mittel wie Sentinel Trash Monitor, eine Finder-Erweiterung oder einen Deep Link geöffnet wird.\nDies ermöglicht die einmalige Verwendung der Anwendung für eine schnelle Deinstallation. Wenn Pearcleaner normal geöffnet wird, wird diese Einstellung ignoriert und funktioniert wie gewohnt."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lorsque ce mode est activé, cliquer sur le bouton Désinstaller pour supprimer une application fermera également Pearcleaner juste après.\nCela n'affecte Pearcleaner que lorsqu'il est ouvert par des moyens externes, tels que Sentinel Trash Monitor, l'extension Finder ou un lien profond.\nCela permet une utilisation unique de l'application pour une désinstallation rapide. Lorsque Pearcleaner est ouvert normalement, ce paramètre est ignoré et fonctionne comme d'habitude."
           }
         },
         "ru" : {
