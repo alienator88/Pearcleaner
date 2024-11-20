@@ -17,7 +17,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "(Build %@)"
           }
         },
@@ -57,49 +57,49 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "/Full/Path/example-1.txt, /Full/Path/example-2.txt"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "/Full/Path/example-1.txt, /Full/Path/example-2.txt"
           }
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "/Full/Path/example-1.txt, /Full/Path/example-2.txt"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "/Full/Path/example-1.txt, /Full/Path/example-2.txt"
           }
         },
         "sk" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "/Full/Path/example-1.txt, /Full/Path/example-2.txt"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "/Full/Path/example-1.txt, /Full/Path/example-2.txt"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "/Full/Path/example-1.txt, /Full/Path/example-2.txt"
           }
         },
         "zh-Hant-HK" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "/Full/Path/example-1.txt, /Full/Path/example-2.txt"
           }
         }
@@ -122,7 +122,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%@ is already on the latest release available"
           }
         },
@@ -175,7 +175,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%@ will check for updates"
           }
         },
@@ -227,7 +227,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "⇧ + Scroll"
           }
         },
@@ -279,7 +279,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "About"
           }
         },
@@ -332,7 +332,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Accessibility"
           }
         },
@@ -384,7 +384,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Add"
           }
         },
@@ -437,7 +437,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Add Direct Paths:"
           }
         },
@@ -490,7 +490,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Add file/folder"
           }
         },
@@ -530,7 +530,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Add file/folder from clipboard"
           }
         },
@@ -542,13 +542,13 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Add file/folder from clipboard"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Add file/folder from clipboard"
           }
         },
@@ -560,19 +560,19 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Add file/folder from clipboard"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Add file/folder from clipboard"
           }
         },
         "zh-Hant-HK" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Add file/folder from clipboard"
           }
         }
@@ -595,7 +595,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Add files or folders that will be ignored when searching for orphaned files. Click a path to remove it from the list."
           }
         },
@@ -648,7 +648,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Add folder"
           }
         },
@@ -688,7 +688,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Add folder from clipboard"
           }
         },
@@ -700,13 +700,13 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Add folder from clipboard"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Add folder from clipboard"
           }
         },
@@ -718,19 +718,19 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Add folder from clipboard"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Add folder from clipboard"
           }
         },
         "zh-Hant-HK" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Add folder from clipboard"
           }
         }
@@ -753,7 +753,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Add/Save"
           }
         },
@@ -806,7 +806,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "All checkboxes"
           }
         },
@@ -859,7 +859,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Always confirm the files marked for removal. In rare cases, unrelated files may be found when app names are too similar.\n\nNOTE: Pearcleaner uses AppleScript to remove files. Currently macOS does not allow AppleScript to authenticate using the fingerprint sensor, only password authentication is supported."
           }
         },
@@ -912,7 +912,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Animations disabled"
           }
         },
@@ -965,7 +965,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Animations enabled"
           }
         },
@@ -1018,7 +1018,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Announcement"
           }
         },
@@ -1070,7 +1070,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "App Name"
           }
         },
@@ -1122,7 +1122,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "App Size"
           }
         },
@@ -1175,7 +1175,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Appearance"
           }
         },
@@ -1227,7 +1227,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Application file is nested within subdirectories. To prevent deleting incorrect folders, Pearcleaner will leave these alone. You may manually delete the remaining folders if required."
           }
         },
@@ -1280,7 +1280,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Application Script"
           }
         },
@@ -1332,7 +1332,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Applications"
           }
         },
@@ -1384,7 +1384,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Are you sure you want to remove these files?"
           }
         },
@@ -1437,7 +1437,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Automation"
           }
         },
@@ -1490,7 +1490,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "calculating"
           }
         },
@@ -1543,7 +1543,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Cancel"
           }
         },
@@ -1596,7 +1596,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Check for Updates"
           }
         },
@@ -1636,7 +1636,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Checked %1$lld paths for %2$@"
           }
         },
@@ -1654,13 +1654,13 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Checked %1$lld paths for %2$@"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Checked %1$lld paths for %2$@"
           }
         },
@@ -1672,7 +1672,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Checked %1$lld paths for %2$@"
           }
         },
@@ -1694,7 +1694,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Clean stored files and cache for common development environments"
           }
         },
@@ -1706,13 +1706,13 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Clean stored files and cache for common development environments"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Clean stored files and cache for common development environments"
           }
         },
@@ -1724,7 +1724,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Clean stored files and cache for common development environments"
           }
         },
@@ -1759,7 +1759,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Clear"
           }
         },
@@ -1812,7 +1812,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Clear text"
           }
         },
@@ -1865,7 +1865,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Click for apps list"
           }
         },
@@ -1918,7 +1918,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Click header to change sorting order"
           }
         },
@@ -1971,7 +1971,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Click to search"
           }
         },
@@ -2023,7 +2023,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Close"
           }
         },
@@ -2076,7 +2076,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Close after uninstall"
           }
         },
@@ -2129,7 +2129,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Command Line"
           }
         },
@@ -2182,7 +2182,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Completed 🚀"
           }
         },
@@ -2235,7 +2235,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Condition Builder"
           }
         },
@@ -2276,7 +2276,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Container"
           }
         },
@@ -2288,7 +2288,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Container"
           }
         },
@@ -2341,7 +2341,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Copy File Paths"
           }
         },
@@ -2394,7 +2394,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Copy Path"
           }
         },
@@ -2447,7 +2447,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Daily"
           }
         },
@@ -2487,7 +2487,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Delete Contents"
           }
         },
@@ -2499,13 +2499,13 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Delete Contents"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Delete Contents"
           }
         },
@@ -2517,7 +2517,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Delete Contents"
           }
         },
@@ -2539,7 +2539,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Delete Folder"
           }
         },
@@ -2551,13 +2551,13 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Delete Folder"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Delete Folder"
           }
         },
@@ -2569,7 +2569,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Delete Folder"
           }
         },
@@ -2604,7 +2604,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Detect when apps are moved to Trash"
           }
         },
@@ -2644,7 +2644,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Development"
           }
         },
@@ -2656,13 +2656,13 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Development"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Development"
           }
         },
@@ -2674,7 +2674,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Development"
           }
         },
@@ -2696,7 +2696,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Development Environments (Beta)"
           }
         },
@@ -2708,13 +2708,13 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Development Environments (Beta)"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Development Environments (Beta)"
           }
         },
@@ -2726,19 +2726,19 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Development Environments (Beta)"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Development Environments (Beta)"
           }
         },
         "zh-Hant-HK" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Development Environments (Beta)"
           }
         }
@@ -2761,7 +2761,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Disabled when menubar icon is enabled"
           }
         },
@@ -2814,7 +2814,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Dismiss"
           }
         },
@@ -2867,7 +2867,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Drop an app here"
           }
         },
@@ -2920,7 +2920,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Drop files or folders above or click to add"
           }
         },
@@ -2973,7 +2973,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Drop folders above or click to add"
           }
         },
@@ -3026,7 +3026,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Drop Target"
           }
         },
@@ -3079,7 +3079,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Enable context menu extension for Finder"
           }
         },
@@ -3132,7 +3132,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Enabling the CLI will allow you to execute Pearcleaner actions from the Terminal. This will add pearcleaner command into /usr/local/bin so it's available directly from your PATH environment variable. Try it after enabling:\n\n> pearcleaner --help"
           }
         },
@@ -3185,7 +3185,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Enabling this extension will allow you to right click apps in Finder to quickly uninstall them with Pearcleaner"
           }
         },
@@ -3225,7 +3225,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Environment"
           }
         },
@@ -3237,13 +3237,13 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Environment"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Environment"
           }
         },
@@ -3255,7 +3255,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Environment"
           }
         },
@@ -3290,7 +3290,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Exclude"
           }
         },
@@ -3343,7 +3343,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Exclude Keywords:"
           }
         },
@@ -3396,7 +3396,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Exclude these files and folders from orphaned file search"
           }
         },
@@ -3449,7 +3449,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Export File Paths"
           }
         },
@@ -3502,7 +3502,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Failed to display release notes"
           }
         },
@@ -3555,7 +3555,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "File size display options"
           }
         },
@@ -3608,7 +3608,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Finder Extension"
           }
         },
@@ -3661,7 +3661,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Finding orphaned files, please wait..."
           }
         },
@@ -3714,7 +3714,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Folders"
           }
         },
@@ -3767,7 +3767,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Force Refresh"
           }
         },
@@ -3820,7 +3820,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Full Disk Access"
           }
         },
@@ -3873,7 +3873,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Functionality"
           }
         },
@@ -3926,7 +3926,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Gathering app details"
           }
         },
@@ -3979,7 +3979,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "General"
           }
         },
@@ -4032,7 +4032,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "GitHub Sponsors"
           }
         },
@@ -4085,7 +4085,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "GitHub: v%@"
           }
         },
@@ -4137,7 +4137,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Hide Details"
           }
         },
@@ -4190,7 +4190,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Homebrew cleanup after uninstall"
           }
         },
@@ -4243,7 +4243,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Important"
           }
         },
@@ -4296,7 +4296,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "In mini window mode, if you pin the Files popover on top, clicking away from the window will not dismiss it. Otherwise, it will dismiss by clicking anywhere outside the app."
           }
         },
@@ -4349,7 +4349,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "In mini window mode, you can have Pearcleaner startup to the Apps List view or the Drop Target view."
           }
         },
@@ -4402,7 +4402,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Include Keywords:"
           }
         },
@@ -4454,7 +4454,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Install Date"
           }
         },
@@ -4506,7 +4506,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Installed Date:"
           }
         },
@@ -4547,7 +4547,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Installed: v%@"
           }
         },
@@ -4559,7 +4559,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Installed: v%@"
           }
         },
@@ -4612,7 +4612,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Instructions"
           }
         },
@@ -4652,7 +4652,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Interface"
           }
         },
@@ -4664,7 +4664,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Interface"
           }
         },
@@ -4717,7 +4717,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "iOS"
           }
         },
@@ -4770,7 +4770,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "iOS app"
           }
         },
@@ -4811,7 +4811,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "item"
           }
         },
@@ -4823,7 +4823,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "item"
           }
         },
@@ -4864,7 +4864,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "items"
           }
         },
@@ -4876,7 +4876,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "items"
           }
         },
@@ -4917,49 +4917,49 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "keyword-1, keyword-2"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "keyword-1, keyword-2"
           }
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "keyword-1, keyword-2"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "keyword-1, keyword-2"
           }
         },
         "sk" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "keyword-1, keyword-2"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "keyword-1, keyword-2"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "keyword-1, keyword-2"
           }
         },
         "zh-Hant-HK" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "keyword-1, keyword-2"
           }
         }
@@ -4981,7 +4981,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Last Used Date"
           }
         },
@@ -5033,7 +5033,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Last Used Date:"
           }
         },
@@ -5086,7 +5086,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Launch Pearcleaner at login"
           }
         },
@@ -5139,7 +5139,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Locations that will be searched for .app files. Click a non-default path to remove it. Default paths can't be removed."
           }
         },
@@ -5192,7 +5192,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Logical"
           }
         },
@@ -5245,7 +5245,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Made with ❤️ by Alin Lupascu"
           }
         },
@@ -5298,7 +5298,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Menubar"
           }
         },
@@ -5351,7 +5351,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Menubar icon mode"
           }
         },
@@ -5404,7 +5404,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Menubar icon preference"
           }
         },
@@ -5457,7 +5457,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Mini Configuration"
           }
         },
@@ -5510,7 +5510,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Mini window mode"
           }
         },
@@ -5563,7 +5563,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Minimalist app list rows disabled"
           }
         },
@@ -5616,7 +5616,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Minimalist app list rows enabled"
           }
         },
@@ -5669,7 +5669,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Missing Permissions"
           }
         },
@@ -5721,7 +5721,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Modified Date"
           }
         },
@@ -5773,7 +5773,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Modified Date:"
           }
         },
@@ -5826,7 +5826,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Monthly"
           }
         },
@@ -5879,7 +5879,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "More"
           }
         },
@@ -5920,7 +5920,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Name"
           }
         },
@@ -5932,7 +5932,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Name"
           }
         },
@@ -5985,7 +5985,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Never"
           }
         },
@@ -6038,7 +6038,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "New Announcement"
           }
         },
@@ -6091,7 +6091,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Next update check: %@"
           }
         },
@@ -6144,7 +6144,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "No files or folders added"
           }
         },
@@ -6197,7 +6197,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "No New Announcement"
           }
         },
@@ -6250,7 +6250,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "No releases to display"
           }
         },
@@ -6303,7 +6303,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "No Update 😌"
           }
         },
@@ -6356,7 +6356,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Not available"
           }
         },
@@ -6396,7 +6396,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Not Found"
           }
         },
@@ -6408,13 +6408,13 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Not Found"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Not Found"
           }
         },
@@ -6426,7 +6426,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Not Found"
           }
         },
@@ -6461,7 +6461,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "of"
           }
         },
@@ -6514,7 +6514,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Okay"
           }
         },
@@ -6566,13 +6566,13 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Open"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Open"
           }
         },
@@ -6584,7 +6584,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Open"
           }
         },
@@ -6619,7 +6619,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Open %@"
           }
         },
@@ -6672,7 +6672,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Orphaned file search is not 100% accurate as it doesn't have any uninstalled app bundles to check against for file exclusion. This does a best guess search for files/folders and excludes the ones that have overlap with your currently installed applications. Please confirm files marked for deletion really do belong to uninstalled applications."
           }
         },
@@ -6725,7 +6725,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Orphaned Files"
           }
         },
@@ -6778,7 +6778,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Pearcleaner and all of its files will be cleanly removed, are you sure?"
           }
         },
@@ -6831,7 +6831,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Pearcleaner CLI support"
           }
         },
@@ -6885,7 +6885,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Pearcleaner Uninstall"
           }
         },
@@ -6938,7 +6938,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Permission Status"
           }
         },
@@ -6991,7 +6991,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Permissions"
           }
         },
@@ -7044,7 +7044,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Pin popover window on top"
           }
         },
@@ -7097,7 +7097,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Plist File"
           }
         },
@@ -7149,7 +7149,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Queue:"
           }
         },
@@ -7202,7 +7202,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Quit"
           }
         },
@@ -7255,7 +7255,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Quit Pearcleaner"
           }
         },
@@ -7308,7 +7308,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Real"
           }
         },
@@ -7361,7 +7361,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Real size type will show how much actual allocated space the file has on disk.\n\nLogical type shows the binary size. The filesystem can compress and deduplicate sectors on disk, so real size is sometimes smaller(or bigger) than logical size.\n\nFinder size is similar to if you right click > Get Info on a file in Finder, which will show both the logical and real sizes together."
           }
         },
@@ -7414,7 +7414,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Refresh"
           }
         },
@@ -7467,7 +7467,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Refresh Apps"
           }
         },
@@ -7520,7 +7520,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Refresh apps (⌘+R)"
           }
         },
@@ -7573,7 +7573,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Refresh updater"
           }
         },
@@ -7625,7 +7625,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Release Notes"
           }
         },
@@ -7678,7 +7678,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Releases"
           }
         },
@@ -7731,7 +7731,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Remaining files and folders from previous applications"
           }
         },
@@ -7784,7 +7784,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Remove"
           }
         },
@@ -7837,7 +7837,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Remove Direct Paths:"
           }
         },
@@ -7890,7 +7890,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Remove the condition from this application"
           }
         },
@@ -7943,7 +7943,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Rescan"
           }
         },
@@ -7996,7 +7996,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Reset all settings to default"
           }
         },
@@ -8049,7 +8049,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Reset Settings"
           }
         },
@@ -8102,7 +8102,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Reset Size"
           }
         },
@@ -8155,7 +8155,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Restart"
           }
         },
@@ -8208,7 +8208,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Restart %@ for changes to take effect"
           }
         },
@@ -8261,7 +8261,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Reverse search completed successfully"
           }
         },
@@ -8314,7 +8314,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Right click to reset size"
           }
         },
@@ -8367,7 +8367,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Save"
           }
         },
@@ -8420,7 +8420,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Save the condition for this application"
           }
         },
@@ -8473,7 +8473,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Search these folders for applications"
           }
         },
@@ -8525,7 +8525,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Searching the file system"
           }
         },
@@ -8565,7 +8565,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Select an environment to view paths."
           }
         },
@@ -8577,13 +8577,13 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Select an environment to view paths."
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Select an environment to view paths."
           }
         },
@@ -8595,7 +8595,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Select an environment to view paths."
           }
         },
@@ -8617,7 +8617,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Select One"
           }
         },
@@ -8629,13 +8629,13 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Select One"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Select One"
           }
         },
@@ -8647,7 +8647,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Select One"
           }
         },
@@ -8682,7 +8682,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Sentinel Monitor"
           }
         },
@@ -8735,7 +8735,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Sentinel Monitor found no other files to remove"
           }
         },
@@ -8788,7 +8788,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Settings"
           }
         },
@@ -8841,7 +8841,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Show announcements badge again"
           }
         },
@@ -8894,7 +8894,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Show apps list on startup"
           }
         },
@@ -8946,7 +8946,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Show Details"
           }
         },
@@ -8999,7 +8999,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Showing last 3 releases"
           }
         },
@@ -9052,7 +9052,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Size"
           }
         },
@@ -9105,7 +9105,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Some files/folders are not similar to the app name or bundle id, causing Pearcleaner to either not find them or find unrelated files. \nTo combat this, you may create a custom condition for each application bundle using keywords or direct paths. \n\n- Can add file/folder keywords that you want to either include or exclude in fuzzy searches. \n\n- Can explicitly add or remove a full Finder path to search results if you want a direct search."
           }
         },
@@ -9158,7 +9158,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Sort app list alphabetically by name or by size"
           }
         },
@@ -9211,7 +9211,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Sorted by Name"
           }
         },
@@ -9264,7 +9264,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Sorted by Size"
           }
         },
@@ -9316,7 +9316,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Sorting Options"
           }
         },
@@ -9369,7 +9369,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Sorting: %@"
           }
         },
@@ -9422,7 +9422,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Sponsor"
           }
         },
@@ -9475,7 +9475,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Submit a bug or feature request"
           }
         },
@@ -9528,7 +9528,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Submit New Issue"
           }
         },
@@ -9581,7 +9581,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Support"
           }
         },
@@ -9634,7 +9634,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "system"
           }
         },
@@ -9686,7 +9686,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "System"
           }
         },
@@ -9739,7 +9739,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Theme Mode"
           }
         },
@@ -9792,7 +9792,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "This adds the file/folder to the Exclusions list. Edit the exclusions list from Settings > Folders tab"
           }
         },
@@ -9845,7 +9845,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "This app is located in %@"
           }
         },
@@ -9898,7 +9898,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "This is a web app"
           }
         },
@@ -9951,7 +9951,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "This is a wrapped iOS app"
           }
         },
@@ -10004,7 +10004,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "This setting will affect Pearcleaner whether you're running in menubar mode or regular mode. If you disable menubar icon, you might want to disable this as well so Pearcleaner doesn't start on login."
           }
         },
@@ -10057,7 +10057,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Toggling between modes will reset the window frames to their default size/position"
           }
         },
@@ -10111,7 +10111,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Tools"
           }
         },
@@ -10151,7 +10151,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Total environment paths available"
           }
         },
@@ -10163,13 +10163,13 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Total environment paths available"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Total environment paths available"
           }
         },
@@ -10181,7 +10181,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Total environment paths available"
           }
         },
@@ -10215,7 +10215,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Total size of files:"
           }
         },
@@ -10268,7 +10268,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Transparent material"
           }
         },
@@ -10320,7 +10320,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Type to search"
           }
         },
@@ -10373,7 +10373,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Undo Removal"
           }
         },
@@ -10426,7 +10426,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Uninstall"
           }
         },
@@ -10479,7 +10479,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Uninstall confirmation alerts"
           }
         },
@@ -10532,7 +10532,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Uninstall Pearcleaner"
           }
         },
@@ -10584,7 +10584,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Update"
           }
         },
@@ -10625,7 +10625,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Update Available 🥳"
           }
         },
@@ -10637,7 +10637,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Update Available 🥳"
           }
         },
@@ -10678,7 +10678,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Update completed"
           }
         },
@@ -10690,13 +10690,13 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Update completed"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Update completed"
           }
         },
@@ -10708,19 +10708,19 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Update completed"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Update completed"
           }
         },
         "zh-Hant-HK" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Update completed"
           }
         }
@@ -10742,7 +10742,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Update Frequency"
           }
         },
@@ -10783,49 +10783,49 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Updated Available"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Updated Available"
           }
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Updated Available"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Updated Available"
           }
         },
         "sk" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Updated Available"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Updated Available"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Updated Available"
           }
         },
         "zh-Hant-HK" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Updated Available"
           }
         }
@@ -10848,7 +10848,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Updater frequency is set to Never"
           }
         },
@@ -10901,7 +10901,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Updates Disabled"
           }
         },
@@ -10953,7 +10953,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "user"
           }
         },
@@ -11005,7 +11005,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "User"
           }
         },
@@ -11057,7 +11057,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Version %@"
           }
         },
@@ -11109,7 +11109,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "View"
           }
         },
@@ -11162,7 +11162,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "View in Finder"
           }
         },
@@ -11215,7 +11215,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "View Issues"
           }
         },
@@ -11268,7 +11268,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "View project contributors"
           }
         },
@@ -11321,7 +11321,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "View Releases"
           }
         },
@@ -11373,7 +11373,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "View releases on GitHub"
           }
         },
@@ -11426,7 +11426,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "View Repository"
           }
         },
@@ -11479,7 +11479,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Warning"
           }
         },
@@ -11532,7 +11532,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Warning!"
           }
         },
@@ -11585,7 +11585,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "web"
           }
         },
@@ -11638,7 +11638,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Web app"
           }
         },
@@ -11691,7 +11691,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Weekly"
           }
         },
@@ -11744,7 +11744,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "When applications are moved to Trash, Pearcleaner will launch and find related files and folders for deletion."
           }
         },
@@ -11797,7 +11797,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "When deleting files using the Trash button, you can prevent accidental deletions by showing an alert before proceeding with the action."
           }
         },
@@ -11850,7 +11850,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "When Homebrew cleanup is enabled, Pearcleaner will check if the app you are removing was installed via Homebrew and launch Terminal.app to execute a brew uninstall and cleanup command to let Homebrew know that the app is removed. This way your Homebrew list will be synced up correctly and caching will be removed. Terminal.app is required since some apps need sudo permissions to remove services and files placed in system folders. Since other terminal apps don't support AppleScript and/or the 'do script' command, I opted to use the default macOS Terminal app for this.\n\nNOTE: If you undo the file delete with CMD+Z, the files will be put back but Homebrew will not be aware of it. To get the Homebrew list back in sync you'd need to run:\n\n> brew install APPNAME --force"
           }
         },
@@ -11903,7 +11903,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "When menubar icon is enabled, the main app window and dock icon will be disabled since the app will be put in accessory mode."
           }
         },
@@ -11956,7 +11956,7 @@
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "When this mode is enabled, clicking the Uninstall button to remove an app will also close Pearcleaner right after.\nThis only affects Pearcleaner when it is opened via external means, like Sentinel Trash Monitor, Finder extension or a Deep Link.\nThis allows for single use of the app for a quick uninstall. When Pearcleaner is opened normally, this setting is ignored and will work as usual."
           }
         },
