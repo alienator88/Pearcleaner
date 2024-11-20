@@ -93,15 +93,15 @@ struct AppCommands: Commands {
             }
             .keyboardShortcut("r", modifiers: .command)
 
-            Button
-            {
-                if !appState.appInfo.bundleIdentifier.isEmpty {
-                    appState.showConditionBuilder = true
-                }
-            } label: {
-                Label("Condition Builder", systemImage: "hammer")
-            }
-            .keyboardShortcut("b", modifiers: .command)
+//            Button
+//            {
+//                if !appState.appInfo.bundleIdentifier.isEmpty {
+//                    appState.showConditionBuilder = true
+//                }
+//            } label: {
+//                Label("Condition Builder", systemImage: "hammer")
+//            }
+//            .keyboardShortcut("b", modifiers: .command)
 
             Button
             {

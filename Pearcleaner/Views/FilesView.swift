@@ -531,9 +531,9 @@ struct FilesView: View {
             .frame(width: 400, height: 250)
             .background(GlassEffect(material: .hudWindow, blendingMode: .behindWindow))
         })
-        .sheet(isPresented: $appState.showConditionBuilder, content: {
-            ConditionBuilderView(showAlert: $appState.showConditionBuilder, bundle: appState.appInfo.bundleIdentifier)
-        })
+//        .sheet(isPresented: $appState.showConditionBuilder, content: {
+//            ConditionBuilderView(showAlert: $appState.showConditionBuilder, bundle: appState.appInfo.bundleIdentifier)
+//        })
         .onAppear {
             if !warning {
                 showAlert = true
