@@ -102,7 +102,7 @@ struct AppListItems: View {
 
                 Spacer()
 
-                if minimalEnabled {
+                if minimalEnabled && !isSelected {
                     Text(appInfo.bundleSize == 0 ? "v\(appInfo.appVersion)" : (isHovered ? "v\(appInfo.appVersion)" : formatByte(size: appInfo.bundleSize).human))
                         .font(.system(size: (isHovered || isSelected) ? 12 : 10))
                         .foregroundStyle(.primary.opacity(0.5))
@@ -138,14 +138,7 @@ struct AppListItems: View {
         }
         .onTapGesture {
             withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                if isSelected {
-                    appState.appInfo = .empty
-                    appState.selectedItems = []
-                    appState.currentView = miniView ? .apps : .empty
-                    showPopover = false
-                } else {
-                    showAppInFiles(appInfo: appInfo, appState: appState, locations: locations, showPopover: $showPopover)
-                }
+                showAppInFiles(appInfo: appInfo, appState: appState, locations: locations, showPopover: $showPopover)
             }
         }
         .background{

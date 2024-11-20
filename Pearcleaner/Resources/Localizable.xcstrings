@@ -1059,6 +1059,9 @@
         }
       }
     },
+    "Bundle Files..." : {
+
+    },
     "calculating" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2568,6 +2571,9 @@
           }
         }
       }
+    },
+    "Export File Paths..." : {
+
     },
     "Failed to display release notes" : {
       "extractionState" : "manual",

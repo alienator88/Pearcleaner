@@ -93,35 +93,38 @@ struct AppCommands: Commands {
             }
             .keyboardShortcut("r", modifiers: .command)
 
-//            Button
-//            {
-//                if !appState.appInfo.bundleIdentifier.isEmpty {
-//                    appState.showConditionBuilder = true
-//                }
-//            } label: {
-//                Label("Condition Builder", systemImage: "hammer")
-//            }
-//            .keyboardShortcut("b", modifiers: .command)
-
             Button
             {
-                if !appState.appInfo.bundleIdentifier.isEmpty {
-                    saveURLsToFile(urls: appState.selectedItems, appState: appState)
+                if !appState.selectedItems.isEmpty {
+                    createTarArchive(appState: appState)
                 }
             } label: {
-                Label("Export File Paths", systemImage: "square.and.arrow.up")
+                Label("Bundle Files...", systemImage: "archivebox")
             }
-            .keyboardShortcut("e", modifiers: .command)
+            .keyboardShortcut("b", modifiers: .command)
+            .disabled(appState.selectedItems.isEmpty)
 
             Button
             {
                 if !appState.appInfo.bundleIdentifier.isEmpty {
-                    saveURLsToFile(urls: appState.selectedItems, appState: appState, copy: true)
+                    saveURLsToFile(appState: appState)
+                }
+            } label: {
+                Label("Export File Paths...", systemImage: "square.and.arrow.up")
+            }
+            .keyboardShortcut("e", modifiers: .command)
+            .disabled(appState.selectedItems.isEmpty)
+
+            Button
+            {
+                if !appState.appInfo.bundleIdentifier.isEmpty {
+                    saveURLsToFile(appState: appState, copy: true)
                 }
             } label: {
                 Label("Copy File Paths", systemImage: "square.and.arrow.up")
             }
             .keyboardShortcut("c", modifiers: [.command, .option])
+            .disabled(appState.selectedItems.isEmpty)
 
 
         }
