@@ -84,6 +84,7 @@ struct EnvironmentCleanerView: View {
                 ScrollView {
                     ForEach(selectedEnvironment.paths, id: \.self) { path in
                         PathRowView(path: path)
+//                        CardView(path: path)
                     }
                 }
 
@@ -122,6 +123,7 @@ struct PathRowView: View {
                             openInFinder(matchedPath)
                         }
                         .foregroundColor(.blue)
+                        .buttonStyle(.borderedProminent)
 
                         Button("Delete Folder") {
                             deleteFolder(matchedPath)
@@ -148,7 +150,10 @@ struct PathRowView: View {
                 }
             }
         }
-        .padding(5)
+        .padding(8)
+        .background(RoundedRectangle(cornerRadius: 10)
+            .fill(.secondary.opacity(0.2))
+            .shadow(radius: 2))
         .onAppear {
             checkPath(path)
         }
@@ -378,5 +383,46 @@ struct PathLibrary {
         ]
             .map { Path(name: $0.name, paths: $0.paths.sorted()) } // Sort paths within each environment
             .sorted { $0.name < $1.name } // Sort environments by name
+    }
+}
+
+
+
+struct CardView: View {
+    var path: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text(path)
+                .font(.body)
+                .foregroundColor(.primary)
+                .lineLimit(1)
+                .truncationMode(.tail)
+
+            HStack {
+                Button(action: { print("Open \(path)") }) {
+                    Label("Open", systemImage: "folder")
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.blue)
+
+                Button(action: { print("Delete Folder \(path)") }) {
+                    Label("Delete Folder", systemImage: "trash")
+                }
+                .buttonStyle(.bordered)
+                .tint(.red)
+
+                Button(action: { print("Delete Contents \(path)") }) {
+                    Label("Delete Contents", systemImage: "trash.circle")
+                }
+                .buttonStyle(.bordered)
+                .tint(.orange)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding()
+        .background(RoundedRectangle(cornerRadius: 10)
+            .fill(.secondary.opacity(0.2))
+            .shadow(radius: 2))
     }
 }
