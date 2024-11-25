@@ -340,6 +340,12 @@
             "state" : "translated",
             "value" : "Pridať súbor/priečinok"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "從剪貼板加入檔案/資料夾"
+          }
         }
       }
     },
@@ -449,6 +455,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pridať priečinok zo schránky"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "從剪貼板加入資料夾"
           }
         }
       }
@@ -1060,7 +1072,14 @@
       }
     },
     "Bundle Files..." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "套件檔案⋯"
+          }
+        }
+      }
     },
     "calculating" : {
       "extractionState" : "manual",
@@ -1147,6 +1166,12 @@
             "state" : "translated",
             "value" : "取消"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消"
+          }
         }
       }
     },
@@ -1222,6 +1247,12 @@
             "state" : "translated",
             "value" : "檢查了%2$@個路徑中的%1$lld個"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已為 %2$@ 檢查 %1$lld 個路徑"
+          }
         }
       }
     },
@@ -1243,6 +1274,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "清除常見開發環境儲存的文件和快取"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "為常見開發環境清理儲存的檔案與快取"
           }
         }
       }
@@ -1876,6 +1913,12 @@
             "state" : "translated",
             "value" : "刪除內容"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刪除內容"
+          }
         }
       }
     },
@@ -1894,6 +1937,12 @@
           }
         },
         "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刪除資料夾"
+          }
+        },
+        "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "刪除資料夾"
@@ -1967,6 +2016,12 @@
             "state" : "translated",
             "value" : "開發"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開發"
+          }
         }
       }
     },
@@ -1982,6 +2037,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vývojárske prostredia (Beta)"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開發環境（Beta）"
           }
         }
       }
@@ -2428,6 +2489,12 @@
             "state" : "translated",
             "value" : "環境"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "環境"
+          }
         }
       }
     },
@@ -2573,7 +2640,14 @@
       }
     },
     "Export File Paths..." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "輸出檔案路徑⋯"
+          }
+        }
+      }
     },
     "Failed to display release notes" : {
       "extractionState" : "manual",
@@ -5077,6 +5151,12 @@
             "state" : "translated",
             "value" : "未找到"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未找到"
+          }
         }
       }
     },
@@ -5165,6 +5245,12 @@
             "state" : "translated",
             "value" : "好"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "好"
+          }
         }
       }
     },
@@ -5186,6 +5272,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "打開"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開啟󠄁"
           }
         }
       }
@@ -5697,6 +5789,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "隊列："
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "佇列："
           }
         }
       }
@@ -6752,6 +6850,12 @@
             "state" : "translated",
             "value" : "選擇一個環境查看包含的路徑"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選擇一個環境以檢視路徑。"
+          }
         }
       }
     },
@@ -6770,6 +6874,12 @@
           }
         },
         "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選擇一個"
+          }
+        },
+        "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "選擇一個"
@@ -8063,6 +8173,12 @@
             "state" : "translated",
             "value" : "完整環境路徑可用"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可用環境路徑總計"
+          }
         }
       }
     },
@@ -8499,6 +8615,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aktualizácia dokončená"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新完成"
           }
         }
       }
