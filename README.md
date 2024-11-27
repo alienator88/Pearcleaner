@@ -4,7 +4,7 @@
    <br />
    <strong>Status: </strong>Maintained (Bi-weekly release cadence)
    <br />
-   <strong>Version: </strong>4.0.0
+   <strong>Version: </strong>4.0.1
    <br />
    <a href="https://github.com/alienator88/Pearcleaner/releases"><strong>Download</strong></a>
     · 
@@ -50,11 +50,11 @@ If you are able to contribute to translations for the app, please see this discu
 - Differentiate between regular, Safari web-apps and mobile apps with badges like **web** and **iOS**
 - Has clean uninstall menu option for the Pearcleaner app itself if you want to stop using it and get rid of all files and launch items
 - New announcements badge
-- Condition builder to easily include or exclude files from searches when file names don't match the app name/bundle id very well
+- Export app bundles for migrating apps and their cache to a new system
 - Export app file list search results
 - Optional Homebrew cleanup
 - Include extra directories to search for apps in
-- Exclude files/folders from the leftover file search
+- Exclude files/folders from the orphaned file search
 - Custom auto-updater that pulls latest release notes and binaries from GitHub Releases (Pearcleaner should run from `/Applications` folder to avoid permission issues)
 
 
