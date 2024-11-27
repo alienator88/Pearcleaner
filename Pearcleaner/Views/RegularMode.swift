@@ -58,7 +58,7 @@ struct RegularMode: View {
                         }
 
                     }
-                    .background(backgroundView(themeManager: themeManager, darker: true, glass: glass))
+                    .background(backgroundView(themeManager: themeManager, darker: false, glass: glass))
                     .transition(.opacity)
 
                     SlideableDivider(dimension: $sidebarWidth)
@@ -105,7 +105,20 @@ struct RegularMode: View {
                     .background(backgroundView(themeManager: themeManager))
             }
 
+#if DEBUG
             VStack(spacing: 0) {
+                HStack {
+                    Text("DEBUG").foregroundStyle(.orange).bold().help("VERSION: \(Bundle.main.version) | BUILD: \(Bundle.main.buildVersion)")
+                    Spacer()
+                }
+                Spacer()
+            }
+            .padding(5.25)
+            .padding(.leading, 62)
+#endif
+
+            VStack(spacing: 0) {
+
                 HStack {
                     Spacer()
                     CustomPickerButton(

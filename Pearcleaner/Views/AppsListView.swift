@@ -32,7 +32,7 @@ struct AppsListView: View {
             }
             .padding(.top, !mini ? 4 : 0)
         }
-        .scrollIndicators(.never)
+        .scrollIndicators(.automatic)
     }
 }
 

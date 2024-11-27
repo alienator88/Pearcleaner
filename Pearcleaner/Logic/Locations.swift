@@ -99,8 +99,8 @@ class Locations: ObservableObject {
             "/Library/LaunchAgents",
             "/Library/LaunchDaemons",
             "/Library/PrivilegedHelperTools",
-            "/private/var/db/receipts",
-            cacheDir,
+//            "/private/var/db/receipts",
+//            cacheDir,
 //            tempDir // Stop listing these files as there's a ton of them and they get cleaned up by the OS anyways
         ])
     }

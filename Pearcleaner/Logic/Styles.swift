@@ -162,7 +162,7 @@ public struct SlideableDivider: View {
 
     public var body: some View {
         Rectangle()
-            .foregroundStyle(.primary.opacity(0.0))
+            .opacity(0.0)
             .frame(width: 10)
             .onHover { inside in
                 if inside {
@@ -192,8 +192,8 @@ public struct SlideableDivider: View {
                 let newDimension = dimensionStart! + Double(delta)
 
                 // Set minimum and maximum width
-                let minWidth: Double = 250
-                let maxWidth: Double = 350
+                let minWidth: Double = 220
+                let maxWidth: Double = 330
                 dimension = max(minWidth, min(maxWidth, newDimension))
                 NSCursor.closedHand.set()
                 handleWidth = 6
@@ -404,7 +404,7 @@ struct CustomPickerButton: View {
     // Action callback when an option is selected
     var onSelect: ((String) -> Void)?
 
-//    @State private var isExpanded: Bool = false
+    @State private var hoveredItem: String? // Tracks the currently hovered option
 
     var body: some View {
         Button(action: {
@@ -417,21 +417,27 @@ struct CustomPickerButton: View {
                 VStack {
                     if isExpanded {
                         // Expanded menu with selectable options
-                        VStack(alignment: .leading, spacing: 10) {
+                        VStack(alignment: .leading, spacing: 2) {
                             ForEach(options, id: \.title) { option in
-                                Button(action: {
+                                HStack {
+                                    Image(systemName: option.icon)
+                                    Text(option.title)
+                                }
+                                .padding(.vertical, 8)
+                                .frame(maxWidth: 125, alignment: .leading)
+                                .contentShape(Rectangle())
+                                .opacity(hoveredItem == option.title ? 0.7 : 1.0) // Change opacity on hover
+                                .onTapGesture {
                                     selectedOption = option // Update selected option
                                     onSelect?(option.title) // Call the selection handler
                                     withAnimation {
                                         isExpanded = false
                                     }
-                                }) {
-                                    HStack {
-                                        Image(systemName: option.icon)
-                                        Text(option.title)
-                                    }
                                 }
-                                .buttonStyle(.plain)
+                                .onHover { isHovering in
+                                    // Update hoveredItem based on whether this HStack is hovered
+                                    hoveredItem = isHovering ? option.title : nil
+                                }
                             }
                         }
                     } else {
@@ -440,25 +446,21 @@ struct CustomPickerButton: View {
                             Image(systemName: selectedOption.icon)
                             Text(selectedOption.title)
                         }
+                        .padding(8)
+                        .contentShape(Rectangle())
+                        .opacity(hoveredItem == selectedOption.title ? 0.7 : 1.0) // Change opacity on hover
+                        .onHover { isHovering in
+                            // Update hoveredItem based on whether this HStack is hovered
+                            hoveredItem = isHovering ? selectedOption.title : nil
+                        }
                     }
                 }
-                .padding(isExpanded ? 10 : 8)
-//                .background(
-//                    ZStack {
-//                        LinearGradient(
-//                            colors: [Color.green, Color.orange],
-//                            startPoint: .topLeading,
-//                            endPoint: .bottomTrailing
-//                        ) // Gradient layer
-//                        .clipShape(RoundedRectangle(cornerRadius: 8)) // Match shape to material
-//                        .overlay(.ultraThinMaterial) // Translucent material over gradient
-//                    }
-//                )
+                .padding(isExpanded ? 10 : 0)
                 .background(.ultraThinMaterial)
                 .cornerRadius(8)
                 .overlay(
                     RoundedRectangle(cornerRadius: 8)
-                        .strokeBorder(Color.secondary.opacity(0.5), lineWidth: 0.8)
+                        .strokeBorder(Color.primary.opacity(0.2), lineWidth: 1)
                 )
                 .transition(.scale)
             }

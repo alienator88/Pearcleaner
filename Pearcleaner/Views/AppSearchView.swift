@@ -31,20 +31,14 @@ struct AppSearchView: View {
         VStack(alignment: .center, spacing: 0) {
 
             Spacer()
-                .frame(height: !isMenuBar ? 30 : 10)
+                .frame(height: !isMenuBar ? 0 : 10)
 
 
             searchBarComponent
                 .padding(8)
 
             Divider()
-
-#if DEBUG
-            Rectangle()
-                .fill(.orange)
-                .frame(height: 2)
-
-#endif
+                .padding(.horizontal, 8)
 
             AppsListView(search: $search, showPopover: $showPopover, filteredApps: filteredApps)
                 .padding(.vertical, 4)
@@ -64,6 +58,17 @@ struct AppSearchView: View {
             }
 
         }
+        .background(backgroundView(themeManager: themeManager, darker: true, glass: glass))
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .strokeBorder(.primary.opacity(0.1), lineWidth: 1)
+        }
+        .padding([.leading, .bottom, .top, .trailing], 8)
+        .padding(.top, 19)
+//        .shadow(radius: 2)
+
+
 
     }
 
@@ -286,7 +291,7 @@ struct SimpleSearchStyle: TextFieldStyle {
                 if text.isEmpty {
                     HStack {
                         Spacer()
-                        Text(isFocused ? String(localized: "Type to search") : String(localized: "Click to search"))
+                        Text(isFocused ? String(localized: "Type to search") : String(localized: "Hover to search"))
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                         Spacer()

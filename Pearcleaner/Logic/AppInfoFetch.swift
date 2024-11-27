@@ -28,7 +28,7 @@ class MetadataAppInfoFetcher {
 
         // Check if any of the critical fields are missing or invalid
         if appName.isEmpty || bundleIdentifier.isEmpty || version.isEmpty || logicalSize == 0 || physicalSize == 0 {
-//            print("Metadata is missing critical fields for \(path). Falling back to AppInfoFetcher.")
+//            printOS("Metadata is missing critical fields for \(path). Falling back to AppInfoFetcher.")
             // Fallback to the regular AppInfoFetcher for this app
             return AppInfoFetcher.getAppInfo(atPath: path)
         }
@@ -215,26 +215,26 @@ func getMDLSMetadataAsPlist(for paths: [String]) -> [String: [String: Any]]? {
 
         let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
         if let errorOutput = String(data: errorData, encoding: .utf8), !errorOutput.isEmpty {
-            print("Error Output from mdls:\n\(errorOutput)\n")
+            printOS("Error Output from mdls:\n\(errorOutput)\n")
         }
 
         // Check if there's any output captured
         if data.isEmpty {
-            print("No output captured from mdls.")
+            printOS("No output captured from mdls.")
             return nil
         }
 
         // Attempt to parse the plist output into a Swift array of dictionaries
         guard let plistArray = try PropertyListSerialization.propertyList(from: data, format: nil) as? [[String: Any]] else {
-            print("Failed to parse plist output into expected format.")
+            printOS("Failed to parse plist output into expected format.")
             return nil
         }
 
-//        print("Parsed plist array count: \(plistArray.count)")
+//        printOS("Parsed plist array count: \(plistArray.count)")
 
         // Ensure the number of plist items matches the number of paths
         if plistArray.count != paths.count {
-            print("Warning: Number of plist items (\(plistArray.count)) does not match the number of paths (\(paths.count)).")
+            printOS("Warning: Number of plist items (\(plistArray.count)) does not match the number of paths (\(paths.count)).")
         }
 
         var metadataDictionary = [String: [String: Any]]()
@@ -245,15 +245,15 @@ func getMDLSMetadataAsPlist(for paths: [String]) -> [String: [String: Any]]? {
             if index < paths.count {
                 let path = paths[index]
                 metadataDictionary[path] = appMetadata
-//                print("Mapped metadata to path: \(path)")
+//                printOS("Mapped metadata to path: \(path)")
             } else {
-                print("Warning: More metadata entries than paths.")
+                printOS("Warning: More metadata entries than paths.")
             }
         }
         return metadataDictionary
 
     } catch {
-        print("Error running mdls: \(error)")
+        printOS("Error running mdls: \(error)")
         return nil
     }
 }

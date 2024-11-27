@@ -13,7 +13,7 @@ import AppKit
 
 func resizeWindowAuto(windowSettings: WindowSettings, title: String) {
     if let window = NSApplication.shared.windows.first(where: { $0.title == title }) {
-        print(windowSettings.loadWindowSettings())
+        printOS(windowSettings.loadWindowSettings())
         let newSize = NSSize(width: windowSettings.loadWindowSettings().width, height: windowSettings.loadWindowSettings().height)
         window.setContentSize(newSize)
     }
@@ -69,6 +69,8 @@ func checkCLISymlink() -> Bool {
 
 // Install/uninstall symlink for CLI
 func manageSymlink(install: Bool) {
+    @AppStorage("settings.general.cli") var isCLISymlinked = false
+
     // Get the current running application's bundle binary path
     guard let appPath = Bundle.main.executablePath else {
         printOS("Error: Unable to get the executable path.")
@@ -80,6 +82,9 @@ func manageSymlink(install: Bool) {
 
     // Check if the symlink already exists
     let symlinkExists = checkCLISymlink()
+
+    // Check if /usr/local/bin exists
+    let binPathExists = directoryExists(at: "/usr/local/bin")
 
     // If we are installing the symlink and it already exists, skip creating it
     if install && symlinkExists {
@@ -97,9 +102,10 @@ func manageSymlink(install: Bool) {
     let script: String
 
     if install {
-        // AppleScript to create a symlink with admin privileges
+        // AppleScript to optionally create the folder and then create the symlink
+        let createBinFolderCommand = binPathExists ? "" : "mkdir -p /usr/local/bin;"
         script = """
-        do shell script "ln -s '\(appPath)' '\(symlinkPath)'" with administrator privileges
+        do shell script "\(createBinFolderCommand)ln -s '\(appPath)' '\(symlinkPath)'" with administrator privileges
         """
     } else {
         // AppleScript to remove the symlink with admin privileges
@@ -115,8 +121,10 @@ func manageSymlink(install: Bool) {
             scriptObject.executeAndReturnError(&error)
 
             if let error = error {
-                printOS("AppleScript Error: \(error)")
+                printOS("Symlink AppleScript Error: \(error)")
+                isCLISymlinked = checkCLISymlink()
             } else {
+                isCLISymlinked = checkCLISymlink()
                 if install {
                     printOS("Symlink created successfully at \(symlinkPath).")
                 } else {
@@ -130,7 +138,10 @@ func manageSymlink(install: Bool) {
 
 }
 
-
+func directoryExists(at path: String) -> Bool {
+    let fileManager = FileManager.default
+    return fileManager.fileExists(atPath: path, isDirectory: nil)
+}
 
 
 
@@ -235,7 +246,7 @@ extension URL {
             let resourceValues = try self.resourceValues(forKeys: [.localizedNameKey])
             return resourceValues.localizedName?.replacingOccurrences(of: ".app", with: "") ?? self.lastPathComponent.replacingOccurrences(of: ".app", with: "")
         } catch {
-            print("Error getting localized name: \(error)")
+            printOS("Error getting localized name: \(error)")
             return self.lastPathComponent.replacingOccurrences(of: ".app", with: "")
         }
     }
@@ -248,7 +259,7 @@ extension String {
             let resourceValues = try url.resourceValues(forKeys: [.localizedNameKey])
             return resourceValues.localizedName?.replacingOccurrences(of: ".app", with: "") ?? self
         } catch {
-            print("Error getting localized name: \(error)")
+            printOS("Error getting localized name: \(error)")
             return self
         }
     }
@@ -267,7 +278,7 @@ extension URL {
         )
         let range = NSRange(location: 0, length: uuid.utf16.count)
         guard uuidRegex.firstMatch(in: uuid, options: [], range: range) != nil else {
-//            print("The URL does not point to a valid UUID container.")
+//            printOS("The URL does not point to a valid UUID container.")
             return ""
         }
 
@@ -298,7 +309,7 @@ extension URL {
                 }
             }
         } catch {
-            print("Error accessing the Containers directory: \(error)")
+            printOS("Error accessing the Containers directory: \(error)")
         }
 
         // Return nil if no matching UUID is found.

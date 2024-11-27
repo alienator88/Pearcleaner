@@ -28,6 +28,11 @@ class DeeplinkManager {
     }
 
     func manage(url: URL, appState: AppState, locations: Locations) {
+        // Set externalMode to true
+        updateOnMain {
+            appState.externalMode = true
+        }
+
         // Add URL to queue
         urlQueue.append(url)
         processQueue(appState: appState, locations: locations)
@@ -90,11 +95,11 @@ class DeeplinkManager {
             }
 
             // Handle sentinel mode
-            if let brewValue = queryItems.first(where: { $0.name == DeepLinkConstants.brew })?.value, brewValue == "true" {
-                updateOnMain {
-                    appState.sentinelMode = true
-                }
-            }
+//            if let brewValue = queryItems.first(where: { $0.name == DeepLinkConstants.brew })?.value, brewValue == "true" {
+//                updateOnMain {
+//                    appState.externalMode = true
+//                }
+//            }
         } else {
             printOS("URL does not match the expected scheme and host")
         }

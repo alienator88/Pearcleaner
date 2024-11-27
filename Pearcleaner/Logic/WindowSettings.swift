@@ -25,9 +25,9 @@ class WindowSettings: ObservableObject {
     func trackMainWindow() {
         if let mainWindow = NSApplication.shared.windows.first(where: { $0.title == "Pearcleaner" }) {
             windowRef = mainWindow
-//            print("Main window detected and tracked")
+//            printOS("Main window detected and tracked")
         } else {
-            print("No main Pearcleaner window detected")
+            printOS("No main Pearcleaner window detected")
         }
     }
 

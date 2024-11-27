@@ -240,7 +240,7 @@ struct SidebarItemView: View {
 //
 //                        // Add more toolbar buttons as needed
 //                        Button(action: {
-//                            print("Toolbar Button Tapped")
+//                            printOS("Toolbar Button Tapped")
 //                        }) {
 //                            Image(systemName: "gearshape")
 //                                .padding()

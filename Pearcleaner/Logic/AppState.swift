@@ -27,7 +27,7 @@ class AppState: ObservableObject {
     @Published var leftoverProgress: (String, Double) = ("", 0.0)
     @Published var finderExtensionEnabled: Bool = false
     @Published var showUninstallAlert: Bool = false
-    @Published var sentinelMode: Bool = false
+    @Published var externalMode: Bool = false
 //    @Published var showConditionBuilder: Bool = false
     @Published var externalPaths: [URL] = [] // for handling multiple app from drops or deeplinks
 

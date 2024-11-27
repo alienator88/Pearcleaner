@@ -245,19 +245,19 @@ func moveFilesToTrashCLI(at fileURLs: [URL]) -> Bool {
 
         // Handle any AppleScript errors
         if let error = error {
-            print("Trash Error: \(error)")  // Synchronous error reporting
+            printOS("Trash Error: \(error)")  // Synchronous error reporting
             return false  // Indicate failure
         }
 
         // Check if output is null, indicating the user canceled the operation
         if output.descriptorType == typeNull {
-            print("Trash Error: operation canceled by the user")  // Synchronous cancellation reporting
+            printOS("Trash Error: operation canceled by the user")  // Synchronous cancellation reporting
             return false  // Indicate failure due to cancellation
         }
 
         // Process output if it exists
         if let outputString = output.stringValue {
-            print("Trash: \(outputString)")
+            printOS("Trash: \(outputString)")
         }
     }
 
@@ -316,7 +316,7 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
 
     // Launch app in terminal for debugging purposes
     func debugLaunch() {
-        print("[BETA] Pearcleaner CLI | Launching App For Debugging:\n")
+        printOS("[BETA] Pearcleaner CLI | Launching App For Debugging:\n")
     }
 
     // Private function to list files for uninstall, using the provided path
@@ -324,11 +324,11 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
         // Convert the provided string path to a URL
         let url = URL(fileURLWithPath: path)
 
-        print("[BETA] Pearcleaner CLI | List Application Files:\n")
+        printOS("[BETA] Pearcleaner CLI | List Application Files:\n")
 
         // Fetch the app info and safely unwrap
         guard let appInfo = AppInfoFetcher.getAppInfo(atPath: url) else {
-            print("Error: Invalid path or unable to fetch app info at path: \(path)\n")
+            printOS("Error: Invalid path or unable to fetch app info at path: \(path)\n")
             exit(1)  // Exit with non-zero code to indicate failure
         }
 
@@ -340,16 +340,16 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
 
         // Print each path in the Set to the console
         for path in foundPaths {
-            print(path.path)
+            printOS(path.path)
         }
 
-        print("\nFound \(foundPaths.count) application files.\n")
+        printOS("\nFound \(foundPaths.count) application files.\n")
 
     }
 
     // Private function to list orphaned files for uninstall, using the provided path
     func listOrphanedFiles() {
-        print("[BETA] Pearcleaner CLI | List Orphaned Files:\n")
+        printOS("[BETA] Pearcleaner CLI | List Orphaned Files:\n")
 
         // Get installed apps for filtering
         let sortedApps = getSortedApps(paths: fsm.folderPaths)
@@ -360,30 +360,30 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
 
         // Print each path in the array to the console
         for path in foundPaths {
-            print(path.path)
+            printOS(path.path)
         }
-        print("\nFound \(foundPaths.count) orphaned files.\n")
+        printOS("\nFound \(foundPaths.count) orphaned files.\n")
     }
 
     // Private function to uninstall the application bundle at a given path
     func uninstallApp(at path: String) {
         // Convert the provided string path to a URL
         let url = URL(fileURLWithPath: path)
-        print("[BETA] Pearcleaner CLI | Uninstall Application:\n")
+        printOS("[BETA] Pearcleaner CLI | Uninstall Application:\n")
 
         // Fetch the app info and safely unwrap
         guard let appInfo = AppInfoFetcher.getAppInfo(atPath: url) else {
-            print("Error: Invalid path or unable to fetch app info at path: \(path)\n")
+            printOS("Error: Invalid path or unable to fetch app info at path: \(path)\n")
             exit(1)  // Exit with non-zero code to indicate failure
         }
 
         killApp(appId: appInfo.bundleIdentifier) {
             let success =  moveFilesToTrashCLI(at: [appInfo.path])
             if success {
-                print("Application moved to the trash successfully.\n")
+                printOS("Application moved to the trash successfully.\n")
                 exit(0)
             } else {
-                print("Failed to move application to trash.\n")
+                printOS("Failed to move application to trash.\n")
                 exit(1)
             }
         }
@@ -393,11 +393,11 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
     func uninstallAll(at path: String) {
         // Convert the provided string path to a URL
         let url = URL(fileURLWithPath: path)
-        print("[BETA] Pearcleaner CLI | Uninstall Application & Related Files:\n")
+        printOS("[BETA] Pearcleaner CLI | Uninstall Application & Related Files:\n")
 
         // Fetch the app info and safely unwrap
         guard let appInfo = AppInfoFetcher.getAppInfo(atPath: url) else {
-            print("Error: Invalid path or unable to fetch app info at path: \(path)")
+            printOS("Error: Invalid path or unable to fetch app info at path: \(path)")
             exit(1)  // Exit with non-zero code to indicate failure
         }
 
@@ -410,10 +410,10 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
         killApp(appId: appInfo.bundleIdentifier) {
             let success =  moveFilesToTrashCLI(at: Array(foundPaths))
             if success {
-                print("The application and related files have been moved to the trash successfully.\n")
+                printOS("The application and related files have been moved to the trash successfully.\n")
                 exit(0)
             } else {
-                print("Failed to move application and related files to trash.\n")
+                printOS("Failed to move application and related files to trash.\n")
                 exit(1)
             }
         }
@@ -421,7 +421,7 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
 
     // Private function to remove the orphaned files
     func removeOrphanedFiles() {
-        print("[BETA] Pearcleaner CLI | Remove Orphaned Files:\n")
+        printOS("[BETA] Pearcleaner CLI | Remove Orphaned Files:\n")
 
         // Get installed apps for filtering
         let sortedApps = getSortedApps(paths: fsm.folderPaths)
@@ -432,10 +432,10 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
 
         let success =  moveFilesToTrashCLI(at: foundPaths)
         if success {
-            print("Orphaned files have been moved to the trash successfully.\n")
+            printOS("Orphaned files have been moved to the trash successfully.\n")
             exit(0)
         } else {
-            print("Failed to move orphaned files to trash.\n")
+            printOS("Failed to move orphaned files to trash.\n")
             exit(1)
         }
     }
@@ -493,7 +493,7 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
 
 // Private function to display help message
 func displayHelp() {
-    print("""
+    printOS("""
             
             [BETA] Pearcleaner CLI | Usage:
             
@@ -606,7 +606,7 @@ func getCaskIdentifier(for appName: String) -> String? {
             }
         }
     } catch {
-        print("Error reading cask metadata: \(error)")
+        printOS("Error reading cask metadata: \(error)")
     }
 
     // If no match is found, return nil

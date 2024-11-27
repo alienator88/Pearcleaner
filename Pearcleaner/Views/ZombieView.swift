@@ -155,20 +155,26 @@ struct ZombieView: View {
                         .padding(.horizontal)
 
 
-                    ScrollView() {
-                        LazyVStack {
-                            ForEach(memoizedFiles, id: \.self) { file in
-                                if let fileSize = appState.zombieFile.fileSize[file], let fileSizeL = appState.zombieFile.fileSizeLogical[file], let fileIcon = appState.zombieFile.fileIcon[file], let iconImage = fileIcon.map(Image.init(nsImage:)) {
-                                    VStack {
-                                        ZombieFileDetailsItem(size: fileSize, sizeL: fileSizeL, icon: iconImage, path: file, memoizedFiles: $memoizedFiles, isSelected: self.binding(for: file))
-                                            .padding(.vertical, 5)
+                    if !memoizedFiles.isEmpty {
+                        ScrollView() {
+                            LazyVStack {
+                                ForEach(memoizedFiles, id: \.self) { file in
+                                    if let fileSize = appState.zombieFile.fileSize[file], let fileSizeL = appState.zombieFile.fileSizeLogical[file], let fileIcon = appState.zombieFile.fileIcon[file], let iconImage = fileIcon.map(Image.init(nsImage:)) {
+                                        VStack {
+                                            ZombieFileDetailsItem(size: fileSize, sizeL: fileSizeL, icon: iconImage, path: file, memoizedFiles: $memoizedFiles, isSelected: self.binding(for: file))
+                                                .padding(.vertical, 5)
+                                        }
                                     }
                                 }
-                            }
 
+                            }
+                            .padding()
                         }
-                        .padding()
+                    } else {
+                        Spacer()
+                        Text("No orphaned files found")
                     }
+
 
                     Spacer()
 

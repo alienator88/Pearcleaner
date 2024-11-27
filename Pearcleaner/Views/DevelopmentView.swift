@@ -41,7 +41,7 @@ struct EnvironmentCleanerView: View {
                             .font(.callout).fontWeight(.bold)
 
                         if let selectedEnvironment = selectedEnvironment {
-                            Text("Checked \(selectedEnvironment.paths.count) paths for \(selectedEnvironment.name)")
+                            Text("Checked paths for \(selectedEnvironment.name)")
                                 .font(.footnote)
                         } else {
                             Text("Total environment paths available")
@@ -63,10 +63,10 @@ struct EnvironmentCleanerView: View {
                         .frame(maxWidth: 300)
 
                         if let selectedEnvironment = selectedEnvironment {
-                            Text(verbatim: "\(selectedEnvironment.paths.count)")
+                            Text(verbatim: "\(selectedEnvironment.paths.count) paths")
                                 .font(.footnote).foregroundStyle(.secondary)
                         } else {
-                            Text(verbatim: "\(paths.reduce(0) { $0 + $1.paths.count })")
+                            Text(verbatim: "\(paths.reduce(0) { $0 + $1.paths.count }) paths")
                                 .font(.footnote).foregroundStyle(.secondary)
                         }
 
@@ -78,13 +78,10 @@ struct EnvironmentCleanerView: View {
 
 
             if let selectedEnvironment = selectedEnvironment {
-//                Text("Paths for \(selectedEnvironment.name):")
-//                    .font(.headline)
 
                 ScrollView {
                     ForEach(selectedEnvironment.paths, id: \.self) { path in
                         PathRowView(path: path)
-//                        CardView(path: path)
                     }
                 }
 
@@ -109,33 +106,56 @@ struct PathRowView: View {
     @State private var matchingPaths: [String] = []
 
     var body: some View {
-        VStack(alignment: .leading) {
+
+        VStack(alignment: .leading, spacing: 10) {
             if !matchingPaths.isEmpty {
                 ForEach(matchingPaths, id: \.self) { matchedPath in
-                    HStack {
+                    VStack(alignment: .leading, spacing: 10) {
                         Text(matchedPath)
+                            .font(.headline)
+                            .foregroundColor(.primary)
                             .lineLimit(1)
-                            .truncationMode(.middle)
+                            .truncationMode(.tail)
 
-                        Spacer()
+                        HStack {
 
-                        Button("Open") {
-                            openInFinder(matchedPath)
+                            Button {
+                                openInFinder(matchedPath)
+                            } label: {
+                                Label("Open", systemImage: "folder")
+                                    .padding(4)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(.blue)
+
+                            Spacer()
+
+                            HStack {
+                                Button {
+                                    deleteFolder(matchedPath)
+                                } label: {
+                                    Label("Delete Folder", systemImage: "trash")
+                                        .padding(4)
+                                }
+                                .buttonStyle(.borderedProminent)
+                                .tint(.red)
+
+                                Button {
+                                    deleteFolderContents(matchedPath)
+                                } label: {
+                                    Label("Delete Contents", systemImage: "trash.circle")
+                                        .padding(4)
+                                }
+                                .buttonStyle(.borderedProminent)
+                                .tint(.orange)
+                                .disabled(isEmpty)
+                                .help(isEmpty ? "Folder is empty" : "Delete all files within this folder")
+                            }
+
                         }
-                        .foregroundColor(.blue)
-                        .buttonStyle(.borderedProminent)
 
-                        Button("Delete Folder") {
-                            deleteFolder(matchedPath)
-                        }
-                        .foregroundColor(.red)
-
-                        Button("Delete Contents") {
-                            deleteFolderContents(matchedPath)
-                        }
-                        .foregroundColor(.orange)
-                        .disabled(isEmpty)
                     }
+
                 }
             } else {
                 HStack {
@@ -150,9 +170,10 @@ struct PathRowView: View {
                 }
             }
         }
-        .padding(8)
+        .frame(maxWidth: .infinity)
+        .padding()
         .background(RoundedRectangle(cornerRadius: 10)
-            .fill(.secondary.opacity(0.2))
+            .fill(.quaternary.opacity(0.3))
             .shadow(radius: 2))
         .onAppear {
             checkPath(path)
@@ -284,7 +305,8 @@ struct PathLibrary {
             Path(name: "Android Studio", paths: [
                 "~/.android/",
                 "~/Library/Application Support/Google/AndroidStudio*/",
-                "~/Library/Logs/AndroidStudio/"
+                "~/Library/Logs/AndroidStudio/",
+                "~/Library/Caches/Google/AndroidStudio*/"
             ]),
             Path(name: "Cargo (Rust)", paths: [
                 "~/.cargo/bin/",
@@ -348,7 +370,8 @@ struct PathLibrary {
                 "~/Library/Caches/pypoetry/"
             ]),
             Path(name: "Pub (Dart/Flutter)", paths: [
-                "~/.pub-cache/"
+                "~/.pub-cache/",
+                "~/Library/Caches/flutter_engine/"
             ]),
             Path(name: "Pyenv", paths: [
                 "~/.pyenv/cache/",
@@ -383,46 +406,5 @@ struct PathLibrary {
         ]
             .map { Path(name: $0.name, paths: $0.paths.sorted()) } // Sort paths within each environment
             .sorted { $0.name < $1.name } // Sort environments by name
-    }
-}
-
-
-
-struct CardView: View {
-    var path: String
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text(path)
-                .font(.body)
-                .foregroundColor(.primary)
-                .lineLimit(1)
-                .truncationMode(.tail)
-
-            HStack {
-                Button(action: { print("Open \(path)") }) {
-                    Label("Open", systemImage: "folder")
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(.blue)
-
-                Button(action: { print("Delete Folder \(path)") }) {
-                    Label("Delete Folder", systemImage: "trash")
-                }
-                .buttonStyle(.bordered)
-                .tint(.red)
-
-                Button(action: { print("Delete Contents \(path)") }) {
-                    Label("Delete Contents", systemImage: "trash.circle")
-                }
-                .buttonStyle(.bordered)
-                .tint(.orange)
-            }
-        }
-        .frame(maxWidth: .infinity)
-        .padding()
-        .background(RoundedRectangle(cornerRadius: 10)
-            .fill(.secondary.opacity(0.2))
-            .shadow(radius: 2))
     }
 }

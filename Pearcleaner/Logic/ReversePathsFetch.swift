@@ -76,8 +76,8 @@ class ReversePathsSearcher {
         if exclusionList.contains(itemPath) || itemPath.contains("dsstore") || itemPath.contains("daemonnameoridentifierhere") {
             return
         }
-
-        guard !skipReverse.contains(where: { itemName.pearFormat().contains($0) }),
+        guard !isUUIDFormatted(itemName.pearFormat()),
+              !skipReverse.contains(where: { itemName.pearFormat().contains($0) }),
               isSupportedFileType(at: itemURL.path),
               !isRelatedToInstalledApp(itemURL: itemURL),
         !isExcludedByConditions(itemPath: itemPath) else {
@@ -123,6 +123,13 @@ class ReversePathsSearcher {
         }
 
         return false
+    }
+
+    private func isUUIDFormatted(_ fileName: String) -> Bool {
+        let uuidRegex = "^[0-9a-fA-F]{32}$" // UUID without dashes
+        let regex = try? NSRegularExpression(pattern: uuidRegex)
+        let range = NSRange(location: 0, length: fileName.utf16.count)
+        return regex?.firstMatch(in: fileName, options: [], range: range) != nil
     }
 
     private func calculateFileDetails() {

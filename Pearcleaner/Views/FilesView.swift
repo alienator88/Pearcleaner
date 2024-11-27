@@ -430,7 +430,7 @@ struct FilesView: View {
                                                 }
 
                                                 // Check if there are more paths in externalPaths
-                                                if appState.externalPaths.isEmpty {
+                                                if appState.externalPaths.isEmpty && appState.externalMode {
                                                     // No more paths, terminate if oneShotMode is enabled
                                                     if oneShotMode {
                                                         NSApp.terminate(nil)
@@ -452,7 +452,7 @@ struct FilesView: View {
                                                 }
 
                                                 // Check if there are more paths in externalPaths
-                                                if appState.externalPaths.isEmpty {
+                                                if appState.externalPaths.isEmpty && appState.externalMode {
                                                     // No more paths, terminate if oneShotMode is enabled
                                                     if oneShotMode {
                                                         NSApp.terminate(nil)
@@ -468,7 +468,7 @@ struct FilesView: View {
                                                 }
 
                                                 // Run brew cleanup if sent from Sentinel
-                                                if brew && appState.sentinelMode {
+                                                if brew && appState.externalMode {
                                                     caskCleanup(app: appState.appInfo.appName)
                                                 }
 
@@ -480,10 +480,10 @@ struct FilesView: View {
                                                     appState.appInfo.fileSize = appState.appInfo.fileSize.filter { !appState.selectedItems.contains($0.key) }
                                                     // Update the selectedFiles to remove references that are no longer present
                                                     appState.selectedItems.removeAll()
-                                                    appState.sentinelMode = false
+                                                    appState.externalMode = false
 
                                                     // Only terminate if there are no more paths and oneShotMode is enabled
-                                                    if oneShotMode && appState.externalPaths.isEmpty {
+                                                    if oneShotMode && appState.externalPaths.isEmpty && appState.externalMode {
                                                         NSApp.terminate(nil)
                                                     }
 

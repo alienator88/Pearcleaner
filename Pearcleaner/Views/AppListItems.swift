@@ -160,7 +160,7 @@ struct AppListItems: View {
         .onAppear {
             if appInfo.bundleSize == 0 {
                 appState.getBundleSize(for: appInfo) { size in
-//                    print("Getting size for: \(appInfo.appName)")
+//                    printOS("Getting size for: \(appInfo.appName)")
 //                    appInfo.bundleSize = size
                 }
             }

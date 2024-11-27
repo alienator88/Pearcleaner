@@ -1223,6 +1223,7 @@
       }
     },
     "Checked %lld paths for %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1255,6 +1256,9 @@
           }
         }
       }
+    },
+    "Checked paths for %@" : {
+
     },
     "Clean stored files and cache for common development environments" : {
       "localizations" : {
@@ -1893,6 +1897,9 @@
           }
         }
       }
+    },
+    "Delete all files within this folder" : {
+
     },
     "Delete Contents" : {
       "localizations" : {
@@ -2837,6 +2844,9 @@
         }
       }
     },
+    "Folder is empty" : {
+
+    },
     "Folders" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3305,6 +3315,9 @@
           }
         }
       }
+    },
+    "Hover to search" : {
+
     },
     "Important" : {
       "extractionState" : "manual",
@@ -4990,6 +5003,9 @@
           }
         }
       }
+    },
+    "No orphaned files found" : {
+
     },
     "No releases to display" : {
       "extractionState" : "manual",

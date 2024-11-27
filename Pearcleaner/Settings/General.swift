@@ -21,7 +21,7 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.confirmAlert") private var confirmAlert: Bool = false
 //    @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
-    @State private var isCLISymlinked = false
+    @AppStorage("settings.general.cli") private var isCLISymlinked = false
 
     var body: some View {
         VStack(spacing: 20) {
