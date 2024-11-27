@@ -1222,41 +1222,6 @@
         }
       }
     },
-    "Checked %lld paths for %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Checked %1$lld paths for %2$@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vérifié %lld chemins pour %@"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skontrolované %1$lld cesty pre %2$@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "檢查了%2$@個路徑中的%1$lld個"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已為 %2$@ 檢查 %1$lld 個路徑"
-          }
-        }
-      }
-    },
     "Checked paths for %@" : {
 
     },
