@@ -673,7 +673,6 @@ func removeApp(appState: AppState, withPath path: URL) {
         // Remove from sortedApps if found
         if let index = appState.sortedApps.firstIndex(where: { $0.path == path }) {
             appState.sortedApps.remove(at: index)
-            //            return // Exit the function if the app was found and removed
         }
 
         // Brew cleanup if enabled
@@ -682,8 +681,6 @@ func removeApp(appState: AppState, withPath path: URL) {
         }
 
         appState.appInfo = AppInfo.empty
-
-
 
     }
 }

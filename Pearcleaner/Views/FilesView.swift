@@ -25,6 +25,7 @@ struct FilesView: View {
     @AppStorage("settings.interface.details") private var detailsEnabled: Bool = true
     @AppStorage("settings.general.oneshot") private var oneShotMode: Bool = false
     @State private var showAlert = false
+    @State private var appWasRemoved = false
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
     @Binding var search: String
@@ -392,6 +393,7 @@ struct FilesView: View {
                                                 return
                                             }
 
+                                            // Update UI if all selected items are removed
                                             if appState.selectedItems.count == appState.appInfo.fileSize.keys.count {
                                                 updateOnMain {
                                                     search = ""
@@ -406,7 +408,7 @@ struct FilesView: View {
                                                 }
                                             }
 
-                                            // Remove app from app list if main app bundle is removed for regular and wrapped apps
+                                            // Remove app from app list if main app bundle is removed
                                             if (appState.appInfo.wrapped && selectedItemsArray.contains(where: { $0.absoluteString == appState.appInfo.path.deletingLastPathComponent().deletingLastPathComponent().absoluteString })) ||
                                                 (!appState.appInfo.wrapped && selectedItemsArray.contains(where: { $0.absoluteString == appState.appInfo.path.absoluteString })) {
                                                 // Change view back to empty/apps if main app bundle is removed
@@ -421,73 +423,14 @@ struct FilesView: View {
                                                         }
                                                     }
                                                 }
-                                                // Match found, remove the app
+                                                // Remove the app
                                                 removeApp(appState: appState, withPath: appState.appInfo.path)
+                                                appWasRemoved = true
+                                            }
 
-                                                // Remove the processed path first to avoid re-processing it
-                                                if !appState.externalPaths.isEmpty {
-                                                    appState.externalPaths.removeFirst()
-                                                }
-
-                                                // Check if there are more paths in externalPaths
-                                                if appState.externalPaths.isEmpty && appState.externalMode {
-                                                    // No more paths, terminate if oneShotMode is enabled
-                                                    if oneShotMode {
-                                                        NSApp.terminate(nil)
-                                                    }
-                                                } else if let nextPath = appState.externalPaths.first {
-                                                    // More paths exist; continue processing
-                                                    let nextApp = AppInfoFetcher.getAppInfo(atPath: nextPath)!
-
-                                                    updateOnMain {
-                                                        appState.appInfo = nextApp
-                                                    }
-                                                    showAppInFiles(appInfo: nextApp, appState: appState, locations: locations, showPopover: $showPopover)
-                                                }
-
-                                            } else {
-                                                // Remove the processed path first to avoid re-processing it
-                                                if !appState.externalPaths.isEmpty {
-                                                    appState.externalPaths.removeFirst()
-                                                }
-
-                                                // Check if there are more paths in externalPaths
-                                                if appState.externalPaths.isEmpty && appState.externalMode {
-                                                    // No more paths, terminate if oneShotMode is enabled
-                                                    if oneShotMode {
-                                                        NSApp.terminate(nil)
-                                                    }
-                                                } else if let nextPath = appState.externalPaths.first {
-                                                    // More paths exist; continue processing
-                                                    let nextApp = AppInfoFetcher.getAppInfo(atPath: nextPath)!
-
-                                                    updateOnMain {
-                                                        appState.appInfo = nextApp
-                                                    }
-                                                    showAppInFiles(appInfo: nextApp, appState: appState, locations: locations, showPopover: $showPopover)
-                                                }
-
-                                                // Run brew cleanup if sent from Sentinel
-                                                if brew && appState.externalMode {
-                                                    caskCleanup(app: appState.appInfo.appName)
-                                                }
-
-                                                // Add deleted appInfo object to trashed array
-                                                appState.trashedFiles.append(appState.appInfo)
-
-                                                updateOnMain {
-                                                    // Remove items from the list
-                                                    appState.appInfo.fileSize = appState.appInfo.fileSize.filter { !appState.selectedItems.contains($0.key) }
-                                                    // Update the selectedFiles to remove references that are no longer present
-                                                    appState.selectedItems.removeAll()
-                                                    appState.externalMode = false
-
-                                                    // Only terminate if there are no more paths and oneShotMode is enabled
-                                                    if oneShotMode && appState.externalPaths.isEmpty && appState.externalMode {
-                                                        NSApp.terminate(nil)
-                                                    }
-
-                                                }
+                                            // Process next app if in external mode
+                                            if appState.externalMode {
+                                                processNextExternalApp()
                                             }
                                         }
                                     }
@@ -531,15 +474,49 @@ struct FilesView: View {
             .frame(width: 400, height: 250)
             .background(GlassEffect(material: .hudWindow, blendingMode: .behindWindow))
         })
-//        .sheet(isPresented: $appState.showConditionBuilder, content: {
-//            ConditionBuilderView(showAlert: $appState.showConditionBuilder, bundle: appState.appInfo.bundleIdentifier)
-//        })
         .onAppear {
             if !warning {
                 showAlert = true
             }
         }
         
+    }
+
+    // Helper function to process the next external app
+    private func processNextExternalApp() {
+        // Remove the processed path to avoid re-processing it
+        if !appState.externalPaths.isEmpty {
+            appState.externalPaths.removeFirst()
+        }
+
+        // Run brew cleanup if brew is true and removeApp was not called
+        if brew && !appWasRemoved {
+            caskCleanup(app: appState.appInfo.appName)
+        }
+
+        // Check if there are more paths in externalPaths
+        if appState.externalPaths.isEmpty {
+            // No more paths; terminate if oneShotMode is enabled
+            if oneShotMode {
+                updateOnMain(after: 2) {
+                    NSApp.terminate(nil)
+                }
+            } else {
+                // Reset mode if the user keeps the app open
+                appState.externalMode = false
+            }
+        } else if let nextPath = appState.externalPaths.first {
+            // More paths exist; continue processing
+            if let nextApp = AppInfoFetcher.getAppInfo(atPath: nextPath) {
+                updateOnMain {
+                    appState.appInfo = nextApp
+                }
+                showAppInFiles(appInfo: nextApp, appState: appState, locations: locations, showPopover: $showPopover)
+            }
+        }
+
+        // Reset the flag for the next iteration
+        appWasRemoved = false
     }
 
     // Function to remove a path from externalPaths and update appInfo if necessary

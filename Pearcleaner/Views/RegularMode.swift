@@ -58,11 +58,9 @@ struct RegularMode: View {
                         }
 
                     }
-                    .background(backgroundView(themeManager: themeManager, darker: false, glass: glass))
                     .transition(.opacity)
 
                     SlideableDivider(dimension: $sidebarWidth)
-                        .background(backgroundView(themeManager: themeManager))
                         .zIndex(3)
 
 
@@ -84,12 +82,10 @@ struct RegularMode: View {
                         Spacer()
                     }
                     .zIndex(2)
-                    .background(backgroundView(themeManager: themeManager))
                 }
 
             } else if appState.currentPage == .orphans {
                 ZombieView(showPopover: $showPopover, search: $search)
-                    .background(backgroundView(themeManager: themeManager))
                     .onAppear {
                         if appState.zombieFile.fileSize.keys.isEmpty {
                             appState.showProgress.toggle()
@@ -102,7 +98,6 @@ struct RegularMode: View {
                     }
             } else if appState.currentPage == .development {
                 EnvironmentCleanerView()
-                    .background(backgroundView(themeManager: themeManager))
             }
 
 #if DEBUG
@@ -137,6 +132,7 @@ struct RegularMode: View {
             }
 
         }
+        .background(backgroundView(themeManager: themeManager))
         .frame(minWidth: appState.currentPage == .orphans ? 700 : 900, minHeight: 600)
         .edgesIgnoringSafeArea(.all)
         .onTapGesture {
