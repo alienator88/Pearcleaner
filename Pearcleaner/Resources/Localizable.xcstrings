@@ -1924,6 +1924,9 @@
         }
       }
     },
+    "DEBUG" : {
+
+    },
     "Delete all files within this folder" : {
       "localizations" : {
         "zh-Hans" : {
@@ -6916,6 +6919,12 @@
         }
       }
     },
+    "Scrollbar is hidden in lists" : {
+
+    },
+    "Scrollbar is set to OS preference in lists" : {
+
+    },
     "Search these folders for applications" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -9107,6 +9116,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "版本 %@"
+          }
+        }
+      }
+    },
+    "VERSION: %@ | BUILD: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "VERSION: %1$@ | BUILD: %2$@"
           }
         }
       }

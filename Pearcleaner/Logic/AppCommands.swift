@@ -15,14 +15,16 @@ struct AppCommands: Commands {
     let fsm: FolderSettingsManager
     let updater: Updater
     let themeManager: ThemeManager
+    @Binding var showPopover: Bool
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
-    init(appState: AppState, locations: Locations, fsm: FolderSettingsManager, updater: Updater, themeManager: ThemeManager) {
+    init(appState: AppState, locations: Locations, fsm: FolderSettingsManager, updater: Updater, themeManager: ThemeManager, showPopover: Binding<Bool>) {
         self.appState = appState
         self.locations = locations
         self.fsm = fsm
         self.updater = updater
         self.themeManager = themeManager
+        self._showPopover = showPopover
     }
 
     var body: some Commands {
@@ -55,8 +57,8 @@ struct AppCommands: Commands {
                 if appState.currentView != .zombie {
                     undoTrash(appState: appState) {
                         reloadAppsList(appState: appState, fsm: fsm)
-                        for app in appState.trashedFiles {
-                            AppPathFinder(appInfo: app, locations: locations, appState: appState, undo: true).findPaths()
+                        if appState.currentView == .files {
+                            showAppInFiles(appInfo: appState.appInfo, appState: appState, locations: locations, showPopover: $showPopover)
                         }
                     }
                 }
@@ -65,17 +67,6 @@ struct AppCommands: Commands {
                 Label("Undo Removal", systemImage: "clear")
             }
             .keyboardShortcut("z", modifiers: .command)
-
-
-//            Button
-//            {
-//                updateOnMain {
-//                    appState.currentView = .zombie
-//                }
-//            } label: {
-//                Label("Zombie", systemImage: "clear")
-//            }
-//            .keyboardShortcut("f", modifiers: .command)
 
 
         }

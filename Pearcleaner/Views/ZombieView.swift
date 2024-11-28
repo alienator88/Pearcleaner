@@ -24,6 +24,7 @@ struct ZombieView: View {
     @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @AppStorage("settings.general.confirmAlert") private var confirmAlert: Bool = false
+    @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
     @Binding var search: String
@@ -170,6 +171,7 @@ struct ZombieView: View {
                             }
                             .padding()
                         }
+                        .scrollIndicators(scrollIndicators ? .automatic : .never)
                     } else {
                         Spacer()
                         Text("No orphaned files found")

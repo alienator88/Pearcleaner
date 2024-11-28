@@ -16,6 +16,7 @@ struct Path: Identifiable, Hashable {
 struct EnvironmentCleanerView: View {
     @State private var selectedEnvironment: Path?
     @State private var paths: [Path] = PathLibrary.getPaths()
+    @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -84,6 +85,7 @@ struct EnvironmentCleanerView: View {
                         PathRowView(path: path)
                     }
                 }
+                .scrollIndicators(scrollIndicators ? .automatic : .never)
 
             } else {
                 Text("Select an environment to view paths.")

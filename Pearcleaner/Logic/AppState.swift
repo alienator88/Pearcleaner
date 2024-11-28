@@ -14,7 +14,6 @@ let home = FileManager.default.homeDirectoryForCurrentUser.path
 
 class AppState: ObservableObject {
     @Published var appInfo: AppInfo
-    @Published var trashedFiles: [AppInfo] = []
     @Published var zombieFile: ZombieFile
     @Published var sortedApps: [AppInfo] = []
     @Published var selectedItems = Set<URL>()
@@ -28,7 +27,6 @@ class AppState: ObservableObject {
     @Published var finderExtensionEnabled: Bool = false
     @Published var showUninstallAlert: Bool = false
     @Published var externalMode: Bool = false
-//    @Published var showConditionBuilder: Bool = false
     @Published var externalPaths: [URL] = [] // for handling multiple app from drops or deeplinks
 
     func getBundleSize(for appInfo: AppInfo, updateState: @escaping (Int64) -> Void) {

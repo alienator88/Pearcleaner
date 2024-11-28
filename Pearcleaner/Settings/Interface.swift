@@ -26,6 +26,7 @@ struct InterfaceSettingsTab: View {
     @AppStorage("settings.general.miniview") private var miniView: Bool = true
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.interface.minimalist") private var minimalEnabled: Bool = true
+    @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.interface.selectedMenubarIcon") var selectedMenubarIcon: String = "bubbles.and.sparkles.fill"
     @State private var isLaunchAtLoginEnabled: Bool = false
     @Binding var showPopover: Bool
@@ -88,6 +89,26 @@ struct InterfaceSettingsTab: View {
                         }
                         Spacer()
                         Toggle(isOn: $animationEnabled, label: {
+                        })
+                        .toggleStyle(.switch)
+                    }
+                    .padding(5)
+
+
+                    HStack(spacing: 0) {
+                        Image(systemName: scrollIndicators ? "computermouse.fill" : "computermouse")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 20, height: 20)
+                            .padding(.trailing)
+                            .foregroundStyle(.primary)
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text(scrollIndicators ? String(localized: "Scrollbar is set to OS preference in lists") : String(localized: "Scrollbar is hidden in lists"))
+                                .font(.callout)
+                                .foregroundStyle(.primary)
+                        }
+                        Spacer()
+                        Toggle(isOn: $scrollIndicators, label: {
                         })
                         .toggleStyle(.switch)
                     }

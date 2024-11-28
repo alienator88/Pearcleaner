@@ -13,6 +13,7 @@ struct AppsListView: View {
     @Binding var showPopover: Bool
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
+    @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
 
     var filteredApps: [AppInfo]
 
@@ -32,7 +33,7 @@ struct AppsListView: View {
             }
             .padding(.top, !mini ? 4 : 0)
         }
-        .scrollIndicators(.automatic)
+        .scrollIndicators(scrollIndicators ? .automatic : .never)
     }
 }
 

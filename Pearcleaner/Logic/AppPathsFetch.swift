@@ -277,8 +277,11 @@ class AppPathFinder {
 
         let nameP = self.appInfo.path.lastPathComponent.replacingOccurrences(of: ".app", with: "")
 
+        // Early validation of bundle identifier
+        let useBundleIdentifier = isValidBundleIdentifier(self.appInfo.bundleIdentifier)
+
         for condition in conditions {
-            if bundleIdentifierL.contains(condition.bundle_id) {
+            if useBundleIdentifier && bundleIdentifierL.contains(condition.bundle_id) {
                 // Exclude keywords
                 let hasExcludeKeyword = condition.exclude.contains(where: itemL.contains)
                 if hasExcludeKeyword {
@@ -297,8 +300,24 @@ class AppPathFinder {
             return itemL.contains(bundleIdentifierL)
         }
 
-        return itemL.contains(bundleIdentifierL) || itemL.contains(bundle) || (nameL.count > 3 && itemL.contains(nameL)) || (nameP.count > 3 && itemL.contains(nameP) || (nameLFiltered.count > 3 && itemL.contains(nameLFiltered)))
+        return (useBundleIdentifier && (itemL.contains(bundleIdentifierL) || itemL.contains(bundle))) ||
+        (nameL.count > 3 && itemL.contains(nameL)) ||
+        (nameP.count > 3 && itemL.contains(nameP)) ||
+        (nameLFiltered.count > 3 && itemL.contains(nameLFiltered))
 
+    }
+
+
+    private func isValidBundleIdentifier(_ bundleIdentifier: String) -> Bool {
+        let components = bundleIdentifier.components(separatedBy: ".")
+
+        // If only one component, require minimum length of 5
+        if components.count == 1 {
+            return bundleIdentifier.count >= 5
+        }
+
+        // For 2 or 3 component bundle IDs, proceed with normal validation
+        return true
     }
 
 

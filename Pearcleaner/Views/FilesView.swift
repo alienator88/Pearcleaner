@@ -24,8 +24,8 @@ struct FilesView: View {
     @AppStorage("settings.general.confirmAlert") private var confirmAlert: Bool = false
     @AppStorage("settings.interface.details") private var detailsEnabled: Bool = true
     @AppStorage("settings.general.oneshot") private var oneShotMode: Bool = false
+    @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @State private var showAlert = false
-    @State private var appWasRemoved = false
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
     @Binding var search: String
@@ -292,52 +292,49 @@ struct FilesView: View {
                     Divider()
                         .padding(.horizontal)
 
+                    if appState.appInfo.fileSize.keys.count == 0 {
+                        Text("Sentinel Monitor found no other files to remove")
+                            .font(.title3)
+                            .opacity(0.5)
+                    } else {
+                        ScrollView() {
+                            LazyVStack {
+                                let sortedFilesSize = appState.appInfo.fileSize.keys.sorted(by: { appState.appInfo.fileSize[$0, default: 0] > appState.appInfo.fileSize[$1, default: 0] })
 
-
-                    ScrollView() {
-                        LazyVStack {
-                            let sortedFilesSize = appState.appInfo.fileSize.keys.sorted(by: { appState.appInfo.fileSize[$0, default: 0] > appState.appInfo.fileSize[$1, default: 0] })
-
-                            let sortedFilesAlpha = appState.appInfo.fileSize.keys.sorted { firstURL, secondURL in
-                                let isFirstPathApp = firstURL.pathExtension == "app"
-                                let isSecondPathApp = secondURL.pathExtension == "app"
-                                if isFirstPathApp, !isSecondPathApp {
-                                    return true // .app extension always comes first
-                                } else if !isFirstPathApp, isSecondPathApp {
-                                    return false
-                                } else {
-                                    // If neither or both are .app, sort alphabetically
-                                    return firstURL.lastPathComponent.pearFormat() < secondURL.lastPathComponent.pearFormat()
-                                }
-                            }
-
-                            let sort = selectedSortAlpha ? sortedFilesAlpha : sortedFilesSize
-
-                            ForEach(Array(sort.enumerated()), id: \.element) { index, path in
-                                if let fileSize = appState.appInfo.fileSize[path], let fileSizeL = appState.appInfo.fileSizeLogical[path], let fileIcon = appState.appInfo.fileIcon[path] {
-                                    let iconImage = fileIcon.map(Image.init(nsImage:))
-                                    VStack {
-                                        FileDetailsItem(size: fileSize, sizeL: fileSizeL, icon: iconImage, path: path)
-                                            .padding(.vertical, 5)
+                                let sortedFilesAlpha = appState.appInfo.fileSize.keys.sorted { firstURL, secondURL in
+                                    let isFirstPathApp = firstURL.pathExtension == "app"
+                                    let isSecondPathApp = secondURL.pathExtension == "app"
+                                    if isFirstPathApp, !isSecondPathApp {
+                                        return true // .app extension always comes first
+                                    } else if !isFirstPathApp, isSecondPathApp {
+                                        return false
+                                    } else {
+                                        // If neither or both are .app, sort alphabetically
+                                        return firstURL.lastPathComponent.pearFormat() < secondURL.lastPathComponent.pearFormat()
                                     }
                                 }
+
+                                let sort = selectedSortAlpha ? sortedFilesAlpha : sortedFilesSize
+
+                                ForEach(Array(sort.enumerated()), id: \.element) { index, path in
+                                    if let fileSize = appState.appInfo.fileSize[path], let fileSizeL = appState.appInfo.fileSizeLogical[path], let fileIcon = appState.appInfo.fileIcon[path] {
+                                        let iconImage = fileIcon.map(Image.init(nsImage:))
+                                        VStack {
+                                            FileDetailsItem(size: fileSize, sizeL: fileSizeL, icon: iconImage, path: path)
+                                                .padding(.vertical, 5)
+                                        }
+                                    }
+                                }
+
                             }
-
+                            .padding()
                         }
-                        .padding()
+                        .scrollIndicators(scrollIndicators ? .automatic : .never)
                     }
-
-
 
                     Spacer()
 
                     HStack(alignment: .center) {
-
-                        if appState.appInfo.fileSize.keys.count == 0 {
-                            Text("Sentinel Monitor found no other files to remove")
-                                .font(.title3)
-                                .opacity(0.5)
-                        }
 
                         if !appState.externalPaths.isEmpty {
                             HStack {
@@ -377,71 +374,11 @@ struct FilesView: View {
                         Spacer()
 
                         Button {
-                            showCustomAlert(enabled: confirmAlert, title: String(localized: "Warning"), message: String(localized: "Are you sure you want to remove these files?"), style: .warning, onOk: {
-                                Task {
-
-                                    let selectedItemsArray = Array(appState.selectedItems)
-
-                                    killApp(appId: appState.appInfo.bundleIdentifier) {
-
-                                        moveFilesToTrash(appState: appState, at: selectedItemsArray) { success in
-
-                                            // Send Sentinel FileWatcher start notification
-                                            sendStartNotificationFW()
-
-                                            guard success else {
-                                                return
-                                            }
-
-                                            // Update UI if all selected items are removed
-                                            if appState.selectedItems.count == appState.appInfo.fileSize.keys.count {
-                                                updateOnMain {
-                                                    search = ""
-                                                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                                                        if mini || menubarEnabled {
-                                                            appState.currentView = .apps
-                                                            showPopover = false
-                                                        } else {
-                                                            appState.currentView = .empty
-                                                        }
-                                                    }
-                                                }
-                                            }
-
-                                            // Remove app from app list if main app bundle is removed
-                                            if (appState.appInfo.wrapped && selectedItemsArray.contains(where: { $0.absoluteString == appState.appInfo.path.deletingLastPathComponent().deletingLastPathComponent().absoluteString })) ||
-                                                (!appState.appInfo.wrapped && selectedItemsArray.contains(where: { $0.absoluteString == appState.appInfo.path.absoluteString })) {
-                                                // Change view back to empty/apps if main app bundle is removed
-                                                updateOnMain {
-                                                    search = ""
-                                                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                                                        if mini || menubarEnabled {
-                                                            appState.currentView = .apps
-                                                            showPopover = false
-                                                        } else {
-                                                            appState.currentView = .empty
-                                                        }
-                                                    }
-                                                }
-                                                // Remove the app
-                                                removeApp(appState: appState, withPath: appState.appInfo.path)
-                                                appWasRemoved = true
-                                            }
-
-                                            // Process next app if in external mode
-                                            if appState.externalMode {
-                                                processNextExternalApp()
-                                            }
-                                        }
-                                    }
-
-                                }
-                            })
+                            handleUninstallAction()
                         } label: {
                             Text(verbatim: "\(sizeType == "Logical" ? totalSelectedSize.logical : totalSelectedSize.real)")
                         }
-                        .buttonStyle(UninstallButton(isEnabled: !appState.selectedItems.isEmpty))
-                        .disabled(appState.selectedItems.isEmpty)
+                        .buttonStyle(UninstallButton(isEnabled: !appState.selectedItems.isEmpty || (appState.selectedItems.isEmpty && brew)))
                         .padding(.top, 5)
 
 
@@ -482,27 +419,122 @@ struct FilesView: View {
         
     }
 
+    // Function to handle the uninstall action
+    private func handleUninstallAction() {
+        showCustomAlert(enabled: confirmAlert, title: String(localized: "Warning"), message: String(localized: "Are you sure you want to remove these files?"), style: .warning, onOk: {
+            Task {
+                let selectedItemsArray = Array(appState.selectedItems)
+                var appWasRemoved = false  // Flag to track if the app was removed
+
+                killApp(appId: appState.appInfo.bundleIdentifier) {
+                    moveFilesToTrash(appState: appState, at: selectedItemsArray) { success in
+                        // Send Sentinel FileWatcher start notification
+                        sendStartNotificationFW()
+
+                        guard success else { return }
+
+                        // Update the app's file list by removing the deleted files
+                        updateOnMain {
+                            appState.appInfo.fileSize = appState.appInfo.fileSize.filter { !selectedItemsArray.contains($0.key) }
+                            appState.selectedItems.removeAll()
+                        }
+
+                        // Determine if it's a full delete
+                        let mainAppPath = appState.appInfo.path.absoluteString
+                        let wrappedAppPath = appState.appInfo.path.deletingLastPathComponent().deletingLastPathComponent().absoluteString
+
+                        let mainAppRemoved = (!appState.appInfo.wrapped && selectedItemsArray.contains(where: { $0.absoluteString == mainAppPath }))
+                        let wrappedAppRemoved = (appState.appInfo.wrapped && selectedItemsArray.contains(where: { $0.absoluteString == wrappedAppPath }))
+
+                        let isInTrash = appState.appInfo.path.path.contains(".Trash")
+
+                        var deleteType: DeleteType
+
+                        if mainAppRemoved || wrappedAppRemoved || isInTrash {
+                            deleteType = .fullDelete
+                        } else {
+                            deleteType = .semiDelete
+                        }
+
+                        switch deleteType {
+                        case .fullDelete:
+                            // The main app bundle is deleted or is already in Trash (Sentinel delete)
+                            appWasRemoved = true
+                            // Remove the app from the app list
+                            removeApp(appState: appState, withPath: appState.appInfo.path)
+                            // `removeApp` handles `caskCleanup` if `brew` is true
+
+                        case .semiDelete:
+                            // Some files deleted but main app bundle remains
+                            // App remains in the list; UI stays the same
+                            // Do NOT call `caskCleanup` here since the main app bundle wasn't removed
+                            // Keeping this for future use-cases
+                            break
+                        }
+
+                        // Process the next app if in external mode
+                        if appState.externalMode {
+                            processNextExternalApp(appWasRemoved: appWasRemoved)
+                        } else {
+                            // Not in external mode
+                            if appWasRemoved {
+                                // Now update the UI to reflect that the app has been removed
+                                updateOnMain {
+                                    search = ""
+                                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                                        if mini || menubarEnabled {
+                                            appState.currentView = .apps
+                                            showPopover = false
+                                        } else {
+                                            appState.currentView = .empty
+                                        }
+                                    }
+                                }
+                            }
+                            // If oneShotMode is true, terminate the app
+                            if oneShotMode {
+                                updateOnMain(after: 2) {
+                                    NSApp.terminate(nil)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        })
+    }
+
     // Helper function to process the next external app
-    private func processNextExternalApp() {
+    private func processNextExternalApp(appWasRemoved: Bool) {
         // Remove the processed path to avoid re-processing it
         if !appState.externalPaths.isEmpty {
             appState.externalPaths.removeFirst()
         }
 
-        // Run brew cleanup if brew is true and removeApp was not called
-        if brew && !appWasRemoved {
-            caskCleanup(app: appState.appInfo.appName)
-        }
-
         // Check if there are more paths in externalPaths
         if appState.externalPaths.isEmpty {
-            // No more paths; terminate if oneShotMode is enabled
+            // No more paths; now update the UI if the app was removed
+            if appWasRemoved {
+                updateOnMain {
+                    search = ""
+                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                        if mini || menubarEnabled {
+                            appState.currentView = .apps
+                            showPopover = false
+                        } else {
+                            appState.currentView = .empty
+                        }
+                    }
+                }
+            }
+
+            // Terminate if oneShotMode is enabled
             if oneShotMode {
                 updateOnMain(after: 2) {
                     NSApp.terminate(nil)
                 }
             } else {
-                // Reset mode if the user keeps the app open
+                // Reset external mode
                 appState.externalMode = false
             }
         } else if let nextPath = appState.externalPaths.first {
@@ -514,9 +546,6 @@ struct FilesView: View {
                 showAppInFiles(appInfo: nextApp, appState: appState, locations: locations, showPopover: $showPopover)
             }
         }
-
-        // Reset the flag for the next iteration
-        appWasRemoved = false
     }
 
     // Function to remove a path from externalPaths and update appInfo if necessary
@@ -553,7 +582,11 @@ struct FilesView: View {
 
 }
 
-
+// Define the DeleteType enum
+enum DeleteType {
+    case fullDelete
+    case semiDelete
+}
 
 struct FileDetailsItem: View {
     @EnvironmentObject var appState: AppState

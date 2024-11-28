@@ -19,7 +19,7 @@ struct FolderSettingsTab: View {
     @State private var isHovered = false
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
-
+    @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
 
     var body: some View {
         VStack(spacing: 20) {
@@ -72,7 +72,7 @@ struct FolderSettingsTab: View {
                         }
 
                     }
-                    .scrollIndicators(.automatic)
+                    .scrollIndicators(scrollIndicators ? .automatic : .never)
                     .padding()
                     .frame(height: 200)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -172,7 +172,7 @@ struct FolderSettingsTab: View {
                         }
 
                     }
-                    .scrollIndicators(.automatic)
+                    .scrollIndicators(scrollIndicators ? .automatic : .never)
                     .padding()
                     .frame(height: 200)
                     .clipShape(RoundedRectangle(cornerRadius: 10))

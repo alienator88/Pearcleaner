@@ -28,34 +28,49 @@ struct AppSearchView: View {
 
 
     var body: some View {
+        
         VStack(alignment: .center, spacing: 0) {
+            if appState.reload {
+                VStack {
+                    Spacer()
+                    ProgressView() {
+                        Text("Gathering app details")
+                            .font(.callout)
+                            .foregroundStyle(.primary.opacity(0.5))
+                            .padding(5)
+                    }
+                    Spacer()
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                Spacer()
+                    .frame(height: !isMenuBar ? 0 : 10)
 
-            Spacer()
-                .frame(height: !isMenuBar ? 0 : 10)
 
+                searchBarComponent
+                    .padding(8)
 
-            searchBarComponent
-                .padding(8)
-
-            Divider()
-                .padding(.horizontal, 8)
-
-            AppsListView(search: $search, showPopover: $showPopover, filteredApps: filteredApps)
-                .padding(.vertical, 4)
-
-            if updater.updateAvailable {
                 Divider()
-                UpdateBadge(updater: updater)
-                    .padding()
-            } else if let _ = permissionManager.results, !permissionManager.allPermissionsGranted {
-                Divider()
-                PermissionsBadge()
-                    .padding()
-            } else if updater.announcementAvailable {
-                Divider()
-                FeatureBadge(updater: updater)
-                    .padding()
+                    .padding(.horizontal, 8)
+
+                AppsListView(search: $search, showPopover: $showPopover, filteredApps: filteredApps)
+                    .padding(.vertical, 4)
+
+                if updater.updateAvailable {
+                    Divider()
+                    UpdateBadge(updater: updater)
+                        .padding()
+                } else if let _ = permissionManager.results, !permissionManager.allPermissionsGranted {
+                    Divider()
+                    PermissionsBadge()
+                        .padding()
+                } else if updater.announcementAvailable {
+                    Divider()
+                    FeatureBadge(updater: updater)
+                        .padding()
+                }
             }
+
 
         }
         .background(backgroundView(themeManager: themeManager, darker: true, glass: glass))

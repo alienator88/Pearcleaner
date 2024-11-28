@@ -18,6 +18,7 @@ struct SettingsView: View {
     @Binding var search: String
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.general.selectedTab") private var selectedTab: CurrentTabView = .general
+    @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @State private var isResetting = false
     @State private var showPerms = false
 
@@ -30,7 +31,7 @@ struct SettingsView: View {
             }
         }
         .navigationTitle(Text(verbatim: ""))
-        .frame(width: 750, height: 620)
+        .frame(width: 750, height: 660)
     }
 
 
@@ -125,7 +126,7 @@ struct SettingsView: View {
                 AboutSettingsTab()
             }
         }
-        .scrollIndicators(.automatic)
+        .scrollIndicators(scrollIndicators ? .automatic : .never)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding()
         .offset(y: -22)

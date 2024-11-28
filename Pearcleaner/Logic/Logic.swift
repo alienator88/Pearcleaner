@@ -271,6 +271,7 @@ func undoTrash(appState: AppState, completion: @escaping () -> Void = {}) {
     tell application "Finder"
         activate
     end tell
+    delay 0.5
     
     tell application "System Events"
         keystroke "z" using command down
@@ -288,10 +289,12 @@ func undoTrash(appState: AppState, completion: @escaping () -> Void = {}) {
             if let error = error {
                 printOS("Undo Trash Error: \(error)")
             } else if let outputString = output.stringValue {
+                completion()
                 printOS(outputString)
+            } else {
+                completion()
             }
         }
-        completion()
     }
 }
 
@@ -299,7 +302,7 @@ func undoTrash(appState: AppState, completion: @escaping () -> Void = {}) {
 // Reload apps list
 func reloadAppsList(appState: AppState, fsm: FolderSettingsManager) {
     appState.reload = true
-    updateOnBackground {
+    updateOnBackground(after: 1.5) {
         let sortedApps = getSortedApps(paths: fsm.folderPaths)
         // Update UI on the main thread
         updateOnMain {

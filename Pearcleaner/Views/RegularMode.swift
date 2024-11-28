@@ -36,29 +36,9 @@ struct RegularMode: View {
                 HStack(alignment: .center, spacing: 0) {
 
                     // App List
-                    HStack(spacing: 0){
-
-                        if appState.reload {
-                            VStack {
-                                Spacer()
-                                ProgressView() {
-                                    Text("Gathering app details")
-                                        .font(.callout)
-                                        .foregroundStyle(.primary.opacity(0.5))
-                                        .padding(5)
-                                }
-                                Spacer()
-                            }
-                            .frame(width: sidebarWidth)
-                            .padding(.vertical)
-                        } else {
-                            AppSearchView(glass: glass, menubarEnabled: menubarEnabled, mini: mini, search: $search, showPopover: $showPopover, isMenuBar: $isMenuBar)
-                                .frame(width: sidebarWidth)
-
-                        }
-
-                    }
-                    .transition(.opacity)
+                    AppSearchView(glass: glass, menubarEnabled: menubarEnabled, mini: mini, search: $search, showPopover: $showPopover, isMenuBar: $isMenuBar)
+                        .frame(width: sidebarWidth)
+                        .transition(.opacity)
 
                     SlideableDivider(dimension: $sidebarWidth)
                         .zIndex(3)

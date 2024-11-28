@@ -164,7 +164,7 @@ struct PearcleanerApp: App {
         .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentMinSize)
         .commands {
-            AppCommands(appState: appState, locations: locations, fsm: fsm, updater: updater, themeManager: themeManager)            
+            AppCommands(appState: appState, locations: locations, fsm: fsm, updater: updater, themeManager: themeManager, showPopover: $showPopover)            
         }
 
 
