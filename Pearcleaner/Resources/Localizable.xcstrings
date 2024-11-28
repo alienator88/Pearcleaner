@@ -341,6 +341,18 @@
             "value" : "Pridať súbor/priečinok"
           }
         },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从剪贴板添加文件/文件夹"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "從剪貼簿新增檔案/資料夾"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -455,6 +467,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pridať priečinok zo schránky"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从剪贴板添加文件夹"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "從剪貼簿新增資料夾"
           }
         },
         "zh-HK" : {
@@ -1073,6 +1097,18 @@
     },
     "Bundle Files..." : {
       "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "捆绑文件..."
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "捆綁檔案..."
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1223,7 +1259,26 @@
       }
     },
     "Checked paths for %@" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已检查路径：%@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已檢查路徑：%@"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已檢查路徑：%@"
+          }
+        }
+      }
     },
     "Clean stored files and cache for common development environments" : {
       "localizations" : {
@@ -1237,6 +1292,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vyčistiť uložené súbory a vyrovnávaciu pamäť pre bežné vývojárske prostredia"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清理常用开发环境的存储文件和缓存"
           }
         },
         "zh-Hant" : {
@@ -1864,7 +1925,26 @@
       }
     },
     "Delete all files within this folder" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除此文件夹内所有文件"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刪除此資料夾中的所有檔案"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刪除此資料夾內所有檔案"
+          }
+        }
+      }
     },
     "Delete Contents" : {
       "localizations" : {
@@ -1878,6 +1958,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Odstrániť obsah"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除内容"
           }
         },
         "zh-Hant" : {
@@ -1906,6 +1992,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Odstrániť priečinok"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除文件夹"
           }
         },
         "zh-Hant" : {
@@ -1983,6 +2075,12 @@
             "value" : "Vývoj"
           }
         },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开发"
+          }
+        },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2009,6 +2107,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vývojárske prostredia (Beta)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开发环境（Beta）"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開發環境（Beta）"
           }
         },
         "zh-HK" : {
@@ -2456,6 +2566,12 @@
             "value" : "Prostredie"
           }
         },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "环境"
+          }
+        },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2613,6 +2729,18 @@
     },
     "Export File Paths..." : {
       "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导出文件路径..."
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "匯出檔案路徑..."
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2810,7 +2938,26 @@
       }
     },
     "Folder is empty" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件夹为空"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "資料夾為空"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "資料夾為空"
+          }
+        }
+      }
     },
     "Folders" : {
       "extractionState" : "manual",
@@ -3282,7 +3429,26 @@
       }
     },
     "Hover to search" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "悬停以搜索"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "懸停搜索"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "懸停搜索"
+          }
+        }
+      }
     },
     "Important" : {
       "extractionState" : "manual",
@@ -4970,7 +5136,26 @@
       }
     },
     "No orphaned files found" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未找到孤立文件"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未找到孤立檔案"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未找到孤立檔案"
+          }
+        }
+      }
     },
     "No releases to display" : {
       "extractionState" : "manual",
@@ -5127,6 +5312,12 @@
             "value" : "Nenašlo sa"
           }
         },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未找到"
+          }
+        },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5247,6 +5438,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Otvoriť"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开"
           }
         },
         "zh-Hant" : {
@@ -6826,6 +7023,12 @@
             "value" : "Vyber prostredie na zobrazenie ciest."
           }
         },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择一个环境了来查看路径。"
+          }
+        },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6852,6 +7055,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vyber jeden"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择一个"
           }
         },
         "zh-Hant" : {
@@ -8149,6 +8358,12 @@
             "value" : "Všetky dostupné cesty k prostrediu"
           }
         },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "总环境路径可用"
+          }
+        },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8596,6 +8811,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aktualizácia dokončená"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新完成"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新完成"
           }
         },
         "zh-HK" : {
