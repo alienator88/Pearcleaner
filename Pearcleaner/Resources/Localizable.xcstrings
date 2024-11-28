@@ -1269,13 +1269,13 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已檢查路徑: ￼%@"
+            "value" : "已檢查路徑：%@"
           }
         },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已檢查路徑: ￼%@"
+            "value" : "已檢查路徑：%@"
           }
         }
       }
