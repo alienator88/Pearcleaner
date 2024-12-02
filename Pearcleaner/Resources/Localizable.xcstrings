@@ -4715,9 +4715,9 @@
              "value" : "ログイン時にPearcleanerを起動"
            }
         }
-       }
-     },
-     "Locations that will be searched for .app files. Click a non-default path to remove it. Default paths can't be removed." : {
+      }
+    },
+    "Locations that will be searched for .app files. Click a non-default path to remove it. Default paths can't be removed." : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
