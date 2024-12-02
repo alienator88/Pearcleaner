@@ -371,6 +371,12 @@
     },
     "Add file/folder from clipboard" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datei/Ordner aus Zwischenablage hinzufügen"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -517,6 +523,12 @@
     },
     "Add folder from clipboard" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordner aus Zwischenablage hinzufügen"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1428,6 +1440,12 @@
     },
     "Checked paths for %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Überprüfte Pfade für %@"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1456,6 +1474,12 @@
     },
     "Clean stored files and cache for common development environments" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gespeicherte Dateien und Cache für gängige Entwicklungsumgebungen bereinigen"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2182,11 +2206,14 @@
         }
       }
     },
-    "DEBUG" : {
-
-    },
     "Delete all files within this folder" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Dateien in diesem Ordner löschen"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2215,6 +2242,12 @@
     },
     "Delete Contents" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lösche Inhalt"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2255,6 +2288,12 @@
     },
     "Delete Folder" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lösche Ordner"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2348,6 +2387,12 @@
     },
     "Development" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entwwicklung"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2388,6 +2433,12 @@
     },
     "Development Environments (Beta)" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entwicklungsumgebungen (Beta)"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2905,6 +2956,12 @@
     },
     "Environment" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Umgebung"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3104,6 +3161,12 @@
     },
     "Export File Paths..." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportiere Dateipfad…"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3344,6 +3407,12 @@
     },
     "Folder is empty" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordner ist leer"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3901,6 +3970,12 @@
     },
     "Hover to search" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zum Suchen mit der Maus darüberfahren"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5830,6 +5905,12 @@
     },
     "No orphaned files found" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine verwaisten Dateien gefunden"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6017,6 +6098,12 @@
     },
     "Not Found" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht gefunden"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6114,7 +6201,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Okay"
+            "value" : "Einverstanden"
           }
         },
         "fr" : {
@@ -6163,6 +6250,12 @@
     },
     "Open" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffnen"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7970,6 +8063,12 @@
     },
     "Select an environment to view paths." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wählen Sie eine Umgebung aus, um Pfade anzuzeigen."
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8010,6 +8109,12 @@
     },
     "Select One" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle eine"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9479,6 +9584,12 @@
     },
     "Total environment paths available" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Insgesamt verfügbare Umgebungspfade"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9994,6 +10105,12 @@
     "Update completed" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates vollständig"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10143,7 +10260,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Updates ausgeschlatet"
+            "value" : "Updates ausgeschaltet"
           }
         },
         "fr" : {
@@ -10342,22 +10459,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "版本 %@"
-          }
-        }
-      }
-    },
-    "VERSION: %@ | BUILD: %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "VERSION: %1$@ | BUILD: %2$@"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "バージョン: %1$@ | ビルド: %2$@"
           }
         }
       }

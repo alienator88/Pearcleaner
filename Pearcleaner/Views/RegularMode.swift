@@ -83,7 +83,8 @@ struct RegularMode: View {
 #if DEBUG
             VStack(spacing: 0) {
                 HStack {
-                    Text("DEBUG").foregroundStyle(.orange).bold().help("VERSION: \(Bundle.main.version) | BUILD: \(Bundle.main.buildVersion)")
+                    Text(verbatim: "DEBUG").foregroundStyle(.orange).bold()
+                        .help(Text(verbatim: "VERSION: \(Bundle.main.version) | BUILD: \(Bundle.main.buildVersion)"))
                     Spacer()
                 }
                 Spacer()
