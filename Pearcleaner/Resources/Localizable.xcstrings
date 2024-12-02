@@ -44,6 +44,12 @@
             "state" : "translated",
             "value" : "（版號 %@）"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(ビルド %@)"
+          }
         }
       }
     },
@@ -90,6 +96,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ 已經為最新版本"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ は既に最新バージョンです"
           }
         }
       }
@@ -138,6 +150,12 @@
             "state" : "translated",
             "value" : "%@ 會檢查更新"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ はアップデートを確認します"
+          }
         }
       }
     },
@@ -184,6 +202,12 @@
             "state" : "translated",
             "value" : "⇧ + 捲動"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⇧ + スクロール"
+          }
         }
       }
     },
@@ -229,6 +253,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "關於"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このアプリについて"
           }
         }
       }
@@ -277,6 +307,12 @@
             "state" : "translated",
             "value" : "輔助使用"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アクセシビリティ"
+          }
         }
       }
     },
@@ -324,6 +360,12 @@
             "state" : "translated",
             "value" : "加入檔案/資料夾"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイル/フォルダを追加"
+          }
         }
       }
     },
@@ -357,6 +399,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "從剪貼板加入檔案/資料夾"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリップボードからファイル/フォルダを追加"
           }
         }
       }
@@ -405,6 +453,12 @@
             "state" : "translated",
             "value" : "加入搜尋單獨檔案時會忽略的檔案或資料夾。按一下路徑以將其從列表中移除。"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "孤立ファイルの検索時に無視されるファイルやフォルダを追加します。パスをクリックするとリストから削除されます。"
+          }
         }
       }
     },
@@ -452,6 +506,12 @@
             "state" : "translated",
             "value" : "加入資料夾"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォルダを追加"
+          }
         }
       }
     },
@@ -485,6 +545,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "從剪貼板加入資料夾"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリップボードからフォルダを追加"
           }
         }
       }
@@ -533,6 +599,12 @@
             "state" : "translated",
             "value" : "全部剔選框"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてのチェックボックス"
+          }
         }
       }
     },
@@ -579,6 +651,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "總是確認標記為移除的檔案。在少數個案中，當應用程式名稱太相似時，可能會找到不相關的檔案。\n\n注意：Pearcleaner 使用 AppleScript 來移除檔案。現時 macOS 不允許 AppleScript 使用指紋感應器進行身分認證，只支援密碼身分認證。"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "削除対象としてマークされたファイルを常に確認してください。稀に、アプリ名が似すぎる場合、関係のないファイルが見つかることがあります。\n\n注意: Pearcleaner はファイルを削除するために AppleScript を使用します。現在、macOS では AppleScript が指紋センサーを使用して認証することはできません。パスワード認証のみがサポートされています。"
           }
         }
       }
@@ -627,6 +705,12 @@
             "state" : "translated",
             "value" : "停用動畫"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アニメーションを無効にする"
+          }
         }
       }
     },
@@ -673,6 +757,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "啟用動畫"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アニメーションを有効にする"
           }
         }
       }
@@ -721,6 +811,12 @@
             "state" : "translated",
             "value" : "宣佈"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "お知らせ"
+          }
         }
       }
     },
@@ -767,6 +863,12 @@
             "state" : "translated",
             "value" : "App 名稱"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリ名"
+          }
         }
       }
     },
@@ -812,6 +914,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "App 大小"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリのサイズ"
           }
         }
       }
@@ -860,6 +968,12 @@
             "state" : "translated",
             "value" : "外觀"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "外観"
+          }
         }
       }
     },
@@ -905,6 +1019,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "應用程式檔案包藏在子目錄中。為了避免刪除不正確的資料夾，Pearcleaner 會保留這些。如有要求，你可以手動刪除剩餘的資料夾。"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリケーションファイルはサブディレクトリに入れ子になっています。間違ったフォルダを削除しないように、Pearcleaner はこれらをそのままにします。必要に応じて、残りのフォルダを手動で削除することができます。"
           }
         }
       }
@@ -953,6 +1073,12 @@
             "state" : "translated",
             "value" : "App 程式碼"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリスクリプト"
+          }
         }
       }
     },
@@ -999,6 +1125,12 @@
             "state" : "translated",
             "value" : "應用程式"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリケーション"
+          }
         }
       }
     },
@@ -1044,6 +1176,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "確定要移除這些檔案嗎？"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これらのファイルを削除してもよろしいですか？"
           }
         }
       }
@@ -1092,6 +1230,12 @@
             "state" : "translated",
             "value" : "自動化"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動化"
+          }
         }
       }
     },
@@ -1113,6 +1257,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "套件檔案⋯"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バンドルファイル..."
           }
         }
       }
@@ -1161,6 +1311,12 @@
             "state" : "translated",
             "value" : "正在計算"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "計算中"
+          }
         }
       }
     },
@@ -1207,6 +1363,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "取消"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キャンセル"
           }
         }
       }
@@ -1255,6 +1417,12 @@
             "state" : "translated",
             "value" : "檢查更新"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新を確認"
+          }
         }
       }
     },
@@ -1276,6 +1444,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已檢查路徑：%@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パスを確認しました: %@"
           }
         }
       }
@@ -1310,6 +1484,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "為常見開發環境清理儲存的檔案與快取"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一般的な開発環境で使用���れるファイ���とキャッシュをクリーンアップ"
           }
         }
       }
@@ -1358,10 +1538,16 @@
             "state" : "translated",
             "value" : "清除"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリア"
+          }
         }
       }
     },
-    "Clear text" : {
+        "Clear text" : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
@@ -1404,6 +1590,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "清除文字"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "テキストをクリア"
           }
         }
       }
@@ -1452,6 +1644,12 @@
             "state" : "translated",
             "value" : "按一下以取得 App 列表"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリリストを表示"
+          }
         }
       }
     },
@@ -1498,6 +1696,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "按一下標題以更改排列順序"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ヘッダーをクリックして並べ替え順序を変更"
           }
         }
       }
@@ -1546,6 +1750,12 @@
             "state" : "translated",
             "value" : "按一下以搜尋"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "検索するにはクリック"
+          }
         }
       }
     },
@@ -1591,6 +1801,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "關閉"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "閉じる"
           }
         }
       }
@@ -1639,6 +1855,12 @@
             "state" : "translated",
             "value" : "解除安裝後關閉"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アンインストール後に閉じる"
+          }
         }
       }
     },
@@ -1685,6 +1907,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "命令列"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コマンドライン"
           }
         }
       }
@@ -1733,6 +1961,12 @@
             "state" : "translated",
             "value" : "已完成 🚀"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完了 🚀"
+          }
         }
       }
     },
@@ -1779,6 +2013,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "容器"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コンテナ"
           }
         }
       }
@@ -1827,6 +2067,12 @@
             "state" : "translated",
             "value" : "複製檔案路徑"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイルパスをコピー"
+          }
         }
       }
     },
@@ -1873,6 +2119,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "複製路徑"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パスをコピー"
           }
         }
       }
@@ -1921,6 +2173,12 @@
             "state" : "translated",
             "value" : "每日"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "毎日"
+          }
         }
       }
     },
@@ -1945,6 +2203,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "刪除此資料夾內所有檔案"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このフォルダ内のすべてのファイルを削除"
           }
         }
       }
@@ -1980,6 +2244,12 @@
             "state" : "translated",
             "value" : "刪除內容"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "内容を削除"
+          }
         }
       }
     },
@@ -2013,6 +2283,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "刪除資料夾"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォルダを削除"
           }
         }
       }
@@ -2061,6 +2337,12 @@
             "state" : "translated",
             "value" : "偵測應用程式何時丟到垃圾桶"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリがゴミ箱に移動されたときに検出"
+          }
         }
       }
     },
@@ -2095,6 +2377,12 @@
             "state" : "translated",
             "value" : "開發"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開発"
+          }
         }
       }
     },
@@ -2128,6 +2416,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "開發環境（Beta）"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開発環境（ベータ版）"
           }
         }
       }
@@ -2176,6 +2470,12 @@
             "state" : "translated",
             "value" : "啟用選單列圖示時停用"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メニューバーアイコンが有効になっている場合は無効"
+          }
         }
       }
     },
@@ -2222,6 +2522,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "關閉"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "閉じる"
           }
         }
       }
@@ -2270,6 +2576,12 @@
             "state" : "translated",
             "value" : "拖放 App 到此處"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリをここにドロップ"
+          }
         }
       }
     },
@@ -2316,6 +2628,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "拖放檔案或資料夾到上方，或按一下以加入"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイルやフォルダを上にドロップするか、クリックして追加"
           }
         }
       }
@@ -2364,6 +2682,12 @@
             "state" : "translated",
             "value" : "拖放資料夾到上方，或按一下以加入"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォルダを上にドロップするか、クリックして追加"
+          }
         }
       }
     },
@@ -2410,6 +2734,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "拖放目標"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ドロップターゲット"
           }
         }
       }
@@ -2458,6 +2788,12 @@
             "state" : "translated",
             "value" : "為 Finder 啟用特色選單延伸功能"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder用のコンテキストメニュー拡張を有効にする"
+          }
         }
       }
     },
@@ -2504,6 +2840,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "啟用命令列介面（CLI）會允許你透過終端機執行 Pearcleaner 動作。這樣會將 pearcleaner 命令加至 /usr/local/bin 下，以便直接從你的 PATH 環境變數使用。當你啟用之後，就可以嘗試它：\n\n> pearcleaner --help"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CLIを有効にすると、ターミナルからPearcleanerのアクションを実行できます。これにより、pearcleanerコマンドが/usr/local/binに追加され、PATH環境変数から直接使用できるようになります。有効にした後、以下を試してください：\n\n> pearcleaner --help"
           }
         }
       }
@@ -2552,6 +2894,12 @@
             "state" : "translated",
             "value" : "啟用此延伸功能可讓你在 Finder 中右鍵點按一下應用程式，以使用 Pearcleaner 快速解除安裝"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この拡張機能を有効にすると、Finderでアプリを右クリックしてPearcleanerですぐにアンインストールできます"
+          }
         }
       }
     },
@@ -2582,6 +2930,12 @@
           }
         },
         "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "環境"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "環境"
@@ -2633,6 +2987,12 @@
             "state" : "translated",
             "value" : "排除"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "除外"
+          }
         }
       }
     },
@@ -2679,6 +3039,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "從單獨檔案搜尋中排除這些檔案與資料夾"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "孤立ファイルの検索時に無視されるファイルやフォルダを追加します。パスをクリックするとリストから削除されます。"
           }
         }
       }
@@ -2727,6 +3093,12 @@
             "state" : "translated",
             "value" : "輸出檔案路徑"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイルパスをエクスポート"
+          }
         }
       }
     },
@@ -2748,6 +3120,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "輸出檔案路徑⋯"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイルパスをエクスポート..."
           }
         }
       }
@@ -2796,6 +3174,12 @@
             "state" : "translated",
             "value" : "無法顯示版本備註"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リリースノートを表示できませんでした"
+          }
         }
       }
     },
@@ -2842,6 +3226,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "檔案大小顯示方式選項"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイルサイズ表示オプション"
           }
         }
       }
@@ -2890,6 +3280,12 @@
             "state" : "translated",
             "value" : "Finder 延伸功能"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder 拡張機能"
+          }
         }
       }
     },
@@ -2937,6 +3333,12 @@
             "state" : "translated",
             "value" : "正在尋找單獨檔案，請稍候⋯"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "孤立ファイルを検索中、お待ちください..."
+          }
         }
       }
     },
@@ -2958,6 +3360,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "資料夾為空"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォルダは空です"
           }
         }
       }
@@ -3006,6 +3414,12 @@
             "state" : "translated",
             "value" : "資料夾"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォルダ"
+          }
         }
       }
     },
@@ -3052,6 +3466,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "強制重新整理"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "強制更新"
           }
         }
       }
@@ -3100,6 +3520,12 @@
             "state" : "translated",
             "value" : "完整磁碟取用"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完全ディスクアクセス"
+          }
         }
       }
     },
@@ -3146,6 +3572,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "功能"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "機能"
           }
         }
       }
@@ -3194,6 +3626,12 @@
             "state" : "translated",
             "value" : "正在收集 App 詳細資料"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリの詳細を収集中"
+          }
         }
       }
     },
@@ -3237,6 +3675,12 @@
           }
         },
         "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一般"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "一般"
@@ -3288,6 +3732,12 @@
             "state" : "translated",
             "value" : "GitHub 贊助者"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHubスポンサー"
+          }
         }
       }
     },
@@ -3335,6 +3785,12 @@
             "state" : "translated",
             "value" : "GitHub：v%@"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub: v%@"
+          }
         }
       }
     },
@@ -3380,6 +3836,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "隱藏詳細資料"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "詳細を隠す"
           }
         }
       }
@@ -3428,6 +3890,12 @@
             "state" : "translated",
             "value" : "解除安裝後執行 Homebrew 清理"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アンインストール後にHomebrewをクリーンアップ"
+          }
         }
       }
     },
@@ -3450,10 +3918,16 @@
             "state" : "translated",
             "value" : "懸停搜索"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ホバーで検索"
+          }
         }
       }
     },
-    "Important" : {
+       "Important" : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
@@ -3493,6 +3967,12 @@
           }
         },
         "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重要"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "重要"
@@ -3544,6 +4024,12 @@
             "state" : "translated",
             "value" : "在迷你視窗模式下，如你固定檔案彈出式視窗於最上方，離開視窗點按不會忽略。否則應用程式以外任何位置的點按都會忽略。"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ミニウィンドウモードで、ファイルポップオーバーを上部にピン留めすると、ウィンドウ外をクリックしても閉じられません。それ以外の場合、アプリ外をクリックすると閉じられます。"
+          }
         }
       }
     },
@@ -3591,6 +4077,12 @@
             "state" : "translated",
             "value" : "在迷你視窗模式下，你可以讓 Pearcleaner 以應用程式列表檢視或拖放目標檢視方式啟動。"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ミニウィンドウモードでは、Pearcleanerをアプリリストビューまたはドロップターゲットビューで起動することができます。"
+          }
         }
       }
     },
@@ -3637,6 +4129,12 @@
             "state" : "translated",
             "value" : "安裝日期"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インストール日"
+          }
         }
       }
     },
@@ -3682,6 +4180,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "安裝日期："
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インストール日:"
           }
         }
       }
@@ -3730,6 +4234,12 @@
             "state" : "translated",
             "value" : "已安裝：v%@"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インストール済み: v%@"
+          }
         }
       }
     },
@@ -3773,6 +4283,12 @@
           }
         },
         "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "指示"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "指示"
@@ -3823,6 +4339,12 @@
             "state" : "translated",
             "value" : "介面"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インターフェース"
+          }
         }
       }
     },
@@ -3866,6 +4388,12 @@
           }
         },
         "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "iOS"
@@ -3917,6 +4445,12 @@
             "state" : "translated",
             "value" : "iOS 應用程式"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS アプリ"
+          }
         }
       }
     },
@@ -3963,6 +4497,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "項目"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アイテム"
           }
         }
       }
@@ -4011,6 +4551,12 @@
             "state" : "translated",
             "value" : "項目"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アイテム"
+          }
         }
       }
     },
@@ -4057,6 +4603,12 @@
             "state" : "translated",
             "value" : "上次使用日期"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最終使用日"
+          }
         }
       }
     },
@@ -4102,6 +4654,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "上次使用日期："
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最終使用日:"
           }
         }
       }
@@ -4150,10 +4708,16 @@
             "state" : "translated",
             "value" : "登入時啟動 Pearcleaner"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ログイン時にPearcleanerを起動"
+          }
         }
       }
     },
-    "Locations that will be searched for .app files. Click a non-default path to remove it. Default paths can't be removed." : {
+       "Locations that will be searched for .app files. Click a non-default path to remove it. Default paths can't be removed." : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
@@ -4196,6 +4760,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "將會搜尋 .app 檔案的位置。按一下非預設的路徑以移除它。預設路徑無法移除。"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリケーションファイルの場所を検索します。デフォルト以外のパスをクリックして削除します。デフォルトのパスは削除できません。"
           }
         }
       }
@@ -4244,6 +4814,12 @@
             "state" : "translated",
             "value" : "邏輯大小"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "論理サイズ"
+          }
         }
       }
     },
@@ -4290,6 +4866,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "由 Alin Lupascu 用 ❤️ 製作"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alin Lupascu による ❤️ 作品"
           }
         }
       }
@@ -4338,6 +4920,12 @@
             "state" : "translated",
             "value" : "選單列"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メニューバー"
+          }
         }
       }
     },
@@ -4384,6 +4972,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "選單列圖示模式"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メニューバーアイコンモード"
           }
         }
       }
@@ -4432,6 +5026,12 @@
             "state" : "translated",
             "value" : "選單列圖示偏好設定"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メニューバーアイコンの設定"
+          }
         }
       }
     },
@@ -4478,6 +5078,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "迷你設定"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ミニ設定"
           }
         }
       }
@@ -4526,6 +5132,12 @@
             "state" : "translated",
             "value" : "迷你視窗模式"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ミニウィンドウモード"
+          }
         }
       }
     },
@@ -4572,6 +5184,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "停用極簡的 App 列表列"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ミニマリストアプリリスト行が無効"
           }
         }
       }
@@ -4620,6 +5238,12 @@
             "state" : "translated",
             "value" : "啟用極簡的 App 列表列"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ミニマリストアプリリスト行が有効"
+          }
         }
       }
     },
@@ -4667,6 +5291,12 @@
             "state" : "translated",
             "value" : "欠缺權限"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "権限が不足しています"
+          }
         }
       }
     },
@@ -4713,6 +5343,12 @@
             "state" : "translated",
             "value" : "修改日期"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "修正日"
+          }
         }
       }
     },
@@ -4758,6 +5394,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "修改日期"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "修正日:"
           }
         }
       }
@@ -4806,6 +5448,12 @@
             "state" : "translated",
             "value" : "每月"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "毎月"
+          }
         }
       }
     },
@@ -4852,6 +5500,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更多"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "もっと見る"
           }
         }
       }
@@ -4900,6 +5554,12 @@
             "state" : "translated",
             "value" : "名稱"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "名前"
+          }
         }
       }
     },
@@ -4946,6 +5606,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "永不"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "しない"
           }
         }
       }
@@ -4994,10 +5660,16 @@
             "state" : "translated",
             "value" : "新宣佈"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新しいお知らせ"
+          }
         }
       }
     },
-    "Next update check: %@" : {
+        "Next update check: %@" : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
@@ -5040,6 +5712,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "下一個更新檢查：%@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次のアップデートチェック：%@"
           }
         }
       }
@@ -5088,6 +5766,12 @@
             "state" : "translated",
             "value" : "沒有加入檔案或資料夾"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイルやフォルダーが追加されていません"
+          }
         }
       }
     },
@@ -5135,6 +5819,12 @@
             "state" : "translated",
             "value" : "没有新宣佈"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新しいお知らせはありません"
+          }
         }
       }
     },
@@ -5156,6 +5846,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "未找到孤立檔案"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "孤立したファイルは見つかりませんでした"
           }
         }
       }
@@ -5204,6 +5900,12 @@
             "state" : "translated",
             "value" : "沒有要顯示的版本"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "表示するリリースはありません"
+          }
         }
       }
     },
@@ -5251,6 +5953,11 @@
             "state" : "translated",
             "value" : "沒有更新 😌"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アップデートはありません 😌}
         }
       }
     },
@@ -5298,6 +6005,12 @@
             "state" : "translated",
             "value" : "無法使用"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "利用不可"
+          }
         }
       }
     },
@@ -5331,6 +6044,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "未找到"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "見つかりません"
           }
         }
       }
@@ -5379,6 +6098,12 @@
             "state" : "translated",
             "value" : "/"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "の"
+          }
         }
       }
     },
@@ -5426,6 +6151,12 @@
             "state" : "translated",
             "value" : "好"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オーケー"
+          }
         }
       }
     },
@@ -5459,6 +6190,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "開啟󠄁"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開く"
           }
         }
       }
@@ -5507,6 +6244,12 @@
             "state" : "translated",
             "value" : "開啟 %@"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@を開く"
+          }
         }
       }
     },
@@ -5553,6 +6296,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "單獨檔案搜尋並非 100% 準確，因為它沒有任何解除安裝的應用程式套件來檢查檔案排除。這會以最佳猜測搜尋檔案/資料夾，並排除與你現時安裝的應用程式重疊的檔案/資料夾。請確認標記為移除的檔案確實屬於已解除安裝的應用程式。"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "孤立ファイル検索は100%正確ではありません。アンインストールされたアプリのバンドルがないため、ファイルの除外に対するチェックができません。これはファイル/フォルダーのベストガイス検索を行い、現在インストールされているアプリケーションと重複するものを除外します。削除対象としてマークされたファイルが本当にアンインストールされたアプリケーションに属していることを確認してください。"
           }
         }
       }
@@ -5601,6 +6350,12 @@
             "state" : "translated",
             "value" : "單獨檔案"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "孤立ファイル"
+          }
         }
       }
     },
@@ -5648,6 +6403,12 @@
             "state" : "translated",
             "value" : "Pearcleaner 及其所有檔案將會完全移除，你確定嗎？"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner とそのすべてのファイルが完全に削除されます。よろしいですか？"
+          }
         }
       }
     },
@@ -5694,6 +6455,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pearcleaner 命令列介面（CLI）支援"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner CLI サポート"
           }
         }
       }
@@ -5743,6 +6510,12 @@
             "state" : "translated",
             "value" : "Pearcleaner 解除安裝"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleanerでアンインストール"
+          }
         }
       }
     },
@@ -5789,6 +6562,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "權限狀態"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "権限ステータス"
           }
         }
       }
@@ -5837,6 +6616,12 @@
             "state" : "translated",
             "value" : "權限"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "権限"
+          }
         }
       }
     },
@@ -5883,6 +6668,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "固定彈出式視窗於最上方"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ポップオーバーウィンドウを最上部に固定"
           }
         }
       }
@@ -5931,6 +6722,12 @@
             "state" : "translated",
             "value" : "PLIST 文件"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plistファイル"
+          }
         }
       }
     },
@@ -5976,6 +6773,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "佇列："
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キュー："
           }
         }
       }
@@ -6024,6 +6827,12 @@
             "state" : "translated",
             "value" : "結束"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "終了"
+          }
         }
       }
     },
@@ -6070,6 +6879,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "結束 Pearcleaner"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleanerを終了"
           }
         }
       }
@@ -6118,6 +6933,12 @@
             "state" : "translated",
             "value" : "實際大小"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "実際のサイズ"
+          }
         }
       }
     },
@@ -6164,6 +6985,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "「實際大小」種類顯示檔案在磁碟上實際分配了多少空間。\n\n「邏輯大小」種類顯示檔案的二進位大小。二進位檔案系統可以在磁碟上壓縮並减少重複的磁區，因此實際大小有時會比邏輯大小更小（或更大）。\n\n「Finder 大小」與你在 Finder 中點按右鍵 > 取得資料的動作類似，這會讓邏輯大小與實際大小在一起顯示。"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「実際のサイズ」タイプは、ファイルがディスク上で実際に割り当てられているスペースの量を表示します。\n\n「論理サイズ」タイプは、バイナリサイズを表示します。ファイルシステムはディスク上のセクターを圧縮し、重複を排除することができるため、実際のサイズは論理サイズより小さい（または大きい）場合があります。\n\n「Finder サイズ」は、Finder でファイルを右クリックして「情報を取得」を選択した場合と同様で、論理サイズと実際のサイズの両方を表示します。"
           }
         }
       }
@@ -6212,10 +7039,16 @@
             "state" : "translated",
             "value" : "重新整理"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新"
+          }
         }
       }
     },
-    "Refresh Apps" : {
+      "Refresh Apps" : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
@@ -6258,6 +7091,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "重新整理 App"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリを更新"
           }
         }
       }
@@ -6306,6 +7145,12 @@
             "state" : "translated",
             "value" : "重新整理 App（⌘R）"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリを更新（⌘R）"
+          }
         }
       }
     },
@@ -6353,6 +7198,12 @@
             "state" : "translated",
             "value" : "重新整理更新程式"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アップデーターを更新"
+          }
         }
       }
     },
@@ -6398,6 +7249,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "版本備註"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リリースノート"
           }
         }
       }
@@ -6446,6 +7303,12 @@
             "state" : "translated",
             "value" : "發行版本"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リリース"
+          }
         }
       }
     },
@@ -6492,6 +7355,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "之前應用程式的剩餘檔案和資料夾"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以前のアプリケーションからの残りのファイルとフォルダー"
           }
         }
       }
@@ -6540,6 +7409,12 @@
             "state" : "translated",
             "value" : "重新掃描"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再スキャン"
+          }
         }
       }
     },
@@ -6586,6 +7461,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "重設全部設定為預設值"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべての設定をデフォルトにリセット"
           }
         }
       }
@@ -6634,6 +7515,12 @@
             "state" : "translated",
             "value" : "重新設定"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定をリセット"
+          }
         }
       }
     },
@@ -6680,6 +7567,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "重設大小"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サイズをリセット"
           }
         }
       }
@@ -6728,6 +7621,12 @@
             "state" : "translated",
             "value" : "重新啟動"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再起動"
+          }
         }
       }
     },
@@ -6774,6 +7673,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "重新啟動 %@ 來使變更生效"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "変更を有効にするために%@を再起動してください"
           }
         }
       }
@@ -6822,6 +7727,12 @@
             "state" : "translated",
             "value" : "已成功完成反向搜尋"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "逆検索が成功しました"
+          }
         }
       }
     },
@@ -6869,6 +7780,12 @@
             "state" : "translated",
             "value" : "點按右鍵來重設大小"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "右クリックでサイズをリセット"
+          }
         }
       }
     },
@@ -6915,6 +7832,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "儲存"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存"
           }
         }
       }
@@ -6969,6 +7892,12 @@
             "state" : "translated",
             "value" : "為應用程式搜尋這些資料夾"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これらのフォルダーでアプリを検索"
+          }
         }
       }
     },
@@ -7015,6 +7944,12 @@
             "state" : "translated",
             "value" : "正在搜尋檔案系統"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイルシステムを検索中"
+          }
         }
       }
     },
@@ -7049,6 +7984,12 @@
             "state" : "translated",
             "value" : "選擇一個環境以檢視路徑。"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パスを表示する環境を選択してください。"
+          }
         }
       }
     },
@@ -7082,6 +8023,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "選擇一個"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一つ選択"
           }
         }
       }
@@ -7130,6 +8077,12 @@
             "state" : "translated",
             "value" : "Sentinel 垃圾監視器"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sentinelモニター"
+          }
         }
       }
     },
@@ -7177,6 +8130,12 @@
             "state" : "translated",
             "value" : "Sentinel 垃圾監視器找不到其他要移除的檔案"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sentinelモニターは他のファイルを見つけられませんでした"
+          }
         }
       }
     },
@@ -7220,6 +8179,12 @@
           }
         },
         "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "設定"
@@ -7271,6 +8236,12 @@
             "state" : "translated",
             "value" : "再次顯示宣佈標記"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アナウンスバッジを再度表示"
+          }
         }
       }
     },
@@ -7318,6 +8289,12 @@
             "state" : "translated",
             "value" : "啟動時顯示 App 列表"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "起動時にアプリリストを表示"
+          }
         }
       }
     },
@@ -7363,6 +8340,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "顯示詳細資料"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "詳細を表示"
           }
         }
       }
@@ -7411,6 +8394,12 @@
             "state" : "translated",
             "value" : "顯示最近 3 個版本"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最近の3つのリリースを表示"
+          }
         }
       }
     },
@@ -7457,6 +8446,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "大小"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サイズ"
           }
         }
       }
@@ -7505,6 +8500,12 @@
             "state" : "translated",
             "value" : "依字母順序，按名稱或大小排序應用程式列表"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリリストを名前またはサイズでアルファベット順に並べ替え"
+          }
         }
       }
     },
@@ -7551,6 +8552,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "按照名稱排序"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "名前で並べ替え"
           }
         }
       }
@@ -7599,6 +8606,12 @@
             "state" : "translated",
             "value" : "按照大小排序"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サイズで並べ替え"
+          }
         }
       }
     },
@@ -7644,6 +8657,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "排序選項"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "並べ替えオプション"
           }
         }
       }
@@ -7692,6 +8711,12 @@
             "state" : "translated",
             "value" : "排序：%@"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "並べ替え：%@"
+          }
         }
       }
     },
@@ -7738,6 +8763,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "贊助"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スポンサー"
           }
         }
       }
@@ -7786,6 +8817,12 @@
             "state" : "translated",
             "value" : "送出一个錯誤回報或功能要求"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バグ報告または機能リクエストを送信"
+          }
         }
       }
     },
@@ -7832,6 +8869,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "送出新 Issue"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新しい問題を送信"
           }
         }
       }
@@ -7880,6 +8923,12 @@
             "state" : "translated",
             "value" : "支援"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サポート"
+          }
         }
       }
     },
@@ -7927,6 +8976,12 @@
             "state" : "translated",
             "value" : "系統"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "システム"
+          }
         }
       }
     },
@@ -7972,6 +9027,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "系統"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "システム"
           }
         }
       }
@@ -8020,6 +9081,12 @@
             "state" : "translated",
             "value" : "主題模式"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "テーマモード"
+          }
         }
       }
     },
@@ -8066,6 +9133,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "這樣會將檔案/資料夾加至排除列表中。前往「設定」>「資料夾」分頁編輯排除列表"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これにより、ファイル/フォルダーが除外リストに追加されます。除外リストは、設定 > フォルダータブから編集できます"
           }
         }
       }
@@ -8114,6 +9187,12 @@
             "state" : "translated",
             "value" : "此 App 位於 %@ 中"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このアプリは%@にあります"
+          }
         }
       }
     },
@@ -8160,6 +9239,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "此為一個網頁 App"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これはウェブアプリです"
           }
         }
       }
@@ -8208,6 +9293,12 @@
             "state" : "translated",
             "value" : "此為一個已封裝的 iOS App"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これはラップされたiOSアプリです"
+          }
         }
       }
     },
@@ -8255,6 +9346,12 @@
             "state" : "translated",
             "value" : "不論你在選單列模式下或常規模式下執行，此設定都會影響 Pearcleaner。如你停用了選單列圖示，你亦可以停用此設定，這樣 Pearcleaner 就不會在登入時開啟。"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この設定は、メニューバーモードまたは通常モードで実行しているかに関係なく、Pearcleanerに影響します。メニューバーアイコンを無効にする場合は、これも無効にすることをお勧めします。そうすれば、Pearcleanerはログイン時に起動しません。"
+          }
         }
       }
     },
@@ -8301,6 +9398,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在模式之間切換會重設視窗頁框為預設大小/位置"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "モードを切り替えると、ウィンドウフレームがデフォルトのサイズ/位置にリセットされます"
           }
         }
       }
@@ -8350,6 +9453,12 @@
             "state" : "translated",
             "value" : "工具"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ツール"
+          }
         }
       }
     },
@@ -8383,6 +9492,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "可用環境路徑總計"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "利用可能な環境パスの合計"
           }
         }
       }
@@ -8429,6 +9544,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "檔案大小總計："
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイルの合計サイズ："
           }
         }
       }
@@ -8477,8 +9598,13 @@
             "state" : "translated",
             "value" : "透明材料"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "透明素材"
+          }
         }
-      }
     },
     "Type to search" : {
       "localizations" : {
@@ -8522,6 +9648,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "輸入以搜尋"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "検索するには入力"
           }
         }
       }
@@ -8570,6 +9702,12 @@
             "state" : "translated",
             "value" : "還原移除"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "削除を元に戻す"
+          }
         }
       }
     },
@@ -8616,6 +9754,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "解除安裝"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アンインストール"
           }
         }
       }
@@ -8664,6 +9808,12 @@
             "state" : "translated",
             "value" : "解除安裝確認提示"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アンインストール確認アラート"
+          }
         }
       }
     },
@@ -8711,6 +9861,12 @@
             "state" : "translated",
             "value" : "解除安裝 Pearcleaner"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleanerをアンインストール"
+          }
         }
       }
     },
@@ -8753,6 +9909,12 @@
           }
         },
         "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "更新"
@@ -8804,6 +9966,12 @@
             "state" : "translated",
             "value" : "有可用的更新 🥳"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新が利用可能です 🥳"
+          }
         }
       }
     },
@@ -8838,6 +10006,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更新完成"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新完了"
           }
         }
       }
@@ -8884,6 +10058,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更新頻率"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新頻度"
           }
         }
       }
@@ -8932,6 +10112,12 @@
             "state" : "translated",
             "value" : "更新頻率已設定為「永不」"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アップデーターの頻度が「なし」に設定されています"
+          }
         }
       }
     },
@@ -8979,6 +10165,12 @@
             "state" : "translated",
             "value" : "已停用更新"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新が無効になっています"
+          }
         }
       }
     },
@@ -9024,6 +10216,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "用户"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ユーザー"
           }
         }
       }
@@ -9071,6 +10269,12 @@
             "state" : "translated",
             "value" : "用户"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ユーザー"
+          }
         }
       }
     },
@@ -9116,6 +10320,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "版本 %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バージョン %@"
           }
         }
       }
@@ -9173,10 +10383,16 @@
             "state" : "translated",
             "value" : "檢視"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "表示"
+          }
         }
       }
     },
-    "View in Finder" : {
+     "View in Finder" : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
@@ -9219,6 +10435,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在 Finder 檢視"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder で表示"
           }
         }
       }
@@ -9267,6 +10489,12 @@
             "state" : "translated",
             "value" : "檢視 Issue"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "課題を表示"
+          }
         }
       }
     },
@@ -9313,6 +10541,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "檢視計劃項目貢獻者"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プロジェクトの貢献者を表示"
           }
         }
       }
@@ -9361,6 +10595,12 @@
             "state" : "translated",
             "value" : "檢視發行版本"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リリースを表示"
+          }
         }
       }
     },
@@ -9406,6 +10646,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在 GitHub 中檢視發行版本"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHubでリリースを表示"
           }
         }
       }
@@ -9454,6 +10700,12 @@
             "state" : "translated",
             "value" : "檢視原始碼 Repository"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リポジトリを表示"
+          }
         }
       }
     },
@@ -9497,6 +10749,12 @@
           }
         },
         "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "警告"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "警告"
@@ -9548,6 +10806,12 @@
             "state" : "translated",
             "value" : "警告！"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "警告！"
+          }
         }
       }
     },
@@ -9594,6 +10858,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "網頁"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ウェブ"
           }
         }
       }
@@ -9642,6 +10912,12 @@
             "state" : "translated",
             "value" : "網頁 App"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ウェブアプリ"
+          }
         }
       }
     },
@@ -9688,6 +10964,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "每星期"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "毎週"
           }
         }
       }
@@ -9736,6 +11018,12 @@
             "state" : "translated",
             "value" : "當應用程式丟到垃圾桶時，Pearcleaner 會啟動並尋找要刪除的相關檔案和資料夾。"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリケーションがゴミ箱に移動されると、Pearcleanerが起動し、関連するファイルとフォルダーを検索して削除します。"
+          }
         }
       }
     },
@@ -9782,6 +11070,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "使用「垃圾桶」按鈕刪除檔案時，你可以在繼續動作前顯示警告以避免意外刪除。"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ゴミ箱ボタンを使用してファイルを削除する場合、アラートを表示してからアクションを実行することで、誤った削除を防ぐことができます。"
           }
         }
       }
@@ -9830,6 +11124,12 @@
             "state" : "translated",
             "value" : "啟用 Homebrew 清理時，Pearcleaner 會檢查你要移除的應用程式是否透過 Homebrew 安裝，並啟動「終端機.app」以執行 brew 解除安裝和清理命令，讓 Homebrew 知道此應用程式已移除。這樣你的 Homebrew 列表會正確同步，並移除快取檔案。這需要「終端機.app」，因為一些應用程式需要 sudo 權限才能移除系統資料夾中的服務和檔案。由於其他終端機應用程式不支援 AppleScript 和/或「do script」命令，因此這裡使用預設的 macOS 終端機應用程式。\n\n注意：如你使用 ⌘Z 還原刪除檔案，檔案將會放回，但 Homebrew 並不會注意到這一點。如要重新同步 Homebrew 列表，你需要執行：\n\n> brew install APPNAME --force"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Homebrewのクリーンアップが有効になっている場合、Pearcleanerはアプリを削除する際にHomebrewを介してインストールされたかどうかを確認し、Terminal.appを起動してbrew uninstallとクリーンアップコマンドを実行して、Homebrewにアプリが削除されたことを通知します。この方法でHomebrewのリストが正しく同期され、キャッシュが削除されます。システムフォルダーに配置されたサービスやファイルを削除するには、一部のアプリにsudo権限が必要なため、Terminal.appが必要です。他のターミナルアプリはAppleScriptや'do script'コマンドをサポートしていないため、デフォルトのmacOS Terminalアプリを使用することにしました。\n\n注意: CMD+Zでファイル削除を元に戻すと、ファイルは元に戻りますが、Homebrewはそれを認識しません。Homebrewのリストを再度同期させるには、次のコマンドを実行する必要があります:\n\n> brew install APPNAME --force"
+          }
         }
       }
     },
@@ -9877,6 +11177,12 @@
             "state" : "translated",
             "value" : "啟用選單欄圖示時，主要應用程式視窗與 Dock 圖示將停用，因為應用程式將設定為「配件模式」。"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メニューバーアイコンが有効になっている場合、アプリのメインウィンドウとDockアイコンが無効になります。アプリがアクセサリモードになるためです。"
+          }
         }
       }
     },
@@ -9923,6 +11229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "啟用此模式時，按一下「解除安裝」按鈕移除應用程式之後亦會立即關閉 Pearcleaner。\n這只會影響 Pearcleaner 透過外部方式開啟󠄁，例如 Sentinel 垃圾監視器、Finder 延伸功能或深連結（Deep Link）。\n這可讓你一次性使用此應用程式以快速解除安裝。如 Pearcleaner 正常開啟，此設定將會忽略，並繼續如常工作。"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このモードが有効になっている場合、アプリを削除するために「アンインストール」ボタンをクリックすると、Pearcleanerも直後に閉じられます。\nこれは、Sentinel Trash Monitor、Finder拡張機能、またはディープリンクなどの外部手段でPearcleanerが開かれた場合にのみ影響します。\nこれにより、アプリを素早くアンインストールするためにアプリを1回だけ使用できます。Pearcleanerが通常の方法で開かれた場合、この設定は無視され、通常どおり機能します。"
           }
         }
       }
