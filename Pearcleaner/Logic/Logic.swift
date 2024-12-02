@@ -300,9 +300,9 @@ func undoTrash(appState: AppState, completion: @escaping () -> Void = {}) {
 
 
 // Reload apps list
-func reloadAppsList(appState: AppState, fsm: FolderSettingsManager) {
+func reloadAppsList(appState: AppState, fsm: FolderSettingsManager, delay: Double = 0.0) {
     appState.reload = true
-    updateOnBackground(after: 1.5) {
+    updateOnBackground(after: delay) {
         let sortedApps = getSortedApps(paths: fsm.folderPaths)
         // Update UI on the main thread
         updateOnMain {

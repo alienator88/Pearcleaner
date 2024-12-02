@@ -33,7 +33,7 @@ struct AppCommands: Commands {
         CommandGroup(replacing: .appInfo) {
 
             Button {
-                updater.checkForUpdatesForce(showSheet: true)
+                updater.checkForUpdates(sheet: true)
             } label: {
                 Text("Check for Updates")
             }
@@ -56,7 +56,7 @@ struct AppCommands: Commands {
             {
                 if appState.currentView != .zombie {
                     undoTrash(appState: appState) {
-                        reloadAppsList(appState: appState, fsm: fsm)
+                        reloadAppsList(appState: appState, fsm: fsm, delay: 1.5)
                         if appState.currentView == .files {
                             showAppInFiles(appInfo: appState.appInfo, appState: appState, locations: locations, showPopover: $showPopover)
                         }

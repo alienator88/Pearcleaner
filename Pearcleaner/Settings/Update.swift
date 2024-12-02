@@ -36,12 +36,12 @@ struct UpdateSettingsTab: View {
             HStack(alignment: .center, spacing: 20) {
 
                 Button {
-                    updater.checkForUpdatesForce(showSheet: false)
+                    updater.checkForUpdates(sheet: false)
                 } label: { EmptyView() }
                 .buttonStyle(SimpleButtonStyle(icon: "arrow.uturn.left.circle", label: String(localized: "Refresh"), help: String(localized: "Refresh updater")))
                 .contextMenu {
                     Button("Force Refresh") {
-                        updater.checkForUpdatesForce(showSheet: true)
+                        updater.checkForUpdates(sheet: true, force: true)
                     }
                 }
 
