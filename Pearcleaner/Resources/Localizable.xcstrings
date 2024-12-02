@@ -1547,7 +1547,7 @@
         }
       }
     },
-        "Clear text" : {
+    "Clear text" : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
