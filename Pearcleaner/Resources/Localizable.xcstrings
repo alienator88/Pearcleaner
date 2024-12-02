@@ -4704,20 +4704,20 @@
           }
         },
         "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "登入時啟動 Pearcleaner"
-          }
-        },
+           "stringUnit" : {
+             "state" : "translated",
+             "value" : "登入時啟動 Pearcleaner"
+           }
+         },
         "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ログイン時にPearcleanerを起動"
-          }
-        }
-      }
-    },
-       "Locations that will be searched for .app files. Click a non-default path to remove it. Default paths can't be removed." : {
+           "stringUnit" : {
+             "state" : "translated",
+             "value" : "ログイン時にPearcleanerを起動"
+           }
+         }
+       }
+     },
+     "Locations that will be searched for .app files. Click a non-default path to remove it. Default paths can't be removed." : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
