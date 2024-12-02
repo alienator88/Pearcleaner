@@ -5669,7 +5669,7 @@
         }
       }
     },
-        "Next update check: %@" : {
+    "Next update check: %@" : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
