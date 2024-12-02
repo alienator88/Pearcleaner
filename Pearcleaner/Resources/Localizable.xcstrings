@@ -7048,7 +7048,7 @@
         }
       }
     },
-      "Refresh Apps" : {
+    "Refresh Apps" : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
