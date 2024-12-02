@@ -4704,16 +4704,16 @@
           }
         },
         "zh-HK" : {
-           "stringUnit" : {
-             "state" : "translated",
-             "value" : "登入時啟動 Pearcleaner"
-           }
+          "stringUnit" : {
+            "state" : "translated",
+             value" : "登入時啟動 Pearcleaner"
+          }
         },
         "ja" : {
-           "stringUnit" : {
-             "state" : "translated",
-             "value" : "ログイン時にPearcleanerを起動"
-           }
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ログイン時にPearcleanerを起動"
+          }
         }
       }
     },
