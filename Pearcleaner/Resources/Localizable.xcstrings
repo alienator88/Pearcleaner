@@ -3927,7 +3927,7 @@
         }
       }
     },
-       "Important" : {
+    "Important" : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
