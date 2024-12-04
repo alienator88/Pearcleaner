@@ -36,20 +36,17 @@ If you are able to contribute to translations for the app, please see this discu
 > Pearcleaner is licensed under Apache 2.0 with [Commons Clause](https://commonsclause.com/). This means that you can do anything you'd like with the source, modify it, contribute to it, etc., but the license explicitly prohibits any form of monetization for Pearcleaner or any modified versions of it. See full license [HERE](https://github.com/alienator88/Pearcleaner/blob/main/LICENSE.md)
 
 ## Features
-- Swift/SwiftUI
-- Small app size
 - Orphaned file search for finding remaining files from previously uninstalled applications
 - Development environments file/cache cleaning
 - Sentinel monitor helper that can be enabled to watch Trash folder for deleted apps to cleanup after the fact(Extremely small (210KB) and uses ~2mb of ram to run in the background and file watch)
 - Mini mode which can be enabled from Settings
 - Menubar icon option
 - CLI support
-- Can drop apps to uninstall directly on the Pearcleaner Dock icon or the app window
+- Drag/drop applications support
 - Optional Finder Extension which allows you to uninstall an app directly from Finder by `right click > Pearcleaner Uninstall`
 - Theme System available with custom color selector
 - Differentiate between regular, Safari web-apps and mobile apps with badges like **web** and **iOS**
 - Has clean uninstall menu option for the Pearcleaner app itself if you want to stop using it and get rid of all files and launch items
-- New announcements badge
 - Export app bundles for migrating apps and their cache to a new system
 - Export app file list search results
 - Optional Homebrew cleanup
@@ -60,65 +57,14 @@ If you are able to contribute to translations for the app, please see this discu
 
 ## Screenshots
 
-<img src="https://github.com/alienator88/Pearcleaner/assets/91337119/64f581a6-47b7-4ad1-acd3-24d585407aa7" align="left" width="400" />
+<img src="https://github.com/user-attachments/assets/8051355a-1321-4b45-8e63-2dadc4efd244" align="left" width="400" />
 
-<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/3cfe64c2-eba9-4aa0-8250-1f318d3f624c" align="center" width="400" />
+<img src="https://github.com/user-attachments/assets/878b21bf-37f7-4624-b9df-a968d1d96eb1" align="center" width="400" />
 <p></p>
-<img src="https://github.com/alienator88/Pearcleaner/assets/91337119/327388d9-e043-40ba-b473-4a7c255b1cdf" align="left" width="400" />
+<img src="https://github.com/user-attachments/assets/fc2f6d24-d6c9-4aec-91da-3d0adc05df48" align="left" width="400" />
 
-<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/e6cc2708-35ed-4084-aa0b-c789a85c6324" align="center" width="400" />
+<img src="https://github.com/user-attachments/assets/d8e43558-071f-4ff8-8557-b0508c063c1c" align="center" width="400" />
 <p></p>
-
-
-<details open>
-  <summary>Themes</summary>
-<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/e3178f02-785d-48b9-b9ac-20f4e94550ff" align="left" width="400" />
-
-<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/d65bc6b4-23b1-47de-b461-f24581aae149" align="center" width="400" />
-</details>
-
-
-<details>
-  <summary>Mini Mode</summary>
-<img src="https://github.com/alienator88/Pearcleaner/assets/91337119/0bcfbbee-7d43-4f14-9657-d3d62da72d88" align="left" width="400" />
-
-<img src="https://github.com/alienator88/Pearcleaner/assets/91337119/3724094f-f160-4e07-8162-ff8e5e850596" align="center" width="400" />
-<p></p>
-<img src="https://github.com/alienator88/Pearcleaner/assets/91337119/9f713923-2eca-41c0-95da-3d35ce546f93" align="left" width="400" />
-
-<img src="https://github.com/alienator88/Pearcleaner/assets/91337119/52cec03b-9b5c-40c0-865d-669466713c18" align="center" width="400" />
-<p></p>
-</details>
-
-<details>
-  <summary>Finder Extension</summary>
-   <img src="https://github.com/alienator88/Pearcleaner/assets/6263626/098d58a4-bc2b-4bb3-958f-b1456dd7cb84" align="center" width="400" />
-</details>
-
-<details>
-  <summary>Leftover File Search</summary>
-<img src="https://github.com/alienator88/Pearcleaner/assets/91337119/7f0bb69c-67ef-488b-b7ea-43e9215b3065" align="left" width="400" />
-
-<img src="https://github.com/alienator88/Pearcleaner/assets/91337119/a1d815cd-7118-4817-80f7-e568c6357d19" align="center" width="400" />
-
-</details>
-
-<details>
-  <summary>Condition Builder</summary>
-<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/07ee866a-e872-472e-b4af-94d7fafe1c4f" align="center" width="400" />
-   
-</details>
-
-<details>
-  <summary>Settings</summary>
-<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/dda6c134-57f1-4a37-95e7-a053d7bab62b" align="left" width="400" />
-
-<img src="https://github.com/alienator88/Pearcleaner/assets/6263626/dd483175-65ad-44de-a742-2bbfffbf124e" align="center" width="400" />
-
-</details>
-
-<p></p>
-
 
 ## Issues
 > [!WARNING]
@@ -131,7 +77,7 @@ If you are able to contribute to translations for the app, please see this discu
 > - MacOS 13.0+ [Non-beta releases]
 > - Full Disk permission to search for files
 > - Accessibility permission to delete/restore files
-> - Automation permission to control Finder
+> - Automation permission to control Finder and Terminal
 
 
 

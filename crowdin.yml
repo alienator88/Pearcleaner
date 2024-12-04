@@ -1,5 +1,0 @@
-files:
-  - source: /Pearcleaner/Resources/Localizable.xcstrings
-    translation: /Pearcleaner/Resources/Crowdin.xcstrings
-    multilingual: 1
-    update_option: update_as_unapproved
