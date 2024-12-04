@@ -12,6 +12,7 @@ struct AboutSettingsTab: View {
     @EnvironmentObject var appState: AppState
     @State private var disclose = false
     @State private var discloseCredits = false
+    @State private var windowController = WindowManager()
 
     var body: some View {
 
@@ -38,6 +39,10 @@ struct AboutSettingsTab: View {
                     }
                     .padding(5)
                 })
+                Button("Console") {
+                    windowController.open(with: ConsoleView(), width: 600, height: 400)
+                }
+                .controlSize(.large)
             }
 
             VStack(spacing: 10) {

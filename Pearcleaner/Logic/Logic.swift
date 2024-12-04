@@ -193,8 +193,9 @@ func moveFilesToTrash(appState: AppState, at fileURLs: [URL], completion: @escap
     sendStopNotificationFW()
 
     updateOnMain {
-        let posixFiles = fileURLs.map { item in
-            return "POSIX file \"\(item.path)\"" + (item == fileURLs.last ? "" : ", ")}.joined()
+        let validFileURLs = filterValidFiles(fileURLs: fileURLs) // Filter invalid files
+        let posixFiles = validFileURLs.map { item in
+            return "POSIX file \"\(item.path)\"" + (item == validFileURLs.last ? "" : ", ")}.joined()
         let scriptSource = """
         tell application \"Finder\" to delete { \(posixFiles) }
         """
@@ -232,13 +233,13 @@ func moveFilesToTrashCLI(at fileURLs: [URL]) -> Bool {
     sendStopNotificationFW()
 
     // Create the AppleScript for moving files to the Trash
-    let posixFiles = fileURLs.map { item in
-        return "POSIX file \"\(item.path)\"" + (item == fileURLs.last ? "" : ", ")}.joined()
+    let validFileURLs = filterValidFiles(fileURLs: fileURLs) // Filter invalid files
+    let posixFiles = validFileURLs.map { item in
+        return "POSIX file \"\(item.path)\"" + (item == validFileURLs.last ? "" : ", ")}.joined()
 
     let scriptSource = """
     tell application \"Finder\" to delete { \(posixFiles) }
     """
-
     var error: NSDictionary?
     if let scriptObject = NSAppleScript(source: scriptSource) {
         let output: NSAppleEventDescriptor = scriptObject.executeAndReturnError(&error)
@@ -262,6 +263,57 @@ func moveFilesToTrashCLI(at fileURLs: [URL]) -> Bool {
     }
 
     return true  // Indicate success
+}
+
+
+func filterValidFiles(fileURLs: [URL]) -> [URL] {
+    let fileManager = FileManager.default
+    return fileURLs.filter { url in
+
+        // Check if file or folder exists
+        guard fileManager.fileExists(atPath: url.path) else {
+            printOS("Skipping \(url.path): File or folder does not exist.")
+            return false
+        }
+
+        // Unlock the file or folder if it is locked
+        if url.isFileLocked {
+            do {
+                try removeImmutableAttribute(from: url)
+                printOS("Unlocked \(url.path).")
+            } catch {
+                printOS("Skipping \(url.path): Failed to unlock file or folder (\(error)).")
+                return false
+            }
+        }
+
+        // Check if file or folder is writable
+        guard fileManager.isWritableFile(atPath: url.path) else {
+            printOS("Skipping \(url.path): File or folder is not writable.")
+            return false
+        }
+
+        return true
+    }
+}
+
+extension URL {
+    var isFileLocked: Bool {
+        do {
+            let fileAttributes = try FileManager.default.attributesOfItem(atPath: self.path)
+            if let isLocked = fileAttributes[.immutable] as? Bool {
+                return isLocked
+            }
+        } catch {
+            printOS("Error checking lock status for \(self.path): \(error)")
+        }
+        return false
+    }
+}
+
+func removeImmutableAttribute(from url: URL) throws {
+    let attributes = [FileAttributeKey.immutable: false]
+    try FileManager.default.setAttributes(attributes, ofItemAtPath: url.path)
 }
 
 
@@ -544,7 +596,7 @@ func caskCleanup(app: String) {
                 do script "/bin/bash --noprofile --norc -c '
                 clear;
                 echo \\"[Pearcleaner] Homebrew cleanup for \(app):\n\\";
-                \(cmd) uninstall --cask \(formattedApp) --force;
+                \(cmd) uninstall --cask \(formattedApp) --zap --force;
                 \(cmd) cleanup;
                 killall Terminal;
                 '" in front window
