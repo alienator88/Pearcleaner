@@ -12,7 +12,6 @@ struct AboutSettingsTab: View {
     @EnvironmentObject var appState: AppState
     @State private var disclose = false
     @State private var discloseCredits = false
-    @State private var windowController = WindowManager()
 
     var body: some View {
 
@@ -39,10 +38,6 @@ struct AboutSettingsTab: View {
                     }
                     .padding(5)
                 })
-                Button("Console") {
-                    windowController.open(with: ConsoleView(), width: 600, height: 400)
-                }
-                .controlSize(.large)
             }
 
             VStack(spacing: 10) {
@@ -118,63 +113,9 @@ struct AboutSettingsTab: View {
                             .padding(5)
                         } label: { EmptyView() }
 
-//                        Button(action: {
-//                            NSWorkspace.shared.open(URL(string: "https://github.com/sponsors/alienator88")!)
-//                        }, label: {
-//                            HStack(alignment: .center, spacing: 8) {
-//                                Image(systemName: "heart")
-//                                    .resizable()
-//                                    .scaledToFit()
-//                                    .frame(width: 20, height: 20)
-//                                    .foregroundStyle(.pink)
-//
-//                                Text("Sponsor")
-//                                    .font(.title3)
-//                                    .bold()
-//                            }
-//                            .padding(5)
-//                        })
                     }
                 })
 
-                // Credits
-//                PearGroupBox(header: { Text("Credits").font(.title2) }, content: {
-//                    HStack{
-//                        Image(systemName: "info.circle")
-//                            .resizable()
-//                            .scaledToFit()
-//                            .frame(width: 20, height: 20)
-//                            .padding(.trailing)
-//
-//                        Text("View project resources")
-//
-//                        DisclosureGroup("", isExpanded: $discloseCredits, content: {
-//                            VStack(alignment: .leading) {
-//
-//                                ForEach(credits) { credit in
-//                                    HStack{
-//                                        VStack(alignment: .leading){
-//                                            Text(credit.name)
-//                                            Text(credit.description)
-//                                                .font(.callout)
-//                                                .foregroundStyle(.primary.opacity(0.5))
-//
-//                                        }
-//                                        Spacer()
-//                                        Button(""){
-//                                            NSWorkspace.shared.open(credit.url)
-//                                        }
-//                                        .buttonStyle(SimpleButtonStyle(icon: "link", help: "View"))
-//                                        .padding(.trailing)
-//
-//                                    }
-//                                }
-//                            }
-//                            .padding(5)
-//                        })
-//                    }
-//
-//                })
 
             }
 
@@ -191,6 +132,7 @@ struct Sponsor: Identifiable {
     let url: URL
 
     static let sponsors: [Sponsor] = [
+        Sponsor(name: "barats", url: URL(string: "https://github.com/barats")!),
         Sponsor(name: "mzdr (monthly)", url: URL(string: "https://github.com/mzdr")!),
         Sponsor(name: "chris3ware", url: URL(string: "https://github.com/chris3ware")!),
         Sponsor(name: "fpuhan", url: URL(string: "https://github.com/fpuhan")!),

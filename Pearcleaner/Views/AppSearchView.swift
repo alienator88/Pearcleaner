@@ -7,7 +7,7 @@
 
 import SwiftUI
 import AlinFoundation
-import Fuse
+import Ifrit
 
 struct AppSearchView: View {
     @EnvironmentObject var appState: AppState
@@ -248,10 +248,9 @@ struct AppSearchView: View {
                 if app.appName.localizedCaseInsensitiveContains(search) {
                     return true
                 }
-                let result = fuse.search(search, in: app.appName)
-                return result?.score ?? 1.0 < 0.5 // Adjust threshold as needed (lower = stricter)
+                let result = fuse.searchSync(search, in: app.appName)
+                return result?.score ?? 1.0 < 0.4 // Adjust threshold as needed (lower = stricter)
             }
-//            apps = appState.sortedApps.filter { $0.appName.localizedCaseInsensitiveContains(search) }
         }
 
         // Sort based on the selected option

@@ -1,5 +1,5 @@
 {
-  "originHash" : "86b6bd342d4a4f0d825ea3c6c6cba6a6c6f5e9c0bd3788dba02512e688f9fbc4",
+  "originHash" : "d9bd537d32aa7a1269125aa1231a21a86d6e82ea494d2dc3e667820ebbc93919",
   "pins" : [
     {
       "identity" : "alinfoundation",
@@ -7,7 +7,7 @@
       "location" : "https://github.com/alienator88/AlinFoundation",
       "state" : {
         "branch" : "main",
-        "revision" : "47da866f06cb92a846e951a0c5db5b9625a661ba"
+        "revision" : "38479e9edc93afd2f4c56feeab6ba0c06d17448c"
       }
     },
     {
@@ -20,12 +20,12 @@
       }
     },
     {
-      "identity" : "fuse-swift",
+      "identity" : "ifrit",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/krisk/fuse-swift",
+      "location" : "https://github.com/ukushu/Ifrit.git",
       "state" : {
-        "revision" : "26ba868691b2d8b7bf2b1322951eb591be70ccca",
-        "version" : "1.4.0"
+        "branch" : "main",
+        "revision" : "0240251c688cca825f9bd5d6b4b30cf429d62e78"
       }
     }
   ],

@@ -1994,9 +1994,6 @@
         }
       }
     },
-    "Console" : {
-
-    },
     "Container" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2208,6 +2205,9 @@
           }
         }
       }
+    },
+    "Debug Console" : {
+
     },
     "Delete all files within this folder" : {
       "localizations" : {

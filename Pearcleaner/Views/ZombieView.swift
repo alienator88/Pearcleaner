@@ -194,51 +194,7 @@ struct ZombieView: View {
                         .buttonStyle(RescanButton())
 
                         Button {
-                            showCustomAlert(enabled: confirmAlert, title: String(localized: "Warning"), message: String(localized: "Are you sure you want to remove these files?"), style: .warning, onOk: {
-                                Task {
-
-                                    let selectedItemsArray = Array(selectedZombieItemsLocal)
-
-                                    moveFilesToTrash(appState: appState, at: selectedItemsArray) { success in
-
-                                        guard success else {
-                                            return
-                                        }
-
-                                        if selectedZombieItemsLocal.count == appState.zombieFile.fileSize.keys.count {
-                                            updateOnMain {
-                                                appState.zombieFile = .empty
-                                                search = ""
-                                                searchZ = ""
-                                                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                                                    if mini || menubarEnabled {
-                                                        appState.currentView = .apps
-                                                        showPopover = false
-                                                    } else {
-                                                        appState.currentView = .empty
-                                                    }
-                                                }
-
-                                            }
-                                        } else {
-                                            // Remove items from the list
-                                            appState.zombieFile.fileSize = appState.zombieFile.fileSize.filter { !selectedZombieItemsLocal.contains($0.key) }
-                                            appState.zombieFile.fileSizeLogical = appState.zombieFile.fileSizeLogical.filter { !selectedZombieItemsLocal.contains($0.key) }
-                                            appState.zombieFile.fileIcon = appState.zombieFile.fileIcon.filter { !selectedZombieItemsLocal.contains($0.key) }
-
-                                            // Clear the selection
-                                            selectedZombieItemsLocal.removeAll()
-
-                                            // Update memoized files and total sizes
-                                            updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSortAlpha: selectedSortAlpha, force: true)
-                                        }
-
-                                    }
-
-                                }
-
-                            })
-
+                            handleUninstallAction()
                         } label: { Text(verbatim: "\(sizeType == "Logical" ? totalLogicalSizeUninstallBtn : totalRealSizeUninstallBtn)") }
                             .buttonStyle(UninstallButton(isEnabled: !selectedZombieItemsLocal.isEmpty))
                             .disabled(selectedZombieItemsLocal.isEmpty)
@@ -282,6 +238,53 @@ struct ZombieView: View {
             }
         }
 
+    }
+
+    private func handleUninstallAction() {
+        showCustomAlert(enabled: confirmAlert, title: String(localized: "Warning"), message: String(localized: "Are you sure you want to remove these files?"), style: .warning, onOk: {
+            Task {
+
+                let selectedItemsArray = Array(selectedZombieItemsLocal)
+
+                moveFilesToTrash(appState: appState, at: selectedItemsArray) { success in
+
+                    guard success else {
+                        return
+                    }
+
+                    if selectedZombieItemsLocal.count == appState.zombieFile.fileSize.keys.count {
+                        updateOnMain {
+                            appState.zombieFile = .empty
+                            search = ""
+                            searchZ = ""
+                            withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                                if mini || menubarEnabled {
+                                    appState.currentView = .apps
+                                    showPopover = false
+                                } else {
+                                    appState.currentView = .empty
+                                }
+                            }
+
+                        }
+                    } else {
+                        // Remove items from the list
+                        appState.zombieFile.fileSize = appState.zombieFile.fileSize.filter { !selectedZombieItemsLocal.contains($0.key) }
+                        appState.zombieFile.fileSizeLogical = appState.zombieFile.fileSizeLogical.filter { !selectedZombieItemsLocal.contains($0.key) }
+                        appState.zombieFile.fileIcon = appState.zombieFile.fileIcon.filter { !selectedZombieItemsLocal.contains($0.key) }
+
+                        // Clear the selection
+                        selectedZombieItemsLocal.removeAll()
+
+                        // Update memoized files and total sizes
+                        updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSortAlpha: selectedSortAlpha, force: true)
+                    }
+
+                }
+
+            }
+
+        })
     }
 
     private func binding(for file: URL) -> Binding<Bool> {

@@ -491,12 +491,6 @@ struct FilesView: View {
                                     }
                                 }
                             }
-//                            // If oneShotMode is true, terminate the app
-//                            if oneShotMode && appState.externalMode {
-//                                updateOnMain(after: 2) {
-//                                    NSApp.terminate(nil)
-//                                }
-//                            }
                         }
                     }
                 }

@@ -197,7 +197,10 @@ func moveFilesToTrash(appState: AppState, at fileURLs: [URL], completion: @escap
         let posixFiles = validFileURLs.map { item in
             return "POSIX file \"\(item.path)\"" + (item == validFileURLs.last ? "" : ", ")}.joined()
         let scriptSource = """
-        tell application \"Finder\" to delete { \(posixFiles) }
+        tell application \"Finder\" 
+            activate
+            delete { \(posixFiles) }
+        end tell
         """
 
         var error: NSDictionary?
@@ -223,6 +226,15 @@ func moveFilesToTrash(appState: AppState, at fileURLs: [URL], completion: @escap
                 printOS("Trash: \(outputString)")
             }
         }
+
+        // Check if any files still exist after the deletion attempt
+        if filesStillExist(at: validFileURLs) {
+            printOS("Trash Error: Some files were not deleted, possible the user cancelled the operation or they were moved. Undoing the delete action")
+            completion(false)  // Indicate failure
+            undoTrash()
+            return
+        }
+
         completion(true)  // Indicate success
     }
 
@@ -238,8 +250,12 @@ func moveFilesToTrashCLI(at fileURLs: [URL]) -> Bool {
         return "POSIX file \"\(item.path)\"" + (item == validFileURLs.last ? "" : ", ")}.joined()
 
     let scriptSource = """
-    tell application \"Finder\" to delete { \(posixFiles) }
-    """
+        tell application \"Finder\" 
+            activate
+            delete { \(posixFiles) }
+        end tell
+        """
+
     var error: NSDictionary?
     if let scriptObject = NSAppleScript(source: scriptSource) {
         let output: NSAppleEventDescriptor = scriptObject.executeAndReturnError(&error)
@@ -262,7 +278,25 @@ func moveFilesToTrashCLI(at fileURLs: [URL]) -> Bool {
         }
     }
 
+    // Check if any files still exist after the deletion attempt
+    if filesStillExist(at: validFileURLs) {
+        printOS("Trash Error: Some files were not deleted, possible the user cancelled the operation or they were moved. Undoing the delete action")
+        undoTrash()
+        return false
+    }
+
     return true  // Indicate success
+}
+
+
+// Helper function to check file existence
+func filesStillExist(at fileURLs: [URL]) -> Bool {
+    for url in fileURLs {
+        if FileManager.default.fileExists(atPath: url.path) {
+            return true // A file still exists
+        }
+    }
+    return false // All files were deleted
 }
 
 
@@ -287,11 +321,11 @@ func filterValidFiles(fileURLs: [URL]) -> [URL] {
             }
         }
 
-        // Check if file or folder is writable
-        guard fileManager.isWritableFile(atPath: url.path) else {
-            printOS("Skipping \(url.path): File or folder is not writable.")
-            return false
-        }
+        // Check if file or folder is writable //MARK: Disabled this as it ignores files that need sudo to remove
+//        guard fileManager.isWritableFile(atPath: url.path) else {
+//            printOS("Skipping \(url.path): File or folder is not writable.")
+//            return false
+//        }
 
         return true
     }
@@ -318,7 +352,7 @@ func removeImmutableAttribute(from url: URL) throws {
 
 
 // Undo trash action
-func undoTrash(appState: AppState, completion: @escaping () -> Void = {}) {
+func undoTrash(completion: @escaping () -> Void = {}) {
     let scriptSource = """
     tell application "Finder"
         activate

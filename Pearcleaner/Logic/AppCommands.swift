@@ -17,6 +17,7 @@ struct AppCommands: Commands {
     let themeManager: ThemeManager
     @Binding var showPopover: Bool
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+    @State private var windowController = WindowManager()
 
     init(appState: AppState, locations: Locations, fsm: FolderSettingsManager, updater: Updater, themeManager: ThemeManager, showPopover: Binding<Bool>) {
         self.appState = appState
@@ -55,8 +56,8 @@ struct AppCommands: Commands {
             Button
             {
                 if appState.currentView != .zombie {
-                    undoTrash(appState: appState) {
-                        reloadAppsList(appState: appState, fsm: fsm, delay: 1.5)
+                    undoTrash() {
+                        reloadAppsList(appState: appState, fsm: fsm, delay: 1)
                         if appState.currentView == .files {
                             showAppInFiles(appInfo: appState.appInfo, appState: appState, locations: locations, showPopover: $showPopover)
                         }
@@ -116,6 +117,16 @@ struct AppCommands: Commands {
             }
             .keyboardShortcut("c", modifiers: [.command, .option])
             .disabled(appState.selectedItems.isEmpty)
+
+            Button {
+                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                    windowController.open(with: ConsoleView(), width: 600, height: 400)
+                }
+            } label: {
+                Text("Debug Console")
+            }
+            .keyboardShortcut("d", modifiers: .command)
+
 
 
         }
