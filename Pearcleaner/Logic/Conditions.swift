@@ -145,6 +145,12 @@ var conditions: [Condition] = [
         exclude: [],
         includeForce: nil
     ),
+    Condition(
+        bundle_id: "com.now.gg.BlueStacks",
+        include: ["bst_boost_interprocess"],
+        exclude: [],
+        includeForce: nil
+    ),
 ]
 
 

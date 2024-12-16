@@ -283,12 +283,16 @@ class AppPathFinder {
         for condition in conditions {
             if useBundleIdentifier && bundleIdentifierL.contains(condition.bundle_id) {
                 // Exclude keywords
-                let hasExcludeKeyword = condition.exclude.contains(where: itemL.contains)
+                let hasExcludeKeyword = condition.exclude.contains { keyword in
+                    itemL.pearFormat().contains(keyword.pearFormat())
+                }
                 if hasExcludeKeyword {
                     return false
                 }
                 // Include keywords
-                let hasIncludeKeyword = condition.include.contains(where: itemL.contains)
+                let hasIncludeKeyword = condition.include.contains { keyword in
+                    itemL.pearFormat().contains(keyword.pearFormat())
+                }
                 if hasIncludeKeyword {
                     return true
                 }

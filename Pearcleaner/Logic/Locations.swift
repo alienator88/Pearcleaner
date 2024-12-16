@@ -27,6 +27,7 @@ class Locations: ObservableObject {
         
         self.apps = Category(name: "Apps", paths: [
             "\(home)",
+            "\(home)/Documents",
             "\(home)/Library",
             "\(home)/Library/Application Scripts",
             "\(home)/Library/Application Support",
@@ -45,6 +46,7 @@ class Locations: ObservableObject {
             "\(home)/Library/WebKit",
             "/Users/Shared",
             "/Users/Library",
+            "/Users/Shared/Library/Application Support",
             "/Library",
             "/Library/Application Support",
             "/Library/Application Support/CrashReporter",
@@ -93,6 +95,7 @@ class Locations: ObservableObject {
             "\(home)/Library/Preferences/ByHost",
             "\(home)/Library/Saved Application State",
             "\(home)/Library/WebKit",
+            "/Users/Shared/Library/Application Support",
             "/Library/Application Support",
             "/Library/Application Support/CrashReporter",
             "/Library/Internet Plug-Ins",

@@ -33,6 +33,12 @@
             "value" : "(Verzia %@)"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(Sürüm %@)"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -84,6 +90,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ je už na najnovšej dostupnej verzii"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ halihazırda mevcut olan en son sürümde"
           }
         },
         "zh-Hans" : {
@@ -139,6 +151,12 @@
             "value" : "%@ skontroluje aktualizácie"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ güncellemeleri şu sıklıkla kontrol edecek"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -191,6 +209,12 @@
             "value" : "⇧ + Rolovanie"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⇧ + Kaydır "
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -241,6 +265,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O aplikácii"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hakkında"
           }
         },
         "zh-Hans" : {
@@ -296,6 +326,12 @@
             "value" : "Prístupnosť"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erişilebilirlik"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -349,6 +385,12 @@
             "value" : "Pridať súbor/priečinok"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dosya/klasör ekle"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -393,6 +435,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pridať súbor/priečinok"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Panodan dosya/klasör ekle"
           }
         },
         "zh-Hans" : {
@@ -448,6 +496,12 @@
             "value" : "Pridaj súbory alebo priečinky, ktoré sa pri hľadaní osamelých súborov budú ignorovať. Kliknutím na cestu ju odstrániš zo zoznamu."
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başıboş dosyaları ararken yok sayılacak dosya veya klasörleri ekleyin. Listeden kaldırmak için bir dizine tıklayın."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -501,6 +555,12 @@
             "value" : "Pridať priečinok"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dosya Ekle"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -545,6 +605,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pridať priečinok zo schránky"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Panodan dosya ekle"
           }
         },
         "zh-Hans" : {
@@ -600,6 +666,12 @@
             "value" : "Všetky zaškrtávacie políčka"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tüm onay kutuları"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -651,6 +723,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vždy potvrď súbory označené na odstránenie. V zriedkavých prípadoch sa môžu nájsť nesúvisiace súbory, keď sú názvy aplikácií príliš podobné.\n\nPOZNÁMKA: Pearcleaner používa na odstránenie súborov AppleScript. V súčasnosti macOS neumožňuje AppleScriptu autentifikovať pomocou snímača odtlačkov prstov, podporované je iba overenie heslom."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaldırmak için işaretlenmiş dosyaları her zaman doğrulayın. Nadir durumlarda, uygulama isimleri çok yakın olduğunda ilişkisiz dosyalar da bulunabilir.\n\nNOT: Pearcleaner dosyaları kaldırmak için AppleScript kullanır. Şimdilik macOS, AppleScript’in parmak izi sensörü ile doğrulama yapmasına izin vermiyor, sadece şifre ile doğrulama mümkün."
           }
         },
         "zh-Hans" : {
@@ -706,6 +784,12 @@
             "value" : "Animácie vypnuté"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animasyonlar devre dışı"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -757,6 +841,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Animácie zapnuté"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animasyonlar etkin"
           }
         },
         "zh-Hans" : {
@@ -812,6 +902,12 @@
             "value" : "Oznámenie"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duyuru"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -864,6 +960,12 @@
             "value" : "Názov aplikácie"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulama Adı"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -914,6 +1016,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Veľkosť aplikácie"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulama Boyutu"
           }
         },
         "zh-Hans" : {
@@ -969,6 +1077,12 @@
             "value" : "Vzhľad"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Görünüm"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1019,6 +1133,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Súbor aplikácie je vnorený do podadresárov. Aby sa predišlo odstráneniu nesprávnych priečinkov, Pearcleaner ich nechá tak. V prípade potreby môžeš zostávajúce priečinky manuálne odstrániť."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulama dosyası alt dizinler içinde bulunuyor. Yanlış dosyaların silinmesini önlemek için Pearcleaner bunlara müdahale etmeyecek. Gerekirse kalan dosyaları manuel olarak silebilirsiniz."
           }
         },
         "zh-Hans" : {
@@ -1074,6 +1194,12 @@
             "value" : "Skript aplikácie"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulama Betiği"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1126,6 +1252,12 @@
             "value" : "Aplikácie"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulamalar"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1176,6 +1308,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Naozaj chceš tieto súbory odstrániť?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu dosyaları kaldırmak istediğinize emin misiniz?"
           }
         },
         "zh-Hans" : {
@@ -1231,6 +1369,12 @@
             "value" : "Automatizácia"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otomasyon"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1257,6 +1401,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "バンドルファイル..."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Balík súborov…"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paket Dosyalar…"
           }
         },
         "zh-Hans" : {
@@ -1312,6 +1468,12 @@
             "value" : "vypočítavanie"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "hesaplanıyor"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1363,6 +1525,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zrušiť"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vazgeç"
           }
         },
         "zh-Hans" : {
@@ -1418,6 +1586,12 @@
             "value" : "Skontrolovať aktualizácie"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güncellemeleri Kontrol Et"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1450,6 +1624,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "パスを確認しました: %@"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skontrolované cesty pre %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ için dizinler kontrol edildi"
           }
         },
         "zh-Hans" : {
@@ -1496,6 +1682,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vyčistiť uložené súbory a vyrovnávaciu pamäť pre bežné vývojárske prostredia"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yaygın geliştirme ortamları için depolanan dosyaları ve önbelleği temizle"
           }
         },
         "zh-Hans" : {
@@ -1551,6 +1743,12 @@
             "value" : "Vyčistiť"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temizle"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1602,6 +1800,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vyčistiť text"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metni temizle"
           }
         },
         "zh-Hans" : {
@@ -1657,6 +1861,12 @@
             "value" : "Klikni pre zoznam aplikácií"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulamaların listesi için tıklayın"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1708,6 +1918,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kliknutím na hlavičku zmeň poradie zoradenia"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sıralama düzenini değiştirmek için başlığa tıklayın"
           }
         },
         "zh-Hans" : {
@@ -1763,6 +1979,12 @@
             "value" : "Klikni pre vyhľadávanie"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aramak için tıklayın"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1813,6 +2035,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zatvoriť"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapat"
           }
         },
         "zh-Hans" : {
@@ -1868,6 +2096,12 @@
             "value" : "Zatvoriť po odinštalácii"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaldırdıktan sonra kapat"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1919,6 +2153,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Príkazový riadok"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Komut Satırı"
           }
         },
         "zh-Hans" : {
@@ -1974,6 +2214,12 @@
             "value" : "Dokončené 🚀"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamamlandı 🚀"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2025,6 +2271,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kontajner"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konteyner"
           }
         },
         "zh-Hans" : {
@@ -2080,6 +2332,12 @@
             "value" : "Kopírovať umiestnenia súboru"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dosya Dizinlerini Kopyala"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2131,6 +2389,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kopírovať umiestnenie"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dizini Kopyala"
           }
         },
         "zh-Hans" : {
@@ -2186,6 +2450,12 @@
             "value" : "Denne"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Günlük"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2208,6 +2478,18 @@
     },
     "Debug Console" : {
       "localizations" : {
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladiaca konzola"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hata Ayıklama Konsolu"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2228,6 +2510,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "このフォルダ内のすべてのファイルを削除"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odstrániť všetky súbory v tomto priečinku"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu klasör içindeki tüm dosyaları sil"
           }
         },
         "zh-Hans" : {
@@ -2276,6 +2570,12 @@
             "value" : "Odstrániť obsah"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İçeriği Sil"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2320,6 +2620,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Odstrániť priečinok"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dosyayı Sil"
           }
         },
         "zh-Hans" : {
@@ -2375,6 +2681,12 @@
             "value" : "Detekovať presunutie aplikácií do Koša"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulamalar Çöp Sepeti’ne taşındığında algıla"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2421,6 +2733,12 @@
             "value" : "Vývoj"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geliştirme"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2465,6 +2783,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vývojárske prostredia (Beta)"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geliştirme Ortamları (Beta)"
           }
         },
         "zh-Hans" : {
@@ -2520,6 +2844,12 @@
             "value" : "Vypnuté pri zapnutej ikone v lište"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menü çubuğu ikonu etkinken devredışı"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2571,6 +2901,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zrušiť"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapat"
           }
         },
         "zh-Hans" : {
@@ -2626,6 +2962,12 @@
             "value" : "Sem presuň aplikáciu"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buraya bir uygulama bırakın"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2677,6 +3019,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Presuň súbory alebo priečinky vyššie alebo kliknutím pridaj"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yukarıya dosya veya klasörleri bırakın veya eklemek için tıklayın"
           }
         },
         "zh-Hans" : {
@@ -2732,6 +3080,12 @@
             "value" : "Presuň priečinky vyššie alebo kliknutím pridaj"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yukarıya dosyaları bırakın veya eklemek için tıklayın"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2783,6 +3137,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cieľ presunutia"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hedefi Bırak"
           }
         },
         "zh-Hans" : {
@@ -2838,6 +3198,12 @@
             "value" : "Zapnúť rozšírenie kontextového menu pre Finder"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder için içerik menüsü uzantısını etkinleştir"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2889,6 +3255,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zapnutím CLI budeš môcť vykonávať akcie Pearcleaneru z terminálu. Tým sa pridá príkaz pearcleaner do priečinka /usr/local/bin, takže bude dostupný priamo z tvojej premennej prostredia PATH. Skús to po zapnutí:\n\n> pearcleaner --help"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CLI’yı etkinleştirmek Pearcleaner işlevlerini Terminal’den gerçekleştirmenize imkan sağlar. Bu, pearcleaner komutunu PATH ortam değişkeninizden direkt olarak ulaşılabilir olması için /usr/local/bin içine ekleyecektir. Etkinleştirdikten sonra deneyin:\n\n> pearcleaner --help"
           }
         },
         "zh-Hans" : {
@@ -2944,6 +3316,12 @@
             "value" : "Zapnutím tohto rozšírenia budeš môcť kliknúť pravým tlačidlom myši na aplikácie vo Finderi a rýchlo ich odinštalovať pomocou Pearcleaneru."
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu uzantıyı etkinleştirmek Finder’da uygulamalara sağ tıklayarak Pearcleaner’la hızla kaldırmanıza imkan sağlar"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2988,6 +3366,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prostredie"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ortam"
           }
         },
         "zh-Hans" : {
@@ -3043,6 +3427,12 @@
             "value" : "Vylúčiť"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hariç Tut"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3094,6 +3484,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vylúčiť tieto súbory a priečinky z vyhľadávania osamelých súborov"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu dosya ve klasörleri başıboş dosya aramasından hariç tut"
           }
         },
         "zh-Hans" : {
@@ -3149,6 +3545,12 @@
             "value" : "Exportovať cesty k súborom"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dosya Dizinlerini Dışa Aktar"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3181,6 +3583,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ファイルパスをエクスポート..."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportovať cesty k súborom..."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dosya Dizinlerini Dışa Aktar…"
           }
         },
         "zh-Hans" : {
@@ -3236,6 +3650,12 @@
             "value" : "Nepodarilo sa zobraziť poznámky k vydaniu"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sürüm notlarını görüntüleme başarısız"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3287,6 +3707,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Možnosti zobrazenia veľkosti súborov"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dosya boyutu görüntüleme seçenekleri"
           }
         },
         "zh-Hans" : {
@@ -3342,6 +3768,12 @@
             "value" : "Finder rozšírenie"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder Uzantısı"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3395,6 +3827,12 @@
             "value" : "Hľadanie osamelých súborov, čakaj prosím..."
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başıboş dosyalar bulunuyor, lütfen bekleyin..."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3427,6 +3865,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "フォルダは空です"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Priečinok je prázdny"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dosya boş"
           }
         },
         "zh-Hans" : {
@@ -3482,6 +3932,12 @@
             "value" : "Priečinky"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dosyalar"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3533,6 +3989,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vynútiť obnovenie"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yenilemeyi Zorla"
           }
         },
         "zh-Hans" : {
@@ -3588,6 +4050,12 @@
             "value" : "Plný prístup k disku"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tam Disk Erişimi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3639,6 +4107,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Funkcie"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İşlev"
           }
         },
         "zh-Hans" : {
@@ -3694,6 +4168,12 @@
             "value" : "Zhromažďovanie údajov o aplikácii"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulama detayları toplanıyor"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3745,6 +4225,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Všeobecné"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genel"
           }
         },
         "zh-Hans" : {
@@ -3800,6 +4286,12 @@
             "value" : "Github Sponzori"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub Sponsorları"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3848,6 +4340,12 @@
           }
         },
         "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub: v%@"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "GitHub: v%@"
@@ -3905,6 +4403,12 @@
             "value" : "Skryť údaje"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detayları Gizle"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3958,6 +4462,12 @@
             "value" : "Vyčistiť Homebrew po odinštalácii"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaldırdıkdan sonra Homebrew temizliği"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3990,6 +4500,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ホバーで検索"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prejsť myšou na vyhľadávanie"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aramak için üzerinde tut"
           }
         },
         "zh-Hans" : {
@@ -4045,6 +4567,12 @@
             "value" : "Dôležité"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Önemli"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4096,6 +4624,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ak v režime mini okna pripneš vyskakovacie okno Súbory, kliknutím mimo okna ho nezatvoríš. V opačnom prípade sa zruší kliknutím kdekoľvek mimo aplikácie."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mini pencere modunda, “Dosyalar” açılır penceresini üste sabitlerseniz, pencereden uzağa tıklamak onu kapatmaz. Aksi takdirde, uygulamanın dışında herhangi bir yere tıklandığında kapanacaktır."
           }
         },
         "zh-Hans" : {
@@ -4151,6 +4685,12 @@
             "value" : "V režime mini okna môžeš spustiť Pearcleaner do zobrazenia Zoznamu aplikácií alebo do zobrazenia na presunutie do zóny."
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mini pencere modunda Pearcleaner’ı Uygulama Listesi görünümünde veya Hedefi Bırak görünümünde başlatabilirsiniz."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4203,6 +4743,12 @@
             "value" : "Dátum inštalácie"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kurulum Tarihi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4253,6 +4799,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dátum inštalácie:"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kurulduğu Tarih:"
           }
         },
         "zh-Hans" : {
@@ -4308,6 +4860,12 @@
             "value" : "Nainštalované: v%@"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kurulma: v%@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4359,6 +4917,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Inštrukcie"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Talimatlar"
           }
         },
         "zh-Hans" : {
@@ -4413,6 +4977,12 @@
             "value" : "Rozhranie"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arayüz"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4461,6 +5031,12 @@
           }
         },
         "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "iOS"
@@ -4519,6 +5095,12 @@
             "value" : "IOS aplikácia"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS uygulaması"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4570,6 +5152,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "položka"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "öğe"
           }
         },
         "zh-Hans" : {
@@ -4625,6 +5213,12 @@
             "value" : "položiek"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "öğeden"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4677,6 +5271,12 @@
             "value" : "Dátum posledného použitia"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kullanıldığı Son Tarih"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4727,6 +5327,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dátum posledného použitia:"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kullanıldığı Son Tarih: "
           }
         },
         "zh-Hans" : {
@@ -4782,6 +5388,12 @@
             "value" : "Spustiť Pearcleaner pri prihlásení"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oturum açıldığında Pearcleaner’ı başlat"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4833,6 +5445,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Umiestnenia, v ktorých sa budú vyhľadávať .app súbory. Kliknutím na inú ako predvolenú cestu ju odstrániš. Predvolené cesty nie je možné odstrániť."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ".app dosyaları için aranacak lokasyonlar. Varsayılan olmayan bir dizini kaldırmak için tıklayın. Varsayılan dizinler kaldırılamaz."
           }
         },
         "zh-Hans" : {
@@ -4888,6 +5506,12 @@
             "value" : "Logická"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantıksal"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4939,6 +5563,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vytvoril s ❤️ Alin Lupascu"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alin Lupascu tarafından ❤️ ile yapıldı"
           }
         },
         "zh-Hans" : {
@@ -4994,6 +5624,12 @@
             "value" : "Lišta"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menü çubuğu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5045,6 +5681,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Režim ikony v lište"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menü çubuğu ikon modu"
           }
         },
         "zh-Hans" : {
@@ -5100,6 +5742,12 @@
             "value" : "Nastavenia ikony v lište"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menü çubuğu ikon tercihi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5151,6 +5799,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mini konfigurácia"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mini Konfigürasyon"
           }
         },
         "zh-Hans" : {
@@ -5206,6 +5860,12 @@
             "value" : "Režim mini okna"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mini pencere modu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5257,6 +5917,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Minimalistický zoznam aplikácií v riadku vypnutý"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimalist uygulama listesi satırları devre dışı"
           }
         },
         "zh-Hans" : {
@@ -5312,6 +5978,12 @@
             "value" : "Minimalistický zoznam aplikácií v riadku zapnutý"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimalist uygulama listesi satırları etkin"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5363,6 +6035,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Chýbajúce povolenia"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eksik İzinler"
           }
         },
         "zh-Hans" : {
@@ -5417,6 +6095,12 @@
             "value" : "Dátum zmeny"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Değiştirme Tarihi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5467,6 +6151,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dátum zmeny:"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Değiştirme Tarihi:"
           }
         },
         "zh-Hans" : {
@@ -5522,6 +6212,12 @@
             "value" : "Mesačne"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aylık"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5573,6 +6269,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Viac"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daha fazla"
           }
         },
         "zh-Hans" : {
@@ -5628,6 +6330,12 @@
             "value" : "Názov"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İsim"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5679,6 +6387,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nikdy"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hiçbir zaman"
           }
         },
         "zh-Hans" : {
@@ -5734,6 +6448,12 @@
             "value" : "Nové oznámenie"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeni Duyuru"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5785,6 +6505,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ďalšia kontrola aktualizácie: %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonraki güncelleme kontrolü: %@"
           }
         },
         "zh-Hans" : {
@@ -5840,6 +6566,12 @@
             "value" : "Neboli pridané žiadne súbory ani priečinky"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klasör veya dosya eklenmedi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5893,6 +6625,12 @@
             "value" : "Žiadne nové oznámenie"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeni Duyuru Yok"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5925,6 +6663,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "孤立したファイルは見つかりませんでした"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenašli sa žiadne osamotené súbory"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başıboş dosya bulunamadı"
           }
         },
         "zh-Hans" : {
@@ -5980,6 +6730,12 @@
             "value" : "Žiadne vydania na zobrazenie"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Görüntülenecek sürüm yok"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6031,6 +6787,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Žiadna aktualizácia 😌"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güncelleme Yok 😌"
           }
         },
         "zh-Hans" : {
@@ -6086,6 +6848,12 @@
             "value" : "Nie je k dispozícii"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mevcut değil"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6130,6 +6898,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nenašlo sa"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bulunamadı"
           }
         },
         "zh-Hans" : {
@@ -6185,6 +6959,12 @@
             "value" : "z"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "öğe"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6238,6 +7018,12 @@
             "value" : "OK"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamam"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6282,6 +7068,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Otvoriť"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aç"
           }
         },
         "zh-Hans" : {
@@ -6337,6 +7129,12 @@
             "value" : "Otvoriť %@"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@’ı aç"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6388,6 +7186,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vyhľadávanie osamotených súborov nie je 100% presné, pretože neobsahuje žiadne balíky odinštalovaných aplikácií, ktoré by mohol použiť na vylúčenie súborov. Toto je len odhadované vyhľadávanie súborov/priečinkov a vylučuje tie, ktoré sa prekrývajú s aktuálne nainštalovanými aplikáciami. Prosím potvrď, že súbory označené na odstránenie naozaj patria k odinštalovaným aplikáciám."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başıboş dosya araması, dosya hariç tutma için kontrol edilecek kaldırılmış uygulama paketleri olmadığından %100 doğru değildir. Bu, dosyalar/klasörler için en iyi tahminle bir arama yapar ve halihazırda yüklü olan uygulamalarınızla çakışanları hariç tutar. Lütfen silinmek üzere işaretlenen dosyaların gerçekten kaldırılmış uygulamalara ait olduğunu doğrulayın."
           }
         },
         "zh-Hans" : {
@@ -6443,6 +7247,12 @@
             "value" : "Osamotené súbory"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başıboş Dosyalar"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6496,6 +7306,12 @@
             "value" : "Pearcleaner a všetky jeho súbory budú úplne odstránené, si si istý?"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner ve onun tüm dosyaları tamamen kaldırılacak, emin misiniz?"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6547,6 +7363,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pearcleaner CLI podpora"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner CLI desteği"
           }
         },
         "zh-Hans" : {
@@ -6603,6 +7425,12 @@
             "value" : "Odinštalovať Pearcleanerom"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner ile Kaldırma"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6654,6 +7482,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Stav povolení"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İzin Durumu"
           }
         },
         "zh-Hans" : {
@@ -6709,6 +7543,12 @@
             "value" : "Povolenia"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İzinler"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6760,6 +7600,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pripnúť vyskakovacie okno na vrch"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Açılır pencereyi en üste sabitle"
           }
         },
         "zh-Hans" : {
@@ -6815,6 +7661,12 @@
             "value" : "Plist súbor"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plist Dosyası"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6865,6 +7717,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fronta:"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kuyruk:"
           }
         },
         "zh-Hans" : {
@@ -6920,6 +7778,12 @@
             "value" : "Ukončiť"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çık"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6971,6 +7835,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ukončiť Pearcleaner"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner’dan Çık"
           }
         },
         "zh-Hans" : {
@@ -7026,6 +7896,12 @@
             "value" : "Reálna"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gerçek"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7077,6 +7953,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reálna veľkosť zobrazí, koľko alokovaného miesta má súbor skutočne na disku.\n\nLogická veľkosť zobrazuje binárnu veľkosť. Súborový systém môže komprimovať a deduplikovať sektory na disku, takže reálna veľkosť je niekedy menšia (alebo väčšia) ako logická veľkosť.\n\nVeľkosť podľa Finderu je podobná, ako keď klikneš pravým tlačidlom myši na súbor vo Finderi a vyberieš možnosť \"Informácie\", čo zobrazí logickú aj reálnu veľkosť spolu."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gerçek boyut türü, dosyanın diskte ne kadar gerçek ayrılmış alana sahip olduğunu gösterir. \n\nMantıksal tip binary boyutunu gösterir. Dosya sistemi disk üzerindeki sektörleri sıkıştırabilir ve tekilleştirebilir, bu nedenle gerçek boyut bazen mantıksal boyuttan daha küçük (veya daha büyük) olabilir.\n\nFinder boyutu, Finder'da bir dosyaya sağ tıklayıp > Bilgi Al dediğinizde hem mantıksal hem de gerçek boyutların birlikte gösterilmesine benzer."
           }
         },
         "zh-Hans" : {
@@ -7132,6 +8014,12 @@
             "value" : "Obnoviť"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yenile"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7183,6 +8071,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Obnoviť aplikácie"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulamaları Yenile"
           }
         },
         "zh-Hans" : {
@@ -7238,6 +8132,12 @@
             "value" : "Obnoviť aplikácie (⌘+R)"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulamaları yenile (⌘+R)"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7291,6 +8191,12 @@
             "value" : "Obnoviť aktualizátor"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güncelleyiciyi yenile"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7341,6 +8247,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Poznámky k vydaniu"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sürüm Notları"
           }
         },
         "zh-Hans" : {
@@ -7396,6 +8308,12 @@
             "value" : "Vydania"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sürümler"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7447,6 +8365,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zostávajúce súbory a priečinky z predchádzajúcich aplikácií"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Önceki uygulamalardan kalan dosya ve klasörler"
           }
         },
         "zh-Hans" : {
@@ -7502,6 +8426,12 @@
             "value" : "Znova skenovať"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeniden Tara"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7553,6 +8483,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Obnoviť všetky nastavenia na pôvodné"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tüm ayarları varsayılana sıfırla"
           }
         },
         "zh-Hans" : {
@@ -7608,6 +8544,12 @@
             "value" : "Obnoviť nastavenia"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayarları Sıfırla"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7659,6 +8601,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Obnoviť veľkosť"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boyutu Sıfırla"
           }
         },
         "zh-Hans" : {
@@ -7714,6 +8662,12 @@
             "value" : "Reštartovať"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeniden başlat"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7765,6 +8719,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reštartuj %@ aby sa zmeny prejavili"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Değişiklerin etkili olması için %@’ı yeniden başlat"
           }
         },
         "zh-Hans" : {
@@ -7820,6 +8780,12 @@
             "value" : "Reverzné vyhľadávanie úspešne dokončené"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ters arama başarıyla tamamlandı"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7871,6 +8837,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pravým kliknutím obnoviť veľkosť"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boyutu sıfırlamak için sağ tıkla"
           }
         },
         "zh-Hans" : {
@@ -7926,6 +8898,12 @@
             "value" : "Uložiť"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaydet"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7954,6 +8932,18 @@
             "value" : "スクロールバーがリストに隠れる"
           }
         },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rolovacia lišta je skrytá v zoznamoch"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaydırma çubuğu listelerde gizli"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7968,6 +8958,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "リストでスクロールバーがOS優先に設定される"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rolovacia lišta v zoznamoch je nastavená podľa OS"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaydırma çubuğu listelerde OS tercihine ayarlı"
           }
         },
         "zh-HK" : {
@@ -8009,6 +9011,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vyhľadať aplikácie v týchto priečinkoch"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulamalar için bu dosyaları ara"
           }
         },
         "zh-Hans" : {
@@ -8063,6 +9071,12 @@
             "value" : "Vyhľadávanie v súborovom systéme"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dosya sistemi aranıyor"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8109,6 +9123,12 @@
             "value" : "Vyber prostredie na zobrazenie ciest."
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dizinleri görüntülemek için bir ortam seç."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8153,6 +9173,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vyber jeden"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Birini Seçin"
           }
         },
         "zh-Hans" : {
@@ -8208,6 +9234,12 @@
             "value" : "Sentinel Monitor"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sentinel Monitör"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8259,6 +9291,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sentinel Monitor nenašiel žiadne ďalšie súbory na odstránenie"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sentinel Monitör kaldırılacak başka dosya bulamadı"
           }
         },
         "zh-Hans" : {
@@ -8314,6 +9352,12 @@
             "value" : "Nastavenia"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayarlar"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8365,6 +9409,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Znova zobraziť odznak oznámení"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duyurular işaretini tekrar göster"
           }
         },
         "zh-Hans" : {
@@ -8420,6 +9470,12 @@
             "value" : "Zobraziť zoznam aplikácií pri spustení"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Açılışta uygulama listesini göster"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8470,6 +9526,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zobraziť údaje"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detayları Göster"
           }
         },
         "zh-Hans" : {
@@ -8525,6 +9587,12 @@
             "value" : "Zobrazujú sa posledné 3 verzie"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son 3 sürüm gösteriliyor"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8576,6 +9644,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Veľkosť"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boyut"
           }
         },
         "zh-Hans" : {
@@ -8631,6 +9705,12 @@
             "value" : "Zoradiť zoznam aplikácií abecedne podľa názvu alebo veľkosti"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulama listesini ada veya boyuta göre alfabetik olarak sırala"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8682,6 +9762,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zoradené podľa názvu"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İsme Göre Sıralandı"
           }
         },
         "zh-Hans" : {
@@ -8737,6 +9823,12 @@
             "value" : "Zoradené podľa veľkosti"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boyuta Göre Sıralandı"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8787,6 +9879,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Možnosti zoradenia"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sıralama Seçenekleri"
           }
         },
         "zh-Hans" : {
@@ -8842,6 +9940,12 @@
             "value" : "Zoradenie: %@"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sıralama: %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8893,6 +9997,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Podporovateľ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sponsor"
           }
         },
         "zh-Hans" : {
@@ -8948,6 +10058,12 @@
             "value" : "Nahlásiť chybu alebo požiadavku na funkciu"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir özellik isteği veya hata bildir"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8999,6 +10115,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nahlásiť nový problém"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeni Sorun Bildir"
           }
         },
         "zh-Hans" : {
@@ -9054,6 +10176,12 @@
             "value" : "Podpora"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Destek"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9107,6 +10235,12 @@
             "value" : "systém"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sistem"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9157,6 +10291,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Systém"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sistem"
           }
         },
         "zh-Hans" : {
@@ -9212,6 +10352,12 @@
             "value" : "Téma vzhľadu"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tema Modu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9263,6 +10409,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Toto pridá súbor/priečinok do zoznamu výnimiek. Zoznam výnimiek môžeš upraviť v Nastaveniach > PriečinkyToto pridá súbor/priečinok do zoznamu výnimiek. Zoznam výnimiek môžeš upraviť v Nastaveniach > Priečinky"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu, dosyayı/klasörü Hariç Tutulanlar listesine ekler. Hariç Tutulanlar listesini Ayarlar > Dosyalar sekmesinden düzenleyin"
           }
         },
         "zh-Hans" : {
@@ -9318,6 +10470,12 @@
             "value" : "Táto aplikácia sa nachádza v %@"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu uygulama %@ konumundadır"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9369,6 +10527,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Toto je webová aplikácia"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu bir web uygulamasıdır"
           }
         },
         "zh-Hans" : {
@@ -9424,6 +10588,12 @@
             "value" : "Toto je zabalená iOS aplikácia"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu örtülü bir iOS uygulamasıdır"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9475,6 +10645,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Toto nastavenie bude mať vplyv na Pearcleaner, či už beží v lište alebo v štandardnom režime. Ak vypneš ikonu v lište, možno budeš chcieť vypnúť aj toto, aby sa Pearcleaner nespúšťal pri prihlásení."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu ayar, menü çubuğu modunda veya normal modda çalışıyor olsanız da Pearcleaner'ı etkileyecektir. Menü çubuğu simgesini devre dışı bırakırsanız, Pearcleaner'ın oturum açarken başlamaması için bunu da devre dışı bırakmak isteyebilirsiniz."
           }
         },
         "zh-Hans" : {
@@ -9530,6 +10706,12 @@
             "value" : "Prepínanie medzi režimami obnoví okná na ich prednastavenú veľkosť/pozíciu"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modlar arasında geçiş yapmak pencere çerçevelerini varsayılan boyutlarına/konumlarına sıfırlayacaktır"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9583,6 +10765,12 @@
             "value" : "Nástroje"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Araçlar"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9627,6 +10815,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Všetky dostupné cesty k prostrediu"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mevcut olan toplam ortam dizinleri"
           }
         },
         "zh-Hans" : {
@@ -9679,6 +10873,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Celková veľkosť súborov:"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dosyaların toplam boyutu: "
           }
         },
         "zh-Hans" : {
@@ -9734,6 +10934,12 @@
             "value" : "Priehľadnosť"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şeffaf materyal"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9784,6 +10990,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Napíš pre vyhľadávanie"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aramak için yazın"
           }
         },
         "zh-Hans" : {
@@ -9839,6 +11051,12 @@
             "value" : "Zrušiť odstránenie"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaldırmayı Geri Al"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9890,6 +11108,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Odinštalovať"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaldır"
           }
         },
         "zh-Hans" : {
@@ -9945,6 +11169,12 @@
             "value" : "Potvrdzovacie hlásenia pri odinštalácii"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaldırmayı onaylama uyarıları"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9998,6 +11228,12 @@
             "value" : "Odinštalovať Pearcleaner"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner’ı Kaldır"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10048,6 +11284,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aktualizovať"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güncelleme"
           }
         },
         "zh-Hans" : {
@@ -10103,6 +11345,12 @@
             "value" : "Aktualizácia dostupná 🥳"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güncelleme Mevcut 🥳"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10148,6 +11396,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aktualizácia dokončená"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güncelleme tamamlandı"
           }
         },
         "zh-Hans" : {
@@ -10200,6 +11454,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Frekvencia aktualizácií"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güncelleme Sıklığı"
           }
         },
         "zh-Hans" : {
@@ -10255,6 +11515,12 @@
             "value" : "Frekvencia aktualizácií je nastavená na Nikdy"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güncelleme sıklığı Hiçbir Zaman olarak ayarlandı"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10306,6 +11572,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aktualizácie vypnuté"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güncellemeler Devre Dışı"
           }
         },
         "zh-Hans" : {
@@ -10360,6 +11632,12 @@
             "value" : "používateľ"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kullanıcı"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10410,6 +11688,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Používateľ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kullanıcı"
           }
         },
         "zh-Hans" : {
@@ -10464,6 +11748,12 @@
             "value" : "Verzia %@"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versiyon %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10514,6 +11804,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zobraziť"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Göster"
           }
         },
         "zh-Hans" : {
@@ -10569,6 +11865,12 @@
             "value" : "Zobraziť vo Finderi"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder’da Göster"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10620,6 +11922,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zobraziť Problémy"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sorunları Görüntüle"
           }
         },
         "zh-Hans" : {
@@ -10675,6 +11983,12 @@
             "value" : "Zobraziť prispievateľov projektu"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Projeye katkıda bulunanları göster"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10728,6 +12042,12 @@
             "value" : "Zobraziť verzie"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sürümleri Göster"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10778,6 +12098,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zobraziť verzie na Githube"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sürümleri GitHub’ta göster"
           }
         },
         "zh-Hans" : {
@@ -10833,6 +12159,12 @@
             "value" : "Zobraziť Repozitár"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repository’i Göster"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10884,6 +12216,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Upozornenie"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uyarı"
           }
         },
         "zh-Hans" : {
@@ -10939,6 +12277,12 @@
             "value" : "Upozornenie!"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uyarı!"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10987,6 +12331,12 @@
           }
         },
         "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "web"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "web"
@@ -11045,6 +12395,12 @@
             "value" : "Webová aplikácia"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Web uygulaması"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11096,6 +12452,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Týždenne"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haftalık"
           }
         },
         "zh-Hans" : {
@@ -11151,6 +12513,12 @@
             "value" : "Keď sa aplikácie presunú do koša, spustí sa Pearcleaner a nájde súvisiace súbory a priečinky na odstránenie."
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulamalar Çöp Sepeti’ne taşınınca Pearcleaner çalışacak ve silmek için ilgili dosya ve klasörleri bulacaktır."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11202,6 +12570,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pri odstraňovaní súborov pomocou tlačidla Koš môžeš zabrániť nechcenému odstráneni tým, že sa zobrazí upozornenie pred pokračovaním v akcii."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çöp Sepeti butonunu kullanarak dosyalar silinirken, işleme devam etmeden önce ek bir uyarı göstererek kazara silmelerin önüne geçebilirsiniz."
           }
         },
         "zh-Hans" : {
@@ -11257,6 +12631,12 @@
             "value" : "Po zapnutí vyčistenia Homebrew, Pearcleaner skontroluje, či bola aplikácia, ktorú odstraňuješ nainštalovaná pomocou Homebrew. Následne spustí Terminal.app a vykoná príkaz brew uninstall a brew cleanup a informuje Homebrew o odstránení aplikácie. Takto sa Homebrew zoznam správne synchronizuje a vyrovnácia pamäť vyčistí. Terminal.app je potrebná, pretože niektoré aplikácie vyžadujú sudo oprávnenia na odstránenie služieb a súborov umiestnených v systémových priečinkoch. Keďže iné terminálové aplikácie nepodporujú AppleScript a/alebo do script príkaz, rozhodol som sa použiť predvolenú aplikáciu Terminal.\n\nUPOZORNENIE: Ak vrátiš späť odstránenie súborov pomocou CMD+Z, súbory sa obnovia, ale Homebrew o tom nebude vedieť. Na opätovné zosynchronizovanie zoznamu Homebrew budeš musieť spustiť príkaz:\n\n> brew install NAZOVAPLIKACIE --force"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Homebrew temizliği etkinken, Pearcleaner kaldırdığınız uygulamanın Homebrew aracılığı ile yüklenip yüklenmediğini kontrol edecek ve Homebrew’e uygulamanın kaldırıldığını bildirmek amacıyla brew uninstall ve cleanup komutlarını çalıştırmak için Terminal.app’i açacaktır. Böylece Homebrew listeniz düzgünce senkronize olacak ve önbellekleme kaldırılacaktır. Terminal.app, bazı uygulamalar sistem klasörlerindeki dosyalar ve servisleri kaldırmak için sudo izinlerine ihtiyaç duyduğu için gereklidir. Diğer terminal uygulamaları AppleScript ve/veya ‘do script’ komutunu desteklemediğinden bunun için varsayılan macOS Terminal uygulamasını kullanmayı seçtim.\n\nNOT: CMD+Z ile dosya silme işlemini geri alırsanız, dosyalar geri konacaktır ancak Homebrew bunun farkında olmayacaktır. Homebrew listesini tekrar senkronize etmek için şu komutu çalıştırmanız gerekir:\n\n> brew install UYGULAMAADI --force"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11310,6 +12690,12 @@
             "value" : "Keď je ikona v lište zapnutá, hlavné okno aplikácie a ikona v Docku budú vypnuté, pretože aplikácia prejde do doplnkového režimu."
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menü çubuğu ikonu etkinleştirildiğinde, uygulama aksesuar moduna alınacağından ana uygulama penceresi ve dock simgesi devre dışı bırakılır."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11361,6 +12747,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Keď je tento režim zapnutý, kliknutím na tlačidlo Odinštalovať sa odstránenia aplikácie a tiež okamžite zatvorí Pearcleaner. Toto platí pre Pearcleaner iba v prípade, keď sa otvorí nepriamo, napr. cez Sentinel Trash Monitor, Finder rozšírenie alebo Deep Link.\nTo umožňuje jednorazové použitie aplikácie pre rýchlu odinštaláciu. Keď sa Pearcleaner otvorí normálne, toto nastavenie sa ignoruje a bude fungovať ako obvykle."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu mod etkinleştirildiğinde bir uygulamayı kaldırmak için Kaldır butonuna basıldığında hemen ardından Pearcleaner’da kapanacaktır. \nBu Pearcleaner’ı sadece Sentinel Trash Monitor, Finder uzantısı veya Deep Link gibi harici yöntemlerle açıldığında etkiler.\nBu, uygulamanın hızlı bir kaldırma işlemi için tek seferlik açılmasına imkan verir. Pearcleaner normal şekilde açıldığında bu ayar yok sayılır ve Pearcleaner normal şekilde çalışır.  "
           }
         },
         "zh-Hans" : {
