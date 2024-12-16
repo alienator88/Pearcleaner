@@ -463,7 +463,7 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "加入搜尋單獨檔案時會忽略的檔案或資料夾。按一下路徑以將其從列表中移除。"
+            "value" : "加入搜尋孤立檔案時會忽略的檔案或資料夾。按一下路徑以將其從列表中移除。"
           }
         }
       }
@@ -2207,7 +2207,14 @@
       }
     },
     "Debug Console" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "除錯主控台"
+          }
+        }
+      }
     },
     "Delete all files within this folder" : {
       "localizations" : {
@@ -2238,7 +2245,7 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "刪除此資料夾內所有檔案"
+            "value" : "刪除此資料夾內的全部檔案"
           }
         }
       }
@@ -3104,7 +3111,7 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "從單獨檔案搜尋中排除這些檔案與資料夾"
+            "value" : "從孤立檔案搜尋中排除這些檔案與資料夾"
           }
         }
       }
@@ -3403,7 +3410,7 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正在尋找單獨檔案，請稍候⋯"
+            "value" : "正在尋找孤立檔案，請稍候⋯"
           }
         }
       }
@@ -3437,7 +3444,7 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "資料夾為空"
+            "value" : "資料夾是空的"
           }
         }
       }
@@ -4000,7 +4007,7 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "懸停搜索"
+            "value" : "懸浮以搜尋"
           }
         }
       }
@@ -5901,7 +5908,7 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "没有新宣佈"
+            "value" : "沒有新宣佈"
           }
         }
       }
@@ -5935,7 +5942,7 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "未找到孤立檔案"
+            "value" : "找不到孤立檔案"
           }
         }
       }
@@ -6140,7 +6147,7 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "未找到"
+            "value" : "找不到"
           }
         }
       }
@@ -6398,7 +6405,7 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "單獨檔案搜尋並非 100% 準確，因為它沒有任何解除安裝的應用程式套件來檢查檔案排除。這會以最佳猜測搜尋檔案/資料夾，並排除與你現時安裝的應用程式重疊的檔案/資料夾。請確認標記為移除的檔案確實屬於已解除安裝的應用程式。"
+            "value" : "孤立檔案搜尋並非 100% 準確，因為它沒有任何解除安裝的應用程式套件來檢查檔案排除。這會以最佳猜測搜尋檔案/資料夾，並排除與你現時安裝的應用程式重疊的檔案/資料夾。請確認標記為移除的檔案確實屬於已解除安裝的應用程式。"
           }
         }
       }
@@ -6451,7 +6458,7 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "單獨檔案"
+            "value" : "孤立檔案"
           }
         }
       }
@@ -6504,7 +6511,7 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pearcleaner 及其所有檔案將會完全移除，你確定嗎？"
+            "value" : "Pearcleaner 及其全部檔案將會完全移除，你確定嗎？"
           }
         }
       }
@@ -7946,6 +7953,12 @@
             "state" : "translated",
             "value" : "スクロールバーがリストに隠れる"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "捲軸在列表中隱藏"
+          }
         }
       }
     },
@@ -7955,6 +7968,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "リストでスクロールバーがOS優先に設定される"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "捲軸在列表中設定為操作系統偏好"
           }
         }
       }
@@ -9261,7 +9280,7 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "這樣會將檔案/資料夾加至排除列表中。前往「設定」>「資料夾」分頁編輯排除列表"
+            "value" : "這樣會將檔案/資料夾加至排除列表中。透過「設定」>「資料夾」分頁編輯排除列表"
           }
         }
       }
@@ -9532,7 +9551,6 @@
       }
     },
     "Tools" : {
-      "comment" : "工具菜单",
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
