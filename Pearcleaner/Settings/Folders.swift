@@ -327,6 +327,13 @@ class FolderSettingsManager: ObservableObject {
         UserDefaults.standard.set(self.folderPaths, forKey: appsKey)
     }
 
+    func removePath(_ path: String) {
+        if let index = self.folderPaths.firstIndex(of: path) {
+            self.folderPaths.remove(at: index) // Update local state
+            UserDefaults.standard.set(self.folderPaths, forKey: appsKey)
+        }
+    }
+
     func refreshPaths() {
         self.folderPaths = UserDefaults.standard.stringArray(forKey: appsKey) ?? defaultPaths
     }
@@ -351,6 +358,13 @@ class FolderSettingsManager: ObservableObject {
         guard self.fileFolderPathsZ.indices.contains(index) else { return }
         self.fileFolderPathsZ.remove(at: index) // Update local state
         UserDefaults.standard.set(self.fileFolderPathsZ, forKey: zombieKey)
+    }
+
+    func removePathZ(_ path: String) {
+        if let index = self.fileFolderPathsZ.firstIndex(of: path) {
+            self.fileFolderPathsZ.remove(at: index) // Update local state
+            UserDefaults.standard.set(self.fileFolderPathsZ, forKey: zombieKey)
+        }
     }
 
     func refreshPathsZ() {

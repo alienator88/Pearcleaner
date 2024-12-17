@@ -34,10 +34,8 @@ class DeeplinkManager {
         static let checkOrphanedFiles = "checkOrphanedFiles"
         static let checkDevEnv = "checkDevEnv"
         static let checkUpdates = "checkUpdates"
-//        static let addFolder = "addFolder"
-//        static let removeFolder = "removeFolder"
-//        static let addExcludeFolder = "addExcludeFolder"
-//        static let removeExcludeFolder = "removeExcludeFolder"
+        static let appsPaths = "appsPaths"
+        static let orphanedPaths = "orphanedPaths"
         static let refreshAppsList = "refreshAppsList"
         static let resetSettings = "resetSettings"
 
@@ -49,10 +47,8 @@ class DeeplinkManager {
             checkOrphanedFiles,
             checkDevEnv,
             checkUpdates,
-//            addFolder,
-//            removeFolder,
-//            addExcludeFolder,
-//            removeExcludeFolder,
+            appsPaths,
+            orphanedPaths,
             refreshAppsList,
             resetSettings
         ]
@@ -76,9 +72,9 @@ class DeeplinkManager {
             default:
                 if let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
                    let queryItems = components.queryItems {
-                    handleAppFunctions(action: host, queryItems: queryItems, appState: appState, locations: locations)
+                    handleAppFunctions(action: host, queryItems: queryItems, appState: appState, fsm: fsm)
                 } else {
-                    handleAppFunctions(action: host, queryItems: [], appState: appState, locations: locations)
+                    handleAppFunctions(action: host, queryItems: [], appState: appState, fsm: fsm)
                 }
             }
         } else {
@@ -198,7 +194,7 @@ class DeeplinkManager {
         showAppInFiles(appInfo: appInfo!, appState: appState, locations: locations, showPopover: $showPopover)
     }
 
-    private func handleAppFunctions(action: String, queryItems: [URLQueryItem], appState: AppState, locations: Locations) {
+    private func handleAppFunctions(action: String, queryItems: [URLQueryItem], appState: AppState, fsm: FolderSettingsManager) {
 
         switch action {
         case DeepLinkActions.openPearcleaner:
@@ -236,18 +232,43 @@ class DeeplinkManager {
         case DeepLinkActions.checkUpdates:
             updater.checkForUpdates(sheet: true)
             break
-//        case DeepLinkActions.addFolder:
-//            // Placeholder
-//            break
-//        case DeepLinkActions.removeFolder:
-//            // Placeholder
-//            break
-//        case DeepLinkActions.addExcludeFolder:
-//            // Placeholder
-//            break
-//        case DeepLinkActions.removeExcludeFolder:
-//            // Placeholder
-//            break
+        case DeepLinkActions.appsPaths:
+            if let actionType = queryItems.first(where: { $0.name == "add" || $0.name == "remove" })?.name,
+               let pathValue = queryItems.first(where: { $0.name == "path" })?.value {
+                var isDirectory: ObjCBool = false
+                if FileManager.default.fileExists(atPath: pathValue, isDirectory: &isDirectory), isDirectory.boolValue {
+                    switch actionType {
+                    case "add":
+                        fsm.addPath(pathValue)
+                    case "remove":
+                        fsm.removePath(pathValue)
+                    default:
+                        printOS("Invalid action type for appsPaths: \(actionType)")
+                    }
+                } else {
+                    printOS("Provided path '\(pathValue)' does not exist or is not a directory.")
+                }
+
+            } else {
+                printOS("Missing 'add' or 'remove' action, or 'path' query item for appsPaths.")
+            }
+            break
+        case DeepLinkActions.orphanedPaths:
+            if let actionType = queryItems.first(where: { $0.name == "add" || $0.name == "remove" })?.name,
+               let pathValue = queryItems.first(where: { $0.name == "path" })?.value {
+
+                switch actionType {
+                case "add":
+                    fsm.addPathZ(pathValue)
+                case "remove":
+                    fsm.removePathZ(pathValue)
+                default:
+                    printOS("Invalid action type for orphanedPaths: \(actionType)")
+                }
+            } else {
+                printOS("Missing 'add' or 'remove' action, or 'path' query item for orphanedPaths.")
+            }
+            break
         case DeepLinkActions.refreshAppsList:
             reloadAppsList(appState: appState, fsm: fsm)
             break
