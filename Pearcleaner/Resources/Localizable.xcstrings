@@ -9149,59 +9149,6 @@
         }
       }
     },
-    "Select One" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wähle eine"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sélectionnez-en un"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "一つ選択"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vyber jeden"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Birini Seçin"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "选择一个"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選擇一個"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選擇一個"
-          }
-        }
-      }
-    },
     "Sentinel Monitor" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -11313,15 +11260,62 @@
         }
       }
     },
+    "Update Available" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mise à jour disponible 🥳"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新が可能です"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доступно обновление"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualizácia Dostupná"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güncelleme Mevcut"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有可用更新"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有可用的更新"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有可用的更新"
+          }
+        }
+      }
+    },
     "Update Available 🥳" : {
       "extractionState" : "manual",
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Update Available 🥳"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11343,7 +11337,7 @@
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aktualizácia dostupná 🥳"
+            "value" : "Aktualizácia Dostupná 🥳"
           }
         },
         "tr" : {
@@ -11482,6 +11476,9 @@
           }
         }
       }
+    },
+    "Update in progress" : {
+      "extractionState" : "manual"
     },
     "Updater frequency is set to Never" : {
       "extractionState" : "manual",
