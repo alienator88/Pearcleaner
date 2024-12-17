@@ -220,6 +220,15 @@ func killApp(appId: String, completion: @escaping () -> Void = {}) {
 }
 
 
+// Open app settings
+func openAppSettings() {
+    if #available(macOS 14.0, *) {
+        @Environment(\.openSettings) var openSettings
+        openSettings()
+    } else {
+        NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+    }
+}
 
 
 // Check if file/folder name has localized variant

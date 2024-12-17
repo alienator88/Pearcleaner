@@ -28,6 +28,8 @@ class AppState: ObservableObject {
     @Published var showUninstallAlert: Bool = false
     @Published var externalMode: Bool = false
     @Published var externalPaths: [URL] = [] // for handling multiple app from drops or deeplinks
+    @Published var selectedEnvironment: Path? // for handling dev environments
+
 
     func getBundleSize(for appInfo: AppInfo, updateState: @escaping (Int64) -> Void) {
         // Step 1: Check if the size is available and not 0 in the sortedApps cache
@@ -238,7 +240,7 @@ enum SortOption:Int, CaseIterable, Identifiable {
 }
 
 
-enum CurrentTabView:Int
+enum CurrentTabView:Int, CaseIterable
 {
     case general
     case interface

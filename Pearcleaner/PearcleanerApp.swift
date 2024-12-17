@@ -87,7 +87,7 @@ struct PearcleanerApp: App {
                 }
 
                 dispatchGroup.notify(queue: .main) {
-                    let deeplinkManager = DeeplinkManager(showPopover: $showPopover)
+                    let deeplinkManager = DeeplinkManager(showPopover: $showPopover, updater: updater, fsm: fsm)
                     for url in droppedURLs {
                         deeplinkManager.manage(url: url, appState: appState, locations: locations)
                     }
@@ -97,7 +97,7 @@ struct PearcleanerApp: App {
             }
 
             .onOpenURL(perform: { url in
-                let deeplinkManager = DeeplinkManager(showPopover: $showPopover)
+                let deeplinkManager = DeeplinkManager(showPopover: $showPopover, updater: updater, fsm: fsm)
                 deeplinkManager.manage(url: url, appState: appState, locations: locations)
             })
             .alert(isPresented: $appState.showUninstallAlert) {

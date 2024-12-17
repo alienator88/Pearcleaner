@@ -14,7 +14,8 @@ struct Path: Identifiable, Hashable {
 }
 
 struct EnvironmentCleanerView: View {
-    @State private var selectedEnvironment: Path?
+    @EnvironmentObject var appState: AppState
+//    @State private var selectedEnvironment: Path?
     @State private var paths: [Path] = PathLibrary.getPaths()
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
 
@@ -41,7 +42,7 @@ struct EnvironmentCleanerView: View {
                         Text("Environment")
                             .font(.callout).fontWeight(.bold)
 
-                        if let selectedEnvironment = selectedEnvironment {
+                        if let selectedEnvironment = appState.selectedEnvironment {
                             Text("Checked paths for \(selectedEnvironment.name)")
                                 .font(.footnote)
                         } else {
@@ -54,16 +55,18 @@ struct EnvironmentCleanerView: View {
                     Spacer()
 
                     VStack(alignment: .trailing, spacing: 5) {
-                        Picker(selection: $selectedEnvironment) {
-                            Text("Select One").tag(Path?.none)
+                        Menu {
                             ForEach(paths) { environment in
-                                Text(environment.name).tag(environment as Path?)
+                                Button(environment.name) {
+                                    appState.selectedEnvironment = environment
+                                }
                             }
-                        } label: { EmptyView() }
-                        .pickerStyle(MenuPickerStyle())
+                        } label: {
+                            Text(appState.selectedEnvironment?.name ?? "Select Environment")
+                        }
                         .frame(maxWidth: 300)
 
-                        if let selectedEnvironment = selectedEnvironment {
+                        if let selectedEnvironment = appState.selectedEnvironment {
                             Text(verbatim: "\(selectedEnvironment.paths.count) paths")
                                 .font(.footnote).foregroundStyle(.secondary)
                         } else {
@@ -78,7 +81,7 @@ struct EnvironmentCleanerView: View {
             })
 
 
-            if let selectedEnvironment = selectedEnvironment {
+            if let selectedEnvironment = appState.selectedEnvironment {
 
                 ScrollView {
                     ForEach(selectedEnvironment.paths, id: \.self) { path in

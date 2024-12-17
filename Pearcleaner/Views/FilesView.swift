@@ -337,39 +337,33 @@ struct FilesView: View {
                     HStack(alignment: .center) {
 
                         if !appState.externalPaths.isEmpty {
-                            HStack {
-                                VStack {
+                            VStack {
+                                HStack {
                                     Text("Queue:").font(.title3).opacity(0.5)
-                                    Text("⇧ + Scroll").font(.callout).foregroundStyle(.secondary).opacity(0.5)
-                                }
-
-                                ScrollView(.horizontal, showsIndicators: false) {
-                                    HStack(spacing: 10) {
-                                        ForEach(appState.externalPaths, id: \.self) { path in
-                                            HStack(spacing: 0) {
-                                                Button(path.deletingPathExtension().lastPathComponent) {
-                                                    let newApp = AppInfoFetcher.getAppInfo(atPath: path)!
-                                                    updateOnMain {
-                                                        appState.appInfo = newApp
+                                        .help("⇧ + Scroll")
+                                    ScrollView(.horizontal, showsIndicators: false) {
+                                        HStack(spacing: 10) {
+                                            ForEach(appState.externalPaths, id: \.self) { path in
+                                                HStack(spacing: 0) {
+                                                    Button(path.deletingPathExtension().lastPathComponent) {
+                                                        let newApp = AppInfoFetcher.getAppInfo(atPath: path)!
+                                                        updateOnMain {
+                                                            appState.appInfo = newApp
+                                                        }
+                                                        showAppInFiles(appInfo: newApp, appState: appState, locations: locations, showPopover: $showPopover)
                                                     }
-                                                    showAppInFiles(appInfo: newApp, appState: appState, locations: locations, showPopover: $showPopover)
+                                                    Button {
+                                                        removePath(path)
+                                                    } label: { EmptyView() }
+                                                        .buttonStyle(SimpleButtonStyle(icon: "minus.circle", help: "Remove from queue", size: 14))
                                                 }
-                                                Button {
-                                                    removePath(path)
-                                                } label: { EmptyView() }
-                                                    .buttonStyle(SimpleButtonStyle(icon: "minus.circle", help: "Remove from queue", size: 14))
                                             }
                                         }
                                     }
-
                                 }
-                                .frame(height: 120)
-
-
+//                                Text("⇧ + Scroll").font(.callout).foregroundStyle(.secondary).opacity(0.5)
                             }
-
                         }
-
 
                         Spacer()
 
@@ -379,10 +373,11 @@ struct FilesView: View {
                             Text(verbatim: "\(sizeType == "Logical" ? totalSelectedSize.logical : totalSelectedSize.real)")
                         }
                         .buttonStyle(UninstallButton(isEnabled: !appState.selectedItems.isEmpty || (appState.selectedItems.isEmpty && brew)))
-                        .padding(.top, 5)
-
-
                     }
+                    .padding(.top, 5)
+
+
+
 
                 }
                 .transition(.opacity)

@@ -9150,6 +9150,7 @@
       }
     },
     "Select One" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

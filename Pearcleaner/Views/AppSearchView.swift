@@ -168,20 +168,12 @@ struct AppSearchView: View {
                         .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: String(localized: "Orphaned Files"), help: String(localized: "Orphaned Files"), size: 5))
 
 
-                        if #available(macOS 14.0, *) {
-                            SettingsLink {}
-                                .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: String(localized: "Settings"), help: String(localized: "Settings"), size: 5))
-                        } else {
-                            Button("Settings") {
-                                if #available(macOS 13.0, *) {
-                                    NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
-                                } else {
-                                    NSApp.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
-                                }
-                                showMenu = false
-                            }
-                            .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: String(localized: "Settings"), help: String(localized: "Settings"), size: 5))
+                        Button("Settings") {
+                            openAppSettings()
+                            showMenu = false
                         }
+                        .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: String(localized: "Settings"), help: String(localized: "Settings"), size: 5))
+
 
                         if menubarEnabled {
                             Button("Quit") {
