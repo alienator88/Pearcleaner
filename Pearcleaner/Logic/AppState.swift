@@ -193,6 +193,19 @@ enum Arch {
     case intel
     case universal
     case empty
+
+    var type: String {
+        switch self {
+        case .arm:
+            return "arm"
+        case .intel:
+            return "intel"
+        case .universal:
+            return String(localized: "universal")
+        case .empty:
+            return ""
+        }
+    }
 }
 
 enum CurrentPage:Int, CaseIterable, Identifiable

@@ -71,7 +71,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ est déjà sur la dernière version disponible"
+            "value" : "%@ a déjà la dernière version disponible"
           }
         },
         "ja" : {
@@ -130,7 +130,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ va vérifier si une mise à jour est disponible"
+            "value" : "Fréquence de vérification de mise à jour de %@"
           }
         },
         "ja" : {
@@ -475,7 +475,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajouter des fichiers ou dossiers qui seront ignorés lors de la recherche de fichiers résiduels. Cliquer sur un chemin d’accès pour le retire de la liste."
+            "value" : "Ajouter des fichiers ou dossiers qui seront ignorés lors de la recherche de fichiers résiduels. Cliquer sur un chemin d’accès pour le retirer de la liste."
           }
         },
         "ja" : {
@@ -704,7 +704,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Confirmez toujours les fichiers marqués pour suppression. Dans de rares cas, des fichiers sans rapport peuvent être trouvés lorsque les noms d'applications sont trop similaires.\n\nREMARQUE : Pearcleaner utilise AppleScript pour supprimer des fichiers. Actuellement, macOS ne permet pas à AppleScript de s'authentifier à l'aide du capteur d'empreintes digitales, seule l'authentification par mot de passe est prise en charge."
+            "value" : "Demande toujours de confirmer avant la suppression de potentiel fichiers. Dans de rares cas, des fichiers sans rapport peuvent être trouvés lorsque des noms d'applications sont trop similaires.\n\nREMARQUE : Pearcleaner utilise AppleScript pour supprimer les fichiers trouvés et comme macOS ne permet pas à AppleScript de s'authentifier à l'aide du capteur d'empreinte digitale, seule l'authentification par mot de passe est prise en charge."
           }
         },
         "ja" : {
@@ -763,7 +763,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Animations désactivées"
+            "value" : "Animations de l’application"
           }
         },
         "ja" : {
@@ -822,7 +822,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Animations activées"
+            "value" : "Animations de l’application"
           }
         },
         "ja" : {
@@ -1114,7 +1114,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le fichier d'application est imbriqué dans des sous-répertoires. Pour éviter de supprimer des dossiers incorrects, Pearcleaner les laissera seuls. Vous pouvez supprimer manuellement les dossiers restants si nécessaire."
+            "value" : "Le fichier d'application est imbriqué dans des sous-répertoires. Pour éviter de supprimer des dossiers incorrects, Pearcleaner les laissera seuls. Vous pourrez supprimer les dossiers restants si nécessaire manuellement."
           }
         },
         "ja" : {
@@ -1397,6 +1397,12 @@
     },
     "Bundle Files..." : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archiver les fichiers…"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1565,7 +1571,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vérifier les Mises à jour"
+            "value" : "Vérifier si une mise à jour est disponible…"
           }
         },
         "ja" : {
@@ -1618,6 +1624,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Überprüfte Pfade für %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chemin(s) vérifié(s) pour %@"
           }
         },
         "ja" : {
@@ -1899,7 +1911,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cliquez sur l'en-tête pour modifier l'ordre de tri"
+            "value" : "Cliquer sur l'en-tête pour modifier l'ordre de tri"
           }
         },
         "ja" : {
@@ -2134,7 +2146,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ligne de commande"
+            "value" : "Interface de Ligne de Commande (CLI)"
           }
         },
         "ja" : {
@@ -2478,6 +2490,12 @@
     },
     "Debug Console" : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Console de débogage"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2504,6 +2522,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Alle Dateien in diesem Ordner löschen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer tous les fichiers dans ce dossier"
           }
         },
         "ja" : {
@@ -2823,7 +2847,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Désactivé lorsque l'icône de la barre de menus est activée"
+            "value" : "Désactivé lorsque le mode icône de Pearcleaner est activé"
           }
         },
         "ja" : {
@@ -2941,7 +2965,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Déposez une application ici"
+            "value" : "Glisser-déposer une application ici"
           }
         },
         "ja" : {
@@ -3000,7 +3024,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Déposez des fichiers ou des dossiers ci-dessus ou cliquez pour ajouter"
+            "value" : "Glisser-déposer des fichiers ou dossiers ci-dessus ou cliquer pour ajouter"
           }
         },
         "ja" : {
@@ -3059,7 +3083,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Déposez les dossiers ci-dessus ou cliquez pour ajouter"
+            "value" : "Glisser-déposer des dossiers ci-dessus ou cliquez pour ajouter"
           }
         },
         "ja" : {
@@ -3118,7 +3142,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cible de dépôt"
+            "value" : "Glisser-déposer la cible"
           }
         },
         "ja" : {
@@ -3236,7 +3260,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'activation de la CLI vous permettra d'exécuter des actions liées à Pearcleaner à partir du terminal. Cela ajoutera la commande pearcleaner dans /usr/local/bin afin qu'elle soit disponible directement à partir de votre variable d'environnement PATH. Essayez-la après avoir activé :\n\n> pearcleaner --help"
+            "value" : "Ceci active l’option d’interface de ligne de commande vous permettant d'exécuter des actions liées à Pearcleaner à partir du terminal de MacOS en ajoutant la commande \"pearcleaner\" dans /usr/local/bin afin qu'elle soit disponible directement à partir de votre variable d'environnement PATH. Après avoir activer cette option, essayez par vous même en tapant \"pearcleaner --help\" dans le terminal."
           }
         },
         "ja" : {
@@ -3295,7 +3319,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'activation de cette extension vous permettra de cliquer avec le bouton droit sur les applications dans le Finder pour les désinstaller rapidement avec Pearcleaner."
+            "value" : "Activer cette extension vous permettra de désinstaller rapidement une application avec Pearcleaner dans le Finder en faisant un clic droit dessus."
           }
         },
         "ja" : {
@@ -3579,6 +3603,12 @@
             "value" : "Exportiere Dateipfad…"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporter les chemins d’accès de fichiers"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3859,6 +3889,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ordner ist leer"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le dossier est vide"
           }
         },
         "ja" : {
@@ -4265,7 +4301,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "GitHub Sponsors"
+            "value" : "Sponsors GitHub"
           }
         },
         "ja" : {
@@ -4441,7 +4477,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nettoyage Homebrew après la désinstallation"
+            "value" : "Nettoyage avec l’utilitaire Homebrew après une désinstallation"
           }
         },
         "ja" : {
@@ -4494,6 +4530,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zum Suchen mit der Maus darüberfahren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Survoler pour rechercher"
           }
         },
         "ja" : {
@@ -4605,7 +4647,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En mode mini fenêtre, si vous épinglez la fenêtre contextuelle Fichiers en haut, cliquer en dehors de la fenêtre ne la fermera pas. Sinon, elle se fermera en cliquant n'importe où en dehors de l'application."
+            "value" : "Lorsque l’option mini-fenêtre est activé, activer cette option permet d’empêcher la fenêtre des détails/désinstallation d’une application de se fermer même si vous cliquer à l’extérieur de cette dernière. Désactiver cette option fera l’effet inverse."
           }
         },
         "ja" : {
@@ -4664,7 +4706,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En mode mini fenêtre, vous pouvez configurer Pearcleaner pour qu'il démarre sur la vue Liste des applications ou sur la vue Cible de dépôt.\n"
+            "value" : "Lorsque l’option mini-fenêtre est activé, permet de choisir si Pearcleaner démarre directement sur la vue de la liste des applications ou la vue glisser-déposer la cible.\n"
           }
         },
         "ja" : {
@@ -5133,7 +5175,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Objet"
+            "value" : "élément"
           }
         },
         "ja" : {
@@ -5192,7 +5234,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Objets"
+            "value" : "éléments"
           }
         },
         "ja" : {
@@ -5426,7 +5468,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Emplacements dans lesquels les fichiers .app seront recherchés. Cliquez sur un chemin autre que celui par défaut pour le supprimer. Les chemins par défaut ne peuvent pas être supprimés."
+            "value" : "Emplacements dans lesquels les fichiers .app seront recherchés. Cliquez sur un chemin d’accès autre que celui par défaut pour le supprimer. Les chemins par défaut ne peuvent pas être supprimés."
           }
         },
         "ja" : {
@@ -5662,7 +5704,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mode icône de la barre de menu"
+            "value" : "Afficher Pearcleaner dans la barre des menus"
           }
         },
         "ja" : {
@@ -5780,7 +5822,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Configuration Mini"
+            "value" : "Configuration du mode Mini-fenêtre"
           }
         },
         "ja" : {
@@ -5839,7 +5881,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mode mini fenêtre"
+            "value" : "Mode mini-fenêtre"
           }
         },
         "ja" : {
@@ -5898,7 +5940,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lignes de la liste des applications minimalistes désactivées"
+            "value" : "Afficher la taille et la version des applications en une seule ligne dans la liste des applications"
           }
         },
         "ja" : {
@@ -5957,7 +5999,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lignes de la liste des applications minimalistes activées"
+            "value" : "Afficher la taille et la version des applications en une seule ligne dans la liste des applications"
           }
         },
         "ja" : {
@@ -6309,7 +6351,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prénom"
+            "value" : "Nom"
           }
         },
         "ja" : {
@@ -6486,7 +6528,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prochaine vérification des mises à jour : %@"
+            "value" : "Prochaine vérification de mise à jour : %@"
           }
         },
         "ja" : {
@@ -6659,6 +6701,12 @@
             "value" : "Keine verwaisten Dateien gefunden"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun fichier résiduel trouvé"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6768,7 +6816,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pas de mise à jour 😌"
+            "value" : "Pas de mise à jour disponible ! 😌"
           }
         },
         "ja" : {
@@ -6938,7 +6986,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "de"
+            "value" : "sur"
           }
         },
         "ja" : {
@@ -7167,7 +7215,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La recherche de fichiers résiduels n'est pas 100 % précise car elle ne dispose d'aucun paquet d'applications désinstallées pour vérifier l'exclusion des fichiers. Il s'agit d'une recherche approximative des fichiers/dossiers et exclut ceux qui chevauchent vos applications actuellement installées. Veuillez confirmer que les fichiers marqués pour suppression appartiennent bien à des applications désinstallées."
+            "value" : "La recherche de fichiers résiduels n'est pas 100 % précise car elle ne dispose d'aucune information concernant les applications anciennement désinstallées pour faciliter l’exclusion de certains fichiers. Ceci effectue donc une recherche approximative des fichiers et dossiers et exclut ceux qui sont similaires à vos applications actuellement installées. Veuillez vérifier avec attention que les fichiers marqués pour suppression appartiennent bien à des applications désinstallées."
           }
         },
         "ja" : {
@@ -7285,7 +7333,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pearcleaner et tous ses fichiers seront supprimés proprement, êtes-vous sûr(e) ?"
+            "value" : "Pearcleaner et tous ses fichiers seront supprimés, êtes-vous sûr(e) ?"
           }
         },
         "ja" : {
@@ -7344,7 +7392,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Support CLI de Pearcleaner"
+            "value" : "Ajouter Pearcleaner à l’interface de ligne de commande"
           }
         },
         "ja" : {
@@ -7581,7 +7629,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Épingler la fenêtre contextuelle au-dessus"
+            "value" : "Empêcher la fermeture des détails d’une l’application si clic externe"
           }
         },
         "ja" : {
@@ -8170,7 +8218,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rafraîchir le programme de mise à jour"
+            "value" : "Rafraîchir et vérifier si une mise à jour est disponible"
           }
         },
         "ja" : {
@@ -8818,7 +8866,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cliquez avec le bouton droit pour réinitialiser la taille"
+            "value" : "Cliquer droit pour réinitialiser la taille"
           }
         },
         "ja" : {
@@ -8926,6 +8974,12 @@
     },
     "Scrollbar is hidden in lists" : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La barre de défilement est masquée dans les listes"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8954,6 +9008,12 @@
     },
     "Scrollbar is set to OS preference in lists" : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La barre de défilement est définie selon les préférences du système d'exploitation dans les listes"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10103,7 +10163,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Support"
+            "value" : "Assistance"
           }
         },
         "ja" : {
@@ -10279,7 +10339,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mode Thème"
+            "value" : "Thème"
           }
         },
         "ja" : {
@@ -10515,7 +10575,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ceci est une application iOS encapsulée"
+            "value" : "Ceci est une application iOS empaquetée"
           }
         },
         "ja" : {
@@ -10633,7 +10693,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le passage d'un mode à l'autre réinitialisera les cadres des fenêtres à leur taille/position par défaut."
+            "value" : "En activant ou désactivant le mode mini-fenêtre, la position et la taille de la fenêtre Pearcleaner seront réinitialisées par défaut."
           }
         },
         "ja" : {
@@ -10861,7 +10921,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Matériel transparent"
+            "value" : "Transparence"
           }
         },
         "ja" : {
@@ -10919,7 +10979,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tapez pour rechercher"
+            "value" : "Taper pour rechercher"
           }
         },
         "ja" : {
@@ -11202,6 +11262,28 @@
         }
       }
     },
+    "universal" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "universel"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "univerzálny"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "evrensel"
+          }
+        }
+      }
+    },
     "Update" : {
       "localizations" : {
         "de" : {
@@ -11266,7 +11348,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mise à jour disponible 🥳"
+            "value" : "Mise à jour disponible"
           }
         },
         "ja" : {
@@ -11319,7 +11401,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mise à jour disponible 🥳"
+            "value" : "Une mise à jour est disponible 🥳"
           }
         },
         "ja" : {
@@ -11430,7 +11512,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fréquence des mises à jour"
+            "value" : "Recherche de mise à jour"
           }
         },
         "ja" : {
@@ -11478,7 +11560,27 @@
       }
     },
     "Update in progress" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mise à jour en cours"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prebieha aktualizácia"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güncelleme devam ediyor"
+          }
+        }
+      }
     },
     "Updater frequency is set to Never" : {
       "extractionState" : "manual",
@@ -11783,7 +11885,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Affichage"
+            "value" : "Voir les détails…"
           }
         },
         "ja" : {
@@ -12077,7 +12179,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voir les versions sur GitHub"
+            "value" : "Voir toutes les versions sur GitHub"
           }
         },
         "ja" : {
@@ -12136,7 +12238,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voir le dépôt GitHub"
+            "value" : "Voir le projet sur GitHub"
           }
         },
         "ja" : {
@@ -12549,7 +12651,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lorsque vous supprimez des fichiers en utilisant le bouton Corbeille, vous pouvez éviter les suppressions accidentelles en affichant une alerte avant de procéder à l'action."
+            "value" : "Lorsque vous supprimez des fichiers en utilisant le bouton Corbeille, vous pouvez éviter les suppressions accidentelles de fichiers/dossiers en affichant une alerte avant de procéder à l'action."
           }
         },
         "ja" : {
@@ -12608,7 +12710,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lorsque le nettoyage Homebrew est activé, Pearcleaner vérifiera si l'application que vous supprimez a été installée via Homebrew et lancera Terminal.app pour exécuter une commande de désinstallation et de nettoyage brew afin de signaler à Homebrew que l'application a été supprimée. De cette façon, votre liste Homebrew sera correctement synchronisée et le cache sera supprimé. Terminal.app est requis car certaines applications nécessitent des autorisations sudo pour supprimer des services et des fichiers placés dans des dossiers système. Étant donné que d'autres applications de terminal ne prennent pas en charge AppleScript et/ou la commande 'do script', j'ai choisi d'utiliser l'application Terminal par défaut de macOS pour cela.\n\nNOTE : Si vous annulez la suppression du fichier avec ⌘+Z, les fichiers seront remis en place mais Homebrew ne sera pas au courant. Pour resynchroniser la liste Homebrew, vous devrez exécuter :\n \n> brew install APPNAME --force"
+            "value" : "Lorsque le nettoyage Homebrew est activé, Pearcleaner vérifiera si l'application que vous supprimez a été installée via Homebrew et lancera Terminal.app pour exécuter une commande de désinstallation et de nettoyage brew afin de signaler à Homebrew que l'application a été supprimée. De cette façon, votre liste Homebrew sera correctement synchronisée et le cache sera supprimé. Terminal.app est requis car certaines applications nécessitent des autorisations sudo pour supprimer des services et des fichiers placés dans des dossiers système. Étant donné que d'autres applications de terminal ne prennent pas en charge AppleScript et/ou la commande 'do script', Pearcleaner a choisi d'utiliser l'application Terminal par défaut de macOS pour cela.\n\nNOTE : Si vous annulez la suppression du fichier avec ⌘+Z, les fichiers seront remis en place mais Homebrew ne sera pas au courant. Pour resynchroniser la liste Homebrew, vous devrez exécuter :\n \n> brew install APPNAME --force"
           }
         },
         "ja" : {
@@ -12667,7 +12769,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lorsque l'icône de la barre de menus est activée, la fenêtre principale de l'application et l'icône du dock seront désactivées car l'application sera mise en mode accessoire."
+            "value" : "Activer cette option cachera la fenêtre principale de Pearcleaner ainsi que son icône dans le Dock car Peacleaner sera mis en mode accessoire (= application dans la barre des menus).  "
           }
         },
         "ja" : {
@@ -12726,7 +12828,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lorsque ce mode est activé, cliquer sur le bouton Désinstaller pour supprimer une application fermera également Pearcleaner juste après.\nCela n'affecte Pearcleaner que lorsqu'il est ouvert par des moyens externes, tels que Sentinel Trash Monitor, l'extension Finder ou un lien profond.\nCela permet une utilisation unique de l'application pour une désinstallation rapide. Lorsque Pearcleaner est ouvert normalement, ce paramètre est ignoré et fonctionne comme d'habitude."
+            "value" : "Lorsque ce mode est activé, cliquer sur le bouton \"Désinstaller\" pour supprimer une application fermera également Pearcleaner juste après.\nCette option est disponible seulement lorsque Pearcleaner est ouvert par des moyens externes, tels que Sentinel Trash Monitor, l'extension Finder ou un lien profond.\nCela permet une utilisation unique de l'application pour une désinstallation rapide. Lorsque Pearcleaner est ouvert normalement, ce paramètre est ignoré et fonctionne comme d'habitude."
           }
         },
         "ja" : {
