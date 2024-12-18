@@ -198,6 +198,7 @@ class DeeplinkManager {
 
         switch action {
         case DeepLinkActions.openPearcleaner:
+            appState.currentPage = .applications
             break
         case DeepLinkActions.openSettings:
             openAppSettings()

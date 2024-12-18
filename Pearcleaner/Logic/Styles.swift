@@ -422,9 +422,21 @@ struct CustomPickerButton: View {
                                 HStack {
                                     Image(systemName: option.icon)
                                     Text(option.title)
+                                    Spacer()
+                                    switch option.title {
+                                    case "Applications":
+                                        Text(verbatim: "⌘1").font(.footnote).opacity(0.3)
+                                    case "Development":
+                                        Text(verbatim: "⌘2").font(.footnote).opacity(0.3)
+                                    case "Orphaned Files":
+                                        Text(verbatim: "⌘3").font(.footnote).opacity(0.3)
+                                    default:
+                                        EmptyView()
+                                    }
+
                                 }
                                 .padding(.vertical, 8)
-                                .frame(maxWidth: 125, alignment: .leading)
+                                .frame(maxWidth: 140, alignment: .leading)
                                 .contentShape(Rectangle())
                                 .opacity(hoveredItem == option.title ? 0.7 : 1.0) // Change opacity on hover
                                 .onTapGesture {

@@ -71,7 +71,42 @@ struct AppCommands: Commands {
 
 
         }
-        
+
+
+        // Window Menu
+        CommandGroup(after: .sidebar) {
+
+            Menu("Navigate To") {
+                Button
+                {
+                    appState.currentPage = .applications
+
+                } label: {
+                    Text("Applications")
+                }
+                .keyboardShortcut("1", modifiers: .command)
+
+                Button
+                {
+                    appState.currentPage = .development
+
+                } label: {
+                    Text("Development")
+                }
+                .keyboardShortcut("2", modifiers: .command)
+
+                Button
+                {
+                    appState.currentPage = .orphans
+
+                } label: {
+                    Text("Orphaned Files")
+                }
+                .keyboardShortcut("3", modifiers: .command)
+            }
+
+        }
+
 
         // Tools Menu
         CommandMenu(Text("Tools", comment: "Tools Menu")) {
@@ -173,4 +208,3 @@ struct AppCommands: Commands {
         
     }
 }
-

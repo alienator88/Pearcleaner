@@ -6398,6 +6398,9 @@
         }
       }
     },
+    "Navigate To" : {
+
+    },
     "Never" : {
       "extractionState" : "manual",
       "localizations" : {
