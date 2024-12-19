@@ -74,18 +74,43 @@ struct AppSearchView: View {
         .padding(.top, 22)
         .background(backgroundView(themeManager: themeManager, darker: true, glass: glass))
 //        .clipShape(RoundedRectangle(cornerRadius: 8))
-        .clipShape(LadderTopRoundedRectangle(cornerRadius: 8, ladderHeight: 21.5, ladderPosition: 54))
 //        .overlay {
 //            RoundedRectangle(cornerRadius: 8)
 //                .strokeBorder(.primary.opacity(0.1), lineWidth: 1)
 //        }
+
+//        .clipShape(LadderTopRoundedRectangle2(cornerRadius: 8, ladderHeight: 21.5, ladderPosition: 54))
+//
+//        .overlay {
+//            LadderTopRoundedRectangle2(cornerRadius: 8, ladderHeight: 21.5, ladderPosition: 54)
+//                .strokeBorder(.primary.opacity(0.1), lineWidth: 1)
+//        }
+
+        .clipShape(LadderTopRoundedRectangle2(cornerRadius: 8, ladderHeight: 22, ladderPosition: 58, isFlipped: true))
+
         .overlay {
-            LadderTopRoundedRectangle(cornerRadius: 8, ladderHeight: 21.5, ladderPosition: 54)
+            LadderTopRoundedRectangle2(cornerRadius: 8, ladderHeight: 22, ladderPosition: 58, isFlipped: true)
                 .strokeBorder(.primary.opacity(0.1), lineWidth: 1)
         }
+#if !DEBUG
+        .overlay {
+            VStack {
+                HStack {
+                    Text(verbatim: "DEBUG").foregroundStyle(.orange)
+                        .help(Text(verbatim: "VERSION: \(Bundle.main.version) | BUILD: \(Bundle.main.buildVersion)"))
+                        .padding(.leading, 72)
+                        .padding(.top, 2)
+                    Spacer()
+                }
+
+                Spacer()
+            }
+        }
+#endif
+
         .padding(6)
-//        .padding(.top, 19)
-//        .shadow(radius: 2)
+        .padding(.top, 1)
+
 
 
 

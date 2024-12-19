@@ -85,11 +85,9 @@ struct RegularMode: View {
             VStack(spacing: 0) {
 
                 HStack {
+
                     Spacer()
-#if DEBUG
-                    Text(verbatim: "DEBUG").foregroundStyle(.orange).bold()
-                        .help(Text(verbatim: "VERSION: \(Bundle.main.version) | BUILD: \(Bundle.main.buildVersion)"))
-#endif
+
                     CustomPickerButton(
                         selectedOption: $appState.currentPage,
                         isExpanded: $isExpanded,

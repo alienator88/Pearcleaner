@@ -64,6 +64,7 @@ struct PearcleanerApp: App {
                     RegularMode(search: $search, showPopover: $showPopover)
                 }
             }
+            .toolbar { Color.clear }
             .environmentObject(appState)
             .environmentObject(locations)
             .environmentObject(fsm)
@@ -162,6 +163,7 @@ struct PearcleanerApp: App {
             }
         }
         .windowStyle(.hiddenTitleBar)
+        .windowToolbarStyle(.unifiedCompact)
         .windowResizability(.contentMinSize)
         .commands {
             AppCommands(appState: appState, locations: locations, fsm: fsm, updater: updater, themeManager: themeManager, showPopover: $showPopover)            

@@ -10,6 +10,134 @@ import SwiftUI
 import AlinFoundation
 
 
+struct LadderTopRoundedRectangle2: InsettableShape {
+    var cornerRadius: CGFloat
+    var ladderHeight: CGFloat
+    var ladderPosition: CGFloat
+    var isFlipped: Bool
+    var insetAmount: CGFloat = 0
+
+    func inset(by amount: CGFloat) -> some InsettableShape {
+        var shape = self
+        shape.insetAmount += amount
+        return shape
+    }
+
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+
+        // Calculate the ladder start position - always measured from left edge
+        let ladderStartX = rect.minX + cornerRadius + ladderPosition
+
+        // Start point changes based on flip
+        let startPoint = isFlipped
+        ? CGPoint(x: rect.minX + cornerRadius, y: rect.minY)
+        : CGPoint(x: rect.maxX - cornerRadius, y: rect.minY)
+
+        path.move(to: startPoint)
+
+        if isFlipped {
+            // Flipped version (ladder on right)
+
+            // 1. Top-left rounded corner
+            path.addQuadCurve(to: CGPoint(x: rect.minX, y: rect.minY + cornerRadius),
+                              control: CGPoint(x: rect.minX, y: rect.minY))
+
+            // 2. Left side straight line down
+            path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY - cornerRadius))
+
+            // 3. Bottom-left rounded corner
+            path.addQuadCurve(to: CGPoint(x: rect.minX + cornerRadius, y: rect.maxY),
+                              control: CGPoint(x: rect.minX, y: rect.maxY))
+
+            // 4. Straight line across bottom
+            path.addLine(to: CGPoint(x: rect.maxX - cornerRadius, y: rect.maxY))
+
+            // 5. Bottom-right rounded corner
+            path.addQuadCurve(to: CGPoint(x: rect.maxX, y: rect.maxY - cornerRadius),
+                              control: CGPoint(x: rect.maxX, y: rect.maxY))
+
+            // 6. Right side straight line going up
+            path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY + ladderHeight + cornerRadius))
+
+            // 7. Top-right rounded corner
+            path.addQuadCurve(to: CGPoint(x: rect.maxX - cornerRadius, y: rect.minY + ladderHeight),
+                              control: CGPoint(x: rect.maxX, y: rect.minY + ladderHeight))
+
+            // 8. Straight line left to the start of the vertical section
+            path.addLine(to: CGPoint(x: ladderStartX + cornerRadius, y: rect.minY + ladderHeight))
+
+            // 9. Curved transition into the vertical section (right side)
+            path.addQuadCurve(
+                to: CGPoint(x: ladderStartX, y: rect.minY + ladderHeight - cornerRadius),
+                control: CGPoint(x: ladderStartX, y: rect.minY + ladderHeight)
+            )
+
+            // 10. Vertical line
+            path.addLine(to: CGPoint(x: ladderStartX, y: rect.minY + cornerRadius))
+
+            // 11. Curved transition from vertical to top (left side)
+            path.addQuadCurve(
+                to: CGPoint(x: ladderStartX - cornerRadius, y: rect.minY),
+                control: CGPoint(x: ladderStartX, y: rect.minY)
+            )
+
+            // 12. Final line to close the shape
+            path.addLine(to: CGPoint(x: rect.minX + cornerRadius, y: rect.minY))
+        } else {
+            // Original version (ladder on left) - keeping your original code and comments
+
+            // 1. Top-right rounded corner
+            path.addQuadCurve(to: CGPoint(x: rect.maxX, y: rect.minY + cornerRadius),
+                              control: CGPoint(x: rect.maxX, y: rect.minY))
+
+            // 2. Right side straight line down
+            path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY - cornerRadius))
+
+            // 3. Bottom-right rounded corner
+            path.addQuadCurve(to: CGPoint(x: rect.maxX - cornerRadius, y: rect.maxY),
+                              control: CGPoint(x: rect.maxX, y: rect.maxY))
+
+            // 4. Straight line across bottom
+            path.addLine(to: CGPoint(x: rect.minX + cornerRadius, y: rect.maxY))
+
+            // 5. Bottom-left rounded corner
+            path.addQuadCurve(to: CGPoint(x: rect.minX, y: rect.maxY - cornerRadius),
+                              control: CGPoint(x: rect.minX, y: rect.maxY))
+
+            // 6. Left side straight line going up
+            path.addLine(to: CGPoint(x: rect.minX, y: rect.minY + ladderHeight + cornerRadius))
+
+            // 7. Top-left rounded corner
+            path.addQuadCurve(to: CGPoint(x: rect.minX + cornerRadius, y: rect.minY + ladderHeight),
+                              control: CGPoint(x: rect.minX, y: rect.minY + ladderHeight))
+
+            // 8. Straight line right to the start of the vertical section
+            path.addLine(to: CGPoint(x: ladderStartX - cornerRadius, y: rect.minY + ladderHeight))
+
+            // 9. Curved transition into the vertical section (left side)
+            path.addQuadCurve(
+                to: CGPoint(x: ladderStartX, y: rect.minY + ladderHeight - cornerRadius),
+                control: CGPoint(x: ladderStartX, y: rect.minY + ladderHeight)
+            )
+
+            // 10. Vertical line
+            path.addLine(to: CGPoint(x: ladderStartX, y: rect.minY + cornerRadius))
+
+            // 11. Curved transition from vertical to top (right side)
+            path.addQuadCurve(
+                to: CGPoint(x: ladderStartX + cornerRadius, y: rect.minY),
+                control: CGPoint(x: ladderStartX, y: rect.minY)
+            )
+
+            // 12. Final line to close the shape
+            path.addLine(to: CGPoint(x: rect.maxX - cornerRadius, y: rect.minY))
+        }
+
+        path.closeSubpath()
+        return path
+    }
+}
 
 struct LadderTopRoundedRectangle: InsettableShape {
     var cornerRadius: CGFloat
