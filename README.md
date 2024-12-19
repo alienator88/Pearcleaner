@@ -57,9 +57,9 @@ If you are able to contribute to translations for the app, please see this discu
 
 ## Screenshots
 
-<img src="https://github.com/user-attachments/assets/8051355a-1321-4b45-8e63-2dadc4efd244" align="left" width="400" />
+<img src="https://github.com/user-attachments/assets/e2e16378-dbed-4cd4-a20b-23dd0d806fdf" align="left" width="400" />
 
-<img src="https://github.com/user-attachments/assets/878b21bf-37f7-4624-b9df-a968d1d96eb1" align="center" width="400" />
+<img src="https://github.com/user-attachments/assets/4221d3ce-6190-45da-9a35-f9554196b2bf" align="center" width="400" />
 <p></p>
 <img src="https://github.com/user-attachments/assets/fc2f6d24-d6c9-4aec-91da-3d0adc05df48" align="left" width="400" />
 
