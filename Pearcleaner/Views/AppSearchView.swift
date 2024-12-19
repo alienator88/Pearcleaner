@@ -92,7 +92,7 @@ struct AppSearchView: View {
             LadderTopRoundedRectangle2(cornerRadius: 8, ladderHeight: 22, ladderPosition: 58, isFlipped: true)
                 .strokeBorder(.primary.opacity(0.1), lineWidth: 1)
         }
-#if !DEBUG
+#if DEBUG
         .overlay {
             VStack {
                 HStack {
