@@ -26,7 +26,6 @@ struct AppSearchView: View {
     @AppStorage("settings.general.selectedSortAppsList") var selectedSortOption: SortOption = .alphabetical
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
-
     var body: some View {
         
         VStack(alignment: .center, spacing: 0) {
@@ -45,7 +44,6 @@ struct AppSearchView: View {
             } else {
                 Spacer()
                     .frame(height: !isMenuBar ? 0 : 10)
-
 
                 searchBarComponent
                     .padding(8)
@@ -73,14 +71,20 @@ struct AppSearchView: View {
 
 
         }
+        .padding(.top, 22)
         .background(backgroundView(themeManager: themeManager, darker: true, glass: glass))
-        .clipShape(RoundedRectangle(cornerRadius: 8))
+//        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .clipShape(LadderTopRoundedRectangle(cornerRadius: 8, ladderHeight: 21.5, ladderPosition: 54))
+//        .overlay {
+//            RoundedRectangle(cornerRadius: 8)
+//                .strokeBorder(.primary.opacity(0.1), lineWidth: 1)
+//        }
         .overlay {
-            RoundedRectangle(cornerRadius: 8)
+            LadderTopRoundedRectangle(cornerRadius: 8, ladderHeight: 21.5, ladderPosition: 54)
                 .strokeBorder(.primary.opacity(0.1), lineWidth: 1)
         }
-        .padding([.leading, .bottom, .top, .trailing], 8)
-        .padding(.top, 19)
+        .padding(6)
+//        .padding(.top, 19)
 //        .shadow(radius: 2)
 
 

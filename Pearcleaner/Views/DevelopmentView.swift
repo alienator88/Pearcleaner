@@ -7,7 +7,7 @@
 import SwiftUI
 import AlinFoundation
 
-struct Path: Identifiable, Hashable {
+struct PathEnv: Identifiable, Hashable {
     let id = UUID()
     let name: String
     let paths: [String]
@@ -16,7 +16,7 @@ struct Path: Identifiable, Hashable {
 struct EnvironmentCleanerView: View {
     @EnvironmentObject var appState: AppState
 //    @State private var selectedEnvironment: Path?
-    @State private var paths: [Path] = PathLibrary.getPaths()
+    @State private var paths: [PathEnv] = PathLibrary.getPaths()
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
 
     var body: some View {
@@ -305,92 +305,92 @@ struct PathRowView: View {
 
 
 struct PathLibrary {
-    static func getPaths() -> [Path] {
+    static func getPaths() -> [PathEnv] {
         return [
-            Path(name: "Android Studio", paths: [
+            PathEnv(name: "Android Studio", paths: [
                 "~/.android/",
                 "~/Library/Application Support/Google/AndroidStudio*/",
                 "~/Library/Logs/AndroidStudio/",
                 "~/Library/Caches/Google/AndroidStudio*/"
             ]),
-            Path(name: "Cargo (Rust)", paths: [
+            PathEnv(name: "Cargo (Rust)", paths: [
                 "~/.cargo/bin/",
                 "~/.cargo/registry/"
             ]),
-            Path(name: "Carthage", paths: [
+            PathEnv(name: "Carthage", paths: [
                 "~/Carthage/",
                 "~/Library/Caches/org.carthage.CarthageKit/"
             ]),
-            Path(name: "Swift", paths: [
+            PathEnv(name: "Swift", paths: [
                 "~/.swiftpm/",
             ]),
-            Path(name: "Composer (PHP)", paths: [
+            PathEnv(name: "Composer (PHP)", paths: [
                 "~/.composer/cache/"
             ]),
-            Path(name: "Conda", paths: [
+            PathEnv(name: "Conda", paths: [
                 "~/.conda/environments.txt",
                 "~/anaconda3/envs/",
                 "~/miniconda3/envs/"
             ]),
-            Path(name: "CocoaPods", paths: [
+            PathEnv(name: "CocoaPods", paths: [
                 "~/Library/Caches/CocoaPods/",
                 "~/.cocoapods/repos/"
             ]),
-            Path(name: "Go Modules", paths: [
+            PathEnv(name: "Go Modules", paths: [
                 "~/go/bin/",
                 "~/go/pkg/mod/"
             ]),
-            Path(name: "Gradle", paths: [
+            PathEnv(name: "Gradle", paths: [
                 "~/.gradle/caches/",
                 "~/.gradle/wrapper/"
             ]),
-            Path(name: "Haskell Stack", paths: [
+            PathEnv(name: "Haskell Stack", paths: [
                 "~/.stack/",
                 "~/.stack/global-project/",
                 "~/.stack/snapshots/"
             ]),
-            Path(name: "IntelliJ IDEA (JetBrains Products)", paths: [
+            PathEnv(name: "IntelliJ IDEA (JetBrains Products)", paths: [
                 "~/Library/Application Support/JetBrains/",
                 "~/Library/Caches/JetBrains/",
                 "~/Library/Logs/JetBrains/"
             ]),
-            Path(name: "Maven", paths: [
+            PathEnv(name: "Maven", paths: [
                 "~/.m2/repository/",
                 "~/.m2/settings.xml"
             ]),
-            Path(name: "Nix", paths: [
+            PathEnv(name: "Nix", paths: [
                 "/nix/store/",
                 "~/.cache/nix/"
             ]),
-            Path(name: "NPM", paths: [
+            PathEnv(name: "NPM", paths: [
                 "/usr/local/lib/node_modules/",
                 "~/.nvm/versions/node/*/",
                 "~/.npm/",
                 "~/.nvm/"
             ]),
-            Path(name: "Pip", paths: [
+            PathEnv(name: "Pip", paths: [
                 "~/.cache/pip/"
             ]),
-            Path(name: "Poetry", paths: [
+            PathEnv(name: "Poetry", paths: [
                 "~/Library/Caches/pypoetry/"
             ]),
-            Path(name: "Pub (Dart/Flutter)", paths: [
+            PathEnv(name: "Pub (Dart/Flutter)", paths: [
                 "~/.pub-cache/",
                 "~/Library/Caches/flutter_engine/"
             ]),
-            Path(name: "Pyenv", paths: [
+            PathEnv(name: "Pyenv", paths: [
                 "~/.pyenv/cache/",
                 "~/.pyenv/versions/"
             ]),
-            Path(name: "Ruby Gems", paths: [
+            PathEnv(name: "Ruby Gems", paths: [
                 "~/.gem/",
                 "~/.gem/ruby/*/"
             ]),
-            Path(name: "VS Code", paths: [
+            PathEnv(name: "VS Code", paths: [
                 "~/Library/Application Support/Code/",
                 "~/.vscode/extensions/"
             ]),
-            Path(name: "Xcode", paths: [
+            PathEnv(name: "Xcode", paths: [
                 "~/Library/Caches/com.apple.dt.xcodebuild/",
                 "~/Library/Caches/com.apple.dt.Xcode.sourcecontrol.Git/",
                 "~/Library/Developer/CoreSimulator/Devices/",
@@ -403,13 +403,13 @@ struct PathLibrary {
                 "~/Library/Developer/Xcode/macOS DeviceSupport/",
                 "~/Library/Developer/Xcode/UserData/"
             ]),
-            Path(name: "Yarn", paths: [
+            PathEnv(name: "Yarn", paths: [
                 "~/.cache/yarn/",
                 "~/.yarn-cache/",
                 "~/.yarn/global/"
             ])
         ]
-            .map { Path(name: $0.name, paths: $0.paths.sorted()) } // Sort paths within each environment
+            .map { PathEnv(name: $0.name, paths: $0.paths.sorted()) } // Sort paths within each environment
             .sorted { $0.name < $1.name } // Sort environments by name
     }
 }

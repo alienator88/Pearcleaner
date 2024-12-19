@@ -80,33 +80,25 @@ struct RegularMode: View {
                 EnvironmentCleanerView()
             }
 
-#if DEBUG
+
+
             VStack(spacing: 0) {
+
                 HStack {
+                    Spacer()
+#if DEBUG
                     Text(verbatim: "DEBUG").foregroundStyle(.orange).bold()
                         .help(Text(verbatim: "VERSION: \(Bundle.main.version) | BUILD: \(Bundle.main.buildVersion)"))
-                    Spacer()
-                }
-                Spacer()
-            }
-            .padding(5.25)
-            .padding(.leading, 62)
 #endif
-
-            VStack(spacing: 0) {
-
-                HStack {
-                    Spacer()
                     CustomPickerButton(
                         selectedOption: $appState.currentPage,
                         isExpanded: $isExpanded,
                         options: CurrentPage.allCases.sorted { $0.title < $1.title } // Sort by title
                     )
-                    .padding(2)
-                    .padding(.vertical, 2)
+                    .padding(6)
+//                    .padding(.vertical, 2)
 
                 }
-                .padding(6)
 
 
                 Spacer()
