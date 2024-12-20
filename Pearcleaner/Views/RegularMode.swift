@@ -103,6 +103,22 @@ struct RegularMode: View {
             }
 
         }
+//        .background(
+//            Group {
+//                if appState.currentView == .empty {
+//                    LinearGradient(
+//                        gradient: Gradient(stops: [
+//                            .init(color: .white.opacity(0.01), location: 0.5),
+//                            .init(color: .clear, location: 0.5)
+//                        ]),
+//                        startPoint: .topLeading,
+//                        endPoint: .bottomTrailing
+//                    )
+//                }
+//            }
+//
+//
+//        )
         .background(backgroundView(themeManager: themeManager))
         .frame(minWidth: appState.currentPage == .orphans ? 700 : 900, minHeight: 600)
         .edgesIgnoringSafeArea(.all)

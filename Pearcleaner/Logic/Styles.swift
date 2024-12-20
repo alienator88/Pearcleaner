@@ -491,11 +491,11 @@ struct PearDropView: View {
         VStack(alignment: .center, spacing: 0) {
             HStack(spacing: 0) {
                 LinearGradient(gradient: Gradient(colors: [.green, .orange]), startPoint: .leading, endPoint: .trailing)
-                    .frame(width: 220 * multiplier) // Adjust the width based on the multiplier
+                    .frame(width: 175 * multiplier) // Adjust the width based on the multiplier
                 LinearGradient(gradient: Gradient(colors: [.orange, .primary.opacity(0.5)]), startPoint: .leading, endPoint: .trailing)
                     .frame(width: 10 * multiplier) // Adjust the width based on the multiplier
-                LinearGradient(gradient: Gradient(colors: [.primary.opacity(0.5), .primary.opacity(0.5)]), startPoint: .leading, endPoint: .trailing)
-                    .frame(width: 300 * multiplier) // Adjust the width based on the multiplier
+                LinearGradient(gradient: Gradient(colors: [.primary.opacity(0.5)]), startPoint: .leading, endPoint: .trailing)
+                    .frame(width: 250 * multiplier) // Adjust the width based on the multiplier
             }
             .mask(
                 Image("logo_text_small")
@@ -515,11 +515,11 @@ struct PearDropViewSmall: View {
         VStack(alignment: .center, spacing: 0) {
             HStack(spacing: 0) {
                 LinearGradient(gradient: Gradient(colors: [.green, .orange]), startPoint: .leading, endPoint: .trailing)
-                    .frame(width: 260)
+                    .frame(width: 60)
                 LinearGradient(gradient: Gradient(colors: [.orange, .primary.opacity(0.5)]), startPoint: .leading, endPoint: .trailing)
                     .frame(width: 10)
                 LinearGradient(gradient: Gradient(colors: [.primary.opacity(0.5), .primary.opacity(0.5)]), startPoint: .leading, endPoint: .trailing)
-                    .frame(width: 300)
+                    .frame(width: 100)
             }
             .mask(
                 Image("logo_text_small")
@@ -596,6 +596,8 @@ struct GlowGradientButton: View {
 
 
 struct CustomPickerButton: View {
+    @EnvironmentObject var themeManager: ThemeManager
+
     // Selected option binding to allow external state management
     @Binding var selectedOption: CurrentPage
     @Binding var isExpanded: Bool
@@ -620,8 +622,8 @@ struct CustomPickerButton: View {
                 VStack {
                     if isExpanded {
                         // Expanded menu with selectable options
-                        VStack(alignment: .leading, spacing: 2) {
-                            ForEach(options, id: \.title) { option in
+                        VStack(alignment: .leading, spacing: 0) {
+                            ForEach(Array(options.enumerated()), id: \.element.title) { index, option in
                                 HStack {
                                     Image(systemName: option.icon)
                                     Text(option.title)
@@ -638,9 +640,9 @@ struct CustomPickerButton: View {
                                     }
 
                                 }
-                                .padding(.vertical, 8)
-                                .frame(maxWidth: 140, alignment: .leading)
+//                                .padding(.vertical, 8)
                                 .contentShape(Rectangle())
+//                                .bounds(.blue)
                                 .opacity(hoveredItem == option.title ? 0.7 : 1.0) // Change opacity on hover
                                 .onTapGesture {
                                     selectedOption = option // Update selected option
@@ -653,8 +655,18 @@ struct CustomPickerButton: View {
                                     // Update hoveredItem based on whether this HStack is hovered
                                     hoveredItem = isHovering ? option.title : nil
                                 }
+
+                                if index < options.count - 1 {
+                                    Divider()
+                                        .padding(.vertical, 8)
+//                                        .padding(.trailing, 23)
+                                        .opacity(0.3)
+                                }
+
                             }
                         }
+                        .frame(maxWidth: 140, alignment: .leading)
+//                        .bounds()
                     } else {
                         // Display the selected option when collapsed
                         HStack {
@@ -671,7 +683,8 @@ struct CustomPickerButton: View {
                     }
                 }
                 .padding(isExpanded ? 10 : 0)
-                .background(.ultraThinMaterial)
+                .background(backgroundView(themeManager: themeManager, darker: true, glass: false))
+//                .background(.ultraThinMaterial)
                 .cornerRadius(8)
                 .overlay(
                     RoundedRectangle(cornerRadius: 8)
