@@ -43,6 +43,7 @@ If you are able to contribute to translations for the app, please see this discu
 - Menubar icon option
 - CLI support
 - Drag/drop applications support
+- Deep link support for automation, see [wiki guide](https://github.com/alienator88/Pearcleaner/wiki/Deep-Link-Guide) for instructions
 - Optional Finder Extension which allows you to uninstall an app directly from Finder by `right click > Pearcleaner Uninstall`
 - Theme System available with custom color selector
 - Differentiate between regular, Safari web-apps and mobile apps with badges like **web** and **iOS**
