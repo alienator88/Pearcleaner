@@ -159,6 +159,8 @@ struct PearcleanerApp: App {
                     }
                 }
 
+                permissionManager.checkAllPermissions()
+
 
             }
         }

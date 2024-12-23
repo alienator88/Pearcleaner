@@ -90,7 +90,7 @@ struct AppSearchView: View {
 
         .overlay {
             LadderTopRoundedRectangle2(cornerRadius: 8, ladderHeight: 22, ladderPosition: 58, isFlipped: true)
-                .strokeBorder(.primary.opacity(0.1), lineWidth: 1)
+                .strokeBorder(.primary.opacity(0.05), lineWidth: 1)
         }
 #if DEBUG
         .overlay {

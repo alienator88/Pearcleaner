@@ -129,7 +129,7 @@ struct ZombieView: View {
                     // Item selection and sorting toolbar
                     HStack {
                         Toggle(isOn: selectAllBinding) { EmptyView() }
-                            .toggleStyle(SimpleCheckboxToggleStyle())
+//                            .toggleStyle(SimpleCheckboxToggleStyle())
                             .help("All checkboxes")
 
                         SearchBar(search: $searchZ, darker: true, glass: glass, sidebar: false)
@@ -439,7 +439,7 @@ struct ZombieFileDetailsItem: View {
 
         HStack(alignment: .center, spacing: 20) {
             Toggle(isOn: $isSelected) { EmptyView() }
-            .toggleStyle(SimpleCheckboxToggleStyle())
+//            .toggleStyle(SimpleCheckboxToggleStyle())
 
             if let appIcon = icon {
                 appIcon

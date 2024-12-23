@@ -624,49 +624,47 @@ struct CustomPickerButton: View {
                         // Expanded menu with selectable options
                         VStack(alignment: .leading, spacing: 0) {
                             ForEach(Array(options.enumerated()), id: \.element.title) { index, option in
-                                HStack {
-                                    Image(systemName: option.icon)
-                                    Text(option.title)
-                                    Spacer()
-                                    switch option.title {
-                                    case "Applications":
-                                        Text(verbatim: "⌘1").font(.footnote).opacity(0.3)
-                                    case "Development":
-                                        Text(verbatim: "⌘2").font(.footnote).opacity(0.3)
-                                    case "Orphaned Files":
-                                        Text(verbatim: "⌘3").font(.footnote).opacity(0.3)
-                                    default:
-                                        EmptyView()
-                                    }
-
-                                }
-//                                .padding(.vertical, 8)
-                                .contentShape(Rectangle())
-//                                .bounds(.blue)
-                                .opacity(hoveredItem == option.title ? 0.7 : 1.0) // Change opacity on hover
-                                .onTapGesture {
-                                    selectedOption = option // Update selected option
-                                    onSelect?(option.title) // Call the selection handler
+                                Button(action: {
+                                    selectedOption = option
+                                    onSelect?(option.title)
                                     withAnimation {
                                         isExpanded = false
                                     }
+                                }) {
+                                    HStack {
+                                        Image(systemName: option.icon)
+                                        Text(option.title)
+                                        Spacer()
+                                        switch option.title {
+                                        case "Applications":
+                                            Text(verbatim: "⌘1").font(.footnote).opacity(0.3)
+                                        case "Development":
+                                            Text(verbatim: "⌘2").font(.footnote).opacity(0.3)
+                                        case "Orphaned Files":
+                                            Text(verbatim: "⌘3").font(.footnote).opacity(0.3)
+                                        default:
+                                            EmptyView()
+                                        }
+
+                                    }
+                                    .contentShape(Rectangle())
+                                    .opacity(hoveredItem == option.title ? 0.7 : 1.0)
                                 }
+                                .buttonStyle(.borderless)
+                                .foregroundStyle(.primary)
                                 .onHover { isHovering in
-                                    // Update hoveredItem based on whether this HStack is hovered
                                     hoveredItem = isHovering ? option.title : nil
                                 }
 
                                 if index < options.count - 1 {
                                     Divider()
                                         .padding(.vertical, 8)
-//                                        .padding(.trailing, 23)
                                         .opacity(0.3)
                                 }
 
                             }
                         }
                         .frame(maxWidth: 140, alignment: .leading)
-//                        .bounds()
                     } else {
                         // Display the selected option when collapsed
                         HStack {
@@ -684,7 +682,6 @@ struct CustomPickerButton: View {
                 }
                 .padding(isExpanded ? 10 : 0)
                 .background(backgroundView(themeManager: themeManager, darker: true, glass: false))
-//                .background(.ultraThinMaterial)
                 .cornerRadius(8)
                 .overlay(
                     RoundedRectangle(cornerRadius: 8)
