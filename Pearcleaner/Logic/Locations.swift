@@ -27,6 +27,7 @@ class Locations: ObservableObject {
         
         self.apps = Category(name: "Apps", paths: [
             "\(home)",
+            "\(home)/.config",
             "\(home)/Documents",
             "\(home)/Library",
             "\(home)/Library/Application Scripts",
