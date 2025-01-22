@@ -683,11 +683,12 @@ func getCaskIdentifier(for appName: String) -> String? {
                 let appDirectory = "\(caskSubPath)/\(latestVersion)/"
 
                 // List all files in the version directory and check for .app file
-                let appsInDir = try fileManager.contentsOfDirectory(atPath: appDirectory).filter { !$0.hasPrefix(".") }
-
+//                let appsInDir = try fileManager.contentsOfDirectory(atPath: appDirectory).filter { !$0.hasPrefix(".") }
+                let appsInDir = try fileManager.contentsOfDirectory(atPath: appDirectory).filter {
+                    !$0.hasPrefix(".") && $0.hasSuffix(".app") && !$0.lowercased().contains("uninstall")
+                }
                 if let appFile = appsInDir.first(where: { $0.hasSuffix(".app") }) {
                     let realAppName = appFile.replacingOccurrences(of: ".app", with: "").lowercased()
-
                     // Compare the lowercased app names for case-insensitive match
                     if realAppName == lowercasedAppName {
                         return realAppName.replacingOccurrences(of: " ", with: "-").lowercased()

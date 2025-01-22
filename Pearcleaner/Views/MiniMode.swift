@@ -59,33 +59,35 @@ struct MiniEmptyView: View {
     @Binding var showPopover: Bool
 
     var body: some View {
-        VStack(alignment: .center) {
+        ZStack() {
 
-            Spacer()
+            VStack {
+                Spacer()
+                LinearGradient(gradient: Gradient(colors: [.green, .orange]), startPoint: .leading, endPoint: .trailing)
+                    .mask(
+                        Image(systemName: "plus.square.dashed")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 120, height: 120, alignment: .center)
+                            .padding()
+                            .fontWeight(.ultraLight)
+                            .offset(x: 5, y: 5)
+                    )
+                Spacer()
+            }
 
-            LinearGradient(gradient: Gradient(colors: [.green, .orange]), startPoint: .leading, endPoint: .trailing)
-                .mask(
-                    Image(systemName: "plus.square.dashed")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 120, height: 120, alignment: .center)
-                        .padding()
-                        .fontWeight(.ultraLight)
-                        .offset(x: 5, y: 5)
-                )
+            VStack {
+                Spacer()
+                Text("Drop an app here")
+                    .font(.title3)
+                    .opacity(0.7)
 
-            Text("Drop an app here")
-                .font(.title3)
-                .opacity(0.7)
+                Text("Click for apps list")
+                    .font(.footnote)
+                    .padding(.bottom, 25)
+                    .opacity(0.5)
+            }
 
-            Text("Click for apps list")
-                .font(.footnote)
-                .padding(.bottom, 25)
-                .opacity(0.5)
-
-            Spacer()
-
-            
         }
         .onTapGesture {
             withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
