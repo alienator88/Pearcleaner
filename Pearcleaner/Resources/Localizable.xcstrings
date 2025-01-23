@@ -8444,6 +8444,9 @@
         }
       }
     },
+    "Remove all files/folders" : {
+
+    },
     "Rescan" : {
       "extractionState" : "manual",
       "localizations" : {

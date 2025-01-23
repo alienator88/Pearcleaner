@@ -205,6 +205,11 @@ struct FolderSettingsTab: View {
                         } label: { EmptyView() }
                             .buttonStyle(SimpleButtonStyle(icon: "doc.on.clipboard", help: String(localized: "Add file/folder from clipboard"), size: 16, rotate: false))
 
+                        Button {
+                            fsm.removeAllPathsZ()
+                        } label: { EmptyView() }
+                            .buttonStyle(SimpleButtonStyle(icon: "trash", help: String(localized: "Remove all files/folders"), size: 16, rotate: false))
+
                         Spacer()
                     }
                 }
@@ -365,6 +370,11 @@ class FolderSettingsManager: ObservableObject {
             self.fileFolderPathsZ.remove(at: index) // Update local state
             UserDefaults.standard.set(self.fileFolderPathsZ, forKey: zombieKey)
         }
+    }
+
+    func removeAllPathsZ() {
+        self.fileFolderPathsZ.removeAll()
+        UserDefaults.standard.set([], forKey: zombieKey)
     }
 
     func refreshPathsZ() {
