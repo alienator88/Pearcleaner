@@ -15,7 +15,7 @@ struct RegularMode: View {
     @EnvironmentObject var locations: Locations
     @EnvironmentObject var fsm: FolderSettingsManager
     @AppStorage("settings.general.glass") private var glass: Bool = false
-    @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 280
+    @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 300
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true

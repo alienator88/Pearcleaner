@@ -27,6 +27,7 @@ class AppState: ObservableObject {
     @Published var finderExtensionEnabled: Bool = false
     @Published var showUninstallAlert: Bool = false
     @Published var externalMode: Bool = false
+    @Published var multiMode: Bool = false
     @Published var externalPaths: [URL] = [] // for handling multiple app from drops or deeplinks
     @Published var selectedEnvironment: PathEnv? // for handling dev environments
 

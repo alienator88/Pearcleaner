@@ -468,25 +468,26 @@ struct FilesView: View {
                         }
 
                         // Process the next app if in external mode
-                        if appState.externalMode {
-                            processNextExternalApp(appWasRemoved: appWasRemoved)
-                        } else {
-                            // Not in external mode
-                            if appWasRemoved {
-                                // Now update the UI to reflect that the app has been removed
-                                updateOnMain {
-                                    search = ""
-                                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                                        if mini || menubarEnabled {
-                                            appState.currentView = .apps
-                                            showPopover = false
-                                        } else {
-                                            appState.currentView = .empty
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        processNextExternalApp(appWasRemoved: appWasRemoved)
+//                        if appState.externalMode || appState.multiMode {
+//                            processNextExternalApp(appWasRemoved: appWasRemoved)
+//                        } else {
+//                            // Not in external mode
+//                            if appWasRemoved {
+//                                // Now update the UI to reflect that the app has been removed
+//                                updateOnMain {
+//                                    search = ""
+//                                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+//                                        if mini || menubarEnabled {
+//                                            appState.currentView = .apps
+//                                            showPopover = false
+//                                        } else {
+//                                            appState.currentView = .empty
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
                     }
                 }
             }
@@ -518,13 +519,14 @@ struct FilesView: View {
             }
 
             // Terminate if oneShotMode is enabled
-            if oneShotMode {
+            if oneShotMode && !appState.multiMode {
                 updateOnMain(after: 2) {
                     NSApp.terminate(nil)
                 }
             } else {
-                // Reset external mode
+                // Reset external/multi mode
                 appState.externalMode = false
+                appState.multiMode = false
             }
         } else if let nextPath = appState.externalPaths.first {
             // More paths exist; continue processing

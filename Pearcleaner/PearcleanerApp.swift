@@ -96,7 +96,6 @@ struct PearcleanerApp: App {
 
                 return true
             }
-
             .onOpenURL(perform: { url in
                 let deeplinkManager = DeeplinkManager(showPopover: $showPopover, updater: updater, fsm: fsm)
                 deeplinkManager.manage(url: url, appState: appState, locations: locations)

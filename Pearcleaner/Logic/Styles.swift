@@ -271,6 +271,10 @@ struct SimpleCheckboxToggleStyle: ToggleStyle {
                             .scaleEffect(isHovered ? 0.8 : 1.0)
                     }
                 }
+                .overlay {
+                    RoundedRectangle(cornerRadius: 4)
+                        .strokeBorder(themeManager.pickerColor.adjustBrightness(-5.0), lineWidth: 1)
+                }
                 .onTapGesture {
                     withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                         configuration.isOn.toggle()
@@ -378,7 +382,7 @@ public struct SlideableDivider: View {
             }
             .contextMenu {
                 Button("Reset Size") {
-                    dimension = 280
+                    dimension = 300
                 }
             }
             .gesture(drag)
@@ -395,8 +399,8 @@ public struct SlideableDivider: View {
                 let newDimension = dimensionStart! + Double(delta)
 
                 // Set minimum and maximum width
-                let minWidth: Double = 220
-                let maxWidth: Double = 330
+                let minWidth: Double = 240
+                let maxWidth: Double = 350
                 dimension = max(minWidth, min(maxWidth, newDimension))
                 NSCursor.closedHand.set()
                 handleWidth = 6

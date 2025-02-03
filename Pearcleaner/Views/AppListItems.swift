@@ -31,135 +31,149 @@ struct AppListItems: View {
 
     var body: some View {
 
-        Button(action: {
-            if !isSelected {
-                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                    showAppInFiles(appInfo: appInfo, appState: appState, locations: locations, showPopover: $showPopover)
-                }
-            } else {
-                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                    updateOnMain {
-                        appState.appInfo = .empty
-                        appState.selectedItems = []
-                        appState.currentView = miniView ? .apps : .empty
-                        showPopover = false
+        HStack {
+
+            Toggle(isOn: Binding(
+                get: { self.appState.externalPaths.contains(self.appInfo.path) },
+                set: { isChecked in
+                    if isChecked {
+                        if !self.appState.externalPaths.contains(self.appInfo.path) {
+                            let wasEmpty = self.appState.externalPaths.isEmpty
+                            self.appState.externalPaths.append(self.appInfo.path)
+
+                            if wasEmpty && appState.currentView != .files {
+                                appState.multiMode = true
+                                showAppInFiles(appInfo: appInfo, appState: appState, locations: locations, showPopover: $showPopover)
+                            }
+                        }
+                    } else {
+                        self.appState.externalPaths.removeAll { $0 == self.appInfo.path }
+
+                        if self.appState.externalPaths.isEmpty {
+                            appState.multiMode = false
+                        }
                     }
                 }
-            }
+            )) { EmptyView() }
+                .toggleStyle(SimpleCheckboxToggleStyle())
+                .padding(.leading)
 
-        }) {
-            VStack() {
+            Button(action: {
+                if !isSelected {
+                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                        showAppInFiles(appInfo: appInfo, appState: appState, locations: locations, showPopover: $showPopover)
+                    }
+                } else {
+                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                        updateOnMain {
+                            appState.appInfo = .empty
+                            appState.selectedItems = []
+                            appState.currentView = miniView ? .apps : .empty
+                            showPopover = false
+                        }
+                    }
+                }
 
-                HStack(alignment: .center) {
+            }) {
+                VStack() {
 
-                    if let appIcon = appInfo.appIcon {
-                        ZStack {
-                            Image(nsImage: appIcon)
+                    HStack(alignment: .center) {
+
+
+
+                        if let appIcon = appInfo.appIcon {
+                            ZStack {
+                                Image(nsImage: appIcon)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 30)
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                            }
+
+                        }
+
+                        if minimalEnabled {
+                            Text(appInfo.appName)
+                                .font(.system(size: (isSelected) ? 14 : 12))
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+                        } else {
+                            VStack(alignment: .center, spacing: 2) {
+                                HStack {
+                                    Text(appInfo.appName)
+                                        .font(.system(size: (isSelected) ? 14 : 12))
+                                        .lineLimit(1)
+                                        .truncationMode(.tail)
+                                    Spacer()
+                                }
+
+                                HStack(spacing: 5) {
+                                    Text(verbatim: "v\(appInfo.appVersion)")
+                                        .font(.footnote)
+                                        .lineLimit(1)
+                                        .truncationMode(.tail)
+                                        .opacity(0.5)
+                                    Text(verbatim: "•").font(.footnote).opacity(0.5)
+
+                                    Text(appInfo.bundleSize == 0 ? String(localized: "calculating") : "\(formatByte(size: appInfo.bundleSize).human)")
+                                        .font(.footnote)
+                                        .lineLimit(1)
+                                        .truncationMode(.tail)
+                                        .opacity(0.5)
+                                    Spacer()
+                                }
+
+                            }
+                        }
+
+
+                        if appInfo.webApp {
+                            Image(systemName: "safari")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(width: 30)
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                .frame(width: 16, height: 16)
+                                .foregroundStyle(.primary.opacity(0.3))
+                                .symbolRenderingMode(.monochrome)
+                                .help("Web app")
+                                .padding(.trailing, 5)
+                        }
+                        if appInfo.wrapped {
+                            Image(systemName: "iphone")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 16, height: 16)
+                                .foregroundStyle(.primary.opacity(0.3))
+                                .symbolRenderingMode(.monochrome)
+                                .help("iOS app")
+                                .padding(.trailing, 5)
                         }
 
-                    }
+                        if minimalEnabled {
+                            Spacer()
+                        }
 
-                    if minimalEnabled {
-                        Text(appInfo.appName)
-                            .font(.system(size: (isSelected) ? 14 : 12))
-                            .lineLimit(1)
-                            .truncationMode(.tail)
-                    } else {
-                        VStack(alignment: .center, spacing: 2) {
-                            HStack {
-                                Text(appInfo.appName)
-                                    .font(.system(size: (isSelected) ? 14 : 12))
-                                    .lineLimit(1)
-                                    .truncationMode(.tail)
-                                Spacer()
-                            }
-
-                            HStack(spacing: 5) {
-                                Text(verbatim: "v\(appInfo.appVersion)")
-                                    .font(.footnote)
-                                    .lineLimit(1)
-                                    .truncationMode(.tail)
-                                    .opacity(0.5)
-                                Text(verbatim: "•").font(.footnote).opacity(0.5)
-
-                                Text(appInfo.bundleSize == 0 ? String(localized: "calculating") : "\(formatByte(size: appInfo.bundleSize).human)")
-                                    .font(.footnote)
-                                    .lineLimit(1)
-                                    .truncationMode(.tail)
-                                    .opacity(0.5)
-                                Spacer()
-                            }
-
+                        if minimalEnabled && !isSelected {
+                            Text(appInfo.bundleSize == 0 ? "v\(appInfo.appVersion)" : formatByte(size: appInfo.bundleSize).human)
+                                .font(.system(size: 10))
+                                .foregroundStyle(.primary.opacity(0.5))
                         }
                     }
-
-
-                    if appInfo.webApp {
-                        Image(systemName: "safari")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 16, height: 16)
-                            .foregroundStyle(.primary.opacity(0.3))
-                            .symbolRenderingMode(.monochrome)
-                            .help("Web app")
-                            .padding(.trailing, 5)
-                    }
-                    if appInfo.wrapped {
-                        Image(systemName: "iphone")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 16, height: 16)
-                            .foregroundStyle(.primary.opacity(0.3))
-                            .symbolRenderingMode(.monochrome)
-                            .help("iOS app")
-                            .padding(.trailing, 5)
-                    }
-
-                    if minimalEnabled {
-                        Spacer()
-                    }
-
-                    if minimalEnabled && !isSelected {
-                        //                    Text(appInfo.bundleSize == 0 ? "v\(appInfo.appVersion)" : (isHovered ? "v\(appInfo.appVersion)" : formatByte(size: appInfo.bundleSize).human))
-                        Text(appInfo.bundleSize == 0 ? "v\(appInfo.appVersion)" : formatByte(size: appInfo.bundleSize).human)
-                            .font(.system(size: 10))
-                            .foregroundStyle(.primary.opacity(0.5))
-                    }
-
-//                    if isSelected && !(mini || menubarEnabled) {
-//                        Button("Close") {
-//                            withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-//                                updateOnMain {
-//                                    appState.appInfo = .empty
-//                                    appState.selectedItems = []
-//                                    appState.currentView = miniView ? .apps : .empty
-//                                    showPopover = false
-//                                }
-//                            }
-//
-//                        }
-//                        .buttonStyle(SimpleButtonStyle(icon: "x.circle", iconFlip: "x.circle.fill", help: String(localized: "Close"), size: 16))
-//                    }
-
 
                 }
+                .frame(height: 35)
+                .padding(.trailing)
+                .padding(.vertical, 5)
+            }
+            .buttonStyle(.borderless)
+            .foregroundStyle(.primary)
+            .onHover { hovering in
+                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.20 : 0)) {
+                    self.isHovered = hovering
+                    self.hoveredItemPath = isHovered ? appInfo.path : nil
+                }
+            }
 
-            }
-            .frame(height: 35)
-            .padding(.horizontal)
-            .padding(.vertical, 5)
-        }
-        .buttonStyle(.borderless)
-        .foregroundStyle(.primary)
-        .onHover { hovering in
-            withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.20 : 0)) {
-                self.isHovered = hovering
-                self.hoveredItemPath = isHovered ? appInfo.path : nil
-            }
+            
         }
         .background{
             Rectangle()
