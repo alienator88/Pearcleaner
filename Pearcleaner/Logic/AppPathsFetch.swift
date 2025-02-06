@@ -10,7 +10,7 @@ import AppKit
 import SwiftUI
 import AlinFoundation
 
-class AppPathFinder {
+class AppPathFinder2 {
     // Shared properties
     private var appInfo: AppInfo
     private var locations: Locations

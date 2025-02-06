@@ -32,6 +32,7 @@
 		C77B901E2AF1A9DB009CC655 /* SettingsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B901D2AF1A9DB009CC655 /* SettingsWindow.swift */; };
 		C77B90232AF2D616009CC655 /* FilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90222AF2D616009CC655 /* FilesView.swift */; };
 		C78121662BC892A000BE06BD /* FinderOpen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78121652BC892A000BE06BD /* FinderOpen.swift */; };
+		C78D7B212D556F1A003DD49F /* AppPathsFetch2.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78D7B202D556F16003DD49F /* AppPathsFetch2.swift */; };
 		C79947962C34A794007279CC /* Tips.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79947952C34A794007279CC /* Tips.swift */; };
 		C7A27E812AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist in Resources */ = {isa = PBXBuildFile; fileRef = C7A27E802AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist */; };
 		C7A2AE5D2B9644F300161540 /* FileWatcher in Frameworks */ = {isa = PBXBuildFile; productRef = C7A2AE5C2B9644F300161540 /* FileWatcher */; };
@@ -126,6 +127,7 @@
 		C78121672BC892A000BE06BD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C78121682BC892A000BE06BD /* FinderOpen.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FinderOpen.entitlements; sourceTree = "<group>"; };
 		C786F1A72C29E599001B3800 /* Builds */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Builds; sourceTree = SOURCE_ROOT; };
+		C78D7B202D556F16003DD49F /* AppPathsFetch2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPathsFetch2.swift; sourceTree = "<group>"; };
 		C79947952C34A794007279CC /* Tips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tips.swift; sourceTree = "<group>"; };
 		C7A27E7F2AFD70DD00166168 /* PearcleanerSentinel.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PearcleanerSentinel.entitlements; sourceTree = "<group>"; };
 		C7A27E802AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = com.alienator88.PearcleanerSentinel.plist; sourceTree = "<group>"; };
@@ -180,6 +182,7 @@
 				C77B90192AF1938F009CC655 /* Logic.swift */,
 				C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */,
 				C74412C62BBF249000DDFCA8 /* AppPathsFetch.swift */,
+				C78D7B202D556F16003DD49F /* AppPathsFetch2.swift */,
 				C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */,
 				C77B90172AF19382009CC655 /* AppCommands.swift */,
 				C77B90152AF19377009CC655 /* AppState.swift */,
@@ -466,6 +469,7 @@
 				C7D31D512AFF00F300C7ED9E /* Locations.swift in Sources */,
 				C77B901A2AF1938F009CC655 /* Logic.swift in Sources */,
 				C77B901C2AF193A3009CC655 /* Styles.swift in Sources */,
+				C78D7B212D556F1A003DD49F /* AppPathsFetch2.swift in Sources */,
 				C770D7DB2CE7C9AD00B3492A /* DevelopmentView.swift in Sources */,
 				C7045A282B03E71D00376976 /* MiniMode.swift in Sources */,
 				C7ED86B12BA8A35500F13DE4 /* Interface.swift in Sources */,
