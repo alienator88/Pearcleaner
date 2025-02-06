@@ -129,9 +129,9 @@ var conditions: [Condition] = [
     ),
     Condition(
         bundle_id: "jetbrains",
-        include: ["jetbrains", "jcef"],
+        include: ["jcef"],
         exclude: [],
-        includeForce: nil
+        includeForce: ["\(home)/Library/Application Support/JetBrains/", "\(home)/Library/Caches/JetBrains/", "\(home)/Library/Logs/JetBrains/"]
     ),
     Condition(
         bundle_id: "company.thebrowser.Browser",

@@ -10039,6 +10039,9 @@
         }
       }
     },
+    "Strict app name search" : {
+
+    },
     "Submit a bug or feature request" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -12821,6 +12824,9 @@
           }
         }
       }
+    },
+    "When searching for related application files, strict will check that the app name matches the found file exactly. Strict disabled will check if the app name is contained in the found file name. This can be useful when searching for multiple versions of the same app, or when searching for files that are not named after the app name. Strict disabled will likely find more files, but some unrelated as well, so make sure you check/uncheck the needed files." : {
+
     },
     "When this mode is enabled, clicking the Uninstall button to remove an app will also close Pearcleaner right after.\nThis only affects Pearcleaner when it is opened via external means, like Sentinel Trash Monitor, Finder extension or a Deep Link.\nThis allows for single use of the app for a quick uninstall. When Pearcleaner is opened normally, this setting is ignored and will work as usual." : {
       "extractionState" : "manual",

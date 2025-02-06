@@ -69,6 +69,7 @@ struct AppListItems: View {
                             appState.appInfo = .empty
                             appState.selectedItems = []
                             appState.currentView = miniView ? .apps : .empty
+//                            appState.externalPaths.removeAll { $0 == appInfo.path }
                             showPopover = false
                         }
                     }

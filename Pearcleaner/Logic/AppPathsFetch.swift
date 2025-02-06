@@ -17,6 +17,7 @@ class AppPathFinder {
     private var collection: [URL] = []
     private var containerCollection: [URL] = []
     private let collectionAccessQueue = DispatchQueue(label: "com.alienator88.Pearcleaner.appPathFinder.collectionAccess")
+    @AppStorage("settings.general.namesearchstrict") var nameSearchStrict = true
 
     // GUI-specific properties (can be nil for CLI)
     private var appState: AppState?
@@ -274,7 +275,6 @@ class AppPathFinder {
         let bundle = bundleComponents.suffix(2).joined()
         let nameL = self.appInfo.appName.pearFormat()
         let nameLFiltered = nameL.filter { $0.isLetter }
-
         let nameP = self.appInfo.path.lastPathComponent.replacingOccurrences(of: ".app", with: "")
 
         // Early validation of bundle identifier
@@ -304,10 +304,12 @@ class AppPathFinder {
             return itemL.contains(bundleIdentifierL)
         }
 
-        return (useBundleIdentifier && (itemL.contains(bundleIdentifierL) || itemL.contains(bundle))) ||
-        (nameL.count > 3 && itemL.contains(nameL)) ||
-        (nameP.count > 3 && itemL.contains(nameP)) ||
-        (nameLFiltered.count > 3 && itemL.contains(nameLFiltered))
+        let bundleMatch = itemL.contains(bundleIdentifierL) || itemL.contains(bundle)
+        let nameLMatch = nameL.count > 3 && (nameSearchStrict ? itemL == nameL : itemL.contains(nameL))
+        let namePMatch = nameP.count > 3 && (nameSearchStrict ? itemL == nameP : itemL.contains(nameP))
+        let nameLFilteredMatch = nameLFiltered.count > 3 && (nameSearchStrict ? itemL == nameLFiltered : itemL.contains(nameLFiltered))
+
+        return (useBundleIdentifier && bundleMatch) || (nameLMatch || namePMatch || nameLFilteredMatch)
 
     }
 

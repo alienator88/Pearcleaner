@@ -22,6 +22,8 @@ struct GeneralSettingsTab: View {
 //    @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @AppStorage("settings.general.cli") private var isCLISymlinked = false
+    @AppStorage("settings.general.namesearchstrict") private var nameSearchStrict = true
+
 
     var body: some View {
         VStack(spacing: 20) {
@@ -52,6 +54,30 @@ struct GeneralSettingsTab: View {
 
                             Spacer()
                             Toggle(isOn: $brew, label: {
+                            })
+                            .toggleStyle(.switch)
+                        }
+                        .padding(5)
+
+
+
+                        HStack(spacing: 0) {
+                            Image(systemName: nameSearchStrict ? "lock.fill" : "lock.open.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 20, height: 20)
+                                .padding(.trailing)
+                                .foregroundStyle(.primary)
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text("Strict app name search")
+                                    .font(.callout)
+                                    .foregroundStyle(.primary)
+                            }
+
+                            InfoButton(text: String(localized: "When searching for related application files, strict will check that the app name matches the found file exactly. Strict disabled will check if the app name is contained in the found file name. This can be useful when searching for multiple versions of the same app, or when searching for files that are not named after the app name. Strict disabled will likely find more files, but some unrelated as well, so make sure you check/uncheck the needed files."))
+
+                            Spacer()
+                            Toggle(isOn: $nameSearchStrict, label: {
                             })
                             .toggleStyle(.switch)
                         }
