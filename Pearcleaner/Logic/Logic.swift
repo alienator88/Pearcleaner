@@ -180,7 +180,7 @@ func showAppInFiles(appInfo: AppInfo, appState: AppState, locations: Locations, 
         // Animate the view change and popover display.
         withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
             appState.currentView = .files
-            showPopover.wrappedValue.toggle()
+            showPopover.wrappedValue = true
         }
     }
 }

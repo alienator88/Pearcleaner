@@ -68,7 +68,7 @@ struct InterfaceSettingsTab: View {
                         Spacer()
                         Toggle(isOn: $glass, label: {
                         })
-                        .toggleStyle(.switch)
+                        .toggleStyle(SettingsToggle())
                         .onChange(of: glass) { newVal in
                             MenuBarExtraManager.shared.restartMenuBarExtra()
                         }
@@ -90,7 +90,7 @@ struct InterfaceSettingsTab: View {
                         Spacer()
                         Toggle(isOn: $animationEnabled, label: {
                         })
-                        .toggleStyle(.switch)
+                        .toggleStyle(SettingsToggle())
                     }
                     .padding(5)
 
@@ -110,7 +110,7 @@ struct InterfaceSettingsTab: View {
                         Spacer()
                         Toggle(isOn: $scrollIndicators, label: {
                         })
-                        .toggleStyle(.switch)
+                        .toggleStyle(SettingsToggle())
                     }
                     .padding(5)
 
@@ -130,7 +130,7 @@ struct InterfaceSettingsTab: View {
                         Spacer()
                         Toggle(isOn: $minimalEnabled, label: {
                         })
-                        .toggleStyle(.switch)
+                        .toggleStyle(SettingsToggle())
                     }
                     .padding(5)
 
@@ -177,7 +177,7 @@ struct InterfaceSettingsTab: View {
                         Spacer()
                         Toggle(isOn: $mini, label: {
                         })
-                        .toggleStyle(.switch)
+                        .toggleStyle(SettingsToggle())
                         .disabled(menubarEnabled)
                         .help(menubarEnabled ? String(localized: "Disabled when menubar icon is enabled") : "")
                         .onChange(of: mini) { newVal in
@@ -237,7 +237,7 @@ struct InterfaceSettingsTab: View {
                         Spacer()
                         Toggle(isOn: $miniView, label: {
                         })
-                        .toggleStyle(.switch)
+                        .toggleStyle(SettingsToggle())
                         .onChange(of: miniView) { newVal in
                             appState.currentView = newVal ? .apps : .empty
                         }
@@ -263,7 +263,7 @@ struct InterfaceSettingsTab: View {
                         Spacer()
                         Toggle(isOn: $popoverStay, label: {
                         })
-                        .toggleStyle(.switch)
+                        .toggleStyle(SettingsToggle())
                     }
                     .padding(5)
                 }
@@ -289,7 +289,7 @@ struct InterfaceSettingsTab: View {
                         Spacer()
                         Toggle(isOn: $menubarEnabled, label: {
                         })
-                        .toggleStyle(.switch)
+                        .toggleStyle(SettingsToggle())
                         .onChange(of: menubarEnabled) { newVal in
                             if newVal {
                                 MenuBarExtraManager.shared.addMenuBarExtra(withView:  {
@@ -355,7 +355,7 @@ struct InterfaceSettingsTab: View {
                         Spacer()
                         Toggle(isOn: $isLaunchAtLoginEnabled, label: {
                         })
-                        .toggleStyle(.switch)
+                        .toggleStyle(SettingsToggle())
                         .onAppear {
                             isLaunchAtLoginEnabled = SMAppService.mainApp.status == .enabled
                         }

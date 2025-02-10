@@ -55,7 +55,7 @@ struct GeneralSettingsTab: View {
                             Spacer()
                             Toggle(isOn: $brew, label: {
                             })
-                            .toggleStyle(.switch)
+                            .toggleStyle(SettingsToggle())
                         }
                         .padding(5)
 
@@ -79,7 +79,7 @@ struct GeneralSettingsTab: View {
                             Spacer()
                             Toggle(isOn: $nameSearchStrict, label: {
                             })
-                            .toggleStyle(.switch)
+                            .toggleStyle(SettingsToggle())
                         }
                         .padding(5)
 
@@ -103,7 +103,7 @@ struct GeneralSettingsTab: View {
                             Spacer()
                             Toggle(isOn: $confirmAlert, label: {
                             })
-                            .toggleStyle(.switch)
+                            .toggleStyle(SettingsToggle())
                         }
                         .padding(5)
 
@@ -127,7 +127,7 @@ struct GeneralSettingsTab: View {
                             Spacer()
                             Toggle(isOn: $oneShotMode, label: {
                             })
-                            .toggleStyle(.switch)
+                            .toggleStyle(SettingsToggle())
                         }
                         .padding(5)
 
@@ -210,7 +210,7 @@ struct GeneralSettingsTab: View {
 
                         Toggle(isOn: $sentinel, label: {
                         })
-                        .toggleStyle(.switch)
+                        .toggleStyle(SettingsToggle())
                         .onChange(of: sentinel) { newValue in
                             if newValue {
                                 launchctl(load: true)
@@ -249,7 +249,7 @@ struct GeneralSettingsTab: View {
 
                         Toggle(isOn: $appState.finderExtensionEnabled, label: {
                         })
-                        .toggleStyle(.switch)
+                        .toggleStyle(SettingsToggle())
                         .onChange(of: appState.finderExtensionEnabled) { newValue in
                             if newValue {
                                 manageFinderPlugin(install: true)
@@ -283,7 +283,7 @@ struct GeneralSettingsTab: View {
 
                         Toggle(isOn: $isCLISymlinked, label: {
                         })
-                        .toggleStyle(.switch)
+                        .toggleStyle(SettingsToggle())
                         .onChange(of: isCLISymlinked) { newValue in
                             if newValue {
                                 manageSymlink(install: true)

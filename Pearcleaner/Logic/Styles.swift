@@ -697,3 +697,38 @@ struct CustomPickerButton: View {
         .buttonStyle(.plain)
     }
 }
+
+
+struct SettingsToggle: ToggleStyle {
+    @EnvironmentObject var themeManager: ThemeManager
+
+    func makeBody(configuration: Configuration) -> some View {
+        Button {
+            configuration.isOn.toggle()
+        } label: {
+            HStack {
+                configuration.label
+                Spacer()
+                ZStack {
+                    // Background Track
+                    Capsule()
+                        .fill(themeManager.pickerColor.adjustBrightness(3))
+                        .frame(width: 40, height: 24)
+//                        .overlay {
+//                            Capsule()
+//                                .stroke(.secondary, lineWidth: 1)
+//                                .frame(width: 40, height: 24)
+//                        }
+
+                    // Toggle Knob
+                    Circle()
+                        .fill(configuration.isOn ? .primary : themeManager.pickerColor)
+                        .frame(width: 18, height: 18)
+                        .offset(x: configuration.isOn ? 9 : -9)
+                        .animation(.easeInOut(duration: 0.2), value: configuration.isOn)
+                }
+            }
+        }
+        .buttonStyle(.plain)
+    }
+}
