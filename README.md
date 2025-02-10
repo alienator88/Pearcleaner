@@ -4,7 +4,7 @@
    <br />
    <strong>Status: </strong>Maintained (Bi-weekly release cadence)
    <br />
-   <strong>Version: </strong>4.1.0
+   <strong>Version: </strong>4.2.0
    <br />
    <a href="https://github.com/alienator88/Pearcleaner/releases"><strong>Download</strong></a>
     · 
