@@ -111,10 +111,16 @@ class ReversePathsSearcher {
     private func isExcludedByConditions(itemPath: String) -> Bool {
 
         for condition in conditions {
+            // Ensure the condition's bundle_id matches an installed app
+            guard sortedApps.contains(where: { $0.bundleIdentifier.pearFormat() == condition.bundle_id.pearFormat() }) else {
+                continue
+            }
+
             // Include keywords
             if condition.include.contains(where: { itemPath.contains($0.pearFormat()) }) {
                 return true
             }
+
             // Include force
             if let includeForce = condition.includeForce,
                includeForce.contains(where: { itemPath.contains($0.path.pearFormat()) }) {
