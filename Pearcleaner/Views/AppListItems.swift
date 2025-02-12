@@ -128,26 +128,37 @@ struct AppListItems: View {
                         }
 
 
-                        if appInfo.webApp {
-                            Image(systemName: "safari")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 16, height: 16)
-                                .foregroundStyle(.primary.opacity(0.3))
-                                .symbolRenderingMode(.monochrome)
-                                .help("Web app")
-                                .padding(.trailing, 5)
-                        }
-                        if appInfo.wrapped {
-                            Image(systemName: "iphone")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 16, height: 16)
-                                .foregroundStyle(.primary.opacity(0.3))
-                                .symbolRenderingMode(.monochrome)
-                                .help("iOS app")
-                                .padding(.trailing, 5)
-                        }
+//                        if appInfo.webApp {
+//                            Image(systemName: "safari")
+//                                .resizable()
+//                                .aspectRatio(contentMode: .fit)
+//                                .frame(width: 16, height: 16)
+//                                .foregroundStyle(.primary.opacity(0.3))
+//                                .symbolRenderingMode(.monochrome)
+//                                .help("Web app")
+//                                .padding(.trailing, 5)
+//                        }
+//                        if appInfo.wrapped {
+//                            Image(systemName: "iphone")
+//                                .resizable()
+//                                .aspectRatio(contentMode: .fit)
+//                                .frame(width: 16, height: 16)
+//                                .foregroundStyle(.primary.opacity(0.3))
+//                                .symbolRenderingMode(.monochrome)
+//                                .help("iOS app")
+//                                .padding(.trailing, 5)
+//                        }
+//
+//                        if appInfo.cask != nil {
+//                            Image(systemName: "cup.and.saucer")
+//                                .resizable()
+//                                .aspectRatio(contentMode: .fit)
+//                                .frame(width: 16, height: 16)
+//                                .foregroundStyle(.primary.opacity(0.3))
+//                                .symbolRenderingMode(.monochrome)
+//                                .help("Homebrew App")
+//                                .padding(.trailing, 5)
+//                        }
 
                         if minimalEnabled {
                             Spacer()

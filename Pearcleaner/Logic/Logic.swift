@@ -614,45 +614,58 @@ func manageFinderPlugin(install: Bool) {
 
 
 // Brew cleanup
-func caskCleanup(app: String) {
-    Task(priority: .high) {
+//func caskCleanup(app: String) {
+//    Task(priority: .high) {
+//
+//#if arch(x86_64)
+//        let cmd = "/usr/local/bin/brew"
+//#elseif arch(arm64)
+//        let cmd = "/opt/homebrew/bin/brew"
+//#endif
+//
+//        if let formattedApp = getCaskIdentifier(for: app) {
+//            // App found, proceed with cleanup
+//            let script = """
+//            tell application "Terminal"
+//                activate
+//                do script "/bin/bash --noprofile --norc -c '
+//                clear;
+//                echo \\"[Pearcleaner] Homebrew cleanup for \(app):\n\\";
+//                \(cmd) uninstall --cask \(formattedApp) --zap --force;
+//                \(cmd) cleanup;
+//                killall Terminal;
+//                '" in front window
+//            end tell
+//            """
+//
+//            updateOnMain {
+//                var error: NSDictionary?
+//                if let appleScript = NSAppleScript(source: script) {
+//                    appleScript.executeAndReturnError(&error)
+//                }
+//
+//                if let error = error {
+//                    printOS("AppleScript Error: \(error)")
+//                }
+//            }
+//
+//        } else {
+//            printOS("Brew cleanup: No cask found for \(app).")
+//        }
+//    }
+//}
 
+func getBrewCleanupCommand(for caskName: String) -> String {
 #if arch(x86_64)
-        let cmd = "/usr/local/bin/brew"
+    let brewPath = "/usr/local/bin/brew"
 #elseif arch(arm64)
-        let cmd = "/opt/homebrew/bin/brew"
+    let brewPath = "/opt/homebrew/bin/brew"
+#else
+    let brewPath = "/usr/local/bin/brew"
 #endif
 
-        if let formattedApp = getCaskIdentifier(for: app) {
-            // App found, proceed with cleanup
-            let script = """
-            tell application "Terminal"
-                activate
-                do script "/bin/bash --noprofile --norc -c '
-                clear;
-                echo \\"[Pearcleaner] Homebrew cleanup for \(app):\n\\";
-                \(cmd) uninstall --cask \(formattedApp) --zap --force;
-                \(cmd) cleanup;
-                killall Terminal;
-                '" in front window
-            end tell
-            """
+    return "\(brewPath) uninstall --cask \(caskName) --zap --force && \(brewPath) cleanup"
 
-            updateOnMain {
-                var error: NSDictionary?
-                if let appleScript = NSAppleScript(source: script) {
-                    appleScript.executeAndReturnError(&error)
-                }
-
-                if let error = error {
-                    printOS("AppleScript Error: \(error)")
-                }
-            }
-
-        } else {
-            printOS("Brew cleanup: No cask found for \(app).")
-        }
-    }
 }
 
 
@@ -767,11 +780,14 @@ func removeApp(appState: AppState, withPath path: URL) {
         }
 
         // Brew cleanup if enabled
-        if brew {
-            caskCleanup(app: appState.appInfo.appName)
-        }
+//        if brew {
+//            if appState.appInfo.cask != nil {
+//                appState.showTerminal = true
+//            }
+////            caskCleanup(app: appState.appInfo.appName)
+//        }
 
-        appState.appInfo = AppInfo.empty
+//        appState.appInfo = AppInfo.empty
 
     }
 }

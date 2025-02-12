@@ -153,6 +153,9 @@ struct MiniAppView: View {
                 } else if appState.currentView == .zombie {
                     ZombieView(showPopover: $showPopover, search: $search)
                         .id(appState.appInfo.id)
+                } else if appState.currentView == .terminal {
+                    TerminalSheetView(showPopover: $showPopover, title: "Homebrew Cleanup: \(appState.appInfo.appName)", command: getBrewCleanupCommand(for: appState.appInfo.cask ?? ""))
+                        .id(appState.appInfo.id)
                 }
 
             }

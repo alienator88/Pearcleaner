@@ -113,7 +113,6 @@ struct FilesView: View {
                                             Text(verbatim: "\(appState.appInfo.appName)").font(.title).fontWeight(.bold).lineLimit(1)
                                             Image(systemName: "circle.fill").foregroundStyle(Color("AccentColor")).font(.system(size: 5))
                                             Text(verbatim: "\(appState.appInfo.appVersion)").font(.title3)
-
                                         }
                                         Text(verbatim: "\(appState.appInfo.bundleIdentifier)")
                                             .lineLimit(1)
@@ -274,6 +273,19 @@ struct FilesView: View {
                                 .background(.primary.opacity(0.1))
                                 .clipShape(.capsule)
                                 .help("This app is located in \(appState.appInfo.system ? "/Applications" : "\(home)")")
+
+                            if appState.appInfo.cask != nil {
+                                Text("homebrew")
+                                    .font(.footnote)
+                                    .foregroundStyle(.primary.opacity(0.5))
+                                    .frame(minWidth: 30, minHeight: 15)
+                                    .padding(2)
+                                    .padding(.horizontal, 2)
+                                    .background(.primary.opacity(0.1))
+                                    .clipShape(.capsule)
+                                    .help("This app is installed via Homebrew")
+
+                            }
                         }
 
 
@@ -373,6 +385,9 @@ struct FilesView: View {
                             Text(verbatim: "\(sizeType == "Logical" ? totalSelectedSize.logical : totalSelectedSize.real)")
                         }
                         .buttonStyle(UninstallButton(isEnabled: !appState.selectedItems.isEmpty || (appState.selectedItems.isEmpty && brew)))
+//                        .sheet(isPresented: $appState.showTerminal) {
+//                            TerminalSheetView(title: "Homebrew Cleanup: \(appState.appInfo.appName)", command: getBrewCleanupCommand(for: appState.appInfo.cask ?? ""))
+//                        }
                     }
                     .padding(.top, 5)
 
@@ -457,7 +472,6 @@ struct FilesView: View {
                             appWasRemoved = true
                             // Remove the app from the app list
                             removeApp(appState: appState, withPath: appState.appInfo.path)
-                            // `removeApp` handles `caskCleanup` if `brew` is true
 
                         case .semiDelete:
                             // Some files deleted but main app bundle remains
@@ -469,25 +483,6 @@ struct FilesView: View {
 
                         // Process the next app if in external mode
                         processNextExternalApp(appWasRemoved: appWasRemoved)
-//                        if appState.externalMode || appState.multiMode {
-//                            processNextExternalApp(appWasRemoved: appWasRemoved)
-//                        } else {
-//                            // Not in external mode
-//                            if appWasRemoved {
-//                                // Now update the UI to reflect that the app has been removed
-//                                updateOnMain {
-//                                    search = ""
-//                                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-//                                        if mini || menubarEnabled {
-//                                            appState.currentView = .apps
-//                                            showPopover = false
-//                                        } else {
-//                                            appState.currentView = .empty
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
                     }
                 }
             }
@@ -508,12 +503,18 @@ struct FilesView: View {
                 updateOnMain {
                     search = ""
                     withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                        if mini || menubarEnabled {
-                            appState.currentView = .apps
-                            showPopover = false
+                        if brew && appState.appInfo.cask != nil {
+                            appState.currentView = .terminal
                         } else {
-                            appState.currentView = .empty
+                            if mini || menubarEnabled {
+                                appState.currentView = .apps
+                                showPopover = false
+                            } else {
+                                appState.currentView = .empty
+                            }
+                            appState.appInfo = AppInfo.empty
                         }
+
                     }
                 }
             }

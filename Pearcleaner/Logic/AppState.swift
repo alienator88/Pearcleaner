@@ -68,6 +68,7 @@ class AppState: ObservableObject {
             wrapped: false,
             system: false,
             arch: .empty,
+            cask: nil,
             bundleSize: 0,
 //            files: [],
             fileSize: [:],
@@ -142,8 +143,8 @@ struct AppInfo: Identifiable, Equatable, Hashable {
     let wrapped: Bool
     let system: Bool
     var arch: Arch
+    let cask: String?
     var bundleSize: Int64 // Only used in the app list view
-//    var files: [URL]
     var fileSize: [URL:Int64]
     var fileSizeLogical: [URL:Int64]
     var fileIcon: [URL:NSImage?]
@@ -163,7 +164,7 @@ struct AppInfo: Identifiable, Equatable, Hashable {
         return path == URL(fileURLWithPath: "./") && bundleIdentifier.isEmpty && appName.isEmpty
     }
 
-    static let empty = AppInfo(id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "", appVersion: "", appIcon: nil, webApp: false, wrapped: false, system: false, arch: .empty, bundleSize: 0, fileSize: [:], fileSizeLogical: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil)
+    static let empty = AppInfo(id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "", appVersion: "", appIcon: nil, webApp: false, wrapped: false, system: false, arch: .empty, cask: nil, bundleSize: 0, fileSize: [:], fileSizeLogical: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil)
 
 }
 
@@ -280,4 +281,5 @@ enum CurrentDetailsView:Int
     case files
     case apps
     case zombie
+    case terminal
 }

@@ -4465,6 +4465,9 @@
         }
       }
     },
+    "homebrew" : {
+
+    },
     "Homebrew cleanup after uninstall" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -10453,6 +10456,9 @@
           }
         }
       }
+    },
+    "This app is installed via Homebrew" : {
+
     },
     "This app is located in %@" : {
       "extractionState" : "manual",

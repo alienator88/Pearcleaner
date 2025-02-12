@@ -176,7 +176,7 @@ var conditions: [Condition] = [
 // Skip com.apple files/folders since most are system originated, allow some for apps
 let skipConditions: [SkipCondition] = [
     SkipCondition(
-        skipPrefix: ["comapple", "mobiledocuments", "reminders"],
+        skipPrefix: ["comapple", "mobiledocuments", "reminders", "dsstore", ".DS_Store"],
         allowPrefixes: ["comappleconfigurator", "comappledt", "comappleiwork", "comapplesfsymbols", "comappletestflight"]
     )
 ]

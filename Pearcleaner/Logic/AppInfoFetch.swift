@@ -46,10 +46,11 @@ class MetadataAppInfoFetcher {
         let appIcon = AppInfoUtils.fetchAppIcon(for: path, wrapped: wrapped, md: true)
         let webApp = AppInfoUtils.isWebApp(appPath: path)
         let system = !path.path.contains(NSHomeDirectory())
+        let cask = getCaskIdentifier(for: appName)
 
         return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName,
                        appVersion: version, appIcon: appIcon, webApp: webApp, wrapped: wrapped, system: system,
-                       arch: arch, bundleSize: logicalSize, fileSize: [:],
+                       arch: arch, cask: cask, bundleSize: logicalSize, fileSize: [:],
                        fileSizeLogical: [:], fileIcon: [:], creationDate: creationDate, contentChangeDate: contentChangeDate, lastUsedDate: lastUsedDate)
     }
 
@@ -127,9 +128,10 @@ class AppInfoFetcher {
 
 
         let system = !path.path.contains(NSHomeDirectory())
+        let cask = getCaskIdentifier(for: appName)
 
         return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName, appVersion: appVersion, appIcon: appIcon,
-                       webApp: webApp, wrapped: wrapped, system: system, arch: .empty, bundleSize: 0, fileSize: [:], fileSizeLogical: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil)
+                       webApp: webApp, wrapped: wrapped, system: system, arch: .empty, cask: cask, bundleSize: 0, fileSize: [:], fileSizeLogical: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil)
     }
 
 }

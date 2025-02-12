@@ -56,10 +56,15 @@ struct RegularMode: View {
                             } else if appState.currentView == .zombie {
                                 ZombieView(showPopover: $showPopover, search: $search)
                                     .id(appState.appInfo.id)
+                            } else if appState.currentView == .terminal {
+                                TerminalSheetView(showPopover: $showPopover, title: "Homebrew Cleanup: \(appState.appInfo.appName)", command: getBrewCleanupCommand(for: appState.appInfo.cask ?? ""))
+                                    .id(appState.appInfo.id)
                             }
                         }
                         .transition(.opacity)
-                        Spacer()
+                        if appState.currentView != .terminal {
+                            Spacer()
+                        }
                     }
                     .zIndex(2)
                 }
@@ -82,25 +87,26 @@ struct RegularMode: View {
 
 
 
-            VStack(spacing: 0) {
+            if appState.currentView != .terminal {
+                VStack(spacing: 0) {
 
-                HStack {
+                    HStack {
+
+                        Spacer()
+
+                        CustomPickerButton(
+                            selectedOption: $appState.currentPage,
+                            isExpanded: $isExpanded,
+                            options: CurrentPage.allCases.sorted { $0.title < $1.title } // Sort by title
+                        )
+                        .padding(6)
+                    }
+
 
                     Spacer()
-
-                    CustomPickerButton(
-                        selectedOption: $appState.currentPage,
-                        isExpanded: $isExpanded,
-                        options: CurrentPage.allCases.sorted { $0.title < $1.title } // Sort by title
-                    )
-                    .padding(6)
-//                    .padding(.vertical, 2)
-
                 }
-
-
-                Spacer()
             }
+
 
         }
 //        .background(
@@ -141,6 +147,9 @@ struct RegularMode: View {
 
 
 struct AppDetailsEmptyView: View {
+    @EnvironmentObject var appState: AppState
+//    @State private var showTerminal: Bool = false
+//    @State private var showPopover: Bool = false
 
     var body: some View {
         VStack(alignment: .center) {
@@ -149,11 +158,26 @@ struct AppDetailsEmptyView: View {
 
             PearDropView()
 
+//            Button("Open") {
+//                showTerminal.toggle()
+//            }
+
 //            GlowGradientButton()
 
             Spacer()
 
         }
-
+//        .sheet(isPresented: $showTerminal, content: {
+//            VStack {
+//                TerminalSheetView(showPopover: $showPopover, title: "Homebrew Cleanup: \(appState.appInfo.appName)", command: getBrewCleanupCommand(for: "appcleaner"))
+//                    .id(appState.appInfo.id)
+//                Button("Close") {
+//                    showTerminal.toggle()
+//                }
+//            }
+//            .frame(width: 600, height: 600)
+//
+//
+//        })
     }
 }
