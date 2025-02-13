@@ -4466,7 +4466,14 @@
       }
     },
     "homebrew" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Homebrew"
+          }
+        }
+      }
     },
     "Homebrew cleanup after uninstall" : {
       "extractionState" : "manual",
@@ -6402,7 +6409,14 @@
       }
     },
     "Navigate To" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "導覽到"
+          }
+        }
+      }
     },
     "Never" : {
       "extractionState" : "manual",
@@ -7263,7 +7277,7 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "孤立檔案搜尋並非 100% 準確，因為它沒有任何解除安裝的應用程式套件來檢查檔案排除。這會以最佳猜測搜尋檔案/資料夾，並排除與你現時安裝的應用程式重疊的檔案/資料夾。請確認標記為移除的檔案確實屬於已解除安裝的應用程式。"
+            "value" : "「孤立檔案搜尋」並非 100% 準確，因為它沒有任何解除安裝的應用程式套件來檢查檔案排除。這會以最佳猜測搜尋檔案/資料夾，並排除與你現時安裝的應用程式重疊的檔案/資料夾。請確認標記為移除的檔案確實屬於已解除安裝的應用程式。"
           }
         }
       }
@@ -8448,7 +8462,14 @@
       }
     },
     "Remove all files/folders" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除全部檔案/資料夾"
+          }
+        }
+      }
     },
     "Rescan" : {
       "extractionState" : "manual",
@@ -10043,7 +10064,14 @@
       }
     },
     "Strict app name search" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "嚴格 App 名稱搜尋"
+          }
+        }
+      }
     },
     "Submit a bug or feature request" : {
       "extractionState" : "manual",
@@ -10458,7 +10486,14 @@
       }
     },
     "This app is installed via Homebrew" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 App 透過 HomeBrew 安装"
+          }
+        }
+      }
     },
     "This app is located in %@" : {
       "extractionState" : "manual",
@@ -11296,6 +11331,12 @@
             "state" : "translated",
             "value" : "evrensel"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通用"
+          }
         }
       }
     },
@@ -11593,6 +11634,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Güncelleme devam ediyor"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新正在進行"
           }
         }
       }
@@ -12119,7 +12166,7 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "檢視計劃項目貢獻者"
+            "value" : "檢視項目貢獻者"
           }
         }
       }
@@ -12767,7 +12814,7 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "啟用 Homebrew 清理時，Pearcleaner 會檢查你要移除的應用程式是否透過 Homebrew 安裝，並啟動「終端機.app」以執行 brew 解除安裝和清理命令，讓 Homebrew 知道此應用程式已移除。這樣你的 Homebrew 列表會正確同步，並移除快取檔案。這需要「終端機.app」，因為一些應用程式需要 sudo 權限才能移除系統資料夾中的服務和檔案。由於其他終端機應用程式不支援 AppleScript 和/或「do script」命令，因此這裡使用預設的 macOS 終端機應用程式。\n\n注意：如你使用 ⌘Z 還原刪除檔案，檔案將會放回，但 Homebrew 並不會注意到這一點。如要重新同步 Homebrew 列表，你需要執行：\n\n> brew install APPNAME --force"
+            "value" : "啟用「Homebrew 清理」時，Pearcleaner 會檢查你要移除的應用程式是否透過 Homebrew 安裝，並啟動「終端機.app」以執行 brew 解除安裝和清理命令，讓 Homebrew 知道此應用程式已移除。這樣你的 Homebrew 列表會正確同步，並移除快取檔案。這需要「終端機.app」，因為一些應用程式需要 sudo 權限才能移除系統資料夾中的服務和檔案。由於其他終端機應用程式不支援 AppleScript 和/或「do script」命令，因此這裡使用預設的 macOS 終端機應用程式。\n\n注意：如你使用 ⌘Z 還原刪除檔案，檔案將會放回，但 Homebrew 並不會注意到這一點。如要重新同步 Homebrew 列表，你需要執行：\n\n> brew install APPNAME --force"
           }
         }
       }
@@ -12832,7 +12879,14 @@
       }
     },
     "When searching for related application files, strict will check that the app name matches the found file exactly. Strict disabled will check if the app name is contained in the found file name. This can be useful when searching for multiple versions of the same app, or when searching for files that are not named after the app name. Strict disabled will likely find more files, but some unrelated as well, so make sure you check/uncheck the needed files." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在搜尋相關應用程式檔案時，「嚴格搜尋」將會檢查 App 名稱是否與找到的檔案完全相符。停用「嚴格搜尋」將會檢查 App 名稱是否包含在找到的檔名中。當搜尋同一個 App 的多個版本，或者搜尋未以 App 名稱命名的檔案時，此功能會非常實用。停用「嚴格搜尋」可能會找到更多檔案，但亦會找到一些不相關的檔案，因此請確定你已剔選/取消剔選所需的檔案。"
+          }
+        }
+      }
     },
     "When this mode is enabled, clicking the Uninstall button to remove an app will also close Pearcleaner right after.\nThis only affects Pearcleaner when it is opened via external means, like Sentinel Trash Monitor, Finder extension or a Deep Link.\nThis allows for single use of the app for a quick uninstall. When Pearcleaner is opened normally, this setting is ignored and will work as usual." : {
       "extractionState" : "manual",
