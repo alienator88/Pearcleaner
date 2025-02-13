@@ -13,39 +13,53 @@ struct TerminalSheetView: View {
     @EnvironmentObject var appState: AppState
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
-    @Binding var showPopover: Bool
-    let title: String
-    let command: String
+    var showPopover: Binding<Bool>?
+    let command: String?
+    let homebrew: Bool
 
-    init(showPopover: Binding<Bool>, title: String = "Terminal", command: String) {
-        self._showPopover = showPopover
-        self.title = title
-        self.command = command
+    init(showPopover: Binding<Bool>? = nil, command: String? = nil, homebrew: Bool = false, caskName: String? = nil) {
+        self.showPopover = showPopover
+        self.command = homebrew ? getBrewCleanupCommand(for: caskName ?? "") : command
+        self.homebrew = homebrew
     }
 
     var body: some View {
         VStack(spacing: 0) {
 
-            Text(title)
+            Text(homebrew ? "Homebrew Cleanup: \(appState.appInfo.appName)" : "Terminal")
                 .font(.title2)
                 .padding()
 
             Divider()
 
-            TerminalWrapper(command: command)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .padding()
+            if let command = command {
+                TerminalWrapper(command: command)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .padding()
+            } else {
+                Text("No command provided")
+                    .foregroundColor(.gray)
+                    .padding()
+            }
 
             Divider()
 
             Button("Close") {
 
-                if mini || menubarEnabled {
-                    appState.currentView = .apps
-                    self.showPopover = false
+                // Handle close logic based on the presence of showPopover
+                if let showPopover = showPopover {
+                    // If popover is present
+                    if mini || menubarEnabled {
+                        appState.currentView = .apps
+                        showPopover.wrappedValue = false
+                    } else {
+                        appState.currentView = .empty
+                    }
                 } else {
+                    // No popover, so just clear the current view and app info
                     appState.currentView = .empty
                 }
+                
                 appState.appInfo = AppInfo.empty
 
             }

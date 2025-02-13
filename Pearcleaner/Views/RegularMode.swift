@@ -57,7 +57,7 @@ struct RegularMode: View {
                                 ZombieView(showPopover: $showPopover, search: $search)
                                     .id(appState.appInfo.id)
                             } else if appState.currentView == .terminal {
-                                TerminalSheetView(showPopover: $showPopover, title: "Homebrew Cleanup: \(appState.appInfo.appName)", command: getBrewCleanupCommand(for: appState.appInfo.cask ?? ""))
+                                TerminalSheetView(showPopover: $showPopover, homebrew: true, caskName: appState.appInfo.cask)
                                     .id(appState.appInfo.id)
                             }
                         }
@@ -109,22 +109,6 @@ struct RegularMode: View {
 
 
         }
-//        .background(
-//            Group {
-//                if appState.currentView == .empty {
-//                    LinearGradient(
-//                        gradient: Gradient(stops: [
-//                            .init(color: .white.opacity(0.01), location: 0.5),
-//                            .init(color: .clear, location: 0.5)
-//                        ]),
-//                        startPoint: .topLeading,
-//                        endPoint: .bottomTrailing
-//                    )
-//                }
-//            }
-//
-//
-//        )
         .background(backgroundView(themeManager: themeManager))
         .frame(minWidth: appState.currentPage == .orphans ? 700 : 900, minHeight: 600)
         .edgesIgnoringSafeArea(.all)

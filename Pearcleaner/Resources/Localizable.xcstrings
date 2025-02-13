@@ -4534,6 +4534,9 @@
         }
       }
     },
+    "Homebrew Cleanup: %@" : {
+
+    },
     "Hover to search" : {
       "localizations" : {
         "de" : {
@@ -6594,6 +6597,9 @@
           }
         }
       }
+    },
+    "No command provided" : {
+
     },
     "No files or folders added" : {
       "extractionState" : "manual",
@@ -10366,6 +10372,9 @@
           }
         }
       }
+    },
+    "Terminal" : {
+
     },
     "Theme Mode" : {
       "extractionState" : "manual",

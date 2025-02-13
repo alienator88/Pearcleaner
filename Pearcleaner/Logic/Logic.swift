@@ -664,7 +664,7 @@ func getBrewCleanupCommand(for caskName: String) -> String {
     let brewPath = "/usr/local/bin/brew"
 #endif
 
-    return "\(brewPath) uninstall --cask \(caskName) --zap --force && \(brewPath) cleanup"
+    return "\(brewPath) uninstall --cask \(caskName) --zap --force && \(brewPath) cleanup && clear; echo '\nHomebrew cleanup was successful, you may close this window..\n'"
 
 }
 

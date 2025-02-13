@@ -385,9 +385,6 @@ struct FilesView: View {
                             Text(verbatim: "\(sizeType == "Logical" ? totalSelectedSize.logical : totalSelectedSize.real)")
                         }
                         .buttonStyle(UninstallButton(isEnabled: !appState.selectedItems.isEmpty || (appState.selectedItems.isEmpty && brew)))
-//                        .sheet(isPresented: $appState.showTerminal) {
-//                            TerminalSheetView(title: "Homebrew Cleanup: \(appState.appInfo.appName)", command: getBrewCleanupCommand(for: appState.appInfo.cask ?? ""))
-//                        }
                     }
                     .padding(.top, 5)
 
