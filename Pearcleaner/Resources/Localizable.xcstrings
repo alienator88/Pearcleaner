@@ -698,7 +698,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bestätigen Sie markierten Dateien zum Entfernen. In seltenen Fällen können nicht verwandte Dateien gefunden werden, wenn die Namen der Anwendungen zu ähnlich sind.\n\nHINWEIS: Pearcleaner verwendet AppleScript, um Dateien zu entfernen. Derzeit erlaubt macOS nicht, dass AppleScript sich mit dem Fingerabdrucksensor authentifiziert, nur die Passwortauthentifizierung wird unterstützt."
+            "value" : "Bestätigen Sie immer die zum Entfernen markierten Dateien. In seltenen Fällen können nicht verwandte Dateien gefunden werden, wenn die Namen der Anwendungen zu ähnlich sind.\n\nHINWEIS: Pearcleaner verwendet AppleScript, um Dateien zu entfernen. Derzeit erlaubt macOS nicht, dass AppleScript sich mit dem Fingerabdrucksensor authentifiziert, nur die Passwortauthentifizierung wird unterstützt."
           }
         },
         "fr" : {
@@ -933,7 +933,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Programm Name"
+            "value" : "Programmname"
           }
         },
         "fr" : {
@@ -991,7 +991,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Programm Grösse"
+            "value" : "Programmgrösse"
           }
         },
         "fr" : {
@@ -1108,7 +1108,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Die Anwendungsdatei ist in Unterverzeichnissen verschachtelt. Um zu verhindern, dass falsche Ordner gelöscht werden, lässt Pearcleaner diese aus. Sie können die übrigen Ordner bei Bedarf manuell löschen."
+            "value" : "Die Programmdatei ist in Unterverzeichnissen verschachtelt. Um zu verhindern, dass falsche Ordner gelöscht werden, lässt Pearcleaner diese aus. Sie können die übrigen Ordner bei Bedarf manuell löschen."
           }
         },
         "fr" : {
@@ -1167,7 +1167,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Programm Script"
+            "value" : "Programm Skript"
           }
         },
         "fr" : {
@@ -1225,7 +1225,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Programm"
+            "value" : "Programme"
           }
         },
         "fr" : {
@@ -1846,7 +1846,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klicke für Programme"
+            "value" : "Klicke für Programmliste"
           }
         },
         "fr" : {
@@ -1905,7 +1905,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klicken Sie auf die Kopfzeile, um die Sortierreihenfolge zu ändern"
+            "value" : "Klicke auf die Kopfzeile, um die Sortierreihenfolge zu ändern"
           }
         },
         "fr" : {
@@ -2199,7 +2199,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Erledigt"
+            "value" : "Erledigt 🚀"
           }
         },
         "fr" : {
@@ -2317,7 +2317,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kopiere Datei Pfad"
+            "value" : "Kopiere Dateipfad"
           }
         },
         "fr" : {
@@ -2490,6 +2490,12 @@
     },
     "Debug Console" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Debug-Konsole"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2736,7 +2742,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entwwicklung"
+            "value" : "Entwicklung"
           }
         },
         "fr" : {
@@ -3771,7 +3777,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Finder Erweiterung"
+            "value" : "Finder-Erweiterung"
           }
         },
         "fr" : {
@@ -4059,7 +4065,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vollständiger Festplattenzugriff"
+            "value" : "Festplattenvollzugriff"
           }
         },
         "fr" : {
@@ -4177,7 +4183,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sammeln von Programm Details"
+            "value" : "Sammeln von Programmdetails"
           }
         },
         "fr" : {
@@ -4771,7 +4777,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Installations Datum"
+            "value" : "Installationsdatum"
           }
         },
         "fr" : {
@@ -4829,7 +4835,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Installations Datum:"
+            "value" : "Installationsdatum:"
           }
         },
         "fr" : {
@@ -4888,7 +4894,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Installed: v%@"
+            "value" : "Installiert: v%@"
           }
         },
         "fr" : {
@@ -5123,7 +5129,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iOS Programm"
+            "value" : "iOS App"
           }
         },
         "fr" : {
@@ -5711,7 +5717,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Menübar Symbol Modus"
+            "value" : "Menüleisten-Symbolmodus"
           }
         },
         "fr" : {
@@ -5770,7 +5776,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Menübar Symbol Voreinstellung"
+            "value" : "Menüleisten-Symbol Voreinstellung"
           }
         },
         "fr" : {
@@ -6413,6 +6419,12 @@
     },
     "Navigate To" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Navigiere zu"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7176,7 +7188,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Öffnen %@"
+            "value" : "Öffne %@"
           }
         },
         "fr" : {
@@ -7531,7 +7543,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Berechtigung Status"
+            "value" : "Berechtigungsstatus"
           }
         },
         "fr" : {
@@ -7943,7 +7955,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Real"
+            "value" : "Tatsächlich"
           }
         },
         "fr" : {
@@ -8296,7 +8308,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versions Anmerkungen"
+            "value" : "Versionshinweise"
           }
         },
         "fr" : {
@@ -8469,6 +8481,12 @@
     },
     "Remove all files/folders" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Dateien/Ordner entfernen"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9010,6 +9028,12 @@
     },
     "Scrollbar is hidden in lists" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rollbalken ist in Listen ausgeblendet"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9044,6 +9068,12 @@
     },
     "Scrollbar is set to OS preference in lists" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rollbalken ist in Listen ist auf die OS-Einstellung eingestellt"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9140,7 +9170,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Durchsuche das Datei System"
+            "value" : "Durchsuche das Dateisystem"
           }
         },
         "fr" : {
@@ -9369,7 +9399,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Einstlelungen"
+            "value" : "Einstellungen"
           }
         },
         "fr" : {
@@ -9487,7 +9517,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zeige Programm Liste beim Start"
+            "value" : "Zeige Programmliste beim Start"
           }
         },
         "fr" : {
@@ -9840,7 +9870,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sortiert nach Namen"
+            "value" : "Sortiert nach Größe"
           }
         },
         "fr" : {
@@ -9898,7 +9928,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sortier Optionen"
+            "value" : "Sortieroptionen"
           }
         },
         "fr" : {
@@ -10144,7 +10174,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Neuen Fehler einreichen"
+            "value" : "Neuen Fehler melden"
           }
         },
         "fr" : {
@@ -10441,7 +10471,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hiermit werden Datei bzw. Ordner zur Ausschlussliste hinzugefügt. Bearbeiten Sie die Ausschlussliste unter Einstellungen > Registerkarte Ordner"
+            "value" : "Hiermit werden Dateien bzw. Ordner zur Ausschlussliste hinzugefügt. Bearbeiten Sie die Ausschlussliste unter Einstellungen > Registerkarte Ordner"
           }
         },
         "fr" : {
@@ -10510,7 +10540,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Programm befindet sich in %@"
+            "value" : "Das Programm befindet sich in %@"
           }
         },
         "fr" : {
@@ -10569,7 +10599,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Das ist ein Web Programm"
+            "value" : "Das ist eine Web-App"
           }
         },
         "fr" : {
@@ -10628,7 +10658,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Das ist ein iOS Programm"
+            "value" : "Das ist ein iOS-App"
           }
         },
         "fr" : {
@@ -10687,7 +10717,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Diese Einstellung wirkt sich auf Pearcleaner aus in allen Modu aus. Wenn Sie das Menüleistensymbol deaktivieren, sollten Sie auch diese Einstellung deaktivieren, damit Pearcleaner beim Anmelden nicht gestartet wird."
+            "value" : "Diese Einstellung wirkt sich auf Pearcleaner in allen Modi aus. Wenn Sie das Menüleistensymbol deaktivieren, sollten Sie auch diese Einstellung deaktivieren, damit Pearcleaner beim Anmelden nicht gestartet wird."
           }
         },
         "fr" : {
@@ -11032,7 +11062,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tippe für die Suche"
+            "value" : "Tippe zum Suchen"
           }
         },
         "fr" : {
@@ -11209,7 +11239,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deinstallieren Warnung "
+            "value" : "Deinstallations-Warnung "
           }
         },
         "fr" : {
@@ -11268,7 +11298,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deinstallieren Pearcleaner"
+            "value" : "Pearcleaner deinstallieren"
           }
         },
         "fr" : {
@@ -11323,6 +11353,12 @@
     },
     "universal" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "universal"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11410,6 +11446,12 @@
     "Update Available" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update verfügbar"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11463,6 +11505,12 @@
     "Update Available 🥳" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update verfügbar 🥳"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11571,7 +11619,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Update Frequenz"
+            "value" : "Updatefrequenz"
           }
         },
         "fr" : {
@@ -11627,6 +11675,12 @@
     "Update in progress" : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update wird durchgeführt"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11659,7 +11713,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Update Frequenz ist auf nie gesetzt"
+            "value" : "Updatefrequenz ist auf nie gesetzt"
           }
         },
         "fr" : {
@@ -12127,7 +12181,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zeige Projekt Mitarbeitende"
+            "value" : "Zeige Projekt-Mitarbeitende"
           }
         },
         "fr" : {
@@ -12539,7 +12593,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Web Programm"
+            "value" : "Web-App"
           }
         },
         "fr" : {
@@ -12657,7 +12711,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wenn Anwendungen in den Papierkorb verschoben werden, startet Pearcleaner und sucht nach zugehörigen Dateien und Ordnern, um diese zu löschen."
+            "value" : "Wenn Programme in den Papierkorb verschoben werden, startet Pearcleaner und sucht nach zugehörigen Dateien und Ordnern, um diese zu löschen."
           }
         },
         "fr" : {
@@ -12834,7 +12888,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wenn das Menüleistensymbol aktiviert ist, werden das Hauptfenster der Anwendung und das Docksymbol deaktiviert, da die Anwendung in den Zubehörmodus versetzt wird."
+            "value" : "Wenn das Menüleisten-Symbol aktiviert ist, werden das Hauptfenster der Anwendung und das Docksymbol deaktiviert, da die Anwendung in den Zubehörmodus versetzt wird."
           }
         },
         "fr" : {
