@@ -12,5 +12,9 @@
 	<true/>
 	<key>KeepAlive</key>
 	<true/>
+	<key>AssociatedBundleIdentifiers</key>
+	<array>
+		<string>com.alienator88.Pearcleaner</string>
+	</array>
 </dict>
 </plist>
