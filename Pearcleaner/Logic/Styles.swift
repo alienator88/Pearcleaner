@@ -263,17 +263,22 @@ struct SimpleCheckboxToggleStyle: ToggleStyle {
         HStack {
             RoundedRectangle(cornerRadius: 4)
                 .fill(themeManager.pickerColor.adjustBrightness(5))
-                .frame(width: 18, height: 18)
+                .frame(width: 14, height: 14)
                 .overlay {
                     if configuration.isOn {
+//                        RoundedRectangle(cornerRadius: 2)
+//                            .fill(themeManager.pickerColor.adjustBrightness(-20))
+//                            .frame(width: 8, height: 8)
                         Image(systemName: "checkmark")
-                            .foregroundStyle(.primary)
-                            .scaleEffect(isHovered ? 0.8 : 1.0)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 8, height: 8)
+                            .foregroundStyle(!isHovered ? .primary : .secondary)
                     }
                 }
                 .overlay {
                     RoundedRectangle(cornerRadius: 4)
-                        .strokeBorder(themeManager.pickerColor.adjustBrightness(-5.0), lineWidth: 1)
+                        .strokeBorder(themeManager.pickerColor.adjustBrightness(isHovered ? -15 : -5.0), lineWidth: 1)
                 }
                 .onTapGesture {
                     withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
