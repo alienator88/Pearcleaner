@@ -140,7 +140,7 @@ func reversePreloader(allApps: [AppInfo], appState: AppState, locations: Locatio
     }
     ReversePathsSearcher(appState: appState, locations: locations, fsm: fsm, sortedApps: allApps).reversePathsSearch {
         updateOnMain {
-            printOS("Reverse search processed successfully")
+//            printOS("Reverse search processed successfully")
             appState.showProgress = false
             withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                 appState.leftoverProgress.1 = 0.0

@@ -289,29 +289,75 @@ struct SimpleCheckboxToggleStyle: ToggleStyle {
 }
 
 
+struct CircleCheckboxToggleStyle: ToggleStyle {
+    @EnvironmentObject private var themeManager: ThemeManager
+    @State private var isHovered: Bool = false
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+
+    func makeBody(configuration: Configuration) -> some View {
+        HStack {
+            Circle()
+                .fill(themeManager.pickerColor.adjustBrightness(5))
+                .frame(width: 18, height: 18)
+                .overlay {
+                    if configuration.isOn {
+                        ZStack {
+//                            Circle()
+//                                .fill(themeManager.pickerColor.adjustBrightness(-15))
+//                                .frame(width: 18, height: 18)
+                            Image(systemName: "checkmark")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 8, height: 8)
+                                .foregroundStyle(.primary)
+                        }
+
+                    }
+                }
+                .overlay {
+                    Circle()
+                        .strokeBorder(themeManager.pickerColor.adjustBrightness(isHovered ? -10 : -5.0), lineWidth: 1)
+                }
+                .onTapGesture {
+                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                        configuration.isOn.toggle()
+                    }
+                }
+            configuration.label
+        }
+        .onHover(perform: { hovering in
+            self.isHovered = hovering
+        })
+    }
+}
+
+
 
 struct UninstallButton: ButtonStyle {
     @State private var hovered: Bool = false
     var isEnabled: Bool
 
     func makeBody(configuration: Configuration) -> some View {
-        HStack(alignment: .center, spacing: 10) {
+        HStack(alignment: .center, spacing: 0) {
             Image(systemName: !hovered ? "trash" : "trash.fill")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
                 .foregroundColor(isEnabled ? .white.opacity(1) : .white.opacity(0.3))
-                .scaleEffect(hovered ? 1.2 : 1.0)
-                .animation(.easeInOut(duration: 0.2), value: hovered)
+                .frame(width: 18, height: 18)
+                .animation(.easeInOut(duration: 0.1), value: hovered)
 
             Divider()
                 .frame(height: 24)
                 .opacity(0.5)
+                .padding(.horizontal, 8)
 
             configuration.label
+                .frame(minWidth: 50)
                 .foregroundColor(isEnabled ? .white.opacity(1) : .white.opacity(0.3))
 
         }
         .frame(height: 24)
-        .frame(minWidth: 75)
-        .padding(.horizontal)
+        .padding(.horizontal, 8)
         .padding(.vertical, 4)
         .background(configuration.isPressed ? Color("uninstall").opacity(0.8) : Color("uninstall"))
         .cornerRadius(8)
@@ -327,26 +373,62 @@ struct RescanButton: ButtonStyle {
     @State private var hovered: Bool = false
 
     func makeBody(configuration: Configuration) -> some View {
-        HStack(alignment: .center, spacing: 10) {
+        HStack(alignment: .center, spacing: 0) {
             Image(systemName: !hovered ? "arrow.counterclockwise.circle" : "arrow.counterclockwise.circle.fill")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 18, height: 18)
                 .foregroundColor(.white)
-                .scaleEffect(hovered ? 1.2 : 1.0)
-                .animation(.easeInOut(duration: 0.2), value: hovered)
+                .animation(.easeInOut(duration: 0.1), value: hovered)
 
             Divider()
                 .frame(height: 24)
                 .foregroundColor(.white)
                 .opacity(0.5)
+                .padding(.horizontal, 8)
 
             configuration.label
                 .foregroundColor(.white)
 
         }
         .frame(height: 24)
-        .frame(minWidth: 75)
-        .padding(.horizontal)
+        .padding(.horizontal, 8)
         .padding(.vertical, 4)
         .background(configuration.isPressed ? Color("button").opacity(0.8) : Color("button"))
+        .cornerRadius(8)
+        .onHover { over in
+            hovered = over
+        }
+    }
+}
+
+struct ExcludeButton: ButtonStyle {
+    @State private var hovered: Bool = false
+    var isEnabled: Bool
+
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(alignment: .center, spacing: 0) {
+            Image(systemName: !hovered ? "minus.circle" : "minus.circle.fill")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 18, height: 18)
+                .foregroundColor(isEnabled ? .white.opacity(1) : .white.opacity(0.3))
+                .animation(.easeInOut(duration: 0.1), value: hovered)
+
+            Divider()
+                .frame(height: 24)
+                .foregroundColor(.white)
+                .opacity(0.5)
+                .padding(.horizontal, 8)
+
+            configuration.label
+                .foregroundColor(isEnabled ? .white.opacity(1) : .white.opacity(0.3))
+
+        }
+        .frame(height: 24)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 4)
+        .background(configuration.isPressed ? Color("grayButton").opacity(0.8) : Color("grayButton"))
         .cornerRadius(8)
         .onHover { over in
             hovered = over

@@ -73,7 +73,7 @@ class ReversePathsSearcher {
         let itemPath = itemURL.path.pearFormat()
         let exclusionList = fsm.fileFolderPathsZ.map { $0.pearFormat() }
 
-        if exclusionList.contains(itemPath) || itemPath.contains("dsstore") || itemPath.contains("daemonnameoridentifierhere") {
+        if exclusionList.contains(itemPath) || itemPath.contains("dsstore") || itemPath.contains("daemonnameoridentifierhere") || exclusionList.first(where: { itemPath.contains($0) }) != nil {
             return
         }
         guard !isUUIDFormatted(itemName.pearFormat()),

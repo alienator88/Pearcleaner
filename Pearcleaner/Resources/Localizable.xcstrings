@@ -3483,6 +3483,9 @@
         }
       }
     },
+    "Exclude Selected" : {
+
+    },
     "Exclude these files and folders from orphaned file search" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -10770,6 +10773,9 @@
         }
       }
     },
+    "This will exclude selected items from future scans. Exclusion list can be edited from Settings > Folders tab." : {
+
+    },
     "Toggling between modes will reset the window frames to their default size/position" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -11056,6 +11062,9 @@
           }
         }
       }
+    },
+    "Type a keyword to exclude, Enter ↵ to save" : {
+
     },
     "Type to search" : {
       "localizations" : {

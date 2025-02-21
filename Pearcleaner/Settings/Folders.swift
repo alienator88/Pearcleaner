@@ -17,6 +17,7 @@ struct FolderSettingsTab: View {
     @EnvironmentObject var fsm: FolderSettingsManager
     @EnvironmentObject var themeManager: ThemeManager
     @State private var isHovered = false
+    @State private var newKeyword: String = ""
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
@@ -36,7 +37,9 @@ struct FolderSettingsTab: View {
                 VStack {
                     ScrollView {
                         VStack(spacing: 5) {
-                            ForEach(fsm.folderPaths.indices, id: \.self) { index in
+                            ForEach(fsm.folderPaths.indices.sorted(by: {
+                                fsm.folderPaths[$0] < fsm.folderPaths[$1]
+                            }), id: \.self) { index in
                                 HStack {
 
                                     Text(fsm.folderPaths[index])
@@ -140,7 +143,9 @@ struct FolderSettingsTab: View {
                                 }
                                 .disabled(true)
                             }
-                            ForEach(fsm.fileFolderPathsZ.indices, id: \.self) { index in
+                            ForEach(fsm.fileFolderPathsZ.indices.sorted(by: {
+                                fsm.fileFolderPathsZ[$0] < fsm.fileFolderPathsZ[$1]
+                            }), id: \.self) { index in
                                 HStack {
 
                                     Text(fsm.fileFolderPathsZ[index])
@@ -192,13 +197,21 @@ struct FolderSettingsTab: View {
                         return true
                     }
 
+                    TextField("Type a keyword to exclude, Enter ↵ to save", text: $newKeyword)
+                        .textFieldStyle(RoundedTextFieldStyle())
+                        .padding(.horizontal, 20)
+                        .onSubmit {
+                            fsm.addKeywordZ(newKeyword)
+                            newKeyword = ""
+                        }
+
                     HStack {
                         Spacer()
                         Text("Drop files or folders above or click to add").opacity(0.5)
                         Button {
                             selectFilesFoldersZ()
                         } label: { EmptyView() }
-                        .buttonStyle(SimpleButtonStyle(icon: "plus.circle", help: String(localized: "Add file/folder"), size: 16, rotate: true))
+                            .buttonStyle(SimpleButtonStyle(icon: "plus.circle", help: String(localized: "Add file/folder"), size: 16, rotate: true))
 
                         Button {
                             clipboardAdd(zombie: true)
@@ -212,6 +225,7 @@ struct FolderSettingsTab: View {
 
                         Spacer()
                     }
+
                 }
             })
 
@@ -355,6 +369,13 @@ class FolderSettingsManager: ObservableObject {
 
         if !self.fileFolderPathsZ.contains(sanitizedPath) {
             self.fileFolderPathsZ.append(sanitizedPath)
+            UserDefaults.standard.set(self.fileFolderPathsZ, forKey: zombieKey)
+        }
+    }
+
+    func addKeywordZ(_ keyword: String) {
+        if !self.fileFolderPathsZ.contains(keyword) {
+            self.fileFolderPathsZ.append(keyword)
             UserDefaults.standard.set(self.fileFolderPathsZ, forKey: zombieKey)
         }
     }

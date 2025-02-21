@@ -31,7 +31,7 @@ struct SettingsView: View {
             }
         }
         .navigationTitle(Text(verbatim: ""))
-        .frame(width: 800, height: 680)
+        .frame(width: 800, height: 700)
     }
 
 

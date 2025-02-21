@@ -184,6 +184,13 @@ struct ZombieView: View {
 
                         Spacer()
 
+                        Button("Exclude Selected") {
+                            excludeAllSelectedItems()
+                        }
+                        .buttonStyle(ExcludeButton(isEnabled: !selectedZombieItemsLocal.isEmpty))
+                        .disabled(selectedZombieItemsLocal.isEmpty)
+                        .help("This will exclude selected items from future scans. Exclusion list can be edited from Settings > Folders tab.")
+
                         Button("Rescan") {
                             updateOnMain {
                                 appState.zombieFile = .empty
@@ -415,6 +422,24 @@ struct ZombieView: View {
         default:
             return "\(formatByte(size: totalLogicalSize).byte) (\(formatByte(size: totalRealSize).human))"
         }
+    }
+
+    private func excludeAllSelectedItems() {
+        for path in selectedZombieItemsLocal {
+            // Add to fsm path
+            fsm.addPathZ(path.path)
+
+            // Remove from memoizedFiles
+            memoizedFiles.removeAll { $0 == path }
+
+            // Remove from appState zombie file details
+            appState.zombieFile.fileSize.removeValue(forKey: path)
+            appState.zombieFile.fileSizeLogical.removeValue(forKey: path)
+            appState.zombieFile.fileIcon.removeValue(forKey: path)
+        }
+
+        // Clear all selected items
+        selectedZombieItemsLocal.removeAll()
     }
 
 }
