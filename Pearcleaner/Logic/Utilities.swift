@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import AlinFoundation
 import AppKit
+import AudioToolbox
 
 
 func resizeWindowAuto(windowSettings: WindowSettings, title: String) {
@@ -45,9 +46,15 @@ func findAndSetWindowFrame(named titles: [String], windowSettings: WindowSetting
 }
 
 
+func playTrashSound(undo: Bool = false) {
+    let soundName = undo ? "poof item off dock.aif" : "drag to trash.aif"
+    let path = "/System/Library/Components/CoreAudio.component/Contents/SharedSupport/SystemSounds/dock/\(soundName)"
+    let url = URL(fileURLWithPath: path)
 
-
-
+    var soundID: SystemSoundID = 0
+    AudioServicesCreateSystemSoundID(url as CFURL, &soundID)
+    AudioServicesPlaySystemSound(soundID)
+}
 
 
 // Check if pearcleaner symlink exists
@@ -71,71 +78,50 @@ func checkCLISymlink() -> Bool {
 func manageSymlink(install: Bool) {
     @AppStorage("settings.general.cli") var isCLISymlinked = false
 
-    // Get the current running application's bundle binary path
     guard let appPath = Bundle.main.executablePath else {
         printOS("Error: Unable to get the executable path.")
         return
     }
 
-    // Path where the symlink should be created
     let symlinkPath = "/usr/local/bin/pearcleaner"
-
-    // Check if the symlink already exists
     let symlinkExists = checkCLISymlink()
-
-    // Check if /usr/local/bin exists
     let binPathExists = directoryExists(at: "/usr/local/bin")
 
-    // If we are installing the symlink and it already exists, skip creating it
     if install && symlinkExists {
         printOS("Symlink already exists at \(symlinkPath). No action needed.")
         return
     }
 
-    // If we are uninstalling the symlink and it doesn't exist, skip removing it
     if !install && !symlinkExists {
         printOS("Symlink does not exist at \(symlinkPath). No action needed.")
         return
     }
 
-    // Create AppleScript commands for installing or uninstalling the symlink
-    let script: String
+    // Prepare privileged commands
+    var command = ""
 
     if install {
-        // AppleScript to optionally create the folder and then create the symlink
-        let createBinFolderCommand = binPathExists ? "" : "mkdir -p /usr/local/bin;"
-        script = """
-        do shell script "\(createBinFolderCommand)ln -s '\(appPath)' '\(symlinkPath)'" with administrator privileges
-        """
+        // Create the /usr/local/bin directory if it doesn't exist, then create symlink
+        if !binPathExists {
+            command += "mkdir -p /usr/local/bin && "
+        }
+        command += "ln -s '\(appPath)' '\(symlinkPath)'"
     } else {
-        // AppleScript to remove the symlink with admin privileges
-        script = """
-        do shell script "rm '\(symlinkPath)'" with administrator privileges
-        """
+        // Remove the symlink
+        command = "rm '\(symlinkPath)'"
     }
+
+    // Perform privileged commands
+    let _ = performPrivilegedCommands(commands: command)
 
     updateOnMain {
-        // Execute the AppleScript
-        var error: NSDictionary?
-        if let scriptObject = NSAppleScript(source: script) {
-            scriptObject.executeAndReturnError(&error)
-
-            if let error = error {
-                printOS("Symlink AppleScript Error: \(error)")
-                isCLISymlinked = checkCLISymlink()
-            } else {
-                isCLISymlinked = checkCLISymlink()
-                if install {
-                    printOS("Symlink created successfully at \(symlinkPath).")
-                } else {
-                    printOS("Symlink removed successfully from \(symlinkPath).")
-                }
-            }
+        isCLISymlinked = checkCLISymlink()
+        if install {
+            printOS("Symlink created successfully at \(symlinkPath).")
         } else {
-            printOS("Error: Unable to create the AppleScript object.")
+            printOS("Symlink removed successfully from \(symlinkPath).")
         }
     }
-
 }
 
 func directoryExists(at path: String) -> Bool {

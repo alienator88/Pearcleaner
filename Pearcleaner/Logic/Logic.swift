@@ -187,117 +187,77 @@ func showAppInFiles(appInfo: AppInfo, appState: AppState, locations: Locations, 
 
 
 
-// Move files to trash using AppleScript/Finder so it asks for user password if needed
-func moveFilesToTrash(appState: AppState, at fileURLs: [URL], completion: @escaping (Bool) -> Void = {_ in }) {
-    // Stop Sentinel FileWatcher momentarily to ignore .app bundle being sent to Trash
-    sendStopNotificationFW()
+// Move files to trash using Authorization Services so it asks for user password if needed
+func moveFilesToTrash(appState: AppState, at fileURLs: [URL]) -> Bool {
+    
 
-    updateOnMain {
-        let validFileURLs = filterValidFiles(fileURLs: fileURLs) // Filter invalid files
-        let posixFiles = validFileURLs.map { item in
-            return "POSIX file \"\(item.path)\"" + (item == validFileURLs.last ? "" : ", ")}.joined()
-        let scriptSource = """
-        tell application \"Finder\" 
-            activate
-            delete { \(posixFiles) }
-        end tell
-        """
-
-        var error: NSDictionary?
-        if let scriptObject = NSAppleScript(source: scriptSource) {
-            let output: NSAppleEventDescriptor = scriptObject.executeAndReturnError(&error)
-
-            // Handle any AppleScript errors
-            if let error = error {
-                printOS("Trash Error: \(error)")
-                completion(false)  // Indicate failure
-                return
-            }
-
-            // Check if output is null, indicating the user canceled the operation
-            if output.descriptorType == typeNull {
-                printOS("Trash Error: operation canceled by the user")
-                completion(false)  // Indicate failure due to cancellation
-                return
-            }
-
-            // Process output if it exists
-            if let outputString = output.stringValue {
-                printOS("Trash: \(outputString)")
-            }
-        }
-
-        // Check if any files still exist after the deletion attempt
-        if filesStillExist(at: validFileURLs) {
-            printOS("Trash Error: Some files were not deleted, possible the user cancelled the operation or they were moved. Undoing the delete action")
-            completion(false)  // Indicate failure
-            undoTrash()
-            return
-        }
-
-        completion(true)  // Indicate success
-    }
-
-}
-
-func moveFilesToTrashCLI(at fileURLs: [URL]) -> Bool {
-    // Stop Sentinel FileWatcher momentarily to ignore .app bundle being sent to Trash
-    sendStopNotificationFW()
-
-    // Create the AppleScript for moving files to the Trash
     let validFileURLs = filterValidFiles(fileURLs: fileURLs) // Filter invalid files
-    let posixFiles = validFileURLs.map { item in
-        return "POSIX file \"\(item.path)\"" + (item == validFileURLs.last ? "" : ", ")}.joined()
 
-    let scriptSource = """
-        tell application \"Finder\" 
-            activate
-            delete { \(posixFiles) }
-        end tell
-        """
-
-    var error: NSDictionary?
-    if let scriptObject = NSAppleScript(source: scriptSource) {
-        let output: NSAppleEventDescriptor = scriptObject.executeAndReturnError(&error)
-
-        // Handle any AppleScript errors
-        if let error = error {
-            printOS("Trash Error: \(error)")  // Synchronous error reporting
-            return false  // Indicate failure
-        }
-
-        // Check if output is null, indicating the user canceled the operation
-        if output.descriptorType == typeNull {
-            printOS("Trash Error: operation canceled by the user")  // Synchronous cancellation reporting
-            return false  // Indicate failure due to cancellation
-        }
-
-        // Process output if it exists
-        if let outputString = output.stringValue {
-            printOS("Trash: \(outputString)")
-        }
-    }
-
-    // Check if any files still exist after the deletion attempt
-    if filesStillExist(at: validFileURLs) {
-        printOS("Trash Error: Some files were not deleted, possible the user cancelled the operation or they were moved. Undoing the delete action")
-        undoTrash()
+    // Check if there are any valid files to delete
+    guard !validFileURLs.isEmpty else {
+        printOS("No valid files to move to Trash.")
         return false
     }
 
-    return true  // Indicate success
+
+    let result = FileManagerUndo.shared.deleteFiles(at: validFileURLs)
+
+
+    if result {
+        playTrashSound()
+    }
+
+    return result
+}
+
+func moveFilesToTrashCLI(at fileURLs: [URL]) -> Bool {
+
+    let validFileURLs = filterValidFiles(fileURLs: fileURLs) // Filter invalid files
+
+    // Check if there are any valid files to delete
+    guard !validFileURLs.isEmpty else {
+        printOS("No valid files to move to Trash.")
+        return false
+    }
+
+    let result = FileManagerUndo.shared.deleteFiles(at: validFileURLs, isCLI: true)
+
+    return result
 }
 
 
 // Helper function to check file existence
-func filesStillExist(at fileURLs: [URL]) -> Bool {
-    for url in fileURLs {
-        if FileManager.default.fileExists(atPath: url.path) {
-            return true // A file still exists
-        }
-    }
-    return false // All files were deleted
-}
+//func filesStillExist(at fileURLs: [URL]) -> Bool {
+//    let maxRetries = 3
+//    let delay: TimeInterval = 1 // 200 ms delay
+//
+//    for attempt in 0..<maxRetries {
+//        var anyFileExists = false
+//        print(attempt)
+//        for url in fileURLs {
+//            if FileManager.default.fileExists(atPath: url.path) {
+//                print("File still exists at: \(url.path)")
+//                anyFileExists = true
+//                break
+//            }
+//        }
+//
+//        // If no files exist, return false
+//        if !anyFileExists {
+//            return false
+//        }
+//
+//        // If this was the last attempt, return true
+//        if attempt == maxRetries - 1 {
+//            return true
+//        }
+//
+//        // Otherwise, wait and try again
+//        Thread.sleep(forTimeInterval: delay)
+//    }
+//
+//    return false // All files were deleted
+//}
 
 
 func filterValidFiles(fileURLs: [URL]) -> [URL] {
@@ -352,36 +312,16 @@ func removeImmutableAttribute(from url: URL) throws {
 
 
 // Undo trash action
-func undoTrash(completion: @escaping () -> Void = {}) {
-    let scriptSource = """
-    tell application "Finder"
-        activate
-    end tell
-    delay 0.5
-    
-    tell application "System Events"
-        keystroke "z" using command down
-    end tell
-    
-    tell application "Pearcleaner"
-        activate
-    end tell
-    """
-    var error: NSDictionary?
-    
-    updateOnMain {
-        if let scriptObject = NSAppleScript(source: scriptSource) {
-            let output: NSAppleEventDescriptor = scriptObject.executeAndReturnError(&error)
-            if let error = error {
-                printOS("Undo Trash Error: \(error)")
-            } else if let outputString = output.stringValue {
-                completion()
-                printOS(outputString)
-            } else {
-                completion()
-            }
+func undoTrash() -> Bool {
+        // Check if an undo action is available
+        if FileManagerUndo.shared.undoManager.canUndo {
+            FileManagerUndo.shared.undoManager.undo()
+            playTrashSound(undo: true)
+            return true
+        } else {
+            printOS("Undo Trash Error: No undo action available.")
+            return false
         }
-    }
 }
 
 
@@ -406,7 +346,7 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
 
     // Launch app in terminal for debugging purposes
     func debugLaunch() {
-        printOS("[BETA] Pearcleaner CLI | Launching App For Debugging:\n")
+        printOS("Pearcleaner CLI | Launching App For Debugging:\n")
     }
 
     // Private function to list files for uninstall, using the provided path
@@ -414,7 +354,7 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
         // Convert the provided string path to a URL
         let url = URL(fileURLWithPath: path)
 
-        printOS("[BETA] Pearcleaner CLI | List Application Files:\n")
+        printOS("Pearcleaner CLI | List Application Files:\n")
 
         // Fetch the app info and safely unwrap
         guard let appInfo = AppInfoFetcher.getAppInfo(atPath: url) else {
@@ -439,7 +379,7 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
 
     // Private function to list orphaned files for uninstall, using the provided path
     func listOrphanedFiles() {
-        printOS("[BETA] Pearcleaner CLI | List Orphaned Files:\n")
+        printOS("Pearcleaner CLI | List Orphaned Files:\n")
 
         // Get installed apps for filtering
         let sortedApps = getSortedApps(paths: fsm.folderPaths)
@@ -459,7 +399,7 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
     func uninstallApp(at path: String) {
         // Convert the provided string path to a URL
         let url = URL(fileURLWithPath: path)
-        printOS("[BETA] Pearcleaner CLI | Uninstall Application:\n")
+        printOS("Pearcleaner CLI | Uninstall Application:\n")
 
         // Fetch the app info and safely unwrap
         guard let appInfo = AppInfoFetcher.getAppInfo(atPath: url) else {
@@ -470,10 +410,10 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
         killApp(appId: appInfo.bundleIdentifier) {
             let success =  moveFilesToTrashCLI(at: [appInfo.path])
             if success {
-                printOS("Application moved to the trash successfully.\n")
+                printOS("Application deleted successfully.\n")
                 exit(0)
             } else {
-                printOS("Failed to move application to trash.\n")
+                printOS("Failed to delete application.\n")
                 exit(1)
             }
         }
@@ -483,7 +423,7 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
     func uninstallAll(at path: String) {
         // Convert the provided string path to a URL
         let url = URL(fileURLWithPath: path)
-        printOS("[BETA] Pearcleaner CLI | Uninstall Application & Related Files:\n")
+        printOS("Pearcleaner CLI | Uninstall Application & Related Files:\n")
 
         // Fetch the app info and safely unwrap
         guard let appInfo = AppInfoFetcher.getAppInfo(atPath: url) else {
@@ -497,13 +437,29 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
         // Call findPaths to get the Set of URLs
         let foundPaths = appPathFinder.findPathsCLI()
 
+        // Check if any file is protected (non-writable)
+        let protectedFiles = foundPaths.filter {
+            !FileManager.default.isWritableFile(atPath: $0.path)
+        }
+
+        // If protected files are found, echo message and exit
+        if !protectedFiles.isEmpty {
+            printOS("Protected files detected. Please run this command with sudo:\n")
+            printOS("sudo pearcleaner --uninstall-all \(path)")
+            printOS("\nProtected files:\n")
+            for file in protectedFiles {
+                printOS(file.path)
+            }
+            exit(1)
+        }
+
         killApp(appId: appInfo.bundleIdentifier) {
             let success =  moveFilesToTrashCLI(at: Array(foundPaths))
             if success {
-                printOS("The application and related files have been moved to the trash successfully.\n")
+                printOS("The application and related files have been deleted successfully.\n")
                 exit(0)
             } else {
-                printOS("Failed to move application and related files to trash.\n")
+                printOS("Failed to delete some files, they might be protected or in use.\n")
                 exit(1)
             }
         }
@@ -511,7 +467,7 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
 
     // Private function to remove the orphaned files
     func removeOrphanedFiles() {
-        printOS("[BETA] Pearcleaner CLI | Remove Orphaned Files:\n")
+        printOS("Pearcleaner CLI | Remove Orphaned Files:\n")
 
         // Get installed apps for filtering
         let sortedApps = getSortedApps(paths: fsm.folderPaths)
@@ -520,12 +476,28 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
         let foundPaths = ReversePathsSearcher(locations: locations, fsm: fsm, sortedApps: sortedApps)
             .reversePathsSearchCLI()
 
+        // Check if any file is protected (non-writable)
+        let protectedFiles = foundPaths.filter {
+            !FileManager.default.isWritableFile(atPath: $0.path)
+        }
+
+        // If protected files are found, echo message and exit
+        if !protectedFiles.isEmpty {
+            printOS("Protected files detected. Please run this command with sudo:\n")
+            printOS("sudo pearcleaner --remove-orphaned")
+            printOS("\nProtected files:\n")
+            for file in protectedFiles {
+                printOS(file.path)
+            }
+            exit(1)
+        }
+
         let success =  moveFilesToTrashCLI(at: foundPaths)
         if success {
-            printOS("Orphaned files have been moved to the trash successfully.\n")
+            printOS("Orphaned files have been deleted successfully.\n")
             exit(0)
         } else {
-            printOS("Failed to move orphaned files to trash.\n")
+            printOS("Failed to delete some orphaned files.\n")
             exit(1)
         }
     }
@@ -585,7 +557,7 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
 func displayHelp() {
     printOS("""
             
-            [BETA] Pearcleaner CLI | Usage:
+            Pearcleaner CLI | Usage:
             
             --run, -r                            Launch Pearcleaner in Debug mode to see console logs
             --list <path>, -l <path>             List application files available for uninstall at the specified path
@@ -594,6 +566,8 @@ func displayHelp() {
             --uninstall-all <path>, -ua <path>   Uninstall application bundle and ALL related files at the specified path
             --remove-orphaned, -ro               Remove ALL orphaned files (To ignore files, add them to the exception list within Pearcleaner settings)
             --help, -h                           Show this help message
+            
+            SUDO WARNING:                        When running pearcleaner CLI with sudo, files are not moved to Trash bin as they are owned by                                   root. This does not affect Pearcleaner GUI.
             
             """)
 }
@@ -614,46 +588,6 @@ func manageFinderPlugin(install: Bool) {
 
 
 // Brew cleanup
-//func caskCleanup(app: String) {
-//    Task(priority: .high) {
-//
-//#if arch(x86_64)
-//        let cmd = "/usr/local/bin/brew"
-//#elseif arch(arm64)
-//        let cmd = "/opt/homebrew/bin/brew"
-//#endif
-//
-//        if let formattedApp = getCaskIdentifier(for: app) {
-//            // App found, proceed with cleanup
-//            let script = """
-//            tell application "Terminal"
-//                activate
-//                do script "/bin/bash --noprofile --norc -c '
-//                clear;
-//                echo \\"[Pearcleaner] Homebrew cleanup for \(app):\n\\";
-//                \(cmd) uninstall --cask \(formattedApp) --zap --force;
-//                \(cmd) cleanup;
-//                killall Terminal;
-//                '" in front window
-//            end tell
-//            """
-//
-//            updateOnMain {
-//                var error: NSDictionary?
-//                if let appleScript = NSAppleScript(source: script) {
-//                    appleScript.executeAndReturnError(&error)
-//                }
-//
-//                if let error = error {
-//                    printOS("AppleScript Error: \(error)")
-//                }
-//            }
-//
-//        } else {
-//            printOS("Brew cleanup: No cask found for \(app).")
-//        }
-//    }
-//}
 
 func getBrewCleanupCommand(for caskName: String) -> String {
 #if arch(x86_64)
@@ -807,15 +741,11 @@ func uninstallPearcleaner(appState: AppState, locations: Locations) {
     AppPathFinder(appInfo: appInfo!, locations: locations, appState: appState, completion: {
         // Kill Pearcleaner and tell Finder to trash the files
         let selectedItemsArray = Array(appState.selectedItems).filter { !$0.path.contains(".Trash") }
-        let posixFiles = selectedItemsArray.map { item in
-            return "POSIX file \"\(item.path)\"" + (item == selectedItemsArray.last ? "" : ", ")}.joined()
-        let scriptSource = """
-        tell application \"Finder\" to delete { \(posixFiles) }
-        """
-        let task = Process()
-        task.launchPath = "/bin/sh"
-        task.arguments = ["-c", "sleep 1; osascript -e '\(scriptSource)'"]
-        task.launch()
+        let result = FileManagerUndo.shared.deleteFiles(at: selectedItemsArray)
+
+        if result {
+            playTrashSound()
+        }
         exit(0)
     }).findPaths()
 }
@@ -854,27 +784,29 @@ func launchctl(load: Bool, completion: @escaping () -> Void = {}) {
                 // Copy the plist content to LaunchAgents
                 try plistContent.write(to: destinationPlistURL, atomically: true, encoding: .utf8)
             } else {
-                // Run the unload command first
-                let task = Process()
-                task.launchPath = "/bin/launchctl"
-                task.arguments = [cmd, destinationPlistURL.path]
+                if fileManager.fileExists(atPath: destinationPlistURL.path) {
+                    // Run the unload command first
+                    let task = Process()
+                    task.launchPath = "/bin/launchctl"
+                    task.arguments = [cmd, destinationPlistURL.path]
 
-                let combinedPipe = Pipe()
-                task.standardOutput = combinedPipe
-                task.standardError = combinedPipe
-                task.launch()
+                    let combinedPipe = Pipe()
+                    task.standardOutput = combinedPipe
+                    task.standardError = combinedPipe
+                    task.launch()
 
-                // Capture and print combined output
-                let outputData = combinedPipe.fileHandleForReading.readDataToEndOfFile()
-                if let output = String(data: outputData, encoding: .utf8), !output.isEmpty {
-                    printOS("Output/Error: \(output)")
+                    // Capture and print combined output
+                    let outputData = combinedPipe.fileHandleForReading.readDataToEndOfFile()
+                    if let output = String(data: outputData, encoding: .utf8), !output.isEmpty {
+                        printOS("Output/Error: \(output)")
+                    }
+
+                    // Wait for the task to complete before deleting
+                    task.waitUntilExit()
+
+                    // Remove plist after unloading
+                    try fileManager.removeItem(at: destinationPlistURL)
                 }
-
-                // Wait for the task to complete before deleting
-                task.waitUntilExit()
-
-                // Remove plist after unloading
-                try fileManager.removeItem(at: destinationPlistURL)
             }
         } catch {
             printOS("Error writing to LaunchAgents or removing plist: \(error)")

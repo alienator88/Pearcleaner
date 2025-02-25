@@ -56,7 +56,8 @@ struct AppCommands: Commands {
             Button
             {
                 if appState.currentView != .zombie {
-                    undoTrash() {
+                    let result = undoTrash()
+                    if result {
                         reloadAppsList(appState: appState, fsm: fsm, delay: 1)
                         if appState.currentView == .files {
                             showAppInFiles(appInfo: appState.appInfo, appState: appState, locations: locations, showPopover: $showPopover)

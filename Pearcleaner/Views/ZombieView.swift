@@ -253,11 +253,8 @@ struct ZombieView: View {
 
                 let selectedItemsArray = Array(selectedZombieItemsLocal)
 
-                moveFilesToTrash(appState: appState, at: selectedItemsArray) { success in
-
-                    guard success else {
-                        return
-                    }
+                let result = moveFilesToTrash(appState: appState, at: selectedItemsArray)
+                if result {
 
                     if selectedZombieItemsLocal.count == appState.zombieFile.fileSize.keys.count {
                         updateOnMain {
@@ -286,7 +283,6 @@ struct ZombieView: View {
                         // Update memoized files and total sizes
                         updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSortAlpha: selectedSortAlpha, force: true)
                     }
-
                 }
 
             }

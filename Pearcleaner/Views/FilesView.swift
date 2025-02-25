@@ -405,7 +405,7 @@ struct FilesView: View {
                     .font(.headline)
                 Divider()
                 Spacer()
-                Text("Always confirm the files marked for removal. In rare cases, unrelated files may be found when app names are too similar.\n\nNOTE: Pearcleaner uses AppleScript to remove files. Currently macOS does not allow AppleScript to authenticate using the fingerprint sensor, only password authentication is supported.")
+                Text("Always confirm the files marked for removal. In rare cases, unrelated files may be found when app names are too similar.")
                     .font(.subheadline)
                 Spacer()
                 Button("Close") {
@@ -431,15 +431,15 @@ struct FilesView: View {
         showCustomAlert(enabled: confirmAlert, title: String(localized: "Warning"), message: String(localized: "Are you sure you want to remove these files?"), style: .warning, onOk: {
             Task {
                 let selectedItemsArray = Array(appState.selectedItems)
-                var appWasRemoved = false  // Flag to track if the app was removed
+                var appWasRemoved = false
+
+                // Stop Sentinel FileWatcher momentarily to ignore .app bundle being sent to Trash
+                sendStopNotificationFW()
 
                 killApp(appId: appState.appInfo.bundleIdentifier) {
-                    moveFilesToTrash(appState: appState, at: selectedItemsArray) { success in
-                        // Send Sentinel FileWatcher start notification
-                        sendStartNotificationFW()
 
-                        guard success else { return }
-
+                    let result = moveFilesToTrash(appState: appState, at: selectedItemsArray)
+                    if result {
                         // Update the app's file list by removing the deleted files
                         updateOnMain {
                             appState.appInfo.fileSize = appState.appInfo.fileSize.filter { !selectedItemsArray.contains($0.key) }
@@ -481,6 +481,9 @@ struct FilesView: View {
                         // Process the next app if in external mode
                         processNextExternalApp(appWasRemoved: appWasRemoved)
                     }
+
+                    // Send Sentinel FileWatcher start notification
+                    sendStartNotificationFW()
                 }
             }
         })
@@ -488,9 +491,21 @@ struct FilesView: View {
 
     // Helper function to process the next external app
     private func processNextExternalApp(appWasRemoved: Bool) {
+
         // Remove the processed path to avoid re-processing it
         if !appState.externalPaths.isEmpty {
             appState.externalPaths.removeFirst()
+        }
+
+        // Check if the current app requires brew cleanup
+        if brew && appState.appInfo.cask != nil {
+            // Set terminal view for the current app
+            updateOnMain {
+                appState.currentView = .terminal
+            }
+
+            // Exit early to wait for the user to close the terminal
+            return
         }
 
         // Check if there are more paths in externalPaths
@@ -500,18 +515,13 @@ struct FilesView: View {
                 updateOnMain {
                     search = ""
                     withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                        if brew && appState.appInfo.cask != nil {
-                            appState.currentView = .terminal
+                        if mini || menubarEnabled {
+                            appState.currentView = .apps
+                            showPopover = false
                         } else {
-                            if mini || menubarEnabled {
-                                appState.currentView = .apps
-                                showPopover = false
-                            } else {
-                                appState.currentView = .empty
-                            }
-                            appState.appInfo = AppInfo.empty
+                            appState.currentView = .empty
                         }
-
+                        appState.appInfo = AppInfo.empty
                     }
                 }
             }

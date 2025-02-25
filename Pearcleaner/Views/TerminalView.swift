@@ -11,6 +11,7 @@ import AlinFoundation
 
 struct TerminalSheetView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var locations: Locations
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     var showPopover: Binding<Bool>?
@@ -62,6 +63,20 @@ struct TerminalSheetView: View {
                 
                 appState.appInfo = AppInfo.empty
 
+                // Check if there are more paths to process
+                if !appState.externalPaths.isEmpty {
+                    // Get the next path
+                    if let nextPath = appState.externalPaths.first {
+                        // Load the next app's info
+                        if let nextApp = AppInfoFetcher.getAppInfo(atPath: nextPath) {
+                            updateOnMain {
+                                appState.appInfo = nextApp
+                            }
+                            showAppInFiles(appInfo: nextApp, appState: appState, locations: locations, showPopover: showPopover ?? .constant(false))
+                        }
+                    }
+                }
+
             }
             .buttonStyle(SimpleButtonStyle(icon: "x.circle", iconFlip: "x.circle.fill", help: String(localized: "Close")))
             .padding(5)
@@ -87,7 +102,7 @@ struct TerminalWrapper: NSViewRepresentable {
 
         // Run the given command after shell initializes
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            terminalView.send(txt: "clear;\(self.command)\n")
+            terminalView.send(txt: "clear;echo 'Please wait..';\(self.command)\n")
         }
 
         return terminalView
