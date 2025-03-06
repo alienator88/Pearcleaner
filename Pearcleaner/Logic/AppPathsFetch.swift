@@ -188,6 +188,12 @@ class AppPathFinder {
         return (cached.useBundleIdentifier && bundleMatch) || (nameLMatch || namePMatch || nameLFilteredMatch)
     }
 
+    // Check for associated zombie files
+    private func fetchAssociatedZombieFiles() -> [URL] {
+        let storedFiles = ZombieFileStorage.shared.getAssociatedFiles(for: self.appInfo.path)
+        return storedFiles
+    }
+
     // Validate the bundle identifier
     private func isValidBundleIdentifier(_ bundleIdentifier: String) -> Bool {
         let components = bundleIdentifier.components(separatedBy: ".")
@@ -283,20 +289,30 @@ class AppPathFinder {
 
     // Post-processing: calculate file details, update state, and call completion
     private func handlePostProcessing(sortedCollection: [URL]) {
+        // Fetch associated zombie files and add them to the collection
+        var tempCollection = sortedCollection
+        let associatedFiles = fetchAssociatedZombieFiles()
+        for file in associatedFiles {
+            if !tempCollection.contains(file) {
+                tempCollection.append(file) // Now it's properly included
+            }
+        }
+
         var fileSize: [URL: Int64] = [:]
         var fileSizeLogical: [URL: Int64] = [:]
         var fileIcon: [URL: NSImage?] = [:]
-        for path in sortedCollection {
+        for path in tempCollection {
             let size = totalSizeOnDisk(for: path)
             fileSize[path] = size.real
             fileSizeLogical[path] = size.logical
             fileIcon[path] = getIconForFileOrFolderNS(atPath: path)
         }
         let arch = checkAppBundleArchitecture(at: self.appInfo.path.path)
-        var updatedCollection = sortedCollection
+        var updatedCollection = tempCollection
         if updatedCollection.count == 1, let firstURL = updatedCollection.first, firstURL.path.contains(".Trash") {
             updatedCollection.removeAll()
         }
+
         DispatchQueue.main.async {
             self.appInfo.fileSize = fileSize
             self.appInfo.fileSizeLogical = fileSizeLogical

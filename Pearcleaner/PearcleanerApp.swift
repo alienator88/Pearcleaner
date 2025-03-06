@@ -160,7 +160,6 @@ struct PearcleanerApp: App {
 
                 permissionManager.checkPermissions(types: [.fullDiskAccess]) { results in
                     permissionManager.results = results
-                    print(results)
                 }
 //                permissionManager.checkAllPermissions()
 

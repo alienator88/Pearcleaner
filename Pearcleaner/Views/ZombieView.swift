@@ -535,6 +535,22 @@ struct ZombieFileDetailsItem: View {
                 NSWorkspace.shared.selectFile(path.path, inFileViewerRootedAtPath: path.deletingLastPathComponent().path)
             }
             Divider()
+            Menu("Link To") {
+                ForEach(appState.sortedApps, id: \.id) { app in
+                    let isAssociated = !ZombieFileStorage.shared.getAssociatedFiles(for: app.path).isEmpty
+
+                    Button {
+                        ZombieFileStorage.shared.addAssociation(appPath: app.path, zombieFilePath: path)
+                    } label: {
+                        HStack {
+                            Text(app.appName)
+                            if isAssociated {
+                                Image(systemName: "checkmark") // Shows checkmark if associated
+                            }
+                        }
+                    }
+                }
+            }
             Button("Exclude") {
                 fsm.addPathZ(path.path)
                 // Remove from memoizedFiles

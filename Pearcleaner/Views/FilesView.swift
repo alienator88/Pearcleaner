@@ -29,6 +29,7 @@ struct FilesView: View {
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPopover: Bool
     @Binding var search: String
+    @State private var sortedFiles: [URL] = []
 
     var body: some View {
 
@@ -311,24 +312,7 @@ struct FilesView: View {
                     } else {
                         ScrollView() {
                             LazyVStack {
-                                let sortedFilesSize = appState.appInfo.fileSize.keys.sorted(by: { appState.appInfo.fileSize[$0, default: 0] > appState.appInfo.fileSize[$1, default: 0] })
-
-                                let sortedFilesAlpha = appState.appInfo.fileSize.keys.sorted { firstURL, secondURL in
-                                    let isFirstPathApp = firstURL.pathExtension == "app"
-                                    let isSecondPathApp = secondURL.pathExtension == "app"
-                                    if isFirstPathApp, !isSecondPathApp {
-                                        return true // .app extension always comes first
-                                    } else if !isFirstPathApp, isSecondPathApp {
-                                        return false
-                                    } else {
-                                        // If neither or both are .app, sort alphabetically
-                                        return firstURL.lastPathComponent.pearFormat() < secondURL.lastPathComponent.pearFormat()
-                                    }
-                                }
-
-                                let sort = selectedSortAlpha ? sortedFilesAlpha : sortedFilesSize
-
-                                ForEach(Array(sort.enumerated()), id: \.element) { index, path in
+                                ForEach(Array(sortedFiles.enumerated()), id: \.element) { index, path in
                                     if let fileSize = appState.appInfo.fileSize[path], let fileSizeL = appState.appInfo.fileSizeLogical[path], let fileIcon = appState.appInfo.fileIcon[path] {
                                         let iconImage = fileIcon.map(Image.init(nsImage:))
                                         VStack {
@@ -337,9 +321,9 @@ struct FilesView: View {
                                         }
                                     }
                                 }
-
                             }
                             .padding()
+                            .onAppear { updateSortedFiles() }
                         }
                         .scrollIndicators(scrollIndicators ? .automatic : .never)
                     }
@@ -379,12 +363,24 @@ struct FilesView: View {
 
                         Spacer()
 
-                        Button {
-                            handleUninstallAction()
-                        } label: {
-                            Text(verbatim: "\(sizeType == "Logical" ? totalSelectedSize.logical : totalSelectedSize.real)")
+                        HStack(spacing: 10) {
+                            // Conditional Remove Association Button
+                            if !ZombieFileStorage.shared.getAssociatedFiles(for: appState.appInfo.path).isEmpty {
+                                Button("Unlink") {
+                                    removeZombieAssociations()
+                                }
+                                .buttonStyle(RescanButton())
+                                .help("Remove linked orphaned files for this app")
+                            }
+
+                            // Trash Button
+                            Button {
+                                handleUninstallAction()
+                            } label: {
+                                Text(verbatim: "\(sizeType == "Logical" ? totalSelectedSize.logical : totalSelectedSize.real)")
+                            }
+                            .buttonStyle(UninstallButton(isEnabled: !appState.selectedItems.isEmpty || (appState.selectedItems.isEmpty && brew)))
                         }
-                        .buttonStyle(UninstallButton(isEnabled: !appState.selectedItems.isEmpty || (appState.selectedItems.isEmpty && brew)))
                     }
                     .padding(.top, 5)
 
@@ -576,6 +572,46 @@ struct FilesView: View {
                     }
                 }
             }
+        }
+    }
+
+    private func updateSortedFiles() {
+        let sortedFilesSize = appState.appInfo.fileSize.keys.sorted(by: {
+            appState.appInfo.fileSize[$0, default: 0] > appState.appInfo.fileSize[$1, default: 0]
+        })
+
+        let sortedFilesAlpha = appState.appInfo.fileSize.keys.sorted { firstURL, secondURL in
+            let isFirstPathApp = firstURL.pathExtension == "app"
+            let isSecondPathApp = secondURL.pathExtension == "app"
+            if isFirstPathApp, !isSecondPathApp {
+                return true
+            } else if !isFirstPathApp, isSecondPathApp {
+                return false
+            } else {
+                return firstURL.lastPathComponent.pearFormat() < secondURL.lastPathComponent.pearFormat()
+            }
+        }
+
+        sortedFiles = selectedSortAlpha ? sortedFilesAlpha : sortedFilesSize
+    }
+
+    private func removeZombieAssociations() {
+        updateOnMain {
+            let associatedFiles = ZombieFileStorage.shared.getAssociatedFiles(for: appState.appInfo.path)
+
+            // Remove associated files from appInfo storage
+            appState.appInfo.fileSize = appState.appInfo.fileSize.filter { !associatedFiles.contains($0.key) }
+            appState.appInfo.fileSizeLogical = appState.appInfo.fileSizeLogical.filter { !associatedFiles.contains($0.key) }
+            appState.appInfo.fileIcon = appState.appInfo.fileIcon.filter { !associatedFiles.contains($0.key) }
+
+            // Remove from sorted list
+            sortedFiles.removeAll { associatedFiles.contains($0) }
+
+            // Remove from selected items
+            appState.selectedItems = appState.selectedItems.filter { !associatedFiles.contains($0) }
+
+            // Clear stored associations
+            ZombieFileStorage.shared.clearAssociations(for: appState.appInfo.path)
         }
     }
 

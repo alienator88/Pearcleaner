@@ -5481,6 +5481,9 @@
         }
       }
     },
+    "Link To" : {
+
+    },
     "Locations that will be searched for .app files. Click a non-default path to remove it. Default paths can't be removed." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8501,6 +8504,9 @@
         }
       }
     },
+    "Remove linked orphaned files for this app" : {
+
+    },
     "Rescan" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -11396,6 +11402,9 @@
           }
         }
       }
+    },
+    "Unlink" : {
+
     },
     "Update" : {
       "localizations" : {

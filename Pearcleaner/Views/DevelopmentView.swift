@@ -109,6 +109,9 @@ struct PathRowView: View {
     @State private var exists: Bool = false
     @State private var isEmpty: Bool = false
     @State private var matchingPaths: [String] = []
+    @State private var sizeLoading: Bool = true
+    @State private var size: Int64 = 0
+    @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
 
     var body: some View {
 
@@ -116,11 +119,30 @@ struct PathRowView: View {
             if !matchingPaths.isEmpty {
                 ForEach(matchingPaths, id: \.self) { matchedPath in
                     VStack(alignment: .leading, spacing: 10) {
-                        Text(matchedPath)
-                            .font(.headline)
-                            .foregroundColor(.primary)
-                            .lineLimit(1)
-                            .truncationMode(.tail)
+                        HStack {
+
+                            Text(matchedPath)
+                                .font(.headline)
+                                .foregroundColor(.primary)
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+
+                            Spacer()
+
+                            Text(formatByte(size: size).human)
+                                .foregroundColor(.secondary)
+                        }
+                        .onAppear {
+                            DispatchQueue.global(qos: .userInitiated).async {
+                                if let url = URL(string: matchedPath) {
+                                    let calculatedSize = sizeType == "Real" ? totalSizeOnDisk(for: url).real : totalSizeOnDisk(for: url).logical
+
+                                    DispatchQueue.main.async {
+                                        self.size = calculatedSize
+                                    }
+                                }
+                            }
+                        }
 
                         HStack {
 

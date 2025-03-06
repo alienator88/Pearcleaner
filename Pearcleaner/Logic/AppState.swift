@@ -70,7 +70,6 @@ class AppState: ObservableObject {
             arch: .empty,
             cask: nil,
             bundleSize: 0,
-//            files: [],
             fileSize: [:],
             fileSizeLogical: [:],
             fileIcon: [:],
@@ -187,6 +186,34 @@ struct ZombieFile: Identifiable, Equatable, Hashable {
 
     static let empty = ZombieFile(id: UUID(), fileSize: [:], fileSizeLogical: [:], fileIcon: [:])
 
+}
+
+
+struct AssociatedZombieFile: Codable {
+    let appPath: URL  // Unique identifier for the app
+    let filePath: URL  // The zombie file to be processed
+}
+
+class ZombieFileStorage {
+    static let shared = ZombieFileStorage()
+    private var associatedFiles: [URL: [URL]] = [:] // Key: App Path, Value: Zombie File URLs
+
+    func addAssociation(appPath: URL, zombieFilePath: URL) {
+        if associatedFiles[appPath] == nil {
+            associatedFiles[appPath] = []
+        }
+        if !associatedFiles[appPath]!.contains(zombieFilePath) {
+            associatedFiles[appPath]?.append(zombieFilePath)
+        }
+    }
+
+    func getAssociatedFiles(for appPath: URL) -> [URL] {
+        return associatedFiles[appPath] ?? []
+    }
+
+    func clearAssociations(for appPath: URL) {
+        associatedFiles[appPath] = nil
+    }
 }
 
 
