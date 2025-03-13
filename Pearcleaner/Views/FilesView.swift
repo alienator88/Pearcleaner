@@ -316,7 +316,7 @@ struct FilesView: View {
                                     if let fileSize = appState.appInfo.fileSize[path], let fileSizeL = appState.appInfo.fileSizeLogical[path], let fileIcon = appState.appInfo.fileIcon[path] {
                                         let iconImage = fileIcon.map(Image.init(nsImage:))
                                         VStack {
-                                            FileDetailsItem(size: fileSize, sizeL: fileSizeL, icon: iconImage, path: path)
+                                            FileDetailsItem(size: fileSize, sizeL: fileSizeL, icon: iconImage, path: path, removeAssociation: removeSingleZombieAssociation)
                                                 .padding(.vertical, 5)
                                         }
                                     }
@@ -365,13 +365,13 @@ struct FilesView: View {
 
                         HStack(spacing: 10) {
                             // Conditional Remove Association Button
-                            if !ZombieFileStorage.shared.getAssociatedFiles(for: appState.appInfo.path).isEmpty {
-                                Button("Unlink") {
-                                    removeZombieAssociations()
-                                }
-                                .buttonStyle(RescanButton())
-                                .help("Remove linked orphaned files for this app")
-                            }
+//                            if !ZombieFileStorage.shared.getAssociatedFiles(for: appState.appInfo.path).isEmpty {
+//                                Button("Unlink") {
+//                                    removeZombieAssociations()
+//                                }
+//                                .buttonStyle(RescanButton())
+//                                .help("Remove linked orphaned files for this app")
+//                            }
 
                             // Trash Button
                             Button {
@@ -615,6 +615,33 @@ struct FilesView: View {
         }
     }
 
+    private func removeSingleZombieAssociation(_ path: URL) {
+        updateOnMain {
+            var associatedFiles = ZombieFileStorage.shared.getAssociatedFiles(for: appState.appInfo.path)
+
+            // Remove only the specified path
+            associatedFiles.removeAll { $0 == path }
+
+            // Update app info storage
+            appState.appInfo.fileSize.removeValue(forKey: path)
+            appState.appInfo.fileSizeLogical.removeValue(forKey: path)
+            appState.appInfo.fileIcon.removeValue(forKey: path)
+
+            // Update sorted list
+            sortedFiles.removeAll { $0 == path }
+
+            // Update selected items
+            appState.selectedItems.remove(path)
+
+            // Update stored associations
+            if associatedFiles.isEmpty {
+                ZombieFileStorage.shared.clearAssociations(for: appState.appInfo.path)
+            } else {
+                ZombieFileStorage.shared.associatedFiles[appState.appInfo.path] = associatedFiles
+            }
+        }
+    }
+
 }
 
 // Define the DeleteType enum
@@ -632,6 +659,7 @@ struct FileDetailsItem: View {
     let sizeL: Int64?
     let icon: Image?
     let path: URL
+    let removeAssociation: (URL) -> Void
 
     var body: some View {
 
@@ -684,6 +712,15 @@ struct FileDetailsItem: View {
                     if let imageView = folderImages(for: path.path) {
                         imageView
                     }
+
+                    if ZombieFileStorage.shared.isPathAssociated(path) {
+                        Image(systemName: "link")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 13)
+                            .foregroundStyle(.primary.opacity(0.5))
+                    }
+
                 }
 
                 Text(path.path)
@@ -723,6 +760,11 @@ struct FileDetailsItem: View {
             }
             Button("View in Finder") {
                 NSWorkspace.shared.selectFile(path.path, inFileViewerRootedAtPath: path.deletingLastPathComponent().path)
+            }
+            if ZombieFileStorage.shared.isPathAssociated(path) {
+                Button("Unlink File") {
+                    removeAssociation(path)
+                }
             }
         }
 

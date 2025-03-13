@@ -196,7 +196,7 @@ struct AssociatedZombieFile: Codable {
 
 class ZombieFileStorage {
     static let shared = ZombieFileStorage()
-    private var associatedFiles: [URL: [URL]] = [:] // Key: App Path, Value: Zombie File URLs
+    var associatedFiles: [URL: [URL]] = [:] // Key: App Path, Value: Zombie File URLs
 
     func addAssociation(appPath: URL, zombieFilePath: URL) {
         if associatedFiles[appPath] == nil {
@@ -211,8 +211,23 @@ class ZombieFileStorage {
         return associatedFiles[appPath] ?? []
     }
 
+    func isPathAssociated(_ path: URL) -> Bool {
+        return associatedFiles.values.contains { $0.contains(path) }
+    }
+
     func clearAssociations(for appPath: URL) {
         associatedFiles[appPath] = nil
+    }
+
+    func removeAssociation(appPath: URL, zombieFilePath: URL) {
+        guard var associatedFilesList = associatedFiles[appPath] else { return }
+        associatedFilesList.removeAll { $0 == zombieFilePath }
+
+        if associatedFilesList.isEmpty {
+            associatedFiles.removeValue(forKey: appPath) // Remove key if no files are left
+        } else {
+            associatedFiles[appPath] = associatedFilesList
+        }
     }
 }
 

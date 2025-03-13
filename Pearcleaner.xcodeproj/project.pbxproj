@@ -37,9 +37,10 @@
 		C79947962C34A794007279CC /* Tips.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79947952C34A794007279CC /* Tips.swift */; };
 		C7A269272D5D138500FA96EC /* SwiftTerm in Frameworks */ = {isa = PBXBuildFile; productRef = C7A269262D5D138500FA96EC /* SwiftTerm */; };
 		C7A269292D5D139600FA96EC /* TerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A269282D5D139200FA96EC /* TerminalView.swift */; };
-		C7A27E812AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist in Resources */ = {isa = PBXBuildFile; fileRef = C7A27E802AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist */; };
 		C7A2AE5D2B9644F300161540 /* FileWatcher in Frameworks */ = {isa = PBXBuildFile; productRef = C7A2AE5C2B9644F300161540 /* FileWatcher */; };
 		C7A6DBF12C9DD27200CFA042 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7A6DBF02C9DD27200CFA042 /* Assets.xcassets */; };
+		C7B3AB082D83901900D829C5 /* com.alienator88.PearcleanerSentinel.plist in Resources */ = {isa = PBXBuildFile; fileRef = C7B3AB072D83900B00D829C5 /* com.alienator88.PearcleanerSentinel.plist */; };
+		C7B3AB0C2D83911A00D829C5 /* com.alienator88.PearcleanerSentinel.plist in CopyFiles */ = {isa = PBXBuildFile; fileRef = C7B3AB072D83900B00D829C5 /* com.alienator88.PearcleanerSentinel.plist */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C7BE91A82C9E37AB009FA129 /* FinderOpen.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C78121632BC892A000BE06BD /* FinderOpen.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C7CF47242B3B3F1700979C5F /* WindowSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7CF47232B3B3F1700979C5F /* WindowSettings.swift */; };
 		C7D31D4A2AFEB26700C7ED9E /* AppListItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D492AFEB26700C7ED9E /* AppListItems.swift */; };
@@ -98,6 +99,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C7B3AB0B2D83910400D829C5 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Library/LaunchAgents;
+			dstSubfolderSpec = 1;
+			files = (
+				C7B3AB0C2D83911A00D829C5 /* com.alienator88.PearcleanerSentinel.plist in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -135,8 +146,8 @@
 		C79947952C34A794007279CC /* Tips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tips.swift; sourceTree = "<group>"; };
 		C7A269282D5D139200FA96EC /* TerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalView.swift; sourceTree = "<group>"; };
 		C7A27E7F2AFD70DD00166168 /* PearcleanerSentinel.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PearcleanerSentinel.entitlements; sourceTree = "<group>"; };
-		C7A27E802AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = com.alienator88.PearcleanerSentinel.plist; sourceTree = "<group>"; };
 		C7A6DBF02C9DD27200CFA042 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C7B3AB072D83900B00D829C5 /* com.alienator88.PearcleanerSentinel.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = com.alienator88.PearcleanerSentinel.plist; sourceTree = "<group>"; };
 		C7CF47232B3B3F1700979C5F /* WindowSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowSettings.swift; sourceTree = "<group>"; };
 		C7D31D492AFEB26700C7ED9E /* AppListItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppListItems.swift; sourceTree = "<group>"; };
 		C7D31D502AFF00F300C7ED9E /* Locations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locations.swift; sourceTree = "<group>"; };
@@ -238,7 +249,7 @@
 		C76D084F2AF84E0100D07867 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				C7A27E802AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist */,
+				C7B3AB072D83900B00D829C5 /* com.alienator88.PearcleanerSentinel.plist */,
 				C77B90142AF18E7C009CC655 /* Info.plist */,
 				C77B90242AF2D796009CC655 /* Pearcleaner.entitlements */,
 				C77B90072AF18E2F009CC655 /* Assets.xcassets */,
@@ -341,6 +352,7 @@
 				C77B8FFE2AF18E2E009CC655 /* Resources */,
 				C7A27E7D2AFD65C400166168 /* CopyFiles */,
 				C781216C2BC892A000BE06BD /* Embed Foundation Extensions */,
+				C7B3AB0B2D83910400D829C5 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -437,8 +449,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7B3AB082D83901900D829C5 /* com.alienator88.PearcleanerSentinel.plist in Resources */,
 				C77B90082AF18E2F009CC655 /* Assets.xcassets in Resources */,
-				C7A27E812AFD7C4600166168 /* com.alienator88.PearcleanerSentinel.plist in Resources */,
 				C7F8436B2CBF066F00E3E30A /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

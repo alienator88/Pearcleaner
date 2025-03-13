@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 import AlinFoundation
 import UniformTypeIdentifiers
-
+import ServiceManagement
 
 // Get all apps from /Applications and ~/Applications
 func getSortedApps(paths: [String]) -> [AppInfo] {
@@ -19,7 +19,7 @@ func getSortedApps(paths: [String]) -> [AppInfo] {
     func collectAppPaths(at directoryPath: String) {
         do {
             let appURLs = try fileManager.contentsOfDirectory(at: URL(fileURLWithPath: directoryPath), includingPropertiesForKeys: nil, options: [])
-            
+
             for appURL in appURLs {
                 if appURL.pathExtension == "app" && !isRestricted(atPath: appURL) &&
                     !appURL.isSymlink() {
@@ -140,7 +140,7 @@ func reversePreloader(allApps: [AppInfo], appState: AppState, locations: Locatio
     }
     ReversePathsSearcher(appState: appState, locations: locations, fsm: fsm, sortedApps: allApps).reversePathsSearch {
         updateOnMain {
-//            printOS("Reverse search processed successfully")
+            //            printOS("Reverse search processed successfully")
             appState.showProgress = false
             withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                 appState.leftoverProgress.1 = 0.0
@@ -189,7 +189,7 @@ func showAppInFiles(appInfo: AppInfo, appState: AppState, locations: Locations, 
 
 // Move files to trash using Authorization Services so it asks for user password if needed
 func moveFilesToTrash(appState: AppState, at fileURLs: [URL]) -> Bool {
-    
+
 
     let validFileURLs = filterValidFiles(fileURLs: fileURLs) // Filter invalid files
 
@@ -282,10 +282,10 @@ func filterValidFiles(fileURLs: [URL]) -> [URL] {
         }
 
         // Check if file or folder is writable //MARK: Disabled this as it ignores files that need sudo to remove
-//        guard fileManager.isWritableFile(atPath: url.path) else {
-//            printOS("Skipping \(url.path): File or folder is not writable.")
-//            return false
-//        }
+        //        guard fileManager.isWritableFile(atPath: url.path) else {
+        //            printOS("Skipping \(url.path): File or folder is not writable.")
+        //            return false
+        //        }
 
         return true
     }
@@ -313,15 +313,15 @@ func removeImmutableAttribute(from url: URL) throws {
 
 // Undo trash action
 func undoTrash() -> Bool {
-        // Check if an undo action is available
-        if FileManagerUndo.shared.undoManager.canUndo {
-            FileManagerUndo.shared.undoManager.undo()
-            playTrashSound(undo: true)
-            return true
-        } else {
-            printOS("Undo Trash Error: No undo action available.")
-            return false
-        }
+    // Check if an undo action is available
+    if FileManagerUndo.shared.undoManager.canUndo {
+        FileManagerUndo.shared.undoManager.undo()
+        playTrashSound(undo: true)
+        return true
+    } else {
+        printOS("Undo Trash Error: No undo action available.")
+        return false
+    }
 }
 
 
@@ -630,7 +630,7 @@ func getCaskIdentifier(for appName: String) -> String? {
                 let appDirectory = "\(caskSubPath)/\(latestVersion)/"
 
                 // List all files in the version directory and check for .app file
-//                let appsInDir = try fileManager.contentsOfDirectory(atPath: appDirectory).filter { !$0.hasPrefix(".") }
+                //                let appsInDir = try fileManager.contentsOfDirectory(atPath: appDirectory).filter { !$0.hasPrefix(".") }
                 let appsInDir = try fileManager.contentsOfDirectory(atPath: appDirectory).filter {
                     !$0.hasPrefix(".") && $0.hasSuffix(".app") && !$0.lowercased().contains("uninstall")
                 }
@@ -656,7 +656,7 @@ func getCaskIdentifier(for appName: String) -> String? {
 // Print list of files locally
 func saveURLsToFile(appState: AppState, copy: Bool = false) {
     let urls = Set(appState.selectedItems)
-    
+
     if copy {
         let homeDirectory = FileManager.default.homeDirectoryForCurrentUser.path
         var fileContent = ""
@@ -714,14 +714,14 @@ func removeApp(appState: AppState, withPath path: URL) {
         }
 
         // Brew cleanup if enabled
-//        if brew {
-//            if appState.appInfo.cask != nil {
-//                appState.showTerminal = true
-//            }
-////            caskCleanup(app: appState.appInfo.appName)
-//        }
+        //        if brew {
+        //            if appState.appInfo.cask != nil {
+        //                appState.showTerminal = true
+        //            }
+        ////            caskCleanup(app: appState.appInfo.appName)
+        //        }
 
-//        appState.appInfo = AppInfo.empty
+        //        appState.appInfo = AppInfo.empty
 
     }
 }
@@ -751,88 +751,25 @@ func uninstallPearcleaner(appState: AppState, locations: Locations) {
 }
 
 
-// --- Load Plist file with launchctl ---
+// --- Load Plist file with SMAppService ---
 func launchctl(load: Bool, completion: @escaping () -> Void = {}) {
-    let fileManager = FileManager.default
-    let cmd = load ? "load" : "unload"
+    let service = SMAppService.agent(plistName: "com.alienator88.PearcleanerSentinel.plist")
 
-    // Define the destination path in LaunchAgents
-    let launchAgentsURL = fileManager.homeDirectoryForCurrentUser
-        .appendingPathComponent("Library/LaunchAgents")
-    let destinationPlistURL = launchAgentsURL
-        .appendingPathComponent("com.alienator88.PearcleanerSentinel.plist")
-
-    // Check if LaunchAgents directory exists, and create it if not
-    if !fileManager.fileExists(atPath: launchAgentsURL.path) {
+    if load {
         do {
-            try fileManager.createDirectory(at: launchAgentsURL, withIntermediateDirectories: true, attributes: nil)
-        } catch {
-            printOS("Error creating LaunchAgents directory: \(error)")
-            return
+            try service.register()
+        } catch let error as NSError {
+            printOS("Error registering PearcleanerSentinel: \(error)")
+        }
+    } else {
+        do {
+            try service.unregister()
+        } catch let error as NSError {
+            printOS("Error unregistering PearcleanerSentinel: \(error)")
         }
     }
 
-    if let plistPath = Bundle.main.path(forResource: "com.alienator88.PearcleanerSentinel", ofType: "plist") {
-        var plistContent = try! String(contentsOfFile: plistPath)
-        let executableURL = Bundle.main.bundleURL.appendingPathComponent("Contents/MacOS/PearcleanerSentinel")
-
-        // Replace the placeholder with the actual executable path
-        plistContent = plistContent.replacingOccurrences(of: "__EXECUTABLE_PATH__", with: executableURL.path)
-
-        do {
-            if load {
-                // Copy the plist content to LaunchAgents
-                try plistContent.write(to: destinationPlistURL, atomically: true, encoding: .utf8)
-            } else {
-                if fileManager.fileExists(atPath: destinationPlistURL.path) {
-                    // Run the unload command first
-                    let task = Process()
-                    task.launchPath = "/bin/launchctl"
-                    task.arguments = [cmd, destinationPlistURL.path]
-
-                    let combinedPipe = Pipe()
-                    task.standardOutput = combinedPipe
-                    task.standardError = combinedPipe
-                    task.launch()
-
-                    // Capture and print combined output
-                    let outputData = combinedPipe.fileHandleForReading.readDataToEndOfFile()
-                    if let output = String(data: outputData, encoding: .utf8), !output.isEmpty {
-                        printOS("Output/Error: \(output)")
-                    }
-
-                    // Wait for the task to complete before deleting
-                    task.waitUntilExit()
-
-                    // Remove plist after unloading
-                    try fileManager.removeItem(at: destinationPlistURL)
-                }
-            }
-        } catch {
-            printOS("Error writing to LaunchAgents or removing plist: \(error)")
-            return
-        }
-
-        // Only run the load command if loading
-        if load {
-            let task = Process()
-            task.launchPath = "/bin/launchctl"
-            task.arguments = [cmd, destinationPlistURL.path]
-
-            let combinedPipe = Pipe()
-            task.standardOutput = combinedPipe
-            task.standardError = combinedPipe
-            task.launch()
-
-            // Capture and print combined output
-            let outputData = combinedPipe.fileHandleForReading.readDataToEndOfFile()
-            if let output = String(data: outputData, encoding: .utf8), !output.isEmpty {
-                printOS("Output/Error: \(output)")
-            }
-        }
-
-        completion()
-    }
+    completion()
 }
 
 
@@ -851,7 +788,7 @@ func createTarArchive(appState: AppState) {
 
     // Create save panel
     let savePanel = NSSavePanel()
-//    savePanel.allowedContentTypes = [.zip]
+    //    savePanel.allowedContentTypes = [.zip]
     savePanel.canCreateDirectories = true
     savePanel.showsTagField = false
 

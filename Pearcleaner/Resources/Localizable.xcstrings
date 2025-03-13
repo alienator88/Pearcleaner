@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "" : {
+
+    },
     "(Build %@)" : {
       "localizations" : {
         "de" : {
@@ -8504,9 +8507,6 @@
         }
       }
     },
-    "Remove linked orphaned files for this app" : {
-
-    },
     "Rescan" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -9581,6 +9581,9 @@
           }
         }
       }
+    },
+    "Show context menu icon" : {
+
     },
     "Show Details" : {
       "localizations" : {
@@ -11403,7 +11406,7 @@
         }
       }
     },
-    "Unlink" : {
+    "Unlink File" : {
 
     },
     "Update" : {

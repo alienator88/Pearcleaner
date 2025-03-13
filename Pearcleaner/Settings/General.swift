@@ -23,7 +23,8 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @AppStorage("settings.general.cli") private var isCLISymlinked = false
     @AppStorage("settings.general.namesearchstrict") private var nameSearchStrict = true
-
+    @AppStorage("finderIcon", store: UserDefaults(suiteName: "BK8443AXLU.group.com.alienator88.Pearcleaner.shared"))
+    private var finderIcon: Bool = true
 
     var body: some View {
         VStack(spacing: 20) {
@@ -227,40 +228,62 @@ struct GeneralSettingsTab: View {
             PearGroupBox(
                 header: { Text("Finder Extension").font(.title2) },
                 content: {
-                    HStack(spacing: 0) {
-                        Image(systemName: appState.finderExtensionEnabled ? "puzzlepiece.extension.fill" : "puzzlepiece.extension")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 20, height: 20)
-                            .padding(.trailing)
-                            .foregroundStyle(.primary)
-//                            .saturation(themeManager.displayMode.colorScheme == .dark ? 0.8 : 1)
-                        Text("Enable context menu extension for Finder")
-                            .font(.callout)
-                            .foregroundStyle(.primary)
-                        InfoButton(text: String(localized: "Enabling this extension will allow you to right click apps in Finder to quickly uninstall them with Pearcleaner"))
+                    VStack {
+                        HStack(spacing: 0) {
+                            Image(systemName: appState.finderExtensionEnabled ? "puzzlepiece.extension.fill" : "puzzlepiece.extension")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 20, height: 20)
+                                .padding(.trailing)
+                                .foregroundStyle(.primary)
 
-                        Spacer()
+                            Text("Enable context menu extension for Finder")
+                                .font(.callout)
+                                .foregroundStyle(.primary)
 
-                        //                Button("Extensions") {
-                        //                    FIFinderSyncController.showExtensionManagementInterface()
-                        //                }
-                        //                .buttonStyle(SimpleButtonStyle(icon: "folder", help: "Show Extensions Pane"))
+                            InfoButton(text: String(localized: "Enabling this extension will allow you to right click apps in Finder to quickly uninstall them with Pearcleaner"))
 
-                        Toggle(isOn: $appState.finderExtensionEnabled, label: {
-                        })
-                        .toggleStyle(SettingsToggle())
-                        .onChange(of: appState.finderExtensionEnabled) { newValue in
-                            if newValue {
-                                manageFinderPlugin(install: true)
-                            } else {
-                                manageFinderPlugin(install: false)
+
+
+                            Spacer()
+
+                            Toggle(isOn: $appState.finderExtensionEnabled, label: {
+                            })
+                            .toggleStyle(SettingsToggle())
+                            .onChange(of: appState.finderExtensionEnabled) { newValue in
+                                if newValue {
+                                    manageFinderPlugin(install: true)
+                                } else {
+                                    manageFinderPlugin(install: false)
+                                }
                             }
+
+
                         }
 
+                        HStack(alignment: .center, spacing: 0) {
 
+                            if let appIcon = NSImage(named: "AppIcon") {
+                                Image(nsImage: appIcon)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 20, height: 20)
+                                    .offset(x: -2)
+                                    .padding(.trailing)
+                            }
+
+
+                            Text("Show context menu icon")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                                .padding(.trailing, 5)
+                            Toggle("", isOn: $finderIcon)
+                                .toggleStyle(SimpleCheckboxToggleStyle())
+                            Spacer()
+                        }
                     }
                     .padding(5)
+
             })
 
             // === CLI ==========================================================================================================

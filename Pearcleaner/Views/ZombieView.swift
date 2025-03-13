@@ -537,15 +537,19 @@ struct ZombieFileDetailsItem: View {
             Divider()
             Menu("Link To") {
                 ForEach(appState.sortedApps, id: \.id) { app in
-                    let isAssociated = !ZombieFileStorage.shared.getAssociatedFiles(for: app.path).isEmpty
+                    let isAssociated = ZombieFileStorage.shared.getAssociatedFiles(for: app.path).contains(path)
 
                     Button {
-                        ZombieFileStorage.shared.addAssociation(appPath: app.path, zombieFilePath: path)
+                        if isAssociated {
+                            ZombieFileStorage.shared.removeAssociation(appPath: app.path, zombieFilePath: path)
+                        } else {
+                            ZombieFileStorage.shared.addAssociation(appPath: app.path, zombieFilePath: path)
+                        }
                     } label: {
                         HStack {
                             Text(app.appName)
                             if isAssociated {
-                                Image(systemName: "checkmark") // Shows checkmark if associated
+                                Image(systemName: "checkmark") // Show checkmark if associated
                             }
                         }
                     }

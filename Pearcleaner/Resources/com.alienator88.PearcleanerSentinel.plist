@@ -4,10 +4,8 @@
 <dict>
 	<key>Label</key>
 	<string>com.alienator88.PearcleanerSentinel</string>
-	<key>ProgramArguments</key>
-	<array>
-		<string>__EXECUTABLE_PATH__</string>
-	</array>
+	<key>BundleProgram</key>
+	<string>Contents/MacOS/PearcleanerSentinel</string>
 	<key>RunAtLoad</key>
 	<true/>
 	<key>KeepAlive</key>
