@@ -803,7 +803,7 @@ struct SettingsToggle: ToggleStyle {
                         .frame(width: 40, height: 24)
 //                        .overlay {
 //                            Capsule()
-//                                .stroke(.secondary, lineWidth: 1)
+//                                .strokeBorder(configuration.isOn ? .green : .red, lineWidth: 1)
 //                                .frame(width: 40, height: 24)
 //                        }
 
@@ -817,5 +817,17 @@ struct SettingsToggle: ToggleStyle {
             }
         }
         .buttonStyle(.plain)
+    }
+}
+
+
+struct HelperBadge: View {
+    @AppStorage("settings.general.selectedTab") private var selectedTab: CurrentTabView = .general
+
+    public var body: some View {
+        AlertNotification(label: "Helper Not Installed".localized(), icon: "key", buttonAction: {
+            selectedTab = .helper
+            openAppSettings()
+        }, btnColor: Color.orange, hideLabel: false)
     }
 }

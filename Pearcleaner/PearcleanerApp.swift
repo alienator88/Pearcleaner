@@ -19,6 +19,7 @@ struct PearcleanerApp: App {
     @StateObject private var themeManager = ThemeManager.shared
     @StateObject private var permissionManager = PermissionManager.shared
     @StateObject private var windowSettings = WindowSettings.shared
+    @ObservedObject private var helperToolManager = HelperToolManager.shared
     @AppStorage("settings.permissions.hasLaunched") private var hasLaunched: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.general.miniview") private var miniView: Bool = true

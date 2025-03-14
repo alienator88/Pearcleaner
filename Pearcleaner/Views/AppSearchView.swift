@@ -62,6 +62,10 @@ struct AppSearchView: View {
                     Divider()
                     PermissionsBadge()
                         .padding()
+                } else if !HelperToolManager.shared.isHelperToolInstalled {
+                    Divider()
+                    HelperBadge()
+                        .padding()
                 } else if updater.announcementAvailable {
                     Divider()
                     FeatureBadge(updater: updater)

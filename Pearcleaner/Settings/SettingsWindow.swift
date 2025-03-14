@@ -58,9 +58,9 @@ struct SettingsView: View {
             SidebarItemView(title: CurrentTabView.update.title, systemImage: "cloud", isSelected: selectedTab == .update) {
                 selectedTab = .update
             }
-            // SidebarItemView(title: CurrentTabView.tips.title, systemImage: "star", isSelected: selectedTab == .tips) {
-            //     selectedTab = .tips
-            // }
+             SidebarItemView(title: CurrentTabView.helper.title, systemImage: "key", isSelected: selectedTab == .helper) {
+                 selectedTab = .helper
+             }
             SidebarItemView(title: CurrentTabView.about.title, systemImage: "info.circle", isSelected: selectedTab == .about) {
                 selectedTab = .about
             }
@@ -120,8 +120,8 @@ struct SettingsView: View {
             case .update:
                 UpdateSettingsTab()
                     .environmentObject(updater)
-//            case .tips:
-//                TipsSettingsTab()
+            case .helper:
+                HelperSettingsTab()
             case .about:
                 AboutSettingsTab()
             }
@@ -176,149 +176,3 @@ struct SidebarItemView: View {
         }
     }
 }
-
-
-
-
-
-
-
-//        NavigationStack {
-//            HStack(spacing: 0) {
-//                // Custom Sidebar with buttons for each tab
-//                List(selection: $selectedTab) {
-//                    SidebarItemView(title: CurrentTabView.general.title,
-//                                    systemImage: "gear",
-//                                    isSelected: selectedTab == .general) {
-//                        selectedTab = .general
-//                    }
-//
-//                    SidebarItemView(title: CurrentTabView.interface.title,
-//                                    systemImage: "macwindow",
-//                                    isSelected: selectedTab == .interface) {
-//                        selectedTab = .interface
-//                    }
-//
-//                    SidebarItemView(title: CurrentTabView.folders.title,
-//                                    systemImage: "folder",
-//                                    isSelected: selectedTab == .folders) {
-//                        selectedTab = .folders
-//                    }
-//
-//                    SidebarItemView(title: CurrentTabView.update.title,
-//                                    systemImage: "cloud",
-//                                    isSelected: selectedTab == .update) {
-//                        selectedTab = .update
-//                    }
-//
-//                    SidebarItemView(title: CurrentTabView.tips.title,
-//                                    systemImage: "star",
-//                                    isSelected: selectedTab == .tips) {
-//                        selectedTab = .tips
-//                    }
-//
-//                    SidebarItemView(title: CurrentTabView.about.title,
-//                                    systemImage: "info.circle",
-//                                    isSelected: selectedTab == .about) {
-//                        selectedTab = .about
-//                    }
-//
-//                    Spacer() // Pushes items to the top
-//                }
-//                .removeSidebarToggle()
-//                .frame(width: 200) // Fixed width for sidebar
-//                .padding(.top, 20) // Top padding to space out items
-//                .background(backgroundView(themeManager: themeManager, glass: true))
-//
-//                ZStack(alignment: .top) {
-//                    // Custom Toolbar View at the top
-//                    HStack {
-//                        Text(selectedTab.title)
-//                            .font(.headline)
-//                            .padding(.leading)
-//
-//                        Spacer()
-//
-//                        // Add more toolbar buttons as needed
-//                        Button(action: {
-//                            printOS("Toolbar Button Tapped")
-//                        }) {
-//                            Image(systemName: "gearshape")
-//                                .padding()
-//                        }
-//                    }
-//                    .frame(height: 40) // Set fixed height for toolbar
-//                    .background(backgroundView(themeManager: themeManager, glass: true))
-//                    .zIndex(1) // Ensure this is on top
-//                    .offset(y: -30)
-//
-//                    // The actual detail view content
-//                    Group {
-//                        switch selectedTab {
-//                        case .general:
-//                            GeneralSettingsTab()
-//                        case .interface:
-//                            InterfaceSettingsTab(showPopover: $showPopover, search: $search)
-//                                .environmentObject(themeManager)
-//                        case .folders:
-//                            FolderSettingsTab()
-//                                .environmentObject(themeManager)
-//                        case .update:
-//                            UpdateSettingsTab()
-//                                .environmentObject(themeManager)
-//                        case .tips:
-//                            TipsSettingsTab()
-//                        case .about:
-//                            AboutSettingsTab()
-//                        }
-//                    }
-//                    .padding(.top, 40) // Add padding below the custom toolbar
-//                    .frame(maxWidth: .infinity, maxHeight: .infinity) // Fill remaining space
-//                    .background(backgroundView(themeManager: themeManager, glass: false))
-//                }
-//
-//            }
-//            .navigationTitle("")
-//        }
-
-//        TabView(selection: $selectedTab) {
-//            GeneralSettingsTab()
-//                .tabItem {
-//                    Label(CurrentTabView.general.title, systemImage: "gear")
-//                }
-//                .tag(CurrentTabView.general)
-//
-//            InterfaceSettingsTab(showPopover: $showPopover, search: $search)
-//                .tabItem {
-//                    Label(CurrentTabView.interface.title, systemImage: "macwindow")
-//                }
-//                .tag(CurrentTabView.interface)
-//                .environmentObject(themeManager)
-//
-//            FolderSettingsTab()
-//                .tabItem {
-//                    Label(CurrentTabView.folders.title, systemImage: "folder")
-//                }
-//                .tag(CurrentTabView.folders)
-//                .environmentObject(themeManager)
-//
-//            UpdateSettingsTab()
-//                .tabItem {
-//                    Label(CurrentTabView.update.title, systemImage: "cloud")
-//                }
-//                .tag(CurrentTabView.update)
-//                .environmentObject(themeManager)
-//
-//            TipsSettingsTab()
-//                .tabItem {
-//                    Label(CurrentTabView.tips.title, systemImage: "star")
-//                }
-//                .tag(CurrentTabView.tips)
-//
-//            AboutSettingsTab()
-//                .tabItem {
-//                    Label(CurrentTabView.about.title, systemImage: "info.circle")
-//                }
-//                .tag(CurrentTabView.about)
-//        }
-//        .background(backgroundView(themeManager: themeManager, glass: glass))

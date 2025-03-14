@@ -14,7 +14,6 @@ struct UpdateSettingsTab: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var updater: Updater
-    @AppStorage("settings.general.glass") private var glass: Bool = false
 
     var body: some View {
         VStack(spacing: 20) {

@@ -3378,6 +3378,9 @@
         }
       }
     },
+    "Enter manual command here, Enter to run" : {
+
+    },
     "Environment" : {
       "localizations" : {
         "de" : {
@@ -3429,6 +3432,9 @@
           }
         }
       }
+    },
+    "Example privileged commands" : {
+
     },
     "Exclude" : {
       "extractionState" : "manual",
@@ -4421,6 +4427,9 @@
           }
         }
       }
+    },
+    "Helper" : {
+
     },
     "Hide Details" : {
       "localizations" : {
@@ -5605,6 +5614,9 @@
         }
       }
     },
+    "Login Items" : {
+
+    },
     "Made with ❤️ by Alin Lupascu" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5663,6 +5675,9 @@
           }
         }
       }
+    },
+    "Management" : {
+
     },
     "Menubar" : {
       "extractionState" : "manual",
@@ -7549,6 +7564,9 @@
         }
       }
     },
+    "Perform privileged commands without prompts" : {
+
+    },
     "Permission Status" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7607,6 +7625,9 @@
           }
         }
       }
+    },
+    "Permission Testing" : {
+
     },
     "Permissions" : {
       "extractionState" : "manual",
@@ -10418,6 +10439,12 @@
         }
       }
     },
+    "systemsetup -getcomputername" : {
+
+    },
+    "systemsetup -getsleep" : {
+
+    },
     "Terminal" : {
 
     },
@@ -13036,6 +13063,12 @@
           }
         }
       }
+    },
+    "whoami" : {
+
+    },
+    "Without a privileged helper tool, Pearcleaner asks the user for a password prompt any time it needs to delete files from a folder the user doesn't have full access to. With a privileged helper tool, you only enter your password once to enable the helper and all subsequent commands will run without any prompts as long as the helper stays enabled in Settings > Login Items.\nLeaving the helper disabled, Pearcleaner will fallback on the legacy logic using Authorization Services and prompt every time a protected file needs to be removed." : {
+
     }
   },
   "version" : "1.0"

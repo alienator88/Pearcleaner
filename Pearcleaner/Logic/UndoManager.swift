@@ -6,8 +6,6 @@
 //
 
 import Foundation
-import Security
-import AppKit
 import AlinFoundation
 
 class FileManagerUndo {
@@ -61,15 +59,30 @@ class FileManagerUndo {
             // Make filePairs immutable
             let filePairs = tempFilePairs
 
-            // Conditional Execution Based on isCLI Parameter
+            // Conditional Execution using Helper Tool if installed
             var status = false
-            if isCLI {
-                // In CLI mode, run commands directly with sudo
-                let cliCommand = "\(mvCommands)"
-                status = runDirectShellCommand(command: cliCommand)
+            if HelperToolManager.shared.isHelperToolInstalled {
+                let semaphore = DispatchSemaphore(value: 0)
+                var success = false
+                var output = ""
+                Task {
+                    let result = await HelperToolManager.shared.runCommand(mvCommands)
+                    success = result.0
+                    output = result.1
+                    semaphore.signal()
+                }
+                semaphore.wait()
+                status = success
+                if !success {
+                    printOS("Trash Error: \(output)")
+                }
             } else {
-                // In GUI mode, use performPrivilegedCommands
-                status = performPrivilegedCommands(commands: mvCommands)
+                if isCLI {
+                    let cliCommand = "\(mvCommands)"
+                    status = runDirectShellCommand(command: cliCommand)
+                } else {
+                    status = performPrivilegedCommands(commands: mvCommands)
+                }
             }
 
             if status == true {
@@ -140,15 +153,30 @@ class FileManagerUndo {
                 return "/bin/mv \(source) \(destination)"
             }.joined(separator: " ; ")
 
-            // Conditional Execution Based on isCLI Parameter
+            // Conditional Execution using Helper Tool if installed
             var status = false
-            if isCLI {
-                // In CLI mode, run commands directly with sudo
-                let cliCommand = "\(commands)"
-                status = runDirectShellCommand(command: cliCommand)
+            if HelperToolManager.shared.isHelperToolInstalled {
+                let semaphore = DispatchSemaphore(value: 0)
+                var success = false
+                var output = ""
+                Task {
+                    let result = await HelperToolManager.shared.runCommand(commands)
+                    success = result.0
+                    output = result.1
+                    semaphore.signal()
+                }
+                semaphore.wait()
+                status = success
+                if !success {
+                    printOS("Trash Error: \(output)")
+                }
             } else {
-                // In GUI mode, use performPrivilegedCommands
-                status = performPrivilegedCommands(commands: commands)
+                if isCLI {
+                    let cliCommand = "\(commands)"
+                    status = runDirectShellCommand(command: cliCommand)
+                } else {
+                    status = performPrivilegedCommands(commands: commands)
+                }
             }
 
             if status == true {
@@ -182,59 +210,6 @@ class FileManagerUndo {
         return finalStatus  // Return the final status
     }
 
-}
-
-public func performPrivilegedCommands(commands: String) -> Bool {
-    var authRef: AuthorizationRef!
-    var status = AuthorizationCreate(nil, nil, [], &authRef)
-    guard status == errAuthorizationSuccess else { return false }
-    defer { AuthorizationFree(authRef, [.destroyRights]) }
-
-    var item = kAuthorizationRightExecute.withCString { name in
-        AuthorizationItem(name: name, valueLength: 0, value: nil, flags: 0)
-    }
-    var rights = withUnsafeMutablePointer(to: &item) { ptr in
-        AuthorizationRights(count: 1, items: ptr)
-    }
-    status = AuthorizationCopyRights(authRef, &rights, nil, [.interactionAllowed, .preAuthorize, .extendRights], nil)
-    guard status == errAuthorizationSuccess else { return false }
-
-    status = executeWithPrivileges(authorization: authRef, cmd: "/bin/sh", arguments: ["-c", commands])
-
-    return status == errAuthorizationSuccess
-}
-
-
-
-
-
-
-public func executeWithPrivileges(authorization: AuthorizationRef, cmd: String, arguments: [String]) -> OSStatus {
-    let RTLD_DEFAULT = dlopen(nil, RTLD_NOW)
-    guard let funcPtr = dlsym(RTLD_DEFAULT, "AuthorizationExecuteWithPrivileges") else {
-        printOS("Failed to find AuthorizationExecuteWithPrivileges")
-        return -1
-    }
-
-    var argPtrs: [UnsafeMutablePointer<CChar>?] = arguments.map { strdup($0) }
-    argPtrs.append(nil)
-    defer {
-        for ptr in argPtrs.dropLast() {
-            if let ptr = ptr { free(ptr) }
-        }
-    }
-
-    typealias AuthorizationExecuteWithPrivilegesImpl = @convention(c) (
-        AuthorizationRef,
-        UnsafePointer<CChar>, // cmd path
-        AuthorizationFlags,
-        UnsafePointer<UnsafeMutablePointer<CChar>?>, // cmd arguments
-        UnsafeMutablePointer<UnsafeMutablePointer<FILE>>?
-    ) -> OSStatus
-
-    let impl = unsafeBitCast(funcPtr, to: AuthorizationExecuteWithPrivilegesImpl.self)
-
-    return impl(authorization, cmd, [], argPtrs, nil)
 }
 
 func runDirectShellCommand(command: String) -> Bool {

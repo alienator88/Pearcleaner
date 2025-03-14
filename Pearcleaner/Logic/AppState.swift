@@ -303,7 +303,7 @@ enum CurrentTabView:Int, CaseIterable
     case interface
     case folders
     case update
-//    case tips
+    case helper
     case about
     
     var title: String {
@@ -312,6 +312,7 @@ enum CurrentTabView:Int, CaseIterable
         case .interface: return String(localized: "Interface")
         case .folders: return String(localized: "Folders")
         case .update: return String(localized: "Update")
+        case .helper: return String(localized: "Helper")
         case .about: return String(localized: "About")
         }
     }

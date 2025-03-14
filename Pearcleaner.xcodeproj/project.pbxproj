@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 73;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -12,6 +12,10 @@
 		C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72893042AFD42E600C8C1CD /* DeepLink.swift */; };
 		C72893122AFD51EA00C8C1CD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72893112AFD51EA00C8C1CD /* main.swift */; };
 		C72FDCB92D6D089100DE7D56 /* UndoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72FDCB82D6D088A00DE7D56 /* UndoManager.swift */; };
+		C73545E92D84944D00A3DC0C /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C73545E82D84944A00A3DC0C /* Helper.swift */; };
+		C73545EB2D8496E000A3DC0C /* HelperToolManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C73545EA2D8496DA00A3DC0C /* HelperToolManager.swift */; };
+		C73545F92D849B5700A3DC0C /* PearcleanerHelper in CopyFiles */ = {isa = PBXBuildFile; fileRef = C73545F02D849A1B00A3DC0C /* PearcleanerHelper */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		C73545FD2D84E5DD00A3DC0C /* com.alienator88.PearcleanerSentinel.plist in CopyFiles */ = {isa = PBXBuildFile; fileRef = C7B3AB072D83900B00D829C5 /* com.alienator88.PearcleanerSentinel.plist */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C74412C72BBF249000DDFCA8 /* AppPathsFetch-OLD.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74412C62BBF249000DDFCA8 /* AppPathsFetch-OLD.swift */; };
 		C74E55512D0773190007EC2C /* IfritStatic in Frameworks */ = {isa = PBXBuildFile; productRef = C74E55502D0773190007EC2C /* IfritStatic */; };
 		C74FDC632BCD833D00B8960F /* Conditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74FDC622BCD833D00B8960F /* Conditions.swift */; };
@@ -34,13 +38,10 @@
 		C77B90232AF2D616009CC655 /* FilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90222AF2D616009CC655 /* FilesView.swift */; };
 		C78121662BC892A000BE06BD /* FinderOpen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78121652BC892A000BE06BD /* FinderOpen.swift */; };
 		C78D7B212D556F1A003DD49F /* AppPathsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78D7B202D556F16003DD49F /* AppPathsFetch.swift */; };
-		C79947962C34A794007279CC /* Tips.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79947952C34A794007279CC /* Tips.swift */; };
 		C7A269272D5D138500FA96EC /* SwiftTerm in Frameworks */ = {isa = PBXBuildFile; productRef = C7A269262D5D138500FA96EC /* SwiftTerm */; };
 		C7A269292D5D139600FA96EC /* TerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A269282D5D139200FA96EC /* TerminalView.swift */; };
 		C7A2AE5D2B9644F300161540 /* FileWatcher in Frameworks */ = {isa = PBXBuildFile; productRef = C7A2AE5C2B9644F300161540 /* FileWatcher */; };
 		C7A6DBF12C9DD27200CFA042 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7A6DBF02C9DD27200CFA042 /* Assets.xcassets */; };
-		C7B3AB082D83901900D829C5 /* com.alienator88.PearcleanerSentinel.plist in Resources */ = {isa = PBXBuildFile; fileRef = C7B3AB072D83900B00D829C5 /* com.alienator88.PearcleanerSentinel.plist */; };
-		C7B3AB0C2D83911A00D829C5 /* com.alienator88.PearcleanerSentinel.plist in CopyFiles */ = {isa = PBXBuildFile; fileRef = C7B3AB072D83900B00D829C5 /* com.alienator88.PearcleanerSentinel.plist */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C7BE91A82C9E37AB009FA129 /* FinderOpen.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C78121632BC892A000BE06BD /* FinderOpen.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C7CF47242B3B3F1700979C5F /* WindowSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7CF47232B3B3F1700979C5F /* WindowSettings.swift */; };
 		C7D31D4A2AFEB26700C7ED9E /* AppListItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D492AFEB26700C7ED9E /* AppListItems.swift */; };
@@ -78,6 +79,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
+		C73545EE2D849A1B00A3DC0C /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		C73545FA2D849B6900A3DC0C /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Library/LaunchDaemons;
+			dstSubfolderSpec = 1;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C781216C2BC892A000BE06BD /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -95,6 +114,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 6;
 			files = (
+				C73545F92D849B5700A3DC0C /* PearcleanerHelper in CopyFiles */,
 				C7575D392B0182DE006A600A /* PearcleanerSentinel in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -105,7 +125,7 @@
 			dstPath = Contents/Library/LaunchAgents;
 			dstSubfolderSpec = 1;
 			files = (
-				C7B3AB0C2D83911A00D829C5 /* com.alienator88.PearcleanerSentinel.plist in CopyFiles */,
+				C73545FD2D84E5DD00A3DC0C /* com.alienator88.PearcleanerSentinel.plist in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,6 +138,9 @@
 		C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PearcleanerSentinel; sourceTree = BUILT_PRODUCTS_DIR; };
 		C72893112AFD51EA00C8C1CD /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		C72FDCB82D6D088A00DE7D56 /* UndoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoManager.swift; sourceTree = "<group>"; };
+		C73545E82D84944A00A3DC0C /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
+		C73545EA2D8496DA00A3DC0C /* HelperToolManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelperToolManager.swift; sourceTree = "<group>"; };
+		C73545F02D849A1B00A3DC0C /* PearcleanerHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PearcleanerHelper; sourceTree = BUILT_PRODUCTS_DIR; };
 		C74412C62BBF249000DDFCA8 /* AppPathsFetch-OLD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppPathsFetch-OLD.swift"; sourceTree = "<group>"; };
 		C74FDC622BCD833D00B8960F /* Conditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conditions.swift; sourceTree = "<group>"; };
 		C764680E2CA778FB00DC72DF /* PearGroupBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PearGroupBox.swift; sourceTree = "<group>"; };
@@ -143,7 +166,6 @@
 		C78121682BC892A000BE06BD /* FinderOpen.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FinderOpen.entitlements; sourceTree = "<group>"; };
 		C786F1A72C29E599001B3800 /* Builds */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Builds; sourceTree = SOURCE_ROOT; };
 		C78D7B202D556F16003DD49F /* AppPathsFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPathsFetch.swift; sourceTree = "<group>"; };
-		C79947952C34A794007279CC /* Tips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tips.swift; sourceTree = "<group>"; };
 		C7A269282D5D139200FA96EC /* TerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalView.swift; sourceTree = "<group>"; };
 		C7A27E7F2AFD70DD00166168 /* PearcleanerSentinel.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PearcleanerSentinel.entitlements; sourceTree = "<group>"; };
 		C7A6DBF02C9DD27200CFA042 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -163,12 +185,38 @@
 		C7FEBA102BDC422200AE195F /* AppSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSearchView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		C73545FC2D849B7E00A3DC0C /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			attributesByRelativePath = {
+				com.alienator88.Pearcleaner.PearcleanerHelper.plist = (
+					CodeSignOnCopy,
+				);
+			};
+			buildPhase = C73545FA2D849B6900A3DC0C /* CopyFiles */;
+			membershipExceptions = (
+				com.alienator88.Pearcleaner.PearcleanerHelper.plist,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		C73545F12D849A1B00A3DC0C /* PearcleanerHelper */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (C73545FC2D849B7E00A3DC0C /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = PearcleanerHelper; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
 		C728930C2AFD51EA00C8C1CD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				C7A2AE5D2B9644F300161540 /* FileWatcher in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C73545ED2D849A1B00A3DC0C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -196,6 +244,7 @@
 		C72893072AFD442600C8C1CD /* Logic */ = {
 			isa = PBXGroup;
 			children = (
+				C73545EA2D8496DA00A3DC0C /* HelperToolManager.swift */,
 				C72FDCB82D6D088A00DE7D56 /* UndoManager.swift */,
 				C77B90192AF1938F009CC655 /* Logic.swift */,
 				C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */,
@@ -240,7 +289,7 @@
 				C7ED86B02BA8A35500F13DE4 /* Interface.swift */,
 				C7DD49EF2BABA14400CCBA16 /* Folders.swift */,
 				C76D08472AF83C3F00D07867 /* Update.swift */,
-				C79947952C34A794007279CC /* Tips.swift */,
+				C73545E82D84944A00A3DC0C /* Helper.swift */,
 				C76D08502AF850F300D07867 /* About.swift */,
 			);
 			path = Settings;
@@ -264,6 +313,7 @@
 				C77B90022AF18E2E009CC655 /* Pearcleaner */,
 				C72893102AFD51EA00C8C1CD /* PearcleanerSentinel */,
 				C78121642BC892A000BE06BD /* FinderOpen */,
+				C73545F12D849A1B00A3DC0C /* PearcleanerHelper */,
 				C77B90012AF18E2E009CC655 /* Products */,
 				C72893162AFD531500C8C1CD /* Frameworks */,
 			);
@@ -275,6 +325,7 @@
 				C77B90002AF18E2E009CC655 /* Pearcleaner.app */,
 				C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */,
 				C78121632BC892A000BE06BD /* FinderOpen.appex */,
+				C73545F02D849A1B00A3DC0C /* PearcleanerHelper */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -343,6 +394,28 @@
 			productReference = C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */;
 			productType = "com.apple.product-type.tool";
 		};
+		C73545EF2D849A1B00A3DC0C /* PearcleanerHelper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C73545F42D849A1B00A3DC0C /* Build configuration list for PBXNativeTarget "PearcleanerHelper" */;
+			buildPhases = (
+				C73545EC2D849A1B00A3DC0C /* Sources */,
+				C73545ED2D849A1B00A3DC0C /* Frameworks */,
+				C73545EE2D849A1B00A3DC0C /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				C73545F12D849A1B00A3DC0C /* PearcleanerHelper */,
+			);
+			name = PearcleanerHelper;
+			packageProductDependencies = (
+			);
+			productName = PearcleanerHelper;
+			productReference = C73545F02D849A1B00A3DC0C /* PearcleanerHelper */;
+			productType = "com.apple.product-type.tool";
+		};
 		C77B8FFF2AF18E2E009CC655 /* Pearcleaner */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C77B900F2AF18E2F009CC655 /* Build configuration list for PBXNativeTarget "Pearcleaner" */;
@@ -353,6 +426,7 @@
 				C7A27E7D2AFD65C400166168 /* CopyFiles */,
 				C781216C2BC892A000BE06BD /* Embed Foundation Extensions */,
 				C7B3AB0B2D83910400D829C5 /* CopyFiles */,
+				C73545FA2D849B6900A3DC0C /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -394,11 +468,14 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1530;
+				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1610;
 				TargetAttributes = {
 					C728930E2AFD51EA00C8C1CD = {
 						CreatedOnToolsVersion = 15.0.1;
+					};
+					C73545EF2D849A1B00A3DC0C = {
+						CreatedOnToolsVersion = 16.2;
 					};
 					C77B8FFF2AF18E2E009CC655 = {
 						CreatedOnToolsVersion = 15.0.1;
@@ -409,7 +486,6 @@
 				};
 			};
 			buildConfigurationList = C77B8FFB2AF18E2E009CC655 /* Build configuration list for PBXProject "Pearcleaner" */;
-			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -433,6 +509,7 @@
 				C74E554D2D0773190007EC2C /* XCRemoteSwiftPackageReference "Ifrit" */,
 				C7A269252D5D138500FA96EC /* XCRemoteSwiftPackageReference "SwiftTerm" */,
 			);
+			preferredProjectObjectVersion = 56;
 			productRefGroup = C77B90012AF18E2E009CC655 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -440,6 +517,7 @@
 				C77B8FFF2AF18E2E009CC655 /* Pearcleaner */,
 				C728930E2AFD51EA00C8C1CD /* PearcleanerSentinel */,
 				C78121622BC892A000BE06BD /* FinderOpen */,
+				C73545EF2D849A1B00A3DC0C /* PearcleanerHelper */,
 			);
 		};
 /* End PBXProject section */
@@ -449,7 +527,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C7B3AB082D83901900D829C5 /* com.alienator88.PearcleanerSentinel.plist in Resources */,
 				C77B90082AF18E2F009CC655 /* Assets.xcassets in Resources */,
 				C7F8436B2CBF066F00E3E30A /* Localizable.xcstrings in Resources */,
 			);
@@ -475,13 +552,19 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C73545EC2D849A1B00A3DC0C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C77B8FFC2AF18E2E009CC655 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				C7DD49EA2BAB4D8100CCBA16 /* AppInfoFetch.swift in Sources */,
 				C764680F2CA7790200DC72DF /* PearGroupBox.swift in Sources */,
-				C79947962C34A794007279CC /* Tips.swift in Sources */,
 				C76D08482AF83C3F00D07867 /* Update.swift in Sources */,
 				C7FB173B2B96321300B96F9A /* AppsListView.swift in Sources */,
 				C77B90162AF19377009CC655 /* AppState.swift in Sources */,
@@ -496,6 +579,7 @@
 				C7045A282B03E71D00376976 /* MiniMode.swift in Sources */,
 				C7ED86B12BA8A35500F13DE4 /* Interface.swift in Sources */,
 				C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */,
+				C73545EB2D8496E000A3DC0C /* HelperToolManager.swift in Sources */,
 				C71848442B8D2D600046CB13 /* ZombieView.swift in Sources */,
 				C7DE672B2BA6343D00EB1633 /* MenuBarItem.swift in Sources */,
 				C72FDCB92D6D089100DE7D56 /* UndoManager.swift in Sources */,
@@ -505,6 +589,7 @@
 				C7A269292D5D139600FA96EC /* TerminalView.swift in Sources */,
 				C77B90182AF19382009CC655 /* AppCommands.swift in Sources */,
 				C7D31D4A2AFEB26700C7ED9E /* AppListItems.swift in Sources */,
+				C73545E92D84944D00A3DC0C /* Helper.swift in Sources */,
 				C77B901E2AF1A9DB009CC655 /* SettingsWindow.swift in Sources */,
 				C74412C72BBF249000DDFCA8 /* AppPathsFetch-OLD.swift in Sources */,
 				C74FDC632BCD833D00B8960F /* Conditions.swift in Sources */,
@@ -549,6 +634,7 @@
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = BK8443AXLU;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = "";
+				INSTALL_PATH = "";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.PearcleanerSentinel;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -572,11 +658,47 @@
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = BK8443AXLU;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = "";
+				INSTALL_PATH = "";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.PearcleanerSentinel;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		C73545F52D849A1B00A3DC0C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = BK8443AXLU;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INSTALL_PATH = "";
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.Pearcleaner.PearcleanerHelper;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		C73545F62D849A1B00A3DC0C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = BK8443AXLU;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INSTALL_PATH = "";
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.Pearcleaner.PearcleanerHelper;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -794,6 +916,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "M1 Pro Signed - Pearcleaner";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Osize";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -879,6 +1002,15 @@
 			buildConfigurations = (
 				C72893142AFD51EA00C8C1CD /* Debug */,
 				C72893152AFD51EA00C8C1CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C73545F42D849A1B00A3DC0C /* Build configuration list for PBXNativeTarget "PearcleanerHelper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C73545F52D849A1B00A3DC0C /* Debug */,
+				C73545F62D849A1B00A3DC0C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
