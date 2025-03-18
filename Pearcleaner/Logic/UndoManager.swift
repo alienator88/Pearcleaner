@@ -60,32 +60,7 @@ class FileManagerUndo {
             let filePairs = tempFilePairs
 
             // Conditional Execution using Helper Tool if installed
-            var status = false
-            if HelperToolManager.shared.isHelperToolInstalled {
-                let semaphore = DispatchSemaphore(value: 0)
-                var success = false
-                var output = ""
-                Task {
-                    let result = await HelperToolManager.shared.runCommand(mvCommands)
-                    success = result.0
-                    output = result.1
-                    semaphore.signal()
-                }
-                semaphore.wait()
-                status = success
-                if !success {
-                    printOS("Trash Error: \(output)")
-                }
-            } else {
-                if isCLI {
-                    let cliCommand = "\(mvCommands)"
-                    status = runDirectShellCommand(command: cliCommand)
-                } else {
-                    status = performPrivilegedCommands(commands: mvCommands)
-                }
-            }
-
-            if status == true {
+            if executeFileCommands(mvCommands, isCLI: isCLI) {
                 // Register undo action with the immutable filePairs
                 undoManager.registerUndo(withTarget: self) { target in
                     let result = target.restoreFiles(filePairs: filePairs)
@@ -95,7 +70,6 @@ class FileManagerUndo {
                 }
                 undoManager.setActionName("Delete File")
 
-                // Call completion after successful registration
                 finalStatus = true
             } else {
                 printOS("Trash Error: \(isCLI ? "Could not run commands directly with sudo." : "Could not perform privileged commands.")")
@@ -154,32 +128,7 @@ class FileManagerUndo {
             }.joined(separator: " ; ")
 
             // Conditional Execution using Helper Tool if installed
-            var status = false
-            if HelperToolManager.shared.isHelperToolInstalled {
-                let semaphore = DispatchSemaphore(value: 0)
-                var success = false
-                var output = ""
-                Task {
-                    let result = await HelperToolManager.shared.runCommand(commands)
-                    success = result.0
-                    output = result.1
-                    semaphore.signal()
-                }
-                semaphore.wait()
-                status = success
-                if !success {
-                    printOS("Trash Error: \(output)")
-                }
-            } else {
-                if isCLI {
-                    let cliCommand = "\(commands)"
-                    status = runDirectShellCommand(command: cliCommand)
-                } else {
-                    status = performPrivilegedCommands(commands: commands)
-                }
-            }
-
-            if status == true {
+            if executeFileCommands(commands, isCLI: isCLI) {
                 finalStatus = true
             } else {
                 printOS("Trash Error: \(isCLI ? "Failed to run restore CLI commands" : "Failed to run restore privileged commands")")
@@ -208,6 +157,37 @@ class FileManagerUndo {
         dispatchSemaphore.wait()
 
         return finalStatus  // Return the final status
+    }
+
+    private func executeFileCommands(_ commands: String, isCLI: Bool) -> Bool {
+        var status = false
+
+        if HelperToolManager.shared.isHelperToolInstalled {
+            let semaphore = DispatchSemaphore(value: 0)
+            var success = false
+            var output = ""
+
+            Task {
+                let result = await HelperToolManager.shared.runCommand(commands)
+                success = result.0
+                output = result.1
+                semaphore.signal()
+            }
+            semaphore.wait()
+
+            status = success
+            if !success {
+                printOS("Trash Error: \(output)")
+            }
+        } else {
+            if isCLI {
+                status = runDirectShellCommand(command: commands)
+            } else {
+                status = performPrivilegedCommands(commands: commands)
+            }
+        }
+
+        return status
     }
 
 }

@@ -112,7 +112,16 @@ func manageSymlink(install: Bool) {
     }
 
     // Perform privileged commands
-    let _ = performPrivilegedCommands(commands: command)
+    if HelperToolManager.shared.isHelperToolInstalled {
+        let semaphore = DispatchSemaphore(value: 0)
+        Task {
+            let _ = await HelperToolManager.shared.runCommand(command)
+            semaphore.signal()
+        }
+        semaphore.wait()
+    } else {
+        let _ = performPrivilegedCommands(commands: command)
+    }
 
     updateOnMain {
         isCLISymlinked = checkCLISymlink()

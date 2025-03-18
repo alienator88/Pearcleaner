@@ -4790,6 +4790,9 @@
         }
       }
     },
+    "Information" : {
+
+    },
     "Install Date" : {
       "localizations" : {
         "de" : {
@@ -7564,7 +7567,7 @@
         }
       }
     },
-    "Perform privileged commands without prompts" : {
+    "Perform privileged actions seamlessly without constant password prompts" : {
 
     },
     "Permission Status" : {
@@ -7746,6 +7749,9 @@
           }
         }
       }
+    },
+    "Please install the helper service" : {
+
     },
     "Plist File" : {
       "extractionState" : "manual",
@@ -9722,6 +9728,9 @@
           }
         }
       }
+    },
+    "Since Authorization services have been deprecated by Apple as a less secure authentication method, it will eventually be removed from Pearcleaner and the helper service will be the only option going forward. I recommend enabling the privileged helper service as soon as possible." : {
+
     },
     "Size" : {
       "extractionState" : "manual",
@@ -13065,9 +13074,6 @@
       }
     },
     "whoami" : {
-
-    },
-    "Without a privileged helper tool, Pearcleaner asks the user for a password prompt any time it needs to delete files from a folder the user doesn't have full access to. With a privileged helper tool, you only enter your password once to enable the helper and all subsequent commands will run without any prompts as long as the helper stays enabled in Settings > Login Items.\nLeaving the helper disabled, Pearcleaner will fallback on the legacy logic using Authorization Services and prompt every time a protected file needs to be removed." : {
 
     }
   },

@@ -809,9 +809,9 @@ struct SettingsToggle: ToggleStyle {
 
                     // Toggle Knob
                     Circle()
-                        .fill(configuration.isOn ? .primary : themeManager.pickerColor)
+                        .fill(configuration.isOn ? .primary : themeManager.pickerColor.adjustBrightness(-5))
                         .frame(width: 18, height: 18)
-                        .offset(x: configuration.isOn ? 9 : -9)
+                        .offset(x: configuration.isOn ? 8 : -8)
                         .animation(.easeInOut(duration: 0.2), value: configuration.isOn)
                 }
             }
@@ -829,5 +829,6 @@ struct HelperBadge: View {
             selectedTab = .helper
             openAppSettings()
         }, btnColor: Color.orange, hideLabel: false)
+
     }
 }

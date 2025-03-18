@@ -163,6 +163,14 @@ struct SidebarItemView: View {
             Text(title)
                 .font(.system(size: 14, weight: .regular))
                 .foregroundColor(isSelected ? .accentColor : .primary)
+            if !HelperToolManager.shared.isHelperToolInstalled && title.lowercased().contains("helper") {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .foregroundColor(.orange)
+                    .frame(width: 14, height: 14)
+                    .help("Please install the helper service")
+            }
             Spacer()
         }
         .padding(.vertical, 8)
