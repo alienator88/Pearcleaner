@@ -226,39 +226,6 @@ func moveFilesToTrashCLI(at fileURLs: [URL]) -> Bool {
 }
 
 
-// Helper function to check file existence
-//func filesStillExist(at fileURLs: [URL]) -> Bool {
-//    let maxRetries = 3
-//    let delay: TimeInterval = 1 // 200 ms delay
-//
-//    for attempt in 0..<maxRetries {
-//        var anyFileExists = false
-//        print(attempt)
-//        for url in fileURLs {
-//            if FileManager.default.fileExists(atPath: url.path) {
-//                print("File still exists at: \(url.path)")
-//                anyFileExists = true
-//                break
-//            }
-//        }
-//
-//        // If no files exist, return false
-//        if !anyFileExists {
-//            return false
-//        }
-//
-//        // If this was the last attempt, return true
-//        if attempt == maxRetries - 1 {
-//            return true
-//        }
-//
-//        // Otherwise, wait and try again
-//        Thread.sleep(forTimeInterval: delay)
-//    }
-//
-//    return false // All files were deleted
-//}
-
 
 func filterValidFiles(fileURLs: [URL]) -> [URL] {
     let fileManager = FileManager.default
@@ -280,12 +247,6 @@ func filterValidFiles(fileURLs: [URL]) -> [URL] {
                 return false
             }
         }
-
-        // Check if file or folder is writable //MARK: Disabled this as it ignores files that need sudo to remove
-        //        guard fileManager.isWritableFile(atPath: url.path) else {
-        //            printOS("Skipping \(url.path): File or folder is not writable.")
-        //            return false
-        //        }
 
         return true
     }
@@ -443,7 +404,7 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
         }
 
         // If protected files are found, echo message and exit
-        if !protectedFiles.isEmpty {
+        if !protectedFiles.isEmpty && !HelperToolManager.shared.isHelperToolInstalled {
             printOS("Protected files detected. Please run this command with sudo:\n")
             printOS("sudo pearcleaner --uninstall-all \(path)")
             printOS("\nProtected files:\n")
@@ -482,7 +443,7 @@ func processCLI(arguments: [String], appState: AppState, locations: Locations, f
         }
 
         // If protected files are found, echo message and exit
-        if !protectedFiles.isEmpty {
+        if !protectedFiles.isEmpty && !HelperToolManager.shared.isHelperToolInstalled {
             printOS("Protected files detected. Please run this command with sudo:\n")
             printOS("sudo pearcleaner --remove-orphaned")
             printOS("\nProtected files:\n")
@@ -567,8 +528,10 @@ func displayHelp() {
             --remove-orphaned, -ro               Remove ALL orphaned files (To ignore files, add them to the exception list within Pearcleaner settings)
             --help, -h                           Show this help message
             
-            SUDO WARNING:                        When running pearcleaner CLI with sudo, files are not moved to Trash bin as they are owned by                                   root. This does not affect Pearcleaner GUI.
-            
+            SUDO WARNING:                        When running pearcleaner CLI with sudo, files are not moved to the user's Trash bin 
+                                                 at ~/.Trash as they are owned by root. This does not affect Pearcleaner GUI or if you 
+                                                 have the helper tool installed and don't use sudo command.
+
             """)
 }
 
@@ -718,17 +681,6 @@ func removeApp(appState: AppState, withPath path: URL) {
                 let _ = await HelperToolManager.shared.runCommand("pkgutil --forget \(appState.appInfo.bundleIdentifier)")
             }
         }
-
-        // Brew cleanup if enabled
-        //        if brew {
-        //            if appState.appInfo.cask != nil {
-        //                appState.showTerminal = true
-        //            }
-        ////            caskCleanup(app: appState.appInfo.appName)
-        //        }
-
-        //        appState.appInfo = AppInfo.empty
-
     }
 }
 
