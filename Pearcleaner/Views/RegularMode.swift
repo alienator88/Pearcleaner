@@ -83,6 +83,8 @@ struct RegularMode: View {
                     }
             } else if appState.currentPage == .development {
                 EnvironmentCleanerView()
+            } else if appState.currentPage == .thinning {
+                LipoView()
             }
 
 

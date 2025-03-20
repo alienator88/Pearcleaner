@@ -31,7 +31,7 @@ struct EnvironmentCleanerView: View {
                         .symbolRenderingMode(.hierarchical)
 
                     VStack(alignment: .leading){
-                        Text("Development Environments (Beta)").font(.title).fontWeight(.bold)
+                        Text("Development Environments").font(.title).fontWeight(.bold)
                         Text("Clean stored files and cache for common development environments")
                             .font(.callout).foregroundStyle(.primary.opacity(0.5))
                     }

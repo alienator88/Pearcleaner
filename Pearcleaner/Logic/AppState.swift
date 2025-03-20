@@ -57,6 +57,7 @@ class AppState: ObservableObject {
                 if let index = self.sortedApps.firstIndex(where: { $0.path == appInfo.path }) {
                     var updatedAppInfo = self.sortedApps[index]
                     updatedAppInfo.bundleSize = calculatedSize
+                    updatedAppInfo.arch = isOSArm() ? .arm : .intel
                     self.sortedApps[index] = updatedAppInfo
                 }
             }
@@ -264,7 +265,8 @@ enum CurrentPage:Int, CaseIterable, Identifiable
     case applications
     case orphans
     case development
-    
+    case thinning
+
     var id: Int { rawValue }
     
     var details: (title: String, icon: String) {
@@ -275,6 +277,8 @@ enum CurrentPage:Int, CaseIterable, Identifiable
             return (String(localized: "Orphaned Files"), "doc.text.magnifyingglass")
         case .development:
             return (String(localized: "Development"), "hammer.circle")
+        case .thinning:
+            return (String(localized: "Thinning"), "square.split.1x2")
         }
     }
     

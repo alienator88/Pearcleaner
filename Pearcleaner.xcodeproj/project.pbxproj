@@ -27,7 +27,6 @@
 		C76D08552AF89CDE00D07867 /* RegularMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76D08542AF89CDE00D07867 /* RegularMode.swift */; };
 		C76EDCD62C45DC82000CF29D /* AlinFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = C76EDCD52C45DC82000CF29D /* AlinFoundation */; };
 		C770D7DB2CE7C9AD00B3492A /* DevelopmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C770D7DA2CE7C9A100B3492A /* DevelopmentView.swift */; };
-		C772FB5B2D8A39DB00A1CA0E /* announcements.json in Resources */ = {isa = PBXBuildFile; fileRef = C772FB5A2D8A39DB00A1CA0E /* announcements.json */; };
 		C7736E4F2C49A44200917293 /* AlinFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = C7736E4E2C49A44200917293 /* AlinFoundation */; };
 		C77B90042AF18E2E009CC655 /* PearcleanerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90032AF18E2E009CC655 /* PearcleanerApp.swift */; };
 		C77B90082AF18E2F009CC655 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C77B90072AF18E2F009CC655 /* Assets.xcassets */; };
@@ -43,11 +42,11 @@
 		C7A269292D5D139600FA96EC /* TerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A269282D5D139200FA96EC /* TerminalView.swift */; };
 		C7A2AE5D2B9644F300161540 /* FileWatcher in Frameworks */ = {isa = PBXBuildFile; productRef = C7A2AE5C2B9644F300161540 /* FileWatcher */; };
 		C7A6DBF12C9DD27200CFA042 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7A6DBF02C9DD27200CFA042 /* Assets.xcassets */; };
+		C7AC48EA2D8CAEF700A44C8E /* LipoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AC48E92D8CAEF200A44C8E /* LipoView.swift */; };
 		C7BE91A82C9E37AB009FA129 /* FinderOpen.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C78121632BC892A000BE06BD /* FinderOpen.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C7CF47242B3B3F1700979C5F /* WindowSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7CF47232B3B3F1700979C5F /* WindowSettings.swift */; };
 		C7D31D4A2AFEB26700C7ED9E /* AppListItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D492AFEB26700C7ED9E /* AppListItems.swift */; };
 		C7D31D512AFF00F300C7ED9E /* Locations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D502AFF00F300C7ED9E /* Locations.swift */; };
-		C7D3A6BB2D8B6E0700367295 /* lipo in Resources */ = {isa = PBXBuildFile; fileRef = C7D3A6BA2D8B6E0700367295 /* lipo */; };
 		C7DD49EA2BAB4D8100CCBA16 /* AppInfoFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */; };
 		C7DD49EE2BAB7F6000CCBA16 /* ReversePathsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */; };
 		C7DD49F02BABA14400CCBA16 /* Folders.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD49EF2BABA14400CCBA16 /* Folders.swift */; };
@@ -171,11 +170,11 @@
 		C78D7B202D556F16003DD49F /* AppPathsFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPathsFetch.swift; sourceTree = "<group>"; };
 		C7A269282D5D139200FA96EC /* TerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalView.swift; sourceTree = "<group>"; };
 		C7A6DBF02C9DD27200CFA042 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C7AC48E92D8CAEF200A44C8E /* LipoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LipoView.swift; sourceTree = "<group>"; };
 		C7B3AB072D83900B00D829C5 /* com.alienator88.PearcleanerSentinel.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = com.alienator88.PearcleanerSentinel.plist; sourceTree = "<group>"; };
 		C7CF47232B3B3F1700979C5F /* WindowSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowSettings.swift; sourceTree = "<group>"; };
 		C7D31D492AFEB26700C7ED9E /* AppListItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppListItems.swift; sourceTree = "<group>"; };
 		C7D31D502AFF00F300C7ED9E /* Locations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locations.swift; sourceTree = "<group>"; };
-		C7D3A6BA2D8B6E0700367295 /* lipo */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = lipo; sourceTree = "<group>"; };
 		C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfoFetch.swift; sourceTree = "<group>"; };
 		C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReversePathsFetch.swift; sourceTree = "<group>"; };
 		C7DD49EF2BABA14400CCBA16 /* Folders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Folders.swift; sourceTree = "<group>"; };
@@ -337,7 +336,6 @@
 			children = (
 				C77B90032AF18E2E009CC655 /* PearcleanerApp.swift */,
 				C772FB5A2D8A39DB00A1CA0E /* announcements.json */,
-				C7D3A6BA2D8B6E0700367295 /* lipo */,
 				C786F1A72C29E599001B3800 /* Builds */,
 				C76D084F2AF84E0100D07867 /* Resources */,
 				C76D08462AF83C2F00D07867 /* Settings */,
@@ -350,6 +348,7 @@
 		C77B901F2AF1B390009CC655 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				C7AC48E92D8CAEF200A44C8E /* LipoView.swift */,
 				C7A269282D5D139200FA96EC /* TerminalView.swift */,
 				C77B90222AF2D616009CC655 /* FilesView.swift */,
 				C770D7DA2CE7C9A100B3492A /* DevelopmentView.swift */,
@@ -531,8 +530,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C7D3A6BB2D8B6E0700367295 /* lipo in Resources */,
-				C772FB5B2D8A39DB00A1CA0E /* announcements.json in Resources */,
 				C77B90082AF18E2F009CC655 /* Assets.xcassets in Resources */,
 				C7F8436B2CBF066F00E3E30A /* Localizable.xcstrings in Resources */,
 			);
@@ -577,6 +574,7 @@
 				C7DD49EE2BAB7F6000CCBA16 /* ReversePathsFetch.swift in Sources */,
 				C7EA06332C1CBE2000F872FC /* ConditionBuilderView.swift in Sources */,
 				C7DD49F02BABA14400CCBA16 /* Folders.swift in Sources */,
+				C7AC48EA2D8CAEF700A44C8E /* LipoView.swift in Sources */,
 				C7D31D512AFF00F300C7ED9E /* Locations.swift in Sources */,
 				C77B901A2AF1938F009CC655 /* Logic.swift in Sources */,
 				C77B901C2AF193A3009CC655 /* Styles.swift in Sources */,

@@ -104,6 +104,15 @@ struct AppCommands: Commands {
                     Text("Orphaned Files")
                 }
                 .keyboardShortcut("3", modifiers: .command)
+
+                Button
+                {
+                    appState.currentPage = .thinning
+
+                } label: {
+                    Text("App Thinning")
+                }
+                .keyboardShortcut("4", modifiers: .command)
             }
 
         }

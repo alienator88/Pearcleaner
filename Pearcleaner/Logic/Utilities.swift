@@ -50,7 +50,7 @@ func playTrashSound(undo: Bool = false) {
     let soundName = undo ? "poof item off dock.aif" : "drag to trash.aif"
     let path = "/System/Library/Components/CoreAudio.component/Contents/SharedSupport/SystemSounds/dock/\(soundName)"
     let url = URL(fileURLWithPath: path)
-    
+
     var soundID: SystemSoundID = 0
     AudioServicesCreateSystemSoundID(url as CFURL, &soundID)
     AudioServicesPlaySystemSound(soundID)
@@ -61,10 +61,10 @@ func playTrashSound(undo: Bool = false) {
 func checkCLISymlink() -> Bool {
     let filePath = "/usr/local/bin/pearcleaner"
     let fileManager = FileManager.default
-    
+
     // Check if the file exists and is a symlink
     guard fileManager.fileExists(atPath: filePath) else { return false }
-    
+
     // Check if the symlink points to the correct path
     do {
         let destination = try fileManager.destinationOfSymbolicLink(atPath: filePath)
@@ -77,29 +77,29 @@ func checkCLISymlink() -> Bool {
 // Install/uninstall symlink for CLI
 func manageSymlink(install: Bool) {
     @AppStorage("settings.general.cli") var isCLISymlinked = false
-    
+
     guard let appPath = Bundle.main.executablePath else {
         printOS("Error: Unable to get the executable path.")
         return
     }
-    
+
     let symlinkPath = "/usr/local/bin/pearcleaner"
     let symlinkExists = checkCLISymlink()
     let binPathExists = directoryExists(at: "/usr/local/bin")
-    
+
     if install && symlinkExists {
         printOS("Symlink already exists at \(symlinkPath). No action needed.")
         return
     }
-    
+
     if !install && !symlinkExists {
         printOS("Symlink does not exist at \(symlinkPath). No action needed.")
         return
     }
-    
+
     // Prepare privileged commands
     var command = ""
-    
+
     if install {
         // Create the /usr/local/bin directory if it doesn't exist, then create symlink
         if !binPathExists {
@@ -110,7 +110,7 @@ func manageSymlink(install: Bool) {
         // Remove the symlink
         command = "rm '\(symlinkPath)'"
     }
-    
+
     // Perform privileged commands
     if HelperToolManager.shared.isHelperToolInstalled {
         let semaphore = DispatchSemaphore(value: 0)
@@ -122,7 +122,7 @@ func manageSymlink(install: Bool) {
     } else {
         let _ = performPrivilegedCommands(commands: command)
     }
-    
+
     updateOnMain {
         isCLISymlinked = checkCLISymlink()
         if install {
@@ -162,65 +162,52 @@ func isRestricted(atPath path: URL) -> Bool {
 // Check app bundle architecture
 func checkAppBundleArchitecture(at appBundlePath: String) -> Arch {
     let bundleURL = URL(fileURLWithPath: appBundlePath)
-    let executableName: String
-    
-    // Extract the executable name from Info.plist
-    let infoPlistPath = bundleURL.appendingPathComponent("Contents/Info.plist")
-    if let infoPlist = NSDictionary(contentsOf: infoPlistPath) as? [String: Any],
-       let bundleExecutable = infoPlist["CFBundleExecutable"] as? String {
-        executableName = bundleExecutable
-    } else {
-        printOS("Failed to read Info.plist or CFBundleExecutable not found when checking bundle architecture")
+    let infoPlistURL = bundleURL.appendingPathComponent("Contents/Info.plist")
+    guard let infoDict = NSDictionary(contentsOf: infoPlistURL) as? [String: Any],
+          let executableName = infoDict["CFBundleExecutable"] as? String else {
         return .empty
     }
-    
-    let executablePath = bundleURL.appendingPathComponent("Contents/MacOS/\(executableName)").path
-    
-    let task = Process()
-    task.launchPath = "/usr/bin/file"
-    task.arguments = [executablePath]
-    
-    let pipe = Pipe()
-    task.standardOutput = pipe
-    task.launch()
-    
-    let data = pipe.fileHandleForReading.readDataToEndOfFile()
-    task.waitUntilExit()
-    
-    if let output = String(data: data, encoding: .utf8) {
-        
-        if output.contains("Mach-O universal binary") {
-            return .universal
-        } else if output.contains("arm64") {
-            return .arm
-        } else if output.contains("x86_64") {
-            return .intel
+    let executableURL = bundleURL.appendingPathComponent("Contents/MacOS").appendingPathComponent(executableName)
+    guard let fileData = try? Data(contentsOf: executableURL) else {
+        return .empty
+    }
+
+    // Check for fat (universal) binary
+    let magic = fileData.prefix(4).withUnsafeBytes { $0.load(as: UInt32.self).bigEndian }
+    let FAT_MAGIC: UInt32 = 0xcafebabe
+    if magic == FAT_MAGIC {
+        let numArchs = fileData.subdata(in: 4..<8).withUnsafeBytes { $0.load(as: UInt32.self).bigEndian }
+        var offset = 8
+        var archs: [Arch] = []
+        for _ in 0..<numArchs {
+            let archData = fileData.subdata(in: offset..<(offset + 20)).withUnsafeBytes { ptr in
+                FatArch(
+                    cpuType: ptr.load(fromByteOffset: 0, as: UInt32.self).bigEndian,
+                    cpuSubtype: ptr.load(fromByteOffset: 4, as: UInt32.self).bigEndian,
+                    offset: ptr.load(fromByteOffset: 8, as: UInt32.self).bigEndian,
+                    size: ptr.load(fromByteOffset: 12, as: UInt32.self).bigEndian,
+                    align: ptr.load(fromByteOffset: 16, as: UInt32.self).bigEndian
+                )
+            }
+            if archData.cpuType == 0x0100000c { archs.append(.arm) }
+            else if archData.cpuType == 0x01000007 { archs.append(.intel) }
+            offset += 20
         }
+        return archs.count == 1 ? archs.first! : .universal
+    } else {
+        // Thin binary: read cpu type from header
+        guard fileData.count >= 8 else { return .empty }
+        let cputype = fileData.subdata(in: 4..<8).withUnsafeBytes { $0.load(as: UInt32.self).bigEndian }
+        if cputype == 0x0100000c { return .arm }
+        else if cputype == 0x01000007 { return .intel }
+        else { return .empty }
     }
-    
-    return .empty
 }
 
-func isOSArm() -> Bool {
-    let task = Process()
-    task.launchPath = "/usr/bin/uname"
-    task.arguments = ["-m"]
-    
-    let pipe = Pipe()
-    task.standardOutput = pipe
-    task.launch()
-    
-    let data = pipe.fileHandleForReading.readDataToEndOfFile()
-    task.waitUntilExit()
-    
-    if let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) {
-        return output == "arm64"
-    }
-    
-    return false
-}
 
-func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch) -> Bool {
+// Main function that now directly uses the Mach-O helper
+func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool = false) -> (Bool, [String: UInt64]?) {
+    // Reset bundle size to 0 before starting
     updateOnMain {
         if let index = AppState.shared.sortedApps.firstIndex(where: { $0.path == appBundlePath }) {
             var updatedAppInfo = AppState.shared.sortedApps[index]
@@ -228,65 +215,152 @@ func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch) -> Bool {
             AppState.shared.sortedApps[index] = updatedAppInfo
         }
     }
+
+    // Skip if already single architecture
     guard arch == .universal else {
-        printOS("Skipping thinning. App is already single architecture: \(arch)")
-        return false
+        printOS("Lipo: Skipping, app is already single architecture: \(arch)")
+        return (false, nil)
     }
-    let targetArch: Arch = isOSArm() ? .arm : .intel
-    
+
+    // Extract executable name from Info.plist
     let executableName: String
-    
-    // Extract the executable name from Info.plist
     let infoPlistPath = appBundlePath.appendingPathComponent("Contents/Info.plist")
+
     if let infoPlist = NSDictionary(contentsOf: infoPlistPath) as? [String: Any],
        let bundleExecutable = infoPlist["CFBundleExecutable"] as? String {
         executableName = bundleExecutable
     } else {
-        printOS("Failed to read Info.plist or CFBundleExecutable not found when thinning bundle")
-        return false
+        printOS("Lipo: Failed to read Info.plist or CFBundleExecutable not found when thinning bundle")
+        return (false, nil)
     }
-    
+
+    // Get full path to executable
     let executablePath = appBundlePath.appendingPathComponent("Contents/MacOS/\(executableName)").path
-    let binaryPath = Bundle.main.bundleURL.appendingPathComponent("Contents/Resources/lipo")
-    let lipoCommand = "\"\(binaryPath.path)\" -thin \(targetArch == .arm ? "arm64" : "x86_64") -output \"\(executablePath)\" \"\(executablePath)\" && /usr/bin/touch \"\(appBundlePath.path)\""
 
-    var success = false
-    var output = ""
-    
-    if HelperToolManager.shared.isHelperToolInstalled {
-        let semaphore = DispatchSemaphore(value: 0)
-        Task {
-            let result = await HelperToolManager.shared.runCommand(lipoCommand)
-            success = result.0
-            output = result.1
-            semaphore.signal()
-        }
-        semaphore.wait()
-    } else {
-        success = performPrivilegedCommands(commands: lipoCommand)
+    // Get size before thinning (lipo/Mach-O)
+    guard let preAttributes = try? FileManager.default.attributesOfItem(atPath: executablePath),
+          let preLipoSize = preAttributes[.size] as? UInt64 else {
+        printOS("Lipo: Failed to get pre-lipo size for executable at \(executablePath)")
+        return (false, nil)
     }
 
-    if !output.lowercased().contains("no output") {
-        printOS("Lipo Output: \(output)")
-    }
+    // Use Mach-O helper function to thin the binary
+    let success = thinBinaryUsingMachO(executablePath: executablePath)
 
+    // Update the app bundle timestamp to refresh Finder
     if success {
-        AppState.shared.getBundleSize(for: AppState.shared.appInfo) { newSize in
-            let newFileSize = totalSizeOnDisk(for: AppState.shared.appInfo.path)
-            updateOnMain {
-                // Create a new appInfo instance with updated size values
-                var updatedAppInfo = AppState.shared.appInfo
-                updatedAppInfo.bundleSize = newSize
-                updatedAppInfo.fileSize[AppState.shared.appInfo.path] = newFileSize.real
-                updatedAppInfo.fileSizeLogical[AppState.shared.appInfo.path] = newFileSize.logical
-                // Replace the whole appInfo object
-                AppState.shared.appInfo = updatedAppInfo
+        // Get size after thinning
+        guard let postAttributes = try? FileManager.default.attributesOfItem(atPath: executablePath),
+              let postLipoSize = postAttributes[.size] as? UInt64 else {
+            printOS("Lipo: Failed to get post-lipo size for executable at \(executablePath)")
+            return (success, nil)
+        }
+
+        if !multi {
+            // Update app sizes after thinning in sortedApps array and the AppInfo active object
+            AppState.shared.getBundleSize(for: AppState.shared.appInfo) { newSize in
+                let newFileSize = totalSizeOnDisk(for: AppState.shared.appInfo.path)
+                updateOnMain {
+                    // Create a new appInfo instance with updated size values
+                    var updatedAppInfo = AppState.shared.appInfo
+                    updatedAppInfo.bundleSize = newSize
+                    updatedAppInfo.fileSize[AppState.shared.appInfo.path] = newFileSize.real
+                    updatedAppInfo.fileSizeLogical[AppState.shared.appInfo.path] = newFileSize.logical
+                    updatedAppInfo.arch = isOSArm() ? .arm : .intel
+                    // Replace the whole appInfo object
+                    AppState.shared.appInfo = updatedAppInfo
+
+                    let savingsPercentage = Int((Double(preLipoSize - postLipoSize) / Double(preLipoSize)) * 100)
+                    showCustomAlert(title: "Space Savings: \(savingsPercentage)%", message: "Thinned File:\n\n\(executablePath)", style: .informational)
+                }
+            }
+        } else { // Update the appInfo in sortedApps array
+            let calculatedSize = totalSizeOnDisk(for: appBundlePath).logical
+            DispatchQueue.main.async {
+                // Update the array
+                if let index = AppState.shared.sortedApps.firstIndex(where: { $0.path == appBundlePath }) {
+                    var updatedAppInfo = AppState.shared.sortedApps[index]
+                    updatedAppInfo.bundleSize = calculatedSize
+//                    updatedAppInfo.arch = isOSArm() ? .arm : .intel
+                    AppState.shared.sortedApps[index] = updatedAppInfo
+                }
             }
         }
+
+        return (success, ["pre": preLipoSize, "post": postLipoSize])
+
     }
 
-    return success
+    return (success, nil)
 }
+
+//func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch) -> Bool {
+//    updateOnMain {
+//        if let index = AppState.shared.sortedApps.firstIndex(where: { $0.path == appBundlePath }) {
+//            var updatedAppInfo = AppState.shared.sortedApps[index]
+//            updatedAppInfo.bundleSize = 0
+//            AppState.shared.sortedApps[index] = updatedAppInfo
+//        }
+//    }
+//    guard arch == .universal else {
+//        printOS("Skipping thinning. App is already single architecture: \(arch)")
+//        return false
+//    }
+//    let targetArch: Arch = isOSArm() ? .arm : .intel
+//
+//    let executableName: String
+//
+//    // Extract the executable name from Info.plist
+//    let infoPlistPath = appBundlePath.appendingPathComponent("Contents/Info.plist")
+//    if let infoPlist = NSDictionary(contentsOf: infoPlistPath) as? [String: Any],
+//       let bundleExecutable = infoPlist["CFBundleExecutable"] as? String {
+//        executableName = bundleExecutable
+//    } else {
+//        printOS("Failed to read Info.plist or CFBundleExecutable not found when thinning bundle")
+//        return false
+//    }
+//
+//    let executablePath = appBundlePath.appendingPathComponent("Contents/MacOS/\(executableName)").path
+//    let binaryPath = Bundle.main.bundleURL.appendingPathComponent("Contents/Resources/lipo")
+//    let lipoCommand = "\"\(binaryPath.path)\" -thin \(targetArch == .arm ? "arm64" : "x86_64") -output \"\(executablePath)\" \"\(executablePath)\" && /usr/bin/touch \"\(appBundlePath.path)\""
+//
+//    var success = false
+//    var output = ""
+//
+//    if HelperToolManager.shared.isHelperToolInstalled {
+//        let semaphore = DispatchSemaphore(value: 0)
+//        Task {
+//            let result = await HelperToolManager.shared.runCommand(lipoCommand)
+//            success = result.0
+//            output = result.1
+//            semaphore.signal()
+//        }
+//        semaphore.wait()
+//    } else {
+//        success = performPrivilegedCommands(commands: lipoCommand)
+//    }
+//
+//    if !output.lowercased().contains("no output") {
+//        printOS("Lipo Output: \(output)")
+//    }
+//
+//    if success {
+//        AppState.shared.getBundleSize(for: AppState.shared.appInfo) { newSize in
+//            let newFileSize = totalSizeOnDisk(for: AppState.shared.appInfo.path)
+//            updateOnMain {
+//                // Create a new appInfo instance with updated size values
+//                var updatedAppInfo = AppState.shared.appInfo
+//                updatedAppInfo.bundleSize = newSize
+//                updatedAppInfo.fileSize[AppState.shared.appInfo.path] = newFileSize.real
+//                updatedAppInfo.fileSizeLogical[AppState.shared.appInfo.path] = newFileSize.logical
+//                // Replace the whole appInfo object
+//                AppState.shared.appInfo = updatedAppInfo
+//            }
+//        }
+//    }
+//
+//    return success
+//}
 
 // Check if app is running before deleting app files
 func killApp(appId: String, completion: @escaping () -> Void = {}) {
@@ -359,7 +433,7 @@ extension URL {
     func containerNameByUUID() -> String {
         // Extract the last path component, which should be the UUID
         let uuid = self.lastPathComponent
-        
+
         // Ensure the UUID matches the expected pattern.
         let uuidRegex = try! NSRegularExpression(
             pattern: "^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$",
@@ -370,11 +444,11 @@ extension URL {
             //            printOS("The URL does not point to a valid UUID container.")
             return ""
         }
-        
+
         // Path to the Containers directory.
         let containersPath = FileManager.default.homeDirectoryForCurrentUser
             .appendingPathComponent("Library/Containers")
-        
+
         do {
             // List all directories in the Containers folder.
             let containerDirectories = try FileManager.default.contentsOfDirectory(
@@ -382,15 +456,15 @@ extension URL {
                 includingPropertiesForKeys: nil,
                 options: .skipsHiddenFiles
             )
-            
+
             // Iterate over each directory to find a match with the UUID.
             for directory in containerDirectories {
                 let directoryName = directory.lastPathComponent
-                
+
                 if directoryName == uuid {
                     // Attempt to read the metadata plist file.
                     let metadataPlistURL = directory.appendingPathComponent(".com.apple.containermanagerd.metadata.plist")
-                    
+
                     if let metadataDict = NSDictionary(contentsOf: metadataPlistURL),
                        let applicationBundleID = metadataDict["MCMMetadataIdentifier"] as? String {
                         return applicationBundleID
@@ -400,7 +474,7 @@ extension URL {
         } catch {
             printOS("Error accessing the Containers directory: \(error)")
         }
-        
+
         // Return nil if no matching UUID is found.
         return ""
     }
@@ -430,17 +504,17 @@ extension View {
 struct MovableWindowAccessor: NSViewRepresentable {
     func makeNSView(context: Context) -> NSView {
         let nsView = NSView()
-        
+
         DispatchQueue.main.async {
             if let window = nsView.window {
                 // Enable dragging by the window's background
                 window.isMovableByWindowBackground = true
             }
         }
-        
+
         return nsView
     }
-    
+
     func updateNSView(_ nsView: NSView, context: Context) {}
 }
 
@@ -475,7 +549,7 @@ func folderImages(for path: String) -> AnyView? {
                 .help("Plist File")
         )
     }
-    
+
     // Return nil if no conditions are met
     return nil
 }
@@ -485,14 +559,14 @@ func folderImages(for path: String) -> AnyView? {
 func isNested(path: URL) -> Bool {
     let applicationsPath = "/Applications"
     let homeApplicationsPath = "\(home)/Applications"
-    
+
     guard path.path.contains("Applications") else {
         return false
     }
-    
+
     // Get the parent directory of the app
     let parentDirectory = path.deletingLastPathComponent().path
-    
+
     // Check if the parent directory is not directly /Applications or ~/Applications
     return parentDirectory != applicationsPath && parentDirectory != homeApplicationsPath
 }

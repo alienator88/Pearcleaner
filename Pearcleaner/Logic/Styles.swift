@@ -349,6 +349,7 @@ struct UninstallButton: ButtonStyle {
                 .aspectRatio(contentMode: .fit)
                 .foregroundColor(isEnabled ? .white.opacity(1) : .white.opacity(0.3))
                 .frame(width: 18, height: 18)
+                .frame(width: 20, alignment: .center)
                 .animation(.easeInOut(duration: 0.1), value: hovered)
 
             Divider()
@@ -383,6 +384,7 @@ struct RescanButton: ButtonStyle {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 18, height: 18)
+                .frame(width: 20, alignment: .center)
                 .foregroundColor(.white)
                 .animation(.easeInOut(duration: 0.1), value: hovered)
 
@@ -417,6 +419,7 @@ struct ExcludeButton: ButtonStyle {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 18, height: 18)
+                .frame(width: 20, alignment: .center)
                 .foregroundColor(isEnabled ? .white.opacity(1) : .white.opacity(0.3))
                 .animation(.easeInOut(duration: 0.1), value: hovered)
 
@@ -447,13 +450,13 @@ struct LipoButton: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         HStack(alignment: .center, spacing: 0) {
-            Image(systemName: "scissors")
+            Image(systemName: hovered ? "square.split.1x2.fill" : "square.split.1x2")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 18, height: 18)
+                .frame(width: 20, alignment: .center)
                 .foregroundColor(.white.opacity(1))
                 .animation(.easeInOut(duration: 0.1), value: hovered)
-
             Divider()
                 .frame(height: 24)
                 .foregroundColor(.white)
@@ -767,6 +770,8 @@ struct CustomPickerButton: View {
                                             Text(verbatim: "⌘2").font(.footnote).opacity(0.3)
                                         case "Orphaned Files":
                                             Text(verbatim: "⌘3").font(.footnote).opacity(0.3)
+                                        case "Thinning":
+                                            Text(verbatim: "⌘4").font(.footnote).opacity(0.3)
                                         default:
                                             EmptyView()
                                         }

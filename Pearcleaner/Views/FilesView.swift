@@ -385,22 +385,12 @@ struct FilesView: View {
 
                             if appState.appInfo.arch == .universal {
                                 Button {
-                                    showCustomAlert(title: "Lipo", message: "Pearcleaner will strip the \(isOSArm() ? "intel" : "arm64") architecture from the app bundle to save space. Would you like to proceed?", style: .informational, onOk: {
-
+                                    showCustomAlert(title: "App Thinning", message: "Pearcleaner will strip the \(isOSArm() ? "intel" : "arm64") architecture from \(appState.appInfo.appName)'s executable file to save space. Would you like to proceed?", style: .informational, onOk: {
                                         let _ = thinAppBundleArchitecture(at: appState.appInfo.path, of: appState.appInfo.arch)
-
-//                                        withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-//                                            updateOnMain {
-//                                                appState.appInfo = .empty
-//                                                appState.selectedItems = []
-//                                                appState.currentView = (mini || menubarEnabled) ? .apps : .empty
-//                                                showPopover = false
-//                                            }
-//                                        }
                                     })
 
                                 } label: {
-                                    Text("Lipo")
+                                    Text("Thin")
                                 }
                                 .buttonStyle(LipoButton())
                             }
@@ -687,9 +677,6 @@ struct FileDetailsItem: View {
     @State private var isHovered = false
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
-    //    let size: Int64?
-    //    let sizeL: Int64?
-    //    let icon: Image?
     let path: URL
     let removeAssociation: (URL) -> Void
 
