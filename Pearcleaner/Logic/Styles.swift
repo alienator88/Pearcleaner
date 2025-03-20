@@ -442,6 +442,40 @@ struct ExcludeButton: ButtonStyle {
 }
 
 
+struct LipoButton: ButtonStyle {
+    @State private var hovered: Bool = false
+
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(alignment: .center, spacing: 0) {
+            Image(systemName: "scissors")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 18, height: 18)
+                .foregroundColor(.white.opacity(1))
+                .animation(.easeInOut(duration: 0.1), value: hovered)
+
+            Divider()
+                .frame(height: 24)
+                .foregroundColor(.white)
+                .opacity(0.5)
+                .padding(.horizontal, 8)
+
+            configuration.label
+                .foregroundColor(.white.opacity(1))
+
+        }
+        .frame(height: 24)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 4)
+        .background(configuration.isPressed ? Color("grayButton").opacity(0.8) : Color("grayButton"))
+        .cornerRadius(8)
+        .onHover { over in
+            hovered = over
+        }
+    }
+}
+
+
 
 public struct SlideableDivider: View {
     @EnvironmentObject private var themeManager: ThemeManager

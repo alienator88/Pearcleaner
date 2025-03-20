@@ -531,7 +531,7 @@ func displayHelp() {
             SUDO WARNING:                        When running pearcleaner CLI with sudo, files are not moved to the user's Trash bin 
                                                  at ~/.Trash as they are owned by root. This does not affect Pearcleaner GUI or if you 
                                                  have the helper tool installed and don't use sudo command.
-
+            
             """)
 }
 
@@ -553,27 +553,14 @@ func manageFinderPlugin(install: Bool) {
 // Brew cleanup
 
 func getBrewCleanupCommand(for caskName: String) -> String {
-#if arch(x86_64)
-    let brewPath = "/usr/local/bin/brew"
-#elseif arch(arm64)
-    let brewPath = "/opt/homebrew/bin/brew"
-#else
-    let brewPath = "/usr/local/bin/brew"
-#endif
-
+    let brewPath = isOSArm() ? "/opt/homebrew/bin/brew" : "/usr/local/bin/brew"
     return "\(brewPath) uninstall --cask \(caskName) --zap --force && \(brewPath) cleanup && clear; echo '\nHomebrew cleanup was successful, you may close this window..\n'"
 
 }
 
 
 func getCaskIdentifier(for appName: String) -> String? {
-
-#if arch(x86_64)
-    let caskroomPath = "/usr/local/Caskroom/"
-#elseif arch(arm64)
-    let caskroomPath = "/opt/homebrew/Caskroom/"
-#endif
-
+    let caskroomPath = isOSArm() ? "/opt/homebrew/Caskroom/" : "/usr/local/Caskroom/"
     let fileManager = FileManager.default
     let lowercasedAppName = appName.lowercased()
 
@@ -606,8 +593,10 @@ func getCaskIdentifier(for appName: String) -> String? {
                 }
             }
         }
-    } catch {
-        printOS("Error reading cask metadata: \(error)")
+    } catch let error as NSError{
+        if !(error.domain == NSCocoaErrorDomain && error.code == 260) {
+            printOS("Cask Identifier: \(error)")
+        }
     }
 
     // If no match is found, return nil

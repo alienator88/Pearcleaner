@@ -48,12 +48,12 @@ struct HelperSettingsTab: View {
                                 .onTapGesture {
                                     showTestingUI.toggle()
                                 }
-                            Text("Perform privileged actions seamlessly without constant password prompts")
+                            Text("Perform privileged operations seamlessly without password prompts")
                                 .font(.callout)
                                 .foregroundStyle(.primary)
-                                .frame(minWidth: 300, alignment: .leading)
+                                .frame(minWidth: 450, maxWidth: .infinity, alignment: .leading)
 
-                            Spacer()
+//                            Spacer()
 
                             Toggle(isOn: Binding(
                                 get: { helperToolManager.isHelperToolInstalled },
@@ -69,6 +69,7 @@ struct HelperSettingsTab: View {
                             ), label: {
                             })
                             .toggleStyle(SettingsToggle())
+                            .frame(alignment: .trailing)
 
                         }
 

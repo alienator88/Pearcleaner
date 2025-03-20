@@ -58,6 +58,10 @@ struct AppSearchView: View {
                     Divider()
                     UpdateBadge(updater: updater)
                         .padding()
+                } else if updater.announcementAvailable {
+                    Divider()
+                    FeatureBadge(updater: updater)
+                        .padding()
                 } else if let _ = permissionManager.results, !permissionManager.allPermissionsGranted {
                     Divider()
                     PermissionsBadge()
@@ -65,10 +69,6 @@ struct AppSearchView: View {
                 } else if !HelperToolManager.shared.isHelperToolInstalled {
                     Divider()
                     HelperBadge()
-                        .padding()
-                } else if updater.announcementAvailable {
-                    Divider()
-                    FeatureBadge(updater: updater)
                         .padding()
                 }
             }

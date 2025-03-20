@@ -12,20 +12,24 @@ import AlinFoundation
 @main
 struct PearcleanerApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    @StateObject var appState = AppState()
+    //MARK: ObservedObjects
+    @ObservedObject var appState = AppState.shared
+    @ObservedObject private var themeManager = ThemeManager.shared
+    @ObservedObject private var permissionManager = PermissionManager.shared
+    @ObservedObject private var windowSettings = WindowSettings.shared
+    @ObservedObject private var helperToolManager = HelperToolManager.shared
+    //MARK: StateObjects
     @StateObject var locations = Locations()
     @StateObject var fsm = FolderSettingsManager()
     @StateObject private var updater = Updater(owner: "alienator88", repo: "Pearcleaner")
-    @StateObject private var themeManager = ThemeManager.shared
-    @StateObject private var permissionManager = PermissionManager.shared
-    @StateObject private var windowSettings = WindowSettings.shared
-    @ObservedObject private var helperToolManager = HelperToolManager.shared
+    //MARK: AppStorage
     @AppStorage("settings.permissions.hasLaunched") private var hasLaunched: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.general.miniview") private var miniView: Bool = true
     @AppStorage("settings.general.brew") private var brew: Bool = false
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     @AppStorage("settings.menubar.mainWin") private var mainWinEnabled: Bool = false
+    //MARK: States
     @State private var search = ""
     @State private var showPopover: Bool = false
     let conditionManager = ConditionManager.shared
@@ -233,7 +237,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
 
         ensureApplicationSupportFolderExists()
-
 
     }
 

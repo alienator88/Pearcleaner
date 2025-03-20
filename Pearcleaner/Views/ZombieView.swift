@@ -14,6 +14,7 @@ struct ZombieView: View {
     @EnvironmentObject var locations: Locations
     @EnvironmentObject var fsm: FolderSettingsManager
     @State private var showPop: Bool = false
+    @State private var windowController = WindowManager()
     @AppStorage("settings.general.leftoverWarning") private var warning: Bool = false
     @State private var showAlert = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
@@ -183,6 +184,17 @@ struct ZombieView: View {
                     HStack() {
 
                         Spacer()
+
+                        if appState.trashError {
+                            InfoButton(text: "A trash error has occurred, please open the debug window(⌘+D) to see what went wrong", color: .orange, label: "View Error", warning: true, extraView: {
+                                Button("View Debug Window") {
+                                    windowController.open(with: ConsoleView(), width: 600, height: 400)
+                                }
+                            })
+                            .onDisappear {
+                                appState.trashError = false
+                            }
+                        }
 
                         Button("Exclude Selected") {
                             excludeAllSelectedItems()

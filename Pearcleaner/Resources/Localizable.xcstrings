@@ -5499,6 +5499,9 @@
     "Link To" : {
 
     },
+    "Lipo" : {
+
+    },
     "Locations that will be searched for .app files. Click a non-default path to remove it. Default paths can't be removed." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7567,7 +7570,7 @@
         }
       }
     },
-    "Perform privileged actions seamlessly without constant password prompts" : {
+    "Perform privileged operations seamlessly without password prompts" : {
 
     },
     "Permission Status" : {
@@ -12116,6 +12119,9 @@
           }
         }
       }
+    },
+    "View Debug Window" : {
+
     },
     "View in Finder" : {
       "extractionState" : "manual",

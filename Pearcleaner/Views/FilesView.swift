@@ -13,6 +13,7 @@ struct FilesView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
     @State private var showPop: Bool = false
+    @State private var windowController = WindowManager()
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.general.brew") private var brew: Bool = false
@@ -218,8 +219,8 @@ struct FilesView: View {
                                 }
                             }
                         )) { EmptyView() }
-                        .toggleStyle(SimpleCheckboxToggleStyle())
-                        .help("All checkboxes")
+                            .toggleStyle(SimpleCheckboxToggleStyle())
+                            .help("All checkboxes")
 
                         Spacer()
 
@@ -313,14 +314,20 @@ struct FilesView: View {
                         ScrollView() {
                             LazyVStack {
                                 ForEach(Array(sortedFiles.enumerated()), id: \.element) { index, path in
-                                    if let fileSize = appState.appInfo.fileSize[path], let fileSizeL = appState.appInfo.fileSizeLogical[path], let fileIcon = appState.appInfo.fileIcon[path] {
-                                        let iconImage = fileIcon.map(Image.init(nsImage:))
-                                        VStack {
-                                            FileDetailsItem(size: fileSize, sizeL: fileSizeL, icon: iconImage, path: path, removeAssociation: removeSingleZombieAssociation)
-                                                .padding(.vertical, 5)
-                                        }
+                                    VStack {
+                                        FileDetailsItem(path: path, removeAssociation: removeSingleZombieAssociation)
+                                            .padding(.vertical, 5)
                                     }
                                 }
+                                //                                ForEach(Array(sortedFiles.enumerated()), id: \.element) { index, path in
+                                //                                    if let fileSize = appState.appInfo.fileSize[path], let fileSizeL = appState.appInfo.fileSizeLogical[path], let fileIcon = appState.appInfo.fileIcon[path] {
+                                //                                        let iconImage = fileIcon.map(Image.init(nsImage:))
+                                //                                        VStack {
+                                //                                            FileDetailsItem(size: fileSize, sizeL: fileSizeL, icon: iconImage, path: path, removeAssociation: removeSingleZombieAssociation)
+                                //                                                .padding(.vertical, 5)
+                                //                                        }
+                                //                                    }
+                                //                                }
                             }
                             .padding()
                             .onAppear { updateSortedFiles() }
@@ -357,21 +364,46 @@ struct FilesView: View {
                                         }
                                     }
                                 }
-//                                Text("⇧ + Scroll").font(.callout).foregroundStyle(.secondary).opacity(0.5)
+                                //                                Text("⇧ + Scroll").font(.callout).foregroundStyle(.secondary).opacity(0.5)
                             }
                         }
 
                         Spacer()
 
                         HStack(spacing: 10) {
-                            // Conditional Remove Association Button
-//                            if !ZombieFileStorage.shared.getAssociatedFiles(for: appState.appInfo.path).isEmpty {
-//                                Button("Unlink") {
-//                                    removeZombieAssociations()
-//                                }
-//                                .buttonStyle(RescanButton())
-//                                .help("Remove linked orphaned files for this app")
-//                            }
+
+                            if appState.trashError {
+                                InfoButton(text: "A trash error has occurred, please open the debug window(⌘+D) to see what went wrong", color: .orange, label: "View Error", warning: true, extraView: {
+                                    Button("View Debug Window") {
+                                        windowController.open(with: ConsoleView(), width: 600, height: 400)
+                                    }
+                                })
+                                .onDisappear {
+                                    appState.trashError = false
+                                }
+                            }
+
+                            if appState.appInfo.arch == .universal {
+                                Button {
+                                    showCustomAlert(title: "Lipo", message: "Pearcleaner will strip the \(isOSArm() ? "intel" : "arm64") architecture from the app bundle to save space. Would you like to proceed?", style: .informational, onOk: {
+
+                                        let _ = thinAppBundleArchitecture(at: appState.appInfo.path, of: appState.appInfo.arch)
+
+//                                        withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+//                                            updateOnMain {
+//                                                appState.appInfo = .empty
+//                                                appState.selectedItems = []
+//                                                appState.currentView = (mini || menubarEnabled) ? .apps : .empty
+//                                                showPopover = false
+//                                            }
+//                                        }
+                                    })
+
+                                } label: {
+                                    Text("Lipo")
+                                }
+                                .buttonStyle(LipoButton())
+                            }
 
                             // Trash Button
                             Button {
@@ -419,7 +451,7 @@ struct FilesView: View {
                 showAlert = true
             }
         }
-        
+
     }
 
     // Function to handle the uninstall action
@@ -655,13 +687,20 @@ struct FileDetailsItem: View {
     @State private var isHovered = false
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
-    let size: Int64?
-    let sizeL: Int64?
-    let icon: Image?
+    //    let size: Int64?
+    //    let sizeL: Int64?
+    //    let icon: Image?
     let path: URL
     let removeAssociation: (URL) -> Void
 
     var body: some View {
+
+        let realSize = appState.appInfo.fileSize[path] ?? 0
+        let logicalSize = appState.appInfo.fileSizeLogical[path] ?? 0
+        let fileIcon = appState.appInfo.fileIcon[path]
+        let iconImage = fileIcon.flatMap { $0.map(Image.init(nsImage:)) }
+
+        let displaySize = sizeType == "Real" ? formatByte(size: realSize).human : formatByte(size: logicalSize).human
 
         HStack(alignment: .center, spacing: 20) {
             Toggle(isOn: Binding(
@@ -674,10 +713,10 @@ struct FileDetailsItem: View {
                     }
                 }
             )) { EmptyView() }
-            .toggleStyle(SimpleCheckboxToggleStyle())
-            .disabled(self.path.path.contains(".Trash"))
+                .toggleStyle(SimpleCheckboxToggleStyle())
+                .disabled(self.path.path.contains(".Trash"))
 
-            if let appIcon = icon {
+            if let appIcon = iconImage {
                 appIcon
                     .resizable()
                     .aspectRatio(contentMode: .fit)
@@ -743,8 +782,8 @@ struct FileDetailsItem: View {
 
             Spacer()
 
-            let displaySize = sizeType == "Real" ? formatByte(size: size!).human :
-            formatByte(size: sizeL!).human
+            //            let displaySize = sizeType == "Real" ? formatByte(size: size!).human :
+            //            formatByte(size: sizeL!).human
             Text(verbatim: "\(displaySize)")
 
         }

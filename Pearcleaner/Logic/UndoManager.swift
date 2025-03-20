@@ -73,6 +73,9 @@ class FileManagerUndo {
                 finalStatus = true
             } else {
                 printOS("Trash Error: \(isCLI ? "Could not run commands directly with sudo." : "Could not perform privileged commands.")")
+                updateOnMain {
+                    AppState.shared.trashError = true
+                }
                 finalStatus = false
             }
 
@@ -95,6 +98,9 @@ class FileManagerUndo {
                     }
                 } catch {
                     printOS("Error trashing file at \(url): \(error)")
+                    updateOnMain {
+                        AppState.shared.trashError = true
+                    }
                     finalStatus = false
                     dispatchSemaphore.signal()
                     return false
@@ -178,6 +184,9 @@ class FileManagerUndo {
             status = success
             if !success {
                 printOS("Trash Error: \(output)")
+                updateOnMain {
+                    AppState.shared.trashError = true
+                }
             }
         } else {
             if isCLI {
