@@ -40,7 +40,7 @@ struct LipoView: View {
             }, content: {
                 HStack(spacing: 20) {
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("App thinning targets the Mach-O binaries in your universal apps and removes any unused architectures, such as x86_64 or arm64, leaving only the architectures your computer actually supports. The list shows only universal type apps, not your full app list.")
+                        Text("App thinning targets the Mach-O binaries in your universal apps and removes any unused architectures, such as x86_64 or arm64, leaving only the architectures your computer actually supports. The list shows only universal type apps, not your full app list.\n\nNOTE: After thinning, the yellow portion will be removed from your app's bundle size.")
                     }
 
                     Spacer()
@@ -73,7 +73,7 @@ struct LipoView: View {
 
                 Spacer()
 
-                Text("Number of apps here")
+                Text("\(universalApps.count) universal apps")
             }
 
             if universalApps.isEmpty {
@@ -150,64 +150,75 @@ struct AppRowView: View {
     @Binding var selectedApps: Set<String>
     @State private var sizeLoading: Bool = true
     @State private var savingsSize: UInt32 = 0
-    @State private var fullSize: UInt32 = 0
+    @State private var binarySize: UInt32 = 0
+    @State private var isHovered: Bool = false
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
 
     var body: some View {
-        HStack {
-            Toggle(isOn: Binding(
-                get: { selectedApps.contains(app.path.path) },
-                set: { isSelected in
-                    if isSelected {
-                        selectedApps.insert(app.path.path)
-                    } else {
-                        selectedApps.remove(app.path.path)
+        VStack {
+            HStack {
+                Toggle(isOn: Binding(
+                    get: { selectedApps.contains(app.path.path) },
+                    set: { isSelected in
+                        if isSelected {
+                            selectedApps.insert(app.path.path)
+                        } else {
+                            selectedApps.remove(app.path.path)
+                        }
                     }
+                )) {
+                    EmptyView()
                 }
-            )) {
-                EmptyView()
-            }
-            .toggleStyle(SimpleCheckboxToggleStyle())
+                .toggleStyle(SimpleCheckboxToggleStyle())
 
-            VStack(alignment: .leading) {
                 Text(app.appName).font(.title3)
-                Text("Bundle Size: \(formatByte(size: app.bundleSize).human)").font(.callout).foregroundStyle(.secondary)
+
+                Spacer()
+
+                VStack(alignment: .trailing) {
+
+                    HStack(spacing: 0) {
+                        Text("Space Savings: ")
+                            .foregroundStyle(.yellow)
+                        Text("\(formatByte(size: Int64(savingsSize)).human)")
+                            .foregroundStyle(.primary)
+                            .frame(minWidth: 50, alignment: .trailing)
+                    }
+                    .font(.callout)
+                    HStack(spacing: 0) {
+                        Text("Binary Size: ")
+                            .foregroundStyle(.blue)
+                        Text("\(formatByte(size: Int64(binarySize)).human)")
+                            .foregroundStyle(.primary)
+                            .frame(minWidth: 50, alignment: .trailing)
+                    }
+                    .font(.callout)
+                    HStack(spacing: 0) {
+                        Text("Bundle Size: ")
+                            .foregroundStyle(.gray)
+                        Text("\(formatByte(size: Int64(app.bundleSize)).human)")
+                            .foregroundStyle(.primary)
+                            .frame(minWidth: 50, alignment: .trailing)
+                    }
+                    .font(.callout)
+                }
+
             }
 
-            Spacer()
-
-
-
-            VStack(alignment: .trailing) {
-                Button {
-                    NSWorkspace.shared.selectFile(app.path.path, inFileViewerRootedAtPath: app.path.deletingLastPathComponent().path)
-                } label: {
-                    Label("Show", systemImage: "folder")
-                        .padding(4)
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(.blue)
-
-                HStack(spacing: 0) {
-                    Text("Binary Size: ")
-                        .foregroundStyle(.blue)
-                    Text("\(formatByte(size: Int64(fullSize)).human)")
-                        .foregroundStyle(.primary)
-                }
-                HStack(spacing: 0) {
-                    Text("Space Savings: ")
-                        .foregroundStyle(.yellow)
-                    Text("\(formatByte(size: Int64(savingsSize)).human)")
-                        .foregroundStyle(.primary)
-                }
-                .font(.callout)
-            }
+            HorizontalSizeBarView(bundleSize: app.bundleSize, binarySize: binarySize, savingsSize: savingsSize)
+                .frame(maxWidth: .infinity)
 
         }
         .padding()
         .background(RoundedRectangle(cornerRadius: 10)
-            .fill(.quaternary.opacity(0.3))
+            .fill(.quaternary.opacity(isHovered ? 0.5 : 0.3))
             .shadow(radius: 2))
+        .onTapGesture {
+            NSWorkspace.shared.selectFile(app.path.path, inFileViewerRootedAtPath: app.path.deletingLastPathComponent().path)
+        }
+        .onHover { hovered in
+            isHovered = hovered
+        }
         .onAppear {
             DispatchQueue.global(qos: .userInitiated).async {
                 let infoPlistPath = app.path.appendingPathComponent("Contents/Info.plist")
@@ -217,12 +228,12 @@ struct AppRowView: View {
                     if let sliceSizes = getArchitectureSliceSizes(from: executablePath.path) {
                         DispatchQueue.main.async {
                             self.savingsSize = isOSArm() ? sliceSizes.intel : sliceSizes.arm
-                            self.fullSize = sliceSizes.full
+                            self.binarySize = sliceSizes.full
                         }
                     } else {
                         DispatchQueue.main.async {
                             self.savingsSize = 0
-                            self.fullSize = 0
+                            self.binarySize = 0
                         }
                     }
                 } else {
@@ -284,5 +295,61 @@ public func getArchitectureSliceSizes(from executablePath: String) -> (arm: UInt
     } catch {
         printOS("Error getting architecture slice sizes: \(error)")
         return nil
+    }
+}
+
+
+
+struct HorizontalSizeBarView: View {
+    let bundleSize: Int64
+    let binarySize: UInt32
+    let savingsSize: UInt32
+
+    var body: some View {
+        GeometryReader { geo in
+            let totalWidth = geo.size.width
+            let blueWidth = totalWidth * (Double(binarySize) / Double(bundleSize))
+            let yellowWidth = blueWidth * (Double(savingsSize) / Double(binarySize))
+
+            ZStack(alignment: .leading) {
+                Rectangle().fill(Color.gray).frame(width: totalWidth)
+//                    .overlay(
+//                        Text(formatByte(size: bundleSize).human)
+//                            .padding(5)
+//                            .font(.caption2)
+//                            .foregroundColor(.white),
+//                        alignment: .trailing
+//                    )
+
+                Rectangle().fill(Color.blue).frame(width: blueWidth)
+//                    .overlay(
+//                        Group {
+//                            if blueWidth >= 30 {
+//                                Text(formatByte(size: Int64(binarySize)).human)
+//                                    .padding(5)
+//                            }
+//                        }
+//                            .font(.caption2)
+//                            .foregroundColor(.white),
+//                        alignment: .trailing
+//                    )
+
+                Rectangle().fill(Color.yellow).frame(width: yellowWidth)
+//                    .overlay(
+//                        Group {
+//                            if yellowWidth >= 30 {
+//                                Text(formatByte(size: Int64(savingsSize)).human)
+//                                    .padding(5)
+//                            }
+//                        }
+//                            .font(.caption2)
+//                            .foregroundColor(.black),
+//                        alignment: .trailing
+//                    )
+
+            }
+            .cornerRadius(4)
+        }
+        .frame(height: 5)
     }
 }

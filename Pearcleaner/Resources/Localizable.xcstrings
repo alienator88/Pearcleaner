@@ -183,6 +183,9 @@
         }
       }
     },
+    "%lld universal apps" : {
+
+    },
     "⇧ + Scroll" : {
       "localizations" : {
         "de" : {
@@ -1056,7 +1059,7 @@
     "App Thinning" : {
 
     },
-    "App thinning targets the Mach-O binaries in your universal apps and removes any unused architectures, such as x86_64 or arm64, leaving only the architectures your computer actually supports. The list shows only universal type apps, not your full app list." : {
+    "App thinning targets the Mach-O binaries in your universal apps and removes any unused architectures, such as x86_64 or arm64, leaving only the architectures your computer actually supports. The list shows only universal type apps, not your full app list.\n\nNOTE: After thinning, the yellow portion will be removed from your app's bundle size." : {
 
     },
     "Appearance" : {
@@ -1459,7 +1462,7 @@
         }
       }
     },
-    "Bundle Size: %@" : {
+    "Bundle Size: " : {
 
     },
     "calculating" : {
@@ -7064,9 +7067,6 @@
         }
       }
     },
-    "Number of apps here" : {
-
-    },
     "of" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -9522,9 +9522,6 @@
         }
       }
     },
-    "Show" : {
-
-    },
     "Show announcements badge again" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -10560,9 +10557,6 @@
       }
     },
     "Thin" : {
-
-    },
-    "Thinning" : {
 
     },
     "This adds the file/folder to the Exclusions list. Edit the exclusions list from Settings > Folders tab" : {
