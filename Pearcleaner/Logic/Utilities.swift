@@ -281,7 +281,7 @@ func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool
                 if let index = AppState.shared.sortedApps.firstIndex(where: { $0.path == appBundlePath }) {
                     var updatedAppInfo = AppState.shared.sortedApps[index]
                     updatedAppInfo.bundleSize = calculatedSize
-//                    updatedAppInfo.arch = isOSArm() ? .arm : .intel
+                    updatedAppInfo.arch = isOSArm() ? .arm : .intel
                     AppState.shared.sortedApps[index] = updatedAppInfo
                 }
             }

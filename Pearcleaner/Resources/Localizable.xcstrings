@@ -62,6 +62,9 @@
         }
       }
     },
+    "**%lld%%** savings" : {
+
+    },
     "%@" : {
 
     },
@@ -642,6 +645,9 @@
         }
       }
     },
+    "After thinning, the green portion will be removed from your app's binary" : {
+
+    },
     "All checkboxes" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1059,7 +1065,7 @@
     "App Thinning" : {
 
     },
-    "App thinning targets the Mach-O binaries in your universal apps and removes any unused architectures, such as x86_64 or arm64, leaving only the architectures your computer actually supports. The list shows only universal type apps, not your full app list.\n\nNOTE: After thinning, the yellow portion will be removed from your app's bundle size." : {
+    "App thinning targets the Mach-O binaries inside your universal app bundles and removes any unused architectures, such as x86_64 or arm64, leaving only the architectures your computer actually supports. The list shows only universal type apps, not your full app list." : {
 
     },
     "Appearance" : {
@@ -1413,7 +1419,7 @@
         }
       }
     },
-    "Binary Size: " : {
+    "Binary Size" : {
 
     },
     "Bundle Files..." : {
@@ -9090,6 +9096,12 @@
         }
       }
     },
+    "Saved: %@" : {
+
+    },
+    "Savings Size" : {
+
+    },
     "Scrollbar is hidden in lists" : {
       "localizations" : {
         "de" : {
@@ -10116,9 +10128,6 @@
         }
       }
     },
-    "Space Savings: " : {
-
-    },
     "Sponsor" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -10190,9 +10199,6 @@
           }
         }
       }
-    },
-    "Strip unused architectures from universal app bundles" : {
-
     },
     "Submit a bug or feature request" : {
       "extractionState" : "manual",
@@ -10557,6 +10563,9 @@
       }
     },
     "Thin" : {
+
+    },
+    "Thinning" : {
 
     },
     "This adds the file/folder to the Exclusions list. Edit the exclusions list from Settings > Folders tab" : {

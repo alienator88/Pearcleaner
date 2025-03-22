@@ -13,6 +13,10 @@ struct LipoView: View {
     @State private var selectAll: Bool = false
     @State private var selectedApps: Set<String> = []
     @State private var isProcessing: Bool = false
+    @State private var savingsAllApps: UInt32 = 0
+    @State private var binaryAllApps: UInt32 = 0
+    @State private var sliceSizesByPath = [String:(binary: UInt32,savings:UInt32)]()
+    @State private var totalSpaceSaved: UInt64 = 0
 
     // Filter the apps to only include universal ones
     var universalApps: [AppInfo] {
@@ -31,31 +35,24 @@ struct LipoView: View {
                         .frame(width: 50, height: 50)
                         .symbolRenderingMode(.hierarchical)
 
-                    VStack(alignment: .leading){
+
+                    HStack(){
                         Text("App Thinning").font(.title).fontWeight(.bold)
-                        Text("Strip unused architectures from universal app bundles")
-                            .font(.callout).foregroundStyle(.primary.opacity(0.5))
+                        Spacer()
+                        Text("Saved: \(formatByte(size: Int64(totalSpaceSaved)).human)").foregroundStyle(.green)
                     }
                 }
+                .padding(.horizontal, 5)
             }, content: {
-                HStack(spacing: 20) {
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text("App thinning targets the Mach-O binaries in your universal apps and removes any unused architectures, such as x86_64 or arm64, leaving only the architectures your computer actually supports. The list shows only universal type apps, not your full app list.\n\nNOTE: After thinning, the yellow portion will be removed from your app's bundle size.")
-                    }
-
-                    Spacer()
-
-                    //                    VStack(alignment: .trailing, spacing: 5) {
-                    //                        Text("Bundle Size")
-                    //
-                    //                    }
-
-
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("App thinning targets the Mach-O binaries inside your universal app bundles and removes any unused architectures, such as x86_64 or arm64, leaving only the architectures your computer actually supports. The list shows only universal type apps, not your full app list.")
+                    Text("After thinning, the green portion will be removed from your app's binary")
+                        .foregroundStyle(.secondary)
+                        .font(.callout)
                 }
             })
 
-            // Global "Select All" checkbox
-            HStack {
+            HStack() {
                 Toggle("Select All", isOn: Binding(
                     get: {
                         Set(universalApps.map { $0.path.path }) == selectedApps
@@ -73,8 +70,16 @@ struct LipoView: View {
 
                 Spacer()
 
+                Rectangle().fill(.green).frame(width: 10, height: 10)
+                Text("Savings Size").foregroundStyle(.secondary).padding(.trailing)
+                Rectangle().fill(.orange).frame(width: 10, height: 10)
+                Text("Binary Size").foregroundStyle(.secondary)
+
+                Spacer()
+
                 Text("\(universalApps.count) universal apps")
             }
+            .padding(.horizontal)
 
             if universalApps.isEmpty {
                 VStack(alignment: .center) {
@@ -88,7 +93,8 @@ struct LipoView: View {
                 ScrollView {
                     LazyVStack {
                         ForEach(universalApps, id: \.self) { app in
-                            AppRowView(app: app, selectedApps: $selectedApps)
+                            let (bin, sav) = sliceSizesByPath[app.path.path] ?? (0, 0)
+                            AppRowView(app: app, selectedApps: $selectedApps, savingsSize: sav, binarySize: bin)
                         }
                     }
                 }
@@ -97,42 +103,35 @@ struct LipoView: View {
 
             // Button to start the thinning process on selected apps
             HStack {
+
+                Text("\(formatByte(size: Int64(savingsAllApps)).human)").foregroundStyle(.green)
+                    .help("Total possible savings between all the apps")
+
                 Spacer()
 
-                if isProcessing {
-                    ProgressView().controlSize(.small)
-                }
-
                 Button {
-                    isProcessing = true
-                    DispatchQueue.global(qos: .userInitiated).async {
-                        var totalPreSize: UInt64 = 0
-                        var totalPostSize: UInt64 = 0
-
-                        for app in universalApps where selectedApps.contains(app.path.path) {
-                            let (success, sizes) = thinAppBundleArchitecture(at: app.path, of: app.arch, multi: true)
-                            if success, let sizes = sizes {
-                                totalPreSize += sizes["pre"] ?? 0
-                                totalPostSize += sizes["post"] ?? 0
-                            }
-                        }
-                        let overallSavings = totalPreSize > 0 ? Int((Double(totalPreSize - totalPostSize) / Double(totalPreSize)) * 100) : 0
-
-                        DispatchQueue.main.async {
-                            showCustomAlert(
-                                title: "Space Savings: \(overallSavings)%",
-                                message: "The total space savings between all the thinned apps\nSize Before: \(formatByte(size: Int64(totalPreSize)).human)\nSize After: \(formatByte(size: Int64(totalPostSize)).human)",
-                                style: .informational
-                            )
-                        }
-                        isProcessing = false
-                    }
+                    startThinning()
                 } label: {
-                    Label("Start Thinning", systemImage: "scissors")
-                        .padding(4)
+                    HStack {
+                        Text("Start Thinning")
+                        if isProcessing {
+                            ProgressView()
+                                .controlSize(.small)
+                        } else {
+                            Image(systemName: "scissors")
+                        }
+                    }
+                    .frame(minWidth: 100)
+                    .padding(4)
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(.red)
+
+                Spacer()
+
+                Text("\(formatByte(size: Int64(binaryAllApps)).human)").foregroundStyle(.orange)
+                    .help("Total binary size between all the apps")
+
 
             }
 
@@ -140,6 +139,51 @@ struct LipoView: View {
         .frame(maxWidth: .infinity)
         .padding(30)
         .padding(.top)
+        .onAppear { calculateAllSizes() }
+    }
+
+    private func calculateAllSizes() {
+        DispatchQueue.global(qos: .userInitiated).async {
+            var temp = [String:(UInt32,UInt32)]()
+            for app in universalApps {
+                if let execURL = app.executableURL,
+                   let sizes = getArchitectureSliceSizes(from: execURL.path) {
+                    temp[app.path.path] = (sizes.full, isOSArm() ? sizes.intel : sizes.arm)
+                }
+            }
+            DispatchQueue.main.async {
+                sliceSizesByPath = temp
+                savingsAllApps = temp.values.reduce(0) { $0 + $1.1 }
+                binaryAllApps = temp.values.reduce(0) { $0 + $1.0 }
+            }
+        }
+    }
+
+    private func startThinning() {
+        isProcessing = true
+        DispatchQueue.global(qos: .userInitiated).async {
+            var totalPreSize: UInt64 = 0
+            var totalPostSize: UInt64 = 0
+
+            for app in universalApps where selectedApps.contains(app.path.path) {
+                let (success, sizes) = thinAppBundleArchitecture(at: app.path, of: app.arch, multi: true)
+                if success, let sizes = sizes {
+                    totalPreSize += sizes["pre"] ?? 0
+                    totalPostSize += sizes["post"] ?? 0
+                    totalSpaceSaved += (sizes["pre"] ?? 0) - (sizes["post"] ?? 0)
+                }
+            }
+            let overallSavings = totalPreSize > 0 ? Int((Double(totalPreSize - totalPostSize) / Double(totalPreSize)) * 100) : 0
+
+            DispatchQueue.main.async {
+                showCustomAlert(
+                    title: "Space Savings: \(overallSavings)%\nTotal Space Saved: \(formatByte(size: Int64(totalSpaceSaved)).human)",
+                    message: "The total space savings between all the thinned apps\nSize Before: \(formatByte(size: Int64(totalPreSize)).human)\nSize After: \(formatByte(size: Int64(totalPostSize)).human)",
+                    style: .informational
+                )
+            }
+            isProcessing = false
+        }
     }
 }
 
@@ -148,51 +192,48 @@ struct LipoView: View {
 struct AppRowView: View {
     let app: AppInfo
     @Binding var selectedApps: Set<String>
+    let savingsSize: UInt32
+    let binarySize: UInt32
     @State private var sizeLoading: Bool = true
-    @State private var savingsSize: UInt32 = 0
-    @State private var binarySize: UInt32 = 0
     @State private var isHovered: Bool = false
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
 
     var body: some View {
-        VStack {
-            HStack {
-                Toggle(isOn: Binding(
-                    get: { selectedApps.contains(app.path.path) },
-                    set: { isSelected in
-                        if isSelected {
-                            selectedApps.insert(app.path.path)
-                        } else {
-                            selectedApps.remove(app.path.path)
-                        }
+        HStack {
+            Toggle(isOn: Binding(
+                get: { selectedApps.contains(app.path.path) },
+                set: { isSelected in
+                    if isSelected {
+                        selectedApps.insert(app.path.path)
+                    } else {
+                        selectedApps.remove(app.path.path)
                     }
-                )) {
-                    EmptyView()
                 }
-                .toggleStyle(SimpleCheckboxToggleStyle())
+            )) {
+                EmptyView()
+            }
+            .toggleStyle(SimpleCheckboxToggleStyle())
 
-                Text(app.appName).font(.title3)
+            VStack {
+                HStack {
 
-                Spacer()
-
-                VStack(alignment: .trailing) {
-
-                    HStack(spacing: 0) {
-                        Text("Space Savings: ")
-                            .foregroundStyle(.yellow)
-                        Text("\(formatByte(size: Int64(savingsSize)).human)")
-                            .foregroundStyle(.primary)
-                            .frame(minWidth: 50, alignment: .trailing)
+                    if let icon = app.appIcon {
+                        Image(nsImage: icon)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 20, height: 20)
                     }
-                    .font(.callout)
-                    HStack(spacing: 0) {
-                        Text("Binary Size: ")
-                            .foregroundStyle(.blue)
-                        Text("\(formatByte(size: Int64(binarySize)).human)")
-                            .foregroundStyle(.primary)
-                            .frame(minWidth: 50, alignment: .trailing)
+
+                    Text(app.appName).font(.title3)
+
+                    if binarySize > 0 && savingsSize > 0 {
+                        Text("**\(Int((Double(savingsSize) / Double(binarySize)) * 100))%** savings")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
                     }
-                    .font(.callout)
+
+                    Spacer()
+
                     HStack(spacing: 0) {
                         Text("Bundle Size: ")
                             .foregroundStyle(.gray)
@@ -201,14 +242,27 @@ struct AppRowView: View {
                             .frame(minWidth: 50, alignment: .trailing)
                     }
                     .font(.callout)
+
                 }
+
+                HorizontalSizeBarView(binarySize: binarySize, savingsSize: savingsSize)
+                    .frame(maxWidth: .infinity)
+
+                HStack {
+                    Text("\(formatByte(size: Int64(savingsSize)).human)")
+                        .foregroundStyle(.green)
+
+                    Spacer()
+
+                    Text("\(formatByte(size: Int64(binarySize)).human)")
+                        .foregroundStyle(.orange)
+                }
+                .font(.callout)
 
             }
 
-            HorizontalSizeBarView(bundleSize: app.bundleSize, binarySize: binarySize, savingsSize: savingsSize)
-                .frame(maxWidth: .infinity)
-
         }
+
         .padding()
         .background(RoundedRectangle(cornerRadius: 10)
             .fill(.quaternary.opacity(isHovered ? 0.5 : 0.3))
@@ -219,31 +273,38 @@ struct AppRowView: View {
         .onHover { hovered in
             isHovered = hovered
         }
-        .onAppear {
-            DispatchQueue.global(qos: .userInitiated).async {
-                let infoPlistPath = app.path.appendingPathComponent("Contents/Info.plist")
-                if let infoPlist = NSDictionary(contentsOf: infoPlistPath) as? [String: Any],
-                   let bundleExecutable = infoPlist["CFBundleExecutable"] as? String {
-                    let executablePath = app.path.appendingPathComponent("Contents/MacOS/\(bundleExecutable)")
-                    if let sliceSizes = getArchitectureSliceSizes(from: executablePath.path) {
-                        DispatchQueue.main.async {
-                            self.savingsSize = isOSArm() ? sliceSizes.intel : sliceSizes.arm
-                            self.binarySize = sliceSizes.full
-                        }
-                    } else {
-                        DispatchQueue.main.async {
-                            self.savingsSize = 0
-                            self.binarySize = 0
-                        }
-                    }
-                } else {
-                    printOS("App Thinning: Failed to read Info.plist or CFBundleExecutable not found when loading slice size")
-                }
-            }
+    }
+}
+
+
+
+struct HorizontalSizeBarView: View {
+    let binarySize: UInt32
+    let savingsSize: UInt32
+
+    var body: some View {
+        GeometryReader { geo in
+            let totalWidth = geo.size.width
+            let binaryWidth = totalWidth * (Double(binarySize) / Double(binarySize))
+            let savingsWidth = binaryWidth * (Double(savingsSize) / Double(binarySize))
+
+            RoundedRectangle(cornerRadius: 4).fill(Color.orange)
+                .frame(width: .infinity, height: 4)
+                .padding(2)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 4).strokeBorder(Color.gray, lineWidth: 1),
+                    alignment: .center
+                )
+                .overlay (
+                    RoundedRectangle(cornerRadius: 4).fill(Color.green)
+                        .frame(width: savingsWidth, height: 4)
+                        .padding(2),
+                    alignment: .leading
+                )
         }
     }
-
 }
+
 
 
 public func getArchitectureSliceSizes(from executablePath: String) -> (arm: UInt32, intel: UInt32, full: UInt32)? {
@@ -300,56 +361,36 @@ public func getArchitectureSliceSizes(from executablePath: String) -> (arm: UInt
 
 
 
-struct HorizontalSizeBarView: View {
-    let bundleSize: Int64
-    let binarySize: UInt32
-    let savingsSize: UInt32
 
-    var body: some View {
-        GeometryReader { geo in
-            let totalWidth = geo.size.width
-            let blueWidth = totalWidth * (Double(binarySize) / Double(bundleSize))
-            let yellowWidth = blueWidth * (Double(savingsSize) / Double(binarySize))
 
-            ZStack(alignment: .leading) {
-                Rectangle().fill(Color.gray).frame(width: totalWidth)
-//                    .overlay(
-//                        Text(formatByte(size: bundleSize).human)
-//                            .padding(5)
-//                            .font(.caption2)
-//                            .foregroundColor(.white),
-//                        alignment: .trailing
-//                    )
 
-                Rectangle().fill(Color.blue).frame(width: blueWidth)
-//                    .overlay(
-//                        Group {
-//                            if blueWidth >= 30 {
-//                                Text(formatByte(size: Int64(binarySize)).human)
-//                                    .padding(5)
-//                            }
-//                        }
-//                            .font(.caption2)
-//                            .foregroundColor(.white),
-//                        alignment: .trailing
-//                    )
 
-                Rectangle().fill(Color.yellow).frame(width: yellowWidth)
-//                    .overlay(
-//                        Group {
-//                            if yellowWidth >= 30 {
-//                                Text(formatByte(size: Int64(savingsSize)).human)
-//                                    .padding(5)
-//                            }
-//                        }
-//                            .font(.caption2)
-//                            .foregroundColor(.black),
-//                        alignment: .trailing
-//                    )
-
-            }
-            .cornerRadius(4)
-        }
-        .frame(height: 5)
-    }
-}
+//struct HorizontalSizeBarView: View {
+//    let bundleSize: Int64
+//    let binarySize: UInt32
+//    let savingsSize: UInt32
+//
+//    var body: some View {
+//        GeometryReader { geo in
+//            let totalWidth = geo.size.width
+//            let blueWidth = totalWidth * (Double(binarySize) / Double(bundleSize))
+//            let yellowWidth = blueWidth * (Double(savingsSize) / Double(binarySize))
+//
+//            ZStack(alignment: .leading) {
+//                RoundedRectangle(cornerRadius: 4).strokeBorder(Color.gray, lineWidth: 1)
+//                    .frame(width: totalWidth, height: 8)
+//
+//
+//                RoundedRectangle(cornerRadius: 4).fill(Color.blue)
+//                    .frame(width: blueWidth, height: 4)
+//                    .padding(.horizontal, 2)
+//                    .shadow(radius: 2)
+//
+//                RoundedRectangle(cornerRadius: 4).fill(Color.yellow)
+//                    .frame(width: yellowWidth, height: 4)
+//                    .padding(.horizontal, 2)
+//
+//            }
+//        }
+//    }
+//}

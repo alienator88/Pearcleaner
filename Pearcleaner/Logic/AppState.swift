@@ -158,15 +158,27 @@ struct AppInfo: Identifiable, Equatable, Hashable {
     let creationDate: Date?
     let contentChangeDate: Date?
     let lastUsedDate: Date?
+
     var totalSize: Int64
     {
         return fileSize.values.reduce(0, +)
     }
+
     var totalSizeLogical: Int64
     {
         return fileSizeLogical.values.reduce(0, +)
     }
-    
+
+    var executableURL: URL? {
+        let infoPlistURL = path.appendingPathComponent("Contents/Info.plist")
+        guard let info = NSDictionary(contentsOf: infoPlistURL) as? [String: Any],
+              let execName = info["CFBundleExecutable"] as? String else {
+            return nil
+        }
+        return path.appendingPathComponent("Contents/MacOS").appendingPathComponent(execName)
+    }
+
+
     var isEmpty: Bool {
         return path == URL(fileURLWithPath: "./") && bundleIdentifier.isEmpty && appName.isEmpty
     }
