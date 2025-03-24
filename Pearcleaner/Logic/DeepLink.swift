@@ -33,7 +33,7 @@ class DeeplinkManager {
         static let uninstallApp = "uninstallApp"
         static let checkOrphanedFiles = "checkOrphanedFiles"
         static let checkDevEnv = "checkDevEnv"
-        static let appThinning = "appThinning"
+        static let appLipo = "appLipo"
         static let checkUpdates = "checkUpdates"
         static let appsPaths = "appsPaths"
         static let orphanedPaths = "orphanedPaths"
@@ -47,7 +47,7 @@ class DeeplinkManager {
             uninstallApp,
             checkOrphanedFiles,
             checkDevEnv,
-            appThinning,
+            appLipo,
             checkUpdates,
             appsPaths,
             orphanedPaths,
@@ -232,8 +232,8 @@ class DeeplinkManager {
             }
             appState.currentPage = .development
             break
-        case DeepLinkActions.appThinning:
-            appState.currentPage = .thinning
+        case DeepLinkActions.appLipo:
+            appState.currentPage = .lipo
             break
         case DeepLinkActions.checkUpdates:
             updater.checkForUpdates(sheet: true)

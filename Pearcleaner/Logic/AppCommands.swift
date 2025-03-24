@@ -98,19 +98,19 @@ struct AppCommands: Commands {
 
                 Button
                 {
-                    appState.currentPage = .orphans
+                    appState.currentPage = .lipo
 
                 } label: {
-                    Text("Orphaned Files")
+                    Text("App Lipo")
                 }
                 .keyboardShortcut("3", modifiers: .command)
 
                 Button
                 {
-                    appState.currentPage = .thinning
+                    appState.currentPage = .orphans
 
                 } label: {
-                    Text("App Thinning")
+                    Text("Orphaned Files")
                 }
                 .keyboardShortcut("4", modifiers: .command)
             }

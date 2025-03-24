@@ -20,155 +20,96 @@ class FileManagerUndo {
 
     // Delete a file and register an undo action to restore it
     func deleteFiles(at urls: [URL], isCLI: Bool = false) -> Bool {
-        // Check if any file is protected
-        let hasProtectedFiles = urls.contains { !FileManager.default.isWritableFile(atPath: $0.path) }
         let trashPath = (NSHomeDirectory() as NSString).appendingPathComponent(".Trash")
         let dispatchSemaphore = DispatchSemaphore(value: 0)  // Semaphore to make it synchronous
         var finalStatus = false  // Store the final success/failure status
 
-        if hasProtectedFiles {
-            // Collect file pairs and build mv commands
-            var tempFilePairs: [(trashURL: URL, originalURL: URL)] = []
-            var seenFileNames: [String: Int] = [:]
+        var tempFilePairs: [(trashURL: URL, originalURL: URL)] = []
+        var seenFileNames: [String: Int] = [:]
 
-            let mvCommands = urls.map { file -> String in
-                var fileName = file.lastPathComponent
+        let hasProtectedFiles = urls.contains { $0.isProtected }
 
-                // Check if the filename has already been used in this batch
-                if let count = seenFileNames[fileName] {
-                    // Increment counter and append it to the filename
-                    let newCount = count + 1
-                    seenFileNames[fileName] = newCount
+        let mvCommands = urls.map { file -> String in
+            var fileName = file.lastPathComponent
 
-                    let newName = "\(file.deletingPathExtension().lastPathComponent)\(newCount).\(file.pathExtension)"
-                    fileName = newName
-                } else {
-                    // First occurrence of this filename
-                    seenFileNames[fileName] = 1
-                }
-
-                // Construct the trash destination URL with the possibly updated filename
-                let destinationURL = URL(fileURLWithPath: (trashPath as NSString).appendingPathComponent(fileName))
-                tempFilePairs.append((trashURL: destinationURL, originalURL: file))
-
-                let source = "\"\(file.path)\""
-                let destination = "\"\(destinationURL.path)\""
-                return "/bin/mv \(source) \(destination)"
-            }.joined(separator: " ; ")
-
-            // Make filePairs immutable
-            let filePairs = tempFilePairs
-
-            // Conditional Execution using Helper Tool if installed
-            if executeFileCommands(mvCommands, isCLI: isCLI) {
-                // Register undo action with the immutable filePairs
-                undoManager.registerUndo(withTarget: self) { target in
-                    let result = target.restoreFiles(filePairs: filePairs)
-                    if !result {
-                        printOS("Trash Error: Could not restore files.")
-                    }
-                }
-                undoManager.setActionName("Delete File")
-
-                finalStatus = true
+            if let count = seenFileNames[fileName] {
+                let newCount = count + 1
+                seenFileNames[fileName] = newCount
+                let newName = "\(file.deletingPathExtension().lastPathComponent)\(newCount).\(file.pathExtension)"
+                fileName = newName
             } else {
-                printOS("Trash Error: \(isCLI ? "Could not run commands directly with sudo." : "Could not perform privileged commands.")")
-                updateOnMain {
-                    AppState.shared.trashError = true
-                }
-                finalStatus = false
+                seenFileNames[fileName] = 1
             }
 
-            dispatchSemaphore.signal()
+            let destinationURL = URL(fileURLWithPath: (trashPath as NSString).appendingPathComponent(fileName))
+            tempFilePairs.append((trashURL: destinationURL, originalURL: file))
 
+            let source = "\"\(file.path)\""
+            let destination = "\"\(destinationURL.path)\""
+            return "/bin/mv \(source) \(destination)"
+        }.joined(separator: " ; ")
+
+        let filePairs = tempFilePairs
+
+        if executeFileCommands(mvCommands, isCLI: isCLI, hasProtectedFiles: hasProtectedFiles) {
+            undoManager.registerUndo(withTarget: self) { target in
+                let result = target.restoreFiles(filePairs: filePairs)
+                if !result {
+                    printOS("Trash Error: Could not restore files.")
+                }
+            }
+            undoManager.setActionName("Delete File")
+
+            finalStatus = true
         } else {
-            // If no files are protected, trash them normally
-            for url in urls {
-                var trashedNSURL: NSURL?
-                do {
-                    try FileManager.default.trashItem(at: url, resultingItemURL: &trashedNSURL)
-                    if let trashURL = trashedNSURL as URL? {
-                        undoManager.registerUndo(withTarget: self) { target in
-                            let result = target.restoreFiles(filePairs: [(trashURL, url)])
-                            if !result {
-                                printOS("Trash Error: Could not restore file from \(trashURL) to \(url)")
-                            }
-                        }
-                        undoManager.setActionName("Delete File")
-                    }
-                } catch {
-                    printOS("Error trashing file at \(url): \(error)")
-                    updateOnMain {
-                        AppState.shared.trashError = true
-                    }
-                    finalStatus = false
-                    dispatchSemaphore.signal()
-                    return false
-                }
+//            printOS("Trash Error: \(isCLI ? "Could not run commands directly with sudo." : "Could not perform privileged commands.")")
+            updateOnMain {
+                AppState.shared.trashError = true
             }
-
-            finalStatus = true  // Success for non-protected files
-            dispatchSemaphore.signal()
-
+            finalStatus = false
         }
+
+        dispatchSemaphore.signal()
 
         dispatchSemaphore.wait()
         return finalStatus
     }
 
     func restoreFiles(filePairs: [(trashURL: URL, originalURL: URL)], isCLI: Bool = false) -> Bool {
-        // Check if any file is protected
+        let dispatchSemaphore = DispatchSemaphore(value: 0)
+        var finalStatus = true
+
         let hasProtectedFiles = filePairs.contains {
-            !FileManager.default.isWritableFile(atPath: $0.originalURL.deletingLastPathComponent().path)
+            $0.originalURL.deletingLastPathComponent().isProtected
         }
 
-        let dispatchSemaphore = DispatchSemaphore(value: 0)  // Semaphore to make it synchronous
-        var finalStatus = true  // Assume success, set to false on error
+        let commands = filePairs.map {
+            let source = "\"\($0.trashURL.path)\""
+            let destination = "\"\($0.originalURL.path)\""
+            return "/bin/mv \(source) \(destination)"
+        }.joined(separator: " ; ")
 
-        if hasProtectedFiles {
-            // Build all mv commands chained with ;
-            let commands = filePairs.map {
-                let source = "\"\($0.trashURL.path)\""
-                let destination = "\"\($0.originalURL.path)\""
-                return "/bin/mv \(source) \(destination)"
-            }.joined(separator: " ; ")
-
-            // Conditional Execution using Helper Tool if installed
-            if executeFileCommands(commands, isCLI: isCLI) {
-                finalStatus = true
-            } else {
-                printOS("Trash Error: \(isCLI ? "Failed to run restore CLI commands" : "Failed to run restore privileged commands")")
-                finalStatus = false
-            }
-
-            // Signal the semaphore to continue
-            dispatchSemaphore.signal()
-
+        if executeFileCommands(commands, isCLI: isCLI, hasProtectedFiles: hasProtectedFiles, isRestore: true) {
+            finalStatus = true
         } else {
-            // If no files are protected, restore them normally
-            for pair in filePairs {
-                do {
-                    try FileManager.default.moveItem(at: pair.trashURL, to: pair.originalURL)
-                } catch {
-                    printOS("Error restoring file from \(pair.trashURL) to \(pair.originalURL): \(error)")
-                    finalStatus = false  // Failure
-                }
+//            printOS("Trash Error: \(isCLI ? "Failed to run restore CLI commands" : "Failed to run restore privileged commands")")
+            updateOnMain {
+                AppState.shared.trashError = true
             }
-
-            // Signal the semaphore to continue
-            dispatchSemaphore.signal()
+            finalStatus = false
         }
 
-        // Wait for all operations to complete
+        dispatchSemaphore.signal()
         dispatchSemaphore.wait()
-
-        return finalStatus  // Return the final status
+        return finalStatus
     }
 
-    private func executeFileCommands(_ commands: String, isCLI: Bool) -> Bool {
+    // Helper function to perform shell commands based on available privileges
+    private func executeFileCommands(_ commands: String, isCLI: Bool, hasProtectedFiles: Bool, isRestore: Bool = false) -> Bool {
         var status = false
 
         if HelperToolManager.shared.isHelperToolInstalled {
+            printOS(isRestore ? "Attempting restore using helper tool" : "Attempting delete using helper tool")
             let semaphore = DispatchSemaphore(value: 0)
             var success = false
             var output = ""
@@ -183,47 +124,65 @@ class FileManagerUndo {
 
             status = success
             if !success {
-                printOS("Trash Error: \(output)")
+                printOS(isRestore ? "Restore Error: \(output)" : "Trash Error: \(output)")
                 updateOnMain {
                     AppState.shared.trashError = true
                 }
             }
         } else {
-            if isCLI {
-                status = runDirectShellCommand(command: commands)
+            if isCLI || !hasProtectedFiles {
+                printOS(isRestore ? "Attempting restore using direct shell command" : "Attempting delete using direct shell command")
+                let result = runDirectShellCommand(command: commands)
+                status = result.0
+                if !status {
+                    printOS(isRestore ? "Restore Error: \(result.1)" : "Trash Error: \(result.1)")
+                    updateOnMain {
+                        AppState.shared.trashError = true
+                    }
+                }
             } else {
-                status = performPrivilegedCommands(commands: commands)
+                printOS(isRestore ? "Attempting restore using authorization services" : "Attempting delete using authorization services")
+                let result = performPrivilegedCommands(commands: commands)
+                status = result.0
+                if !status {
+                    printOS(isRestore ? "Restore Error: performPrivilegedCommands failed (\(result.1))" : "Trash Error: performPrivilegedCommands failed (\(result.1)")
+                    updateOnMain {
+                        AppState.shared.trashError = true
+                    }
+                }
             }
         }
 
         return status
     }
 
-}
+    // Helper to run direct non-privileged shell commands
+    private func runDirectShellCommand(command: String) -> (Bool, String) {
+        let task = Process()
+        task.launchPath = "/bin/sh"
+        task.arguments = ["-c", command]
 
-func runDirectShellCommand(command: String) -> Bool {
-    let task = Process()
-    task.launchPath = "/bin/sh"
-    task.arguments = ["-c", command]
+        let pipe = Pipe()
+        task.standardOutput = pipe
+        task.standardError = pipe
+        
+        task.launch()
+        task.waitUntilExit()
+        
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        let output = String(data: data, encoding: .utf8) ?? ""
 
-    let pipe = Pipe()
-    task.standardOutput = pipe
-    task.standardError = pipe
-
-    task.launch()
-    task.waitUntilExit()
-
-    let data = pipe.fileHandleForReading.readDataToEndOfFile()
-    if let output = String(data: data, encoding: .utf8) {
         if output.lowercased().contains("permission denied") {
-            return false
+            return (false, output)
         }
+
+        return (task.terminationStatus == 0, output)
     }
 
-    return task.terminationStatus == 0
 }
 
-// Helper to check if the file is in a protected location by verifying writability
-private func isProtected(url: URL) -> Bool {
-    return !FileManager.default.isWritableFile(atPath: url.path)
+extension URL {
+    var isProtected: Bool {
+        !FileManager.default.isWritableFile(atPath: self.path)
+    }
 }

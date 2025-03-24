@@ -37,7 +37,8 @@ struct LipoView: View {
 
 
                     HStack(){
-                        Text("App Thinning").font(.title).fontWeight(.bold)
+                        Text("Lipo").font(.title).fontWeight(.bold)
+                        BetaBadge()
                         Spacer()
                         Text("Saved: \(formatByte(size: Int64(totalSpaceSaved)).human)").foregroundStyle(.green)
                     }
@@ -45,8 +46,8 @@ struct LipoView: View {
                 .padding(.horizontal, 5)
             }, content: {
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("App thinning targets the Mach-O binaries inside your universal app bundles and removes any unused architectures, such as x86_64 or arm64, leaving only the architectures your computer actually supports. The list shows only universal type apps, not your full app list.")
-                    Text("After thinning, the green portion will be removed from your app's binary")
+                    Text("App lipo targets the Mach-O binaries inside your universal app bundles and removes any unused architectures, such as x86_64 or arm64, leaving only the architectures your computer actually supports. The list shows only universal type apps, not your full app list.")
+                    Text("After lipo, the green portion will be removed from your app's binary")
                         .foregroundStyle(.secondary)
                         .font(.callout)
                 }
@@ -101,7 +102,7 @@ struct LipoView: View {
             }
 
 
-            // Button to start the thinning process on selected apps
+            // Button to start the lipo process on selected apps
             HStack {
 
                 Text("\(formatByte(size: Int64(savingsAllApps)).human)").foregroundStyle(.green)
@@ -110,10 +111,10 @@ struct LipoView: View {
                 Spacer()
 
                 Button {
-                    startThinning()
+                    startLipo()
                 } label: {
                     HStack {
-                        Text("Start Thinning")
+                        Text("Start Lipo")
                         if isProcessing {
                             ProgressView()
                                 .controlSize(.small)
@@ -159,7 +160,7 @@ struct LipoView: View {
         }
     }
 
-    private func startThinning() {
+    private func startLipo() {
         isProcessing = true
         DispatchQueue.global(qos: .userInitiated).async {
             var totalPreSize: UInt64 = 0
@@ -178,7 +179,7 @@ struct LipoView: View {
             DispatchQueue.main.async {
                 showCustomAlert(
                     title: "Space Savings: \(overallSavings)%\nTotal Space Saved: \(formatByte(size: Int64(totalSpaceSaved)).human)",
-                    message: "The total space savings between all the thinned apps\nSize Before: \(formatByte(size: Int64(totalPreSize)).human)\nSize After: \(formatByte(size: Int64(totalPostSize)).human)",
+                    message: "The total space savings between all the lipo'd apps\nSize Before: \(formatByte(size: Int64(totalPreSize)).human)\nSize After: \(formatByte(size: Int64(totalPostSize)).human)",
                     style: .informational
                 )
             }
@@ -343,7 +344,7 @@ public func getArchitectureSliceSizes(from executablePath: String) -> (arm: UInt
                 offset += 20
             }
         } else {
-            // For a thin binary, assume the whole file is the slice.
+            // For a lipo'd binary, assume the whole file is the slice.
             let cpuType = fileData.subdata(in: 4..<8).withUnsafeBytes { $0.load(as: UInt32.self).bigEndian }
             if cpuType == 0x100000C {
                 armSize = fullSize

@@ -645,7 +645,7 @@
         }
       }
     },
-    "After thinning, the green portion will be removed from your app's binary" : {
+    "After lipo, the green portion will be removed from your app's binary" : {
 
     },
     "All checkboxes" : {
@@ -946,6 +946,12 @@
         }
       }
     },
+    "App Lipo" : {
+
+    },
+    "App lipo targets the Mach-O binaries inside your universal app bundles and removes any unused architectures, such as x86_64 or arm64, leaving only the architectures your computer actually supports. The list shows only universal type apps, not your full app list." : {
+
+    },
     "App Name" : {
       "localizations" : {
         "de" : {
@@ -1061,12 +1067,6 @@
           }
         }
       }
-    },
-    "App Thinning" : {
-
-    },
-    "App thinning targets the Mach-O binaries inside your universal app bundles and removes any unused architectures, such as x86_64 or arm64, leaving only the architectures your computer actually supports. The list shows only universal type apps, not your full app list." : {
-
     },
     "Appearance" : {
       "extractionState" : "manual",
@@ -1418,6 +1418,9 @@
           }
         }
       }
+    },
+    "BETA" : {
+
     },
     "Binary Size" : {
 
@@ -5525,6 +5528,9 @@
       }
     },
     "Link To" : {
+
+    },
+    "Lipo" : {
 
     },
     "Locations that will be searched for .app files. Click a non-default path to remove it. Default paths can't be removed." : {
@@ -10187,7 +10193,7 @@
         }
       }
     },
-    "Start Thinning" : {
+    "Start Lipo" : {
 
     },
     "Strict app name search" : {
@@ -10561,12 +10567,6 @@
           }
         }
       }
-    },
-    "Thin" : {
-
-    },
-    "Thinning" : {
-
     },
     "This adds the file/folder to the Exclusions list. Edit the exclusions list from Settings > Folders tab" : {
       "extractionState" : "manual",
@@ -10994,6 +10994,9 @@
         }
       }
     },
+    "Total binary size between all the apps" : {
+
+    },
     "Total environment paths available" : {
       "localizations" : {
         "de" : {
@@ -11045,6 +11048,9 @@
           }
         }
       }
+    },
+    "Total possible savings between all the apps" : {
+
     },
     "Total size of files:" : {
       "localizations" : {

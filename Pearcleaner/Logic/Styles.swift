@@ -762,16 +762,20 @@ struct CustomPickerButton: View {
                                     HStack {
                                         Image(systemName: option.icon)
                                         Text(option.title)
+                                        if option.title == "Lipo" {
+                                            BetaBadge()
+                                        }
                                         Spacer()
                                         switch option.title {
                                         case "Applications":
                                             Text(verbatim: "⌘1").font(.footnote).opacity(0.3)
                                         case "Development":
                                             Text(verbatim: "⌘2").font(.footnote).opacity(0.3)
-                                        case "Orphaned Files":
+                                        case "Lipo":
                                             Text(verbatim: "⌘3").font(.footnote).opacity(0.3)
-                                        case "Thinning":
+                                        case "Orphaned Files":
                                             Text(verbatim: "⌘4").font(.footnote).opacity(0.3)
+
                                         default:
                                             EmptyView()
                                         }
@@ -863,11 +867,29 @@ struct SettingsToggle: ToggleStyle {
 struct HelperBadge: View {
     @AppStorage("settings.general.selectedTab") private var selectedTab: CurrentTabView = .general
 
-    public var body: some View {
+    var body: some View {
         AlertNotification(label: "Helper Not Installed".localized(), icon: "key", buttonAction: {
             selectedTab = .helper
             openAppSettings()
         }, btnColor: Color.orange, hideLabel: false)
 
+    }
+}
+
+
+struct BetaBadge: View {
+    let fontSize: CGFloat
+
+    init(fontSize: CGFloat = 10) {
+        self.fontSize = fontSize
+    }
+
+    var body: some View {
+        Text("BETA").font(.system(size: fontSize)).foregroundColor(.orange)
+            .padding(1).padding(.horizontal, 2)
+            .overlay {
+                RoundedRectangle(cornerRadius: 4)
+                    .strokeBorder(.orange, lineWidth: 1)
+            }
     }
 }

@@ -94,8 +94,11 @@ class HelperToolManager: ObservableObject {
         }
 
         await updateStatusMessages(with: service, occurredError: occurredError)
+        let isEnabled = (service.status == .enabled)
+        let whoamiResult = await runCommand("whoami", skipHelperCheck: true)
+        let isRoot = whoamiResult.0 && whoamiResult.1.trimmingCharacters(in: .whitespacesAndNewlines) == "root"
         updateOnMain {
-            self.isHelperToolInstalled = (service.status == .enabled)
+            self.isHelperToolInstalled = isEnabled && isRoot
         }
     }
 
@@ -105,8 +108,8 @@ class HelperToolManager: ObservableObject {
     }
 
     // Function to run privileged commands
-    func runCommand(_ command: String) async -> (Bool, String) {
-        if !isHelperToolInstalled {
+    func runCommand(_ command: String, skipHelperCheck: Bool = false) async -> (Bool, String) {
+        if !skipHelperCheck && !isHelperToolInstalled {
             return (false, "XPC: Helper tool is not installed")
         }
 

@@ -385,12 +385,12 @@ struct FilesView: View {
 
                             if appState.appInfo.arch == .universal {
                                 Button {
-                                    showCustomAlert(title: "App Thinning", message: "Pearcleaner will strip the \(isOSArm() ? "intel" : "arm64") architecture from \(appState.appInfo.appName)'s executable file to save space. Would you like to proceed?", style: .informational, onOk: {
+                                    showCustomAlert(title: "App Lipo", message: "Pearcleaner will strip the \(isOSArm() ? "intel" : "arm64") architecture from \(appState.appInfo.appName)'s executable file to save space. Would you like to proceed?", style: .informational, onOk: {
                                         let _ = thinAppBundleArchitecture(at: appState.appInfo.path, of: appState.appInfo.arch)
                                     })
 
                                 } label: {
-                                    Text("Thin")
+                                    Text("Lipo")
                                 }
                                 .buttonStyle(LipoButton())
                             }
@@ -461,7 +461,10 @@ struct FilesView: View {
                         // Update the app's file list by removing the deleted files
                         updateOnMain {
                             appState.appInfo.fileSize = appState.appInfo.fileSize.filter { !selectedItemsArray.contains($0.key) }
+                            appState.appInfo.fileSizeLogical = appState.appInfo.fileSizeLogical.filter { !selectedItemsArray.contains($0.key) }
+                            appState.appInfo.fileIcon = appState.appInfo.fileIcon.filter { !selectedItemsArray.contains($0.key) }
                             appState.selectedItems.removeAll()
+                            updateSortedFiles()
                         }
 
                         // Determine if it's a full delete
@@ -490,9 +493,7 @@ struct FilesView: View {
 
                         case .semiDelete:
                             // Some files deleted but main app bundle remains
-                            // App remains in the list; UI stays the same
-                            // Do NOT call `caskCleanup` here since the main app bundle wasn't removed
-                            // Keeping this for future use-cases
+                            // App remains in the list; removes only deleted items
                             break
                         }
 
@@ -563,6 +564,9 @@ struct FilesView: View {
                 showAppInFiles(appInfo: nextApp, appState: appState, locations: locations, showPopover: $showPopover)
             }
         }
+
+        // Update the files list
+        updateSortedFiles()
     }
 
     // Function to remove a path from externalPaths and update appInfo if necessary

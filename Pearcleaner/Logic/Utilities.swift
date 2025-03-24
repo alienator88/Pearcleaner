@@ -120,7 +120,10 @@ func manageSymlink(install: Bool) {
         }
         semaphore.wait()
     } else {
-        let _ = performPrivilegedCommands(commands: command)
+        let result = performPrivilegedCommands(commands: command)
+        if !result.0 {
+            printOS("Symlink failed: \(result.1)")
+        }
     }
 
     updateOnMain {
@@ -195,7 +198,7 @@ func checkAppBundleArchitecture(at appBundlePath: String) -> Arch {
         }
         return archs.count == 1 ? archs.first! : .universal
     } else {
-        // Thin binary: read cpu type from header
+        // Lipo binary: read cpu type from header
         guard fileData.count >= 8 else { return .empty }
         let cputype = fileData.subdata(in: 4..<8).withUnsafeBytes { $0.load(as: UInt32.self).bigEndian }
         if cputype == 0x0100000c { return .arm }
@@ -230,26 +233,26 @@ func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool
        let bundleExecutable = infoPlist["CFBundleExecutable"] as? String {
         executableName = bundleExecutable
     } else {
-        printOS("Lipo: Failed to read Info.plist or CFBundleExecutable not found when thinning bundle")
+        printOS("Lipo: Failed to read Info.plist or CFBundleExecutable not found")
         return (false, nil)
     }
 
     // Get full path to executable
     let executablePath = appBundlePath.appendingPathComponent("Contents/MacOS/\(executableName)").path
 
-    // Get size before thinning (lipo/Mach-O)
+    // Get size before lipo (lipo/Mach-O)
     guard let preAttributes = try? FileManager.default.attributesOfItem(atPath: executablePath),
           let preLipoSize = preAttributes[.size] as? UInt64 else {
         printOS("Lipo: Failed to get pre-lipo size for executable at \(executablePath)")
         return (false, nil)
     }
 
-    // Use Mach-O helper function to thin the binary
+    // Use Mach-O helper function to lipo the binary
     let success = thinBinaryUsingMachO(executablePath: executablePath)
 
     // Update the app bundle timestamp to refresh Finder
     if success {
-        // Get size after thinning
+        // Get size after lipo
         guard let postAttributes = try? FileManager.default.attributesOfItem(atPath: executablePath),
               let postLipoSize = postAttributes[.size] as? UInt64 else {
             printOS("Lipo: Failed to get post-lipo size for executable at \(executablePath)")
@@ -257,7 +260,7 @@ func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool
         }
 
         if !multi {
-            // Update app sizes after thinning in sortedApps array and the AppInfo active object
+            // Update app sizes after lipo in sortedApps array and the AppInfo active object
             AppState.shared.getBundleSize(for: AppState.shared.appInfo) { newSize in
                 let newFileSize = totalSizeOnDisk(for: AppState.shared.appInfo.path)
                 updateOnMain {
@@ -271,7 +274,7 @@ func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool
                     AppState.shared.appInfo = updatedAppInfo
 
                     let savingsPercentage = Int((Double(preLipoSize - postLipoSize) / Double(preLipoSize)) * 100)
-                    showCustomAlert(title: "Space Savings: \(savingsPercentage)%", message: "Thinned File:\n\n\(executablePath)", style: .informational)
+                    showCustomAlert(title: "Space Savings: \(savingsPercentage)%", message: "Lipo'd File:\n\n\(executablePath)", style: .informational)
                 }
             }
         } else { // Update the appInfo in sortedApps array
@@ -294,73 +297,7 @@ func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool
     return (success, nil)
 }
 
-//func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch) -> Bool {
-//    updateOnMain {
-//        if let index = AppState.shared.sortedApps.firstIndex(where: { $0.path == appBundlePath }) {
-//            var updatedAppInfo = AppState.shared.sortedApps[index]
-//            updatedAppInfo.bundleSize = 0
-//            AppState.shared.sortedApps[index] = updatedAppInfo
-//        }
-//    }
-//    guard arch == .universal else {
-//        printOS("Skipping thinning. App is already single architecture: \(arch)")
-//        return false
-//    }
-//    let targetArch: Arch = isOSArm() ? .arm : .intel
-//
-//    let executableName: String
-//
-//    // Extract the executable name from Info.plist
-//    let infoPlistPath = appBundlePath.appendingPathComponent("Contents/Info.plist")
-//    if let infoPlist = NSDictionary(contentsOf: infoPlistPath) as? [String: Any],
-//       let bundleExecutable = infoPlist["CFBundleExecutable"] as? String {
-//        executableName = bundleExecutable
-//    } else {
-//        printOS("Failed to read Info.plist or CFBundleExecutable not found when thinning bundle")
-//        return false
-//    }
-//
-//    let executablePath = appBundlePath.appendingPathComponent("Contents/MacOS/\(executableName)").path
-//    let binaryPath = Bundle.main.bundleURL.appendingPathComponent("Contents/Resources/lipo")
-//    let lipoCommand = "\"\(binaryPath.path)\" -thin \(targetArch == .arm ? "arm64" : "x86_64") -output \"\(executablePath)\" \"\(executablePath)\" && /usr/bin/touch \"\(appBundlePath.path)\""
-//
-//    var success = false
-//    var output = ""
-//
-//    if HelperToolManager.shared.isHelperToolInstalled {
-//        let semaphore = DispatchSemaphore(value: 0)
-//        Task {
-//            let result = await HelperToolManager.shared.runCommand(lipoCommand)
-//            success = result.0
-//            output = result.1
-//            semaphore.signal()
-//        }
-//        semaphore.wait()
-//    } else {
-//        success = performPrivilegedCommands(commands: lipoCommand)
-//    }
-//
-//    if !output.lowercased().contains("no output") {
-//        printOS("Lipo Output: \(output)")
-//    }
-//
-//    if success {
-//        AppState.shared.getBundleSize(for: AppState.shared.appInfo) { newSize in
-//            let newFileSize = totalSizeOnDisk(for: AppState.shared.appInfo.path)
-//            updateOnMain {
-//                // Create a new appInfo instance with updated size values
-//                var updatedAppInfo = AppState.shared.appInfo
-//                updatedAppInfo.bundleSize = newSize
-//                updatedAppInfo.fileSize[AppState.shared.appInfo.path] = newFileSize.real
-//                updatedAppInfo.fileSizeLogical[AppState.shared.appInfo.path] = newFileSize.logical
-//                // Replace the whole appInfo object
-//                AppState.shared.appInfo = updatedAppInfo
-//            }
-//        }
-//    }
-//
-//    return success
-//}
+
 
 // Check if app is running before deleting app files
 func killApp(appId: String, completion: @escaping () -> Void = {}) {

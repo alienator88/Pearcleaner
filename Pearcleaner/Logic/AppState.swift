@@ -277,7 +277,7 @@ enum CurrentPage:Int, CaseIterable, Identifiable
     case applications
     case orphans
     case development
-    case thinning
+    case lipo
 
     var id: Int { rawValue }
     
@@ -289,8 +289,8 @@ enum CurrentPage:Int, CaseIterable, Identifiable
             return (String(localized: "Orphaned Files"), "doc.text.magnifyingglass")
         case .development:
             return (String(localized: "Development"), "hammer.circle")
-        case .thinning:
-            return (String(localized: "Thinning"), "square.split.1x2")
+        case .lipo:
+            return (String(localized: "Lipo"), "square.split.1x2")
         }
     }
     
