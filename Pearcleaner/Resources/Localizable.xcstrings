@@ -645,7 +645,7 @@
         }
       }
     },
-    "After lipo, the green portion will be removed from your app's binary" : {
+    "After lipo, the green portion will be removed from your app's binary. Make sure to open an app at least once before lipo to make sure macOS has cached the signature." : {
 
     },
     "All checkboxes" : {
