@@ -32,6 +32,15 @@ struct HelperSettingsTab: View {
                                 .padding(4)
                         }
                         .buttonStyle(ResetSettingsButtonStyle(isResetting: .constant(false), label: String(localized: "Login Items"), help: ""))
+                        .contextMenu {
+                            Button("Kickstart Service") {
+                                let result = performPrivilegedCommands(commands: "launchctl kickstart -k system/com.alienator88.Pearcleaner.PearcleanerHelper")
+
+                                if !result.0 {
+                                    printOS("Helper Kickstart Error: \(result.1)")
+                                }
+                            }
+                        }
                     }
 
                 },

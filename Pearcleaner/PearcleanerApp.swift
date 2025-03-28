@@ -238,6 +238,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
         ensureApplicationSupportFolderExists()
 
+        // Remove this after a couple versions
+        removeOldSentinelPlist()
+
     }
 
 
