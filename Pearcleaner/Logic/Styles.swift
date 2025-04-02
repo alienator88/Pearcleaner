@@ -155,7 +155,7 @@ struct LadderTopRoundedRectangle: InsettableShape {
         var path = Path()
 
         // Calculate the middle x position for the vertical section
-//        let ladderStartX = rect.maxX - cornerRadius - (rect.width / ladderPosition)
+        //        let ladderStartX = rect.maxX - cornerRadius - (rect.width / ladderPosition)
         let ladderStartX = rect.minX + cornerRadius + ladderPosition
 
         // Start at the top-right corner
@@ -266,9 +266,9 @@ struct SimpleCheckboxToggleStyle: ToggleStyle {
                 .frame(width: 14, height: 14)
                 .overlay {
                     if configuration.isOn {
-//                        RoundedRectangle(cornerRadius: 2)
-//                            .fill(themeManager.pickerColor.adjustBrightness(-20))
-//                            .frame(width: 8, height: 8)
+                        //                        RoundedRectangle(cornerRadius: 2)
+                        //                            .fill(themeManager.pickerColor.adjustBrightness(-20))
+                        //                            .frame(width: 8, height: 8)
                         Image(systemName: "checkmark")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
@@ -278,7 +278,7 @@ struct SimpleCheckboxToggleStyle: ToggleStyle {
                 }
                 .overlay {
                     RoundedRectangle(cornerRadius: 4)
-                        .strokeBorder(themeManager.pickerColor.adjustBrightness(isHovered ? -15 : -5.0), lineWidth: 1)
+                        .strokeBorder(.secondary.opacity(0.5), lineWidth: 2)
                 }
                 .onTapGesture {
                     withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
@@ -307,9 +307,9 @@ struct CircleCheckboxToggleStyle: ToggleStyle {
                 .overlay {
                     if configuration.isOn {
                         ZStack {
-//                            Circle()
-//                                .fill(themeManager.pickerColor.adjustBrightness(-15))
-//                                .frame(width: 18, height: 18)
+                            //                            Circle()
+                            //                                .fill(themeManager.pickerColor.adjustBrightness(-15))
+                            //                                .frame(width: 18, height: 18)
                             Image(systemName: "checkmark")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
@@ -559,14 +559,14 @@ struct RoundedTextFieldStyle: TextFieldStyle {
 struct GlassEffect: NSViewRepresentable {
     var material: NSVisualEffectView.Material // Choose the material you want
     var blendingMode: NSVisualEffectView.BlendingMode // Choose the blending mode
-    
+
     func makeNSView(context: Self.Context) -> NSView {
         let visualEffectView = NSVisualEffectView()
         visualEffectView.material = material
         visualEffectView.blendingMode = blendingMode
         return visualEffectView
     }
-    
+
     func updateNSView(_ nsView: NSView, context: Context) { }
 }
 
@@ -836,27 +836,18 @@ struct SettingsToggle: ToggleStyle {
         Button {
             configuration.isOn.toggle()
         } label: {
-            HStack {
-                configuration.label
-                Spacer()
-                ZStack {
-                    // Background Track
-                    Capsule()
-                        .fill(themeManager.pickerColor.adjustBrightness(3))
-                        .frame(width: 40, height: 24)
-//                        .overlay {
-//                            Capsule()
-//                                .strokeBorder(configuration.isOn ? .green : .red, lineWidth: 1)
-//                                .frame(width: 40, height: 24)
-//                        }
+            ZStack {
+                // Background Track
+                Capsule()
+                    .fill(.tertiary.opacity(0.5))
+                    .frame(width: 40, height: 24)
 
-                    // Toggle Knob
-                    Circle()
-                        .fill(configuration.isOn ? .primary : themeManager.pickerColor.adjustBrightness(-5))
-                        .frame(width: 18, height: 18)
-                        .offset(x: configuration.isOn ? 8 : -8)
-                        .animation(.easeInOut(duration: 0.2), value: configuration.isOn)
-                }
+                // Toggle Knob
+                Circle()
+                    .fill(configuration.isOn ? Color.white : (themeManager.displayMode == .light ? themeManager.pickerColor.adjustBrightness(5) : themeManager.pickerColor))
+                    .frame(width: 18, height: 18)
+                    .offset(x: configuration.isOn ? 8 : -8)
+                    .animation(.spring(duration: 0.2), value: configuration.isOn)
             }
         }
         .buttonStyle(.plain)
