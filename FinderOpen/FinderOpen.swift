@@ -5,13 +5,10 @@
 //  Created by Alin Lupascu on 4/11/24.
 //
 
-//import Cocoa
+import Cocoa
 import FinderSync
 
 class FinderOpen: FIFinderSync {
-    private var finderIcon: Bool {
-        UserDefaults(suiteName: "BK8443AXLU.group.com.alienator88.Pearcleaner.shared")?.bool(forKey: "finderIcon") ?? true
-    }
 
     override init() {
         super.init()
@@ -30,13 +27,14 @@ class FinderOpen: FIFinderSync {
                selectedItemURLs.count == 1, selectedItemURLs.first?.pathExtension == "app" {
                 // Add menu item if the selected item is a .app file
                 let menuItem = NSMenuItem(title: String(localized: "Pearcleaner Uninstall"), action: #selector(openInMyApp), keyEquivalent: "")
-                if finderIcon {
-                    if let appIcon = NSImage(named: "Icon") {
-                        menuItem.image = appIcon
-                    } else {
-                        menuItem.image = NSImage(named: NSImage.trashFullName)
-                    }
-                }
+//                if shouldShowIcon {
+//                    if let appIcon = NSImage(named: "Icon") {
+//                        menuItem.image = appIcon
+//                    } else {
+//                        menuItem.image = NSImage(named: NSImage.trashFullName)
+//                    }
+//                }
+//                menuItem.image = NSImage(named: NSImage.trashFullName)
                 menu.addItem(menuItem)
 
             }

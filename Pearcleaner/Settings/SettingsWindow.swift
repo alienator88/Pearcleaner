@@ -27,6 +27,7 @@ struct SettingsView: View {
         NavigationStack {
             HStack(spacing: 0) {
                 sidebarView
+                Divider().edgesIgnoringSafeArea(.top)
                 detailView
             }
         }
@@ -39,31 +40,39 @@ struct SettingsView: View {
     @ViewBuilder
     private var sidebarView: some View {
         VStack(alignment: .center, spacing: 4) {
-            PearDropViewSmall()
-                .padding(.leading, 4)
+//            PearDropViewSmall()
+//                .padding(.leading, 4)
 
-            Divider()
-                .padding(.bottom, 8)
-                .padding(.horizontal, 9)
+//            Divider()
+//                .padding(.bottom, 8)
+//                .padding(.horizontal, 9)
 
-            SidebarItemView(title: CurrentTabView.general.title, systemImage: "gear", isSelected: selectedTab == .general) {
-                selectedTab = .general
+            Color.clear
+                .frame(height: 0)
+                .padding(.bottom)
+
+            VStack(alignment: .leading, spacing: 0) {
+                SidebarItemView(title: CurrentTabView.general.title, systemImage: "gear", isSelected: selectedTab == .general) {
+                    selectedTab = .general
+                }
+                SidebarItemView(title: CurrentTabView.interface.title, systemImage: "macwindow", isSelected: selectedTab == .interface) {
+                    selectedTab = .interface
+                }
+                SidebarItemView(title: CurrentTabView.folders.title, systemImage: "folder", isSelected: selectedTab == .folders) {
+                    selectedTab = .folders
+                }
+                SidebarItemView(title: CurrentTabView.update.title, systemImage: "cloud", isSelected: selectedTab == .update) {
+                    selectedTab = .update
+                }
+                SidebarItemView(title: CurrentTabView.helper.title, systemImage: "key", isSelected: selectedTab == .helper) {
+                    selectedTab = .helper
+                }
+                SidebarItemView(title: CurrentTabView.about.title, systemImage: "info.circle", isSelected: selectedTab == .about) {
+                    selectedTab = .about
+                }
             }
-            SidebarItemView(title: CurrentTabView.interface.title, systemImage: "macwindow", isSelected: selectedTab == .interface) {
-                selectedTab = .interface
-            }
-            SidebarItemView(title: CurrentTabView.folders.title, systemImage: "folder", isSelected: selectedTab == .folders) {
-                selectedTab = .folders
-            }
-            SidebarItemView(title: CurrentTabView.update.title, systemImage: "cloud", isSelected: selectedTab == .update) {
-                selectedTab = .update
-            }
-             SidebarItemView(title: CurrentTabView.helper.title, systemImage: "key", isSelected: selectedTab == .helper) {
-                 selectedTab = .helper
-             }
-            SidebarItemView(title: CurrentTabView.about.title, systemImage: "info.circle", isSelected: selectedTab == .about) {
-                selectedTab = .about
-            }
+
+
 
             Spacer()
 
@@ -89,16 +98,22 @@ struct SettingsView: View {
             Button {
                 resetUserDefaults()
             } label: { EmptyView() }
-            .buttonStyle(ResetSettingsButtonStyle(isResetting: $isResetting, label: String(localized: "Reset Settings"), help: String(localized: "Reset all settings to default")))
+            .buttonStyle(ResetSettingsButtonStyle(isResetting: $isResetting, label: String(localized: "Reset"), help: String(localized: "Reset all settings to default")))
             .disabled(isResetting)
 
 
  
         }
         .padding(.bottom)
-        .padding(.horizontal, 8)
-        .frame(width: 200)
-        .background(backgroundView(themeManager: themeManager, darker: true, glass: glass))
+        .padding(.horizontal)
+        .frame(width: 180)
+        .background(.ultraThickMaterial)
+        .background {
+            MetalView()
+                .frame(width: 180)
+                .ignoresSafeArea(.all)
+        }
+//        .background(backgroundView(themeManager: themeManager, darker: true, glass: glass))
     }
 
     /// Detail view content based on the selected tab
@@ -158,11 +173,11 @@ struct SidebarItemView: View {
             Image(systemName: systemImage)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .foregroundColor(isSelected ? .accentColor : .primary)
+                .foregroundColor(isSelected ? .primary : .primary)
                 .frame(width: 20, height: 20)
             Text(title)
                 .font(.system(size: 14, weight: .regular))
-                .foregroundColor(isSelected ? .accentColor : .primary)
+                .foregroundColor(isSelected ? .primary : .primary)
             if !HelperToolManager.shared.isHelperToolInstalled && title.lowercased().contains("helper") {
                 Image(systemName: "exclamationmark.triangle.fill")
                     .resizable()

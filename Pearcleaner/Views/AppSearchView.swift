@@ -77,23 +77,9 @@ struct AppSearchView: View {
         }
         .padding(.top, 22)
         .background(backgroundView(themeManager: themeManager, darker: true, glass: glass))
-//        .clipShape(RoundedRectangle(cornerRadius: 8))
-//        .overlay {
-//            RoundedRectangle(cornerRadius: 8)
-//                .strokeBorder(.primary.opacity(0.1), lineWidth: 1)
-//        }
-
-//        .clipShape(LadderTopRoundedRectangle2(cornerRadius: 8, ladderHeight: 21.5, ladderPosition: 54))
-//
-//        .overlay {
-//            LadderTopRoundedRectangle2(cornerRadius: 8, ladderHeight: 21.5, ladderPosition: 54)
-//                .strokeBorder(.primary.opacity(0.1), lineWidth: 1)
-//        }
-
-        .clipShape(LadderTopRoundedRectangle2(cornerRadius: 8, ladderHeight: 22, ladderPosition: 58, isFlipped: true))
-
+        .clipShape(LadderTopRoundedRectangle(cornerRadius: 8, ladderHeight: 22, ladderPosition: 58, isFlipped: true))
         .overlay {
-            LadderTopRoundedRectangle2(cornerRadius: 8, ladderHeight: 22, ladderPosition: 58, isFlipped: true)
+            LadderTopRoundedRectangle(cornerRadius: 8, ladderHeight: 22, ladderPosition: 58, isFlipped: true)
                 .strokeBorder(.primary.opacity(0.05), lineWidth: 1)
         }
 #if DEBUG

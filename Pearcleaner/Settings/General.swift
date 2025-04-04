@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftUI
-//import FinderSync
+import FinderSync
 import AlinFoundation
 import UniformTypeIdentifiers
 
@@ -23,8 +23,6 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @AppStorage("settings.general.cli") private var isCLISymlinked = false
     @AppStorage("settings.general.namesearchstrict") private var nameSearchStrict = true
-    @AppStorage("finderIcon", store: UserDefaults(suiteName: "BK8443AXLU.group.com.alienator88.Pearcleaner.shared"))
-    private var finderIcon: Bool = true
 
     var body: some View {
         VStack(spacing: 20) {
@@ -237,11 +235,34 @@ struct GeneralSettingsTab: View {
                                 .padding(.trailing)
                                 .foregroundStyle(.primary)
 
-                            Text("Enable context menu extension for Finder")
-                                .font(.callout)
-                                .foregroundStyle(.primary)
+                            VStack {
 
-                            InfoButton(text: String(localized: "Enabling this extension will allow you to right click apps in Finder to quickly uninstall them with Pearcleaner"))
+                                HStack(spacing: 0) {
+                                    Text("Enable context menu extension for Finder")
+                                        .font(.callout)
+                                        .foregroundStyle(.primary)
+
+                                    InfoButton(text: String(localized: "Enabling this extension will allow you to right click apps in Finder to quickly uninstall them with Pearcleaner"))
+                                    Spacer()
+                                }
+
+                                HStack(spacing: 0) {
+                                    Text("MacOS only enables extensions if the main app is in Applications folder")
+                                        .font(.footnote)
+                                        .foregroundStyle(.secondary)
+                                    Button {
+                                        FIFinderSyncController.showExtensionManagementInterface()
+                                    } label: {
+                                        Image(systemName: "gear")
+                                    }
+                                    .buttonStyle(.plain)
+                                    .padding(.leading, 5)
+                                    Spacer()
+                                }
+
+
+                            }
+
 
 
 
@@ -261,26 +282,30 @@ struct GeneralSettingsTab: View {
 
                         }
 
-                        HStack(alignment: .center, spacing: 0) {
+//                        HStack(alignment: .center, spacing: 0) {
+//
+////                            if let appIcon = NSImage(named: "AppIcon") {
+////                                Image(nsImage: appIcon)
+////                                    .resizable()
+////                                    .scaledToFit()
+////                                    .frame(width: 20, height: 20)
+////                                    .offset(x: -2)
+////                                    .padding(.trailing)
+////                            }
+//
+//
+//                            Text("Finder extension will only be enabled if app is running from Applications directory")
+//                                .font(.footnote)
+//                                .foregroundStyle(.secondary)
+//                                .padding(.trailing, 5)
+////                            Toggle("", isOn: $finderIconToggle)
+////                                .toggleStyle(SimpleCheckboxToggleStyle())
+////                                .onAppear {
+////                                    finderIconToggle = SharedData.finderIcon
+////                                }
+//                            Spacer()
+//                        }
 
-                            if let appIcon = NSImage(named: "AppIcon") {
-                                Image(nsImage: appIcon)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 20, height: 20)
-                                    .offset(x: -2)
-                                    .padding(.trailing)
-                            }
-
-
-                            Text("Show context menu icon")
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
-                                .padding(.trailing, 5)
-                            Toggle("", isOn: $finderIcon)
-                                .toggleStyle(SimpleCheckboxToggleStyle())
-                            Spacer()
-                        }
                     }
                     .padding(5)
 

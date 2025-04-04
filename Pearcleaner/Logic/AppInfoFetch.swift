@@ -9,7 +9,6 @@ import Foundation
 import SwiftUI
 import AlinFoundation
 
-
 // Metadata-based AppInfo Fetcher Class
 class MetadataAppInfoFetcher {
     static func getAppInfo(fromMetadata metadata: [String: Any], atPath path: URL) -> AppInfo? {
@@ -28,7 +27,6 @@ class MetadataAppInfoFetcher {
 
         // Check if any of the critical fields are missing or invalid
         if appName.isEmpty || bundleIdentifier.isEmpty || version.isEmpty || logicalSize == 0 || physicalSize == 0 {
-//            printOS("Metadata is missing critical fields for \(path). Falling back to AppInfoFetcher.")
             // Fallback to the regular AppInfoFetcher for this app
             return AppInfoFetcher.getAppInfo(atPath: path)
         }
@@ -79,6 +77,82 @@ class MetadataAppInfoFetcher {
 
 
 
+
+
+
+class AppInfoUtils {
+    /// Determines if the app is a web application by directly reading its `Info.plist` using the app path.
+    static func isWebApp(appPath: URL) -> Bool {
+        guard let bundle = Bundle(url: appPath) else { return false }
+        return isWebApp(bundle: bundle)
+    }
+
+    /// Determines if the app is a web application based on its bundle.
+    static func isWebApp(bundle: Bundle?) -> Bool {
+        guard let infoDict = bundle?.infoDictionary else { return false }
+        return (infoDict["LSTemplateApplication"] as? Bool ?? false) ||
+        (infoDict["CFBundleExecutable"] as? String == "app_mode_loader")
+    }
+
+    /// Fetch app icon.
+    static func fetchAppIcon(for path: URL, wrapped: Bool, md: Bool = false) -> NSImage? {
+        let iconPath = wrapped ? (md ? path : path.deletingLastPathComponent().deletingLastPathComponent()) : path
+        if let appIcon = getIconForFileOrFolderNS(atPath: iconPath) {
+            return convertICNSToPNG(icon: appIcon, size: NSSize(width: 50, height: 50))
+        } else {
+            printOS("App Icon not found for app at path: \(path)")
+            return nil
+        }
+    }
+}
+
+
+
+
+func getMDLSMetadata(for paths: [String]) -> [String: [String: Any]]? {
+    var metadataDictionary = [String: [String: Any]]()
+    let kMDItemLogicalSize: CFString = "kMDItemLogicalSize" as CFString // Not exposed in the CoreServices framework headers
+    let kMDItemPhysicalSize: CFString = "kMDItemPhysicalSize" as CFString // Not exposed in the CoreServices framework headers
+
+    // List of metadata attributes to fetch
+    let attributes: [CFString] = [
+        kMDItemFSCreationDate,
+        kMDItemFSContentChangeDate,
+        kMDItemLastUsedDate,
+        kMDItemDisplayName,
+        kMDItemCFBundleIdentifier,
+        kMDItemExecutableArchitectures,
+        kMDItemFSName,
+        kMDItemVersion,
+        kMDItemLogicalSize,
+        kMDItemPhysicalSize
+    ]
+
+    // Iterate over each path to fetch metadata using CoreServices APIs
+    for path in paths {
+        // Create an MDItem for the file at the given path
+        guard let mdItem = MDItemCreate(nil, path as CFString) else {
+            printOS("Failed to create MDItem for path: \(path)")
+            continue
+        }
+
+        var itemMetadata = [String: Any]()
+        // Extract each attribute from the MDItem
+        for attribute in attributes {
+            if let value = MDItemCopyAttribute(mdItem, attribute) {
+                itemMetadata[attribute as String] = value
+            }
+        }
+
+        metadataDictionary[path] = itemMetadata
+    }
+
+    return metadataDictionary.isEmpty ? nil : metadataDictionary
+}
+
+
+
+//MARK: Fallback legacy function in case metadata doesn't contain the needed information
 class AppInfoFetcher {
     static let fileManager = FileManager.default
 
@@ -137,125 +211,94 @@ class AppInfoFetcher {
 }
 
 
-class AppInfoUtils {
-    /// Determines if the app is a web application by directly reading its `Info.plist` using the app path.
-    static func isWebApp(appPath: URL) -> Bool {
-        guard let bundle = Bundle(url: appPath) else { return false }
-        return isWebApp(bundle: bundle)
-    }
-
-    /// Determines if the app is a web application based on its bundle.
-    static func isWebApp(bundle: Bundle?) -> Bool {
-        guard let infoDict = bundle?.infoDictionary else { return false }
-        return (infoDict["LSTemplateApplication"] as? Bool ?? false) ||
-        (infoDict["CFBundleExecutable"] as? String == "app_mode_loader")
-    }
-
-    /// Fetch app icon.
-    static func fetchAppIcon(for path: URL, wrapped: Bool, md: Bool = false) -> NSImage? {
-        let iconPath = wrapped ? (md ? path : path.deletingLastPathComponent().deletingLastPathComponent()) : path
-        if let appIcon = getIconForFileOrFolderNS(atPath: iconPath) {
-            return convertICNSToPNG(icon: appIcon, size: NSSize(width: 50, height: 50))
-        } else {
-            printOS("App Icon not found for app at path: \(path)")
-            return nil
-        }
-    }
-}
-
-
-
-
-
-
 
 /// Executes `mdls` with `-plist -` and `-nullMarker ""` options and returns metadata in a structured dictionary.
-func getMDLSMetadataAsPlist(for paths: [String]) -> [String: [String: Any]]? {
-    let task = Process()
-    task.executableURL = URL(fileURLWithPath: "/usr/bin/mdls")
-
-    // Define the required metadata attributes to include in the output
-    let attributes = [
-        "kMDItemFSCreationDate",
-        "kMDItemFSContentChangeDate",
-        "kMDItemLastUsedDate",
-        "kMDItemDisplayName",
-        "kMDItemAppStoreCategory",
-        "kMDItemCFBundleIdentifier",
-        "kMDItemExecutableArchitectures",
-        "kMDItemFSName",
-        "kMDItemVersion",
-        "kMDItemLogicalSize",
-        "kMDItemPhysicalSize"
-    ]
-
-    // Construct the `mdls` arguments: paths + -name for each attribute + -plist - + -nullMarker ""
-    var arguments = paths
-    for attribute in attributes {
-        arguments.append("-name")
-        arguments.append(attribute)
-    }
-    arguments.append("-plist")       // Use plist format
-    arguments.append("-")            // Output to stdout
-    arguments.append("-nullMarker")  // Replace null attributes
-    arguments.append("")             // Substitute null values with empty string
-
-    task.arguments = arguments
-
-    // Use Pipe to capture the output
-    let pipe = Pipe()
-    let errorPipe = Pipe()
-    task.standardOutput = pipe
-    task.standardError = errorPipe  // Capture stderr in case there are errors
-
-    do {
-        // Run the task
-        try task.run()
-
-        // Read the data from the pipe
-        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-
-        let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-        if let errorOutput = String(data: errorData, encoding: .utf8), !errorOutput.isEmpty {
-            printOS("Error Output from mdls:\n\(errorOutput)\n")
-        }
-
-        // Check if there's any output captured
-        if data.isEmpty {
-            printOS("No output captured from mdls.")
-            return nil
-        }
-
-        // Attempt to parse the plist output into a Swift array of dictionaries
-        guard let plistArray = try PropertyListSerialization.propertyList(from: data, format: nil) as? [[String: Any]] else {
-            printOS("Failed to parse plist output into expected format.")
-            return nil
-        }
-
-//        printOS("Parsed plist array count: \(plistArray.count)")
-
-        // Ensure the number of plist items matches the number of paths
-        if plistArray.count != paths.count {
-            printOS("Warning: Number of plist items (\(plistArray.count)) does not match the number of paths (\(paths.count)).")
-        }
-
-        var metadataDictionary = [String: [String: Any]]()
-
-        // Map each metadata dictionary to its corresponding path using indices
-        for (index, appMetadata) in plistArray.enumerated() {
-            // Match metadata to path using the index
-            if index < paths.count {
-                let path = paths[index]
-                metadataDictionary[path] = appMetadata
-//                printOS("Mapped metadata to path: \(path)")
-            } else {
-                printOS("Warning: More metadata entries than paths.")
-            }
-        }
-        return metadataDictionary
-
-    } catch {
-        printOS("Error running mdls: \(error)")
-        return nil
-    }
-}
+//func getMDLSMetadataAsPlist2(for paths: [String]) -> [String: [String: Any]]? {
+//    let task = Process()
+//    task.executableURL = URL(fileURLWithPath: "/usr/bin/mdls")
+//
+//    // Define the required metadata attributes to include in the output
+//    let attributes = [
+//        "kMDItemFSCreationDate",
+//        "kMDItemFSContentChangeDate",
+//        "kMDItemLastUsedDate",
+//        "kMDItemDisplayName",
+//        "kMDItemAppStoreCategory",
+//        "kMDItemCFBundleIdentifier",
+//        "kMDItemExecutableArchitectures",
+//        "kMDItemFSName",
+//        "kMDItemVersion",
+//        "kMDItemLogicalSize",
+//        "kMDItemPhysicalSize"
+//    ]
+//
+//    // Construct the `mdls` arguments: paths + -name for each attribute + -plist - + -nullMarker ""
+//    var arguments = paths
+//    for attribute in attributes {
+//        arguments.append("-name")
+//        arguments.append(attribute)
+//    }
+//    arguments.append("-plist")       // Use plist format
+//    arguments.append("-")            // Output to stdout
+//    arguments.append("-nullMarker")  // Replace null attributes
+//    arguments.append("")             // Substitute null values with empty string
+//
+//    task.arguments = arguments
+//
+//    // Use Pipe to capture the output
+//    let pipe = Pipe()
+//    let errorPipe = Pipe()
+//    task.standardOutput = pipe
+//    task.standardError = errorPipe  // Capture stderr in case there are errors
+//
+//    do {
+//        // Run the task
+//        try task.run()
+//
+//        // Read the data from the pipe
+//        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+//
+//        let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+//        if let errorOutput = String(data: errorData, encoding: .utf8), !errorOutput.isEmpty {
+//            printOS("Error Output from mdls:\n\(errorOutput)\n")
+//        }
+//
+//        // Check if there's any output captured
+//        if data.isEmpty {
+//            printOS("No output captured from mdls.")
+//            return nil
+//        }
+//
+//        // Attempt to parse the plist output into a Swift array of dictionaries
+//        guard let plistArray = try PropertyListSerialization.propertyList(from: data, format: nil) as? [[String: Any]] else {
+//            printOS("Failed to parse plist output into expected format.")
+//            return nil
+//        }
+//
+////        printOS("Parsed plist array count: \(plistArray.count)")
+//
+//        // Ensure the number of plist items matches the number of paths
+//        if plistArray.count != paths.count {
+//            printOS("Warning: Number of plist items (\(plistArray.count)) does not match the number of paths (\(paths.count)).")
+//        }
+//
+//        var metadataDictionary = [String: [String: Any]]()
+//
+//        // Map each metadata dictionary to its corresponding path using indices
+//        for (index, appMetadata) in plistArray.enumerated() {
+//            // Match metadata to path using the index
+//            if index < paths.count {
+//                let path = paths[index]
+//                metadataDictionary[path] = appMetadata
+////                printOS("Mapped metadata to path: \(path)")
+//            } else {
+//                printOS("Warning: More metadata entries than paths.")
+//            }
+//        }
+//        return metadataDictionary
+//
+//    } catch {
+//        printOS("Error running mdls: \(error)")
+//        return nil
+//    }
+//}

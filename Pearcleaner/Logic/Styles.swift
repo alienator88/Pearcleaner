@@ -10,7 +10,7 @@ import SwiftUI
 import AlinFoundation
 
 
-struct LadderTopRoundedRectangle2: InsettableShape {
+struct LadderTopRoundedRectangle: InsettableShape {
     var cornerRadius: CGFloat
     var ladderHeight: CGFloat
     var ladderPosition: CGFloat
@@ -139,78 +139,78 @@ struct LadderTopRoundedRectangle2: InsettableShape {
     }
 }
 
-struct LadderTopRoundedRectangle: InsettableShape {
-    var cornerRadius: CGFloat
-    var ladderHeight: CGFloat
-    var ladderPosition: CGFloat
-    var insetAmount: CGFloat = 0
-
-    func inset(by amount: CGFloat) -> some InsettableShape {
-        var shape = self
-        shape.insetAmount += amount
-        return shape
-    }
-
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-
-        // Calculate the middle x position for the vertical section
-        //        let ladderStartX = rect.maxX - cornerRadius - (rect.width / ladderPosition)
-        let ladderStartX = rect.minX + cornerRadius + ladderPosition
-
-        // Start at the top-right corner
-        path.move(to: CGPoint(x: rect.maxX - cornerRadius, y: rect.minY))
-
-        // 1. Top-right rounded corner
-        path.addQuadCurve(to: CGPoint(x: rect.maxX, y: rect.minY + cornerRadius),
-                          control: CGPoint(x: rect.maxX, y: rect.minY))
-
-        // 2. Right side straight line down
-        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY - cornerRadius))
-
-        // 3. Bottom-right rounded corner
-        path.addQuadCurve(to: CGPoint(x: rect.maxX - cornerRadius, y: rect.maxY),
-                          control: CGPoint(x: rect.maxX, y: rect.maxY))
-
-        // 4. Straight line across bottom
-        path.addLine(to: CGPoint(x: rect.minX + cornerRadius, y: rect.maxY))
-
-        // 5. Bottom-left rounded corner
-        path.addQuadCurve(to: CGPoint(x: rect.minX, y: rect.maxY - cornerRadius),
-                          control: CGPoint(x: rect.minX, y: rect.maxY))
-
-        // 6. Left side straight line going up
-        path.addLine(to: CGPoint(x: rect.minX, y: rect.minY + ladderHeight + cornerRadius))
-
-        // 7. Top-left rounded corner
-        path.addQuadCurve(to: CGPoint(x: rect.minX + cornerRadius, y: rect.minY + ladderHeight),
-                          control: CGPoint(x: rect.minX, y: rect.minY + ladderHeight))
-
-        // 8. Straight line right to the start of the vertical section
-        path.addLine(to: CGPoint(x: ladderStartX - cornerRadius, y: rect.minY + ladderHeight))
-
-        // 9. Curved transition into the vertical section (left side)
-        path.addQuadCurve(
-            to: CGPoint(x: ladderStartX, y: rect.minY + ladderHeight - cornerRadius),
-            control: CGPoint(x: ladderStartX, y: rect.minY + ladderHeight)
-        )
-
-        // 10. Vertical line
-        path.addLine(to: CGPoint(x: ladderStartX, y: rect.minY + cornerRadius))
-
-        // 11. Curved transition from vertical to top (right side)
-        path.addQuadCurve(
-            to: CGPoint(x: ladderStartX + cornerRadius, y: rect.minY),
-            control: CGPoint(x: ladderStartX, y: rect.minY)
-        )
-
-        // 12. Final line to close the shape
-        path.addLine(to: CGPoint(x: rect.maxX - cornerRadius, y: rect.minY))
-
-        path.closeSubpath()
-        return path
-    }
-}
+//struct LadderTopRoundedRectangle: InsettableShape {
+//    var cornerRadius: CGFloat
+//    var ladderHeight: CGFloat
+//    var ladderPosition: CGFloat
+//    var insetAmount: CGFloat = 0
+//
+//    func inset(by amount: CGFloat) -> some InsettableShape {
+//        var shape = self
+//        shape.insetAmount += amount
+//        return shape
+//    }
+//
+//    func path(in rect: CGRect) -> Path {
+//        var path = Path()
+//
+//        // Calculate the middle x position for the vertical section
+//        //        let ladderStartX = rect.maxX - cornerRadius - (rect.width / ladderPosition)
+//        let ladderStartX = rect.minX + cornerRadius + ladderPosition
+//
+//        // Start at the top-right corner
+//        path.move(to: CGPoint(x: rect.maxX - cornerRadius, y: rect.minY))
+//
+//        // 1. Top-right rounded corner
+//        path.addQuadCurve(to: CGPoint(x: rect.maxX, y: rect.minY + cornerRadius),
+//                          control: CGPoint(x: rect.maxX, y: rect.minY))
+//
+//        // 2. Right side straight line down
+//        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY - cornerRadius))
+//
+//        // 3. Bottom-right rounded corner
+//        path.addQuadCurve(to: CGPoint(x: rect.maxX - cornerRadius, y: rect.maxY),
+//                          control: CGPoint(x: rect.maxX, y: rect.maxY))
+//
+//        // 4. Straight line across bottom
+//        path.addLine(to: CGPoint(x: rect.minX + cornerRadius, y: rect.maxY))
+//
+//        // 5. Bottom-left rounded corner
+//        path.addQuadCurve(to: CGPoint(x: rect.minX, y: rect.maxY - cornerRadius),
+//                          control: CGPoint(x: rect.minX, y: rect.maxY))
+//
+//        // 6. Left side straight line going up
+//        path.addLine(to: CGPoint(x: rect.minX, y: rect.minY + ladderHeight + cornerRadius))
+//
+//        // 7. Top-left rounded corner
+//        path.addQuadCurve(to: CGPoint(x: rect.minX + cornerRadius, y: rect.minY + ladderHeight),
+//                          control: CGPoint(x: rect.minX, y: rect.minY + ladderHeight))
+//
+//        // 8. Straight line right to the start of the vertical section
+//        path.addLine(to: CGPoint(x: ladderStartX - cornerRadius, y: rect.minY + ladderHeight))
+//
+//        // 9. Curved transition into the vertical section (left side)
+//        path.addQuadCurve(
+//            to: CGPoint(x: ladderStartX, y: rect.minY + ladderHeight - cornerRadius),
+//            control: CGPoint(x: ladderStartX, y: rect.minY + ladderHeight)
+//        )
+//
+//        // 10. Vertical line
+//        path.addLine(to: CGPoint(x: ladderStartX, y: rect.minY + cornerRadius))
+//
+//        // 11. Curved transition from vertical to top (right side)
+//        path.addQuadCurve(
+//            to: CGPoint(x: ladderStartX + cornerRadius, y: rect.minY),
+//            control: CGPoint(x: ladderStartX, y: rect.minY)
+//        )
+//
+//        // 12. Final line to close the shape
+//        path.addLine(to: CGPoint(x: rect.maxX - cornerRadius, y: rect.minY))
+//
+//        path.closeSubpath()
+//        return path
+//    }
+//}
 
 struct ResetSettingsButtonStyle: ButtonStyle {
     @Binding var isResetting: Bool
@@ -258,11 +258,12 @@ struct SimpleCheckboxToggleStyle: ToggleStyle {
     @EnvironmentObject private var themeManager: ThemeManager
     @State private var isHovered: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+    @AppStorage("settings.general.glass") private var glass: Bool = false
 
     func makeBody(configuration: Configuration) -> some View {
         HStack {
             RoundedRectangle(cornerRadius: 4)
-                .fill(themeManager.pickerColor.adjustBrightness(5))
+                .fill(Color.white.opacity(0.0000000001))
                 .frame(width: 14, height: 14)
                 .overlay {
                     if configuration.isOn {
@@ -506,7 +507,7 @@ public struct SlideableDivider: View {
             }
             .contextMenu {
                 Button("Reset Size") {
-                    dimension = 300
+                    dimension = 265
                 }
             }
             .gesture(drag)
@@ -613,52 +614,55 @@ struct SimpleButtonBrightStyle: ButtonStyle {
 
 
 struct PearDropView: View {
-    var multiplier: CGFloat = 1.0 // Multiplier parameter with a default value
+    @ObservedObject private var theme = ThemeManager.shared
 
     var body: some View {
-        VStack(alignment: .center, spacing: 0) {
-            HStack(spacing: 0) {
-                LinearGradient(gradient: Gradient(colors: [.green, .orange]), startPoint: .leading, endPoint: .trailing)
-                    .frame(width: 175 * multiplier) // Adjust the width based on the multiplier
-                LinearGradient(gradient: Gradient(colors: [.orange, .primary.opacity(0.5)]), startPoint: .leading, endPoint: .trailing)
-                    .frame(width: 10 * multiplier) // Adjust the width based on the multiplier
-                LinearGradient(gradient: Gradient(colors: [.primary.opacity(0.5)]), startPoint: .leading, endPoint: .trailing)
-                    .frame(width: 250 * multiplier) // Adjust the width based on the multiplier
-            }
-            .mask(
-                Image("logo_text_small")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 500 * multiplier) // Scale the mask image width
-                    .padding()
-            )
+
+        ZStack() {
+            let shadow = theme.displayMode == .dark ? Color.white.opacity(0.2) : Color.black.opacity(0.3)
+            let mainColor = theme.pickerColor.adjustBrightness(theme.displayMode == .dark ? 3 : 7)
+
+            shadow
+                .mask(
+                    Image("pearLogo")
+                        .resizable()
+                        .scaledToFit()
+                )
+                .offset(y: theme.displayMode == .dark ? 1 : -1)
+
+            mainColor
+                .mask(
+                    Image("pearLogo")
+                        .resizable()
+                        .scaledToFit()
+                )
         }
-        .frame(height: 120 * multiplier) // Adjust the height of the VStack based on the multiplier
+        //            AnimatedGradientView(colors: [.orange, .green, .yellow], direction: .horizontal)
     }
 }
 
-struct PearDropViewSmall: View {
-
-    var body: some View {
-        VStack(alignment: .center, spacing: 0) {
-            HStack(spacing: 0) {
-                LinearGradient(gradient: Gradient(colors: [.green, .orange]), startPoint: .leading, endPoint: .trailing)
-                    .frame(width: 60)
-                LinearGradient(gradient: Gradient(colors: [.orange, .primary.opacity(0.5)]), startPoint: .leading, endPoint: .trailing)
-                    .frame(width: 10)
-                LinearGradient(gradient: Gradient(colors: [.primary.opacity(0.5), .primary.opacity(0.5)]), startPoint: .leading, endPoint: .trailing)
-                    .frame(width: 100)
-            }
-            .mask(
-                Image("logo_text_small")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 180)
-            )
-        }
-        .frame(height: 50)
-    }
-}
+//struct PearDropViewSmall: View {
+//
+//    var body: some View {
+//        VStack(alignment: .center, spacing: 0) {
+//            HStack(spacing: 0) {
+//                LinearGradient(gradient: Gradient(colors: [.green, .orange]), startPoint: .leading, endPoint: .trailing)
+//                    .frame(width: 60)
+//                LinearGradient(gradient: Gradient(colors: [.orange, .primary.opacity(0.5)]), startPoint: .leading, endPoint: .trailing)
+//                    .frame(width: 10)
+//                LinearGradient(gradient: Gradient(colors: [.primary.opacity(0.5), .primary.opacity(0.5)]), startPoint: .leading, endPoint: .trailing)
+//                    .frame(width: 100)
+//            }
+//            .mask(
+//                Image("logo_text_small")
+//                    .resizable()
+//                    .scaledToFit()
+//                    .frame(width: 180)
+//            )
+//        }
+//        .frame(height: 50)
+//    }
+//}
 
 
 // Background color/glass setter
@@ -672,54 +676,6 @@ func backgroundView(themeManager: ThemeManager = ThemeManager.shared, darker: Bo
     }
 }
 
-
-
-struct GlowGradientButton: View {
-    // Define gradient colors for the button
-    let gradientColors = Gradient(colors: [.blue,.purple,.pink,.red,.blue])
-
-    // State variables to control animation and press state
-    @State var isAnimating = false
-    @State var isPressed = false
-
-    var body: some View {
-        ZStack{
-            // Background of the button with stroke, blur, and offset effects
-            RoundedRectangle(cornerRadius: 20)
-                .stroke(AngularGradient(gradient: gradientColors, center: .center, angle: .degrees(isAnimating ? 360 : 0)), lineWidth: 10)
-                .blur(radius: 30)
-            //                .offset(y: 30) // Move the glow up or down
-                .frame(width: 230, height: 30)
-
-            // Text label for the button
-            Text(verbatim: "Hello")
-                .font(.system(size: 24))
-                .frame(width: 280, height: 60)
-                .background(.quinary.opacity(0.2), in: RoundedRectangle(cornerRadius: 20))
-                .foregroundStyle(.white)
-                .overlay(
-                    // Overlay to create glow effect
-                    RoundedRectangle(cornerRadius: 20)
-                        .stroke(AngularGradient(gradient: gradientColors, center: .center, angle: .degrees(isAnimating ? 360 : 0)), lineWidth: 2)
-                )
-        }
-        // Scale effect when pressed
-        .scaleEffect(isPressed ? 0.95 : 1)
-        .animation(.easeInOut(duration: 0.2), value: isPressed)
-        .onAppear() {
-            // Animation to rotate gradient colors infinitely
-            withAnimation(.linear(duration: 3).repeatForever(autoreverses: false)) {
-                isAnimating = true
-            }
-        }
-        // Gesture to detect button press
-        .simultaneousGesture(
-            DragGesture(minimumDistance: 0)
-                .onChanged({_ in isPressed = true})
-                .onEnded({_ in isPressed = false})
-        )
-    }
-}
 
 
 

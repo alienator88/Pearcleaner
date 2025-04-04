@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import AlinFoundation
+import FinderSync
 
 struct RegularMode: View {
     @EnvironmentObject var appState: AppState
@@ -15,7 +16,7 @@ struct RegularMode: View {
     @EnvironmentObject var locations: Locations
     @EnvironmentObject var fsm: FolderSettingsManager
     @AppStorage("settings.general.glass") private var glass: Bool = false
-    @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 300
+    @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 265
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
@@ -134,8 +135,6 @@ struct RegularMode: View {
 
 struct AppDetailsEmptyView: View {
     @EnvironmentObject var appState: AppState
-//    @State private var showTerminal: Bool = false
-//    @State private var showPopover: Bool = false
 
     var body: some View {
         VStack(alignment: .center) {
@@ -143,27 +142,10 @@ struct AppDetailsEmptyView: View {
             Spacer()
 
             PearDropView()
-
-//            Button("Open") {
-//                showTerminal.toggle()
-//            }
-
-//            GlowGradientButton()
+                .frame(width: 500)
 
             Spacer()
 
         }
-//        .sheet(isPresented: $showTerminal, content: {
-//            VStack {
-//                TerminalSheetView(showPopover: $showPopover, title: "Homebrew Cleanup: \(appState.appInfo.appName)", command: getBrewCleanupCommand(for: "appcleaner"))
-//                    .id(appState.appInfo.id)
-//                Button("Close") {
-//                    showTerminal.toggle()
-//                }
-//            }
-//            .frame(width: 600, height: 600)
-//
-//
-//        })
     }
 }

@@ -44,7 +44,8 @@ func getSortedApps(paths: [String]) -> [AppInfo] {
 
     // Get metadata for all collected app paths
     var metadataDictionary: [String: [String: Any]] = [:]
-    if let metadata = getMDLSMetadataAsPlist(for: combinedPaths) {
+
+    if let metadata = getMDLSMetadata(for: combinedPaths) {
         metadataDictionary = metadata
     }
 
@@ -66,8 +67,6 @@ func getSortedApps(paths: [String]) -> [AppInfo] {
 
     return sortedApps
 }
-
-
 
 // Get directory path for darwin cache and temp directories
 func darwinCT() -> (String, String) {

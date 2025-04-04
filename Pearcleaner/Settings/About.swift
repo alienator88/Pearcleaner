@@ -15,7 +15,7 @@ struct AboutSettingsTab: View {
 
     var body: some View {
 
-        let sponsors = Sponsor.sponsors
+//        let sponsors = Sponsor.sponsors
 //        let credits = Credit.credits
 
         VStack(alignment: .center) {
@@ -82,39 +82,39 @@ struct AboutSettingsTab: View {
                 })
 
                 // GitHub Sponsors
-                PearGroupBox(header: { Text("GitHub Sponsors").font(.title2) }, content: {
-                    HStack{
-                        Image(systemName: "dollarsign.circle")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 20, height: 20)
-                            .padding(.trailing)
-
-                        Text("View project contributors")
-
-                        DisclosureGroup(isExpanded: $disclose) {
-                            ScrollView {
-                                LazyVStack(alignment: .leading, spacing: 0) {
-                                    ForEach(sponsors) { sponsor in
-                                        HStack() {
-                                            Text(sponsor.name)
-                                            Spacer()
-                                            Button {
-                                                NSWorkspace.shared.open(sponsor.url)
-                                            } label: { EmptyView() }
-                                            .buttonStyle(SimpleButtonStyle(icon: "link", help: String(localized: "View")))
-                                            .padding(.trailing)
-                                        }
-                                    }
-                                }
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            }
-                            .frame(height: 45)
-                            .padding(5)
-                        } label: { EmptyView() }
-
-                    }
-                })
+//                PearGroupBox(header: { Text("GitHub Sponsors").font(.title2) }, content: {
+//                    HStack{
+//                        Image(systemName: "dollarsign.circle")
+//                            .resizable()
+//                            .scaledToFit()
+//                            .frame(width: 20, height: 20)
+//                            .padding(.trailing)
+//
+//                        Text("View project contributors")
+//
+//                        DisclosureGroup(isExpanded: $disclose) {
+//                            ScrollView {
+//                                LazyVStack(alignment: .leading, spacing: 0) {
+//                                    ForEach(sponsors) { sponsor in
+//                                        HStack() {
+//                                            Text(sponsor.name)
+//                                            Spacer()
+//                                            Button {
+//                                                NSWorkspace.shared.open(sponsor.url)
+//                                            } label: { EmptyView() }
+//                                            .buttonStyle(SimpleButtonStyle(icon: "link", help: String(localized: "View")))
+//                                            .padding(.trailing)
+//                                        }
+//                                    }
+//                                }
+//                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+//                            }
+//                            .frame(height: 45)
+//                            .padding(5)
+//                        } label: { EmptyView() }
+//
+//                    }
+//                })
 
 
             }
@@ -126,40 +126,40 @@ struct AboutSettingsTab: View {
 
 
 //MARK: Sponsors
-struct Sponsor: Identifiable {
-    let id = UUID()
-    let name: String
-    let url: URL
-
-    static let sponsors: [Sponsor] = [
-        Sponsor(name: "dimitur2204", url: URL(string: "https://github.com/dimitur2204")!),
-        Sponsor(name: "txaty", url: URL(string: "https://github.com/txaty")!),
-        Sponsor(name: "Sagittarius", url: URL(string: "https://github.com/sagittarius-codebase")!),
-        Sponsor(name: "Ilovecatz17", url: URL(string: "https://github.com/Ilovecatz17")!),
-        Sponsor(name: "ichoosetoaccept", url: URL(string: "https://github.com/ichoosetoaccept")!),
-        Sponsor(name: "barats", url: URL(string: "https://github.com/barats")!),
-        Sponsor(name: "mzdr (monthly)", url: URL(string: "https://github.com/mzdr")!),
-        Sponsor(name: "chris3ware", url: URL(string: "https://github.com/chris3ware")!),
-        Sponsor(name: "fpuhan", url: URL(string: "https://github.com/fpuhan")!),
-        Sponsor(name: "HungThinhIT", url: URL(string: "https://github.com/HungThinhIT")!),
-        Sponsor(name: "DharsanB", url: URL(string: "https://github.com/dharsanb")!),
-        Sponsor(name: "MadMacMad", url: URL(string: "https://github.com/MadMacMad")!),
-        Sponsor(name: "Butterdawgs", url: URL(string: "https://github.com/butterdawgs")!),
-        Sponsor(name: "y-u-s-u-f", url: URL(string: "https://github.com/y-u-s-u-f")!)
-    ]
-}
+//struct Sponsor: Identifiable {
+//    let id = UUID()
+//    let name: String
+//    let url: URL
+//
+//    static let sponsors: [Sponsor] = [
+//        Sponsor(name: "dimitur2204", url: URL(string: "https://github.com/dimitur2204")!),
+//        Sponsor(name: "txaty", url: URL(string: "https://github.com/txaty")!),
+//        Sponsor(name: "Sagittarius", url: URL(string: "https://github.com/sagittarius-codebase")!),
+//        Sponsor(name: "Ilovecatz17", url: URL(string: "https://github.com/Ilovecatz17")!),
+//        Sponsor(name: "ichoosetoaccept", url: URL(string: "https://github.com/ichoosetoaccept")!),
+//        Sponsor(name: "barats", url: URL(string: "https://github.com/barats")!),
+//        Sponsor(name: "mzdr (monthly)", url: URL(string: "https://github.com/mzdr")!),
+//        Sponsor(name: "chris3ware", url: URL(string: "https://github.com/chris3ware")!),
+//        Sponsor(name: "fpuhan", url: URL(string: "https://github.com/fpuhan")!),
+//        Sponsor(name: "HungThinhIT", url: URL(string: "https://github.com/HungThinhIT")!),
+//        Sponsor(name: "DharsanB", url: URL(string: "https://github.com/dharsanb")!),
+//        Sponsor(name: "MadMacMad", url: URL(string: "https://github.com/MadMacMad")!),
+//        Sponsor(name: "Butterdawgs", url: URL(string: "https://github.com/butterdawgs")!),
+//        Sponsor(name: "y-u-s-u-f", url: URL(string: "https://github.com/y-u-s-u-f")!)
+//    ]
+//}
 
 //MARK: Credits
-struct Credit: Identifiable {
-    let id = UUID()
-    let name: String
-    let description: String
-    let url: URL
-
-    static let credits: [Credit] = [
-        Credit(name: "Microsoft Designer", description: "Application icon resource", url: URL(string: "https://designer.microsoft.com/image-creator")!),
-        Credit(name: "Privacy Guides", description: "Inspired by open-source appcleaner script from Sun Knudsen", url: URL(string: "https://sunknudsen.com/privacy-guides/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative")!),
-        Credit(name: "AppCleaner", description: "Inspired by AppCleaner from Freemacsoft", url: URL(string: "https://freemacsoft.net/appcleaner/")!)
-    ]
-}
+//struct Credit: Identifiable {
+//    let id = UUID()
+//    let name: String
+//    let description: String
+//    let url: URL
+//
+//    static let credits: [Credit] = [
+//        Credit(name: "Microsoft Designer", description: "Application icon resource", url: URL(string: "https://designer.microsoft.com/image-creator")!),
+//        Credit(name: "Privacy Guides", description: "Inspired by open-source appcleaner script from Sun Knudsen", url: URL(string: "https://sunknudsen.com/privacy-guides/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative")!),
+//        Credit(name: "AppCleaner", description: "Inspired by AppCleaner from Freemacsoft", url: URL(string: "https://freemacsoft.net/appcleaner/")!)
+//    ]
+//}
 

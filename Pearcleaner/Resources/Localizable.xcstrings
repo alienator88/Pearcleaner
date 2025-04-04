@@ -1,9 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "" : {
-
-    },
     "(Build %@)" : {
       "localizations" : {
         "de" : {
@@ -5657,6 +5654,9 @@
     "Login Items" : {
 
     },
+    "MacOS only enables extensions if the main app is in Applications folder" : {
+
+    },
     "Made with ❤️ by Alin Lupascu" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8633,6 +8633,9 @@
         }
       }
     },
+    "Reset" : {
+
+    },
     "Reset all settings to default" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -9660,9 +9663,6 @@
           }
         }
       }
-    },
-    "Show context menu icon" : {
-
     },
     "Show Details" : {
       "localizations" : {

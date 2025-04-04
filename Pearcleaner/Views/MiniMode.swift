@@ -113,7 +113,7 @@ struct MiniAppView: View {
     @AppStorage("settings.general.glass") private var glass: Bool = true
     @AppStorage("settings.general.popover") private var popoverStay: Bool = true
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
-    @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 280
+    @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 265
     @Binding var showPopover: Bool
     @State private var showMenu = false
     @State var isMenuBar: Bool = false
