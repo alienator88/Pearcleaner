@@ -25,7 +25,7 @@ struct UpdateSettingsTab: View {
 
             // === Release Notes ========================================================================================
             PearGroupBox(header: { Text("Release Notes").font(.title2) }, content: {
-                ReleasesView(updater: updater)
+                RecentReleasesView(updater: updater)
                     .frame(height: 380)
                     .frame(maxWidth: .infinity)
             })

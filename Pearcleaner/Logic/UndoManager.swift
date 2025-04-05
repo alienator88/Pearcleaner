@@ -145,7 +145,7 @@ class FileManagerUndo {
                 let result = performPrivilegedCommands(commands: commands)
                 status = result.0
                 if !status {
-                    printOS(isRestore ? "Restore Error: performPrivilegedCommands failed (\(result.1))" : "Trash Error: performPrivilegedCommands failed (\(result.1)")
+                    printOS(isRestore ? "Restore Error: performPrivilegedCommands failed (\(result.1))" : "Trash Error: performPrivilegedCommands failed (\(result.1))")
                     updateOnMain {
                         AppState.shared.trashError = true
                     }
