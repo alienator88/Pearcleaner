@@ -419,6 +419,7 @@ struct PathLibrary {
                 "~/Library/Developer/DeveloperDiskImages/",
                 "~/Library/Developer/Xcode/Archives/",
                 "~/Library/Developer/Xcode/DerivedData/",
+                "~/Library/Developer/Xcode/DocumentationCache/",
                 "~/Library/Developer/Xcode/iOS DeviceSupport/",
                 "~/Library/Developer/Xcode/tvOS DeviceSupport/",
                 "~/Library/Developer/Xcode/watchOS DeviceSupport/",
