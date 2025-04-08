@@ -114,3 +114,5 @@ brew install pearcleaner
 [Sentinel](https://github.com/alienator88/Sentinel) - A GUI for controlling gatekeeper status on your Mac
 
 [Viz](https://github.com/alienator88/Viz) - Utility for extracting text from images, videos, qr/barcodes
+
+[PearHID](https://github.com/alienator88/PearHID) - Remap your macOS keyboard with a simple SwiftUI frontend
