@@ -342,11 +342,11 @@
 		C77B90022AF18E2E009CC655 /* Pearcleaner */ = {
 			isa = PBXGroup;
 			children = (
-				C7EBEBC92D9F13B20003569A /* Metal */,
 				C77B90032AF18E2E009CC655 /* PearcleanerApp.swift */,
 				C74451F62D93774700146AF8 /* announcements.json */,
 				C786F1A72C29E599001B3800 /* Builds */,
 				C76D084F2AF84E0100D07867 /* Resources */,
+				C7EBEBC92D9F13B20003569A /* Metal */,
 				C76D08462AF83C2F00D07867 /* Settings */,
 				C77B901F2AF1B390009CC655 /* Views */,
 				C72893072AFD442600C8C1CD /* Logic */,

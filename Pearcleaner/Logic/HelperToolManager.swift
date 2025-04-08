@@ -95,10 +95,10 @@ class HelperToolManager: ObservableObject {
 
         await updateStatusMessages(with: service, occurredError: occurredError)
         let isEnabled = (service.status == .enabled)
-        let whoamiResult = await runCommand("whoami", skipHelperCheck: true)
-        let isRoot = whoamiResult.0 && whoamiResult.1.trimmingCharacters(in: .whitespacesAndNewlines) == "root"
+//        let whoamiResult = await runCommand("whoami", skipHelperCheck: true)
+//        let isRoot = whoamiResult.0 && whoamiResult.1.trimmingCharacters(in: .whitespacesAndNewlines) == "root"
         updateOnMain {
-            self.isHelperToolInstalled = isEnabled && isRoot
+            self.isHelperToolInstalled = isEnabled// && isRoot
         }
     }
 
@@ -181,8 +181,10 @@ class HelperToolManager: ObservableObject {
                     self.message = "Service hasn’t been registered. You may register it now."
                 }
             case .enabled:
+                let whoamiResult = await runCommand("whoami", skipHelperCheck: true)
+                let isRoot = whoamiResult.0 && whoamiResult.1.trimmingCharacters(in: .whitespacesAndNewlines) == "root"
                 updateOnMain {
-                    self.message = "Service successfully registered and eligible to run."
+                    self.message = isRoot ? "Service successfully registered and eligible to run." : "Service successfully registered and eligible to run (Desynced)"
                 }
             case .requiresApproval:
                 updateOnMain {

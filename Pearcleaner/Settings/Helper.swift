@@ -40,6 +40,11 @@ struct HelperSettingsTab: View {
                                     printOS("Helper Kickstart Error: \(result.1)")
                                 }
                             }
+                            Button("Unregister Service") {
+                                Task {
+                                    await helperToolManager.manageHelperTool(action: .uninstall)
+                                }
+                            }
                         }
                     }
 

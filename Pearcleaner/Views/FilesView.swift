@@ -468,11 +468,11 @@ struct FilesView: View {
                         }
 
                         // Determine if it's a full delete
-                        let mainAppPath = appState.appInfo.path.absoluteString
-                        let wrappedAppPath = appState.appInfo.path.deletingLastPathComponent().deletingLastPathComponent().absoluteString
+                        let appPath = appState.appInfo.path.absoluteString
+                        let appRemoved = selectedItemsArray.contains(where: { $0.absoluteString == appPath })
 
-                        let mainAppRemoved = (!appState.appInfo.wrapped && selectedItemsArray.contains(where: { $0.absoluteString == mainAppPath }))
-                        let wrappedAppRemoved = (appState.appInfo.wrapped && selectedItemsArray.contains(where: { $0.absoluteString == wrappedAppPath }))
+                        let mainAppRemoved = !appState.appInfo.wrapped && appRemoved
+                        let wrappedAppRemoved = appState.appInfo.wrapped && appRemoved
 
                         let isInTrash = appState.appInfo.path.path.contains(".Trash")
 

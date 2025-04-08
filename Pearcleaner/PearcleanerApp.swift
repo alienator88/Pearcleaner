@@ -179,8 +179,6 @@ struct PearcleanerApp: App {
         }
 
 
-
-        
         Settings {
                 SettingsView(showPopover: $showPopover, search: $search)
                     .environmentObject(appState)
