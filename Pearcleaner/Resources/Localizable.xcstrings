@@ -39,6 +39,12 @@
             "value" : "(Sürüm %@)"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(Збірка %@)"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -60,10 +66,24 @@
       }
     },
     "**%lld%%** savings" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**%lld%%** збережено"
+          }
+        }
+      }
     },
     "%@" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        }
+      }
     },
     "%@ is already on the latest release available" : {
       "extractionState" : "manual",
@@ -102,6 +122,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ halihazırda mevcut olan en son sürümde"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ вже на останній версії"
           }
         },
         "zh-Hans" : {
@@ -163,6 +189,12 @@
             "value" : "%@ güncellemeleri şu sıklıkla kontrol edecek"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ перевірить наявність оновлень"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -184,7 +216,14 @@
       }
     },
     "%lld universal apps" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld універсальні програми"
+          }
+        }
+      }
     },
     "⇧ + Scroll" : {
       "localizations" : {
@@ -222,6 +261,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "⇧ + Kaydır "
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⇧ + Скрол"
           }
         },
         "zh-Hans" : {
@@ -280,6 +325,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hakkında"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Про програму"
           }
         },
         "zh-Hans" : {
@@ -341,6 +392,12 @@
             "value" : "Erişilebilirlik"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доступність"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -400,6 +457,12 @@
             "value" : "Dosya/klasör ekle"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Додати файл/папку"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -450,6 +513,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Panodan dosya/klasör ekle"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Додати файл/папку з буферу обміну"
           }
         },
         "zh-Hans" : {
@@ -511,6 +580,12 @@
             "value" : "Başıboş dosyaları ararken yok sayılacak dosya veya klasörleri ekleyin. Listeden kaldırmak için bir dizine tıklayın."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Додати файл чи папку які будуть ігноровані при пошуку осиротілих файлів. Клікни на шлях щоб прибрати його зі списку"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -570,6 +645,12 @@
             "value" : "Dosya Ekle"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Додати папку"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -622,6 +703,12 @@
             "value" : "Panodan dosya ekle"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Додати папку з буферу обміну"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -643,7 +730,14 @@
       }
     },
     "After lipo, the green portion will be removed from your app's binary. Make sure to open an app at least once before lipo to make sure macOS has cached the signature." : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Після lipo, зелена частина буде видалена з бінарного файлу програми. Переконайтеся, що ви відкрили програму хоча б один раз перед lipo, щоб переконатися, що macOS закешувала підпис."
+          }
+        }
+      }
     },
     "All checkboxes" : {
       "extractionState" : "manual",
@@ -684,6 +778,12 @@
             "value" : "Tüm onay kutuları"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Всі чекбокси"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -705,7 +805,14 @@
       }
     },
     "Always confirm the files marked for removal. In rare cases, unrelated files may be found when app names are too similar." : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завжди перевіряйте файли, позначені для видалення. У рідкісних випадках можуть бути знайдені не пов'язані файли, якщо назви програм занадто схожі."
+          }
+        }
+      }
     },
     "Always confirm the files marked for removal. In rare cases, unrelated files may be found when app names are too similar.\n\nNOTE: Pearcleaner uses AppleScript to remove files. Currently macOS does not allow AppleScript to authenticate using the fingerprint sensor, only password authentication is supported." : {
       "extractionState" : "manual",
@@ -744,6 +851,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kaldırmak için işaretlenmiş dosyaları her zaman doğrulayın. Nadir durumlarda, uygulama isimleri çok yakın olduğunda ilişkisiz dosyalar da bulunabilir.\n\nNOT: Pearcleaner dosyaları kaldırmak için AppleScript kullanır. Şimdilik macOS, AppleScript’in parmak izi sensörü ile doğrulama yapmasına izin vermiyor, sadece şifre ile doğrulama mümkün."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завжди перевіряйте файли, позначені для видалення. У рідкісних випадках можуть бути знайдені не пов'язані файли, якщо назви програм занадто схожі.\n\nПРИМІТКА: Pearcleaner використовує AppleScript для видалення файлів. Наразі macOS не дозволяє AppleScript автентифікуватися за допомогою сканера відбитків пальців, підтримується лише автентифікація за допомогою пароля."
           }
         },
         "zh-Hans" : {
@@ -805,6 +918,12 @@
             "value" : "Animasyonlar devre dışı"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Анімації вимкнено"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -862,6 +981,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Animasyonlar etkin"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Анімації увімкнено"
           }
         },
         "zh-Hans" : {
@@ -923,6 +1048,12 @@
             "value" : "Duyuru"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оголошення"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -944,10 +1075,24 @@
       }
     },
     "App Lipo" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Програма Lipo"
+          }
+        }
+      }
     },
     "App lipo targets the Mach-O binaries inside your universal app bundles and removes any unused architectures, such as x86_64 or arm64, leaving only the architectures your computer actually supports. The list shows only universal type apps, not your full app list." : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Програма lipo перевіряє бінарні файли Mach-O у ваших універсальних програмах і видаляє всі невикористовувані архітектури, такі як x86_64 або arm64, залишаючи лише ті архітектури, які ваш комп'ютер дійсно підтримує. У списку показано лише програми універсального типу, а не повний список ваших програм."
+          }
+        }
+      }
     },
     "App Name" : {
       "localizations" : {
@@ -985,6 +1130,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uygulama Adı"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Назва програми"
           }
         },
         "zh-Hans" : {
@@ -1043,6 +1194,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uygulama Boyutu"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Розмір програми"
           }
         },
         "zh-Hans" : {
@@ -1104,6 +1261,12 @@
             "value" : "Görünüm"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оформлення"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1160,6 +1323,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uygulama dosyası alt dizinler içinde bulunuyor. Yanlış dosyaların silinmesini önlemek için Pearcleaner bunlara müdahale etmeyecek. Gerekirse kalan dosyaları manuel olarak silebilirsiniz."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Файл програми вкладено у підпапки. Щоб запобігти видаленню неправильних папок, Pearcleaner залишить їх без змін. За потреби ви можете вручну видалити решту папок."
           }
         },
         "zh-Hans" : {
@@ -1221,6 +1390,12 @@
             "value" : "Uygulama Betiği"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скрипт програми"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1279,6 +1454,12 @@
             "value" : "Uygulamalar"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Програми"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1335,6 +1516,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bu dosyaları kaldırmak istediğinize emin misiniz?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ви впевнені, що хочете видалити ці файли?"
           }
         },
         "zh-Hans" : {
@@ -1396,6 +1583,12 @@
             "value" : "Otomasyon"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автоматизація"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1417,10 +1610,24 @@
       }
     },
     "BETA" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "БЕТА"
+          }
+        }
+      }
     },
     "Binary Size" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Розмір бінарного файла"
+          }
+        }
+      }
     },
     "Bundle Files..." : {
       "localizations" : {
@@ -1448,6 +1655,12 @@
             "value" : "Paket Dosyalar…"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пакетні Файли..."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1469,7 +1682,14 @@
       }
     },
     "Bundle Size: " : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Розмір Пакету"
+          }
+        }
+      }
     },
     "calculating" : {
       "extractionState" : "manual",
@@ -1508,6 +1728,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "hesaplanıyor"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "розраховую"
           }
         },
         "zh-Hans" : {
@@ -1569,6 +1795,12 @@
             "value" : "Vazgeç"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скасувати"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1628,6 +1860,12 @@
             "value" : "Güncellemeleri Kontrol Et"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перевірити Оновлення"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1680,6 +1918,12 @@
             "value" : "%@ için dizinler kontrol edildi"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перевірені шляхи для %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1730,6 +1974,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Yaygın geliştirme ortamları için depolanan dosyaları ve önbelleği temizle"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очищення збережених файлів і кешу для поширених середовищ розробки"
           }
         },
         "zh-Hans" : {
@@ -1791,6 +2041,12 @@
             "value" : "Temizle"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очистити"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1848,6 +2104,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Metni temizle"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очистити текст"
           }
         },
         "zh-Hans" : {
@@ -1909,6 +2171,12 @@
             "value" : "Uygulamaların listesi için tıklayın"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Натисни для списку програм"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1966,6 +2234,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sıralama düzenini değiştirmek için başlığa tıklayın"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Натисни на заголовок для зміни сортування"
           }
         },
         "zh-Hans" : {
@@ -2027,6 +2301,12 @@
             "value" : "Aramak için tıklayın"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Натисни для пошуку"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2083,6 +2363,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kapat"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрити"
           }
         },
         "zh-Hans" : {
@@ -2144,6 +2430,12 @@
             "value" : "Kaldırdıktan sonra kapat"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрити після видалення"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2201,6 +2493,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Komut Satırı"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Команда строка"
           }
         },
         "zh-Hans" : {
@@ -2262,6 +2560,12 @@
             "value" : "Tamamlandı 🚀"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виконано 🚀"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2319,6 +2623,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Konteyner"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Контейнер"
           }
         },
         "zh-Hans" : {
@@ -2380,6 +2690,12 @@
             "value" : "Dosya Dizinlerini Kopyala"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Копіювати шляхів до файлів"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2437,6 +2753,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dizini Kopyala"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скопіювати шлях"
           }
         },
         "zh-Hans" : {
@@ -2498,6 +2820,12 @@
             "value" : "Günlük"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Щоденно"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2544,6 +2872,12 @@
             "value" : "Hata Ayıklama Konsolu"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Консоль Налагодження"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2582,6 +2916,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bu klasör içindeki tüm dosyaları sil"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видалити всі файли з цієї папки"
           }
         },
         "zh-Hans" : {
@@ -2636,6 +2976,12 @@
             "value" : "İçeriği Sil"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видалити вміст"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2686,6 +3032,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dosyayı Sil"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видалити папку"
           }
         },
         "zh-Hans" : {
@@ -2747,6 +3099,12 @@
             "value" : "Uygulamalar Çöp Sepeti’ne taşındığında algıla"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відстежувати коли застосунок переміщено в Смітник"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2799,6 +3157,12 @@
             "value" : "Geliştirme"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Розробка"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2820,7 +3184,14 @@
       }
     },
     "Development Environments" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Середовища Розробки"
+          }
+        }
+      }
     },
     "Development Environments (Beta)" : {
       "extractionState" : "stale",
@@ -2853,6 +3224,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Geliştirme Ortamları (Beta)"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Середовища Розробки (Бета)"
           }
         },
         "zh-Hans" : {
@@ -2914,6 +3291,12 @@
             "value" : "Menü çubuğu ikonu etkinken devredışı"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вимкнено, якщо увімкнено режим на Смузі Меню"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2971,6 +3354,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kapat"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скасувати"
           }
         },
         "zh-Hans" : {
@@ -3032,6 +3421,12 @@
             "value" : "Buraya bir uygulama bırakın"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перемістіть програму сюди"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3089,6 +3484,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Yukarıya dosya veya klasörleri bırakın veya eklemek için tıklayın"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перемістити файли чи папки вище або натисніть додати"
           }
         },
         "zh-Hans" : {
@@ -3150,6 +3551,12 @@
             "value" : "Yukarıya dosyaları bırakın veya eklemek için tıklayın"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перемістити папки вище або натисніть додати"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3207,6 +3614,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hedefi Bırak"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скинути ціль"
           }
         },
         "zh-Hans" : {
@@ -3268,6 +3681,12 @@
             "value" : "Finder için içerik menüsü uzantısını etkinleştir"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Увімкнути розширення для контекстного меню Finder"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3325,6 +3744,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "CLI’yı etkinleştirmek Pearcleaner işlevlerini Terminal’den gerçekleştirmenize imkan sağlar. Bu, pearcleaner komutunu PATH ortam değişkeninizden direkt olarak ulaşılabilir olması için /usr/local/bin içine ekleyecektir. Etkinleştirdikten sonra deneyin:\n\n> pearcleaner --help"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Увімкнення CLI дозволить вам виконувати дії Pearcleaner з терміналу. Це додасть команду pearcleaner до /usr/local/bin, щоб вона була доступна безпосередньо з вашої змінної оточення PATH. Спробуйте після увімкнення:\n\n> pearcleaner --help"
           }
         },
         "zh-Hans" : {
@@ -3386,6 +3811,12 @@
             "value" : "Bu uzantıyı etkinleştirmek Finder’da uygulamalara sağ tıklayarak Pearcleaner’la hızla kaldırmanıza imkan sağlar"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Увімкнувши це розширення, ви зможете клацнути правою кнопкою миші на програмах у Finder, щоб швидко видалити їх за допомогою Pearcleaner"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3407,7 +3838,14 @@
       }
     },
     "Enter manual command here, Enter to run" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Введіть ручну команду тут, Enter для запуску"
+          }
+        }
+      }
     },
     "Environment" : {
       "localizations" : {
@@ -3441,6 +3879,12 @@
             "value" : "Ortam"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оточення"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3462,7 +3906,14 @@
       }
     },
     "Example privileged commands" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приклади привілейованих команд"
+          }
+        }
+      }
     },
     "Exclude" : {
       "extractionState" : "manual",
@@ -3503,6 +3954,12 @@
             "value" : "Hariç Tut"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виключити"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3524,7 +3981,14 @@
       }
     },
     "Exclude Selected" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виключити обрані"
+          }
+        }
+      }
     },
     "Exclude these files and folders from orphaned file search" : {
       "extractionState" : "manual",
@@ -3563,6 +4027,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bu dosya ve klasörleri başıboş dosya aramasından hariç tut"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виключити ці файли та папки з пошуку осиротілих файлів"
           }
         },
         "zh-Hans" : {
@@ -3624,6 +4094,12 @@
             "value" : "Dosya Dizinlerini Dışa Aktar"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Експортувати шляхи файлів"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3674,6 +4150,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dosya Dizinlerini Dışa Aktar…"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Експортувати шляхи файлів…"
           }
         },
         "zh-Hans" : {
@@ -3735,6 +4217,12 @@
             "value" : "Sürüm notlarını görüntüleme başarısız"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося відобразити примітки до випуску"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3792,6 +4280,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dosya boyutu görüntüleme seçenekleri"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Параметри відображення розміру файлу"
           }
         },
         "zh-Hans" : {
@@ -3853,6 +4347,12 @@
             "value" : "Finder Uzantısı"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Розширення Finder"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3912,6 +4412,12 @@
             "value" : "Başıboş dosyalar bulunuyor, lütfen bekleyin..."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шукаю осиротілі файли, очікуйте, будь ласка"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3962,6 +4468,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dosya boş"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Папка пуста"
           }
         },
         "zh-Hans" : {
@@ -4023,6 +4535,12 @@
             "value" : "Dosyalar"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Папки"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4080,6 +4598,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Yenilemeyi Zorla"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Примусове Оновлення"
           }
         },
         "zh-Hans" : {
@@ -4141,6 +4665,12 @@
             "value" : "Tam Disk Erişimi"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Повний Доступ до Диску"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4198,6 +4728,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "İşlev"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Функціональність"
           }
         },
         "zh-Hans" : {
@@ -4259,6 +4795,12 @@
             "value" : "Uygulama detayları toplanıyor"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Збираю дані про програму"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4316,6 +4858,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Genel"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загальні"
           }
         },
         "zh-Hans" : {
@@ -4377,6 +4925,12 @@
             "value" : "GitHub Sponsorları"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Спонсори GitHub"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4436,6 +4990,12 @@
             "value" : "GitHub: v%@"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub: версія %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4457,7 +5017,14 @@
       }
     },
     "Helper" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Помічник"
+          }
+        }
+      }
     },
     "Hide Details" : {
       "localizations" : {
@@ -4497,6 +5064,12 @@
             "value" : "Detayları Gizle"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заховати деталі"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4519,6 +5092,12 @@
     },
     "homebrew" : {
       "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "homebrew"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4566,6 +5145,12 @@
             "value" : "Kaldırdıkdan sonra Homebrew temizliği"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очистка Homebrew після видалення"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4587,7 +5172,14 @@
       }
     },
     "Homebrew Cleanup: %@" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очистка Homebrew: %@"
+          }
+        }
+      }
     },
     "Hover to search" : {
       "localizations" : {
@@ -4619,6 +5211,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aramak için üzerinde tut"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Навести для пошуку"
           }
         },
         "zh-Hans" : {
@@ -4680,6 +5278,12 @@
             "value" : "Önemli"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Важливо"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4737,6 +5341,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mini pencere modunda, “Dosyalar” açılır penceresini üste sabitlerseniz, pencereden uzağa tıklamak onu kapatmaz. Aksi takdirde, uygulamanın dışında herhangi bir yere tıklandığında kapanacaktır."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "У режимі міні-вікна, якщо ви закріпите спливаюче вікно Файли зверху, клацання за межами вікна не призведе до його закриття. Інакше його можна буде закрити, клацнувши деінде поза програмою."
           }
         },
         "zh-Hans" : {
@@ -4798,6 +5408,12 @@
             "value" : "Mini pencere modunda Pearcleaner’ı Uygulama Listesi görünümünde veya Hedefi Bırak görünümünde başlatabilirsiniz."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "У режимі міні-вікна ви можете запустити Pearcleaner у вікні списку програм або у вікні видалення цільових обʼєктів"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4819,7 +5435,14 @@
       }
     },
     "Information" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Інформація"
+          }
+        }
+      }
     },
     "Install Date" : {
       "localizations" : {
@@ -4857,6 +5480,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kurulum Tarihi"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дата інсталяції"
           }
         },
         "zh-Hans" : {
@@ -4915,6 +5544,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kurulduğu Tarih:"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дата інсталяції:"
           }
         },
         "zh-Hans" : {
@@ -4976,6 +5611,12 @@
             "value" : "Kurulma: v%@"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Інстальовано: v%@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5033,6 +5674,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Talimatlar"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Інструкції"
           }
         },
         "zh-Hans" : {
@@ -5093,6 +5740,12 @@
             "value" : "Arayüz"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Інтерфейс"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5147,6 +5800,12 @@
           }
         },
         "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS"
+          }
+        },
+        "uk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "iOS"
@@ -5211,6 +5870,12 @@
             "value" : "iOS uygulaması"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Програма iOS"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5268,6 +5933,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "öğe"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "елемент"
           }
         },
         "zh-Hans" : {
@@ -5329,6 +6000,12 @@
             "value" : "öğeden"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "елементи"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5350,7 +6027,14 @@
       }
     },
     "Kickstart Service" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запустити Сервіс"
+          }
+        }
+      }
     },
     "Last Used Date" : {
       "localizations" : {
@@ -5388,6 +6072,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kullanıldığı Son Tarih"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Використано востаннє"
           }
         },
         "zh-Hans" : {
@@ -5446,6 +6136,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kullanıldığı Son Tarih: "
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Використано востаннє: "
           }
         },
         "zh-Hans" : {
@@ -5507,6 +6203,12 @@
             "value" : "Oturum açıldığında Pearcleaner’ı başlat"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запускати Pearcleaner після логіну"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5528,10 +6230,24 @@
       }
     },
     "Link To" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Посилання на"
+          }
+        }
+      }
     },
     "Lipo" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lipo"
+          }
+        }
+      }
     },
     "Locations that will be searched for .app files. Click a non-default path to remove it. Default paths can't be removed." : {
       "extractionState" : "manual",
@@ -5570,6 +6286,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : ".app dosyaları için aranacak lokasyonlar. Varsayılan olmayan bir dizini kaldırmak için tıklayın. Varsayılan dizinler kaldırılamaz."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Локації, в яких буде здійснюватися пошук файлів .app. Клацніть нестандартний шлях, щоб видалити його. Шляхи за замовчуванням не можна видалити."
           }
         },
         "zh-Hans" : {
@@ -5631,6 +6353,12 @@
             "value" : "Mantıksal"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Логічно"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5652,10 +6380,24 @@
       }
     },
     "Login Items" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Елементи Логіну"
+          }
+        }
+      }
     },
     "MacOS only enables extensions if the main app is in Applications folder" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacOS дозволяє розширення, тільки якщо основна програма знаходиться в папці Applications"
+          }
+        }
+      }
     },
     "Made with ❤️ by Alin Lupascu" : {
       "extractionState" : "manual",
@@ -5696,6 +6438,12 @@
             "value" : "Alin Lupascu tarafından ❤️ ile yapıldı"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зроблено з ❤️ Alin Lupascu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5717,7 +6465,14 @@
       }
     },
     "Management" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Керування"
+          }
+        }
+      }
     },
     "Menubar" : {
       "extractionState" : "manual",
@@ -5756,6 +6511,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Menü çubuğu"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Смуга Меню"
           }
         },
         "zh-Hans" : {
@@ -5817,6 +6578,12 @@
             "value" : "Menü çubuğu ikon modu"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Режим відображення іконок в Смузі Меню"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5874,6 +6641,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Menü çubuğu ikon tercihi"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вибір іконки на Смузі Меню"
           }
         },
         "zh-Hans" : {
@@ -5935,6 +6708,12 @@
             "value" : "Mini Konfigürasyon"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Міні конфігурація"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5992,6 +6771,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mini pencere modu"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Режим міні-вікна"
           }
         },
         "zh-Hans" : {
@@ -6053,6 +6838,12 @@
             "value" : "Minimalist uygulama listesi satırları devre dışı"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вимкнено мінімалістичні рядки списку програм"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6110,6 +6901,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Minimalist uygulama listesi satırları etkin"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Увімкнено мінімалістичні рядки списку програм"
           }
         },
         "zh-Hans" : {
@@ -6171,6 +6968,12 @@
             "value" : "Eksik İzinler"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відсутні Дозволи"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6229,6 +7032,12 @@
             "value" : "Değiştirme Tarihi"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дата модифікації"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6285,6 +7094,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Değiştirme Tarihi:"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дата модифікації:"
           }
         },
         "zh-Hans" : {
@@ -6346,6 +7161,12 @@
             "value" : "Aylık"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Щомісяця"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6403,6 +7224,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Daha fazla"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Більше"
           }
         },
         "zh-Hans" : {
@@ -6464,6 +7291,12 @@
             "value" : "İsim"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Назва"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6490,6 +7323,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Navigiere zu"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перейти"
           }
         },
         "zh-HK" : {
@@ -6537,6 +7376,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hiçbir zaman"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ніколи"
           }
         },
         "zh-Hans" : {
@@ -6598,6 +7443,12 @@
             "value" : "Yeni Duyuru"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нове Оголошення"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6657,6 +7508,12 @@
             "value" : "Sonraki güncelleme kontrolü: %@"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Наступна перевірка оновлення: %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6678,7 +7535,14 @@
       }
     },
     "No command provided" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Команда не надана"
+          }
+        }
+      }
     },
     "No files or folders added" : {
       "extractionState" : "manual",
@@ -6717,6 +7581,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Klasör veya dosya eklenmedi"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Файли чи папки не додано"
           }
         },
         "zh-Hans" : {
@@ -6778,6 +7648,12 @@
             "value" : "Yeni Duyuru Yok"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нема нових оголошень"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6828,6 +7704,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Başıboş dosya bulunamadı"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Осиротілих файлів не знайдено"
           }
         },
         "zh-Hans" : {
@@ -6889,6 +7771,12 @@
             "value" : "Görüntülenecek sürüm yok"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нема релізів для відображення"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6910,7 +7798,14 @@
       }
     },
     "No universal apps found." : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не знайдено універсальних програм"
+          }
+        }
+      }
     },
     "No Update 😌" : {
       "extractionState" : "manual",
@@ -6949,6 +7844,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Güncelleme Yok 😌"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нема оновлення 😌"
           }
         },
         "zh-Hans" : {
@@ -7010,6 +7911,12 @@
             "value" : "Mevcut değil"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Недоступно"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7060,6 +7967,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bulunamadı"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не знайдено"
           }
         },
         "zh-Hans" : {
@@ -7121,6 +8034,12 @@
             "value" : "öğe"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "з"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7180,6 +8099,12 @@
             "value" : "Tamam"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Окей"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7230,6 +8155,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aç"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відкрити"
           }
         },
         "zh-Hans" : {
@@ -7291,6 +8222,12 @@
             "value" : "%@’ı aç"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відкрити %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7348,6 +8285,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Başıboş dosya araması, dosya hariç tutma için kontrol edilecek kaldırılmış uygulama paketleri olmadığından %100 doğru değildir. Bu, dosyalar/klasörler için en iyi tahminle bir arama yapar ve halihazırda yüklü olan uygulamalarınızla çakışanları hariç tutar. Lütfen silinmek üzere işaretlenen dosyaların gerçekten kaldırılmış uygulamalara ait olduğunu doğrulayın."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пошук осиротілих файлів не є на 100% точним, оскільки він не має пакунків видалених програм, які можна було б перевірити на предмет виключення файлів. Виконується пошук файлів/папок на основі найкращих припущень і виключаються ті, що перетинаються з вашими поточними встановленими програмами. Будь ласка, переконайтеся, що файли, позначені для видалення, дійсно належать до видалених програм."
           }
         },
         "zh-Hans" : {
@@ -7409,6 +8352,12 @@
             "value" : "Başıboş Dosyalar"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Осиротілі Файли"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7468,6 +8417,12 @@
             "value" : "Pearcleaner ve onun tüm dosyaları tamamen kaldırılacak, emin misiniz?"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner і всі його файли буде повністю видалено, ви впевнені?"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7525,6 +8480,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pearcleaner CLI desteği"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Підтримка Pearcleaner CLI"
           }
         },
         "zh-Hans" : {
@@ -7587,6 +8548,12 @@
             "value" : "Pearcleaner ile Kaldırma"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видалити через Pearcleaner"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7608,7 +8575,14 @@
       }
     },
     "Perform privileged operations seamlessly without password prompts" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виконуйте привілейовані операції без запитів на введення пароля"
+          }
+        }
+      }
     },
     "Permission Status" : {
       "extractionState" : "manual",
@@ -7649,6 +8623,12 @@
             "value" : "İzin Durumu"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Статус Дозволів"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7670,7 +8650,14 @@
       }
     },
     "Permission Testing" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тестування Дозволів"
+          }
+        }
+      }
     },
     "Permissions" : {
       "extractionState" : "manual",
@@ -7709,6 +8696,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "İzinler"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дозволи"
           }
         },
         "zh-Hans" : {
@@ -7770,6 +8763,12 @@
             "value" : "Açılır pencereyi en üste sabitle"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закріпіть спливаюче вікно зверху"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7791,7 +8790,14 @@
       }
     },
     "Please install the helper service" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Будь ласка, встановіть допоміжний сервіс"
+          }
+        }
+      }
     },
     "Plist File" : {
       "extractionState" : "manual",
@@ -7830,6 +8836,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Plist Dosyası"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Файл Plist"
           }
         },
         "zh-Hans" : {
@@ -7888,6 +8900,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kuyruk:"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Черга:"
           }
         },
         "zh-Hans" : {
@@ -7949,6 +8967,12 @@
             "value" : "Çık"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрити"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8006,6 +9030,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pearcleaner’dan Çık"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрити Pearcleaner"
           }
         },
         "zh-Hans" : {
@@ -8067,6 +9097,12 @@
             "value" : "Gerçek"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Справжній"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8124,6 +9160,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gerçek boyut türü, dosyanın diskte ne kadar gerçek ayrılmış alana sahip olduğunu gösterir. \n\nMantıksal tip binary boyutunu gösterir. Dosya sistemi disk üzerindeki sektörleri sıkıştırabilir ve tekilleştirebilir, bu nedenle gerçek boyut bazen mantıksal boyuttan daha küçük (veya daha büyük) olabilir.\n\nFinder boyutu, Finder'da bir dosyaya sağ tıklayıp > Bilgi Al dediğinizde hem mantıksal hem de gerçek boyutların birlikte gösterilmesine benzer."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Справжній розмір показує, скільки реально виділено місця на диску для файлу.\n\nЛогічний тип показує двійковий розмір. Файлова система може стискати і дедуплікувати сектори на диску, тому реальний розмір іноді може бути меншим (або більшим) за логічний.\n\nРозмір Finder подібний до того, якби ви клацнули правою кнопкою миші > Отримати інформацію про файл у Finder, де буде показано як логічний, так і реальний розмір разом."
           }
         },
         "zh-Hans" : {
@@ -8185,6 +9227,12 @@
             "value" : "Yenile"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оновити"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8242,6 +9290,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uygulamaları Yenile"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оновити Програми"
           }
         },
         "zh-Hans" : {
@@ -8303,6 +9357,12 @@
             "value" : "Uygulamaları yenile (⌘+R)"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оновити Програми (⌘+R)"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8362,6 +9422,12 @@
             "value" : "Güncelleyiciyi yenile"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Освіжити оновлювач"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8418,6 +9484,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sürüm Notları"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Примітки до релізу"
           }
         },
         "zh-Hans" : {
@@ -8479,6 +9551,12 @@
             "value" : "Sürümler"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Релізи"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8538,6 +9616,12 @@
             "value" : "Önceki uygulamalardan kalan dosya ve klasörler"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Залишки файлів і папок з попередніх програм"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8564,6 +9648,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Alle Dateien/Ordner entfernen"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видалити всі файли/папки"
           }
         },
         "zh-HK" : {
@@ -8613,6 +9703,12 @@
             "value" : "Yeniden Tara"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пересканувати"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8634,7 +9730,14 @@
       }
     },
     "Reset" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скинути"
+          }
+        }
+      }
     },
     "Reset all settings to default" : {
       "extractionState" : "manual",
@@ -8673,6 +9776,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tüm ayarları varsayılana sıfırla"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скинути всі налаштування на стандартні"
           }
         },
         "zh-Hans" : {
@@ -8734,6 +9843,12 @@
             "value" : "Ayarları Sıfırla"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скинути Налаштування"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8791,6 +9906,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Boyutu Sıfırla"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скинути Розмір"
           }
         },
         "zh-Hans" : {
@@ -8852,6 +9973,12 @@
             "value" : "Yeniden başlat"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перезапуск"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8909,6 +10036,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Değişiklerin etkili olması için %@’ı yeniden başlat"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перезапустити %@ щоб зміни вступили в дію"
           }
         },
         "zh-Hans" : {
@@ -8970,6 +10103,12 @@
             "value" : "Ters arama başarıyla tamamlandı"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зворотній пошук успішно завершено"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9027,6 +10166,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Boyutu sıfırlamak için sağ tıkla"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Правий клік для скидання розміру"
           }
         },
         "zh-Hans" : {
@@ -9088,6 +10233,12 @@
             "value" : "Kaydet"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зберегти"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9109,10 +10260,24 @@
       }
     },
     "Saved: %@" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Збережено: %@"
+          }
+        }
+      }
     },
     "Savings Size" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Збережено"
+          }
+        }
+      }
     },
     "Scrollbar is hidden in lists" : {
       "localizations" : {
@@ -9144,6 +10309,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kaydırma çubuğu listelerde gizli"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Смуга прокрутки прихована у списках"
           }
         },
         "zh-HK" : {
@@ -9184,6 +10355,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kaydırma çubuğu listelerde OS tercihine ayarlı"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Смуга прокрутки у списках налаштована відповідно до уподобань операційної системи"
           }
         },
         "zh-HK" : {
@@ -9231,6 +10408,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uygulamalar için bu dosyaları ara"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шукайте програми в цих папках"
           }
         },
         "zh-Hans" : {
@@ -9291,6 +10474,12 @@
             "value" : "Dosya sistemi aranıyor"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пошук у файловій системі"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9312,10 +10501,24 @@
       }
     },
     "Select All" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вибрати все"
+          }
+        }
+      }
     },
     "Select all universal apps" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вибрати всі універсальні програми"
+          }
+        }
+      }
     },
     "Select an environment to view paths." : {
       "localizations" : {
@@ -9347,6 +10550,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dizinleri görüntülemek için bir ortam seç."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вибрати оточення для перегляду шляхів."
           }
         },
         "zh-Hans" : {
@@ -9408,6 +10617,12 @@
             "value" : "Sentinel Monitör"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сторожовий Монітор"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9465,6 +10680,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sentinel Monitör kaldırılacak başka dosya bulamadı"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сторожовий Монітор не знайшов інших файлів для видалення"
           }
         },
         "zh-Hans" : {
@@ -9526,6 +10747,12 @@
             "value" : "Ayarlar"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налаштування"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9583,6 +10810,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Duyurular işaretini tekrar göster"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Знову показати значок оголошень"
           }
         },
         "zh-Hans" : {
@@ -9644,6 +10877,12 @@
             "value" : "Açılışta uygulama listesini göster"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показувати список програм під час запуску"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9700,6 +10939,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Detayları Göster"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показати Деталі"
           }
         },
         "zh-Hans" : {
@@ -9761,6 +11006,12 @@
             "value" : "Son 3 sürüm gösteriliyor"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показувати останні 3 релізи"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9782,7 +11033,14 @@
       }
     },
     "Since Authorization services have been deprecated by Apple as a less secure authentication method, it will eventually be removed from Pearcleaner and the helper service will be the only option going forward. I recommend enabling the privileged helper service as soon as possible." : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оскільки компанія Apple відмовилася від використання служби авторизації як менш безпечного методу автентифікації, її буде вилучено з Pearcleaner, а допоміжна служба залишиться єдиним варіантом у майбутньому. Я рекомендую увімкнути привілейовану допоміжну службу якомога швидше."
+          }
+        }
+      }
     },
     "Size" : {
       "extractionState" : "manual",
@@ -9821,6 +11079,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Boyut"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Розмір"
           }
         },
         "zh-Hans" : {
@@ -9882,6 +11146,12 @@
             "value" : "Uygulama listesini ada veya boyuta göre alfabetik olarak sırala"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сортувати список програм за алфавітом, назвою або розміром"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9939,6 +11209,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "İsme Göre Sıralandı"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відсортовано за Назвою"
           }
         },
         "zh-Hans" : {
@@ -10000,6 +11276,12 @@
             "value" : "Boyuta Göre Sıralandı"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відсортовано за Розміром"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10056,6 +11338,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sıralama Seçenekleri"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Параметри Сортування"
           }
         },
         "zh-Hans" : {
@@ -10117,6 +11405,12 @@
             "value" : "Sıralama: %@"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сортування: %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10176,6 +11470,12 @@
             "value" : "Sponsor"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Спонсор"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10197,10 +11497,23 @@
       }
     },
     "Start Lipo" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Почати lipo"
+          }
+        }
+      }
     },
     "Strict app name search" : {
       "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Суворий пошук за назвою програми"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10246,6 +11559,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bir özellik isteği veya hata bildir"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подати запит на виправлення помилки або новий функціонал"
           }
         },
         "zh-Hans" : {
@@ -10307,6 +11626,12 @@
             "value" : "Yeni Sorun Bildir"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Повідомити про проблему"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10364,6 +11689,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Destek"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Підтримка"
           }
         },
         "zh-Hans" : {
@@ -10425,6 +11756,12 @@
             "value" : "sistem"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "система"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10483,6 +11820,12 @@
             "value" : "Sistem"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Система"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10504,13 +11847,34 @@
       }
     },
     "systemsetup -getcomputername" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "systemsetup -getcomputername"
+          }
+        }
+      }
     },
     "systemsetup -getsleep" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "systemsetup -getsleep"
+          }
+        }
+      }
     },
     "Terminal" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Термінал"
+          }
+        }
+      }
     },
     "Theme Mode" : {
       "extractionState" : "manual",
@@ -10549,6 +11913,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tema Modu"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Режим Теми"
           }
         },
         "zh-Hans" : {
@@ -10610,6 +11980,12 @@
             "value" : "Bu, dosyayı/klasörü Hariç Tutulanlar listesine ekler. Hariç Tutulanlar listesini Ayarlar > Dosyalar sekmesinden düzenleyin"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Файл/папку буде додано до списку винятків. Відредагуйте список винятків на вкладці Налаштування > вкладка Папки"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10632,6 +12008,12 @@
     },
     "This app is installed via Homebrew" : {
       "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ця програма інстальована через Homebrew"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10677,6 +12059,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bu uygulama %@ konumundadır"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ця програма знаходиться в %@"
           }
         },
         "zh-Hans" : {
@@ -10738,6 +12126,12 @@
             "value" : "Bu bir web uygulamasıdır"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Це веб програма"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10795,6 +12189,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bu örtülü bir iOS uygulamasıdır"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Це обернути iOS програма"
           }
         },
         "zh-Hans" : {
@@ -10856,6 +12256,12 @@
             "value" : "Bu ayar, menü çubuğu modunda veya normal modda çalışıyor olsanız da Pearcleaner'ı etkileyecektir. Menü çubuğu simgesini devre dışı bırakırsanız, Pearcleaner'ın oturum açarken başlamaması için bunu da devre dışı bırakmak isteyebilirsiniz."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Цей параметр впливає на роботу Pearcleaner незалежно від того, у якому режимі ви працюєте: у режимі Смуги Меню або звичайному режимі. Якщо ви вимкнули Смугу Меню на панелі меню, вам також слід вимкнути цей параметр, щоб Pearcleaner не запускався під час входу до системи."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10877,7 +12283,14 @@
       }
     },
     "This will exclude selected items from future scans. Exclusion list can be edited from Settings > Folders tab." : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Це виключить обрані елементи з майбутніх сканувань. Список Вийнятків можна відредагувати у Налаштування - вкладка Папки"
+          }
+        }
+      }
     },
     "Toggling between modes will reset the window frames to their default size/position" : {
       "extractionState" : "manual",
@@ -10916,6 +12329,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Modlar arasında geçiş yapmak pencere çerçevelerini varsayılan boyutlarına/konumlarına sıfırlayacaktır"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перемикання між режимами призведе до скидання розмірів/положення віконних рамок за замовчуванням"
           }
         },
         "zh-Hans" : {
@@ -10977,6 +12396,12 @@
             "value" : "Araçlar"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Інструменти"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10998,7 +12423,14 @@
       }
     },
     "Total binary size between all the apps" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загальний розмір бінарного файлу для всіх програм"
+          }
+        }
+      }
     },
     "Total environment paths available" : {
       "localizations" : {
@@ -11032,6 +12464,12 @@
             "value" : "Mevcut olan toplam ortam dizinleri"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загальна кількість доступних шляхів до середовища"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11053,7 +12491,14 @@
       }
     },
     "Total possible savings between all the apps" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загальний обсяг доступного звільнення для всіх програм"
+          }
+        }
+      }
     },
     "Total size of files:" : {
       "localizations" : {
@@ -11091,6 +12536,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dosyaların toplam boyutu: "
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загальний розмір файлів:"
           }
         },
         "zh-Hans" : {
@@ -11152,6 +12603,12 @@
             "value" : "Şeffaf materyal"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прозорий матеріал"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11173,7 +12630,14 @@
       }
     },
     "Type a keyword to exclude, Enter ↵ to save" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Введіть ключове слово для виключення, натисніть Enter ↵, щоб зберегти"
+          }
+        }
+      }
     },
     "Type to search" : {
       "localizations" : {
@@ -11211,6 +12675,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aramak için yazın"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Введіть для пошуку"
           }
         },
         "zh-Hans" : {
@@ -11272,6 +12742,12 @@
             "value" : "Kaldırmayı Geri Al"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скасувати видалення"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11329,6 +12805,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kaldır"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видалити"
           }
         },
         "zh-Hans" : {
@@ -11390,6 +12872,12 @@
             "value" : "Kaldırmayı onaylama uyarıları"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сповіщення про підтвердження видалення"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11449,6 +12937,12 @@
             "value" : "Pearcleaner’ı Kaldır"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видалити Pearcleaner"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11495,6 +12989,12 @@
             "value" : "evrensel"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "універсальний"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11504,10 +13004,24 @@
       }
     },
     "Unlink File" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Від'єднати файл"
+          }
+        }
+      }
     },
     "Unregister Service" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скасувати Реєстрацію Сервіса"
+          }
+        }
+      }
     },
     "Update" : {
       "localizations" : {
@@ -11545,6 +13059,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Güncelleme"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оновити"
           }
         },
         "zh-Hans" : {
@@ -11606,6 +13126,12 @@
             "value" : "Güncelleme Mevcut"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оновлення Доступне"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11665,6 +13191,12 @@
             "value" : "Güncelleme Mevcut 🥳"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оновлення Доступне 🥳"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11716,6 +13248,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Güncelleme tamamlandı"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оновлення виконано"
           }
         },
         "zh-Hans" : {
@@ -11776,6 +13314,12 @@
             "value" : "Güncelleme Sıklığı"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Частота Оновлень"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11823,6 +13367,12 @@
             "value" : "Güncelleme devam ediyor"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оновлення в процесі"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11868,6 +13418,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Güncelleme sıklığı Hiçbir Zaman olarak ayarlandı"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автоматичні оновлення вимкнено"
           }
         },
         "zh-Hans" : {
@@ -11929,6 +13485,12 @@
             "value" : "Güncellemeler Devre Dışı"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оновлення вимкнені"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11985,6 +13547,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "kullanıcı"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "користувач"
           }
         },
         "zh-Hans" : {
@@ -12045,6 +13613,12 @@
             "value" : "Kullanıcı"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Користувач"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12101,6 +13675,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Versiyon %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версія %@"
           }
         },
         "zh-Hans" : {
@@ -12161,6 +13741,12 @@
             "value" : "Göster"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перегляд"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12182,7 +13768,14 @@
       }
     },
     "View Debug Window" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переглянути вікно налагодження"
+          }
+        }
+      }
     },
     "View in Finder" : {
       "extractionState" : "manual",
@@ -12221,6 +13814,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Finder’da Göster"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переглянути у Finder"
           }
         },
         "zh-Hans" : {
@@ -12282,6 +13881,12 @@
             "value" : "Sorunları Görüntüle"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переглянути Проблеми"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12339,6 +13944,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Projeye katkıda bulunanları göster"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переглянути вклад у проектування"
           }
         },
         "zh-Hans" : {
@@ -12400,6 +14011,12 @@
             "value" : "Sürümleri Göster"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переглянути Релізи"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12456,6 +14073,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sürümleri GitHub’ta göster"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переглянути релізи на GitHub"
           }
         },
         "zh-Hans" : {
@@ -12517,6 +14140,12 @@
             "value" : "Repository’i Göster"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переглянути репозиторій"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12574,6 +14203,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uyarı"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Попередження"
           }
         },
         "zh-Hans" : {
@@ -12635,6 +14270,12 @@
             "value" : "Uyarı!"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Попередження!"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12692,6 +14333,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "web"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "веб"
           }
         },
         "zh-Hans" : {
@@ -12753,6 +14400,12 @@
             "value" : "Web uygulaması"
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Веб програма"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12810,6 +14463,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Haftalık"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Щотижня"
           }
         },
         "zh-Hans" : {
@@ -12871,6 +14530,12 @@
             "value" : "Uygulamalar Çöp Sepeti’ne taşınınca Pearcleaner çalışacak ve silmek için ilgili dosya ve klasörleri bulacaktır."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Коли програми буде переміщено до Смітника, Pearcleaner запуститься і знайде відповідні файли та папки для видалення."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12930,6 +14595,12 @@
             "value" : "Çöp Sepeti butonunu kullanarak dosyalar silinirken, işleme devam etmeden önce ek bir uyarı göstererek kazara silmelerin önüne geçebilirsiniz."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видаляючи файли за допомогою кнопки Смітник, ви можете запобігти випадковому видаленню, показавши попередження перед тим, як продовжити дію."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12951,7 +14622,14 @@
       }
     },
     "When Homebrew cleanup is enabled, Pearcleaner will check if the app you are removing was installed via Homebrew and launch a built-in Terminal to execute a brew uninstall and cleanup command to let Homebrew know that the app is removed. This way your Homebrew list will be synced up correctly and caching will be removed.\n\nNOTE: If you undo the file delete with CMD+Z, the files will be put back but Homebrew will not be aware of it. To get the Homebrew list back in sync you'd need to run:\n\n> brew install APPNAME --force" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Якщо очищення Homebrew увімкнено, Pearcleaner перевірить, чи програма, яку ви видаляєте, була встановлена через Homebrew, і запустить вбудований термінал для виконання команди видалення і очищення, щоб повідомити Homebrew про те, що програму видалено. Таким чином ваш список Homebrew буде правильно синхронізовано, а кешування буде видалено.\n\nПРИМІТКА: Якщо ви скасуєте видалення файлів за допомогою CMD+Z, файли буде відновлено, але Homebrew не знатиме про це. Щоб відновити синхронізацію списку Homebrew, вам потрібно виконати\n\n> brew install APPNAME --force"
+          }
+        }
+      }
     },
     "When Homebrew cleanup is enabled, Pearcleaner will check if the app you are removing was installed via Homebrew and launch Terminal.app to execute a brew uninstall and cleanup command to let Homebrew know that the app is removed. This way your Homebrew list will be synced up correctly and caching will be removed. Terminal.app is required since some apps need sudo permissions to remove services and files placed in system folders. Since other terminal apps don't support AppleScript and/or the 'do script' command, I opted to use the default macOS Terminal app for this.\n\nNOTE: If you undo the file delete with CMD+Z, the files will be put back but Homebrew will not be aware of it. To get the Homebrew list back in sync you'd need to run:\n\n> brew install APPNAME --force" : {
       "extractionState" : "manual",
@@ -12990,6 +14668,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Homebrew temizliği etkinken, Pearcleaner kaldırdığınız uygulamanın Homebrew aracılığı ile yüklenip yüklenmediğini kontrol edecek ve Homebrew’e uygulamanın kaldırıldığını bildirmek amacıyla brew uninstall ve cleanup komutlarını çalıştırmak için Terminal.app’i açacaktır. Böylece Homebrew listeniz düzgünce senkronize olacak ve önbellekleme kaldırılacaktır. Terminal.app, bazı uygulamalar sistem klasörlerindeki dosyalar ve servisleri kaldırmak için sudo izinlerine ihtiyaç duyduğu için gereklidir. Diğer terminal uygulamaları AppleScript ve/veya ‘do script’ komutunu desteklemediğinden bunun için varsayılan macOS Terminal uygulamasını kullanmayı seçtim.\n\nNOT: CMD+Z ile dosya silme işlemini geri alırsanız, dosyalar geri konacaktır ancak Homebrew bunun farkında olmayacaktır. Homebrew listesini tekrar senkronize etmek için şu komutu çalıştırmanız gerekir:\n\n> brew install UYGULAMAADI --force"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Якщо очищення Homebrew увімкнено, Pearcleaner перевірить, чи програму, яку ви видаляєте, було встановлено через Homebrew, і запустить програму Terminal.app для виконання команди видалення і очищення, щоб повідомити Homebrew, що програму видалено. Таким чином ваш список Homebrew буде правильно синхронізовано, а кешування буде видалено. Terminal.app є необхідним, оскільки деякі програми потребують дозволів sudo для видалення служб і файлів, розміщених у системних теках. Оскільки інші термінальні програми не підтримують AppleScript та/або команду «do script», я вирішив використати для цього стандартну програму macOS Terminal.\n\nПРИМІТКА: Якщо ви скасуєте видалення файлів за допомогою CMD+Z, файли буде відновлено, але Homebrew не знатиме про це. Щоб відновити синхронізацію списку Homebrew, вам потрібно виконати\n\n> brew install APPNAME --force"
           }
         },
         "zh-Hans" : {
@@ -13051,6 +14735,12 @@
             "value" : "Menü çubuğu ikonu etkinleştirildiğinde, uygulama aksesuar moduna alınacağından ana uygulama penceresi ve dock simgesi devre dışı bırakılır."
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Коли увімкнено режим на Смузі Меню, головне вікно програми та піктограму док-станції буде вимкнено, оскільки програму буде переведено в режим доповнення."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13073,6 +14763,12 @@
     },
     "When searching for related application files, strict will check that the app name matches the found file exactly. Strict disabled will check if the app name is contained in the found file name. This can be useful when searching for multiple versions of the same app, or when searching for files that are not named after the app name. Strict disabled will likely find more files, but some unrelated as well, so make sure you check/uncheck the needed files." : {
       "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Під час пошуку пов'язаних файлів програми строго перевірятиметься, чи ім'я програми точно збігається з назвою знайденого файлу. Якщо вимкнено, буде перевірено, чи міститься назва програми у назві знайденого файлу. Це може бути корисно під час пошуку кількох версій однієї програми або під час пошуку файлів, назви яких не збігаються з назвою програми. У разі використання цього параметра буде знайдено більше файлів, але деякі з них можуть бути не пов'язані з програмою, тому переконайтеся, що ви встановили/зняли прапорець з потрібних файлів."
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13120,6 +14816,12 @@
             "value" : "Bu mod etkinleştirildiğinde bir uygulamayı kaldırmak için Kaldır butonuna basıldığında hemen ardından Pearcleaner’da kapanacaktır. \nBu Pearcleaner’ı sadece Sentinel Trash Monitor, Finder uzantısı veya Deep Link gibi harici yöntemlerle açıldığında etkiler.\nBu, uygulamanın hızlı bir kaldırma işlemi için tek seferlik açılmasına imkan verir. Pearcleaner normal şekilde açıldığında bu ayar yok sayılır ve Pearcleaner normal şekilde çalışır.  "
           }
         },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Якщо цей режим увімкнено, натискання кнопки Видалити для видалення програми також призведе до закриття Pearcleaner одразу після цього.\nЦе впливає на Pearcleaner лише тоді, коли його відкрито за допомогою зовнішніх засобів, таких як Sentinel Trash Monitor, розширення Finder або Deep Link.\nЦе дозволяє одноразове використання програми для швидкого видалення. Якщо Pearcleaner відкрито у звичайному режимі, цей параметр ігнорується і програма працюватиме у звичайному режимі."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13141,7 +14843,14 @@
       }
     },
     "whoami" : {
-
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "whoami"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
