@@ -247,8 +247,20 @@ func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool
         return (false, nil)
     }
 
-    // Use Mach-O helper function to lipo the binary
-    let success = thinBinaryUsingMachO(executablePath: executablePath)
+    // Use privileged thinning if helper is installed, otherwise fallback to Mach-O thinning
+    var success: Bool
+    if HelperToolManager.shared.isHelperToolInstalled {
+        let semaphore = DispatchSemaphore(value: 0)
+        success = false
+        Task {
+            let result = await HelperToolManager.shared.runThinning(atPath: executablePath)
+            success = result.0
+            semaphore.signal()
+        }
+        semaphore.wait()
+    } else {
+        success = thinBinaryUsingMachO(executablePath: executablePath)
+    }
 
     // Update the app bundle timestamp to refresh Finder
     if success {

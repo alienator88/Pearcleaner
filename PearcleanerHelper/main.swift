@@ -10,6 +10,7 @@ import Foundation
 @objc(HelperToolProtocol)
 public protocol HelperToolProtocol {
     func runCommand(command: String, withReply reply: @escaping (Bool, String) -> Void)
+    func runThinning(atPath: String, withReply reply: @escaping (Bool, String) -> Void)
 }
 
 // XPC Communication setup
@@ -54,6 +55,12 @@ class HelperToolDelegate: NSObject, NSXPCListenerDelegate, HelperToolProtocol {
         let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let success = (process.terminationStatus == 0) // Check if process exited successfully
         reply(success, output.isEmpty ? "No output" : output)
+    }
+
+    // Execute app lipo using privileges for apps owned by root
+    func runThinning(atPath: String, withReply reply: @escaping (Bool, String) -> Void) {
+        let success = thinBinaryUsingMachO(executablePath: atPath)
+        reply(success, success ? "Success" : "Failed")
     }
 }
 

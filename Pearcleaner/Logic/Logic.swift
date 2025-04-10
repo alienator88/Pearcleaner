@@ -301,6 +301,30 @@ func reloadAppsList(appState: AppState, fsm: FolderSettingsManager, delay: Doubl
 
 
 // Process CLI // ========================================================================================================
+
+func handleLaunchMode(appState: AppState, locations: Locations, fsm: FolderSettingsManager) {
+    var arguments = CommandLine.arguments
+    arguments = arguments.filter { !["-NSDocumentRevisionsDebugMode", "YES", "-AppleTextDirection", "NO"].contains($0) }
+
+    if let langIndex = arguments.firstIndex(of: "-AppleLanguages"), langIndex + 1 < arguments.count {
+        arguments.remove(at: langIndex)
+        arguments.remove(at: langIndex)
+    }
+
+    let termType = ProcessInfo.processInfo.environment["TERM"]
+    let isRunningInTerminal = termType != nil && termType != "dumb"
+
+    if isRunningInTerminal && arguments.count == 1 {
+        displayHelp()
+        exit(0)
+    }
+
+    if arguments.count > 1 {
+        processCLI(arguments: arguments, appState: appState, locations: locations, fsm: fsm)
+    }
+}
+
+
 func processCLI(arguments: [String], appState: AppState, locations: Locations, fsm: FolderSettingsManager) {
     let options = Array(arguments.dropFirst()) // Remove the first argument (binary path)
 

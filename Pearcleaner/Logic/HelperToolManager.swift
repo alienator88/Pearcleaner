@@ -11,6 +11,7 @@ import AlinFoundation
 @objc(HelperToolProtocol)
 public protocol HelperToolProtocol {
     func runCommand(command: String, withReply reply: @escaping (Bool, String) -> Void)
+    func runThinning(atPath: String, withReply reply: @escaping (Bool, String) -> Void)
 }
 
 enum HelperToolAction {
@@ -128,6 +129,26 @@ class HelperToolManager: ObservableObject {
             proxy.runCommand(command: command, withReply: { success, output in
                 continuation.resume(returning: (success, output))
             })
+        }
+    }
+
+    // Function to run privileged thinning on apps owned by root
+    func runThinning(atPath path: String) async -> (Bool, String) {
+        guard let connection = getConnection() else {
+            return (false, "XPC: No helper connection")
+        }
+
+        return await withCheckedContinuation { continuation in
+            guard let proxy = connection.remoteObjectProxyWithErrorHandler({ error in
+                continuation.resume(returning: (false, "XPC: Error: \(error.localizedDescription)"))
+            }) as? HelperToolProtocol else {
+                continuation.resume(returning: (false, "XPC: Proxy failure"))
+                return
+            }
+
+            proxy.runThinning(atPath: path) { success, output in
+                continuation.resume(returning: (success, output))
+            }
         }
     }
 

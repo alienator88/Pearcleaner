@@ -359,39 +359,3 @@ public func getArchitectureSliceSizes(from executablePath: String) -> (arm: UInt
         return nil
     }
 }
-
-
-
-
-
-
-
-//struct HorizontalSizeBarView: View {
-//    let bundleSize: Int64
-//    let binarySize: UInt32
-//    let savingsSize: UInt32
-//
-//    var body: some View {
-//        GeometryReader { geo in
-//            let totalWidth = geo.size.width
-//            let blueWidth = totalWidth * (Double(binarySize) / Double(bundleSize))
-//            let yellowWidth = blueWidth * (Double(savingsSize) / Double(binarySize))
-//
-//            ZStack(alignment: .leading) {
-//                RoundedRectangle(cornerRadius: 4).strokeBorder(Color.gray, lineWidth: 1)
-//                    .frame(width: totalWidth, height: 8)
-//
-//
-//                RoundedRectangle(cornerRadius: 4).fill(Color.blue)
-//                    .frame(width: blueWidth, height: 4)
-//                    .padding(.horizontal, 2)
-//                    .shadow(radius: 2)
-//
-//                RoundedRectangle(cornerRadius: 4).fill(Color.yellow)
-//                    .frame(width: yellowWidth, height: 4)
-//                    .padding(.horizontal, 2)
-//
-//            }
-//        }
-//    }
-//}

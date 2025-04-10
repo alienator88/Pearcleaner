@@ -35,27 +35,7 @@ struct PearcleanerApp: App {
     let conditionManager = ConditionManager.shared
 
     init() {
-        var arguments = CommandLine.arguments
-        arguments = arguments.filter { !["-NSDocumentRevisionsDebugMode", "YES", "-AppleTextDirection", "NO"].contains($0) }
-        if let langIndex = arguments.firstIndex(of: "-AppleLanguages"), langIndex + 1 < arguments.count {
-            arguments.remove(at: langIndex) // Remove "-AppleLanguages"
-            arguments.remove(at: langIndex) // Remove the associated language value (e.g., "(zh-HK)")
-        }
-//        let isRunningInTerminal = isatty(STDIN_FILENO) != 0
-        let termType = ProcessInfo.processInfo.environment["TERM"]
-        let isRunningInTerminal = termType != nil && termType != "dumb"
-
-        // If running from terminal and no arguments are provided
-        if isRunningInTerminal && arguments.count == 1 {
-            displayHelp()
-            exit(0)  // Exit without launching the GUI
-        }
-
-        // The first argument is always the binary path, so check if there are more than 1 arguments
-        if arguments.count > 1 {
-            // Process the CLI options
-            processCLI(arguments: arguments, appState: appState, locations: locations, fsm: fsm)
-        }
+        handleLaunchMode(appState: appState, locations: locations, fsm: fsm)
     }
 
     var body: some Scene {
