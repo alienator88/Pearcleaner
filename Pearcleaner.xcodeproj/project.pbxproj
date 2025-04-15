@@ -62,6 +62,7 @@
 		C7F8436B2CBF066F00E3E30A /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C7F8436A2CBF066F00E3E30A /* Localizable.xcstrings */; };
 		C7F8436C2CBF066F00E3E30A /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C7F8436A2CBF066F00E3E30A /* Localizable.xcstrings */; };
 		C7FB173B2B96321300B96F9A /* AppsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7FB173A2B96321300B96F9A /* AppsListView.swift */; };
+		C7FBD9DF2DAD66D500151934 /* AlinFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = C7C90DDD2DA8221B0056769A /* AlinFoundation */; };
 		C7FEBA112BDC422200AE195F /* AppSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7FEBA102BDC422200AE195F /* AppSearchView.swift */; };
 /* End PBXBuildFile section */
 
@@ -228,6 +229,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7FBD9DF2DAD66D500151934 /* AlinFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

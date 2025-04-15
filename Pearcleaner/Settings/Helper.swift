@@ -139,9 +139,9 @@ struct HelperSettingsTab: View {
                     VStack {
 
                         Picker("Example privileged commands", selection: $commandToRun) {
-                            Text("whoami").tag("whoami")
-                            Text("systemsetup -getsleep").tag("systemsetup -getsleep")
-                            Text("systemsetup -getcomputername").tag("systemsetup -getcomputername")
+                            Text(verbatim: "whoami").tag("whoami")
+                            Text(verbatim: "systemsetup -getsleep").tag("systemsetup -getsleep")
+                            Text(verbatim: "systemsetup -getcomputername").tag("systemsetup -getcomputername")
                         }
                         .pickerStyle(MenuPickerStyle())
                         .onChange(of: commandToRun) { newValue in

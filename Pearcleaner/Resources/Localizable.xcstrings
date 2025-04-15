@@ -72,12 +72,24 @@
             "state" : "translated",
             "value" : "**%lld%%** збережено"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**%lld%%** 瘦身"
+          }
         }
       }
     },
     "%@" : {
       "localizations" : {
         "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@"
@@ -221,6 +233,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld універсальні програми"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 通用应用程序"
           }
         }
       }
@@ -736,6 +754,12 @@
             "state" : "translated",
             "value" : "Після lipo, зелена частина буде видалена з бінарного файлу програми. Переконайтеся, що ви відкрили програму хоча б один раз перед lipo, щоб переконатися, що macOS закешувала підпис."
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "瘦身后，绿色部分将从您的应用二进制文件中移除。请确保在解压前至少打开一次应用，以确保macOS已缓存签名。"
+          }
         }
       }
     },
@@ -810,6 +834,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Завжди перевіряйте файли, позначені для видалення. У рідкісних випадках можуть бути знайдені не пов'язані файли, якщо назви програм занадто схожі."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "始终确认标记为删除的文件。在极少数情况下，当应用名称过于相似时，可能会找到无关的文件。"
           }
         }
       }
@@ -1081,6 +1111,12 @@
             "state" : "translated",
             "value" : "Програма Lipo"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App 瘦身"
+          }
         }
       }
     },
@@ -1090,6 +1126,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Програма lipo перевіряє бінарні файли Mach-O у ваших універсальних програмах і видаляє всі невикористовувані архітектури, такі як x86_64 або arm64, залишаючи лише ті архітектури, які ваш комп'ютер дійсно підтримує. У списку показано лише програми універсального типу, а не повний список ваших програм."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App 瘦身针对您通用应用包内的Mach-O二进制文件，移除任何未使用的架构，例如x86_64或arm64，仅保留您的计算机实际支持的架构。列表仅显示通用类型应用，而不是您的完整应用列表。"
           }
         }
       }
@@ -1616,6 +1658,12 @@
             "state" : "translated",
             "value" : "БЕТА"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BETA"
+          }
         }
       }
     },
@@ -1625,6 +1673,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Розмір бінарного файла"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "二进制大小"
           }
         }
       }
@@ -1687,6 +1741,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Розмір Пакету"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "包大小："
           }
         }
       }
@@ -2878,6 +2938,12 @@
             "value" : "Консоль Налагодження"
           }
         },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "调试控制台"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3189,6 +3255,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Середовища Розробки"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开发环境"
           }
         }
       }
@@ -3785,6 +3857,12 @@
             "state" : "translated",
             "value" : "Введіть ручну команду тут, Enter для запуску"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在此处输入手动命令，按回车键运行"
+          }
         }
       }
     },
@@ -3852,6 +3930,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Приклади привілейованих команд"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "特权命令示例"
           }
         }
       }
@@ -3927,6 +4011,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Виключити обрані"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "排除所选"
           }
         }
       }
@@ -4964,6 +5054,12 @@
             "state" : "translated",
             "value" : "Помічник"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "辅助服务"
+          }
         }
       }
     },
@@ -5034,6 +5130,12 @@
     "homebrew" : {
       "localizations" : {
         "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "homebrew"
+          }
+        },
+        "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "homebrew"
@@ -5118,6 +5220,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Очистка Homebrew: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Homebrew清理: %@"
           }
         }
       }
@@ -5381,6 +5489,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Інформація"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "信息"
           }
         }
       }
@@ -5974,6 +6088,12 @@
             "state" : "translated",
             "value" : "Запустити Сервіс"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启动服务"
+          }
         }
       }
     },
@@ -6177,6 +6297,12 @@
             "state" : "translated",
             "value" : "Посилання на"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "链接到"
+          }
         }
       }
     },
@@ -6186,6 +6312,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lipo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "瘦身"
           }
         }
       }
@@ -6327,6 +6459,12 @@
             "state" : "translated",
             "value" : "Елементи Логіну"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登录项"
+          }
         }
       }
     },
@@ -6336,6 +6474,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "MacOS дозволяє розширення, тільки якщо основна програма знаходиться в папці Applications"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacOS仅当主应用程序位于应用程序文件夹中时才启用扩展"
           }
         }
       }
@@ -6388,7 +6532,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "用 ❤️ 制作 by Alin Lupascu"
+            "value" : "由 Alin Lupascu 用 ❤️ 制作"
           }
         },
         "zh-Hant" : {
@@ -6411,6 +6555,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Керування"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "管理"
           }
         }
       }
@@ -7272,6 +7422,12 @@
             "value" : "Перейти"
           }
         },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导航至"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7481,6 +7637,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Команда не надана"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未提供命令"
           }
         }
       }
@@ -7744,6 +7906,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Не знайдено універсальних програм"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未找到通用应用程序。"
           }
         }
       }
@@ -8522,6 +8690,12 @@
             "state" : "translated",
             "value" : "Виконуйте привілейовані операції без запитів на введення пароля"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无缝执行带权限的操作，无需密码提示"
+          }
         }
       }
     },
@@ -8596,6 +8770,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Тестування Дозволів"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "权限测试"
           }
         }
       }
@@ -8736,6 +8916,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Будь ласка, встановіть допоміжний сервіс"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请安装辅助服务"
           }
         }
       }
@@ -9597,6 +9783,12 @@
             "value" : "Видалити всі файли/папки"
           }
         },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除所有文件/文件夹"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9676,6 +9868,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Скинути"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重置"
           }
         }
       }
@@ -10207,6 +10405,12 @@
             "state" : "translated",
             "value" : "Збережено: %@"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已瘦身: %@"
+          }
         }
       }
     },
@@ -10216,6 +10420,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Збережено"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "瘦身大小"
           }
         }
       }
@@ -10256,6 +10466,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Смуга прокрутки прихована у списках"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "滚动条在列表中隐藏"
           }
         },
         "zh-HK" : {
@@ -10302,6 +10518,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Смуга прокрутки у списках налаштована відповідно до уподобань операційної системи"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "滚动条在列表中设置为操作系统偏好设置"
           }
         },
         "zh-HK" : {
@@ -10448,6 +10670,12 @@
             "state" : "translated",
             "value" : "Вибрати все"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全选"
+          }
         }
       }
     },
@@ -10457,6 +10685,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Вибрати всі універсальні програми"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择所有通用应用程序"
           }
         }
       }
@@ -10980,6 +11214,12 @@
             "state" : "translated",
             "value" : "Оскільки компанія Apple відмовилася від використання служби авторизації як менш безпечного методу автентифікації, її буде вилучено з Pearcleaner, а допоміжна служба залишиться єдиним варіантом у майбутньому. Я рекомендую увімкнути привілейовану допоміжну службу якомога швидше."
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "由于苹果公司已将授权服务弃用，作为一种不太安全的认证方法，它最终将从Pearcleaner中移除，并将辅助服务作为未来的唯一选项。我建议尽快启用特权辅助服务。"
+          }
         }
       }
     },
@@ -11444,6 +11684,12 @@
             "state" : "translated",
             "value" : "Почати lipo"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开始瘦身"
+          }
         }
       }
     },
@@ -11453,6 +11699,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Суворий пошук за назвою програми"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "严格应用名称搜索"
           }
         },
         "zh-HK" : {
@@ -11706,7 +11958,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "system"
+            "value" : "系统"
           }
         },
         "zh-Hant" : {
@@ -11787,32 +12039,18 @@
         }
       }
     },
-    "systemsetup -getcomputername" : {
-      "localizations" : {
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "systemsetup -getcomputername"
-          }
-        }
-      }
-    },
-    "systemsetup -getsleep" : {
-      "localizations" : {
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "systemsetup -getsleep"
-          }
-        }
-      }
-    },
     "Terminal" : {
       "localizations" : {
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Термінал"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "终端"
           }
         }
       }
@@ -11953,6 +12191,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ця програма інстальована через Homebrew"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此应用通过Homebrew安装"
           }
         },
         "zh-HK" : {
@@ -12230,6 +12474,12 @@
             "state" : "translated",
             "value" : "Це виключить обрані елементи з майбутніх сканувань. Список Вийнятків можна відредагувати у Налаштування - вкладка Папки"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这将使选定项在未来扫描中被排除。可以从“设置”>“文件夹”标签编辑排除列表。"
+          }
         }
       }
     },
@@ -12370,6 +12620,12 @@
             "state" : "translated",
             "value" : "Загальний розмір бінарного файлу для всіх програм"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所有应用之间的总二进制大小"
+          }
         }
       }
     },
@@ -12437,6 +12693,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Загальний обсяг доступного звільнення для всіх програм"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所有应用程序的总可能瘦身"
           }
         }
       }
@@ -12576,6 +12838,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Введіть ключове слово для виключення, натисніть Enter ↵, щоб зберегти"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "输入一个关键词以排除，按回车键 ↵ 保存"
           }
         }
       }
@@ -12936,6 +13204,12 @@
             "value" : "універсальний"
           }
         },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "universal"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12951,6 +13225,12 @@
             "state" : "translated",
             "value" : "Від'єднати файл"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "解除文件链接"
+          }
         }
       }
     },
@@ -12960,6 +13240,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Скасувати Реєстрацію Сервіса"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "注销服务"
           }
         }
       }
@@ -13314,6 +13600,12 @@
             "value" : "Оновлення в процесі"
           }
         },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新进行中"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13627,7 +13919,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version %@"
+            "value" : "版本 %@"
           }
         },
         "zh-Hant" : {
@@ -13714,6 +14006,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Переглянути вікно налагодження"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看调试窗口"
           }
         }
       }
@@ -14569,6 +14867,12 @@
             "state" : "translated",
             "value" : "Якщо очищення Homebrew увімкнено, Pearcleaner перевірить, чи програма, яку ви видаляєте, була встановлена через Homebrew, і запустить вбудований термінал для виконання команди видалення і очищення, щоб повідомити Homebrew про те, що програму видалено. Таким чином ваш список Homebrew буде правильно синхронізовано, а кешування буде видалено.\n\nПРИМІТКА: Якщо ви скасуєте видалення файлів за допомогою CMD+Z, файли буде відновлено, але Homebrew не знатиме про це. Щоб відновити синхронізацію списку Homebrew, вам потрібно виконати\n\n> brew install APPNAME --force"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当启用 Homebrew 清理时，Pearcleaner 将检查您要删除的应用程序是否通过 Homebrew 安装，并启动内置的终端来执行brew uninstall和cleanup命令，以便让Homebrew知道该应用已被删除。这样，您的Homebrew列表将正确同步，缓存将被移除。\n\n注意：如果您使用CMD+Z撤销文件删除，文件将被恢复，但Homebrew将不会意识到这一点。要使Homebrew列表重新同步，您需要运行：\n\n> brew install APPNAME --force"
+          }
         }
       }
     },
@@ -14620,7 +14924,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "当启用 Homebrew 清理时，Pearcleaner 将检查您要删除的应用程序是否通过 Homebrew 安装，并启动 Terminal.app 执行 brew uninstall 和清理命令，以便让 Homebrew 知道该应用程序已被删除。这样可以确保您的 Homebrew 列表正确同步，并且缓存将被删除。需要 Terminal.app，因为某些应用程序需要 sudo 权限才能删除服务和放置在系统文件夹中的文件。由于其他终端应用程序不支持 AppleScript 和/或 'do script' 命令，因此我选择使用默认的 macOS Terminal 应用程序。\n\n注意：如果您使用 CMD+Z 撤销文件删除，文件将被恢复，但 Homebrew 将不会意识到这一点。要使 Homebrew 列表重新同步，您需要运行：\n\n> brew install APPNAME --force"
+            "value" : "当启用 Homebrew 清理时，Pearcleaner 将检查您要删除的应用程序是否通过 Homebrew 安装，并启动 终端.app 来执行brew uninstall和cleanup命令，以便让Homebrew知道该应用已被删除。这样，您的Homebrew列表将正确同步，缓存将被移除。需要 终端.app，因为某些应用程序需要 sudo 权限才能删除服务和放置在系统文件夹中的文件。由于其他终端应用程序不支持 AppleScript 和/或 'do script' 命令，因此我选择使用默认的 macOS 终端 应用程序。\n\n注意：如果您使用CMD+Z撤销文件删除，文件将被恢复，但Homebrew将不会意识到这一点。要使Homebrew列表重新同步，您需要运行：\n\n> brew install APPNAME --force"
           }
         },
         "zh-Hant" : {
@@ -14710,6 +15014,12 @@
             "value" : "Під час пошуку пов'язаних файлів програми строго перевірятиметься, чи ім'я програми точно збігається з назвою знайденого файлу. Якщо вимкнено, буде перевірено, чи міститься назва програми у назві знайденого файлу. Це може бути корисно під час пошуку кількох версій однієї програми або під час пошуку файлів, назви яких не збігаються з назвою програми. У разі використання цього параметра буде знайдено більше файлів, але деякі з них можуть бути не пов'язані з програмою, тому переконайтеся, що ви встановили/зняли прапорець з потрібних файлів."
           }
         },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在搜索相关应用程序文件时，严格模式会检查应用名称是否与找到的文件完全匹配。严格模式禁用时会检查应用名称是否包含在找到的文件名中。这在搜索同一应用的多个版本或搜索不以应用名称命名的文件时可能很有用。严格模式禁用可能会找到更多文件，但也可能包括一些无关的文件，因此请确保检查/取消检查所需的文件。"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -14779,16 +15089,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "啟用此模式時，按一下「解除安裝」按鈕移除應用程式之後亦會立即關閉 Pearcleaner。\n這只會影響 Pearcleaner 透過外部方式開啟󠄁，例如 Sentinel 垃圾監視器、Finder 延伸功能或深連結（Deep Link）。\n這可讓你一次性使用此應用程式以快速解除安裝。如 Pearcleaner 正常開啟，此設定將會忽略，並繼續如常工作。"
-          }
-        }
-      }
-    },
-    "whoami" : {
-      "localizations" : {
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "whoami"
           }
         }
       }

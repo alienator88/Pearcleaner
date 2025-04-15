@@ -80,43 +80,6 @@ struct AboutSettingsTab: View {
                     }
 
                 })
-
-                // GitHub Sponsors
-//                PearGroupBox(header: { Text("GitHub Sponsors").font(.title2) }, content: {
-//                    HStack{
-//                        Image(systemName: "dollarsign.circle")
-//                            .resizable()
-//                            .scaledToFit()
-//                            .frame(width: 20, height: 20)
-//                            .padding(.trailing)
-//
-//                        Text("View project contributors")
-//
-//                        DisclosureGroup(isExpanded: $disclose) {
-//                            ScrollView {
-//                                LazyVStack(alignment: .leading, spacing: 0) {
-//                                    ForEach(sponsors) { sponsor in
-//                                        HStack() {
-//                                            Text(sponsor.name)
-//                                            Spacer()
-//                                            Button {
-//                                                NSWorkspace.shared.open(sponsor.url)
-//                                            } label: { EmptyView() }
-//                                            .buttonStyle(SimpleButtonStyle(icon: "link", help: String(localized: "View")))
-//                                            .padding(.trailing)
-//                                        }
-//                                    }
-//                                }
-//                                .frame(maxWidth: .infinity, maxHeight: .infinity)
-//                            }
-//                            .frame(height: 45)
-//                            .padding(5)
-//                        } label: { EmptyView() }
-//
-//                    }
-//                })
-
-
             }
 
         }
