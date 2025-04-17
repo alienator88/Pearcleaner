@@ -63,6 +63,10 @@ class DeeplinkManager {
         }
 
         guard let scheme = url.scheme, scheme == "pear" else {
+            guard !url.path.isEmpty else {
+                printOS("DLM: URL path is empty.")
+                return
+            }
             handleAsPathOrDropped(url: url, appState: appState, locations: locations)
             return
         }
@@ -135,6 +139,11 @@ class DeeplinkManager {
             if let path = queryItems.first(where: { $0.name == "path" })?.value {
                 let pathURL = URL(fileURLWithPath: path)
 
+                guard FileManager.default.fileExists(atPath: pathURL.path) else {
+                    printOS("DLM: sent path doesn't exist: \(pathURL.path)")
+                    return
+                }
+
                 // Add path only if it's not already in externalPaths
                 if !appState.externalPaths.contains(pathURL) {
                     appState.externalPaths.append(pathURL)
@@ -173,15 +182,15 @@ class DeeplinkManager {
                             self.loadNextAppInfo(appState: appState, locations: locations)
                         }
                     } else {
-                        printOS("No app found matching the name '\(name)' with matchType: \(matchType)")
+                        printOS("DLM: No app found matching the name '\(name)' with matchType: \(matchType)")
                     }
                 }
 
             } else {
-                printOS("No valid query items for 'path' or 'name' found in the URL.")
+                printOS("DLM: No valid query items for 'path' or 'name' found in the URL.")
             }
         } else {
-            printOS("URL does not match the expected scheme pear://")
+            printOS("DLM: URL does not match the expected scheme pear://")
         }
     }
 
@@ -190,10 +199,13 @@ class DeeplinkManager {
         guard let nextPath = appState.externalPaths.first else { return }
 
         // Fetch app info
-        let appInfo = AppInfoFetcher.getAppInfo(atPath: nextPath)
+        guard let appInfo = AppInfoFetcher.getAppInfo(atPath: nextPath) else {
+            printOS("DLM: Failed to get appInfo for path: \(nextPath.path)")
+            return
+        }
 
         // Pass the appInfo and trigger showAppInFiles to handle display and animations
-        showAppInFiles(appInfo: appInfo!, appState: appState, locations: locations, showPopover: $showPopover)
+        showAppInFiles(appInfo: appInfo, appState: appState, locations: locations, showPopover: $showPopover)
     }
 
     private func handleAppFunctions(action: String, queryItems: [URLQueryItem], appState: AppState, fsm: FolderSettingsManager) {
@@ -249,14 +261,14 @@ class DeeplinkManager {
                     case "remove":
                         fsm.removePath(pathValue)
                     default:
-                        printOS("Invalid action type for appsPaths: \(actionType)")
+                        printOS("DLM: Invalid action type for appsPaths: \(actionType)")
                     }
                 } else {
-                    printOS("Provided path '\(pathValue)' does not exist or is not a directory.")
+                    printOS("DLM: Provided path '\(pathValue)' does not exist or is not a directory.")
                 }
 
             } else {
-                printOS("Missing 'add' or 'remove' action, or 'path' query item for appsPaths.")
+                printOS("DLM: Missing 'add' or 'remove' action, or 'path' query item for appsPaths.")
             }
             break
         case DeepLinkActions.orphanedPaths:
@@ -269,10 +281,10 @@ class DeeplinkManager {
                 case "remove":
                     fsm.removePathZ(pathValue)
                 default:
-                    printOS("Invalid action type for orphanedPaths: \(actionType)")
+                    printOS("DLM: Invalid action type for orphanedPaths: \(actionType)")
                 }
             } else {
-                printOS("Missing 'add' or 'remove' action, or 'path' query item for orphanedPaths.")
+                printOS("DLM: Missing 'add' or 'remove' action, or 'path' query item for orphanedPaths.")
             }
             break
         case DeepLinkActions.refreshAppsList:
