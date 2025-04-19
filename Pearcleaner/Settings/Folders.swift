@@ -108,7 +108,7 @@ struct FolderSettingsTab: View {
                         Button {
                             selectFolder()
                         } label: { EmptyView() }
-                        .buttonStyle(SimpleButtonStyle(icon: "plus.circle", help: String(localized: "Add folder"), size: 16, rotate: true))
+                            .buttonStyle(SimpleButtonStyle(icon: "plus.circle", help: String(localized: "Add folder"), size: 16, rotate: true))
 
                         Button {
                             clipboardAdd()
@@ -323,6 +323,18 @@ class FolderSettingsManager: ObservableObject {
 
     // Application folders //////////////////////////////////////////////////////////////////////////////////
     private func loadDefaultPathsIfNeeded() {
+        let fileManager = FileManager.default
+        let userApplicationsPath = "\(NSHomeDirectory())/Applications"
+
+        var isDir: ObjCBool = false
+        if !fileManager.fileExists(atPath: userApplicationsPath, isDirectory: &isDir) || !isDir.boolValue {
+            do {
+                try fileManager.createDirectory(atPath: userApplicationsPath, withIntermediateDirectories: true, attributes: nil)
+            } catch {
+                printOS("FSM: Failed to create ~/Applications: \(error)")
+            }
+        }
+
         var appsPaths = UserDefaults.standard.stringArray(forKey: appsKey) ?? defaultPaths
         let zombiePaths = UserDefaults.standard.stringArray(forKey: zombieKey) ?? []
         if appsPaths.count < 2 {
