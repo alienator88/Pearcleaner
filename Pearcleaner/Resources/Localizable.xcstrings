@@ -67,6 +67,12 @@
     },
     "**%lld%%** savings" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%% の節約"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -229,6 +235,12 @@
     },
     "%lld universal apps" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 個のユニバーサルアプリ"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -749,6 +761,12 @@
     },
     "After lipo, the green portion will be removed from your app's binary. Make sure to open an app at least once before lipo to make sure macOS has cached the signature." : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "lipo 処理の後、緑色の部分はアプリのバイナリから削除されます。macOS が署名をキャッシュするために、lipo を実行する前に少なくとも一度はアプリを開いてください。"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -830,6 +848,12 @@
     },
     "Always confirm the files marked for removal. In rare cases, unrelated files may be found when app names are too similar." : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "削除対象としてマークされたファイルを常に確認してください。まれに、アプリ名が似すぎている場合に関連のないファイルが検出されることがあります。"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1106,6 +1130,12 @@
     },
     "App Lipo" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Lipo"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1122,6 +1152,12 @@
     },
     "App lipo targets the Mach-O binaries inside your universal app bundles and removes any unused architectures, such as x86_64 or arm64, leaving only the architectures your computer actually supports. The list shows only universal type apps, not your full app list." : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App lipo はユニバーサルアプリバンドル内の Mach-O バイナリをターゲットにし、x86_64 や arm64 などの未使用のアーキテクチャを削除して、お使いのコンピュータが実際にサポートしているアーキテクチャのみを残します。リストには、すべてのアプリリストではなく、ユニバーサル形式のアプリのみが表示されます。"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1653,6 +1689,12 @@
     },
     "BETA" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ベータ"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1669,6 +1711,12 @@
     },
     "Binary Size" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バンドルサイズ"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1737,6 +1785,12 @@
     },
     "Bundle Size: " : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バンドルサイズ:"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2920,6 +2974,12 @@
             "value" : "Console de débogage"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デバッグコンソール"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3251,6 +3311,12 @@
     },
     "Development Environments" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開発環境"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3852,6 +3918,12 @@
     },
     "Enter manual command here, Enter to run" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ここに手動コマンドを入力し、Enter キーを押して実行"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3926,6 +3998,12 @@
     },
     "Example privileged commands" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "特権コマンドの例"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4007,6 +4085,12 @@
     },
     "Exclude Selected" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択項目を除外"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5049,6 +5133,12 @@
     },
     "Helper" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ヘルパー"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5129,6 +5219,12 @@
     },
     "homebrew" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "homebrew"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5216,6 +5312,12 @@
     },
     "Homebrew Cleanup: %@" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Homebrew クリーンアップ: %@"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5485,6 +5587,12 @@
     },
     "Information" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "お知らせ"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6083,6 +6191,12 @@
     },
     "Kickstart Service" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サービスを開始"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6292,6 +6406,12 @@
     },
     "Link To" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リンク先"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6308,6 +6428,12 @@
     },
     "Lipo" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lipo"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6454,6 +6580,12 @@
     },
     "Login Items" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ログイン項目"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6470,6 +6602,12 @@
     },
     "MacOS only enables extensions if the main app is in Applications folder" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS はアプリケーションフォルダに本体アプリがある場合のみ拡張機能を有効にします"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6551,6 +6689,12 @@
     },
     "Management" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "管理"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7416,6 +7560,12 @@
             "value" : "Navigiere zu"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移動先"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7633,6 +7783,12 @@
     },
     "No command provided" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コマンドが指定されていません"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7902,6 +8058,12 @@
     },
     "No universal apps found." : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ユニバーサルアプリが見つかりませんでした。"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8685,6 +8847,12 @@
     },
     "Perform privileged operations seamlessly without password prompts" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パスワード入力なしでシームレスに特権操作を実行"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8766,6 +8934,12 @@
     },
     "Permission Testing" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "権限テスト"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8912,6 +9086,12 @@
     },
     "Please install the helper service" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ヘルパーサービスをインストールしてください"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9777,6 +9957,12 @@
             "value" : "Alle Dateien/Ordner entfernen"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてのファイル/フォルダを削除"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9864,6 +10050,12 @@
     },
     "Reset" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リセット"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10400,6 +10592,12 @@
     },
     "Saved: %@" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存しました: %@"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10416,6 +10614,12 @@
     },
     "Savings Size" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存サイズ"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10665,6 +10869,12 @@
     },
     "Select All" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全てを選択"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10681,6 +10891,12 @@
     },
     "Select all universal apps" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてのユニバーサルアプリを選択"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11209,6 +11425,12 @@
     },
     "Since Authorization services have been deprecated by Apple as a less secure authentication method, it will eventually be removed from Pearcleaner and the helper service will be the only option going forward. I recommend enabling the privileged helper service as soon as possible." : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Authorization サービスは Apple によってセキュリティの低い認証方法として非推奨とされているため、最終的に Pearcleaner から削除され、ヘルパーサービスが唯一の選択肢となります。できるだけ早く特権ヘルパーサービスを有効にすることをお勧めします。"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11679,6 +11901,12 @@
     },
     "Start Lipo" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lipoを始める"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11695,6 +11923,12 @@
     },
     "Strict app name search" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "厳密なアプリ名検索"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12187,6 +12421,12 @@
     },
     "This app is installed via Homebrew" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このアプリは Homebrew を通してインストールされています"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12469,6 +12709,12 @@
     },
     "This will exclude selected items from future scans. Exclusion list can be edited from Settings > Folders tab." : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択した項目を今後のスキャンから除外します。除外リストは設定 > フォルダタブから編集できます。"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12615,6 +12861,12 @@
     },
     "Total binary size between all the apps" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてのアプリの合計バイナリサイズ"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12689,6 +12941,12 @@
     },
     "Total possible savings between all the apps" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてのアプリで可能な合計節約量"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12834,6 +13092,12 @@
     },
     "Type a keyword to exclude, Enter ↵ to save" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "除外するキーワードを入力し、Enter ↵ キーを押して保存"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13186,6 +13450,12 @@
             "value" : "universel"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ユニバーサル"
+          }
+        },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13220,6 +13490,12 @@
     },
     "Unlink File" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイルのリンクを解除"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13236,6 +13512,12 @@
     },
     "Unregister Service" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サービスの登録解除"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13580,6 +13862,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mise à jour en cours"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新中"
           }
         },
         "sk" : {
@@ -14002,6 +14290,12 @@
     },
     "View Debug Window" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デバッグウィンドウを表示"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -14862,6 +15156,12 @@
     },
     "When Homebrew cleanup is enabled, Pearcleaner will check if the app you are removing was installed via Homebrew and launch a built-in Terminal to execute a brew uninstall and cleanup command to let Homebrew know that the app is removed. This way your Homebrew list will be synced up correctly and caching will be removed.\n\nNOTE: If you undo the file delete with CMD+Z, the files will be put back but Homebrew will not be aware of it. To get the Homebrew list back in sync you'd need to run:\n\n> brew install APPNAME --force" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Homebrew クリーンアップが有効になっている場合、Pearcleaner は削除しようとしているアプリが Homebrew を通してインストールされたかどうかを確認し、内蔵ターミナルを起動して brew uninstall およびクリーンアップコマンドを実行し、Homebrew にアプリが削除されたことを通知します。これにより、Homebrew のリストが正しく同期され、キャッシュが削除されます。\n注意：CMD+Z でファイル削除を元に戻した場合、ファイルは復元されますが、Homebrew はそれを認識しません。Homebrew のリストを再同期するには、以下のコマンドを実行する必要があります：\n\nbrew install アプリ名 --force」"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -15008,6 +15308,12 @@
     },
     "When searching for related application files, strict will check that the app name matches the found file exactly. Strict disabled will check if the app name is contained in the found file name. This can be useful when searching for multiple versions of the same app, or when searching for files that are not named after the app name. Strict disabled will likely find more files, but some unrelated as well, so make sure you check/uncheck the needed files." : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "関連するアプリケーションファイルを検索する際、「厳密」モードではアプリ名が見つかったファイルと完全に一致するかチェックします。「厳密」モードが無効の場合は、アプリ名が見つかったファイル名に含まれているかをチェックします。これは同じアプリの複数バージョンを検索する場合や、アプリ名で命名されていないファイルを検索する場合に便利です。「厳密」モードを無効にすると、より多くのファイルが見つかる可能性がありますが、関連のないファイルも含まれる場合があるため、必要なファイルをチェック/チェック解除するようにしてください。"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
