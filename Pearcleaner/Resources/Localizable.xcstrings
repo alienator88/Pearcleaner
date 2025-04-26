@@ -3798,7 +3798,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ceci active l’option d’interface de ligne de commande vous permettant d'exécuter des actions liées à Pearcleaner à partir du terminal de MacOS en ajoutant la commande \"pearcleaner\" dans /usr/local/bin afin qu'elle soit disponible directement à partir de votre variable d'environnement PATH. Après avoir activer cette option, essayez par vous même en tapant \"pearcleaner --help\" dans le terminal."
+            "value" : "Ceci active l’option d’interface de ligne de commande vous permettant d'exécuter des actions liées à Pearcleaner à partir du terminal de macOS en ajoutant la commande \"pearcleaner\" dans /usr/local/bin afin qu'elle soit disponible directement à partir de votre variable d'environnement PATH. Après avoir activer cette option, essayez par vous même en tapant \"pearcleaner --help\" dans le terminal."
           }
         },
         "ja" : {
@@ -6600,7 +6600,7 @@
         }
       }
     },
-    "MacOS only enables extensions if the main app is in Applications folder" : {
+    "macOS only enables extensions if the main app is in Applications folder" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -6611,13 +6611,13 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "MacOS дозволяє розширення, тільки якщо основна програма знаходиться в папці Applications"
+            "value" : "macOS дозволяє розширення, тільки якщо основна програма знаходиться в папці Applications"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "MacOS仅当主应用程序位于应用程序文件夹中时才启用扩展"
+            "value" : "macOS仅当主应用程序位于应用程序文件夹中时才启用扩展"
           }
         }
       }
