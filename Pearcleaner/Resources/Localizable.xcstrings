@@ -67,6 +67,12 @@
     },
     "**%lld%%** savings" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**%lld%%** savings"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -89,6 +95,12 @@
     },
     "%@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -235,6 +247,12 @@
     },
     "%lld universal apps" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld universal apps"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -761,6 +779,12 @@
     },
     "After lipo, the green portion will be removed from your app's binary. Make sure to open an app at least once before lipo to make sure macOS has cached the signature." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach dem Lipo wird der grüne Teil aus der Binärdatei Ihrer App entfernt. Öffnen Sie die App vor dem Lipo mindestens einmal, um sicherzustellen, dass macOS die Signatur zwischengespeichert hat."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -848,6 +872,12 @@
     },
     "Always confirm the files marked for removal. In rare cases, unrelated files may be found when app names are too similar." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bestätigen Sie immer die markierten Dateien zum löschen. In seltenen Fällen können Dateien gefunden werden, die nichts mit der App zu tun haben, wenn die App-Namen zu ähnlich sind."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1130,6 +1160,12 @@
     },
     "App Lipo" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Lipo"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1152,6 +1188,12 @@
     },
     "App lipo targets the Mach-O binaries inside your universal app bundles and removes any unused architectures, such as x86_64 or arm64, leaving only the architectures your computer actually supports. The list shows only universal type apps, not your full app list." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Lipo zielt auf die Mach-O-Binärdateien in Ihren Universal-App-Bundles ab und entfernt alle nicht verwendeten Architekturen, wie z. B. x86_64 oder arm64, so dass nur die Architekturen übrig bleiben, die Ihr Computer tatsächlich unterstützt. Die Liste zeigt nur Apps vom Typ „Universal“, nicht Ihre vollständige App-Liste."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1689,6 +1731,12 @@
     },
     "BETA" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BETA"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1711,6 +1759,12 @@
     },
     "Binary Size" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Binary Grösse"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1733,6 +1787,12 @@
     },
     "Bundle Files..." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bundle Dateien…"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1785,6 +1845,12 @@
     },
     "Bundle Size: " : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bundle Grösse:"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3311,6 +3377,12 @@
     },
     "Development Environments" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entwicklung Umgebung"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3918,6 +3990,12 @@
     },
     "Enter manual command here, Enter to run" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geben Sie hier manuelle Befehle ein, drücken Sie die Eingabetaste, um diese auszuführen."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3998,6 +4076,12 @@
     },
     "Example privileged commands" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beispiel für privilegierte Befehle"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4085,6 +4169,12 @@
     },
     "Exclude Selected" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausgewählte ausschliessen"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5133,6 +5223,12 @@
     },
     "Helper" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Helper"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5219,6 +5315,12 @@
     },
     "homebrew" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Homebrew"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5312,6 +5414,12 @@
     },
     "Homebrew Cleanup: %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Homebrew-Bereinigung: %@"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5587,6 +5695,12 @@
     },
     "Information" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Information"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6191,6 +6305,12 @@
     },
     "Kickstart Service" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kickstart Service"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6406,6 +6526,12 @@
     },
     "Link To" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Link zu"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6428,6 +6554,12 @@
     },
     "Lipo" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lipo"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6580,6 +6712,12 @@
     },
     "Login Items" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anmeldeobjekte"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6602,6 +6740,12 @@
     },
     "MacOS only enables extensions if the main app is in Applications folder" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacOS aktiviert Erweiterungen nur, wenn sich die Hauptanwendung im Ordner „Programme“ befindet."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6689,6 +6833,12 @@
     },
     "Management" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Management"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7783,6 +7933,12 @@
     },
     "No command provided" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Befehl angegeben"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8058,6 +8214,12 @@
     },
     "No universal apps found." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine universellen Apps gefunden."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8847,6 +9009,12 @@
     },
     "Perform privileged operations seamlessly without password prompts" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Führt privilegierte Vorgänge nahtlos und ohne Passwortabfrage aus."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8934,6 +9102,12 @@
     },
     "Permission Testing" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berechtigungsprüfung"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9086,6 +9260,12 @@
     },
     "Please install the helper service" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte installieren Sie den Hilfsdienst"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10050,6 +10230,12 @@
     },
     "Reset" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zurücksetzen"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10592,6 +10778,12 @@
     },
     "Saved: %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gesichert: %@"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10614,6 +10806,12 @@
     },
     "Savings Size" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gesicherte Grösse"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10869,6 +11067,12 @@
     },
     "Select All" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alles auswählen"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10891,6 +11095,12 @@
     },
     "Select all universal apps" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Universellen Apps auswählen"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11425,6 +11635,12 @@
     },
     "Since Authorization services have been deprecated by Apple as a less secure authentication method, it will eventually be removed from Pearcleaner and the helper service will be the only option going forward. I recommend enabling the privileged helper service as soon as possible." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Da die Autorisierungsdienste von Apple als weniger sichere Authentifizierungsmethode bezeichnet, werden sie letztendlich aus Pearcleaner entfernt und der Hilfsdienst wird künftig die einzige Option sein. Ich empfehle, den privilegierten Hilfsdienst so bald wie möglich zu aktivieren."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11901,6 +12117,12 @@
     },
     "Start Lipo" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Lipo"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11923,6 +12145,12 @@
     },
     "Strict app name search" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "strenge Suche nach App-Namen"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12275,6 +12503,12 @@
     },
     "Terminal" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminal"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12421,6 +12655,12 @@
     },
     "This app is installed via Homebrew" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Programm wurde durch Homebrew installiert"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12709,6 +12949,12 @@
     },
     "This will exclude selected items from future scans. Exclusion list can be edited from Settings > Folders tab." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dadurch werden ausgewählte Elemente von zukünftigen Scans ausgeschlossen. Die Ausschlussliste kann unter „Einstellungen“ > „Ordner“ bearbeitet werden."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12861,6 +13107,12 @@
     },
     "Total binary size between all the apps" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gesamtgrösse aller Apps"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12941,6 +13193,12 @@
     },
     "Total possible savings between all the apps" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gesamte Einsparungen aller Apps"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13092,6 +13350,12 @@
     },
     "Type a keyword to exclude, Enter ↵ to save" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geben Sie ein zu ausschliessendes Stichwort ein und drücken Sie die Zeilenschaltung, um zu speichern."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13490,6 +13754,12 @@
     },
     "Unlink File" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dateiverknüpfung aufheben"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13512,6 +13782,12 @@
     },
     "Unregister Service" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht registrierter Dienst"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -14290,6 +14566,12 @@
     },
     "View Debug Window" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeige Debug Fenster"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -15156,6 +15438,12 @@
     },
     "When Homebrew cleanup is enabled, Pearcleaner will check if the app you are removing was installed via Homebrew and launch a built-in Terminal to execute a brew uninstall and cleanup command to let Homebrew know that the app is removed. This way your Homebrew list will be synced up correctly and caching will be removed.\n\nNOTE: If you undo the file delete with CMD+Z, the files will be put back but Homebrew will not be aware of it. To get the Homebrew list back in sync you'd need to run:\n\n> brew install APPNAME --force" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn die Homebrew-Bereinigung aktiviert ist, überprüft Pearcleaner, ob die zu entfernende Programme über Homebrew installiert wurde, und startet ein integriertes Terminal, um einen Befehl zum Deinstallieren und Bereinigen von Homebrew auszuführen, damit Homebrew weiß, dass die App entfernt wurde. Auf diese Weise wird Ihre Homebrew-Liste korrekt synchronisiert und der Cache wird entfernt.\n\nHINWEIS: Wenn Sie das Löschen der Datei mit CMD+Z rückgängig machen, werden die Dateien wiederhergestellt, aber Homebrew wird davon nicht informiert. Um die Homebrew-Liste wieder zu synchronisieren, müssen Sie folgenden Befehl ausführen:\n\n> brew install APPNAME --force"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -15308,6 +15596,12 @@
     },
     "When searching for related application files, strict will check that the app name matches the found file exactly. Strict disabled will check if the app name is contained in the found file name. This can be useful when searching for multiple versions of the same app, or when searching for files that are not named after the app name. Strict disabled will likely find more files, but some unrelated as well, so make sure you check/uncheck the needed files." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bei der Suche nach zugehörigen Anwendungsdateien überprüft „Streng“, ob der Name der App genau mit dem Namen der gefundenen Datei übereinstimmt. „Streng deaktiviert“ überprüft, ob der Name der App im Namen der gefundenen Datei enthalten ist. Dies kann nützlich sein, wenn Sie nach mehreren Versionen derselben App suchen oder nach Dateien suchen, die nicht nach dem Namen der App benannt sind. „Streng deaktiviert“ findet wahrscheinlich mehr Dateien, darunter jedoch auch einige, die nicht relevant sind. Überprüfen Sie daher unbedingt, ob die gewünschten Dateien ausgewählt sind."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
