@@ -247,7 +247,7 @@ struct GeneralSettingsTab: View {
                                 }
 
                                 HStack(spacing: 0) {
-                                    Text("MacOS only enables extensions if the main app is in Applications folder")
+                                    Text("macOS only enables extensions if the main app is in Applications folder")
                                         .font(.footnote)
                                         .foregroundStyle(.secondary)
                                     Button {

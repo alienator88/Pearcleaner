@@ -90,6 +90,12 @@
             "state" : "translated",
             "value" : "**%lld%%** 瘦身"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已節省 **%lld%%**"
+          }
         }
       }
     },
@@ -108,6 +114,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@"
@@ -269,6 +281,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld 通用应用程序"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 個通用應用程式"
           }
         }
       }
@@ -802,6 +820,12 @@
             "state" : "translated",
             "value" : "瘦身后，绿色部分将从您的应用二进制文件中移除。请确保在解压前至少打开一次应用，以确保macOS已缓存签名。"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "節省之後，綠色部分將會從你的應用程式的二進位檔移除。確保在節省之前至少開啟一次應用程式，以讓 macOS 快取應用程式簽名。"
+          }
         }
       }
     },
@@ -894,6 +918,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "始终确认标记为删除的文件。在极少数情况下，当应用名称过于相似时，可能会找到无关的文件。"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "總是確認標記為移除的檔案。在少數個案中，當應用程式名稱太相似時，可能會找到不相關的檔案。"
           }
         }
       }
@@ -1183,6 +1213,12 @@
             "state" : "translated",
             "value" : "App 瘦身"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App 節省"
+          }
         }
       }
     },
@@ -1210,6 +1246,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "App 瘦身针对您通用应用包内的Mach-O二进制文件，移除任何未使用的架构，例如x86_64或arm64，仅保留您的计算机实际支持的架构。列表仅显示通用类型应用，而不是您的完整应用列表。"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「App 節省」針對你的通用應用程式套件的 Mach-O 二進位檔，移除任何未使用的架構（例如 x86_64 或 arm64），只保留你的電腦實際支援的架構。此列表只顯示通用種類的應用程式，而非你的完整應用程式列表。"
           }
         }
       }
@@ -1754,6 +1796,12 @@
             "state" : "translated",
             "value" : "BETA"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BETA"
+          }
         }
       }
     },
@@ -1781,6 +1829,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "二进制大小"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "二進位大小"
           }
         }
       }
@@ -1867,6 +1921,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "包大小："
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "套件大小："
           }
         }
       }
@@ -3400,6 +3460,12 @@
             "state" : "translated",
             "value" : "开发环境"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開發環境"
+          }
         }
       }
     },
@@ -3870,7 +3936,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ceci active l’option d’interface de ligne de commande vous permettant d'exécuter des actions liées à Pearcleaner à partir du terminal de MacOS en ajoutant la commande \"pearcleaner\" dans /usr/local/bin afin qu'elle soit disponible directement à partir de votre variable d'environnement PATH. Après avoir activer cette option, essayez par vous même en tapant \"pearcleaner --help\" dans le terminal."
+            "value" : "Ceci active l’option d’interface de ligne de commande vous permettant d'exécuter des actions liées à Pearcleaner à partir du terminal de macOS en ajoutant la commande \"pearcleaner\" dans /usr/local/bin afin qu'elle soit disponible directement à partir de votre variable d'environnement PATH. Après avoir activer cette option, essayez par vous même en tapant \"pearcleaner --help\" dans le terminal."
           }
         },
         "ja" : {
@@ -4013,6 +4079,12 @@
             "state" : "translated",
             "value" : "在此处输入手动命令，按回车键运行"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在此處輸入手動命令，按一下 Enter 以執行"
+          }
         }
       }
     },
@@ -4098,6 +4170,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "特权命令示例"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "特殊權限命令範例"
           }
         }
       }
@@ -4191,6 +4269,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "排除所选"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "從選擇中排除"
           }
         }
       }
@@ -5246,6 +5330,12 @@
             "state" : "translated",
             "value" : "辅助服务"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "輔助應用程式"
+          }
         }
       }
     },
@@ -5436,6 +5526,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Homebrew清理: %@"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Homebrew 清理：%@"
           }
         }
       }
@@ -5717,6 +5813,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "信息"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "訊息"
           }
         }
       }
@@ -6328,6 +6430,12 @@
             "state" : "translated",
             "value" : "启动服务"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開始服務"
+          }
         }
       }
     },
@@ -6549,6 +6657,12 @@
             "state" : "translated",
             "value" : "链接到"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "連結至"
+          }
         }
       }
     },
@@ -6576,6 +6690,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "瘦身"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "節省"
           }
         }
       }
@@ -6735,10 +6855,16 @@
             "state" : "translated",
             "value" : "登录项"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登入項目"
+          }
         }
       }
     },
-    "MacOS only enables extensions if the main app is in Applications folder" : {
+    "macOS only enables extensions if the main app is in Applications folder" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -6755,13 +6881,19 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "MacOS дозволяє розширення, тільки якщо основна програма знаходиться в папці Applications"
+            "value" : "macOS дозволяє розширення, тільки якщо основна програма знаходиться в папці Applications"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "MacOS仅当主应用程序位于应用程序文件夹中时才启用扩展"
+            "value" : "macOS仅当主应用程序位于应用程序文件夹中时才启用扩展"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "僅當主應用程式位於「應用程式」資料夾時，macOS 才會啟用延伸功能"
           }
         }
       }
@@ -6852,6 +6984,12 @@
           }
         },
         "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "管理"
+          }
+        },
+        "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "管理"
@@ -7956,6 +8094,12 @@
             "state" : "translated",
             "value" : "未提供命令"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未提供命令"
+          }
         }
       }
     },
@@ -8236,6 +8380,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "未找到通用应用程序。"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未找到通用應用程式。"
           }
         }
       }
@@ -9032,6 +9182,12 @@
             "state" : "translated",
             "value" : "无缝执行带权限的操作，无需密码提示"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在沒有密碼的提示下流暢地執行特殊權限操作"
+          }
         }
       }
     },
@@ -9124,6 +9280,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "权限测试"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "測試權限"
           }
         }
       }
@@ -9282,6 +9444,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "请安装辅助服务"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請安裝輔助應用程式服務"
           }
         }
       }
@@ -10253,6 +10421,12 @@
             "state" : "translated",
             "value" : "重置"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重設"
+          }
         }
       }
     },
@@ -10801,6 +10975,12 @@
             "state" : "translated",
             "value" : "已瘦身: %@"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已儲存：%@"
+          }
         }
       }
     },
@@ -10828,6 +11008,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "瘦身大小"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已節省大小"
           }
         }
       }
@@ -11090,6 +11276,12 @@
             "state" : "translated",
             "value" : "全选"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全選"
+          }
         }
       }
     },
@@ -11117,6 +11309,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "选择所有通用应用程序"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選擇全部通用應用程式"
           }
         }
       }
@@ -11658,6 +11856,12 @@
             "state" : "translated",
             "value" : "由于苹果公司已将授权服务弃用，作为一种不太安全的认证方法，它最终将从Pearcleaner中移除，并将辅助服务作为未来的唯一选项。我建议尽快启用特权辅助服务。"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "由於授權服務已被 Apple 停用（因為其不是安全的身分認證方法），最終它將會從 Pearcleaner 中移除，後續只能使用輔助應用程式服務。建議儘快啟用特殊權限輔助應用程式服務。"
+          }
         }
       }
     },
@@ -12140,6 +12344,12 @@
             "state" : "translated",
             "value" : "开始瘦身"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開始節省"
+          }
         }
       }
     },
@@ -12520,6 +12730,12 @@
             "state" : "translated",
             "value" : "终端"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "終端機"
+          }
         }
       }
     },
@@ -12682,7 +12898,7 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此 App 透過 HomeBrew 安装"
+            "value" : "此 App 透過 HomeBrew 安裝"
           }
         }
       }
@@ -12972,6 +13188,12 @@
             "state" : "translated",
             "value" : "这将使选定项在未来扫描中被排除。可以从“设置”>“文件夹”标签编辑排除列表。"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這會從未來的掃描中排除選擇的項目。可以透過「設定」>「資料夾」分頁編輯排除列表。"
+          }
         }
       }
     },
@@ -13130,6 +13352,12 @@
             "state" : "translated",
             "value" : "所有应用之间的总二进制大小"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所有應用程式二進位大小的總數"
+          }
         }
       }
     },
@@ -13215,6 +13443,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "所有应用程序的总可能瘦身"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所有應用程式可節省大小的總和"
           }
         }
       }
@@ -13372,6 +13606,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "输入一个关键词以排除，按回车键 ↵ 保存"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "輸入關鍵詞以排除，按一下 Enter (↵) 以儲存"
           }
         }
       }
@@ -13777,6 +14017,12 @@
             "state" : "translated",
             "value" : "解除文件链接"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消連結檔案"
+          }
         }
       }
     },
@@ -13804,6 +14050,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "注销服务"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消註冊服務"
           }
         }
       }
@@ -14588,6 +14840,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "查看调试窗口"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "檢視除錯視窗"
           }
         }
       }
@@ -15461,6 +15719,12 @@
             "state" : "translated",
             "value" : "当启用 Homebrew 清理时，Pearcleaner 将检查您要删除的应用程序是否通过 Homebrew 安装，并启动内置的终端来执行brew uninstall和cleanup命令，以便让Homebrew知道该应用已被删除。这样，您的Homebrew列表将正确同步，缓存将被移除。\n\n注意：如果您使用CMD+Z撤销文件删除，文件将被恢复，但Homebrew将不会意识到这一点。要使Homebrew列表重新同步，您需要运行：\n\n> brew install APPNAME --force"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啟用「Homebrew 清理」時，Pearcleaner 會檢查你要移除的應用程式是否透過 Homebrew 安裝，並啟動內置終端機以執行 brew 解除安裝和清理命令，讓 Homebrew 知道此應用程式已移除。這樣你的 Homebrew 列表會正確同步，快取檔案亦會被移除。\n\n注意：如你使用 ⌘Z 還原刪除檔案，檔案將會放回，但 Homebrew 並不會注意到這一點。如要重新同步 Homebrew 列表，你需要執行：\n\n> brew install APPNAME --force"
+          }
         }
       }
     },
@@ -15524,7 +15788,7 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "啟用「Homebrew 清理」時，Pearcleaner 會檢查你要移除的應用程式是否透過 Homebrew 安裝，並啟動「終端機.app」以執行 brew 解除安裝和清理命令，讓 Homebrew 知道此應用程式已移除。這樣你的 Homebrew 列表會正確同步，並移除快取檔案。這需要「終端機.app」，因為一些應用程式需要 sudo 權限才能移除系統資料夾中的服務和檔案。由於其他終端機應用程式不支援 AppleScript 和/或「do script」命令，因此這裡使用預設的 macOS 終端機應用程式。\n\n注意：如你使用 ⌘Z 還原刪除檔案，檔案將會放回，但 Homebrew 並不會注意到這一點。如要重新同步 Homebrew 列表，你需要執行：\n\n> brew install APPNAME --force"
+            "value" : "啟用「Homebrew 清理」時，Pearcleaner 會檢查你要移除的應用程式是否透過 Homebrew 安裝，並啟動「終端機.app」以執行 brew 解除安裝和清理命令，讓 Homebrew 知道此應用程式已移除。這樣你的 Homebrew 列表會正確同步，快取檔案亦會被移除。這需要「終端機.app」，因為一些應用程式需要 sudo 權限才能移除系統資料夾中的服務和檔案。由於其他終端機應用程式不支援 AppleScript 和/或「do script」命令，因此這裡使用預設的 macOS 終端機應用程式。\n\n注意：如你使用 ⌘Z 還原刪除檔案，檔案將會放回，但 Homebrew 並不會注意到這一點。如要重新同步 Homebrew 列表，你需要執行：\n\n> brew install APPNAME --force"
           }
         }
       }
