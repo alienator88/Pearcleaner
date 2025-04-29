@@ -67,10 +67,10 @@ struct EnvironmentCleanerView: View {
                         .frame(maxWidth: 300)
 
                         if let selectedEnvironment = appState.selectedEnvironment {
-                            Text(verbatim: "\(selectedEnvironment.paths.count) paths")
+                            Text("\(selectedEnvironment.paths.count) paths")
                                 .font(.footnote).foregroundStyle(.secondary)
                         } else {
-                            Text(verbatim: "\(paths.reduce(0) { $0 + $1.paths.count }) paths")
+                            Text("\(paths.reduce(0) { $0 + $1.paths.count }) paths")
                                 .font(.footnote).foregroundStyle(.secondary)
                         }
 

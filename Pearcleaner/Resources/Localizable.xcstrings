@@ -107,6 +107,12 @@
             "value" : "%@"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -256,6 +262,9 @@
           }
         }
       }
+    },
+    "%lld paths" : {
+
     },
     "%lld universal apps" : {
       "localizations" : {
@@ -1706,6 +1715,9 @@
         }
       }
     },
+    "Authorization required in Settings > Login Items > %@.app." : {
+
+    },
     "Automation" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2183,6 +2195,9 @@
           }
         }
       }
+    },
+    "Checking..." : {
+
     },
     "Clean stored files and cache for common development environments" : {
       "localizations" : {
@@ -3469,6 +3484,9 @@
         }
       }
     },
+    "Disabled" : {
+
+    },
     "Disabled when menubar icon is enabled" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3923,6 +3941,9 @@
           }
         }
       }
+    },
+    "Enabled" : {
+
     },
     "Enabling the CLI will allow you to execute Pearcleaner actions from the Terminal. This will add pearcleaner command into /usr/local/bin so it's available directly from your PATH environment variable. Try it after enabling:\n\n> pearcleaner --help" : {
       "extractionState" : "manual",
@@ -5887,6 +5908,9 @@
         }
       }
     },
+    "Installation failed: %@" : {
+
+    },
     "Installed Date:" : {
       "localizations" : {
         "de" : {
@@ -6144,6 +6168,9 @@
           }
         }
       }
+    },
+    "Invalid signature, ensure proper signing on the application and helper tool." : {
+
     },
     "iOS" : {
       "extractionState" : "manual",
@@ -8831,6 +8858,9 @@
         }
       }
     },
+    "Operation failed: %@" : {
+
+    },
     "Orphaned file search is not 100% accurate as it doesn't have any uninstalled app bundles to check against for file exclusion. This does a best guess search for files/folders and excludes the ones that have overlap with your currently installed applications. Please confirm files marked for deletion really do belong to uninstalled applications." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -9026,6 +9056,9 @@
         }
       }
     },
+    "Pearcleaner can perform privileged operations in the following ways:\n- Helper service 👍🏻\n- Authorization services 👎🏻\n\nHelper service: Pearcleaner will only ask you to enter your password once to enable the helper, then all subsequent operations will run without any prompts as long as the helper stays enabled in Settings > Login Items. This authorization is all managed by macOS via SMAppService.\n\nAuthorization services: Pearcleaner will ask the user for a password prompt on every single privileged operation, which can get overwhelming. These authorizations are managed by Pearcleaner and the user.\n\nWhat is a privileged operation: Whenever Pearcleaner needs to delete files from a folder (Ex. /var) the user doesn't have privileges to or undoing/restoring files back to a privileged location." : {
+
+    },
     "Pearcleaner CLI support" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -9190,6 +9223,9 @@
           }
         }
       }
+    },
+    "Permission required. Enable in System Settings > Login Items." : {
+
     },
     "Permission Status" : {
       "extractionState" : "manual",
@@ -10102,6 +10138,9 @@
           }
         }
       }
+    },
+    "Registered but requires enabling in System Settings > Login Items." : {
+
     },
     "Release Notes" : {
       "localizations" : {
@@ -11507,6 +11546,21 @@
         }
       }
     },
+    "Service hasn’t been registered. You may register it now." : {
+
+    },
+    "Service is already enabled." : {
+
+    },
+    "Service is already registered and enabled." : {
+
+    },
+    "Service is not installed." : {
+
+    },
+    "Service registered but requires user approval in Settings > Login Items > %@.app." : {
+
+    },
     "Settings" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -12717,6 +12771,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Terminal"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ターミナル"
           }
         },
         "uk" : {
@@ -13944,53 +14004,56 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "universal"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "universel"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "ユニバーサル"
           }
         },
         "sk" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "univerzálny"
           }
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "evrensel"
           }
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "універсальний"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "universal"
           }
         },
         "zh-HK" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "通用"
           }
         }
       }
+    },
+    "Unknown service status (%lld)." : {
+
     },
     "Unlink File" : {
       "localizations" : {
@@ -14687,6 +14750,9 @@
           }
         }
       }
+    },
+    "User denied permission. Enable in System Settings > Login Items." : {
+
     },
     "Version %@" : {
       "localizations" : {

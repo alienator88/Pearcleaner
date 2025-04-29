@@ -254,7 +254,7 @@ struct FilesView: View {
                             }
 
                             if appState.appInfo.arch != .empty {
-                                Text("\(appState.appInfo.arch)")
+                                Text("\(appState.appInfo.arch.type)")
                                     .font(.footnote)
                                     .foregroundStyle(.primary.opacity(0.5))
                                     .frame(minWidth: 30, minHeight: 15)

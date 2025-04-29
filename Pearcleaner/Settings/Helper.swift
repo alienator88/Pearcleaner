@@ -112,7 +112,7 @@ struct HelperSettingsTab: View {
                 PearGroupBox(header: {
                     Text("Information").font(.title2)
                 }, content: {
-                    let message = """
+                    let message: String.LocalizationValue = """
                 Pearcleaner can perform privileged operations in the following ways:
                 - Helper service 👍🏻
                 - Authorization services 👎🏻
@@ -122,10 +122,10 @@ struct HelperSettingsTab: View {
                 Authorization services: Pearcleaner will ask the user for a password prompt on every single privileged operation, which can get overwhelming. These authorizations are managed by Pearcleaner and the user.
                 
                 What is a privileged operation: Whenever Pearcleaner needs to delete files from a folder (Ex. /var) the user doesn't have privileges to or undoing/restoring files back to a privileged location.
-                """.localized()
+                """
                     
                     VStack(alignment: .leading, spacing: 20) {
-                        Text(String(message)).font(.body).lineSpacing(5)
+                        Text(String(localized: message)).font(.body).lineSpacing(5)
 
                         Text(String(localized: "Since Authorization services have been deprecated by Apple as a less secure authentication method, it will eventually be removed from Pearcleaner and the helper service will be the only option going forward. I recommend enabling the privileged helper service as soon as possible.")).font(.footnote).foregroundStyle(.secondary)
                     }

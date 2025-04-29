@@ -25,9 +25,9 @@ class HelperToolManager: ObservableObject {
     private var helperConnection: NSXPCConnection?
     let helperToolIdentifier = "com.alienator88.Pearcleaner.PearcleanerHelper"
     @Published var isHelperToolInstalled: Bool = false
-    @Published var message: String = "Checking..."
+    @Published var message: String = String(localized: "Checking...")
     var status: String {
-        return isHelperToolInstalled ? "Enabled" : "Disabled"
+        return isHelperToolInstalled ? String(localized:"Enabled") : String(localized:"Disabled")
     }
 
     init() {
@@ -49,12 +49,12 @@ class HelperToolManager: ObservableObject {
             switch service.status {
             case .requiresApproval:
                 updateOnMain {
-                    self.message = "Registered but requires enabling in System Settings > Login Items."
+                    self.message = String(localized: "Registered but requires enabling in System Settings > Login Items.")
                 }
                 SMAppService.openSystemSettingsLoginItems()
             case .enabled:
                 updateOnMain {
-                    self.message = "Service is already enabled."
+                    self.message = String(localized: "Service is already enabled.")
                 }
             default:
                 do {
@@ -66,12 +66,12 @@ class HelperToolManager: ObservableObject {
                     occurredError = nsError
                     if nsError.code == 1 { // Operation not permitted
                         updateOnMain {
-                            self.message = "Permission required. Enable in System Settings > Login Items."
+                            self.message = String(localized: "Permission required. Enable in System Settings > Login Items.")
                         }
                         SMAppService.openSystemSettingsLoginItems()
                     } else {
                         updateOnMain {
-                            self.message = "Installation failed: \(nsError.localizedDescription)"
+                            self.message = String(localized: "Installation failed: \(nsError.localizedDescription)")
                         }
                         printOS("Failed to register helper: \(nsError.localizedDescription)")
                     }
@@ -96,8 +96,8 @@ class HelperToolManager: ObservableObject {
 
         await updateStatusMessages(with: service, occurredError: occurredError)
         let isEnabled = (service.status == .enabled)
-//        let whoamiResult = await runCommand("whoami", skipHelperCheck: true)
-//        let isRoot = whoamiResult.0 && whoamiResult.1.trimmingCharacters(in: .whitespacesAndNewlines) == "root"
+        //        let whoamiResult = await runCommand("whoami", skipHelperCheck: true)
+        //        let isRoot = whoamiResult.0 && whoamiResult.1.trimmingCharacters(in: .whitespacesAndNewlines) == "root"
         updateOnMain {
             self.isHelperToolInstalled = isEnabled// && isRoot
         }
@@ -176,48 +176,48 @@ class HelperToolManager: ObservableObject {
             switch nsError.code {
             case kSMErrorAlreadyRegistered:
                 updateOnMain {
-                    self.message = "Service is already registered and enabled."
+                    self.message = String(localized: "Service is already registered and enabled.")
                 }
             case kSMErrorLaunchDeniedByUser:
                 updateOnMain {
-                    self.message = "User denied permission. Enable in System Settings > Login Items."
+                    self.message = String(localized: "User denied permission. Enable in System Settings > Login Items.")
                 }
             case kSMErrorInvalidSignature:
                 updateOnMain {
-                    self.message = "Invalid signature, ensure proper signing on the application and helper tool."
+                    self.message = String(localized: "Invalid signature, ensure proper signing on the application and helper tool.")
                 }
             case 1:
                 updateOnMain {
-                    self.message = "Authorization required in Settings > Login Items > \(Bundle.main.name).app."
+                    self.message = String(localized: "Authorization required in Settings > Login Items > \(Bundle.main.name).app.")
                 }
             default:
                 updateOnMain {
-                    self.message = "Operation failed: \(nsError.localizedDescription)"
+                    self.message = String(localized: "Operation failed: \(nsError.localizedDescription)")
                 }
             }
         } else {
             switch service.status {
             case .notRegistered:
                 updateOnMain {
-                    self.message = "Service hasn’t been registered. You may register it now."
+                    self.message = String(localized: "Service hasn’t been registered. You may register it now.")
                 }
             case .enabled:
                 let whoamiResult = await runCommand("whoami", skipHelperCheck: true)
                 let isRoot = whoamiResult.0 && whoamiResult.1.trimmingCharacters(in: .whitespacesAndNewlines) == "root"
                 updateOnMain {
-                    self.message = isRoot ? "Service successfully registered and eligible to run." : "Service successfully registered and eligible to run (Desynced)"
+                    self.message = String(localized: isRoot ? "Service successfully registered and eligible to run." : "Service successfully registered and eligible to run (Desynced)")
                 }
             case .requiresApproval:
                 updateOnMain {
-                    self.message = "Service registered but requires user approval in Settings > Login Items > \(Bundle.main.name).app."
+                    self.message = String(localized: "Service registered but requires user approval in Settings > Login Items > \(Bundle.main.name).app.")
                 }
             case .notFound:
                 updateOnMain {
-                    self.message = "Service is not installed."
+                    self.message = String(localized: "Service is not installed.")
                 }
             @unknown default:
                 updateOnMain {
-                    self.message = "Unknown service status (\(service.status))."
+                    self.message = String(localized: "Unknown service status (\(service.status.rawValue)).")
                 }
             }
         }
