@@ -264,7 +264,14 @@
       }
     },
     "%lld paths" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 個路徑"
+          }
+        }
+      }
     },
     "%lld universal apps" : {
       "localizations" : {
@@ -1260,7 +1267,7 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "「App 節省」針對你的通用應用程式套件的 Mach-O 二進位檔，移除任何未使用的架構（例如 x86_64 或 arm64），只保留你的電腦實際支援的架構。此列表只顯示通用種類的應用程式，而非你的完整應用程式列表。"
+            "value" : "「App 節省」針對你的通用應用程式套裝的 Mach-O 二進位檔，移除任何未使用的架構（例如 x86_64 或 arm64），只保留你的電腦實際支援的架構。此列表只顯示通用種類的應用程式，而非你的完整應用程式列表。"
           }
         }
       }
@@ -1716,7 +1723,14 @@
       }
     },
     "Authorization required in Settings > Login Items > %@.app." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要在「設定」>「登入項目」>「%@.app」中授權。"
+          }
+        }
+      }
     },
     "Automation" : {
       "extractionState" : "manual",
@@ -1904,7 +1918,7 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "套件檔案⋯"
+            "value" : "套裝檔案⋯"
           }
         }
       }
@@ -1938,7 +1952,7 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "套件大小："
+            "value" : "套裝大小："
           }
         }
       }
@@ -2197,7 +2211,14 @@
       }
     },
     "Checking..." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在檢查⋯"
+          }
+        }
+      }
     },
     "Clean stored files and cache for common development environments" : {
       "localizations" : {
@@ -3485,7 +3506,14 @@
       }
     },
     "Disabled" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已停用"
+          }
+        }
+      }
     },
     "Disabled when menubar icon is enabled" : {
       "extractionState" : "manual",
@@ -3943,7 +3971,14 @@
       }
     },
     "Enabled" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已啟用"
+          }
+        }
+      }
     },
     "Enabling the CLI will allow you to execute Pearcleaner actions from the Terminal. This will add pearcleaner command into /usr/local/bin so it's available directly from your PATH environment variable. Try it after enabling:\n\n> pearcleaner --help" : {
       "extractionState" : "manual",
@@ -5909,7 +5944,14 @@
       }
     },
     "Installation failed: %@" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安裝失敗：%@"
+          }
+        }
+      }
     },
     "Installed Date:" : {
       "localizations" : {
@@ -6170,7 +6212,14 @@
       }
     },
     "Invalid signature, ensure proper signing on the application and helper tool." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無效的簽名。確保應用程式與輔助應用程式工具已正確簽署。"
+          }
+        }
+      }
     },
     "iOS" : {
       "extractionState" : "manual",
@@ -6920,7 +6969,7 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "僅當主應用程式位於「應用程式」資料夾時，macOS 才會啟用延伸功能"
+            "value" : "只有主應用程式位於「應用程式」資料夾時，macOS 才會啟用延伸功能"
           }
         }
       }
@@ -8859,7 +8908,14 @@
       }
     },
     "Operation failed: %@" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "操作失敗：%@"
+          }
+        }
+      }
     },
     "Orphaned file search is not 100% accurate as it doesn't have any uninstalled app bundles to check against for file exclusion. This does a best guess search for files/folders and excludes the ones that have overlap with your currently installed applications. Please confirm files marked for deletion really do belong to uninstalled applications." : {
       "extractionState" : "manual",
@@ -8921,7 +8977,7 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "「孤立檔案搜尋」並非 100% 準確，因為它沒有任何解除安裝的應用程式套件來檢查檔案排除。這會以最佳猜測搜尋檔案/資料夾，並排除與你現時安裝的應用程式重疊的檔案/資料夾。請確認標記為移除的檔案確實屬於已解除安裝的應用程式。"
+            "value" : "「孤立檔案搜尋」並非 100% 準確，因為它沒有任何解除安裝的應用程式套裝來檢查檔案排除。這會以最佳猜測搜尋檔案/資料夾，並排除與你現時安裝的應用程式重疊的檔案/資料夾。請確認標記為移除的檔案確實屬於已解除安裝的應用程式。"
           }
         }
       }
@@ -9057,7 +9113,14 @@
       }
     },
     "Pearcleaner can perform privileged operations in the following ways:\n- Helper service 👍🏻\n- Authorization services 👎🏻\n\nHelper service: Pearcleaner will only ask you to enter your password once to enable the helper, then all subsequent operations will run without any prompts as long as the helper stays enabled in Settings > Login Items. This authorization is all managed by macOS via SMAppService.\n\nAuthorization services: Pearcleaner will ask the user for a password prompt on every single privileged operation, which can get overwhelming. These authorizations are managed by Pearcleaner and the user.\n\nWhat is a privileged operation: Whenever Pearcleaner needs to delete files from a folder (Ex. /var) the user doesn't have privileges to or undoing/restoring files back to a privileged location." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner 可以透過以下方式執行特殊權限操作：\n- 輔助應用程式服務 👍🏻\n- 授權服務 👎🏻\n\n輔助應用程式服務：Pearcleaner 只會要求你輸入一次密碼來啟用輔助應用程式，在「設定」>「登入項目」中保持輔助應用程式啟用時，隨後所有操作都將會在無提示下執行。此授權全部由 macOS 透過 SMAppService 管理。\n\n授權服務：Pearcleaner 會對每個特殊權限操作提示用户提供密碼，這可能會令人難以承受。這些授權由 Pearcleaner 與用户管理。\n\n甚麽是特殊權限操作：每當 Pearcleaner 需要從資料夾中刪除檔案（例如 /var）時，用户沒有權限將檔案還原回需要權限的位置。"
+          }
+        }
+      }
     },
     "Pearcleaner CLI support" : {
       "extractionState" : "manual",
@@ -9225,7 +9288,14 @@
       }
     },
     "Permission required. Enable in System Settings > Login Items." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要權限。在「系統設定」>「登入項目」中啟用。"
+          }
+        }
+      }
     },
     "Permission Status" : {
       "extractionState" : "manual",
@@ -10140,7 +10210,14 @@
       }
     },
     "Registered but requires enabling in System Settings > Login Items." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已註冊，但需要在「系統設定」>「登入項目」中啟用。"
+          }
+        }
+      }
     },
     "Release Notes" : {
       "localizations" : {
@@ -11547,19 +11624,54 @@
       }
     },
     "Service hasn’t been registered. You may register it now." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "服務未註冊。你現在可以註冊。"
+          }
+        }
+      }
     },
     "Service is already enabled." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已啟用服務。"
+          }
+        }
+      }
     },
     "Service is already registered and enabled." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "服務已註冊並且啟󠄁用。"
+          }
+        }
+      }
     },
     "Service is not installed." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "服務尚未安裝。"
+          }
+        }
+      }
     },
     "Service registered but requires user approval in Settings > Login Items > %@.app." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "服務已註冊，但需要用户在「設定」>「登入項目」>「%@.app」中批准。"
+          }
+        }
+      }
     },
     "Settings" : {
       "extractionState" : "manual",
@@ -14053,7 +14165,14 @@
       }
     },
     "Unknown service status (%lld)." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未知的服務狀態（%lld）。"
+          }
+        }
+      }
     },
     "Unlink File" : {
       "localizations" : {
@@ -14618,7 +14737,7 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已停用更新"
+            "value" : "更新已停用"
           }
         }
       }
@@ -14752,7 +14871,14 @@
       }
     },
     "User denied permission. Enable in System Settings > Login Items." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用户拒絕了權限。在「系統設定」>「登入項目」中啟󠄁用。"
+          }
+        }
+      }
     },
     "Version %@" : {
       "localizations" : {
