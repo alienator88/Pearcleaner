@@ -15,9 +15,6 @@ struct AboutSettingsTab: View {
 
     var body: some View {
 
-//        let sponsors = Sponsor.sponsors
-//        let credits = Credit.credits
-
         VStack(alignment: .center) {
 
             HStack {
@@ -57,9 +54,9 @@ struct AboutSettingsTab: View {
 
             VStack(spacing: 20) {
                 // GitHub
-                PearGroupBox(header: { Text("Support").font(.title2) }, content: {
+                PearGroupBox(header: { Text("Support").font(.title) }, content: {
                     HStack{
-                        Image(systemName: "star")
+                        Image(systemName: "ant")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 20, height: 20)
@@ -67,15 +64,49 @@ struct AboutSettingsTab: View {
 
                         VStack(alignment: .leading){
                             Text("Submit a bug or feature request")
-                                .font(.callout)
+                                .font(.title3)
                                 .foregroundStyle(.primary)
 
                         }
                         Spacer()
                         Button {
                             NSWorkspace.shared.open(URL(string: "https://github.com/alienator88/Pearcleaner/issues/new/choose")!)
-                        } label: { EmptyView() }
-                        .buttonStyle(SimpleButtonStyle(icon: "paperplane", help: String(localized: "View")))
+                        } label: {
+                            Text("View")
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(.secondary)
+                    }
+
+                })
+
+                // Translators
+                PearGroupBox(header: { Text("Translation").font(.title) }, content: {
+                    HStack{
+                        Image(systemName: "globe")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 20, height: 20)
+                            .padding(.trailing)
+
+                        VStack(alignment: .leading, spacing: 10){
+                            Text("A **huge** thank you to everyone who has contributed so far!")
+                                .font(.title3)
+                                .foregroundStyle(.primary)
+                            Text(translators)
+                                .font(.callout)
+                                .foregroundStyle(.secondary)
+
+                        }
+
+                        Spacer()
+                        Button {
+                            NSWorkspace.shared.open(URL(string: "https://github.com/alienator88/Pearcleaner/discussions/137")!)
+                        } label: {
+                            Text("View")
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(.secondary)
 
                     }
 
@@ -87,42 +118,4 @@ struct AboutSettingsTab: View {
 }
 
 
-
-//MARK: Sponsors
-//struct Sponsor: Identifiable {
-//    let id = UUID()
-//    let name: String
-//    let url: URL
-//
-//    static let sponsors: [Sponsor] = [
-//        Sponsor(name: "dimitur2204", url: URL(string: "https://github.com/dimitur2204")!),
-//        Sponsor(name: "txaty", url: URL(string: "https://github.com/txaty")!),
-//        Sponsor(name: "Sagittarius", url: URL(string: "https://github.com/sagittarius-codebase")!),
-//        Sponsor(name: "Ilovecatz17", url: URL(string: "https://github.com/Ilovecatz17")!),
-//        Sponsor(name: "ichoosetoaccept", url: URL(string: "https://github.com/ichoosetoaccept")!),
-//        Sponsor(name: "barats", url: URL(string: "https://github.com/barats")!),
-//        Sponsor(name: "mzdr (monthly)", url: URL(string: "https://github.com/mzdr")!),
-//        Sponsor(name: "chris3ware", url: URL(string: "https://github.com/chris3ware")!),
-//        Sponsor(name: "fpuhan", url: URL(string: "https://github.com/fpuhan")!),
-//        Sponsor(name: "HungThinhIT", url: URL(string: "https://github.com/HungThinhIT")!),
-//        Sponsor(name: "DharsanB", url: URL(string: "https://github.com/dharsanb")!),
-//        Sponsor(name: "MadMacMad", url: URL(string: "https://github.com/MadMacMad")!),
-//        Sponsor(name: "Butterdawgs", url: URL(string: "https://github.com/butterdawgs")!),
-//        Sponsor(name: "y-u-s-u-f", url: URL(string: "https://github.com/y-u-s-u-f")!)
-//    ]
-//}
-
-//MARK: Credits
-//struct Credit: Identifiable {
-//    let id = UUID()
-//    let name: String
-//    let description: String
-//    let url: URL
-//
-//    static let credits: [Credit] = [
-//        Credit(name: "Microsoft Designer", description: "Application icon resource", url: URL(string: "https://designer.microsoft.com/image-creator")!),
-//        Credit(name: "Privacy Guides", description: "Inspired by open-source appcleaner script from Sun Knudsen", url: URL(string: "https://sunknudsen.com/privacy-guides/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative")!),
-//        Credit(name: "AppCleaner", description: "Inspired by AppCleaner from Freemacsoft", url: URL(string: "https://freemacsoft.net/appcleaner/")!)
-//    ]
-//}
-
+let translators = "changanmoon, L1cardo, funsiyuan, megabitsenmzq, iFloneUEFN, vogt65, kiwamizamurai, exituser, Svec-Tomas, realkeremcam, Ihor-Khomenko, HungThinhIT"
