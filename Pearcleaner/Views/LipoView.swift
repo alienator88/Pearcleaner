@@ -176,12 +176,15 @@ struct LipoView: View {
             }
             let overallSavings = totalPreSize > 0 ? Int((Double(totalPreSize - totalPostSize) / Double(totalPreSize)) * 100) : 0
 
+            let titleFormat = NSLocalizedString("Space Savings: %d%%\nTotal Space Saved: %@", comment: "Lipo completion title")
+            let messageFormat = NSLocalizedString("The total space savings between all the lipo'd apps\nSize Before: %@\nSize After: %@", comment: "Lipo completion message")
+
+            let title = String(format: titleFormat, overallSavings, formatByte(size: Int64(totalSpaceSaved)).human)
+            let message = String(format: messageFormat, formatByte(size: Int64(totalPreSize)).human, formatByte(size: Int64(totalPostSize)).human)
+
+
             DispatchQueue.main.async {
-                showCustomAlert(
-                    title: "Space Savings: \(overallSavings)%\nTotal Space Saved: \(formatByte(size: Int64(totalSpaceSaved)).human)",
-                    message: "The total space savings between all the lipo'd apps\nSize Before: \(formatByte(size: Int64(totalPreSize)).human)\nSize After: \(formatByte(size: Int64(totalPostSize)).human)",
-                    style: .informational
-                )
+                showCustomAlert(title: title, message: message, style: .informational)
             }
             isProcessing = false
         }

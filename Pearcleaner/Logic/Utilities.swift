@@ -286,7 +286,9 @@ func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool
                     AppState.shared.appInfo = updatedAppInfo
 
                     let savingsPercentage = Int((Double(preLipoSize - postLipoSize) / Double(preLipoSize)) * 100)
-                    showCustomAlert(title: "Space Savings: \(savingsPercentage)%", message: "Lipo'd File:\n\n\(executablePath)", style: .informational)
+                    let title = String(format: NSLocalizedString("Space Savings: %d%%", comment: "Lipo result title"), savingsPercentage)
+                    let message = String(format: NSLocalizedString("Lipo'd File:\n\n%@", comment: "Lipo result message"), executablePath)
+                    showCustomAlert(title: title, message: message, style: .informational)
                 }
             }
         } else { // Update the appInfo in sortedApps array

@@ -182,9 +182,9 @@ class AppPathFinder {
             return itemL.contains(cached.bundleIdentifierL)
         }
         let bundleMatch = itemL.contains(cached.bundleIdentifierL) || itemL.contains(cached.bundle)
-        let nameLMatch = cached.nameL.count > 3 && (nameSearchStrict ? itemL == cached.nameL : itemL.contains(cached.nameL))
-        let namePMatch = cached.nameP.count > 3 && (nameSearchStrict ? itemL == cached.nameP : itemL.contains(cached.nameP))
-        let nameLFilteredMatch = cached.nameLFiltered.count > 3 && (nameSearchStrict ? itemL == cached.nameLFiltered : itemL.contains(cached.nameLFiltered))
+        let nameLMatch = nameSearchStrict ? itemL == cached.nameL : itemL.contains(cached.nameL)
+        let namePMatch = nameSearchStrict ? itemL == cached.nameP : itemL.contains(cached.nameP)
+        let nameLFilteredMatch = nameSearchStrict ? itemL == cached.nameLFiltered : itemL.contains(cached.nameLFiltered)
         return (cached.useBundleIdentifier && bundleMatch) || (nameLMatch || namePMatch || nameLFilteredMatch)
     }
 

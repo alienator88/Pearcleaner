@@ -1337,6 +1337,7 @@
       }
     },
     "App Lipo" : {
+      "comment" : "Lipo alert title",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7508,6 +7509,9 @@
         }
       }
     },
+    "Lipo'd File:\n\n%@" : {
+      "comment" : "Lipo result message"
+    },
     "Locations that will be searched for .app files. Click a non-default path to remove it. Default paths can't be removed." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -10239,6 +10243,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pearcleaner 解除安裝"
+          }
+        }
+      }
+    },
+    "Pearcleaner will strip the %@ architecture from %@'s executable file to save space. Would you like to proceed?" : {
+      "comment" : "Lipo alert message",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Pearcleaner will strip the %1$@ architecture from %2$@'s executable file to save space. Would you like to proceed?"
           }
         }
       }
@@ -13771,6 +13786,20 @@
         }
       }
     },
+    "Space Savings: %d%%" : {
+      "comment" : "Lipo result title"
+    },
+    "Space Savings: %d%%\nTotal Space Saved: %@" : {
+      "comment" : "Lipo completion title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Space Savings: %1$d%%\nTotal Space Saved: %2$@"
+          }
+        }
+      }
+    },
     "Sponsor" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -14312,6 +14341,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "終端機"
+          }
+        }
+      }
+    },
+    "The total space savings between all the lipo'd apps\nSize Before: %@\nSize After: %@" : {
+      "comment" : "Lipo completion message",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The total space savings between all the lipo'd apps\nSize Before: %1$@\nSize After: %2$@"
           }
         }
       }
