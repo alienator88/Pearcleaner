@@ -325,13 +325,11 @@ func handleLaunchMode(appState: AppState, locations: Locations, fsm: FolderSetti
     let termType = ProcessInfo.processInfo.environment["TERM"]
     let isRunningInTerminal = termType != nil && termType != "dumb"
 
-    if isRunningInTerminal && arguments.count == 1 {
-        displayHelp()
-        exit(0)
-    }
-
     if arguments.count > 1 {
-        Pear.run(arguments)
+        // Set up dependencies first
+        PearCLI.setupDependencies(appState: appState, locations: locations, fsm: fsm)
+
+        PearCLI.main(arguments)
     }
 }
 

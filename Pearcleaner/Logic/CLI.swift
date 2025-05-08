@@ -6,10 +6,10 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 // Main command structure
-struct Pear: ParsableCommand {
+struct PearCLI: ParsableCommand {
 	static var configuration = CommandConfiguration(
-		commandName: "pearcleaner",
-		abstract: "Command-line interface for Pearcleaner app",
+		commandName: "Pear",
+		abstract: "Command-line interface for the Pearcleaner app",
 		subcommands: [
 			Run.self,
 			List.self,
@@ -17,20 +17,21 @@ struct Pear: ParsableCommand {
 			Uninstall.self,
 			UninstallAll.self,
 			RemoveOrphaned.self,
-		],
-		defaultSubcommand: Help.self
+		]
 	)
 
-	// Default help subcommand
-	struct Help: ParsableCommand {
-		static var configuration = CommandConfiguration(
-			commandName: "help",
-			abstract: "Display help information"
-		)
+	// For dependency management
+	static var appState: AppState!
+	static var locations: Locations!
+	static var fsm: FolderSettingsManager!
 
-		func run() throws {
-			displayHelp()
-		}
+	// Set up dependencies before running commands
+	static func setupDependencies(
+		appState: AppState, locations: Locations, fsm: FolderSettingsManager
+	) {
+		Self.appState = appState
+		Self.locations = locations
+		Self.fsm = fsm
 	}
 
 	// Run subcommand
@@ -42,8 +43,6 @@ struct Pear: ParsableCommand {
 
 		func run() throws {
 			printOS("Pearcleaner CLI | Launching App For Debugging:\n")
-			// This command will simply return to allow the app to launch normally
-			// with debug mode enabled - actual implementation is in the main app
 		}
 	}
 
@@ -66,11 +65,11 @@ struct Pear: ParsableCommand {
 			// Fetch the app info and safely unwrap
 			guard let appInfo = AppInfoFetcher.getAppInfo(atPath: url) else {
 				printOS("Error: Invalid path or unable to fetch app info at path: \(path)\n")
-				throw ExitCode(1)
+				Foundation.exit(1)
 			}
 
 			// Use the AppPathFinder to find paths synchronously
-			let appPathFinder = AppPathFinder(appInfo: appInfo, locations: Locations.shared)
+			let appPathFinder = AppPathFinder(appInfo: appInfo, locations: PearCLI.locations)
 
 			// Call findPaths to get the Set of URLs
 			let foundPaths = appPathFinder.findPathsCLI()
@@ -94,15 +93,14 @@ struct Pear: ParsableCommand {
 		func run() throws {
 			printOS("Pearcleaner CLI | List Orphaned Files:\n")
 
-			let fsm = FolderSettingsManager.shared
-			let locations = Locations.shared
-
 			// Get installed apps for filtering
-			let sortedApps = getSortedApps(paths: fsm.folderPaths.map { $0.path })
+			let sortedApps = getSortedApps(paths: PearCLI.fsm.folderPaths)
 
 			// Find orphaned files
 			let foundPaths = ReversePathsSearcher(
-				locations: locations, fsm: fsm, sortedApps: sortedApps
+				locations: PearCLI.locations,
+				fsm: PearCLI.fsm,
+				sortedApps: sortedApps
 			)
 			.reversePathsSearchCLI()
 
@@ -132,7 +130,7 @@ struct Pear: ParsableCommand {
 			// Fetch the app info and safely unwrap
 			guard let appInfo = AppInfoFetcher.getAppInfo(atPath: url) else {
 				printOS("Error: Invalid path or unable to fetch app info at path: \(path)\n")
-				throw ExitCode(1)
+				Foundation.exit(1)
 			}
 
 			// Create a semaphore for synchronous operation
@@ -150,10 +148,10 @@ struct Pear: ParsableCommand {
 
 			if operationSuccess {
 				printOS("Application deleted successfully.\n")
-				exit(0)
+				Foundation.exit(0)
 			} else {
 				printOS("Failed to delete application.\n")
-				throw ExitCode(1)
+				Foundation.exit(1)
 			}
 		}
 	}
@@ -176,11 +174,11 @@ struct Pear: ParsableCommand {
 			// Fetch the app info and safely unwrap
 			guard let appInfo = AppInfoFetcher.getAppInfo(atPath: url) else {
 				printOS("Error: Invalid path or unable to fetch app info at path: \(path)")
-				throw ExitCode(1)
+				Foundation.exit(1)
 			}
 
 			// Use the AppPathFinder to find paths synchronously
-			let appPathFinder = AppPathFinder(appInfo: appInfo, locations: Locations.shared)
+			let appPathFinder = AppPathFinder(appInfo: appInfo, locations: PearCLI.locations)
 
 			// Call findPaths to get the Set of URLs
 			let foundPaths = appPathFinder.findPathsCLI()
@@ -198,7 +196,7 @@ struct Pear: ParsableCommand {
 				for file in protectedFiles {
 					printOS(file.path)
 				}
-				throw ExitCode(1)
+				Foundation.exit(1)
 			}
 
 			// Create a semaphore for synchronous operation
@@ -216,10 +214,10 @@ struct Pear: ParsableCommand {
 
 			if operationSuccess {
 				printOS("The application and related files have been deleted successfully.\n")
-				exit(0)
+				Foundation.exit(0)
 			} else {
 				printOS("Failed to delete some files, they might be protected or in use.\n")
-				throw ExitCode(1)
+				Foundation.exit(1)
 			}
 		}
 	}
@@ -235,15 +233,14 @@ struct Pear: ParsableCommand {
 		func run() throws {
 			printOS("Pearcleaner CLI | Remove Orphaned Files:\n")
 
-			let fsm = FolderSettingsManager.shared
-			let locations = Locations.shared
-
 			// Get installed apps for filtering
-			let sortedApps = getSortedApps(paths: fsm.folderPaths.map { $0.path })
+			let sortedApps = getSortedApps(paths: PearCLI.fsm.folderPaths)
 
 			// Find orphaned files
 			let foundPaths = ReversePathsSearcher(
-				locations: locations, fsm: fsm, sortedApps: sortedApps
+				locations: PearCLI.locations,
+				fsm: PearCLI.fsm,
+				sortedApps: sortedApps
 			)
 			.reversePathsSearchCLI()
 
@@ -260,44 +257,17 @@ struct Pear: ParsableCommand {
 				for file in protectedFiles {
 					printOS(file.path)
 				}
-				throw ExitCode(1)
+				Foundation.exit(1)
 			}
 
 			let success = moveFilesToTrashCLI(at: foundPaths)
 			if success {
 				printOS("Orphaned files have been deleted successfully.\n")
-				exit(0)
+				Foundation.exit(0)
 			} else {
 				printOS("Failed to delete some orphaned files.\n")
-				exit(1)
+				Foundation.exit(1)
 			}
 		}
-	}
-}
-
-// App Path Finder extension for CLI use
-extension AppPathFinder {
-	// CLI-specific version that doesn't depend on AppState
-	convenience init(appInfo: AppInfo, locations: Locations) {
-		self.init(appInfo: appInfo, locations: locations, appState: nil) {
-			// No-op completion handler for CLI
-		}
-	}
-
-	// Synchronous version for CLI use
-	func findPathsCLI() -> Set<URL> {
-		// Create a semaphore for synchronous operation
-		let semaphore = DispatchSemaphore(value: 0)
-		var results = Set<URL>()
-
-		// Call the asynchronous method with a callback to store results
-		findPaths { foundPaths in
-			results = foundPaths
-			semaphore.signal()
-		}
-
-		// Wait for the async operation to complete
-		semaphore.wait()
-		return results
 	}
 }
