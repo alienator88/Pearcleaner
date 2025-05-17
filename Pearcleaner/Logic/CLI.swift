@@ -7,267 +7,254 @@ import UniformTypeIdentifiers
 
 // Main command structure
 struct PearCLI: ParsableCommand {
-	static var configuration = CommandConfiguration(
-		commandName: "Pear",
-		abstract: "Command-line interface for the Pearcleaner app",
-		subcommands: [
-			Run.self,
-			List.self,
-			ListOrphaned.self,
-			Uninstall.self,
-			UninstallAll.self,
-			RemoveOrphaned.self,
-		]
-	)
+  static var configuration = CommandConfiguration(
+    commandName: "Pear",
+    abstract: "Command-line interface for the Pearcleaner app",
+    subcommands: [
+      Run.self,
+      List.self,
+      ListOrphaned.self,
+      Uninstall.self,
+      UninstallAll.self,
+      RemoveOrphaned.self,
+    ]
+  )
 
-	// For dependency management
-	static var appState: AppState!
-	static var locations: Locations!
-	static var fsm: FolderSettingsManager!
+  // For dependency management
+  static var appState: AppState!
+  static var locations: Locations!
+  static var fsm: FolderSettingsManager!
 
-	// Set up dependencies before running commands
-	static func setupDependencies(
-		appState: AppState, locations: Locations, fsm: FolderSettingsManager
-	) {
-		Self.appState = appState
-		Self.locations = locations
-		Self.fsm = fsm
-	}
+  // Set up dependencies before running commands
+  static func setupDependencies(
+    appState: AppState, locations: Locations, fsm: FolderSettingsManager
+  ) {
+    Self.appState = appState
+    Self.locations = locations
+    Self.fsm = fsm
+  }
 
-	// Run subcommand
-	struct Run: ParsableCommand {
-		static var configuration = CommandConfiguration(
-			commandName: "run",
-			abstract: "Launch Pearcleaner in Debug mode to see console logs"
-		)
+  struct Run: ParsableCommand {
+    static var configuration = CommandConfiguration(
+      commandName: "run",
+      abstract: "Launch Pearcleaner in Debug mode to see console logs"
+    )
 
-		func run() throws {
-			printOS("Pearcleaner CLI | Launching App For Debugging:\n")
-		}
-	}
+    func run() throws {
+      printOS("Pearcleaner CLI | Launching App For Debugging:\n")
+    }
+  }
 
-	// List subcommand
-	struct List: ParsableCommand {
-		static var configuration = CommandConfiguration(
-			commandName: "list",
-			abstract: "List application files available for uninstall at the specified path"
-		)
+  struct List: ParsableCommand {
+    static var configuration = CommandConfiguration(
+      commandName: "list",
+      abstract: "List application files available for uninstall at the specified path"
+    )
 
-		@Argument(help: "Path to the application")
-		var path: String
+    @Argument(help: "Path to the application")
+    var path: String
 
-		func run() throws {
-			// Convert the provided string path to a URL
-			let url = URL(fileURLWithPath: path)
+    func run() throws {
+      // Convert the provided string path to a URL
+      let url = URL(fileURLWithPath: path)
 
-			printOS("Pearcleaner CLI | List Application Files:\n")
+      // Fetch the app info and safely unwrap
+      guard let appInfo = AppInfoFetcher.getAppInfo(atPath: url) else {
+        printOS("Error: Invalid path or unable to fetch app info at path: \(path)\n")
+        Foundation.exit(1)
+      }
 
-			// Fetch the app info and safely unwrap
-			guard let appInfo = AppInfoFetcher.getAppInfo(atPath: url) else {
-				printOS("Error: Invalid path or unable to fetch app info at path: \(path)\n")
-				Foundation.exit(1)
-			}
+      // Use the AppPathFinder to find paths synchronously
+      let appPathFinder = AppPathFinder(appInfo: appInfo, locations: PearCLI.locations)
 
-			// Use the AppPathFinder to find paths synchronously
-			let appPathFinder = AppPathFinder(appInfo: appInfo, locations: PearCLI.locations)
+      // Call findPaths to get the Set of URLs
+      let foundPaths = appPathFinder.findPathsCLI()
 
-			// Call findPaths to get the Set of URLs
-			let foundPaths = appPathFinder.findPathsCLI()
+      // Print each path in the Set to the console
+      for path in foundPaths {
+        printOS(path.path)
+      }
 
-			// Print each path in the Set to the console
-			for path in foundPaths {
-				printOS(path.path)
-			}
+      printOS("\nFound \(foundPaths.count) application files.\n")
+    }
+  }
 
-			printOS("\nFound \(foundPaths.count) application files.\n")
-		}
-	}
+  struct ListOrphaned: ParsableCommand {
+    static var configuration = CommandConfiguration(
+      commandName: "list-orphaned",
+      abstract: "List orphaned files available for removal"
+    )
 
-	// ListOrphaned subcommand
-	struct ListOrphaned: ParsableCommand {
-		static var configuration = CommandConfiguration(
-			commandName: "list-orphaned",
-			abstract: "List orphaned files available for removal"
-		)
+    func run() throws {
+      // Get installed apps for filtering
+      let sortedApps = getSortedApps(paths: PearCLI.fsm.folderPaths)
 
-		func run() throws {
-			printOS("Pearcleaner CLI | List Orphaned Files:\n")
+      // Find orphaned files
+      let foundPaths = ReversePathsSearcher(
+        locations: PearCLI.locations,
+        fsm: PearCLI.fsm,
+        sortedApps: sortedApps
+      )
+      .reversePathsSearchCLI()
 
-			// Get installed apps for filtering
-			let sortedApps = getSortedApps(paths: PearCLI.fsm.folderPaths)
+      // Print each path in the array to the console
+      for path in foundPaths {
+        printOS(path.path)
+      }
+      printOS("\nFound \(foundPaths.count) orphaned files.\n")
+    }
+  }
 
-			// Find orphaned files
-			let foundPaths = ReversePathsSearcher(
-				locations: PearCLI.locations,
-				fsm: PearCLI.fsm,
-				sortedApps: sortedApps
-			)
-			.reversePathsSearchCLI()
+  struct Uninstall: ParsableCommand {
+    static var configuration = CommandConfiguration(
+      commandName: "uninstall",
+      abstract: "Uninstall only the application bundle at the specified path"
+    )
 
-			// Print each path in the array to the console
-			for path in foundPaths {
-				printOS(path.path)
-			}
-			printOS("\nFound \(foundPaths.count) orphaned files.\n")
-		}
-	}
+    @Argument(help: "Path to the application")
+    var path: String
 
-	// Uninstall subcommand
-	struct Uninstall: ParsableCommand {
-		static var configuration = CommandConfiguration(
-			commandName: "uninstall",
-			abstract: "Uninstall only the application bundle at the specified path"
-		)
+    func run() throws {
+      // Convert the provided string path to a URL
+      let url = URL(fileURLWithPath: path)
 
-		@Argument(help: "Path to the application")
-		var path: String
+      // Fetch the app info and safely unwrap
+      guard let appInfo = AppInfoFetcher.getAppInfo(atPath: url) else {
+        printOS("Error: Invalid path or unable to fetch app info at path: \(path)\n")
+        Foundation.exit(1)
+      }
 
-		func run() throws {
-			// Convert the provided string path to a URL
-			let url = URL(fileURLWithPath: path)
-			printOS("Pearcleaner CLI | Uninstall Application:\n")
+      // Create a semaphore for synchronous operation
+      let semaphore = DispatchSemaphore(value: 0)
+      var operationSuccess = false
 
-			// Fetch the app info and safely unwrap
-			guard let appInfo = AppInfoFetcher.getAppInfo(atPath: url) else {
-				printOS("Error: Invalid path or unable to fetch app info at path: \(path)\n")
-				Foundation.exit(1)
-			}
+      killApp(appId: appInfo.bundleIdentifier) {
+        let success = moveFilesToTrashCLI(at: [appInfo.path])
+        operationSuccess = success
+        semaphore.signal()
+      }
 
-			// Create a semaphore for synchronous operation
-			let semaphore = DispatchSemaphore(value: 0)
-			var operationSuccess = false
+      // Wait for the async operation to complete
+      semaphore.wait()
 
-			killApp(appId: appInfo.bundleIdentifier) {
-				let success = moveFilesToTrashCLI(at: [appInfo.path])
-				operationSuccess = success
-				semaphore.signal()
-			}
+      if operationSuccess {
+        printOS("Application deleted successfully.\n")
+        Foundation.exit(0)
+      } else {
+        printOS("Failed to delete application.\n")
+        Foundation.exit(1)
+      }
+    }
+  }
 
-			// Wait for the async operation to complete
-			semaphore.wait()
+  struct UninstallAll: ParsableCommand {
+    static var configuration = CommandConfiguration(
+      commandName: "uninstall-all",
+      abstract: "Uninstall application bundle and ALL related files at the specified path"
+    )
 
-			if operationSuccess {
-				printOS("Application deleted successfully.\n")
-				Foundation.exit(0)
-			} else {
-				printOS("Failed to delete application.\n")
-				Foundation.exit(1)
-			}
-		}
-	}
+    @Argument(help: "Path to the application")
+    var path: String
 
-	// UninstallAll subcommand
-	struct UninstallAll: ParsableCommand {
-		static var configuration = CommandConfiguration(
-			commandName: "uninstall-all",
-			abstract: "Uninstall application bundle and ALL related files at the specified path"
-		)
+    func run() throws {
+      // Convert the provided string path to a URL
+      let url = URL(fileURLWithPath: path)
 
-		@Argument(help: "Path to the application")
-		var path: String
+      // Fetch the app info and safely unwrap
+      guard let appInfo = AppInfoFetcher.getAppInfo(atPath: url) else {
+        printOS("Error: Invalid path or unable to fetch app info at path: \(path)")
+        Foundation.exit(1)
+      }
 
-		func run() throws {
-			// Convert the provided string path to a URL
-			let url = URL(fileURLWithPath: path)
-			printOS("Pearcleaner CLI | Uninstall Application & Related Files:\n")
+      // Use the AppPathFinder to find paths synchronously
+      let appPathFinder = AppPathFinder(appInfo: appInfo, locations: PearCLI.locations)
 
-			// Fetch the app info and safely unwrap
-			guard let appInfo = AppInfoFetcher.getAppInfo(atPath: url) else {
-				printOS("Error: Invalid path or unable to fetch app info at path: \(path)")
-				Foundation.exit(1)
-			}
+      // Call findPaths to get the Set of URLs
+      let foundPaths = appPathFinder.findPathsCLI()
 
-			// Use the AppPathFinder to find paths synchronously
-			let appPathFinder = AppPathFinder(appInfo: appInfo, locations: PearCLI.locations)
+      // Check if any file is protected (non-writable)
+      let protectedFiles = foundPaths.filter {
+        !FileManager.default.isWritableFile(atPath: $0.path)
+      }
 
-			// Call findPaths to get the Set of URLs
-			let foundPaths = appPathFinder.findPathsCLI()
+      // If protected files are found, echo message and exit
+      if !protectedFiles.isEmpty && !HelperToolManager.shared.isHelperToolInstalled {
+        printOS("Protected files detected. Please run this command with sudo:\n")
+        printOS("sudo pearcleaner uninstall-all \(path)")
+        printOS("\nProtected files:\n")
+        for file in protectedFiles {
+          printOS(file.path)
+        }
+        Foundation.exit(1)
+      }
 
-			// Check if any file is protected (non-writable)
-			let protectedFiles = foundPaths.filter {
-				!FileManager.default.isWritableFile(atPath: $0.path)
-			}
+      // Create a semaphore for synchronous operation
+      let semaphore = DispatchSemaphore(value: 0)
+      var operationSuccess = false
 
-			// If protected files are found, echo message and exit
-			if !protectedFiles.isEmpty && !HelperToolManager.shared.isHelperToolInstalled {
-				printOS("Protected files detected. Please run this command with sudo:\n")
-				printOS("sudo pearcleaner uninstall-all \(path)")
-				printOS("\nProtected files:\n")
-				for file in protectedFiles {
-					printOS(file.path)
-				}
-				Foundation.exit(1)
-			}
+      killApp(appId: appInfo.bundleIdentifier) {
+        let success = moveFilesToTrashCLI(at: Array(foundPaths))
+        operationSuccess = success
+        semaphore.signal()
+      }
 
-			// Create a semaphore for synchronous operation
-			let semaphore = DispatchSemaphore(value: 0)
-			var operationSuccess = false
+      // Wait for the async operation to complete
+      semaphore.wait()
 
-			killApp(appId: appInfo.bundleIdentifier) {
-				let success = moveFilesToTrashCLI(at: Array(foundPaths))
-				operationSuccess = success
-				semaphore.signal()
-			}
+      if operationSuccess {
+        printOS("The application and related files have been deleted successfully.\n")
+        Foundation.exit(0)
+      } else {
+        printOS("Failed to delete some files, they might be protected or in use.\n")
+        Foundation.exit(1)
+      }
+    }
+  }
 
-			// Wait for the async operation to complete
-			semaphore.wait()
+  struct RemoveOrphaned: ParsableCommand {
+    static var configuration = CommandConfiguration(
+      commandName: "remove-orphaned",
+      abstract:
+        "Remove ALL orphaned files (To ignore files, add them to the exception list within Pearcleaner settings)"
+    )
 
-			if operationSuccess {
-				printOS("The application and related files have been deleted successfully.\n")
-				Foundation.exit(0)
-			} else {
-				printOS("Failed to delete some files, they might be protected or in use.\n")
-				Foundation.exit(1)
-			}
-		}
-	}
+    func run() throws {
 
-	// RemoveOrphaned subcommand
-	struct RemoveOrphaned: ParsableCommand {
-		static var configuration = CommandConfiguration(
-			commandName: "remove-orphaned",
-			abstract:
-				"Remove ALL orphaned files (To ignore files, add them to the exception list within Pearcleaner settings)"
-		)
+      // Get installed apps for filtering
+      let sortedApps = getSortedApps(paths: PearCLI.fsm.folderPaths)
 
-		func run() throws {
-			printOS("Pearcleaner CLI | Remove Orphaned Files:\n")
+      // Find orphaned files
+      let foundPaths = ReversePathsSearcher(
+        locations: PearCLI.locations,
+        fsm: PearCLI.fsm,
+        sortedApps: sortedApps
+      )
+      .reversePathsSearchCLI()
 
-			// Get installed apps for filtering
-			let sortedApps = getSortedApps(paths: PearCLI.fsm.folderPaths)
+      // Check if any file is protected (non-writable)
+      let protectedFiles = foundPaths.filter {
+        !FileManager.default.isWritableFile(atPath: $0.path)
+      }
 
-			// Find orphaned files
-			let foundPaths = ReversePathsSearcher(
-				locations: PearCLI.locations,
-				fsm: PearCLI.fsm,
-				sortedApps: sortedApps
-			)
-			.reversePathsSearchCLI()
+      // If protected files are found, echo message and exit
+      if !protectedFiles.isEmpty && !HelperToolManager.shared.isHelperToolInstalled {
+        printOS("Protected files detected. Please run this command with sudo:\n")
+        printOS("sudo pearcleaner remove-orphaned")
+        printOS("\nProtected files:\n")
+        for file in protectedFiles {
+          printOS(file.path)
+        }
+        Foundation.exit(1)
+      }
 
-			// Check if any file is protected (non-writable)
-			let protectedFiles = foundPaths.filter {
-				!FileManager.default.isWritableFile(atPath: $0.path)
-			}
-
-			// If protected files are found, echo message and exit
-			if !protectedFiles.isEmpty && !HelperToolManager.shared.isHelperToolInstalled {
-				printOS("Protected files detected. Please run this command with sudo:\n")
-				printOS("sudo pearcleaner remove-orphaned")
-				printOS("\nProtected files:\n")
-				for file in protectedFiles {
-					printOS(file.path)
-				}
-				Foundation.exit(1)
-			}
-
-			let success = moveFilesToTrashCLI(at: foundPaths)
-			if success {
-				printOS("Orphaned files have been deleted successfully.\n")
-				Foundation.exit(0)
-			} else {
-				printOS("Failed to delete some orphaned files.\n")
-				Foundation.exit(1)
-			}
-		}
-	}
+      let success = moveFilesToTrashCLI(at: foundPaths)
+      if success {
+        printOS("Orphaned files have been deleted successfully.\n")
+        Foundation.exit(0)
+      } else {
+        printOS("Failed to delete some orphaned files.\n")
+        Foundation.exit(1)
+      }
+    }
+  }
 }
