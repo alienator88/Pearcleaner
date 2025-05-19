@@ -57,15 +57,13 @@ func playTrashSound(undo: Bool = false) {
 }
 
 
-// Check if pearcleaner symlink exists
+// Check if pear symlink exists
 func checkCLISymlink() -> Bool {
-    let filePath = "/usr/local/bin/pearcleaner"
+    let filePath = "/usr/local/bin/pear"
     let fileManager = FileManager.default
 
-    // Check if the file exists and is a symlink
     guard fileManager.fileExists(atPath: filePath) else { return false }
 
-    // Check if the symlink points to the correct path
     do {
         let destination = try fileManager.destinationOfSymbolicLink(atPath: filePath)
         return destination == Bundle.main.executablePath
@@ -74,8 +72,18 @@ func checkCLISymlink() -> Bool {
     }
 }
 
+// Fix legacy pearcleaner symlink if it exists
+func fixLegacySymlink() {
+    let legacyPath = "/usr/local/bin/pearcleaner"
+    let fileManager = FileManager.default
+    if fileManager.fileExists(atPath: legacyPath) {
+        manageSymlink(install: false, symlinkName: "pearcleaner")
+        manageSymlink(install: true, symlinkName: "pear")
+    }
+}
+
 // Install/uninstall symlink for CLI
-func manageSymlink(install: Bool) {
+func manageSymlink(install: Bool, symlinkName: String = "pear") {
     @AppStorage("settings.general.cli") var isCLISymlinked = false
 
     guard let appPath = Bundle.main.executablePath else {
@@ -83,8 +91,8 @@ func manageSymlink(install: Bool) {
         return
     }
 
-    let symlinkPath = "/usr/local/bin/pearcleaner"
-    let symlinkExists = checkCLISymlink()
+    let symlinkPath = "/usr/local/bin/\(symlinkName)"
+    let symlinkExists = FileManager.default.fileExists(atPath: symlinkPath)
     let binPathExists = directoryExists(at: "/usr/local/bin")
 
     if install && symlinkExists {

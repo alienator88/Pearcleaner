@@ -326,7 +326,7 @@ struct GeneralSettingsTab: View {
                         Text("Pearcleaner CLI support")
                             .font(.callout)
                             .foregroundStyle(.primary)
-                        InfoButton(text: String(localized: "Enabling the CLI will allow you to execute Pearcleaner actions from the Terminal. This will add pearcleaner command into /usr/local/bin so it's available directly from your PATH environment variable. Try it after enabling:\n\n> pearcleaner --help"))
+                        InfoButton(text: String(localized: "Enabling the CLI will allow you to execute Pearcleaner actions from the Terminal. This will add pearcleaner command into /usr/local/bin so it's available directly from your PATH environment variable. Try it after enabling:\n\n> pear --help"))
                         Spacer()
 
                         Toggle(isOn: $isCLISymlinked, label: {
@@ -348,6 +348,7 @@ struct GeneralSettingsTab: View {
         .onAppear {
             Task {
                 appState.updateExtensionStatus()
+                fixLegacySymlink()
                 isCLISymlinked = checkCLISymlink()
             }
 

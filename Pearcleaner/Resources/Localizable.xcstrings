@@ -4416,73 +4416,72 @@
         }
       }
     },
-    "Enabling the CLI will allow you to execute Pearcleaner actions from the Terminal. This will add pearcleaner command into /usr/local/bin so it's available directly from your PATH environment variable. Try it after enabling:\n\n> pearcleaner --help" : {
-      "extractionState" : "manual",
+    "Enabling the CLI will allow you to execute Pearcleaner actions from the Terminal. This will add pearcleaner command into /usr/local/bin so it's available directly from your PATH environment variable. Try it after enabling:\n\n> pear --help" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wenn Sie die CLI aktivieren, können Sie Pearcleaner-Aktionen über das Terminal ausführen. Dies fügt den Befehl pearcleaner in /usr/local/bin ein, so dass er direkt über Ihre PATH-Umgebungsvariable verfügbar ist. Probieren Sie es nach der Aktivierung aus:\n\n> pearcleaner --help"
+            "value" : "Wenn Sie die CLI aktivieren, können Sie Pearcleaner-Aktionen über das Terminal ausführen. Dies fügt den Befehl pearcleaner in /usr/local/bin ein, so dass er direkt über Ihre PATH-Umgebungsvariable verfügbar ist. Probieren Sie es nach der Aktivierung aus:\n\n> pear --help"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ceci active l’option d’interface de ligne de commande vous permettant d'exécuter des actions liées à Pearcleaner à partir du terminal de macOS en ajoutant la commande \"pearcleaner\" dans /usr/local/bin afin qu'elle soit disponible directement à partir de votre variable d'environnement PATH. Après avoir activer cette option, essayez par vous même en tapant \"pearcleaner --help\" dans le terminal."
+            "value" : "Ceci active l’option d’interface de ligne de commande vous permettant d'exécuter des actions liées à Pearcleaner à partir du terminal de macOS en ajoutant la commande \"pearcleaner\" dans /usr/local/bin afin qu'elle soit disponible directement à partir de votre variable d'environnement PATH. Après avoir activer cette option, essayez par vous même en tapant \"pear --help\" dans le terminal."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "CLIを有効にすると、ターミナルからPearcleanerのアクションを実行できます。これにより、pearcleanerコマンドが/usr/local/binに追加され、PATH環境変数から直接使用できるようになります。有効にした後、以下を試してください：\n\n> pearcleaner --help"
+            "value" : "CLIを有効にすると、ターミナルからPearcleanerのアクションを実行できます。これにより、pearcleanerコマンドが/usr/local/binに追加され、PATH環境変数から直接使用できるようになります。有効にした後、以下を試してください：\n\n> pear --help"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Включение CLI позволит вам выполнять действия с Pearcleaner из терминала. Это добавит команду pearcleaner в /usr/local/bin, чтобы она была доступна непосредственно из вашей переменной окружения PATH. Попробуйте ее после включения:\n\n> pearcleaner —help"
+            "value" : "Включение CLI позволит вам выполнять действия с Pearcleaner из терминала. Это добавит команду pearcleaner в /usr/local/bin, чтобы она была доступна непосредственно из вашей переменной окружения PATH. Попробуйте ее после включения:\n\n> pear —help"
           }
         },
         "sk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zapnutím CLI budeš môcť vykonávať akcie Pearcleaneru z terminálu. Tým sa pridá príkaz pearcleaner do priečinka /usr/local/bin, takže bude dostupný priamo z tvojej premennej prostredia PATH. Skús to po zapnutí:\n\n> pearcleaner --help"
+            "value" : "Zapnutím CLI budeš môcť vykonávať akcie Pearcleaneru z terminálu. Tým sa pridá príkaz pearcleaner do priečinka /usr/local/bin, takže bude dostupný priamo z tvojej premennej prostredia PATH. Skús to po zapnutí:\n\n> pear --help"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "CLI’yı etkinleştirmek Pearcleaner işlevlerini Terminal’den gerçekleştirmenize imkan sağlar. Bu, pearcleaner komutunu PATH ortam değişkeninizden direkt olarak ulaşılabilir olması için /usr/local/bin içine ekleyecektir. Etkinleştirdikten sonra deneyin:\n\n> pearcleaner --help"
+            "value" : "CLI’yı etkinleştirmek Pearcleaner işlevlerini Terminal’den gerçekleştirmenize imkan sağlar. Bu, pearcleaner komutunu PATH ortam değişkeninizden direkt olarak ulaşılabilir olması için /usr/local/bin içine ekleyecektir. Etkinleştirdikten sonra deneyin:\n\n> pear --help"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Увімкнення CLI дозволить вам виконувати дії Pearcleaner з терміналу. Це додасть команду pearcleaner до /usr/local/bin, щоб вона була доступна безпосередньо з вашої змінної оточення PATH. Спробуйте після увімкнення:\n\n> pearcleaner --help"
+            "value" : "Увімкнення CLI дозволить вам виконувати дії Pearcleaner з терміналу. Це додасть команду pearcleaner до /usr/local/bin, щоб вона була доступна безпосередньо з вашої змінної оточення PATH. Спробуйте після увімкнення:\n\n> pear --help"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bật sử dụng dòng lệnh (CLI) sẽ cho phép thực thi các hành động của Pearcleaner từ Terminal. Việc này sẽ thêm lệnh pearcleaner vào thư mục /usr/local/bin, có thể gọi lệnh trực tiếp thông qua biến môi trường (PATH). Hãy thử lệnh này sau khi bật:\n\n> pearcleaner --help"
+            "value" : "Bật sử dụng dòng lệnh (CLI) sẽ cho phép thực thi các hành động của Pearcleaner từ Terminal. Việc này sẽ thêm lệnh pearcleaner vào thư mục /usr/local/bin, có thể gọi lệnh trực tiếp thông qua biến môi trường (PATH). Hãy thử lệnh này sau khi bật:\n\n> pear --help"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "启用 CLI 后,您可以从终端执行 Pearcleaner 操作。这将把 pearcleaner 命令添加到 /usr/local/bin 中，使其可以直接从 PATH 环境变量中访问。启用后尝试：\n\n> pearcleaner --help"
+            "value" : "启用 CLI 后,您可以从终端执行 Pearcleaner 操作。这将把 pearcleaner 命令添加到 /usr/local/bin 中，使其可以直接从 PATH 环境变量中访问。启用后尝试：\n\n> pear --help"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "啟用命令列介面（CLI）會允許你透過終端機執行 Pearcleaner 動作。這樣會將 pearcleaner 命令加至 /usr/local/bin 下，以便直接從你的 PATH 環境變數使用。當你啟用之後，就可以嘗試它：\n\n> pearcleaner --help"
+            "value" : "啟用命令列介面（CLI）會允許你透過終端機執行 Pearcleaner 動作。這樣會將 pearcleaner 命令加至 /usr/local/bin 下，以便直接從你的 PATH 環境變數使用。當你啟用之後，就可以嘗試它：\n\n> pear --help"
           }
         },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "啟用命令列介面（CLI）會允許你透過終端機執行 Pearcleaner 動作。這樣會將 pearcleaner 命令加至 /usr/local/bin 下，以便直接從你的 PATH 環境變數使用。當你啟用之後，就可以嘗試它：\n\n> pearcleaner --help"
+            "value" : "啟用命令列介面（CLI）會允許你透過終端機執行 Pearcleaner 動作。這樣會將 pearcleaner 命令加至 /usr/local/bin 下，以便直接從你的 PATH 環境變數使用。當你啟用之後，就可以嘗試它：\n\n> pear --help"
           }
         }
       }
