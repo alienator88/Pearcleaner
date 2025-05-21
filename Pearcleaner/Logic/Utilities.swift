@@ -226,13 +226,11 @@ func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool
             AppState.shared.sortedApps[index] = updatedAppInfo
         }
     }
-
     // Skip if already single architecture
     guard arch == .universal else {
         printOS("Lipo: Skipping, app is already single architecture: \(arch)")
         return (false, nil)
     }
-
     // Extract executable name from Info.plist
     let executableName: String
     let infoPlistPath = appBundlePath.appendingPathComponent("Contents/Info.plist")

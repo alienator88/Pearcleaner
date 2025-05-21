@@ -85,6 +85,12 @@
             "value" : "%lld%% の節約"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**%lld%%** tasarruf"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -120,6 +126,12 @@
           }
         },
         "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@"
@@ -295,6 +307,12 @@
     },
     "%lld paths" : {
       "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld dizin"
+          }
+        },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
@@ -321,6 +339,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld 個のユニバーサルアプリ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld evrensel uygulama"
           }
         },
         "uk" : {
@@ -384,7 +408,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "⇧ + Kaydır "
+            "value" : "⇧ + Scroll"
           }
         },
         "uk" : {
@@ -420,7 +444,14 @@
       }
     },
     "A **huge** thank you to everyone who has contributed so far!" : {
-
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şimdiye kadar katkıda bulunan herkese **çok** teşekkür ederiz!"
+          }
+        }
+      }
     },
     "About" : {
       "localizations" : {
@@ -805,7 +836,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dosya Ekle"
+            "value" : "Dosya ekle"
           }
         },
         "uk" : {
@@ -904,7 +935,11 @@
         }
       }
     },
+    "After lipo, the green portion will be removed from your app's binary. It's recommended to open an app at least once before lipo to make sure macOS has cached the signature. **Privileged Helper is required to perform this action on certain applications.**" : {
+
+    },
     "After lipo, the green portion will be removed from your app's binary. Make sure to open an app at least once before lipo to make sure macOS has cached the signature." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -916,6 +951,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "lipo 処理の後、緑色の部分はアプリのバイナリから削除されます。macOS が署名をキャッシュするために、lipo を実行する前に少なくとも一度はアプリを開いてください。"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lipo'dan sonra yeşil kısım uygulamanızın ikili dosyasından kaldırılacaktır. macOS'un imzayı önbelleklediğinden emin olmak için lipo'dan önce en az bir kez uygulamayı açtığınızdan emin olun."
           }
         },
         "uk" : {
@@ -980,7 +1021,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tüm onay kutuları"
+            "value" : "Tüm kutucuklar"
           }
         },
         "uk" : {
@@ -1027,6 +1068,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "削除対象としてマークされたファイルを常に確認してください。まれに、アプリ名が似すぎている場合に関連のないファイルが検出されることがあります。"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaldırılmak üzere işaretlenen dosyaları her zaman kontrol edin. Nadir durumlarda, uygulama adları birbirine çok benzer ise alakasız dosyalar bulunabilir."
           }
         },
         "uk" : {
@@ -1091,7 +1138,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kaldırmak için işaretlenmiş dosyaları her zaman doğrulayın. Nadir durumlarda, uygulama isimleri çok yakın olduğunda ilişkisiz dosyalar da bulunabilir.\n\nNOT: Pearcleaner dosyaları kaldırmak için AppleScript kullanır. Şimdilik macOS, AppleScript’in parmak izi sensörü ile doğrulama yapmasına izin vermiyor, sadece şifre ile doğrulama mümkün."
+            "value" : "Kaldırmak üzere işaretlenmiş dosyaları her zaman kontrol edin. Nadir durumlarda, uygulama adları birbirine çok benzer ise alakasız dosyalar bulunabilir.\n\nNOT: Pearcleaner dosyaları kaldırmak için AppleScript kullanır. Şimdilik macOS, AppleScript’in parmak izi sensörü ile doğrulama yapmasına izin vermiyor, sadece şifre ile doğrulama mümkün."
           }
         },
         "uk" : {
@@ -1354,6 +1401,12 @@
             "value" : "App Lipo"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulama Lipo’su"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1392,6 +1445,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "App lipo はユニバーサルアプリバンドル内の Mach-O バイナリをターゲットにし、x86_64 や arm64 などの未使用のアーキテクチャを削除して、お使いのコンピュータが実際にサポートしているアーキテクチャのみを残します。リストには、すべてのアプリリストではなく、ユニバーサル形式のアプリのみが表示されます。"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulama lipo’su, evrensel uygulama paketlerinizdeki Mach-O ikili dosyalarını hedefler ve kullanılmayan mimarileri (x86_64 veya arm64 gibi) kaldırarak yalnızca bilgisayarınızın gerçekten desteklediği mimarileri bırakır. Liste yalnızca evrensel tipteki uygulamaları gösterir, tüm uygulama listenizi göstermez."
           }
         },
         "uk" : {
@@ -1666,7 +1725,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uygulama dosyası alt dizinler içinde bulunuyor. Yanlış dosyaların silinmesini önlemek için Pearcleaner bunlara müdahale etmeyecek. Gerekirse kalan dosyaları manuel olarak silebilirsiniz."
+            "value" : "Uygulama dosyası alt dizinler içinde bulunuyor. Yanlış dosyaların silinmesini önlemek için Pearcleaner bunlara müdahale etmeyecek. Gerekirse kalan klasörleri manuel olarak silebilirsiniz."
           }
         },
         "uk" : {
@@ -1914,6 +1973,12 @@
     },
     "Authorization required in Settings > Login Items > %@.app." : {
       "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayarlar > Oturum Açma Öğeleri > %@.app'de yetkilendirme gerekiyor."
+          }
+        },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2013,6 +2078,12 @@
             "value" : "ベータ"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BETA"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2051,6 +2122,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "バンドルサイズ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İkili Boyut"
           }
         },
         "uk" : {
@@ -2155,6 +2232,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "バンドルサイズ:"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paket Boyutu: "
           }
         },
         "uk" : {
@@ -2462,6 +2545,12 @@
     },
     "Checking..." : {
       "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontrol ediliyor..."
+          }
+        },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2505,7 +2594,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yaygın geliştirme ortamları için depolanan dosyaları ve önbelleği temizle"
+            "value" : "Yaygın geliştirme ortamları için depolanan dosyaları ve önbelleği temizleyin"
           }
         },
         "uk" : {
@@ -2718,7 +2807,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uygulamaların listesi için tıklayın"
+            "value" : "Uygulama listesi için tıklayın"
           }
         },
         "uk" : {
@@ -3677,7 +3766,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dosyayı Sil"
+            "value" : "Klasörü Sil"
           }
         },
         "uk" : {
@@ -3861,6 +3950,12 @@
             "value" : "開発環境"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geliştirme Ortamları"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3889,6 +3984,12 @@
     },
     "Disabled" : {
       "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etkin Değil"
+          }
+        },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3939,7 +4040,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Menü çubuğu ikonu etkinken devredışı"
+            "value" : "Menü çubuğu ikonu etkinken devre dışı"
           }
         },
         "uk" : {
@@ -4365,7 +4466,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Finder için içerik menüsü uzantısını etkinleştir"
+            "value" : "Finder için bağlamsal menü uzantısını etkinleştir"
           }
         },
         "uk" : {
@@ -4402,6 +4503,12 @@
     },
     "Enabled" : {
       "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etkin"
+          }
+        },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4522,7 +4629,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bu uzantıyı etkinleştirmek Finder’da uygulamalara sağ tıklayarak Pearcleaner’la hızla kaldırmanıza imkan sağlar"
+            "value" : "Bu uzantıyı etkinleştirmek Finder’da uygulamalara sağ tıklayarak Pearcleaner’la hızlıca kaldırmanıza imkan sağlar"
           }
         },
         "uk" : {
@@ -4569,6 +4676,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ここに手動コマンドを入力し、Enter キーを押して実行"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buraya manuel komutu girin, çalıştırmak için Enter'a basın"
           }
         },
         "uk" : {
@@ -4673,6 +4786,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "特権コマンドの例"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Örnek ayrıcalıklı komutlar"
           }
         },
         "uk" : {
@@ -4784,6 +4903,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "選択項目を除外"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seçilenleri Hariç Tut"
           }
         },
         "uk" : {
@@ -5473,7 +5598,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yenilemeyi Zorla"
+            "value" : "Zorla Yenile"
           }
         },
         "uk" : {
@@ -5948,6 +6073,12 @@
             "value" : "ヘルパー"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yardımcı"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6058,6 +6189,12 @@
             "value" : "homebrew"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "homebrew"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6120,7 +6257,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kaldırdıkdan sonra Homebrew temizliği"
+            "value" : "Kaldırdıktan sonra Homebrew temizliği"
           }
         },
         "uk" : {
@@ -6167,6 +6304,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Homebrew クリーンアップ: %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Homebrew Temizliği: %@"
           }
         },
         "uk" : {
@@ -6366,7 +6509,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mini pencere modunda, “Dosyalar” açılır penceresini üste sabitlerseniz, pencereden uzağa tıklamak onu kapatmaz. Aksi takdirde, uygulamanın dışında herhangi bir yere tıklandığında kapanacaktır."
+            "value" : "Mini pencere modunda, “Dosyalar” açılır penceresini üste sabitlerseniz, pencereden uzağa tıklamak onu kapatmaz. Aksi durumda, uygulamanın dışında herhangi bir yere tıklandığında kapanacaktır."
           }
         },
         "uk" : {
@@ -6486,6 +6629,12 @@
             "value" : "お知らせ"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilgi"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6584,6 +6733,12 @@
     },
     "Installation failed: %@" : {
       "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kurulum başarısız oldu: %@"
+          }
+        },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6704,7 +6859,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kurulma: v%@"
+            "value" : "Kurulum: v%@"
           }
         },
         "uk" : {
@@ -6882,6 +7037,12 @@
     },
     "Invalid signature, ensure proper signing on the application and helper tool." : {
       "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geçersiz imza, uygulamada ve yardımcı araçta doğru imzalamayı sağlayın."
+          }
+        },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7194,6 +7355,12 @@
             "value" : "サービスを開始"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kickstart Servisi"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7325,7 +7492,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kullanıldığı Son Tarih: "
+            "value" : "Kullanıldığı Son Tarih:"
           }
         },
         "uk" : {
@@ -7445,6 +7612,12 @@
             "value" : "リンク先"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şuna Bağla"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7485,6 +7658,12 @@
             "value" : "Lipo"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lipo"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7512,7 +7691,15 @@
       }
     },
     "Lipo'd File:\n\n%@" : {
-      "comment" : "Lipo result message"
+      "comment" : "Lipo result message",
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lipo’lanmış Dosya:\n\n%@"
+          }
+        }
+      }
     },
     "Locations that will be searched for .app files. Click a non-default path to remove it. Default paths can't be removed." : {
       "extractionState" : "manual",
@@ -7670,6 +7857,12 @@
             "value" : "ログイン項目"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oturum Açma Öğeleri"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7708,6 +7901,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "macOS はアプリケーションフォルダに本体アプリがある場合のみ拡張機能を有効にします"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS, uzantıları yalnızca ana uygulama Uygulamalar klasöründe ise etkinleştirir"
           }
         },
         "uk" : {
@@ -7819,6 +8018,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "管理"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yönetme"
           }
         },
         "uk" : {
@@ -8782,6 +8987,12 @@
             "value" : "移動先"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şuraya Git:"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9033,6 +9244,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "コマンドが指定されていません"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hiçbir komut sağlanmadı"
           }
         },
         "uk" : {
@@ -9350,6 +9567,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ユニバーサルアプリが見つかりませんでした。"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Evrensel uygulama bulunamadı."
           }
         },
         "uk" : {
@@ -9863,6 +10086,12 @@
     },
     "Operation failed: %@" : {
       "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İşlem başarısız oldu: %@"
+          }
+        },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10092,6 +10321,12 @@
     },
     "Pearcleaner can perform privileged operations in the following ways:\n- Helper service 👍🏻\n- Authorization services 👎🏻\n\nHelper service: Pearcleaner will only ask you to enter your password once to enable the helper, then all subsequent operations will run without any prompts as long as the helper stays enabled in Settings > Login Items. This authorization is all managed by macOS via SMAppService.\n\nAuthorization services: Pearcleaner will ask the user for a password prompt on every single privileged operation, which can get overwhelming. These authorizations are managed by Pearcleaner and the user.\n\nWhat is a privileged operation: Whenever Pearcleaner needs to delete files from a folder (Ex. /var) the user doesn't have privileges to or undoing/restoring files back to a privileged location." : {
       "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner ayrıcalıklı işlemleri aşağıdaki şekillerde gerçekleştirebilir:\n- Yardımcı servisi 👍🏻\n- Yetkilendirme servisleri 👎🏻\n\nYardımcı servisi: Pearcleaner, yardımcıyı etkinleştirmek için bir kez parolanızı girmenizi isteyecektir, ardından, yardımcı, Ayarlar > Oturum Açma Öğeleri'nde etkin kaldığı sürece sonraki tüm işlemler herhangi bir istemde bulunulmadan çalışacaktır. Bu yetkilendirmenin tamamı macOS tarafından SMAppService ile yönetilir.\n\nYetkilendirme hizmetleri: Pearcleaner, her ayrıcalıklı işlemde kullanıcıdan parola isteyecektir; bu da bunaltıcı olabilir. Bu yetkilendirmeler Pearcleaner ve kullanıcı tarafından yönetilir.\n\nAyrıcalıklı işlem nedir: Pearcleaner'ın bir klasörden (Örn. /var) dosya silmesi gerektiğinde, kullanıcının ayrıcalıkları yoktur veya dosyaları ayrıcalıklı bir konuma geri yükleme/geri koyma yetkisi yoktur."
+          }
+        },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10257,6 +10492,12 @@
             "state" : "new",
             "value" : "Pearcleaner will strip the %1$@ architecture from %2$@'s executable file to save space. Would you like to proceed?"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner, alandan tasarruf etmek amacıyla %2$@'nin yürütülebilir dosyasından %1$@ mimarisini kaldıracaktır. Devam etmek istiyor musunuz?"
+          }
         }
       }
     },
@@ -10272,6 +10513,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "パスワード入力なしでシームレスに特権操作を実行"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parola istemleri olmadan ayrıcalıklı işlemleri sorunsuz bir şekilde gerçekleştirin"
           }
         },
         "uk" : {
@@ -10302,6 +10549,12 @@
     },
     "Permission required. Enable in System Settings > Login Items." : {
       "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İzin gerekli. Sistem Ayarları > Oturum Açma Öğeleri'nde etkinleştirin."
+          }
+        },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10399,6 +10652,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "権限テスト"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İzin Testi"
           }
         },
         "uk" : {
@@ -10581,6 +10840,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ヘルパーサービスをインストールしてください"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lütfen yardımcı servisi yükleyin"
           }
         },
         "uk" : {
@@ -10999,7 +11264,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gerçek boyut türü, dosyanın diskte ne kadar gerçek ayrılmış alana sahip olduğunu gösterir. \n\nMantıksal tip binary boyutunu gösterir. Dosya sistemi disk üzerindeki sektörleri sıkıştırabilir ve tekilleştirebilir, bu nedenle gerçek boyut bazen mantıksal boyuttan daha küçük (veya daha büyük) olabilir.\n\nFinder boyutu, Finder'da bir dosyaya sağ tıklayıp > Bilgi Al dediğinizde hem mantıksal hem de gerçek boyutların birlikte gösterilmesine benzer."
+            "value" : "Gerçek boyut türü, dosyanın diskte ne kadar gerçek ayrılmış alana sahip olduğunu gösterir. \n\nMantıksal tür ikili boyutu gösterir. Dosya sistemi disk üzerindeki sektörleri sıkıştırabilir ve tekilleştirebilir, bu nedenle gerçek boyut bazen mantıksal boyuttan daha küçük (veya daha büyük) olabilir.\n\nFinder boyutu, Finder'da bir dosyaya sağ tıklayıp > Bilgi Al dediğinizde hem mantıksal hem de gerçek boyutların birlikte gösterilmesine benzer."
           }
         },
         "uk" : {
@@ -11320,6 +11585,12 @@
     },
     "Registered but requires enabling in System Settings > Login Items." : {
       "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıtlı, ancak Sistem Ayarları > Oturum Açma Öğeleri'nde etkinleştirilmesi gerekiyor."
+          }
+        },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11560,6 +11831,12 @@
             "value" : "すべてのファイル/フォルダを削除"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tüm dosyaları/klasörleri kaldır"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11669,6 +11946,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "リセット"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sıfırla"
           }
         },
         "uk" : {
@@ -12279,6 +12562,12 @@
             "value" : "保存しました: %@"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaydedildi: %@"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12317,6 +12606,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "保存サイズ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tasarruf Boyutu"
           }
         },
         "uk" : {
@@ -12374,7 +12669,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kaydırma çubuğu listelerde gizli"
+            "value" : "Kaydırma çubuğu listelerde gizlensin"
           }
         },
         "uk" : {
@@ -12432,7 +12727,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kaydırma çubuğu listelerde OS tercihine ayarlı"
+            "value" : "Kaydırma çubuğu listelerde OS tercihine ayarlansın"
           }
         },
         "uk" : {
@@ -12497,7 +12792,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uygulamalar için bu dosyaları ara"
+            "value" : "Uygulamalar için bu dosyalar aransın"
           }
         },
         "uk" : {
@@ -12616,6 +12911,12 @@
             "value" : "全てを選択"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tümünü Seç"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12654,6 +12955,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "すべてのユニバーサルアプリを選択"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tüm evrensel uygulamaları seç"
           }
         },
         "uk" : {
@@ -12890,6 +13197,12 @@
     },
     "Service hasn’t been registered. You may register it now." : {
       "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Servis kaydedilmedi. Şimdi kaydedebilirsiniz."
+          }
+        },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12906,6 +13219,12 @@
     },
     "Service is already enabled." : {
       "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Servis zaten etkin."
+          }
+        },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12922,6 +13241,12 @@
     },
     "Service is already registered and enabled." : {
       "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Servis zaten kayıtlı ve etkin."
+          }
+        },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12938,6 +13263,12 @@
     },
     "Service is not installed." : {
       "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Servis kurulu değil."
+          }
+        },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12954,6 +13285,12 @@
     },
     "Service registered but requires user approval in Settings > Login Items > %@.app." : {
       "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hizmet kaydedildi ancak Ayarlar > Oturum Açma Öğeleri > %@.app'de kullanıcı onayı gerekiyor."
+          }
+        },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13334,6 +13671,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Authorization サービスは Apple によってセキュリティの低い認証方法として非推奨とされているため、最終的に Pearcleaner から削除され、ヘルパーサービスが唯一の選択肢となります。できるだけ早く特権ヘルパーサービスを有効にすることをお勧めします。"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple, yetkilendirme servislerini nispeten az güvenli bir kimlik doğrulama yöntemi olduğundan dolayı sonlandırdığı için, bir gün Pearcleaner'dan da kaldırılacak ve yardımcı servis artık tek seçenek olacak. Ayrıcalıklı yardımcı servisini en kısa sürede etkinleştirmenizi öneririm."
           }
         },
         "uk" : {
@@ -13789,7 +14132,15 @@
       }
     },
     "Space Savings: %d%%" : {
-      "comment" : "Lipo result title"
+      "comment" : "Lipo result title",
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alandan Tasarruf: %d%%"
+          }
+        }
+      }
     },
     "Space Savings: %d%%\nTotal Space Saved: %@" : {
       "comment" : "Lipo completion title",
@@ -13798,6 +14149,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Space Savings: %1$d%%\nTotal Space Saved: %2$@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alandan Tasarruf: %1$d%%\nToplam Alan Tasarrufu: %2$@"
           }
         }
       }
@@ -13887,6 +14244,12 @@
             "value" : "Lipoを始める"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lipo'yu Başlat"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13925,6 +14288,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "厳密なアプリ名検索"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sert uygulama adı araması"
           }
         },
         "uk" : {
@@ -14321,6 +14690,12 @@
             "value" : "ターミナル"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminal"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -14354,6 +14729,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "The total space savings between all the lipo'd apps\nSize Before: %1$@\nSize After: %2$@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tüm lipo uygulamaları arasındaki toplam alan tasarrufu\nÖnceki Boyut: %1$@\nSonraki Boyut: %2$@"
           }
         }
       }
@@ -14465,7 +14846,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bu, dosyayı/klasörü Hariç Tutulanlar listesine ekler. Hariç Tutulanlar listesini Ayarlar > Dosyalar sekmesinden düzenleyin"
+            "value" : "Bu, dosyayı/klasörü Hariç Tutulanlar listesine ekler. Hariç Tutulanlar listesini Ayarlar > Klasörler sekmesinden düzenleyin"
           }
         },
         "uk" : {
@@ -14512,6 +14893,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "このアプリは Homebrew を通してインストールされています"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu uygulama Homebrew aracılığıyla yüklendi"
           }
         },
         "uk" : {
@@ -14576,7 +14963,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bu uygulama %@ konumundadır"
+            "value" : "Bu uygulama %@ konumunda"
           }
         },
         "uk" : {
@@ -14838,6 +15225,12 @@
             "value" : "選択した項目を今後のスキャンから除外します。除外リストは設定 > フォルダタブから編集できます。"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu, seçili öğeleri gelecekteki taramalardan hariç tutacaktır. Hariç tutma listesi Ayarlar > Klasörler sekmesinden düzenlenebilir."
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -15020,6 +15413,12 @@
             "value" : "すべてのアプリの合計バイナリサイズ"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tüm uygulamalar arasındaki toplam ikili boyut"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -15124,6 +15523,12 @@
             "value" : "すべてのアプリで可能な合計節約量"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tüm uygulamalar arasındaki toplam olası tasarruf"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -15185,7 +15590,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dosyaların toplam boyutu: "
+            "value" : "Dosyaların toplam boyutu:"
           }
         },
         "uk" : {
@@ -15221,7 +15626,14 @@
       }
     },
     "Translation" : {
-
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çeviri"
+          }
+        }
+      }
     },
     "Transparent material" : {
       "extractionState" : "manual",
@@ -15306,6 +15718,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "除外するキーワードを入力し、Enter ↵ キーを押して保存"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hariç tutulacak bir anahtar kelime yazın, kaydetmek için Enter ↵ tuşuna basın"
           }
         },
         "uk" : {
@@ -15582,7 +16000,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kaldırmayı onaylama uyarıları"
+            "value" : "Kaldırma onay uyarıları"
           }
         },
         "uk" : {
@@ -15716,7 +16134,7 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "evrensel"
           }
         },
@@ -15748,6 +16166,12 @@
     },
     "Unknown service status (%lld)." : {
       "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilinmeyen servis durumu (%lld)."
+          }
+        },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
@@ -15774,6 +16198,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ファイルのリンクを解除"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dosya Bağlantısını Kaldır"
           }
         },
         "uk" : {
@@ -15814,6 +16244,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "サービスの登録解除"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Servisin Kaydını Sil"
           }
         },
         "uk" : {
@@ -16532,6 +16968,12 @@
     },
     "User denied permission. Enable in System Settings > Login Items." : {
       "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kullanıcı izni reddetti. Sistem Ayarları > Oturum Açma Öğeleri'nde etkinleştirin."
+          }
+        },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
@@ -16698,6 +17140,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "デバッグウィンドウを表示"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hata Ayıklama Penceresini Görüntüle"
           }
         },
         "uk" : {
@@ -17662,6 +18110,12 @@
             "value" : "Homebrew クリーンアップが有効になっている場合、Pearcleaner は削除しようとしているアプリが Homebrew を通してインストールされたかどうかを確認し、内蔵ターミナルを起動して brew uninstall およびクリーンアップコマンドを実行し、Homebrew にアプリが削除されたことを通知します。これにより、Homebrew のリストが正しく同期され、キャッシュが削除されます。\n注意：CMD+Z でファイル削除を元に戻した場合、ファイルは復元されますが、Homebrew はそれを認識しません。Homebrew のリストを再同期するには、以下のコマンドを実行する必要があります：\n\nbrew install アプリ名 --force」"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Homebrew temizliği etkinleştirildiğinde, Pearcleaner kaldırdığınız uygulamanın Homebrew aracılığıyla yüklenip yüklenmediğini kontrol edecek ve Homebrew'e uygulamanın kaldırıldığını bildirmek için bir brew uninstall and cleanup komutunu yürütmek üzere yerleşik bir Terminal başlatacaktır. Bu şekilde Homebrew listeniz doğru bir şekilde senkronize edilecek ve önbellekleme kaldırılacaktır.\n\nNOT: Dosya silme işlemini CMD+Z ile geri alırsanız dosyalar geri konur ancak Homebrew bundan haberdar olmaz. Homebrew listesini tekrar senkronize etmek için şunu çalıştırmanız gerekir:\n\n> brew install UYGULAMAADI --force"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -17844,6 +18298,12 @@
             "value" : "関連するアプリケーションファイルを検索する際、「厳密」モードではアプリ名が見つかったファイルと完全に一致するかチェックします。「厳密」モードが無効の場合は、アプリ名が見つかったファイル名に含まれているかをチェックします。これは同じアプリの複数バージョンを検索する場合や、アプリ名で命名されていないファイルを検索する場合に便利です。「厳密」モードを無効にすると、より多くのファイルが見つかる可能性がありますが、関連のないファイルも含まれる場合があるため、必要なファイルをチェック/チェック解除するようにしてください。"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İlgili uygulama dosyalarını ararken, sert arama, uygulama adının bulunan dosyayla tam olarak eşleşip eşleşmediğini kontrol edecektir. Sert arama devre dışı ise, uygulama adının bulunan dosya adında olup olmadığını kontrol edecektir. Bu, aynı uygulamanın birden fazla sürümünü ararken veya uygulama adıyla adlandırılmayan dosyaları ararken yararlı olabilir. Sıkı bir şekilde devre dışı bırakmak muhtemelen daha fazla dosya bulacaktır, ancak alakasız olanlar da olacaktır, bu yüzden gerekli dosyaları işaretlediğinizden/işaretini kaldırdığınızdan emin olun."
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -17906,7 +18366,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bu mod etkinleştirildiğinde bir uygulamayı kaldırmak için Kaldır butonuna basıldığında hemen ardından Pearcleaner’da kapanacaktır. \nBu Pearcleaner’ı sadece Sentinel Trash Monitor, Finder uzantısı veya Deep Link gibi harici yöntemlerle açıldığında etkiler.\nBu, uygulamanın hızlı bir kaldırma işlemi için tek seferlik açılmasına imkan verir. Pearcleaner normal şekilde açıldığında bu ayar yok sayılır ve Pearcleaner normal şekilde çalışır.  "
+            "value" : "Bu mod etkinleştirildiğinde bir uygulamayı kaldırmak için Kaldır butonuna basıldığında hemen ardından Pearcleaner’da kapanacaktır. \nBu Pearcleaner’ı sadece Sentinel Trash Monitor, Finder uzantısı veya Deep Link gibi harici yöntemlerle açıldığında etkiler.\nBu, uygulamanın hızlı bir kaldırma işlemi için tek seferlik açılmasına imkan verir. Pearcleaner normal şekilde açıldığında bu ayar yok sayılır ve Pearcleaner normal şekilde çalışır."
           }
         },
         "uk" : {

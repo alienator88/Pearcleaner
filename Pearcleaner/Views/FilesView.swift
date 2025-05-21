@@ -383,18 +383,18 @@ struct FilesView: View {
                                 }
                             }
 
-                            if appState.appInfo.arch == .universal {
-                                Button {
-                                    let title = NSLocalizedString("App Lipo", comment: "Lipo alert title")
-                                    let message = String(format: NSLocalizedString("Pearcleaner will strip the %@ architecture from %@'s executable file to save space. Would you like to proceed?", comment: "Lipo alert message"), isOSArm() ? "intel" : "arm64", appState.appInfo.appName)
-                                    showCustomAlert(title: title, message: message, style: .informational, onOk: {
-                                        let _ = thinAppBundleArchitecture(at: appState.appInfo.path, of: appState.appInfo.arch)
-                                    })
-                                } label: {
-                                    Text("Lipo")
-                                }
-                                .buttonStyle(LipoButton())
-                            }
+//                            if appState.appInfo.arch == .universal {
+//                                Button {
+//                                    let title = NSLocalizedString("App Lipo", comment: "Lipo alert title")
+//                                    let message = String(format: NSLocalizedString("Pearcleaner will strip the %@ architecture from %@'s executable file to save space. Would you like to proceed?", comment: "Lipo alert message"), isOSArm() ? "intel" : "arm64", appState.appInfo.appName)
+//                                    showCustomAlert(title: title, message: message, style: .informational, onOk: {
+//                                        let _ = thinAppBundleArchitecture(at: appState.appInfo.path, of: appState.appInfo.arch)
+//                                    })
+//                                } label: {
+//                                    Text("Lipo")
+//                                }
+//                                .buttonStyle(LipoButton())
+//                            }
 
                             // Trash Button
                             Button {

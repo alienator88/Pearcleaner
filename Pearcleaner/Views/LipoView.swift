@@ -47,7 +47,7 @@ struct LipoView: View {
             }, content: {
                 VStack(alignment: .leading, spacing: 10) {
                     Text("App lipo targets the Mach-O binaries inside your universal app bundles and removes any unused architectures, such as x86_64 or arm64, leaving only the architectures your computer actually supports. The list shows only universal type apps, not your full app list.")
-                    Text("After lipo, the green portion will be removed from your app's binary. Make sure to open an app at least once before lipo to make sure macOS has cached the signature.")
+                    Text("After lipo, the green portion will be removed from your app's binary. It's recommended to open an app at least once before lipo to make sure macOS has cached the signature. **Privileged Helper is required to perform this action on certain applications.**")
                         .foregroundStyle(.secondary)
                         .font(.callout)
                 }

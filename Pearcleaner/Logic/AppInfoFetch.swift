@@ -37,7 +37,7 @@ class MetadataAppInfoFetcher {
         let lastUsedDate = metadata["kMDItemLastUsedDate"] as? Date
 
         // Determine architecture type
-        let arch = determineArchitecture(from: metadata)
+        let arch = checkArchViaFile(at: path.path)
 
         // Use similar helper functions as `AppInfoFetcher` for attributes not found in metadata
         let wrapped = AppInfoFetcher.isDirectoryWrapped(path: path)
@@ -53,26 +53,26 @@ class MetadataAppInfoFetcher {
     }
 
     /// Determine the architecture type based on metadata
-    private static func determineArchitecture(from metadata: [String: Any]) -> Arch {
-        guard let architectures = metadata["kMDItemExecutableArchitectures"] as? [String] else {
-            return .empty
-        }
-
-        // Check for ARM and Intel presence
-        let containsArm = architectures.contains("arm64")
-        let containsIntel = architectures.contains("x86_64")
-
-        // Determine the Arch type based on available architectures
-        if containsArm && containsIntel {
-            return .universal
-        } else if containsArm {
-            return .arm
-        } else if containsIntel {
-            return .intel
-        } else {
-            return .empty
-        }
-    }
+    //    private static func determineArchitecture(from metadata: [String: Any]) -> Arch {
+    //        guard let architectures = metadata["kMDItemExecutableArchitectures"] as? [String] else {
+    //            return .empty
+    //        }
+    //
+    //        // Check for ARM and Intel presence
+    //        let containsArm = architectures.contains("arm64")
+    //        let containsIntel = architectures.contains("x86_64")
+    //
+    //        // Determine the Arch type based on available architectures
+    //        if containsArm && containsIntel {
+    //            return .universal
+    //        } else if containsArm {
+    //            return .arm
+    //        } else if containsIntel {
+    //            return .intel
+    //        } else {
+    //            return .empty
+    //        }
+    //    }
 }
 
 
@@ -121,7 +121,7 @@ func getMDLSMetadata(for paths: [String]) -> [String: [String: Any]]? {
         kMDItemLastUsedDate,
         kMDItemDisplayName,
         kMDItemCFBundleIdentifier,
-        kMDItemExecutableArchitectures,
+        //        kMDItemExecutableArchitectures,
         kMDItemFSName,
         kMDItemVersion,
         kMDItemLogicalSize,
@@ -203,11 +203,39 @@ class AppInfoFetcher {
 
         let system = !path.path.contains(NSHomeDirectory())
         let cask = getCaskIdentifier(for: appName)
+        let arch = checkArchViaFile(at: path.path)
 
         return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName, appVersion: appVersion, appIcon: appIcon,
-                       webApp: webApp, wrapped: wrapped, system: system, arch: .empty, cask: cask, bundleSize: 0, fileSize: [:], fileSizeLogical: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil)
+                       webApp: webApp, wrapped: wrapped, system: system, arch: arch, cask: cask, bundleSize: 0, fileSize: [:], fileSizeLogical: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil)
     }
 
+}
+
+
+func checkArchViaFile(at path: String) -> Arch {
+    let task = Process()
+    task.executableURL = URL(fileURLWithPath: "/usr/bin/file")
+    // Target the app's main binary inside Contents/MacOS
+    let binaryName = ((path as NSString).lastPathComponent as NSString).deletingPathExtension.replacingOccurrences(of: " ", with: "")
+    let binaryPath = "\(path)/Contents/MacOS/\(binaryName)"
+    task.arguments = [binaryPath]
+
+    let pipe = Pipe()
+    task.standardOutput = pipe
+    try? task.run()
+
+    let data = pipe.fileHandleForReading.readDataToEndOfFile()
+    let output = String(data: data, encoding: .utf8) ?? ""
+
+    if output.contains("arm64") && output.contains("x86_64") {
+        return .universal
+    } else if output.contains("arm64") {
+        return .arm
+    } else if output.contains("x86_64") {
+        return .intel
+    } else {
+        return .empty
+    }
 }
 
 
