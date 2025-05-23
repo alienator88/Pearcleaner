@@ -189,13 +189,8 @@ struct FilesView: View {
                                                     .font(.footnote)
                                                     .foregroundStyle(.secondary)
                                             }
-
-
-
                                         }
-
                                     }
-
                                 }
 
                             })
@@ -383,18 +378,32 @@ struct FilesView: View {
                                 }
                             }
 
-//                            if appState.appInfo.arch == .universal {
-//                                Button {
-//                                    let title = NSLocalizedString("App Lipo", comment: "Lipo alert title")
-//                                    let message = String(format: NSLocalizedString("Pearcleaner will strip the %@ architecture from %@'s executable file to save space. Would you like to proceed?", comment: "Lipo alert message"), isOSArm() ? "intel" : "arm64", appState.appInfo.appName)
-//                                    showCustomAlert(title: title, message: message, style: .informational, onOk: {
-//                                        let _ = thinAppBundleArchitecture(at: appState.appInfo.path, of: appState.appInfo.arch)
-//                                    })
-//                                } label: {
-//                                    Text("Lipo")
-//                                }
-//                                .buttonStyle(LipoButton())
-//                            }
+                            Menu {
+                                if appState.appInfo.arch == .universal {
+                                    Button("Lipo Architectures") {
+                                        let title = NSLocalizedString("App Lipo", comment: "Lipo alert title")
+                                        let message = String(format: NSLocalizedString("Pearcleaner will strip the %@ architecture from %@'s executable file to save space. Would you like to proceed?", comment: "Lipo alert message"), isOSArm() ? "intel" : "arm64", appState.appInfo.appName)
+                                        showCustomAlert(title: title, message: message, style: .informational, onOk: {
+                                            let _ = thinAppBundleArchitecture(at: appState.appInfo.path, of: appState.appInfo.arch)
+                                        })
+                                    }
+                                }
+                                Button("Prune Translations") {
+                                    let title = NSLocalizedString("Prune Translations", comment: "Prune alert title")
+                                    let message = String(format: NSLocalizedString("This will remove all unused language translation files", comment: "Prune alert message"))
+                                    showCustomAlert(title: title, message: message, style: .warning, onOk: {
+                                        do {
+                                            try pruneLanguages(in: appState.appInfo.path.path)
+                                        } catch {
+                                            printOS("Translation prune error: \(error)")
+                                        }
+                                    })
+                                }
+                            } label: {
+                                Label("Options", systemImage: "ellipsis.circle")
+                            }
+                            .menuStyle(.borderlessButton)
+                            .frame(width: 100)
 
                             // Trash Button
                             Button {

@@ -35,7 +35,7 @@ struct PearcleanerApp: App {
     let conditionManager = ConditionManager.shared
 
     init() {
-        handleLaunchMode(appState: appState, locations: locations, fsm: fsm)
+        handleLaunchMode()
     }
 
     var body: some Scene {

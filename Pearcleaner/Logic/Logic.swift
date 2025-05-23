@@ -310,8 +310,9 @@ func reloadAppsList(
 
 // Process CLI // ========================================================================================================
 
-func handleLaunchMode(appState: AppState, locations: Locations, fsm: FolderSettingsManager) {
+func handleLaunchMode() {
     var arguments = CommandLine.arguments
+    // Filter out arguments that break CLI commands on startup
     arguments = arguments.filter {
         !["-NSDocumentRevisionsDebugMode", "YES", "-AppleTextDirection", "NO"].contains($0)
     }
@@ -325,7 +326,9 @@ func handleLaunchMode(appState: AppState, locations: Locations, fsm: FolderSetti
     let isRunningInTerminal = termType != nil && termType != "dumb"
 
     if isRunningInTerminal {
-        PearCLI.setupDependencies(appState: appState, locations: locations, fsm: fsm)
+        let locations = Locations()
+        let fsm = FolderSettingsManager()
+        PearCLI.setupDependencies(locations: locations, fsm: fsm)
         do {
             // Drop the program name as to not interfere with argument parsing
             let args = Array(arguments.dropFirst())
@@ -338,6 +341,39 @@ func handleLaunchMode(appState: AppState, locations: Locations, fsm: FolderSetti
         }
     }
 
+}
+
+// Remove translations that are not in use
+func pruneLanguages(in appBundlePath: String) throws {
+    let fileManager = FileManager.default
+    let preferredLang = Locale.preferredLanguages.first?.prefix(2) ?? "en"
+    let contentsPath = (appBundlePath as NSString).appendingPathComponent("Contents/Resources")
+
+    guard fileManager.fileExists(atPath: contentsPath) else { return }
+
+    let items = try fileManager.contentsOfDirectory(atPath: contentsPath)
+
+    for item in items where item.hasSuffix(".lproj") {
+        let langCode = item.replacingOccurrences(of: ".lproj", with: "")
+        if langCode != "Base" && (langCode != preferredLang && !langCode.hasPrefix("\(preferredLang)-")) {
+            let pathToDelete = (contentsPath as NSString).appendingPathComponent(item)
+            let command = ["rm", "-rf", "\"\(pathToDelete)\""]
+
+            if HelperToolManager.shared.isHelperToolInstalled {
+                let semaphore = DispatchSemaphore(value: 0)
+                Task {
+                    let _ = await HelperToolManager.shared.runCommand(command.joined(separator: " "))
+                    semaphore.signal()
+                }
+                semaphore.wait()
+            } else {
+                let result = performPrivilegedCommands(commands: command.joined(separator: " "))
+                if !result.0 {
+                    printOS("Symlink failed: \(result.1)")
+                }
+            }
+        }
+    }
 }
 
 // FinderExtension Sequoia Fix

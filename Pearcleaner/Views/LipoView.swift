@@ -17,6 +17,7 @@ struct LipoView: View {
     @State private var binaryAllApps: UInt32 = 0
     @State private var sliceSizesByPath = [String:(binary: UInt32,savings:UInt32)]()
     @State private var totalSpaceSaved: UInt64 = 0
+    @AppStorage("settings.lipo.pruneTranslations") private var prune = false
 
     // Filter the apps to only include universal ones
     var universalApps: [AppInfo] {
@@ -136,6 +137,9 @@ struct LipoView: View {
 
             }
 
+            Toggle(isOn: $prune, label: { Text("Prune unused language translations") })
+                .toggleStyle(SimpleCheckboxToggleStyle())
+
         }
         .frame(maxWidth: .infinity)
         .padding(30)
@@ -173,7 +177,18 @@ struct LipoView: View {
                     totalPostSize += sizes["post"] ?? 0
                     totalSpaceSaved += (sizes["pre"] ?? 0) - (sizes["post"] ?? 0)
                 }
+                // Prune languages if enabled
+                if prune {
+                    do {
+                        try pruneLanguages(in: app.path.path)
+                    } catch {
+                        printOS("Translation prune error: \(error)")
+                    }
+                }
             }
+
+
+
             let overallSavings = totalPreSize > 0 ? Int((Double(totalPreSize - totalPostSize) / Double(totalPreSize)) * 100) : 0
 
             let titleFormat = NSLocalizedString("Space Savings: %d%%\nTotal Space Saved: %@", comment: "Lipo completion title")

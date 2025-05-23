@@ -21,15 +21,13 @@ struct PearCLI: ParsableCommand {
     )
 
     // For dependency management
-    static var appState: AppState!
     static var locations: Locations!
     static var fsm: FolderSettingsManager!
 
     // Set up dependencies before running commands
     static func setupDependencies(
-        appState: AppState, locations: Locations, fsm: FolderSettingsManager
+        locations: Locations, fsm: FolderSettingsManager
     ) {
-        Self.appState = appState
         Self.locations = locations
         Self.fsm = fsm
     }

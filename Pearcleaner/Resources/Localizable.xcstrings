@@ -938,53 +938,6 @@
     "After lipo, the green portion will be removed from your app's binary. It's recommended to open an app at least once before lipo to make sure macOS has cached the signature. **Privileged Helper is required to perform this action on certain applications.**" : {
 
     },
-    "After lipo, the green portion will be removed from your app's binary. Make sure to open an app at least once before lipo to make sure macOS has cached the signature." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nach dem Lipo wird der grüne Teil aus der Binärdatei Ihrer App entfernt. Öffnen Sie die App vor dem Lipo mindestens einmal, um sicherzustellen, dass macOS die Signatur zwischengespeichert hat."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "lipo 処理の後、緑色の部分はアプリのバイナリから削除されます。macOS が署名をキャッシュするために、lipo を実行する前に少なくとも一度はアプリを開いてください。"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lipo'dan sonra yeşil kısım uygulamanızın ikili dosyasından kaldırılacaktır. macOS'un imzayı önbelleklediğinden emin olmak için lipo'dan önce en az bir kez uygulamayı açtığınızdan emin olun."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Після lipo, зелена частина буде видалена з бінарного файлу програми. Переконайтеся, що ви відкрили програму хоча б один раз перед lipo, щоб переконатися, що macOS закешувала підпис."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sau khi lipo, phần màu xanh sẽ bị xóa khỏi tệp nhị phân của ứng dụng. Hãy chắc chắn mở ứng dụng ít nhất một lần trước khi sử dụng lipo để đảm bảo macOS đã lưu trữ chữ ký."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "瘦身后，绿色部分将从您的应用二进制文件中移除。请确保在解压前至少打开一次应用，以确保macOS已缓存签名。"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "節省之後，綠色部分將會從你的應用程式的二進位檔移除。確保在節省之前至少開啟一次應用程式，以讓 macOS 快取應用程式簽名。"
-          }
-        }
-      }
-    },
     "All checkboxes" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7690,6 +7643,9 @@
         }
       }
     },
+    "Lipo Architectures" : {
+
+    },
     "Lipo'd File:\n\n%@" : {
       "comment" : "Lipo result message",
       "localizations" : {
@@ -10106,6 +10062,9 @@
         }
       }
     },
+    "Options" : {
+
+    },
     "Orphaned file search is not 100% accurate as it doesn't have any uninstalled app bundles to check against for file exclusion. This does a best guess search for files/folders and excludes the ones that have overlap with your currently installed applications. Please confirm files marked for deletion really do belong to uninstalled applications." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -10944,6 +10903,12 @@
           }
         }
       }
+    },
+    "Prune Translations" : {
+      "comment" : "Prune alert title"
+    },
+    "Prune unused language translations" : {
+
     },
     "Queue:" : {
       "localizations" : {
@@ -15256,6 +15221,9 @@
           }
         }
       }
+    },
+    "This will remove all unused language translation files" : {
+      "comment" : "Prune alert message"
     },
     "Toggling between modes will reset the window frames to their default size/position" : {
       "extractionState" : "manual",
