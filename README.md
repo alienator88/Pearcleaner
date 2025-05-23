@@ -41,6 +41,7 @@ If you are able to contribute to translations for the app, please see this discu
 - Orphaned file search for finding remaining files from previously uninstalled applications
 - Development environments file/cache cleaning
 - App Lipo to strip unneeded architectures from universal apps. No dependency on the lipo tool so no need to install xcode or command line tools
+- Prune unused translation files from app bundles keeping only the preferred language set on macOS
 - Sentinel monitor helper that can be enabled to watch Trash folder for deleted apps to cleanup after the fact(Extremely small (210KB) and uses ~2mb of ram to run in the background and file watch)
 - Mini mode which can be enabled from Settings
 - Menubar icon option
