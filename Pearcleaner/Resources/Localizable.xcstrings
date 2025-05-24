@@ -450,6 +450,12 @@
             "state" : "translated",
             "value" : "Şimdiye kadar katkıda bulunan herkese **çok** teşekkür ederiz!"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**衷心感謝**所有參與貢獻的各位！"
+          }
         }
       }
     },
@@ -936,7 +942,14 @@
       }
     },
     "After lipo, the green portion will be removed from your app's binary. It's recommended to open an app at least once before lipo to make sure macOS has cached the signature. **Privileged Helper is required to perform this action on certain applications.**" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "節省之後，綠色部分將會從你的應用程式的二進位檔移除。確保在節省之前至少開啟一次應用程式，以讓 macOS 快取應用程式簽名。**在某些應用程式上，需要使用輔助應用程式執行這項動作。**"
+          }
+        }
+      }
     },
     "All checkboxes" : {
       "extractionState" : "manual",
@@ -7644,7 +7657,14 @@
       }
     },
     "Lipo Architectures" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "節省應用程式架構"
+          }
+        }
+      }
     },
     "Lipo'd File:\n\n%@" : {
       "comment" : "Lipo result message",
@@ -7653,6 +7673,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lipo’lanmış Dosya:\n\n%@"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已節省的檔案：\n\n%@"
           }
         }
       }
@@ -10063,7 +10089,14 @@
       }
     },
     "Options" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選項"
+          }
+        }
+      }
     },
     "Orphaned file search is not 100% accurate as it doesn't have any uninstalled app bundles to check against for file exclusion. This does a best guess search for files/folders and excludes the ones that have overlap with your currently installed applications. Please confirm files marked for deletion really do belong to uninstalled applications." : {
       "extractionState" : "manual",
@@ -10456,6 +10489,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pearcleaner, alandan tasarruf etmek amacıyla %2$@'nin yürütülebilir dosyasından %1$@ mimarisini kaldıracaktır. Devam etmek istiyor musunuz?"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner 將從 %2$@ 的執行檔中剝離 %1$@ 架構以節省空間。你想繼續嗎？"
           }
         }
       }
@@ -10905,10 +10944,25 @@
       }
     },
     "Prune Translations" : {
-      "comment" : "Prune alert title"
+      "comment" : "Prune alert title",
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刪除翻譯"
+          }
+        }
+      }
     },
     "Prune unused language translations" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刪除未使用的語言翻譯"
+          }
+        }
+      }
     },
     "Queue:" : {
       "localizations" : {
@@ -14104,6 +14158,12 @@
             "state" : "translated",
             "value" : "Alandan Tasarruf: %d%%"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "節省空間：%d%%"
+          }
         }
       }
     },
@@ -14120,6 +14180,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Alandan Tasarruf: %1$d%%\nToplam Alan Tasarrufu: %2$@"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "節省空間：%1$d%%\n總計已節省空間：%2$@"
           }
         }
       }
@@ -14701,6 +14767,12 @@
             "state" : "translated",
             "value" : "Tüm lipo uygulamaları arasındaki toplam alan tasarrufu\nÖnceki Boyut: %1$@\nSonraki Boyut: %2$@"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所有應用程式已節省空間的總數\n之前大小：%1$@\n之後大小：%2$@"
+          }
         }
       }
     },
@@ -15223,7 +15295,15 @@
       }
     },
     "This will remove all unused language translation files" : {
-      "comment" : "Prune alert message"
+      "comment" : "Prune alert message",
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這將會移除全部未使用的語言翻譯檔案"
+          }
+        }
+      }
     },
     "Toggling between modes will reset the window frames to their default size/position" : {
       "extractionState" : "manual",
@@ -15599,6 +15679,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Çeviri"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻譯"
           }
         }
       }
@@ -18059,7 +18145,7 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "使用「垃圾桶」按鈕刪除檔案時，你可以在繼續動作前顯示警告以避免意外刪除。"
+            "value" : "使用「垃圾桶」按鈕刪除檔案時，你可以在繼續此動作前顯示警告以避免意外刪除。"
           }
         }
       }
