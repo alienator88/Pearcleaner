@@ -81,9 +81,6 @@ If you are able to contribute to translations for the app, please see this discu
 > [!NOTE]
 > - MacOS 13.0+ [Non-beta releases]
 > - Full Disk permission to search for files
-> - Accessibility permission to delete/restore files
-> - Automation permission to control Finder and Terminal
-
 
 
 ## Getting Pearcleaner
