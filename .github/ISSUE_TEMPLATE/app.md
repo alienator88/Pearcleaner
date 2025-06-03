@@ -7,9 +7,6 @@ assignees: ''
 
 ---
 
->NOTE: If a specific app is finding unrelated files or not finding expected files, use the new condition builder to either include or exclude files from the search. Push CMD+B when you're on an app's page to show the condition builder.
-
-
 **Describe the app**
 
 A clear and concise description of what the affected app issue is.
