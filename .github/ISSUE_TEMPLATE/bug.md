@@ -30,11 +30,14 @@ A clear and concise description of what you expected to happen.
 ### Screenshots:
 If applicable, add screenshots to help explain your problem.
 
+### Debug Console
+1. While Pearcleaner is running, push CMD+D to open the debug console and show captured logs
+2. If issue is happening while starting/launching Pearcleaner, pull logs via steps below
 
-### Console Logs (For app crashes or hard to reproduce issues):
+### Console Logs (For app startup issues):
  1. Open the Terminal app and run the following command
 ```
 log stream --level debug --style compact --predicate 'subsystem == "com.alienator88.Pearcleaner"'
 ```
- 2. Reproduce the issue to capture logs
+ 2. Launch Pearcleaner to reproduce the issue and capture logs
  3. Copy the logs here
