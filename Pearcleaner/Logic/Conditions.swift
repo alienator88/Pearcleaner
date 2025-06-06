@@ -105,7 +105,7 @@ var conditions: [Condition] = [
     ),
     Condition(
         bundle_id: "com.logi.optionsplus",
-        include: ["logi"],
+        include: ["logi", "logipluginservice"],
         exclude: ["login", "logic"],
         includeForce: nil
     ),
