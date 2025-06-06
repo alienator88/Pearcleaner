@@ -5251,6 +5251,9 @@
         }
       }
     },
+    "File System" : {
+
+    },
     "Finder Extension" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -12775,6 +12778,9 @@
         }
       }
     },
+    "Search spotlight index" : {
+
+    },
     "Search these folders for applications" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -12915,6 +12921,9 @@
           }
         }
       }
+    },
+    "Searching:" : {
+
     },
     "Select All" : {
       "localizations" : {
@@ -14261,6 +14270,9 @@
         }
       }
     },
+    "Spotlight Index" : {
+
+    },
     "Start Lipo" : {
       "localizations" : {
         "de" : {
@@ -14752,6 +14764,9 @@
           }
         }
       }
+    },
+    "The search algorithm will cross-check the Spotlight metadata index for matches. This can be useful for fuzzy name searches and directories missed by the standard search. Note that strict name search above will limit the fuzzy search to the exact file name and will find less matches." : {
+
     },
     "The total space savings between all the lipo'd apps\nSize Before: %@\nSize After: %@" : {
       "comment" : "Lipo completion message",

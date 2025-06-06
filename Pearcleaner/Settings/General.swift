@@ -19,10 +19,11 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.brew") private var brew: Bool = false
     @AppStorage("settings.general.oneshot") private var oneShotMode: Bool = false
     @AppStorage("settings.general.confirmAlert") private var confirmAlert: Bool = false
-//    @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @AppStorage("settings.general.cli") private var isCLISymlinked = false
-    @AppStorage("settings.general.namesearchstrict") private var nameSearchStrict = true
+    @AppStorage("settings.general.namesearchstrict") private var nameSearchStrict = false
+    @AppStorage("settings.general.spotlight") private var spotlight = true
+
 
     var body: some View {
         VStack(spacing: 20) {
@@ -77,6 +78,30 @@ struct GeneralSettingsTab: View {
 
                             Spacer()
                             Toggle(isOn: $nameSearchStrict, label: {
+                            })
+                            .toggleStyle(SettingsToggle())
+                        }
+                        .padding(5)
+
+
+
+                        HStack(spacing: 0) {
+                            Image(systemName: spotlight ? "text.magnifyingglass" : "magnifyingglass")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 20, height: 20)
+                                .padding(.trailing)
+                                .foregroundStyle(.primary)
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text("Search spotlight index")
+                                    .font(.callout)
+                                    .foregroundStyle(.primary)
+                            }
+
+                            InfoButton(text: String(localized: "The search algorithm will cross-check the Spotlight metadata index for matches. This can be useful for fuzzy name searches and directories missed by the standard search. Note that strict name search above will limit the fuzzy search to the exact file name and will find less matches."))
+
+                            Spacer()
+                            Toggle(isOn: $spotlight, label: {
                             })
                             .toggleStyle(SettingsToggle())
                         }

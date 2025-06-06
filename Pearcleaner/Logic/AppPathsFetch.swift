@@ -17,6 +17,7 @@ class AppPathFinder {
     private var containerCollection: [URL] = []
     private let collectionAccessQueue = DispatchQueue(label: "com.alienator88.Pearcleaner.appPathFinder.collectionAccess")
     @AppStorage("settings.general.namesearchstrict") var nameSearchStrict = true
+    @AppStorage("settings.general.spotlight") var spotlight = true
 
     // GUI-specific properties (can be nil for CLI)
     private var appState: AppState?
@@ -203,6 +204,54 @@ class AppPathFinder {
         return true
     }
 
+    // Check spotlight index for leftovers missed by manual search
+    private func spotlightSupplementalPaths() -> [URL] {
+        guard spotlight else { return [] }
+        Thread.sleep(forTimeInterval: 0.5)
+        updateOnMain {
+            self.appState?.progressStep = 1
+        }
+        Thread.sleep(forTimeInterval: 1)
+        var results: [URL] = []
+        let query = NSMetadataQuery()
+
+        let appName = self.appInfo.appName
+        let bundleID = self.appInfo.bundleIdentifier
+        query.predicate = NSPredicate(format: "kMDItemDisplayName CONTAINS[cd] %@ OR kMDItemPath CONTAINS[cd] %@", appName, bundleID)
+        query.searchScopes = [NSMetadataQueryUserHomeScope]
+
+        let finishedNotification = NotificationCenter.default.addObserver(forName: .NSMetadataQueryDidFinishGathering, object: query, queue: nil) { _ in
+            query.disableUpdates()
+            query.stop()
+            results = query.results.compactMap {
+                ($0 as? NSMetadataItem)?.value(forAttribute: kMDItemPath as String)
+            }.compactMap {
+                URL(fileURLWithPath: $0 as! String)
+            }
+            if self.nameSearchStrict {
+                let nameFormatted = appName.pearFormat()
+                let bundleFormatted = bundleID.pearFormat()
+                results = results.filter { url in
+                    let pathFormatted = url.lastPathComponent.pearFormat()
+                    return pathFormatted == nameFormatted || pathFormatted == bundleFormatted
+                }
+            }
+            CFRunLoopStop(CFRunLoopGetCurrent())
+        }
+
+        query.start()
+
+        DispatchQueue.global().asyncAfter(deadline: .now() + 5) {
+            CFRunLoopStop(CFRunLoopGetCurrent())
+        }
+
+        CFRunLoopRun()
+
+        NotificationCenter.default.removeObserver(finishedNotification)
+
+        return results
+    }
+
     // Finalize the collection for GUI usage
     private func finalizeCollection() {
         DispatchQueue.global(qos: .userInitiated).async {
@@ -214,6 +263,14 @@ class AppPathFinder {
             }
             tempCollection.append(contentsOf: self.containerCollection)
             tempCollection.append(contentsOf: outliers)
+            // Insert spotlight results before sorting and filtering
+            let spotlightResults = self.spotlightSupplementalPaths()
+            let spotlightOnly = spotlightResults.filter { !self.collectionSet.contains($0) }
+//            if self.spotlight {
+//                printOS("Spotlight index found: \(spotlightOnly.count)")
+//            }
+            tempCollection.append(contentsOf: spotlightOnly)
+
             let excludePaths = outliersEx.map { $0.path }
             tempCollection.removeAll { url in
                 excludePaths.contains(url.path)
@@ -242,6 +299,12 @@ class AppPathFinder {
         }
         tempCollection.append(contentsOf: self.containerCollection)
         tempCollection.append(contentsOf: outliers)
+        // Insert spotlight results before sorting and filtering
+        let spotlightResults = self.spotlightSupplementalPaths()
+        let spotlightOnly = spotlightResults.filter { !self.collectionSet.contains($0) }
+        //        printOS("Spotlight index found: \(spotlightOnly.count)")
+        tempCollection.append(contentsOf: spotlightOnly)
+
         let excludePaths = outliersEx.map { $0.path }
         tempCollection.removeAll { url in
             excludePaths.contains(url.path)
@@ -322,6 +385,7 @@ class AppPathFinder {
             if !self.undo {
                 self.appState?.selectedItems = Set(updatedCollection)
             }
+            self.appState?.progressStep = 0
             self.completion?()
         }
     }

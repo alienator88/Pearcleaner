@@ -840,3 +840,45 @@ struct BetaBadge: View {
             }
     }
 }
+
+
+struct ProgressStepView: View {
+    var currentStep: Int
+    @Namespace private var animation
+    @AppStorage("settings.interface.animationEnabled") var animationEnabled: Bool = true
+
+    var body: some View {
+        VStack(spacing: 4) {
+            if currentStep > 0 {
+                HStack(spacing: 8) {
+
+                    Text("Searching:")
+                        .font(.title2)
+                        .opacity(0)
+
+                    Text("File System")
+                        .font(.title2)
+                        .foregroundStyle(.secondary.opacity(0.5))
+                        .matchedGeometryEffect(id: "previous", in: animation)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                }
+            }
+
+            HStack(spacing: 8) {
+                Text("Searching:")
+                    .font(.title2)
+                    .foregroundStyle(.secondary)
+
+                Text(currentStep == 0 ? "File System" : "Spotlight Index")
+                    .font(.title2)
+                    .foregroundStyle(.secondary)
+                    .matchedGeometryEffect(id: "current", in: animation)
+                    .transition(.opacity)
+
+                ProgressView().controlSize(.small)
+            }
+            .animation(.easeInOut(duration: animationEnabled ? 0.3 : 0), value: currentStep)
+        }
+        .frame(height: 48)
+    }
+}

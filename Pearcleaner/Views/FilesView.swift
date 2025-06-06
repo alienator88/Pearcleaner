@@ -55,11 +55,12 @@ struct FilesView: View {
                 VStack {
                     Spacer()
 
-                    HStack(spacing: 10) {
-                        Text("Searching the file system").font(.title3)
-                            .foregroundStyle(.primary.opacity(0.5))
-                        ProgressView().controlSize(.small)
-                    }
+                    ProgressStepView(currentStep: appState.progressStep)
+//                    HStack(spacing: 10) {
+//                        Text(appState.progressStatus).font(.title3)
+//                            .foregroundStyle(.primary.opacity(0.5))
+//                        ProgressView().controlSize(.small)
+//                    }
 
                     Spacer()
                 }
@@ -290,6 +291,7 @@ struct FilesView: View {
 
                         Button {
                             selectedSortAlpha.toggle()
+                            updateSortedFiles()
                         } label: { EmptyView() }
                             .buttonStyle(SimpleButtonStyle(icon: "line.3.horizontal.decrease.circle", label: selectedSortAlpha ? String(localized: "Name") : String(localized: "Size"), help: selectedSortAlpha ? String(localized: "Sorted by Name") : String(localized: "Sorted by Size"), size: 16))
 
@@ -624,7 +626,8 @@ struct FilesView: View {
             } else if !isFirstPathApp, isSecondPathApp {
                 return false
             } else {
-                return firstURL.lastPathComponent.pearFormat() < secondURL.lastPathComponent.pearFormat()
+                //                return firstURL.lastPathComponent.pearFormat() < secondURL.lastPathComponent.pearFormat()
+                return showLocalized(url: firstURL).localizedCaseInsensitiveCompare(showLocalized(url: secondURL)) == .orderedAscending
             }
         }
 
@@ -648,6 +651,7 @@ struct FilesView: View {
 
             // Clear stored associations
             ZombieFileStorage.shared.clearAssociations(for: appState.appInfo.path)
+            updateSortedFiles()
         }
     }
 
@@ -675,6 +679,7 @@ struct FilesView: View {
             } else {
                 ZombieFileStorage.shared.associatedFiles[appState.appInfo.path] = associatedFiles
             }
+            updateSortedFiles()
         }
     }
 

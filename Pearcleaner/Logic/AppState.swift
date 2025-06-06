@@ -26,6 +26,7 @@ class AppState: ObservableObject {
     @Published var sidebar: Bool = true
     @Published var reload: Bool = false
     @Published var showProgress: Bool = false
+    @Published var progressStep: Int = 0
     @Published var leftoverProgress: (String, Double) = ("", 0.0)
     @Published var finderExtensionEnabled: Bool = false
     @Published var showUninstallAlert: Bool = false
