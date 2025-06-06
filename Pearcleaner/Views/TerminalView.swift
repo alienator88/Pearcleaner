@@ -14,6 +14,8 @@ struct TerminalSheetView: View {
     @EnvironmentObject var locations: Locations
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
+    @AppStorage("settings.general.oneshot") private var oneShotMode: Bool = false
+
     var showPopover: Binding<Bool>?
     let command: String?
     let homebrew: Bool
@@ -75,10 +77,14 @@ struct TerminalSheetView: View {
                             showAppInFiles(appInfo: nextApp, appState: appState, locations: locations, showPopover: showPopover ?? .constant(false))
                         }
                     }
+                } else if oneShotMode && !appState.multiMode {
+                    updateOnMain() {
+                        NSApp.terminate(nil)
+                    }
                 }
 
             }
-            .buttonStyle(SimpleButtonStyle(icon: "x.circle", iconFlip: "x.circle.fill", help: String(localized: "Close")))
+            .buttonStyle(SimpleButtonStyle(icon: "x.circle", iconFlip: "x.circle.fill", help: String(localized: "Close"), color: .white))
             .padding(5)
         }
         .ignoresSafeArea(.all)

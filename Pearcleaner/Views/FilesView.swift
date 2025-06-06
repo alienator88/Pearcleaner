@@ -557,7 +557,7 @@ struct FilesView: View {
 
             // Terminate if oneShotMode is enabled
             if oneShotMode && !appState.multiMode {
-                updateOnMain(after: 2) {
+                updateOnMain() {
                     NSApp.terminate(nil)
                 }
             } else {
