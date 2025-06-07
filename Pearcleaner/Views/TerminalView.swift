@@ -156,23 +156,33 @@ class NoScrollTerminalView: LocalProcessTerminalView {
     }
 }
 
-func getShell () -> String
-{
+func getShell() -> String {
+    let compatibleShells = ["sh", "bash", "zsh", "dash", "ksh", "ash"]
+
     let bufsize = sysconf(_SC_GETPW_R_SIZE_MAX)
     guard bufsize != -1 else {
         return "/bin/bash"
     }
-    let buffer = UnsafeMutablePointer<Int8>.allocate(capacity: bufsize)
-    defer {
-        buffer.deallocate()
-    }
-    var pwd = passwd()
-    var result: UnsafeMutablePointer<passwd>? = UnsafeMutablePointer<passwd>.allocate(capacity: 1)
 
-    if getpwuid_r(getuid(), &pwd, buffer, bufsize, &result) != 0 {
+    let buffer = UnsafeMutablePointer<Int8>.allocate(capacity: bufsize)
+    defer { buffer.deallocate() }
+
+    var pwd = passwd()
+    var result: UnsafeMutablePointer<passwd>? = nil
+
+    let err = getpwuid_r(getuid(), &pwd, buffer, bufsize, &result)
+    guard err == 0, let result = result else {
         return "/bin/bash"
     }
-    return String (cString: pwd.pw_shell)
+
+    let shellPath = String(cString: result.pointee.pw_shell)
+    let shellName = URL(fileURLWithPath: shellPath).lastPathComponent.lowercased()
+
+    if compatibleShells.contains(shellName) {
+        return shellPath
+    } else {
+        return "/bin/bash"
+    }
 }
 
 func getNerdFont() -> NSFont {
