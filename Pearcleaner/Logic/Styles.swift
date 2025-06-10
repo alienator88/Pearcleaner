@@ -846,16 +846,15 @@ struct ProgressStepView: View {
     var currentStep: Int
     @Namespace private var animation
     @AppStorage("settings.interface.animationEnabled") var animationEnabled: Bool = true
+    @AppStorage("settings.general.spotlight") var spotlight = true
 
     var body: some View {
         VStack(spacing: 4) {
-            if currentStep > 0 {
+            if currentStep > 0 && spotlight {
                 HStack(spacing: 8) {
-
                     Text("Searching:")
                         .font(.title2)
                         .opacity(0)
-
                     Text("File System")
                         .font(.title2)
                         .foregroundStyle(.secondary.opacity(0.5))
@@ -868,8 +867,8 @@ struct ProgressStepView: View {
                 Text("Searching:")
                     .font(.title2)
                     .foregroundStyle(.secondary)
-
-                Text(currentStep == 0 ? "File System" : "Spotlight Index")
+                
+                Text((currentStep == 0 || !spotlight) ? "File System" : "Spotlight Index")
                     .font(.title2)
                     .foregroundStyle(.secondary)
                     .matchedGeometryEffect(id: "current", in: animation)

@@ -266,9 +266,9 @@ class AppPathFinder {
             // Insert spotlight results before sorting and filtering
             let spotlightResults = self.spotlightSupplementalPaths()
             let spotlightOnly = spotlightResults.filter { !self.collectionSet.contains($0) }
-//            if self.spotlight {
-//                printOS("Spotlight index found: \(spotlightOnly.count)")
-//            }
+            //            if self.spotlight {
+            //                printOS("Spotlight index found: \(spotlightOnly.count)")
+            //            }
             tempCollection.append(contentsOf: spotlightOnly)
 
             let excludePaths = outliersEx.map { $0.path }
@@ -365,7 +365,7 @@ class AppPathFinder {
         var fileSizeLogical: [URL: Int64] = [:]
         var fileIcon: [URL: NSImage?] = [:]
         for path in tempCollection {
-            let size = totalSizeOnDisk(for: path)
+            let size = spotlightSizeForURL(path)
             fileSize[path] = size.real
             fileSizeLogical[path] = size.logical
             fileIcon[path] = getIconForFileOrFolderNS(atPath: path)
@@ -419,4 +419,20 @@ class AppPathFinder {
             return finalizeCollectionCLI()
         }
     }
+}
+
+// Get size using Spotlight metadata, fallback to manual calculation if needed
+private func spotlightSizeForURL(_ url: URL) -> (real: Int64, logical: Int64) {
+    let metadataItem = NSMetadataItem(url: url)
+    let real = metadataItem?.value(forAttribute: "kMDItemPhysicalSize") as? Int64
+    let logical = metadataItem?.value(forAttribute: "kMDItemLogicalSize") as? Int64
+
+    if let real = real, let logical = logical {
+        print("Found Spotlight size")
+        return (real, logical)
+    }
+
+    let fallback = totalSizeOnDisk(for: url)
+    print("Fallback to manual calculation")
+    return (real ?? fallback.real, logical ?? fallback.logical)
 }
