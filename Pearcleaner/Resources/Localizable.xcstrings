@@ -163,6 +163,19 @@
         }
       }
     },
+    "%@ (%lld)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ (%2$lld)"
+          }
+        }
+      }
+    },
+    "%@ (0)" : {
+
+    },
     "%@ is already on the latest release available" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3304,6 +3317,9 @@
         }
       }
     },
+    "Contents" : {
+
+    },
     "Copy File Paths" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3575,6 +3591,9 @@
         }
       }
     },
+    "Delete All Contents" : {
+
+    },
     "Delete all files within this folder" : {
       "localizations" : {
         "de" : {
@@ -3639,7 +3658,11 @@
         }
       }
     },
+    "Delete All Folders" : {
+
+    },
     "Delete Contents" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3704,6 +3727,7 @@
       }
     },
     "Delete Folder" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3766,6 +3790,9 @@
           }
         }
       }
+    },
+    "Delete the folder" : {
+
     },
     "Detect when apps are moved to Trash" : {
       "extractionState" : "manual",
@@ -5396,7 +5423,11 @@
         }
       }
     },
+    "Folder" : {
+
+    },
     "Folder is empty" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
