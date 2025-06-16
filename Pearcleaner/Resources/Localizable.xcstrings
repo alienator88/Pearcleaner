@@ -458,6 +458,12 @@
     },
     "A **huge** thank you to everyone who has contributed so far!" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein **riesiges** Dankeschön an alle, die bisher mitgewirkt haben!"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -956,6 +962,12 @@
     },
     "After lipo, the green portion will be removed from your app's binary. It's recommended to open an app at least once before lipo to make sure macOS has cached the signature. **Privileged Helper is required to perform this action on certain applications.**" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach dem Lipo-Vorgang wird der grüne Teil aus der Binärdatei Ihrer App entfernt. Es wird empfohlen, eine App vor dem Lipo-Vorgang mindestens einmal zu öffnen, um sicherzustellen, dass macOS die Signatur zwischengespeichert hat. **Für bestimmte Anwendungen ist „Privileged Helper” erforderlich, um diesen Vorgang auszuführen.**"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4366,6 +4378,12 @@
     },
     "Enabled" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktiviert"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4391,7 +4409,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wenn Sie die CLI aktivieren, können Sie Pearcleaner-Aktionen über das Terminal ausführen. Dies fügt den Befehl pearcleaner in /usr/local/bin ein, so dass er direkt über Ihre PATH-Umgebungsvariable verfügbar ist. Probieren Sie es nach der Aktivierung aus:\n\n> pear --help"
+            "value" : "Wenn Sie die CLI aktivieren, können Sie Pearcleaner-Aktionen über das Terminal ausführen. Dies fügt den Befehl pearcleaner in /usr/local/bin ein, so dass er direkt über Ihre PATH-Umgebungsvariable verfügbar ist. Probieren Sie es nach der Aktivierung aus:\n\n> pear —Hilfe"
           }
         },
         "fr" : {
@@ -6842,6 +6860,12 @@
     },
     "Invalid signature, ensure proper signing on the application and helper tool." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ungültige Signatur, stellen Sie sicher, dass die Anwendung und das Hilfsprogramm ordnungsgemäß signiert sind."
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7497,6 +7521,12 @@
     },
     "Lipo Architectures" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lipo Architektur"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7508,6 +7538,12 @@
     "Lipo'd File:\n\n%@" : {
       "comment" : "Lipo result message",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lipo'd Datei:\n\n%@"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9907,6 +9943,12 @@
     },
     "Operation failed: %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorgang fehlgeschlagen: %@"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9929,6 +9971,12 @@
     },
     "Options" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optionen"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10152,6 +10200,12 @@
     },
     "Pearcleaner can perform privileged operations in the following ways:\n- Helper service 👍🏻\n- Authorization services 👎🏻\n\nHelper service: Pearcleaner will only ask you to enter your password once to enable the helper, then all subsequent operations will run without any prompts as long as the helper stays enabled in Settings > Login Items. This authorization is all managed by macOS via SMAppService.\n\nAuthorization services: Pearcleaner will ask the user for a password prompt on every single privileged operation, which can get overwhelming. These authorizations are managed by Pearcleaner and the user.\n\nWhat is a privileged operation: Whenever Pearcleaner needs to delete files from a folder (Ex. /var) the user doesn't have privileges to or undoing/restoring files back to a privileged location." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner kann privilegierte Vorgänge auf folgende Weise ausführen:\n- Hilfsdienst 👍🏻\n- Autorisierungsdienste 👎🏻\n\nHilfsdienst: Pearcleaner fordert Sie nur einmal zur Eingabe Ihres Passworts auf, um den Hilfsdienst zu aktivieren. Anschließend werden alle nachfolgenden Vorgänge ohne weitere Aufforderungen ausgeführt, solange der Hilfsdienst in den Einstellungen > Anmeldeobjekte aktiviert bleibt. Diese Autorisierung wird vollständig von macOS über SMAppService verwaltet.\n\nAutorisierungsdienste: Pearcleaner fordert den Benutzer bei jedem privilegierten Vorgang zur Eingabe seines Passworts auf, was sehr lästig sein kann. Diese Autorisierungen werden von Pearcleaner und dem Benutzer verwaltet.\n\nWas ist ein privilegierter Vorgang: Immer wenn Pearcleaner Dateien aus einem Ordner löschen muss (z. B. /var), für den der Benutzer keine Berechtigungen hat, oder Dateien an einem privilegierten Speicherort rückgängig machen/wiederherstellen muss."
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10318,6 +10372,12 @@
     "Pearcleaner will strip the %@ architecture from %@'s executable file to save space. Would you like to proceed?" : {
       "comment" : "Lipo alert message",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner entfernt die %1$@-Architektur aus der ausführbaren Datei von %2$@, um Speicherplatz zu sparen. Möchten Sie fortfahren?"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -10386,6 +10446,12 @@
     },
     "Permission required. Enable in System Settings > Login Items." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berechtigung notwendig. Einschalten in den Systemeinstellungen > Anmeldeobjekte"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10785,6 +10851,12 @@
     "Prune Translations" : {
       "comment" : "Prune alert title",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "um Übersetzungen kürzen"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10795,6 +10867,12 @@
     },
     "Prune unused language translations" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kürze um alle nicht benötigten Sprachen"
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11443,6 +11521,12 @@
     },
     "Registered but requires enabling in System Settings > Login Items." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registriert, muss jedoch in den Systemeinstellungen > Anmeldeobjekte aktiviert werden."
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13061,6 +13145,12 @@
     },
     "Service hasn’t been registered. You may register it now." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Dienst wurde noch nicht registriert. Sie können ihn jetzt registrieren."
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13083,6 +13173,12 @@
     },
     "Service is already enabled." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dienst ist bereits aktiviert."
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13105,6 +13201,12 @@
     },
     "Service is already registered and enabled." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dienst ist bereits registriert und aktiviert."
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13127,6 +13229,12 @@
     },
     "Service is not installed." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dienst ist nicht installiert."
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13149,6 +13257,12 @@
     },
     "Service registered but requires user approval in Settings > Login Items > %@.app." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dienst registriert, erfordert jedoch die Zustimmung des Benutzers unter „Einstellungen“ > „Anmeldeobjekte“ > %@.app."
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13998,6 +14112,12 @@
     "Space Savings: %d%%" : {
       "comment" : "Lipo result title",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Platzersparnis: %d%%"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -14015,6 +14135,12 @@
     "Space Savings: %d%%\nTotal Space Saved: %@" : {
       "comment" : "Lipo completion title",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Platzersparnis: %1$%%\nGesamtplatzersparnis: %2$@"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -14607,6 +14733,12 @@
     "The total space savings between all the lipo'd apps\nSize Before: %@\nSize After: %@" : {
       "comment" : "Lipo completion message",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die gesamte Platzersparnis aller gelöschten Apps\nGröße vorher: %1$@\nGröße nachher: %2$@"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
@@ -15148,6 +15280,12 @@
     "This will remove all unused language translation files" : {
       "comment" : "Prune alert message",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dadurch werden alle nicht verwendeten Sprachübersetzungsdateien entfernt."
+          }
+        },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
@@ -15526,6 +15664,12 @@
     },
     "Translation" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übersetzung"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -16015,7 +16159,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "universal"
           }
         },
@@ -16071,6 +16215,12 @@
     },
     "Unknown service status (%lld)." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unbekannter Dienst Zustand (%lld)."
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -16873,6 +17023,12 @@
     },
     "User denied permission. Enable in System Settings > Login Items." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benutzer hat die Berechtigung verweigert. Aktivieren Sie diese Option in den Systemeinstellungen > Anmeldeobjekte."
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",

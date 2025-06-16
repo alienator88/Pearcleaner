@@ -22,7 +22,7 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @AppStorage("settings.general.cli") private var isCLISymlinked = false
     @AppStorage("settings.general.namesearchstrict") private var nameSearchStrict = false
-    @AppStorage("settings.general.spotlight") private var spotlight = true
+    @AppStorage("settings.general.spotlight") private var spotlight = false
 
 
     var body: some View {
@@ -98,7 +98,7 @@ struct GeneralSettingsTab: View {
                                     .foregroundStyle(.primary)
                             }
 
-                            InfoButton(text: String(localized: "The search algorithm will cross-check the Spotlight metadata index for matches. This can be useful for fuzzy name searches and directories missed by the standard search. Note that strict name search above will limit the fuzzy search to the exact file name and will find less matches."))
+                            InfoButton(text: String(localized: "The search algorithm will cross-check the Spotlight metadata index for matches. This can be useful for fuzzy name searches and directories missed by the standard search. This will likely find a lot more unrelated files if the file names are very short or generic."))
 
                             Spacer()
                             Toggle(isOn: $spotlight, label: {
