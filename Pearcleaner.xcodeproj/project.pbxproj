@@ -536,6 +536,7 @@
 				es,
 				uk,
 				vi,
+				"pt-BR",
 			);
 			mainGroup = C77B8FF72AF18E2E009CC655;
 			packageReferences = (
