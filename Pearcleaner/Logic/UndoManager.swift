@@ -29,7 +29,11 @@ class FileManagerUndo {
 
         let hasProtectedFiles = urls.contains { $0.isProtected }
 
-        let mvCommands = urls.map { file -> String in
+        // First, build the list of files to be moved and check for conflicts
+        var mvCommands: [String] = []
+        var rmCommands: [String] = []
+        
+        for file in urls {
             var fileName = file.lastPathComponent
 
             if let count = seenFileNames[fileName] {
@@ -44,14 +48,21 @@ class FileManagerUndo {
             let destinationURL = URL(fileURLWithPath: (trashPath as NSString).appendingPathComponent(fileName))
             tempFilePairs.append((trashURL: destinationURL, originalURL: file))
 
-            let source = "\"\(file.path)\""
+            // Check if destination already exists in Trash and add remove command
             let destination = "\"\(destinationURL.path)\""
-            return "/bin/mv \(source) \(destination)"
-        }.joined(separator: " ; ")
+            rmCommands.append("/bin/rm -rf \(destination)")
+            
+            // Add move command
+            let source = "\"\(file.path)\""
+            mvCommands.append("/bin/mv \(source) \(destination)")
+        }
+
+        // Combine commands: first remove existing files, then move new files
+        let allCommands = (rmCommands + mvCommands).joined(separator: " ; ")
 
         let filePairs = tempFilePairs
 
-        if executeFileCommands(mvCommands, isCLI: isCLI, hasProtectedFiles: hasProtectedFiles) {
+        if executeFileCommands(allCommands, isCLI: isCLI, hasProtectedFiles: hasProtectedFiles) {
             undoManager.registerUndo(withTarget: self) { target in
                 let result = target.restoreFiles(filePairs: filePairs)
                 if !result {
