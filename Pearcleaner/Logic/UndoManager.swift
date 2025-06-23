@@ -30,18 +30,21 @@ class FileManagerUndo {
         let hasProtectedFiles = urls.contains { $0.isProtected }
 
         let mvCommands = urls.map { file -> String in
-            var fileName = file.lastPathComponent
+            var finalName = file.lastPathComponent
+            var count = seenFileNames[finalName] ?? 0
 
-            if let count = seenFileNames[fileName] {
-                let newCount = count + 1
-                seenFileNames[fileName] = newCount
-                let newName = "\(file.deletingPathExtension().lastPathComponent)\(newCount).\(file.pathExtension)"
-                fileName = newName
-            } else {
-                seenFileNames[fileName] = 1
-            }
+            repeat {
+                if count > 0 {
+                    let base = file.deletingPathExtension().lastPathComponent
+                    let ext = file.pathExtension
+                    finalName = "\(base)\(count).\(ext)"
+                }
+                count += 1
+            } while FileManager.default.fileExists(atPath: (trashPath as NSString).appendingPathComponent(finalName))
 
-            let destinationURL = URL(fileURLWithPath: (trashPath as NSString).appendingPathComponent(fileName))
+            seenFileNames[finalName] = count
+
+            let destinationURL = URL(fileURLWithPath: (trashPath as NSString).appendingPathComponent(finalName))
             tempFilePairs.append((trashURL: destinationURL, originalURL: file))
 
             let source = "\"\(file.path)\""
@@ -62,7 +65,7 @@ class FileManagerUndo {
 
             finalStatus = true
         } else {
-//            printOS("Trash Error: \(isCLI ? "Could not run commands directly with sudo." : "Could not perform privileged commands.")")
+            //            printOS("Trash Error: \(isCLI ? "Could not run commands directly with sudo." : "Could not perform privileged commands.")")
             updateOnMain {
                 AppState.shared.trashError = true
             }
@@ -92,7 +95,7 @@ class FileManagerUndo {
         if executeFileCommands(commands, isCLI: isCLI, hasProtectedFiles: hasProtectedFiles, isRestore: true) {
             finalStatus = true
         } else {
-//            printOS("Trash Error: \(isCLI ? "Failed to run restore CLI commands" : "Failed to run restore privileged commands")")
+            //            printOS("Trash Error: \(isCLI ? "Failed to run restore CLI commands" : "Failed to run restore privileged commands")")
             updateOnMain {
                 AppState.shared.trashError = true
             }
@@ -165,10 +168,10 @@ class FileManagerUndo {
         let pipe = Pipe()
         task.standardOutput = pipe
         task.standardError = pipe
-        
+
         task.launch()
         task.waitUntilExit()
-        
+
         let data = pipe.fileHandleForReading.readDataToEndOfFile()
         let output = String(data: data, encoding: .utf8) ?? ""
 

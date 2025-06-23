@@ -510,7 +510,7 @@ struct FilesView: View {
                         }
 
                         // Process the next app if in external mode
-                        processNextExternalApp(appWasRemoved: appWasRemoved)
+                        processNextExternalApp(appWasRemoved: appWasRemoved, isInTrash: isInTrash)
                     }
 
                     // Send Sentinel FileWatcher start notification
@@ -521,15 +521,15 @@ struct FilesView: View {
     }
 
     // Helper function to process the next external app
-    private func processNextExternalApp(appWasRemoved: Bool) {
+    private func processNextExternalApp(appWasRemoved: Bool, isInTrash: Bool) {
 
         // Remove the processed path to avoid re-processing it
         if !appState.externalPaths.isEmpty {
             appState.externalPaths.removeFirst()
         }
 
-        // Check if the current app requires brew cleanup
-        if brew && appState.appInfo.cask != nil {
+        // Check if the current app requires brew cleanup (Is brew cleanup enabled, was main app bundle removed or was main bundle in Trash)
+        if brew && (appWasRemoved || isInTrash) {
             // Set terminal view for the current app
             updateOnMain {
                 appState.currentView = .terminal

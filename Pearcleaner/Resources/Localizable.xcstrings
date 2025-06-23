@@ -14727,7 +14727,7 @@
         }
       }
     },
-    "The search algorithm will cross-check the Spotlight metadata index for matches. This can be useful for fuzzy name searches and directories missed by the standard search. Note that strict name search above will limit the fuzzy search to the exact file name and will find less matches." : {
+    "The search algorithm will cross-check the Spotlight metadata index for matches. This can be useful for fuzzy name searches and directories missed by the standard search. This will likely find a lot more unrelated files if the file names are very short or generic." : {
 
     },
     "The total space savings between all the lipo'd apps\nSize Before: %@\nSize After: %@" : {
