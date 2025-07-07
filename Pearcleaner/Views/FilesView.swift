@@ -529,7 +529,7 @@ struct FilesView: View {
         }
 
         // Check if the current app requires brew cleanup (Is brew cleanup enabled, was main app bundle removed or was main bundle in Trash)
-        if brew && (appWasRemoved || isInTrash) {
+        if brew && (appWasRemoved || isInTrash) && appState.appInfo.cask != nil {
             // Set terminal view for the current app
             updateOnMain {
                 appState.currentView = .terminal
