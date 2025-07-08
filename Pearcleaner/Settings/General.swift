@@ -93,7 +93,7 @@ struct GeneralSettingsTab: View {
                                 .padding(.trailing)
                                 .foregroundStyle(.primary)
                             VStack(alignment: .leading, spacing: 5) {
-                                Text("Search spotlight index")
+                                Text("Search Spotlight index")
                                     .font(.callout)
                                     .foregroundStyle(.primary)
                             }
