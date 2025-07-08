@@ -170,11 +170,24 @@
             "state" : "new",
             "value" : "%1$@ (%2$lld)"
           }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ (%2$lld)"
+          }
         }
       }
     },
     "%@ (0)" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ (0)"
+          }
+        }
+      }
     },
     "%@ is already on the latest release available" : {
       "extractionState" : "manual",
@@ -3330,7 +3343,14 @@
       }
     },
     "Contents" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "內容"
+          }
+        }
+      }
     },
     "Copy File Paths" : {
       "extractionState" : "manual",
@@ -3604,7 +3624,14 @@
       }
     },
     "Delete All Contents" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刪除全部內容"
+          }
+        }
+      }
     },
     "Delete all files within this folder" : {
       "localizations" : {
@@ -3671,10 +3698,24 @@
       }
     },
     "Delete All Folders" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刪除全部資料夾"
+          }
+        }
+      }
     },
     "Delete the folder" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刪除資料夾"
+          }
+        }
+      }
     },
     "Detect when apps are moved to Trash" : {
       "extractionState" : "manual",
@@ -5167,7 +5208,14 @@
       }
     },
     "File System" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "檔案系統"
+          }
+        }
+      }
     },
     "Finder Extension" : {
       "extractionState" : "manual",
@@ -5312,7 +5360,14 @@
       }
     },
     "Folder" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "資料夾"
+          }
+        }
+      }
     },
     "Folders" : {
       "extractionState" : "manual",
@@ -12698,8 +12753,15 @@
         }
       }
     },
-    "Search spotlight index" : {
-
+    "Search Spotlight index" : {
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "搜尋 Spotlight 索引"
+          }
+        }
+      }
     },
     "Search these folders for applications" : {
       "extractionState" : "manual",
@@ -12843,7 +12905,14 @@
       }
     },
     "Searching:" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在搜尋："
+          }
+        }
+      }
     },
     "Select All" : {
       "localizations" : {
@@ -14233,7 +14302,14 @@
       }
     },
     "Spotlight Index" : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotlight 索引"
+          }
+        }
+      }
     },
     "Start Lipo" : {
       "localizations" : {
@@ -14728,7 +14804,14 @@
       }
     },
     "The search algorithm will cross-check the Spotlight metadata index for matches. This can be useful for fuzzy name searches and directories missed by the standard search. This will likely find a lot more unrelated files if the file names are very short or generic." : {
-
+      "localizations" : {
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "搜尋演算法會交叉檢查 Spotlight 元數據索引是否匹配。此功能對於模糊名稱搜尋與標準搜尋遺漏的目錄會非常實用。如檔案名稱過短或一般，可能會找到更多不相關的檔案。"
+          }
+        }
+      }
     },
     "The total space savings between all the lipo'd apps\nSize Before: %@\nSize After: %@" : {
       "comment" : "Lipo completion message",
