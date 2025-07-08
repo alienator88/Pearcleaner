@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import ObjectiveC
 
 @objc(HelperToolProtocol)
 public protocol HelperToolProtocol {
@@ -16,13 +17,19 @@ public protocol HelperToolProtocol {
 // XPC Communication setup
 class HelperToolDelegate: NSObject, NSXPCListenerDelegate, HelperToolProtocol {
     private var activeConnections = Set<NSXPCConnection>()
-
+    
     override init() {
         super.init()
     }
+    
 
+    
     // Accept new XPC connections by setting up the exported interface and object.
     func listener(_ listener: NSXPCListener, shouldAcceptNewConnection newConnection: NSXPCConnection) -> Bool {
+        guard isValidClient(connection: newConnection) else {
+            print("❌ Rejected connection from unauthorized client")
+            return false
+        }
         newConnection.exportedInterface = NSXPCInterface(with: HelperToolProtocol.self)
         newConnection.exportedObject = self
         newConnection.invalidationHandler = { [weak self] in
@@ -35,7 +42,7 @@ class HelperToolDelegate: NSObject, NSXPCListenerDelegate, HelperToolProtocol {
         newConnection.resume()
         return true
     }
-
+    
     // Execute the shell command and reply with output.
     func runCommand(command: String, withReply reply: @escaping (Bool, String) -> Void) {
         let process = Process()
@@ -56,11 +63,21 @@ class HelperToolDelegate: NSObject, NSXPCListenerDelegate, HelperToolProtocol {
         let success = (process.terminationStatus == 0) // Check if process exited successfully
         reply(success, output.isEmpty ? "No output" : output)
     }
-
+    
     // Execute app lipo using privileges for apps owned by root
     func runThinning(atPath: String, withReply reply: @escaping (Bool, String) -> Void) {
         let success = thinBinaryUsingMachO(executablePath: atPath)
         reply(success, success ? "Success" : "Failed")
+    }
+
+    // Check that the codesigning matches between the main app and the helper app
+    private func isValidClient(connection: NSXPCConnection) -> Bool {
+        do {
+            return try CodesignCheck.codeSigningMatches(pid: connection.processIdentifier)
+        } catch {
+            print("Helper code signing check failed with error: \(error)")
+            return false
+        }
     }
 }
 
