@@ -32,7 +32,7 @@ struct PearcleanerApp: App {
     //MARK: States
     @State private var search = ""
     @State private var showPopover: Bool = false
-    let conditionManager = ConditionManager.shared
+//    let conditionManager = ConditionManager.shared
 
     init() {
         handleLaunchMode()

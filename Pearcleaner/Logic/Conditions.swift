@@ -191,54 +191,54 @@ let skipReverse = ["apple", "temporary", "btserver", "proapps", "scripteditor", 
 
 
 // Store and load conditions locally via SwiftData
-class ConditionManager {
-    static let shared = ConditionManager()
-
-    private init() {
-        loadConditions()
-    }
-
-    // Function to save a condition
-    func saveCondition(_ condition: Condition) {
-        if condition.include.isEmpty && condition.exclude.isEmpty && (condition.includeForce?.isEmpty ?? true) {
-            deleteCondition(bundle_id: condition.bundle_id)
-            return
-        }
-        let defaults = UserDefaults.standard
-        let encoder = JSONEncoder()
-        let key = "Condition-\(condition.bundle_id)"
-
-        if let encoded = try? encoder.encode(condition) {
-            defaults.set(encoded, forKey: key)
-            conditions.append(condition)
-        }
-    }
-
-    // Function to delete a condition from defaults and conditions variable
-    func deleteCondition(bundle_id: String) {
-        let defaults = UserDefaults.standard
-        let key = "Condition-\(bundle_id.pearFormat())"
-
-        // Remove from UserDefaults
-        defaults.removeObject(forKey: key)
-
-        // Remove from conditions variable
-        conditions.removeAll { $0.bundle_id == bundle_id.pearFormat() }
-    }
-
-    // Function to load a condition and append to the global variable
-    func loadConditions() {
-        let defaults = UserDefaults.standard
-        let decoder = JSONDecoder()
-
-        for (key, value) in defaults.dictionaryRepresentation() {
-            if key.starts(with: "Condition-"), let savedCondition = value as? Data {
-                if let loadedCondition = try? decoder.decode(Condition.self, from: savedCondition) {
-                    conditions.append(loadedCondition)
-                }
-            }
-        }
-    }
-
-    
-}
+//class ConditionManager {
+//    static let shared = ConditionManager()
+//
+//    private init() {
+//        loadConditions()
+//    }
+//
+//    // Function to save a condition
+//    func saveCondition(_ condition: Condition) {
+//        if condition.include.isEmpty && condition.exclude.isEmpty && (condition.includeForce?.isEmpty ?? true) {
+//            deleteCondition(bundle_id: condition.bundle_id)
+//            return
+//        }
+//        let defaults = UserDefaults.standard
+//        let encoder = JSONEncoder()
+//        let key = "Condition-\(condition.bundle_id)"
+//
+//        if let encoded = try? encoder.encode(condition) {
+//            defaults.set(encoded, forKey: key)
+//            conditions.append(condition)
+//        }
+//    }
+//
+//    // Function to delete a condition from defaults and conditions variable
+//    func deleteCondition(bundle_id: String) {
+//        let defaults = UserDefaults.standard
+//        let key = "Condition-\(bundle_id.pearFormat())"
+//
+//        // Remove from UserDefaults
+//        defaults.removeObject(forKey: key)
+//
+//        // Remove from conditions variable
+//        conditions.removeAll { $0.bundle_id == bundle_id.pearFormat() }
+//    }
+//
+//    // Function to load a condition and append to the global variable
+//    func loadConditions() {
+//        let defaults = UserDefaults.standard
+//        let decoder = JSONDecoder()
+//
+//        for (key, value) in defaults.dictionaryRepresentation() {
+//            if key.starts(with: "Condition-"), let savedCondition = value as? Data {
+//                if let loadedCondition = try? decoder.decode(Condition.self, from: savedCondition) {
+//                    conditions.append(loadedCondition)
+//                }
+//            }
+//        }
+//    }
+//
+//    
+//}

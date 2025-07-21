@@ -12,6 +12,7 @@ struct AboutSettingsTab: View {
     @EnvironmentObject var appState: AppState
     @State private var disclose = false
     @State private var discloseCredits = false
+    @State private var isResetting = false
 
     var body: some View {
 
@@ -111,8 +112,60 @@ struct AboutSettingsTab: View {
                     }
 
                 })
+
+                SettingsControlButtonGroup(isResetting: $isResetting, resetAction: {
+                    resetUserDefaults()
+                }, exportAction: {
+                    exportUserDefaults()
+                }, importAction: {
+                    importUserDefaults()
+                })
             }
 
+        }
+    }
+
+    private func resetUserDefaults() {
+        isResetting = true
+        DispatchQueue.global(qos: .background).async {
+            let keys = UserDefaults.standard.dictionaryRepresentation().keys
+                .filter { $0.hasPrefix("settings.") }
+            for key in keys {
+                UserDefaults.standard.removeObject(forKey: key)
+            }
+            DispatchQueue.main.async {
+                isResetting = false
+            }
+        }
+    }
+
+    private func exportUserDefaults() {
+        let defaults = UserDefaults.standard.dictionaryRepresentation()
+        let settingsOnly = defaults.filter { $0.key.hasPrefix("settings.") }
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: settingsOnly, options: [.prettyPrinted]) else { return }
+
+        let savePanel = NSSavePanel()
+        savePanel.directoryURL = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first
+        savePanel.allowedContentTypes = [.json]
+        savePanel.nameFieldStringValue = "PearcleanerSettings.json"
+        savePanel.begin { response in
+            guard response == .OK, let url = savePanel.url else { return }
+            try? jsonData.write(to: url)
+        }
+    }
+
+    private func importUserDefaults() {
+        let openPanel = NSOpenPanel()
+        openPanel.directoryURL = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first
+        openPanel.allowedContentTypes = [.json]
+        openPanel.begin { response in
+            guard response == .OK, let url = openPanel.url,
+                  let data = try? Data(contentsOf: url),
+                  let dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
+
+            for (key, value) in dict {
+                UserDefaults.standard.setValue(value, forKey: key)
+            }
         }
     }
 }

@@ -19,7 +19,6 @@ struct SettingsView: View {
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.general.selectedTab") private var selectedTab: CurrentTabView = .general
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
-    @State private var isResetting = false
     @State private var showPerms = false
 
     var body: some View {
@@ -40,12 +39,12 @@ struct SettingsView: View {
     @ViewBuilder
     private var sidebarView: some View {
         VStack(alignment: .center, spacing: 4) {
-//            PearDropViewSmall()
-//                .padding(.leading, 4)
+            //            PearDropViewSmall()
+            //                .padding(.leading, 4)
 
-//            Divider()
-//                .padding(.bottom, 8)
-//                .padding(.horizontal, 9)
+            //            Divider()
+            //                .padding(.bottom, 8)
+            //                .padding(.horizontal, 9)
 
             Color.clear
                 .frame(height: 0)
@@ -94,15 +93,6 @@ struct SettingsView: View {
             }
             .padding(.bottom, 4)
 
-
-            Button {
-                resetUserDefaults()
-            } label: { EmptyView() }
-            .buttonStyle(ResetSettingsButtonStyle(isResetting: $isResetting, label: String(localized: "Reset"), help: String(localized: "Reset all settings to default")))
-            .disabled(isResetting)
-
-
- 
         }
         .padding(.bottom)
         .padding(.horizontal)
@@ -113,7 +103,7 @@ struct SettingsView: View {
                 .frame(width: 180)
                 .ignoresSafeArea(.all)
         }
-//        .background(backgroundView(themeManager: themeManager, darker: true, glass: glass))
+        //        .background(backgroundView(themeManager: themeManager, darker: true, glass: glass))
     }
 
     /// Detail view content based on the selected tab
@@ -147,16 +137,6 @@ struct SettingsView: View {
         .offset(y: -22)
         .background(backgroundView(themeManager: themeManager, glass: false))
 
-    }
-
-    private func resetUserDefaults() {
-        isResetting = true
-        DispatchQueue.global(qos: .background).async {
-            UserDefaults.standard.dictionaryRepresentation().keys.forEach(UserDefaults.standard.removeObject(forKey:))
-            DispatchQueue.main.async {
-                isResetting = false
-            }
-        }
     }
 
 }

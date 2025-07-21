@@ -23,7 +23,7 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.cli") private var isCLISymlinked = false
     @AppStorage("settings.general.namesearchstrict") private var nameSearchStrict = false
     @AppStorage("settings.general.spotlight") private var spotlight = false
-
+    @AppStorage("settings.general.permanentDelete") private var permanentDelete: Bool = false
 
     var body: some View {
         VStack(spacing: 20) {
@@ -102,6 +102,29 @@ struct GeneralSettingsTab: View {
 
                             Spacer()
                             Toggle(isOn: $spotlight, label: {
+                            })
+                            .toggleStyle(SettingsToggle())
+                        }
+                        .padding(5)
+
+
+                        HStack(spacing: 0) {
+                            Image(systemName: permanentDelete ? "trash.slash" : "trash")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 20, height: 20)
+                                .padding(.trailing)
+                                .foregroundStyle(.primary)
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text("Permanently delete files")
+                                    .font(.callout)
+                                    .foregroundStyle(.primary)
+                            }
+
+                            InfoButton(text: String(localized: "Instead of moving files to Trash folder, this will permanently remove them. With this setting enabled, the Undo function is also not active as there's no files in Trash folder to undo."))
+
+                            Spacer()
+                            Toggle(isOn: $permanentDelete, label: {
                             })
                             .toggleStyle(SettingsToggle())
                         }

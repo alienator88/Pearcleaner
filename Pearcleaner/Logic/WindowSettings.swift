@@ -12,10 +12,10 @@ class WindowSettings: ObservableObject {
     static let shared = WindowSettings()
     let menubarEnabled = UserDefaults.standard.bool(forKey: "settings.menubar.enabled")
 
-    private let windowWidthKey = "windowWidthKey"
-    private let windowHeightKey = "windowHeightKey"
-    private let windowXKey = "windowXKey"
-    private let windowYKey = "windowYKey"
+    private let windowWidthKey = "settings.windowWidthKey"
+    private let windowHeightKey = "settings.windowHeightKey"
+    private let windowXKey = "settings.windowXKey"
+    private let windowYKey = "settings.windowYKey"
     var windowRef: NSWindow?
 
     init() {

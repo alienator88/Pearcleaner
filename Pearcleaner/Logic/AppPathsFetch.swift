@@ -277,13 +277,14 @@ class AppPathFinder {
             }
             let sortedCollection = tempCollection.map { $0.standardizedFileURL }.sorted(by: { $0.path < $1.path })
             var filteredCollection: [URL] = []
-            var previousUrl: URL?
             for url in sortedCollection {
-                if let previousUrl = previousUrl, url.path.hasPrefix(previousUrl.path + "/") {
-                    continue
+                // Remove any existing child paths of the current URL
+                filteredCollection.removeAll { $0.path.hasPrefix(url.path + "/") }
+
+                // Only add if it's not already a subpath of an existing item
+                if !filteredCollection.contains(where: { url.path.hasPrefix($0.path + "/") }) {
+                    filteredCollection.append(url)
                 }
-                filteredCollection.append(url)
-                previousUrl = url
             }
             self.handlePostProcessing(sortedCollection: filteredCollection)
         }

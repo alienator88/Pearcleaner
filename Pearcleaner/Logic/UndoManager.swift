@@ -6,9 +6,12 @@
 //
 
 import Foundation
+import SwiftUI
 import AlinFoundation
 
 class FileManagerUndo {
+    @AppStorage("settings.general.permanentDelete") private var permanentDelete: Bool = false
+
     // MARK: - Singleton Instance
     static let shared = FileManagerUndo()
 
@@ -30,6 +33,10 @@ class FileManagerUndo {
         let hasProtectedFiles = urls.contains { $0.isProtected }
 
         let mvCommands = urls.map { file -> String in
+            if permanentDelete {
+                return "/bin/rm -rf \"\(file.path)\""
+            }
+            guard !permanentDelete else { return "" }
             var finalName = file.lastPathComponent
             var count = seenFileNames[finalName] ?? 0
 
@@ -55,13 +62,15 @@ class FileManagerUndo {
         let filePairs = tempFilePairs
 
         if executeFileCommands(mvCommands, isCLI: isCLI, hasProtectedFiles: hasProtectedFiles) {
-            undoManager.registerUndo(withTarget: self) { target in
-                let result = target.restoreFiles(filePairs: filePairs)
-                if !result {
-                    printOS("Trash Error: Could not restore files.")
+            if !permanentDelete {
+                undoManager.registerUndo(withTarget: self) { target in
+                    let result = target.restoreFiles(filePairs: filePairs)
+                    if !result {
+                        printOS("Trash Error: Could not restore files.")
+                    }
                 }
+                undoManager.setActionName("Delete File")
             }
-            undoManager.setActionName("Delete File")
 
             finalStatus = true
         } else {
@@ -79,6 +88,7 @@ class FileManagerUndo {
     }
 
     func restoreFiles(filePairs: [(trashURL: URL, originalURL: URL)], isCLI: Bool = false) -> Bool {
+        if permanentDelete { return false }
         let dispatchSemaphore = DispatchSemaphore(value: 0)
         var finalStatus = true
 

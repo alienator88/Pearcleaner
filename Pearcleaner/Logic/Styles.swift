@@ -253,6 +253,74 @@ struct ResetSettingsButtonStyle: ButtonStyle {
     }
 }
 
+struct SettingsControlButtonGroup: View {
+    @Binding var isResetting: Bool
+    let resetAction: () -> Void
+    let exportAction: () -> Void
+    let importAction: () -> Void
+
+    @State private var hoveredIndex: Int? = nil
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+
+    var body: some View {
+        HStack(spacing: 0) {
+            Group {
+                if isResetting {
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle())
+                        .controlSize(.small)
+                        .frame(width: 20)
+                } else {
+                    Image(systemName: "gear")
+                        .frame(width: 20)
+                }
+            }
+            .padding(.horizontal, 4)
+
+            Divider().frame(height: 16).padding(.horizontal, 4)
+
+            ForEach(0..<3) { index in
+                let (label, action): (String, () -> Void) = switch index {
+                case 0: ("Reset", resetAction)
+                case 1: ("Export", exportAction)
+                default: ("Import", importAction)
+                }
+
+                Button(action: action) {
+                    Text(label)
+                        .textCase(.uppercase)
+                        .foregroundColor(.primary)
+                        .fontWeight(.bold)
+                        .padding(.horizontal, 6)
+                }
+                .buttonStyle(.plain)
+                .disabled(isResetting)
+                .padding(4)
+                .background(hoveredIndex == index ? Color.primary.opacity(0.4) : Color.clear)
+                .cornerRadius(4)
+                .onHover { hovering in
+                    withAnimation(animationEnabled ? .easeInOut(duration: 0.3) : nil) {
+                        hoveredIndex = hovering ? index : nil
+                    }
+                }
+
+                if index < 2 {
+                    Divider().frame(height: 16).padding(.horizontal, 4)
+                }
+            }
+        }
+        .padding(8)
+        // .background(hoveredIndex != nil ? Color.primary.opacity(0.4) : Color.clear) // removed as highlight is now per button
+        .cornerRadius(6)
+        .overlay(
+            RoundedRectangle(cornerRadius: 6)
+                .strokeBorder(.primary.opacity(0.5), lineWidth: 1)
+        )
+    }
+}
+
+
+
 
 struct SimpleCheckboxToggleStyle: ToggleStyle {
     @EnvironmentObject private var themeManager: ThemeManager
@@ -867,7 +935,7 @@ struct ProgressStepView: View {
                 Text("Searching:")
                     .font(.title2)
                     .foregroundStyle(.secondary)
-                
+
                 Text((currentStep == 0 || !spotlight) ? "File System" : "Spotlight Index")
                     .font(.title2)
                     .foregroundStyle(.secondary)
