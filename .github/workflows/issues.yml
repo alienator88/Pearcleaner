@@ -5,6 +5,7 @@ on:
       - reopened
       - opened
       - edited
+  workflow_dispatch:
 
 jobs:
   closeEmptyIssuesAndTemplates:
