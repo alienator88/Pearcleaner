@@ -74,5 +74,12 @@ class MenuBarExtraManager {
         }
     }
 
+    // Method to programmatically show the popover (for deep link handling)
+    func showPopover() {
+        if let button = statusItem?.button, !popover.isShown {
+            popover.show(relativeTo: button.bounds, of: button, preferredEdge: NSRectEdge.minY)
+        }
+    }
 
 }
+

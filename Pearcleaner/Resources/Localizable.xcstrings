@@ -367,6 +367,16 @@
         }
       }
     },
+    "%lld of %lld items" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld of %2$lld items"
+          }
+        }
+      }
+    },
     "%lld paths" : {
       "localizations" : {
         "tr" : {
@@ -6254,6 +6264,7 @@
       }
     },
     "Hide Details" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -6932,6 +6943,7 @@
       }
     },
     "Installed Date:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7663,6 +7675,7 @@
       }
     },
     "Last Used Date:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -8978,6 +8991,7 @@
       }
     },
     "Modified Date:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -13485,6 +13499,9 @@
         }
       }
     },
+    "See app details" : {
+
+    },
     "Select All" : {
       "localizations" : {
         "de" : {
@@ -14209,6 +14226,7 @@
       }
     },
     "Show Details" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -15712,6 +15730,7 @@
       }
     },
     "This app is installed via Homebrew" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

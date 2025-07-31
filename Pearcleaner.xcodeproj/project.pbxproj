@@ -35,7 +35,6 @@
 		C77B901A2AF1938F009CC655 /* Logic.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90192AF1938F009CC655 /* Logic.swift */; };
 		C77B901C2AF193A3009CC655 /* Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B901B2AF193A3009CC655 /* Styles.swift */; };
 		C77B901E2AF1A9DB009CC655 /* SettingsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B901D2AF1A9DB009CC655 /* SettingsWindow.swift */; };
-		C77B90232AF2D616009CC655 /* FilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90222AF2D616009CC655 /* FilesView.swift */; };
 		C78121662BC892A000BE06BD /* FinderOpen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78121652BC892A000BE06BD /* FinderOpen.swift */; };
 		C78D7B212D556F1A003DD49F /* AppPathsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78D7B202D556F16003DD49F /* AppPathsFetch.swift */; };
 		C7A269272D5D138500FA96EC /* SwiftTerm in Frameworks */ = {isa = PBXBuildFile; productRef = C7A269262D5D138500FA96EC /* SwiftTerm */; };
@@ -167,7 +166,6 @@
 		C77B90192AF1938F009CC655 /* Logic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logic.swift; sourceTree = "<group>"; };
 		C77B901B2AF193A3009CC655 /* Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Styles.swift; sourceTree = "<group>"; };
 		C77B901D2AF1A9DB009CC655 /* SettingsWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindow.swift; sourceTree = "<group>"; };
-		C77B90222AF2D616009CC655 /* FilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesView.swift; sourceTree = "<group>"; };
 		C77B90242AF2D796009CC655 /* Pearcleaner.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = Pearcleaner.entitlements; sourceTree = "<group>"; };
 		C78121632BC892A000BE06BD /* FinderOpen.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FinderOpen.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		C78121652BC892A000BE06BD /* FinderOpen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinderOpen.swift; sourceTree = "<group>"; };
@@ -217,6 +215,7 @@
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		C73545F12D849A1B00A3DC0C /* PearcleanerHelper */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (C73545FC2D849B7E00A3DC0C /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = PearcleanerHelper; sourceTree = "<group>"; };
+		C76073F32E3C1C2C003957A7 /* FilesView */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = FilesView; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -365,9 +364,9 @@
 		C77B901F2AF1B390009CC655 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				C76073F32E3C1C2C003957A7 /* FilesView */,
 				C7AC48E92D8CAEF200A44C8E /* LipoView.swift */,
 				C7A269282D5D139200FA96EC /* TerminalView.swift */,
-				C77B90222AF2D616009CC655 /* FilesView.swift */,
 				C770D7DA2CE7C9A100B3492A /* DevelopmentView.swift */,
 				C71848432B8D2D600046CB13 /* ZombieView.swift */,
 				C76D08542AF89CDE00D07867 /* RegularMode.swift */,
@@ -464,6 +463,9 @@
 			);
 			dependencies = (
 				C781216A2BC892A000BE06BD /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				C76073F32E3C1C2C003957A7 /* FilesView */,
 			);
 			name = Pearcleaner;
 			packageProductDependencies = (
@@ -642,7 +644,6 @@
 				C76D08552AF89CDE00D07867 /* RegularMode.swift in Sources */,
 				C7FEBA112BDC422200AE195F /* AppSearchView.swift in Sources */,
 				C7CF47242B3B3F1700979C5F /* WindowSettings.swift in Sources */,
-				C77B90232AF2D616009CC655 /* FilesView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

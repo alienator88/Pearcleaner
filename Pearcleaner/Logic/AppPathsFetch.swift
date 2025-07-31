@@ -35,19 +35,8 @@ class AppPathFinder {
         )
     }()
 
-    // Cache computed identifiers to avoid redundant work
-    private lazy var cachedIdentifiers: (bundleIdentifierL: String, bundle: String, nameL: String, nameLFiltered: String, nameP: String, useBundleIdentifier: Bool) = {
-        let bundleIdentifierL = self.appInfo.bundleIdentifier.pearFormat()
-        let bundleComponents = self.appInfo.bundleIdentifier
-            .components(separatedBy: ".")
-            .compactMap { $0 != "-" ? $0.lowercased() : nil }
-        let bundle = bundleComponents.suffix(2).joined()
-        let nameL = self.appInfo.appName.pearFormat()
-        let nameLFiltered = nameL.filter { $0.isLetter }
-        let nameP = self.appInfo.path.lastPathComponent.replacingOccurrences(of: ".app", with: "")
-        let useBundleIdentifier = self.isValidBundleIdentifier(self.appInfo.bundleIdentifier)
-        return (bundleIdentifierL, bundle, nameL, nameLFiltered, nameP, useBundleIdentifier)
-    }()
+    // Change from lazy var to regular property initialized in init
+    private let cachedIdentifiers: (bundleIdentifierL: String, bundle: String, nameL: String, nameLFiltered: String, nameP: String, useBundleIdentifier: Bool)
 
     // Initializer for both CLI and GUI
     init(appInfo: AppInfo, locations: Locations, appState: AppState? = nil, undo: Bool = false, completion: (() -> Void)? = nil) {
@@ -56,6 +45,18 @@ class AppPathFinder {
         self.appState = appState
         self.undo = undo
         self.completion = completion
+        
+        // Initialize cachedIdentifiers eagerly and thread-safely
+        let bundleIdentifierL = appInfo.bundleIdentifier.pearFormat()
+        let bundleComponents = appInfo.bundleIdentifier
+            .components(separatedBy: ".")
+            .compactMap { $0 != "-" ? $0.lowercased() : nil }
+        let bundle = bundleComponents.suffix(2).joined()
+        let nameL = appInfo.appName.pearFormat()
+        let nameLFiltered = nameL.filter { $0.isLetter }
+        let nameP = appInfo.path.lastPathComponent.replacingOccurrences(of: ".app", with: "")
+        let useBundleIdentifier = AppPathFinder.isValidBundleIdentifier(appInfo.bundleIdentifier)
+        self.cachedIdentifiers = (bundleIdentifierL, bundle, nameL, nameLFiltered, nameP, useBundleIdentifier)
     }
 
     // Process the initial URL
@@ -195,8 +196,8 @@ class AppPathFinder {
         return storedFiles
     }
 
-    // Validate the bundle identifier
-    private func isValidBundleIdentifier(_ bundleIdentifier: String) -> Bool {
+    // Helper method to check bundle identifier validity - now static
+    private static func isValidBundleIdentifier(_ bundleIdentifier: String) -> Bool {
         let components = bundleIdentifier.components(separatedBy: ".")
         if components.count == 1 {
             return bundleIdentifier.count >= 5
@@ -429,11 +430,11 @@ private func spotlightSizeForURL(_ url: URL) -> (real: Int64, logical: Int64) {
     let logical = metadataItem?.value(forAttribute: "kMDItemLogicalSize") as? Int64
 
     if let real = real, let logical = logical {
-        print("Found Spotlight size")
+//        print("Found Spotlight size")
         return (real, logical)
     }
 
     let fallback = totalSizeOnDisk(for: url)
-    print("Fallback to manual calculation")
+//    print("Fallback to manual calculation")
     return (real ?? fallback.real, logical ?? fallback.logical)
 }

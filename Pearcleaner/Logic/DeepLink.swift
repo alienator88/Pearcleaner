@@ -62,6 +62,14 @@ class DeeplinkManager {
             appState.externalMode = true
         }
 
+        // If in menubar mode, show the menubar popover to display deep link content
+//        let menubarEnabled = UserDefaults.standard.bool(forKey: "settings.menubar.enabled")
+//        if menubarEnabled {
+//            DispatchQueue.main.async {
+//                MenuBarExtraManager.shared.showPopover()
+//            }
+//        }
+
         guard let scheme = url.scheme, scheme == "pear" else {
             guard !url.path.isEmpty else {
                 printOS("DLM: URL path is empty.")

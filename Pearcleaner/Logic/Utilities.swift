@@ -532,7 +532,7 @@ func isNested(path: URL) -> Bool {
 // Date formatter for metadata
 func formattedMDDate(from date: Date) -> String {
     let formatter = DateFormatter()
-    formatter.dateFormat = "yyyy-MM-dd HH:mm zzz"
+    formatter.dateStyle = .long
     formatter.timeZone = .current // Use the current timezone
     return formatter.string(from: date)
 }

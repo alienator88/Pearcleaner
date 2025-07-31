@@ -309,6 +309,8 @@ struct FolderSettingsTab: View {
 
 
 class FolderSettingsManager: ObservableObject {
+    static let shared = FolderSettingsManager()
+    
     @Published var folderPaths: [String] = []
     @Published var fileFolderPathsZ: [String] = []
     private let appsKey = "settings.folders.apps"

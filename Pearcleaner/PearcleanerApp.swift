@@ -20,7 +20,7 @@ struct PearcleanerApp: App {
     @ObservedObject private var helperToolManager = HelperToolManager.shared
     //MARK: StateObjects
     @StateObject var locations = Locations()
-    @StateObject var fsm = FolderSettingsManager()
+    @StateObject var fsm = FolderSettingsManager.shared
     @StateObject private var updater = Updater(owner: "alienator88", repo: "Pearcleaner")
     //MARK: AppStorage
     @AppStorage("settings.permissions.hasLaunched") private var hasLaunched: Bool = false
@@ -189,6 +189,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+
         let menubarEnabled = UserDefaults.standard.bool(forKey: "settings.menubar.enabled")
 
         if !menubarEnabled {

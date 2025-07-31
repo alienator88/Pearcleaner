@@ -41,13 +41,12 @@ struct RegularMode: View {
                         .frame(width: sidebarWidth)
                         .transition(.opacity)
 
-                    SlideableDivider(dimension: $sidebarWidth)
-                        .zIndex(3)
+//                    SlideableDivider(dimension: $sidebarWidth)
+//                        .zIndex(3)
 
 
                     // Details View
                     HStack(spacing: 0) {
-                        Spacer()
                         Group {
                             if appState.currentView == .empty || appState.currentView == .apps {
                                 AppDetailsEmptyView()
@@ -63,9 +62,7 @@ struct RegularMode: View {
                             }
                         }
                         .transition(.opacity)
-                        if appState.currentView != .terminal {
-                            Spacer()
-                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
                     .zIndex(2)
                 }
