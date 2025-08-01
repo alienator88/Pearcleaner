@@ -29,15 +29,11 @@ struct AppSearchView: View {
     var body: some View {
         
         VStack(alignment: .center, spacing: 0) {
-            if appState.reload {
+            if appState.reload || appState.sortedApps.isEmpty {
                 VStack {
                     Spacer()
-                    ProgressView() {
-                        Text("Gathering app details")
-                            .font(.callout)
-                            .foregroundStyle(.primary.opacity(0.5))
-                            .padding(5)
-                    }
+                    ProgressView()
+                        .controlSize(.small)
                     Spacer()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -66,7 +62,7 @@ struct AppSearchView: View {
                     Divider()
                     PermissionsBadge()
                         .padding()
-                } else if !HelperToolManager.shared.isHelperToolInstalled {
+                } else if HelperToolManager.shared.shouldShowHelperBadge {
                     Divider()
                     HelperBadge()
                         .padding()

@@ -32,10 +32,24 @@ struct PearcleanerApp: App {
     //MARK: States
     @State private var search = ""
     @State private var showPopover: Bool = false
-//    let conditionManager = ConditionManager.shared
 
     init() {
         handleLaunchMode()
+
+        // Pre-load apps data during app initialization
+        let fsm = FolderSettingsManager.shared
+        DispatchQueue.global(qos: .userInitiated).async {
+            let sortedApps = getSortedApps(paths: fsm.folderPaths)
+            DispatchQueue.main.async {
+                AppState.shared.sortedApps = sortedApps
+            }
+        }
+
+        // Check permissions
+        let permissionManager = PermissionManager.shared
+        permissionManager.checkPermissions(types: [.fullDiskAccess]) { results in
+            permissionManager.results = results
+        }
     }
 
     var body: some Scene {
@@ -133,18 +147,11 @@ struct PearcleanerApp: App {
                 // Disable tabbing
                 NSWindow.allowsAutomaticWindowTabbing = false
 
-                // Load apps list on startup
-                reloadAppsList(appState: appState, fsm: fsm)
-
                 if !menubarEnabled {
                     Task {
                         // Track main window within windowSettings class
                         windowSettings.trackMainWindow()
                     }
-                }
-
-                permissionManager.checkPermissions(types: [.fullDiskAccess]) { results in
-                    permissionManager.results = results
                 }
 
             }
@@ -219,7 +226,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         removeOldSentinelPlist()
 
     }
-
 
 
     func applicationWillTerminate(_ notification: Notification) {

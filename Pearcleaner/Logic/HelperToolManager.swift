@@ -26,8 +26,13 @@ class HelperToolManager: ObservableObject {
     let helperToolIdentifier = "com.alienator88.Pearcleaner.PearcleanerHelper"
     @Published var isHelperToolInstalled: Bool = false
     @Published var message: String = String(localized: "Checking...")
+    @Published var isInitialCheckComplete: Bool = false
     var status: String {
         return isHelperToolInstalled ? String(localized:"Enabled") : String(localized:"Disabled")
+    }
+
+    var shouldShowHelperBadge: Bool {
+        return isInitialCheckComplete && !isHelperToolInstalled
     }
 
     init() {
@@ -100,6 +105,7 @@ class HelperToolManager: ObservableObject {
         //        let isRoot = whoamiResult.0 && whoamiResult.1.trimmingCharacters(in: .whitespacesAndNewlines) == "root"
         updateOnMain {
             self.isHelperToolInstalled = isEnabled// && isRoot
+            self.isInitialCheckComplete = true
         }
     }
 

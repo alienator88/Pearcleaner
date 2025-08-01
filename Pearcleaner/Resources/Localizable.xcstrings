@@ -3065,6 +3065,9 @@
         }
       }
     },
+    "Click to dismiss" : {
+
+    },
     "Click to search" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6335,6 +6338,7 @@
       }
     },
     "homebrew" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -17801,6 +17805,7 @@
       }
     },
     "user" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

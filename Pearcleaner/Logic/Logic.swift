@@ -11,32 +11,83 @@ import ServiceManagement
 import SwiftUI
 import UniformTypeIdentifiers
 
+
+/// Creates optimally-sized chunks for parallel processing based on system capabilities
+/// - Parameters:
+///   - array: The array to chunk
+///   - minChunkSize: Minimum size per chunk (default: 10)
+///   - maxChunkSize: Maximum size per chunk (default: 50)
+/// - Returns: Array of chunks optimized for the current system
+func createOptimalChunks<T>(from array: [T], minChunkSize: Int = 10, maxChunkSize: Int = 50) -> [[T]] {
+    let coreCount = ProcessInfo.processInfo.activeProcessorCount
+    let chunkSize = min(max(array.count / coreCount, minChunkSize), maxChunkSize)
+    return array.chunked(into: chunkSize)
+}
+
+
+
 // Get all apps from /Applications and ~/Applications
 func getSortedApps(paths: [String]) -> [AppInfo] {
     let fileManager = FileManager.default
     var apps: [URL] = []
 
     func collectAppPaths(at directoryPath: String) {
-        do {
-            let appURLs = try fileManager.contentsOfDirectory(
-                at: URL(fileURLWithPath: directoryPath), includingPropertiesForKeys: nil,
-                options: [])
+        let queue = DispatchQueue(label: "com.pearcleaner.filetree", qos: .userInitiated, attributes: .concurrent)
+        let group = DispatchGroup()
+        let appsQueue = DispatchQueue(label: "com.pearcleaner.apps.collection")
 
-            for appURL in appURLs {
-                if appURL.pathExtension == "app" && !isRestricted(atPath: appURL)
-                    && !appURL.isSymlink()
-                {
-                    // Add the path to the array
-                    apps.append(appURL)
-                } else if appURL.hasDirectoryPath {
-                    // If it's a directory, recursively explore it
-                    collectAppPaths(at: appURL.path)
+        func collectAppPathsParallel(at directoryPath: String) {
+            do {
+                let appURLs = try fileManager.contentsOfDirectory(
+                    at: URL(fileURLWithPath: directoryPath),
+                    includingPropertiesForKeys: [.isDirectoryKey, .isSymbolicLinkKey],
+                    options: [])
+
+                var foundApps: [URL] = []
+                var subdirectories: [URL] = []
+
+                // Separate apps from subdirectories in one pass
+                for appURL in appURLs {
+                    let resourceValues = try? appURL.resourceValues(forKeys: [.isDirectoryKey, .isSymbolicLinkKey])
+                    let isDirectory = resourceValues?.isDirectory ?? false
+                    let isSymlink = resourceValues?.isSymbolicLink ?? false
+
+                    if appURL.pathExtension == "app" && !isRestricted(atPath: appURL) && !isSymlink {
+                        foundApps.append(appURL)
+                    } else if isDirectory && !isSymlink {
+                        subdirectories.append(appURL)
+                    }
                 }
+
+                // Add found apps to the main collection
+                if !foundApps.isEmpty {
+                    appsQueue.sync {
+                        apps.append(contentsOf: foundApps)
+                    }
+                }
+
+                // Process subdirectories in parallel
+                for subdirectory in subdirectories {
+                    group.enter()
+                    queue.async {
+                        collectAppPathsParallel(at: subdirectory.path)
+                        group.leave()
+                    }
+                }
+
+            } catch {
+                printOS("Error: \(error)")
             }
-        } catch {
-            // Handle any potential errors here
-            printOS("Error: \(error)")
         }
+
+        // Start the parallel collection
+        group.enter()
+        queue.async {
+            collectAppPathsParallel(at: directoryPath)
+            group.leave()
+        }
+
+        group.wait()
     }
 
     // Collect system applications
@@ -53,17 +104,49 @@ func getSortedApps(paths: [String]) -> [AppInfo] {
     }
 
     // Process each app path and construct AppInfo using metadata first, then fallback if necessary
-    let appInfos: [AppInfo] = apps.compactMap { appURL in
-        let appPath = appURL.path
+    let appInfos: [AppInfo] = {
+        let chunks = createOptimalChunks(from: apps, minChunkSize: 10, maxChunkSize: 40)
+        let queue = DispatchQueue(label: "com.pearcleaner.appinfo", qos: .userInitiated, attributes: .concurrent)
+        let group = DispatchGroup()
 
-        if let appMetadata = metadataDictionary[appPath] {
-            // Use `MetadataAppInfoFetcher` first
-            return MetadataAppInfoFetcher.getAppInfo(fromMetadata: appMetadata, atPath: appURL)
-        } else {
-            // Fallback to `AppInfoFetcher` if no metadata found
-            return AppInfoFetcher.getAppInfo(atPath: appURL)
+        var allAppInfos: [AppInfo] = []
+        let resultsQueue = DispatchQueue(label: "com.pearcleaner.appinfo.results")
+
+        for chunk in chunks {
+            group.enter()
+            queue.async {
+                let chunkAppInfos: [AppInfo] = chunk.compactMap { appURL in
+                    let appPath = appURL.path
+
+                    if let appMetadata = metadataDictionary[appPath] {
+                        return MetadataAppInfoFetcher.getAppInfo(fromMetadata: appMetadata, atPath: appURL)
+                    } else {
+                        return AppInfoFetcher.getAppInfo(atPath: appURL)
+                    }
+                }
+
+                resultsQueue.sync {
+                    allAppInfos.append(contentsOf: chunkAppInfos)
+                }
+                group.leave()
+            }
         }
-    }
+
+        group.wait()
+        return allAppInfos
+    }()
+//    let appInfos: [AppInfo] = apps.compactMap { appURL in
+//        let appPath = appURL.path
+//
+//        if let appMetadata = metadataDictionary[appPath] {
+//            // Use `MetadataAppInfoFetcher` first
+//            return MetadataAppInfoFetcher.getAppInfo(fromMetadata: appMetadata, atPath: appURL)
+//        } else {
+//            // Fallback to `AppInfoFetcher` if no metadata found
+//            return AppInfoFetcher.getAppInfo(atPath: appURL)
+//        }
+//
+//    }
 
     // Sort apps by display name
     let sortedApps = appInfos.sorted { $0.appName.lowercased() < $1.appName.lowercased() }
@@ -369,7 +452,7 @@ func pruneLanguages(in appBundlePath: String) throws {
             } else {
                 let result = performPrivilegedCommands(commands: command.joined(separator: " "))
                 if !result.0 {
-                    printOS("Symlink failed: \(result.1)")
+                    printOS("Prune failed: \(result.1)")
                 }
             }
         }
@@ -393,55 +476,124 @@ func getBrewCleanupCommand(for caskName: String) -> String {
     return "\(brewPath) uninstall --cask \(caskName) --zap --force && \(brewPath) cleanup && clear; echo '\nHomebrew cleanup was successful, you may close this window..\n'"
 }
 
+private var caskLookupTable: [String: String]?
+private let caskLookupQueue = DispatchQueue(label: "com.pearcleaner.cask.lookup", attributes: .concurrent)
+
 func getCaskIdentifier(for appName: String) -> String? {
+    return caskLookupQueue.sync {
+        // Build lookup table once for all apps
+        if caskLookupTable == nil {
+            caskLookupTable = buildCaskLookupTable()
+        }
+
+        return caskLookupTable?[appName.lowercased()]
+    }
+}
+
+private func buildCaskLookupTable() -> [String: String] {
     let caskroomPath = isOSArm() ? "/opt/homebrew/Caskroom/" : "/usr/local/Caskroom/"
     let fileManager = FileManager.default
-    let lowercasedAppName = appName.lowercased()
+    var appToCask: [String: String] = [:]
 
-    do {
-        // Get all cask directories from Caskroom, ignoring hidden files
-        let casks = try fileManager.contentsOfDirectory(atPath: caskroomPath).filter {
-            !$0.hasPrefix(".")
-        }
-
-        for cask in casks {
-            // Construct the path to the cask directory
-            let caskSubPath = caskroomPath + cask
-
-            // Get all version directories for this cask, ignoring hidden files
-            let versions = try fileManager.contentsOfDirectory(atPath: caskSubPath).filter {
-                !$0.hasPrefix(".")
-            }
-
-            // Only check the first valid version directory to improve efficiency
-            if let latestVersion = versions.first {
-                let appDirectory = "\(caskSubPath)/\(latestVersion)/"
-
-                // List all files in the version directory and check for .app file
-                //                let appsInDir = try fileManager.contentsOfDirectory(atPath: appDirectory).filter { !$0.hasPrefix(".") }
-                let appsInDir = try fileManager.contentsOfDirectory(atPath: appDirectory).filter {
-                    !$0.hasPrefix(".") && $0.hasSuffix(".app")
-                    && !$0.lowercased().contains("uninstall")
-                }
-                if let appFile = appsInDir.first(where: { $0.hasSuffix(".app") }) {
-                    let realAppName = appFile.replacingOccurrences(of: ".app", with: "")
-                        .lowercased()
-                    // Compare the lowercased app names for case-insensitive match
-                    if realAppName == lowercasedAppName {
-                        return realAppName.replacingOccurrences(of: " ", with: "-").lowercased()
-                    }
-                }
-            }
-        }
-    } catch let error as NSError {
-        if !(error.domain == NSCocoaErrorDomain && error.code == 260) {
-            printOS("Cask Identifier: \(error)")
-        }
+    // Add safety checks
+    guard fileManager.fileExists(atPath: caskroomPath) else {
+        printOS("Caskroom not found at: \(caskroomPath)")
+        return [:]
     }
 
-    // If no match is found, return nil
-    return nil
+    do {
+        let casks = try fileManager.contentsOfDirectory(atPath: caskroomPath).filter { !$0.hasPrefix(".") }
+
+        for cask in casks {
+            let caskSubPath = caskroomPath + cask
+
+            // Add safety check for each cask directory
+            guard fileManager.fileExists(atPath: caskSubPath) else { continue }
+
+            do {
+                let versions = try fileManager.contentsOfDirectory(atPath: caskSubPath).filter { !$0.hasPrefix(".") }
+
+                if let latestVersion = versions.first {
+                    let appDirectory = "\(caskSubPath)/\(latestVersion)/"
+
+                    // Add safety check for app directory
+                    guard fileManager.fileExists(atPath: appDirectory) else { continue }
+
+                    do {
+                        let appsInDir = try fileManager.contentsOfDirectory(atPath: appDirectory).filter {
+                            !$0.hasPrefix(".") && $0.hasSuffix(".app") && !$0.lowercased().contains("uninstall")
+                        }
+
+                        for appFile in appsInDir {
+                            let realAppName = appFile.replacingOccurrences(of: ".app", with: "").lowercased()
+                            appToCask[realAppName] = cask
+                        }
+                    } catch {
+                        printOS("Error reading app directory \(appDirectory): \(error)")
+                        continue
+                    }
+                }
+            } catch {
+                printOS("Error reading cask directory \(caskSubPath): \(error)")
+                continue
+            }
+        }
+    } catch {
+        printOS("Error reading Caskroom: \(error)")
+    }
+
+    return appToCask
 }
+
+//func getCaskIdentifier(for appName: String) -> String? {
+//    let caskroomPath = isOSArm() ? "/opt/homebrew/Caskroom/" : "/usr/local/Caskroom/"
+//    let fileManager = FileManager.default
+//    let lowercasedAppName = appName.lowercased()
+//
+//    do {
+//        // Get all cask directories from Caskroom, ignoring hidden files
+//        let casks = try fileManager.contentsOfDirectory(atPath: caskroomPath).filter {
+//            !$0.hasPrefix(".")
+//        }
+//
+//        for cask in casks {
+//            // Construct the path to the cask directory
+//            let caskSubPath = caskroomPath + cask
+//
+//            // Get all version directories for this cask, ignoring hidden files
+//            let versions = try fileManager.contentsOfDirectory(atPath: caskSubPath).filter {
+//                !$0.hasPrefix(".")
+//            }
+//
+//            // Only check the first valid version directory to improve efficiency
+//            if let latestVersion = versions.first {
+//                let appDirectory = "\(caskSubPath)/\(latestVersion)/"
+//
+//                // List all files in the version directory and check for .app file
+//                //                let appsInDir = try fileManager.contentsOfDirectory(atPath: appDirectory).filter { !$0.hasPrefix(".") }
+//                let appsInDir = try fileManager.contentsOfDirectory(atPath: appDirectory).filter {
+//                    !$0.hasPrefix(".") && $0.hasSuffix(".app")
+//                    && !$0.lowercased().contains("uninstall")
+//                }
+//                if let appFile = appsInDir.first(where: { $0.hasSuffix(".app") }) {
+//                    let realAppName = appFile.replacingOccurrences(of: ".app", with: "")
+//                        .lowercased()
+//                    // Compare the lowercased app names for case-insensitive match
+//                    if realAppName == lowercasedAppName {
+//                        return realAppName.replacingOccurrences(of: " ", with: "-").lowercased()
+//                    }
+//                }
+//            }
+//        }
+//    } catch let error as NSError {
+//        if !(error.domain == NSCocoaErrorDomain && error.code == 260) {
+//            printOS("Cask Identifier: \(error)")
+//        }
+//    }
+//
+//    // If no match is found, return nil
+//    return nil
+//}
 
 // Print list of files locally
 func saveURLsToFile(appState: AppState, copy: Bool = false) {

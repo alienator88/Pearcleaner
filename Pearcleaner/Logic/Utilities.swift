@@ -206,12 +206,40 @@ func checkAppBundleArchitecture(at appBundlePath: String) -> Arch {
         }
         return archs.count == 1 ? archs.first! : .universal
     } else {
-        // Lipo binary: read cpu type from header
+        // Single architecture Mach-O binary: read cpu type from header
         guard fileData.count >= 8 else { return .empty }
-        let cputype = fileData.subdata(in: 4..<8).withUnsafeBytes { $0.load(as: UInt32.self).bigEndian }
-        if cputype == 0x0100000c { return .arm }
-        else if cputype == 0x01000007 { return .intel }
-        else { return .empty }
+
+        // Check magic number for 64-bit Mach-O
+        let magic = fileData.prefix(4).withUnsafeBytes { $0.load(as: UInt32.self) }
+
+        if magic == 0xfeedfacf || magic == 0xcffaedfe {
+            // 64-bit Mach-O - read CPU type
+            let cputypeLittle = fileData.subdata(in: 4..<8).withUnsafeBytes { $0.load(as: UInt32.self) }
+            let cputypeBig = fileData.subdata(in: 4..<8).withUnsafeBytes { $0.load(as: UInt32.self).bigEndian }
+
+            // ARM64 detection
+            if cputypeLittle == 0x0100000c || cputypeBig == 0x0c000001 {
+                return .arm
+            }
+            // x86_64 detection
+            else if cputypeLittle == 0x01000007 || cputypeBig == 0x07000001 {
+                return .intel
+            }
+        } else if magic == 0xfeedface || magic == 0xcefaedfe {
+            // 32-bit Mach-O (less common)
+            let cputypeLittle = fileData.subdata(in: 4..<8).withUnsafeBytes { $0.load(as: UInt32.self) }
+            let cputypeBig = fileData.subdata(in: 4..<8).withUnsafeBytes { $0.load(as: UInt32.self).bigEndian }
+
+            // ARM64 and x86_64 with 32-bit magic (edge case)
+            if cputypeLittle == 0x0100000c || cputypeBig == 0x0c000001 {
+                return .arm
+            }
+            else if cputypeLittle == 0x01000007 || cputypeBig == 0x07000001 {
+                return .intel
+            }
+        }
+
+        return .empty
     }
 }
 

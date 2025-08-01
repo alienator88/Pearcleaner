@@ -208,11 +208,9 @@ class AppPathFinder {
     // Check spotlight index for leftovers missed by manual search
     private func spotlightSupplementalPaths() -> [URL] {
         guard spotlight else { return [] }
-        Thread.sleep(forTimeInterval: 0.5)
         updateOnMain {
             self.appState?.progressStep = 1
         }
-        Thread.sleep(forTimeInterval: 1)
         var results: [URL] = []
         let query = NSMetadataQuery()
 
@@ -366,12 +364,41 @@ class AppPathFinder {
         var fileSize: [URL: Int64] = [:]
         var fileSizeLogical: [URL: Int64] = [:]
         var fileIcon: [URL: NSImage?] = [:]
-        for path in tempCollection {
-            let size = spotlightSizeForURL(path)
-            fileSize[path] = size.real
-            fileSizeLogical[path] = size.logical
-            fileIcon[path] = getIconForFileOrFolderNS(atPath: path)
+        let chunks = createOptimalChunks(from: tempCollection)
+        let queue = DispatchQueue(label: "size-calculation", qos: .userInitiated, attributes: .concurrent)
+        let group = DispatchGroup()
+
+        for chunk in chunks {
+            group.enter()
+            queue.async {
+                var localFileSize: [URL: Int64] = [:]
+                var localFileSizeLogical: [URL: Int64] = [:]
+                var localFileIcon: [URL: NSImage?] = [:]
+
+                for path in chunk {
+                    let size = spotlightSizeForURL(path)
+                    localFileSize[path] = size.real
+                    localFileSizeLogical[path] = size.logical
+                    localFileIcon[path] = getIconForFileOrFolderNS(atPath: path)
+
+                }
+
+                // Merge results safely
+                DispatchQueue.main.sync {
+                    fileSize.merge(localFileSize) { $1 }
+                    fileSizeLogical.merge(localFileSizeLogical) { $1 }
+                    fileIcon.merge(localFileIcon) { $1 }
+                }
+                group.leave()
+            }
         }
+        group.wait()
+//        for path in tempCollection {
+//            let size = spotlightSizeForURL(path)
+//            fileSize[path] = size.real
+//            fileSizeLogical[path] = size.logical
+//            fileIcon[path] = getIconForFileOrFolderNS(atPath: path)
+//        }
         let arch = checkAppBundleArchitecture(at: self.appInfo.path.path)
         var updatedCollection = tempCollection
         if updatedCollection.count == 1, let firstURL = updatedCollection.first, firstURL.path.contains(".Trash") {

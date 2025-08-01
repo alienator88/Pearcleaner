@@ -11,7 +11,6 @@ import AlinFoundation
 
 struct SidebarView: View {
     @EnvironmentObject var appState: AppState
-    @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @Binding var infoSidebar: Bool
     let displaySizeTotal: String
 
@@ -28,7 +27,7 @@ struct SidebarView: View {
                     ExtraOptions()
                 }
                 .padding()
-                .frame(width: 350)
+                .frame(width: 250)
                 .background(.ultraThinMaterial)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
                 .overlay {
@@ -50,7 +49,7 @@ struct AppDetailsHeaderView: View {
     let displaySizeTotal: String
 
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(alignment: .leading, spacing: 8) {
 
             headerMain()
 
@@ -58,30 +57,32 @@ struct AppDetailsHeaderView: View {
             headerDetailRow(label: "Bundle", value: appState.appInfo.bundleIdentifier)
             headerDetailRow(label: "Total size of all files", value: displaySizeTotal)
         }
-
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     @ViewBuilder
     private func headerMain() -> some View {
-        VStack {
+        VStack(alignment: .center) {
             if let appIcon = appState.appInfo.appIcon {
                 Image(nsImage: appIcon)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 50, height: 50)
-                    .padding(5)
-                    .background {
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(Color(appState.appInfo.appIcon?.averageColor ?? .clear))
-                    }
+                    .shadow(color: appState.appInfo.averageColor ?? .black, radius: 6)
             }
 
             Text(appState.appInfo.appName)
-                .font(.title2)
+                .font(.title3)
                 .fontWeight(.bold)
                 .lineLimit(2)
-                .padding(.bottom)
+                .padding(4)
+                .padding(.horizontal, 2)
+                .background {
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(appState.appInfo.averageColor ?? .clear)
+                }
         }
+        .frame(maxWidth: .infinity, alignment: .center)
         .padding(.vertical, 5)
     }
 
@@ -93,7 +94,6 @@ struct AppDetailsHeaderView: View {
                 .foregroundStyle(.secondary)
             Text(value)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.bottom, 5)
     }
 }
@@ -103,76 +103,59 @@ struct AppDetails: View {
     @EnvironmentObject var appState: AppState
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: 8) {
 
             //MARK: Badges
-            HStack(alignment: .center, spacing: 10) {
-                Spacer()
-                if appState.appInfo.webApp {
-                    Text("web")
-                        .font(.footnote)
-                        .foregroundStyle(.primary.opacity(0.5))
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .background(.primary.opacity(0.1))
-                        .clipShape(Capsule())
-                }
+            HStack(alignment: .center, spacing: 5) {
 
-                if appState.appInfo.wrapped {
-                    Text("iOS")
-                        .font(.footnote)
-                        .foregroundStyle(.primary.opacity(0.5))
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .background(.primary.opacity(0.1))
-                        .clipShape(Capsule())
-                }
+                if appState.appInfo.webApp { badge("web") }
+                if appState.appInfo.wrapped { badge("iOS") }
+                if appState.appInfo.arch != .empty { badge(appState.appInfo.arch.type) }
+                badge(appState.appInfo.system ? "system" : "user")
+                if appState.appInfo.cask != nil { badge("brew") }
 
-                if appState.appInfo.arch != .empty {
-                    Text(appState.appInfo.arch.type)
-                        .font(.footnote)
-                        .foregroundStyle(.primary.opacity(0.5))
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .background(.primary.opacity(0.1))
-                        .clipShape(Capsule())
-                }
-
-                Text(appState.appInfo.system ? "system" : "user")
-                    .font(.footnote)
-                    .foregroundStyle(.primary.opacity(0.5))
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
-                    .background(.primary.opacity(0.1))
-                    .clipShape(Capsule())
-
-                if appState.appInfo.cask != nil {
-                    Text("homebrew")
-                        .font(.footnote)
-                        .foregroundStyle(.primary.opacity(0.5))
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .background(.primary.opacity(0.1))
-                        .clipShape(Capsule())
-                }
-
-                Spacer()
             }
+            .padding(.bottom, 8)
 
-            detailRow(label: "Location", value: appState.appInfo.path.deletingLastPathComponent().path)
+            detailRow(label: "Location", value: appState.appInfo.path.deletingLastPathComponent().path, location: true)
             detailRow(label: "Installed Date", value: appState.appInfo.creationDate.map { formattedMDDate(from: $0) })
             detailRow(label: "Modified Date", value: appState.appInfo.contentChangeDate.map { formattedMDDate(from: $0) })
             detailRow(label: "Last Used Date", value: appState.appInfo.lastUsedDate.map { formattedMDDate(from: $0) })
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.vertical, 5)
     }
 
     @ViewBuilder
-    private func detailRow(label: String, value: String?) -> some View {
+    private func badge(_ text: String) -> some View {
+        Text(text)
+            .font(.footnote)
+            .foregroundStyle(.primary.opacity(0.5))
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background(.primary.opacity(0.1))
+            .clipShape(Capsule())
+    }
+
+    @ViewBuilder
+    private func detailRow(label: String, value: String?, location: Bool = false) -> some View {
         VStack(alignment: .leading) {
-            Text(label)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-            Text(value ?? "Not available")
+            HStack(spacing: 2) {
+                Text(label)
+                if location {
+                    Button {
+                        NSWorkspace.shared.selectFile(appState.appInfo.path.path, inFileViewerRootedAtPath: appState.appInfo.path.deletingLastPathComponent().path)
+                    } label: {
+                        Image(systemName: "folder")
+                    }
+                    .buttonStyle(.borderless)
+                }
+
+            }
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+
+            Text(value ?? "Metadata not available")
         }
         .padding(.bottom, 5)
     }
@@ -185,6 +168,7 @@ struct ExtraOptions: View {
 
     var body: some View {
         HStack() {
+            Text("Click to dismiss").font(.caption).foregroundStyle(.secondary.opacity(0.5))
             Spacer()
             Menu {
                 if appState.appInfo.arch == .universal {
