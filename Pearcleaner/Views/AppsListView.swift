@@ -10,8 +10,6 @@ import SwiftUI
 
 struct AppsListView: View {
     @Binding var search: String
-    @Binding var showPopover: Bool
-    @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
 
@@ -24,14 +22,14 @@ struct AppsListView: View {
                 let filteredSystemApps = filteredApps.filter { $0.system }
 
                 if !filteredUserApps.isEmpty {
-                    SectionView(title: String(localized: "User"), count: filteredUserApps.count, apps: filteredUserApps, search: $search, showPopover: $showPopover)
+                    SectionView(title: String(localized: "User"), count: filteredUserApps.count, apps: filteredUserApps, search: $search)
                 }
 
-
                 if !filteredSystemApps.isEmpty {
-                    SectionView(title: String(localized: "System"), count: filteredSystemApps.count, apps: filteredSystemApps, search: $search, showPopover: $showPopover)                }
+                    SectionView(title: String(localized: "System"), count: filteredSystemApps.count, apps: filteredSystemApps, search: $search)
+                }
             }
-            .padding(.top, !mini ? 4 : 0)
+            .padding(.top, 4)
         }
         .scrollIndicators(scrollIndicators ? .automatic : .never)
     }
@@ -43,13 +41,13 @@ struct SectionView: View {
     var count: Int
     var apps: [AppInfo]
     @Binding var search: String
-    @Binding var showPopover: Bool
+//    @Binding var showPopover: Bool
     @State private var showItems: Bool = true
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
     var body: some View {
         VStack(spacing: 0) {
-            Header(title: title, count: count, showPopover: $showPopover)
+            Header(title: title, count: count)
                 .padding(.leading, 5)
                 .onTapGesture {
                     withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
@@ -59,7 +57,7 @@ struct SectionView: View {
             
             if showItems {
                 ForEach(apps, id: \.self) { appInfo in
-                    AppListItems(search: $search, showPopover: $showPopover, appInfo: appInfo)
+                    AppListItems(search: $search, appInfo: appInfo)
                         .transition(.opacity)
                 }
             }
@@ -76,7 +74,7 @@ struct Header: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
     @EnvironmentObject var fsm: FolderSettingsManager
-    @Binding var showPopover: Bool
+//    @Binding var showPopover: Bool
     @AppStorage("settings.general.glass") private var glass: Bool = true
 //    @AppStorage("settings.general.selectedSortAppsList") var selectedSortAlpha: Bool = true
 
@@ -98,7 +96,7 @@ struct Header: View {
         }
         .frame(minHeight: 20)
         .padding(5)
-        .help("Click header to change sorting order")
+//        .help("Click header to change sorting order")
 //        .onTapGesture {
 //            selectedSortAlpha.toggle()
 //        }

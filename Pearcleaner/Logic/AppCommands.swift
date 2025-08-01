@@ -14,18 +14,14 @@ struct AppCommands: Commands {
     let locations: Locations
     let fsm: FolderSettingsManager
     let updater: Updater
-    let themeManager: ThemeManager
-    @Binding var showPopover: Bool
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @State private var windowController = WindowManager()
 
-    init(appState: AppState, locations: Locations, fsm: FolderSettingsManager, updater: Updater, themeManager: ThemeManager, showPopover: Binding<Bool>) {
+    init(appState: AppState, locations: Locations, fsm: FolderSettingsManager, updater: Updater) {
         self.appState = appState
         self.locations = locations
         self.fsm = fsm
         self.updater = updater
-        self.themeManager = themeManager
-        self._showPopover = showPopover
     }
 
     var body: some Commands {
@@ -60,7 +56,7 @@ struct AppCommands: Commands {
                     if result {
                         reloadAppsList(appState: appState, fsm: fsm, delay: 1)
                         if appState.currentView == .files {
-                            showAppInFiles(appInfo: appState.appInfo, appState: appState, locations: locations, showPopover: $showPopover)
+                            showAppInFiles(appInfo: appState.appInfo, appState: appState, locations: locations)
                         }
                     }
                 }

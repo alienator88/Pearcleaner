@@ -10,18 +10,15 @@ import SwiftUI
 import AlinFoundation
 
 class DeeplinkManager {
-    @Binding var showPopover: Bool
     private var urlQueue: [URL] = []
     private var isProcessing = false
     let updater: Updater
     let fsm: FolderSettingsManager
-    @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.general.oneshot") private var oneShotMode: Bool = false
     @AppStorage("settings.general.selectedTab") private var selectedTab: CurrentTabView = .general
     @State private var windowController = WindowManager()
 
-    init(showPopover: Binding<Bool>, updater: Updater, fsm: FolderSettingsManager) {
-        _showPopover = showPopover
+    init(updater: Updater, fsm: FolderSettingsManager) {
         self.updater = updater
         self.fsm = fsm
     }
@@ -61,14 +58,6 @@ class DeeplinkManager {
         updateOnMain {
             appState.externalMode = true
         }
-
-        // If in menubar mode, show the menubar popover to display deep link content
-//        let menubarEnabled = UserDefaults.standard.bool(forKey: "settings.menubar.enabled")
-//        if menubarEnabled {
-//            DispatchQueue.main.async {
-//                MenuBarExtraManager.shared.showPopover()
-//            }
-//        }
 
         guard let scheme = url.scheme, scheme == "pear" else {
             guard !url.path.isEmpty else {
@@ -213,7 +202,7 @@ class DeeplinkManager {
         }
 
         // Pass the appInfo and trigger showAppInFiles to handle display and animations
-        showAppInFiles(appInfo: appInfo, appState: appState, locations: locations, showPopover: $showPopover)
+        showAppInFiles(appInfo: appInfo, appState: appState, locations: locations)
     }
 
     private func handleAppFunctions(action: String, queryItems: [URLQueryItem], appState: AppState, fsm: FolderSettingsManager) {

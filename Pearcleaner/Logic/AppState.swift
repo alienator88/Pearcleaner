@@ -270,11 +270,11 @@ enum CurrentPage:Int, CaseIterable, Identifiable
     var details: (title: String, icon: String) {
         switch self {
         case .applications:
-            return (String(localized: "Applications"), "square.grid.3x3.fill.square")
+            return (String(localized: "Apps"), "square.grid.3x3.fill.square")
         case .orphans:
-            return (String(localized: "Orphaned Files"), "doc.text.magnifyingglass")
+            return (String(localized: "Orphans"), "doc.text.magnifyingglass")
         case .development:
-            return (String(localized: "Development"), "hammer.circle")
+            return (String(localized: "Dev"), "hammer.circle")
         case .lipo:
             return (String(localized: "Lipo"), "square.split.1x2")
         }
@@ -331,7 +331,6 @@ enum CurrentDetailsView:Int
 {
     case empty
     case files
-    case apps
     case zombie
     case terminal
 }

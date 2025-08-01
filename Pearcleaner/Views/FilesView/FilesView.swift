@@ -14,10 +14,8 @@ struct FilesView: View {
     @EnvironmentObject var locations: Locations
     @State private var showPop: Bool = false
     @State private var windowController = WindowManager()
-    @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.general.brew") private var brew: Bool = false
-    @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @AppStorage("settings.general.filesWarning") private var warning: Bool = false
@@ -28,7 +26,6 @@ struct FilesView: View {
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @State private var showAlert = false
     @Environment(\.colorScheme) var colorScheme
-    @Binding var showPopover: Bool
     @Binding var search: String
     @State private var sortedFiles: [URL] = []
     @State private var infoSidebar: Bool = false
@@ -65,27 +62,7 @@ struct FilesView: View {
                 .transition(.opacity)
             } else {
 
-                // Titlebar
-                HStack(spacing: 0) {
-
-                    Spacer()
-
-                    if mini || menubarEnabled {
-                        Button("Close") {
-                            updateOnMain {
-                                appState.appInfo = AppInfo.empty
-                                search = ""
-                                appState.currentView = .apps
-                                showPopover = false
-                            }
-                        }
-                        .buttonStyle(SimpleButtonStyle(icon: "x.circle", iconFlip: "x.circle.fill", help: String(localized: "Close")))
-                    }
-
-
-                }
-                .padding(.top, (mini || menubarEnabled) ? 6 : 30)
-                .padding(.trailing, (mini || menubarEnabled) ? 6 : 0)
+//                Spacer().frame(height: 30) // So it doesn't go under the Applications button
 
                 ZStack {
 
@@ -94,7 +71,6 @@ struct FilesView: View {
                         infoSidebar: $infoSidebar,
                         selectedSortAlpha: $selectedSortAlpha,
                         isHoveredChevron: $isHoveredChevron,
-                        showPopover: $showPopover,
                         locations: locations,
                         windowController: windowController,
                         handleUninstallAction: handleUninstallAction,
@@ -105,371 +81,12 @@ struct FilesView: View {
                         removeSingleZombieAssociation: removeSingleZombieAssociation,
                         removePath: removePath
                     )
+                    
                     SidebarView(infoSidebar: $infoSidebar, displaySizeTotal: displaySizeTotal)
-
-                    //                    //MARK: File List
-                    //                    VStack(spacing: 0) {
-                    //
-                    //                        if appState.appInfo.fileSize.keys.count == 0 {
-                    //                            Text("Sentinel Monitor found no other files to remove")
-                    //                                .font(.title3)
-                    //                                .opacity(0.5)
-                    //                        } else {
-                    //                            HStack {
-                    //
-                    //                                VStack(spacing: 0) {
-                    //                                    HStack {
-                    //                                        Toggle(isOn: Binding(
-                    //                                            get: { self.appState.selectedItems.count == self.appState.appInfo.fileSize.keys.count },
-                    //                                            set: { newValue in
-                    //                                                updateOnMain {
-                    //                                                    self.appState.selectedItems = newValue ? Set(self.appState.appInfo.fileSize.keys) : []
-                    //                                                }
-                    //                                            }
-                    //                                        )) { EmptyView() }
-                    //                                            .toggleStyle(SimpleCheckboxToggleStyle())
-                    //                                            .help("All checkboxes")
-                    //
-                    //                                        Spacer()
-                    //
-                    //                                        Button {
-                    //                                            selectedSortAlpha.toggle()
-                    //                                            updateSortedFiles()
-                    //                                        } label: { EmptyView() }
-                    //                                            .buttonStyle(SimpleButtonStyle(icon: "line.3.horizontal.decrease.circle", label: selectedSortAlpha ? String(localized: "Name") : String(localized: "Size"), help: selectedSortAlpha ? String(localized: "Sorted by Name") : String(localized: "Sorted by Size"), size: 16))
-                    //                                    }
-                    //
-                    //                                    Divider().padding(.vertical, 5)
-                    //
-                    //                                    ScrollView() {
-                    //                                        LazyVStack {
-                    //                                            ForEach(Array(sortedFiles.enumerated()), id: \.element) { index, path in
-                    //                                                VStack {
-                    //                                                    FileDetailsItem(path: path, removeAssociation: removeSingleZombieAssociation)
-                    //                                                        .padding(.vertical, 5)
-                    //                                                }
-                    //                                            }
-                    //                                        }
-                    //                                        .onAppear { updateSortedFiles() }
-                    //                                    }
-                    //                                    .scrollIndicators(scrollIndicators ? .automatic : .never)
-                    //
-                    //                                }
-                    //                                .padding(.horizontal)
-                    //                                .blur(radius: infoSidebar ? 2 : 0)
-                    //
-                    //                                Button {
-                    //                                    infoSidebar.toggle()
-                    //                                } label: {
-                    //                                    Image(systemName: isHoveredChevron ? "chevron.left.circle.fill" : "chevron.left.circle")
-                    //                                        .resizable()
-                    //                                        .aspectRatio(contentMode: .fit)
-                    //                                        .frame(width: 18, height: 18)
-                    //                                }
-                    //                                .onHover { hovering in
-                    //                                    isHoveredChevron = hovering
-                    //                                }
-                    //                                .buttonStyle(.borderless)
-                    //                                .transition(.move(edge: .trailing))
-                    //                                .help("See app details")
-                    //                            }
-                    //
-                    //
-                    //                        }
-                    //
-                    //                        Spacer()
-                    //
-                    //                        HStack(alignment: .center) {
-                    //
-                    //                            if !appState.externalPaths.isEmpty {
-                    //                                VStack {
-                    //                                    HStack {
-                    //                                        Text("Queue:").font(.title3).opacity(0.5)
-                    //                                            .help("⇧ + Scroll")
-                    //                                        ScrollView(.horizontal, showsIndicators: false) {
-                    //                                            HStack(spacing: 10) {
-                    //                                                ForEach(appState.externalPaths, id: \.self) { path in
-                    //                                                    HStack(spacing: 0) {
-                    //                                                        Button(path.deletingPathExtension().lastPathComponent) {
-                    //                                                            let newApp = AppInfoFetcher.getAppInfo(atPath: path)!
-                    //                                                            updateOnMain {
-                    //                                                                appState.appInfo = newApp
-                    //                                                            }
-                    //                                                            showAppInFiles(appInfo: newApp, appState: appState, locations: locations, showPopover: $showPopover)
-                    //                                                        }
-                    //                                                        Button {
-                    //                                                            removePath(path)
-                    //                                                        } label: { EmptyView() }
-                    //                                                            .buttonStyle(SimpleButtonStyle(icon: "minus.circle", help: "Remove from queue", size: 14))
-                    //                                                    }
-                    //                                                }
-                    //                                            }
-                    //                                        }
-                    //                                    }
-                    //                                    //                                Text("⇧ + Scroll").font(.callout).foregroundStyle(.secondary).opacity(0.5)
-                    //                                }
-                    //                            }
-                    //
-                    //                            Spacer()
-                    //
-                    //                            HStack(spacing: 10) {
-                    //
-                    //                                if appState.trashError {
-                    //                                    InfoButton(text: "A trash error has occurred, please open the debug window(⌘+D) to see what went wrong", color: .orange, label: "View Error", warning: true, extraView: {
-                    //                                        Button("View Debug Window") {
-                    //                                            windowController.open(with: ConsoleView(), width: 600, height: 400)
-                    //                                        }
-                    //                                    })
-                    //                                    .onDisappear {
-                    //                                        appState.trashError = false
-                    //                                    }
-                    //                                }
-                    //
-                    //                                // Trash Button
-                    //                                Button {
-                    //                                    handleUninstallAction()
-                    //                                } label: {
-                    //                                    Text(verbatim: "\(sizeType == "Logical" ? totalSelectedSize.logical : totalSelectedSize.real)")
-                    //                                }
-                    //                                .buttonStyle(UninstallButton(isEnabled: !appState.selectedItems.isEmpty || (appState.selectedItems.isEmpty && brew)))
-                    //                            }
-                    //                        }
-                    //                    }
-                    //
-                    //                    //MARK: Sidebar Component
-                    //                    if infoSidebar {
-                    //                        HStack {
-                    //                            Spacer()
-                    //
-                    //                            //MARK: Info sidebar
-                    //                            VStack(spacing: 0) {
-                    //                                // Main Group
-                    //                                HStack(alignment: .center) {
-                    //
-                    //                                    //app icon, title, size and items
-                    //                                    VStack(alignment: .leading, spacing: 5){
-                    //                                        PearGroupBox(header: {
-                    //                                            HStack(alignment: .center, spacing: 15) {
-                    //                                                if let appIcon = appState.appInfo.appIcon {
-                    //                                                    Image(nsImage: appIcon)
-                    //                                                        .resizable()
-                    //                                                        .scaledToFit()
-                    //                                                        .frame(width: 50, height: 50)
-                    //                                                        .padding(5)
-                    //                                                        .background{
-                    //                                                            RoundedRectangle(cornerRadius: 10)
-                    //                                                                .fill(Color((appState.appInfo.appIcon?.averageColor)!))
-                    //
-                    //                                                        }
-                    //                                                }
-                    //                                                VStack(alignment: .leading) {
-                    //                                                    HStack(alignment: .center) {
-                    //                                                        Text(verbatim: "\(appState.appInfo.appName)").font(.title).fontWeight(.bold).lineLimit(1)
-                    //                                                        Image(systemName: "circle.fill").foregroundStyle(Color("AccentColor")).font(.system(size: 5))
-                    //                                                        Text(verbatim: "\(appState.appInfo.appVersion)").font(.title3)
-                    //                                                    }
-                    //                                                    Text(verbatim: "\(appState.appInfo.bundleIdentifier)")
-                    //                                                        .lineLimit(1)
-                    //                                                        .font(.title3)
-                    //                                                        .foregroundStyle((.primary.opacity(0.5)))
-                    //                                                }
-                    //
-                    //                                            }
-                    //
-                    //                                        }, content: {
-                    //
-                    //                                            HStack(spacing: 20) {
-                    //                                                VStack(alignment: .leading, spacing: 5) {
-                    //                                                    Text("Total size of files:")
-                    //                                                        .font(.callout).fontWeight(.bold)
-                    //                                                    Text(verbatim: "")
-                    //                                                        .font(.footnote)
-                    //                                                    Text("Installed Date:")
-                    //                                                        .font(.footnote)
-                    //                                                    Text("Modified Date:")
-                    //                                                        .font(.footnote)
-                    //                                                    Text("Last Used Date:")
-                    //                                                        .font(.footnote)
-                    //
-                    //                                                }
-                    //                                                Spacer()
-                    //                                                VStack(alignment: .trailing, spacing: 5) {
-                    //                                                    Text(verbatim: "\(displaySizeTotal)").font(.callout).fontWeight(.bold)//.help("Total size on disk")
-                    //
-                    //                                                    Text(verbatim: "\(appState.appInfo.fileSize.count == 1 ? "\(appState.selectedItems.count) \(String(localized: "of"))  \(appState.appInfo.fileSize.count) \(String(localized: "item"))" : "\(appState.selectedItems.count) \(String(localized: "of")) \(appState.appInfo.fileSize.count) \(String(localized: "items"))")")
-                    //                                                        .font(.footnote)
-                    //
-                    //                                                    if let creationDate = appState.appInfo.creationDate {
-                    //                                                        Text(formattedMDDate(from: creationDate))
-                    //                                                            .font(.footnote)
-                    //                                                            .foregroundStyle(.secondary)
-                    //                                                    } else {
-                    //                                                        Text("Not available")
-                    //                                                            .font(.footnote)
-                    //                                                            .foregroundStyle(.secondary)
-                    //                                                    }
-                    //
-                    //                                                    if let modificationDate = appState.appInfo.contentChangeDate {
-                    //                                                        Text(formattedMDDate(from: modificationDate))
-                    //                                                            .font(.footnote)
-                    //                                                            .foregroundStyle(.secondary)
-                    //                                                    } else {
-                    //                                                        Text("Not available")
-                    //                                                            .font(.footnote)
-                    //                                                            .foregroundStyle(.secondary)
-                    //                                                    }
-                    //
-                    //                                                    if let lastUsedDate = appState.appInfo.lastUsedDate {
-                    //                                                        Text(formattedMDDate(from: lastUsedDate))
-                    //                                                            .font(.footnote)
-                    //                                                            .foregroundStyle(.secondary)
-                    //                                                    } else {
-                    //                                                        Text("Not available")
-                    //                                                            .font(.footnote)
-                    //                                                            .foregroundStyle(.secondary)
-                    //                                                    }
-                    //                                                }
-                    //                                            }
-                    //
-                    //                                        })
-                    //
-                    //
-                    //                                    }
-                    //                                    .padding(.horizontal, 20)
-                    //                                    .padding(.top, 0)
-                    //
-                    //
-                    //                                }
-                    //
-                    //
-                    //                                // Item selection and sorting toolbar
-                    //                                HStack() {
-                    //
-                    //                                    //MARK: Badges
-                    //                                    HStack(alignment: .center, spacing: 10) {
-                    //
-                    //                                        if appState.appInfo.webApp {
-                    //                                            Text("web")
-                    //                                                .font(.footnote)
-                    //                                                .foregroundStyle(.primary.opacity(0.5))
-                    //                                                .frame(minWidth: 30, minHeight: 15)
-                    //                                                .padding(2)
-                    //                                                .padding(.horizontal, 2)
-                    //                                                .background(.primary.opacity(0.1))
-                    //                                                .clipShape(.capsule)
-                    //                                                .help("This is a web app")
-                    //
-                    //                                        }
-                    //
-                    //                                        if appState.appInfo.wrapped {
-                    //                                            Text("iOS")
-                    //                                                .font(.footnote)
-                    //                                                .foregroundStyle(.primary.opacity(0.5))
-                    //                                                .frame(minWidth: 30, minHeight: 15)
-                    //                                                .padding(2)
-                    //                                                .padding(.horizontal, 2)
-                    //                                                .background(.primary.opacity(0.1))
-                    //                                                .clipShape(.capsule)
-                    //                                                .help("This is a wrapped iOS app")
-                    //
-                    //                                        }
-                    //
-                    //                                        if appState.appInfo.arch != .empty {
-                    //                                            Text("\(appState.appInfo.arch.type)")
-                    //                                                .font(.footnote)
-                    //                                                .foregroundStyle(.primary.opacity(0.5))
-                    //                                                .frame(minWidth: 30, minHeight: 15)
-                    //                                                .padding(2)
-                    //                                                .padding(.horizontal, 2)
-                    //                                                .background(.primary.opacity(0.1))
-                    //                                                .clipShape(.capsule)
-                    //                                                .help("This bundle's architecture is \(appState.appInfo.arch)")
-                    //
-                    //                                        }
-                    //
-                    //                                        Text(appState.appInfo.system ? "system" : "user")
-                    //                                            .font(.footnote)
-                    //                                            .foregroundStyle(.primary.opacity(0.5))
-                    //                                            .frame(minWidth: 30, minHeight: 15)
-                    //                                            .padding(2)
-                    //                                            .padding(.horizontal, 2)
-                    //                                            .background(.primary.opacity(0.1))
-                    //                                            .clipShape(.capsule)
-                    //                                            .help("This app is located in \(appState.appInfo.system ? "/Applications" : "\(home)")")
-                    //
-                    //                                        if appState.appInfo.cask != nil {
-                    //                                            Text("homebrew")
-                    //                                                .font(.footnote)
-                    //                                                .foregroundStyle(.primary.opacity(0.5))
-                    //                                                .frame(minWidth: 30, minHeight: 15)
-                    //                                                .padding(2)
-                    //                                                .padding(.horizontal, 2)
-                    //                                                .background(.primary.opacity(0.1))
-                    //                                                .clipShape(.capsule)
-                    //                                                .help("This app is installed via Homebrew")
-                    //
-                    //                                        }
-                    //                                    }
-                    //
-                    //
-                    //                                }
-                    //                                .padding()
-                    //
-                    //                                Menu {
-                    //                                    if appState.appInfo.arch == .universal {
-                    //                                        Button("Lipo Architectures") {
-                    //                                            let title = NSLocalizedString("App Lipo", comment: "Lipo alert title")
-                    //                                            let message = String(format: NSLocalizedString("Pearcleaner will strip the %@ architecture from %@'s executable file to save space. Would you like to proceed?", comment: "Lipo alert message"), isOSArm() ? "intel" : "arm64", appState.appInfo.appName)
-                    //                                            showCustomAlert(title: title, message: message, style: .informational, onOk: {
-                    //                                                let _ = thinAppBundleArchitecture(at: appState.appInfo.path, of: appState.appInfo.arch)
-                    //                                            })
-                    //                                        }
-                    //                                    }
-                    //                                    Button("Prune Translations") {
-                    //                                        let title = NSLocalizedString("Prune Translations", comment: "Prune alert title")
-                    //                                        let message = String(format: NSLocalizedString("This will remove all unused language translation files", comment: "Prune alert message"))
-                    //                                        showCustomAlert(title: title, message: message, style: .warning, onOk: {
-                    //                                            do {
-                    //                                                try pruneLanguages(in: appState.appInfo.path.path)
-                    //                                            } catch {
-                    //                                                printOS("Translation prune error: \(error)")
-                    //                                            }
-                    //                                        })
-                    //                                    }
-                    //                                } label: {
-                    //                                    Label("Options", systemImage: "ellipsis.circle")
-                    //                                }
-                    //                                .menuStyle(.borderlessButton)
-                    //                                .frame(width: 100)
-                    //
-                    //                                Spacer()
-                    //                            }
-                    //                            .padding()
-                    //                            .frame(width: 350)
-                    //                            .background(.ultraThinMaterial)
-                    //                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                    //                            .overlay {
-                    //                                RoundedRectangle(cornerRadius: 8)
-                    //                                    .strokeBorder(Color.primary.opacity(0.2), lineWidth: 1)
-                    //                            }
-                    //                        }
-                    //                        .background(.black.opacity(0.00000000001))
-                    //                        .transition(.move(edge: .trailing))
-                    //                        .onTapGesture {
-                    //                            if infoSidebar {
-                    //                                infoSidebar = false
-                    //                            }
-                    //                        }
-                    //
-                    //
-                    //
-                    //                    }
-
 
                 }
                 .animation(.easeInOut(duration: animationEnabled ? 0.35 : 0), value: infoSidebar)
-                .padding([.horizontal, .bottom], 10)
-                .padding(.top, !mini ? 10 : 0)
+                .padding()
 
             }
 
@@ -591,12 +208,7 @@ struct FilesView: View {
                 updateOnMain {
                     search = ""
                     withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                        if mini || menubarEnabled {
-                            appState.currentView = .apps
-                            showPopover = false
-                        } else {
-                            appState.currentView = .empty
-                        }
+                        appState.currentView = .empty
                         appState.appInfo = AppInfo.empty
                     }
                 }
@@ -618,7 +230,7 @@ struct FilesView: View {
                 updateOnMain {
                     appState.appInfo = nextApp
                 }
-                showAppInFiles(appInfo: nextApp, appState: appState, locations: locations, showPopover: $showPopover)
+                showAppInFiles(appInfo: nextApp, appState: appState, locations: locations)
             }
         }
 
@@ -638,19 +250,14 @@ struct FilesView: View {
                     updateOnMain {
                         appState.appInfo = nextApp
                     }
-                    showAppInFiles(appInfo: nextApp, appState: appState, locations: locations, showPopover: $showPopover)
+                    showAppInFiles(appInfo: nextApp, appState: appState, locations: locations)
                 } else {
                     // If no more items are left, set appInfo to .empty and change page to default view
                     updateOnMain {
                         appState.appInfo = .empty
                         search = ""
                         withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                            if mini || menubarEnabled {
-                                appState.currentView = .apps
-                                showPopover = false
-                            } else {
-                                appState.currentView = .empty
-                            }
+                            appState.currentView = .empty
                         }
                     }
                 }

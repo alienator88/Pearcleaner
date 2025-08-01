@@ -17,17 +17,14 @@ struct ZombieView: View {
     @State private var windowController = WindowManager()
     @AppStorage("settings.general.leftoverWarning") private var warning: Bool = false
     @State private var showAlert = false
-    @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
-    @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @AppStorage("settings.general.confirmAlert") private var confirmAlert: Bool = false
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @Environment(\.colorScheme) var colorScheme
-    @Binding var showPopover: Bool
     @Binding var search: String
     @State private var searchZ: String = ""
     @State private var selectedZombieItemsLocal: Set<URL> = []
@@ -61,26 +58,6 @@ struct ZombieView: View {
                 .transition(.opacity)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                // Titlebar
-                HStack(spacing: 0) {
-                    Spacer()
-
-                    if mini || menubarEnabled {
-                        Button("Close") {
-                            updateOnMain {
-                                appState.appInfo = AppInfo.empty
-                                search = ""
-                                appState.currentView = .apps
-                                showPopover = false
-                            }
-                        }
-                        .buttonStyle(SimpleButtonStyle(icon: "x.circle", iconFlip: "x.circle.fill", help: String(localized: "Close")))
-                    }
-                }
-                .padding(.top, (mini || menubarEnabled) ? 6 : 30)
-                .padding(.trailing, (mini || menubarEnabled) ? 6 : 0)
-
-
                 VStack(spacing: 0) {
 
                     // Main Group
@@ -224,7 +201,7 @@ struct ZombieView: View {
                 }
                 .transition(.opacity)
                 .padding([.horizontal, .bottom], 20)
-                .padding(.top, !mini ? 10 : 0)
+                .padding(.top)
                 .onAppear {
                     updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSortAlpha: selectedSortAlpha, force: true)
                 }
@@ -274,12 +251,7 @@ struct ZombieView: View {
                             search = ""
                             searchZ = ""
                             withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                                if mini || menubarEnabled {
-                                    appState.currentView = .apps
-                                    showPopover = false
-                                } else {
-                                    appState.currentView = .empty
-                                }
+                                appState.currentView = .empty
                             }
 
                         }

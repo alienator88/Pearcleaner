@@ -11,10 +11,8 @@ import AlinFoundation
 struct SettingsView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var fsm: FolderSettingsManager
-    @EnvironmentObject var themeManager: ThemeManager
+    @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var updater: Updater
-    @EnvironmentObject var windowSettings: WindowSettings
-    @Binding var showPopover: Bool
     @Binding var search: String
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.general.selectedTab") private var selectedTab: CurrentTabView = .general
@@ -103,7 +101,6 @@ struct SettingsView: View {
                 .frame(width: 180)
                 .ignoresSafeArea(.all)
         }
-        //        .background(backgroundView(themeManager: themeManager, darker: true, glass: glass))
     }
 
     /// Detail view content based on the selected tab
@@ -116,12 +113,9 @@ struct SettingsView: View {
                 GeneralSettingsTab()
                     .environmentObject(appState)
             case .interface:
-                InterfaceSettingsTab(showPopover: $showPopover, search: $search)
-                    .environmentObject(themeManager)
-                    .environmentObject(windowSettings)
+                InterfaceSettingsTab(search: $search)
             case .folders:
                 FolderSettingsTab()
-                    .environmentObject(themeManager)
             case .update:
                 UpdateSettingsTab()
                     .environmentObject(updater)
@@ -135,7 +129,7 @@ struct SettingsView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding()
         .offset(y: -22)
-        .background(backgroundView(themeManager: themeManager, glass: false))
+        .background(backgroundView(color: theme(for: colorScheme).backgroundMain))
 
     }
 

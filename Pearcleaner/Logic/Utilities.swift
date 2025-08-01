@@ -12,40 +12,6 @@ import AppKit
 import AudioToolbox
 
 
-func resizeWindowAuto(windowSettings: WindowSettings, title: String) {
-    if let window = NSApplication.shared.windows.first(where: { $0.title == title }) {
-        printOS(windowSettings.loadWindowSettings())
-        let newSize = NSSize(width: windowSettings.loadWindowSettings().width, height: windowSettings.loadWindowSettings().height)
-        window.setContentSize(newSize)
-    }
-}
-
-
-
-// Check if Pearcleaner has any windows open
-func hasWindowOpen() -> Bool {
-    for window in NSApp.windows where window.title == "Pearcleaner" {
-        return true
-    }
-    return false
-}
-
-
-
-func findAndSetWindowFrame(named titles: [String], windowSettings: WindowSettings) {
-    windowSettings.registerDefaultWindowSettings() {
-        for title in titles {
-            if let window = NSApp.windows.first(where: { $0.title == title }) {
-                window.isRestorable = false
-                window.isReleasedWhenClosed = false
-                let frame = windowSettings.loadWindowSettings()
-                window.setFrame(frame, display: true, animate: true)
-            }
-        }
-    }
-}
-
-
 func playTrashSound(undo: Bool = false) {
     let soundName = undo ? "poof item off dock.aif" : "drag to trash.aif"
     let path = "/System/Library/Components/CoreAudio.component/Contents/SharedSupport/SystemSounds/dock/\(soundName)"

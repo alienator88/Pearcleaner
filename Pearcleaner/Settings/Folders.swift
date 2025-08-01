@@ -15,7 +15,6 @@ struct FolderSettingsTab: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
     @EnvironmentObject var fsm: FolderSettingsManager
-    @EnvironmentObject var themeManager: ThemeManager
     @State private var isHovered = false
     @State private var newKeyword: String = ""
     @AppStorage("settings.general.glass") private var glass: Bool = false

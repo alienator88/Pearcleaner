@@ -323,7 +323,6 @@ struct SettingsControlButtonGroup: View {
 
 
 struct SimpleCheckboxToggleStyle: ToggleStyle {
-    @EnvironmentObject private var themeManager: ThemeManager
     @State private var isHovered: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.general.glass") private var glass: Bool = false
@@ -335,9 +334,6 @@ struct SimpleCheckboxToggleStyle: ToggleStyle {
                 .frame(width: 14, height: 14)
                 .overlay {
                     if configuration.isOn {
-                        //                        RoundedRectangle(cornerRadius: 2)
-                        //                            .fill(themeManager.pickerColor.adjustBrightness(-20))
-                        //                            .frame(width: 8, height: 8)
                         Image(systemName: "checkmark")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
@@ -363,47 +359,46 @@ struct SimpleCheckboxToggleStyle: ToggleStyle {
 }
 
 
-struct CircleCheckboxToggleStyle: ToggleStyle {
-    @EnvironmentObject private var themeManager: ThemeManager
-    @State private var isHovered: Bool = false
-    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
-
-    func makeBody(configuration: Configuration) -> some View {
-        HStack {
-            Circle()
-                .fill(themeManager.pickerColor.adjustBrightness(5))
-                .frame(width: 18, height: 18)
-                .overlay {
-                    if configuration.isOn {
-                        ZStack {
-                            //                            Circle()
-                            //                                .fill(themeManager.pickerColor.adjustBrightness(-15))
-                            //                                .frame(width: 18, height: 18)
-                            Image(systemName: "checkmark")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 8, height: 8)
-                                .foregroundStyle(.primary)
-                        }
-
-                    }
-                }
-                .overlay {
-                    Circle()
-                        .strokeBorder(themeManager.pickerColor.adjustBrightness(isHovered ? -10 : -5.0), lineWidth: 1)
-                }
-                .onTapGesture {
-                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                        configuration.isOn.toggle()
-                    }
-                }
-            configuration.label
-        }
-        .onHover(perform: { hovering in
-            self.isHovered = hovering
-        })
-    }
-}
+//struct CircleCheckboxToggleStyle: ToggleStyle {
+//    @State private var isHovered: Bool = false
+//    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+//
+//    func makeBody(configuration: Configuration) -> some View {
+//        HStack {
+//            Circle()
+//                .fill(themeManager.pickerColor.adjustBrightness(5))
+//                .frame(width: 18, height: 18)
+//                .overlay {
+//                    if configuration.isOn {
+//                        ZStack {
+//                            //                            Circle()
+//                            //                                .fill(themeManager.pickerColor.adjustBrightness(-15))
+//                            //                                .frame(width: 18, height: 18)
+//                            Image(systemName: "checkmark")
+//                                .resizable()
+//                                .aspectRatio(contentMode: .fit)
+//                                .frame(width: 8, height: 8)
+//                                .foregroundStyle(.primary)
+//                        }
+//
+//                    }
+//                }
+//                .overlay {
+//                    Circle()
+//                        .strokeBorder(themeManager.pickerColor.adjustBrightness(isHovered ? -10 : -5.0), lineWidth: 1)
+//                }
+//                .onTapGesture {
+//                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+//                        configuration.isOn.toggle()
+//                    }
+//                }
+//            configuration.label
+//        }
+//        .onHover(perform: { hovering in
+//            self.isHovered = hovering
+//        })
+//    }
+//}
 
 
 
@@ -550,7 +545,6 @@ struct LipoButton: ButtonStyle {
 
 
 public struct SlideableDivider: View {
-    @EnvironmentObject private var themeManager: ThemeManager
     @Binding var dimension: Double
     @State private var dimensionStart: Double?
     @State private var handleWidth: Double = 4
@@ -561,16 +555,19 @@ public struct SlideableDivider: View {
     }
 
     public var body: some View {
-        Rectangle()
-            .opacity(0.0)
-            .frame(width: 10)
+        Divider()
+            .background(
+                // Invisible wider hover area
+                Rectangle()
+                    .fill(Color.clear)
+                    .frame(width: 10) // 10pt wide hover area
+                    .contentShape(Rectangle()) // Makes the clear area interactive
+            )
             .onHover { inside in
                 if inside {
                     NSCursor.resizeLeftRight.push()
-
                 } else {
                     NSCursor.pop()
-
                 }
             }
             .contextMenu {
@@ -580,6 +577,7 @@ public struct SlideableDivider: View {
             }
             .gesture(drag)
             .help("Right click to reset size")
+            .ignoresSafeArea(.all)
     }
 
     var drag: some Gesture {
@@ -593,7 +591,7 @@ public struct SlideableDivider: View {
 
                 // Set minimum and maximum width
                 let minWidth: Double = 240
-                let maxWidth: Double = 350
+                let maxWidth: Double = 300
                 dimension = max(minWidth, min(maxWidth, newDimension))
                 NSCursor.closedHand.set()
                 handleWidth = 6
@@ -680,34 +678,81 @@ struct SimpleButtonBrightStyle: ButtonStyle {
 }
 
 
+public struct SimpleButtonStyleFlipped: ButtonStyle {
+    @State private var hovered = false
+    let icon: String
+    let iconFlip: String
+    let label: String
+    let help: String
+    let color: Color
+    let size: CGFloat
+    let padding: CGFloat
+    let rotate: Bool
 
-struct PearDropView: View {
-    @ObservedObject private var theme = ThemeManager.shared
+    public init(icon: String, iconFlip: String = "", label: String = "", help: String, color: Color = .primary, size: CGFloat = 20, padding: CGFloat = 5, rotate: Bool = false) {
+        self.icon = icon
+        self.iconFlip = iconFlip
+        self.label = label
+        self.help = help
+        self.color = color
+        self.size = size
+        self.padding = padding
+        self.rotate = rotate
+    }
 
-    var body: some View {
+    public func makeBody(configuration: Self.Configuration) -> some View {
+        HStack(alignment: .center) {
+            if !label.isEmpty {
+                Text(label)
+            }
 
-        ZStack() {
-            let shadow = theme.displayMode == .dark ? Color.white.opacity(0.2) : Color.black.opacity(0.3)
-            let mainColor = theme.pickerColor.adjustBrightness(theme.displayMode == .dark ? 3 : 7)
-
-            shadow
-                .mask(
-                    Image("pearLogo")
-                        .resizable()
-                        .scaledToFit()
-                )
-                .offset(y: theme.displayMode == .dark ? 1 : -1)
-
-            mainColor
-                .mask(
-                    Image("pearLogo")
-                        .resizable()
-                        .scaledToFit()
-                )
+            Image(systemName: (hovered && !iconFlip.isEmpty) ? iconFlip : icon)
+                .resizable()
+                .scaledToFit()
+                .frame(width: size, height: size)
+                .rotationEffect(.degrees(rotate ? (hovered ? 90 : 0) : 0))
+                .animation(.easeInOut(duration: 0.2), value: hovered)
         }
-        //            AnimatedGradientView(colors: [.orange, .green, .yellow], direction: .horizontal)
+        .foregroundColor(hovered ? color.opacity(0.5) : color)
+        .padding(padding)
+        .onHover { hovering in
+            withAnimation() {
+                hovered = hovering
+            }
+        }
+        .scaleEffect(configuration.isPressed ? 0.90 : 1)
+        .help(help)
     }
 }
+
+
+//struct PearDropView: View {
+//    @ObservedObject private var theme = ThemeManager.shared
+//
+//    var body: some View {
+//
+//        ZStack() {
+//            let shadow = theme.displayMode == .dark ? Color.white.opacity(0.2) : Color.black.opacity(0.3)
+//            let mainColor = theme.pickerColor.adjustBrightness(theme.displayMode == .dark ? 3 : 7)
+//
+//            shadow
+//                .mask(
+//                    Image("pearLogo")
+//                        .resizable()
+//                        .scaledToFit()
+//                )
+//                .offset(y: theme.displayMode == .dark ? 1 : -1)
+//
+//            mainColor
+//                .mask(
+//                    Image("pearLogo")
+//                        .resizable()
+//                        .scaledToFit()
+//                )
+//        }
+//        //            AnimatedGradientView(colors: [.orange, .green, .yellow], direction: .horizontal)
+//    }
+//}
 
 //struct PearDropViewSmall: View {
 //
@@ -735,126 +780,126 @@ struct PearDropView: View {
 
 // Background color/glass setter
 @ViewBuilder
-func backgroundView(themeManager: ThemeManager = ThemeManager.shared, darker: Bool = false, glass: Bool = false) -> some View {
+func backgroundView(color: Color, glass: Bool = false) -> some View {
     if glass {
         GlassEffect(material: .sidebar, blendingMode: .behindWindow)
             .edgesIgnoringSafeArea(.all)
     } else {
-        darker ? themeManager.pickerColor.adjustBrightness(5).edgesIgnoringSafeArea(.all) : themeManager.pickerColor.edgesIgnoringSafeArea(.all)
+        color.edgesIgnoringSafeArea(.all)
     }
 }
 
 
 
 
-struct CustomPickerButton: View {
-    @EnvironmentObject var themeManager: ThemeManager
-
-    // Selected option binding to allow external state management
-    @Binding var selectedOption: CurrentPage
-    @Binding var isExpanded: Bool
-    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
-
-    // Options array with names and icons
-    let options: [CurrentPage]
-
-    // Action callback when an option is selected
-    var onSelect: ((String) -> Void)?
-
-    @State private var hoveredItem: String? // Tracks the currently hovered option
-
-    var body: some View {
-        Button(action: {
-            withAnimation(Animation.spring(duration: animationEnabled ? 0.35 : 0)) {
-                isExpanded.toggle()
-            }
-        }) {
-            ZStack {
-                // Background and overlay styling
-                VStack {
-                    if isExpanded {
-                        // Expanded menu with selectable options
-                        VStack(alignment: .leading, spacing: 0) {
-                            ForEach(Array(options.enumerated()), id: \.element.title) { index, option in
-                                Button(action: {
-                                    selectedOption = option
-                                    onSelect?(option.title)
-                                    withAnimation {
-                                        isExpanded = false
-                                    }
-                                }) {
-                                    HStack {
-                                        Image(systemName: option.icon)
-                                        Text(option.title)
-                                        if option.title == "Lipo" {
-                                            BetaBadge()
-                                        }
-                                        Spacer()
-                                        switch option.title {
-                                        case "Applications":
-                                            Text(verbatim: "⌘1").font(.footnote).opacity(0.3)
-                                        case "Development":
-                                            Text(verbatim: "⌘2").font(.footnote).opacity(0.3)
-                                        case "Lipo":
-                                            Text(verbatim: "⌘3").font(.footnote).opacity(0.3)
-                                        case "Orphaned Files":
-                                            Text(verbatim: "⌘4").font(.footnote).opacity(0.3)
-
-                                        default:
-                                            EmptyView()
-                                        }
-
-                                    }
-                                    .contentShape(Rectangle())
-                                    .opacity(hoveredItem == option.title ? 0.7 : 1.0)
-                                }
-                                .buttonStyle(.borderless)
-                                .foregroundStyle(.primary)
-                                .onHover { isHovering in
-                                    hoveredItem = isHovering ? option.title : nil
-                                }
-
-                                if index < options.count - 1 {
-                                    Divider()
-                                        .padding(.vertical, 8)
-                                        .opacity(0.3)
-                                }
-
-                            }
-                        }
-                        .frame(maxWidth: 140, alignment: .leading)
-                    } else {
-                        // Display the selected option when collapsed
-                        HStack {
-                            Image(systemName: selectedOption.icon)
-                            Text(selectedOption.title)
-                        }
-                        .padding(8)
-                        .contentShape(Rectangle())
-                        .opacity(hoveredItem == selectedOption.title ? 0.7 : 1.0) // Change opacity on hover
-                        .onHover { isHovering in
-                            // Update hoveredItem based on whether this HStack is hovered
-                            hoveredItem = isHovering ? selectedOption.title : nil
-                        }
-                    }
-                }
-                .padding(isExpanded ? 10 : 0)
-                .background(backgroundView(themeManager: themeManager, darker: true, glass: false))
-                .cornerRadius(8)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .strokeBorder(Color.primary.opacity(0.2), lineWidth: 1)
-                )
-                .transition(.scale)
-            }
-        }
-        .buttonStyle(.plain)
-    }
-}
+//struct CustomPickerButton: View {
+//    @EnvironmentObject var themeManager: ThemeManager
+//
+//    // Selected option binding to allow external state management
+//    @Binding var selectedOption: CurrentPage
+//    @Binding var isExpanded: Bool
+//    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+//
+//    // Options array with names and icons
+//    let options: [CurrentPage]
+//
+//    // Action callback when an option is selected
+//    var onSelect: ((String) -> Void)?
+//
+//    @State private var hoveredItem: String? // Tracks the currently hovered option
+//
+//    var body: some View {
+//        Button(action: {
+//            withAnimation(Animation.spring(duration: animationEnabled ? 0.35 : 0)) {
+//                isExpanded.toggle()
+//            }
+//        }) {
+//            ZStack {
+//                // Background and overlay styling
+//                VStack {
+//                    if isExpanded {
+//                        // Expanded menu with selectable options
+//                        VStack(alignment: .leading, spacing: 0) {
+//                            ForEach(Array(options.enumerated()), id: \.element.title) { index, option in
+//                                Button(action: {
+//                                    selectedOption = option
+//                                    onSelect?(option.title)
+//                                    withAnimation {
+//                                        isExpanded = false
+//                                    }
+//                                }) {
+//                                    HStack {
+//                                        Image(systemName: option.icon)
+//                                        Text(option.title)
+//                                        if option.title == "Lipo" {
+//                                            BetaBadge()
+//                                        }
+//                                        Spacer()
+//                                        switch option.title {
+//                                        case "Applications":
+//                                            Text(verbatim: "⌘1").font(.footnote).opacity(0.3)
+//                                        case "Development":
+//                                            Text(verbatim: "⌘2").font(.footnote).opacity(0.3)
+//                                        case "Lipo":
+//                                            Text(verbatim: "⌘3").font(.footnote).opacity(0.3)
+//                                        case "Orphaned Files":
+//                                            Text(verbatim: "⌘4").font(.footnote).opacity(0.3)
+//
+//                                        default:
+//                                            EmptyView()
+//                                        }
+//
+//                                    }
+//                                    .contentShape(Rectangle())
+//                                    .opacity(hoveredItem == option.title ? 0.7 : 1.0)
+//                                }
+//                                .buttonStyle(.borderless)
+//                                .foregroundStyle(.primary)
+//                                .onHover { isHovering in
+//                                    hoveredItem = isHovering ? option.title : nil
+//                                }
+//
+//                                if index < options.count - 1 {
+//                                    Divider()
+//                                        .padding(.vertical, 8)
+//                                        .opacity(0.3)
+//                                }
+//
+//                            }
+//                        }
+//                        .frame(maxWidth: 140, alignment: .leading)
+//                    } else {
+//                        // Display the selected option when collapsed
+//                        HStack {
+//                            Image(systemName: selectedOption.icon)
+//                            Text(selectedOption.title)
+//                        }
+//                        .padding(8)
+//                        .contentShape(Rectangle())
+//                        .opacity(hoveredItem == selectedOption.title ? 0.7 : 1.0) // Change opacity on hover
+//                        .onHover { isHovering in
+//                            // Update hoveredItem based on whether this HStack is hovered
+//                            hoveredItem = isHovering ? selectedOption.title : nil
+//                        }
+//                    }
+//                }
+//                .padding(isExpanded ? 10 : 0)
+//                .background(backgroundView(color: .blue, glass: false))
+//                .cornerRadius(8)
+//                .overlay(
+//                    RoundedRectangle(cornerRadius: 8)
+//                        .strokeBorder(Color.primary.opacity(0.2), lineWidth: 1)
+//                )
+//                .transition(.scale)
+//            }
+//        }
+//        .buttonStyle(.plain)
+//    }
+//}
 
 
 struct SettingsToggle: ToggleStyle {
-    @EnvironmentObject var themeManager: ThemeManager
+    @Environment(\.colorScheme) var colorScheme
 
     func makeBody(configuration: Configuration) -> some View {
         Button {
@@ -868,7 +913,7 @@ struct SettingsToggle: ToggleStyle {
 
                 // Toggle Knob
                 Circle()
-                    .fill(configuration.isOn ? Color.white : (themeManager.displayMode == .light ? themeManager.pickerColor.adjustBrightness(5) : themeManager.pickerColor))
+                    .fill(configuration.isOn ? ThemeColors.shared(for: colorScheme).textPrimary : ThemeColors.shared(for: colorScheme).textSecondary)
                     .frame(width: 18, height: 18)
                     .offset(x: configuration.isOn ? 8 : -8)
                     .animation(.spring(duration: 0.2), value: configuration.isOn)

@@ -11,18 +11,12 @@ import AlinFoundation
 
 struct AppListItems: View {
     @EnvironmentObject var appState: AppState
-    @EnvironmentObject var themeManager: ThemeManager
     @Binding var search: String
     @State private var isHovered = false
     @Environment(\.colorScheme) var colorScheme
-    @AppStorage("displayMode") var displayMode: DisplayMode = .system
-    @AppStorage("settings.general.miniview") private var miniView: Bool = true
-    @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.general.glass") private var glass: Bool = true
-    @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.interface.minimalist") private var minimalEnabled: Bool = true
-    @Binding var showPopover: Bool
     @EnvironmentObject var locations: Locations
     let itemId = UUID()
     let appInfo: AppInfo
@@ -43,7 +37,7 @@ struct AppListItems: View {
 
                             if wasEmpty && appState.currentView != .files {
                                 appState.multiMode = true
-                                showAppInFiles(appInfo: appInfo, appState: appState, locations: locations, showPopover: $showPopover)
+                                showAppInFiles(appInfo: appInfo, appState: appState, locations: locations)
                             }
                         }
                     } else {
@@ -61,15 +55,14 @@ struct AppListItems: View {
             Button(action: {
                 if !isSelected {
                     withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                        showAppInFiles(appInfo: appInfo, appState: appState, locations: locations, showPopover: $showPopover)
+                        showAppInFiles(appInfo: appInfo, appState: appState, locations: locations)
                     }
                 } else {
                     withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                         updateOnMain {
                             appState.appInfo = .empty
                             appState.selectedItems = []
-                            appState.currentView = miniView ? .apps : .empty
-                            showPopover = false
+                            appState.currentView = .empty
                         }
                     }
                 }
@@ -155,7 +148,8 @@ struct AppListItems: View {
         }
         .background{
             Rectangle()
-                .fill(isSelected && !glass ? themeManager.pickerColor : .clear)
+                .fill(.clear)
+//                .fill(isSelected && !glass ? theme(for: colorScheme).accentPrimary : .clear)
         }
         .overlay{
             if (isHovered || isSelected) {

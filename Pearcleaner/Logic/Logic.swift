@@ -251,11 +251,10 @@ func reversePreloader(
 
 // Load item in Files view
 func showAppInFiles(
-    appInfo: AppInfo, appState: AppState, locations: Locations, showPopover: Binding<Bool>
-) {
+    appInfo: AppInfo, appState: AppState, locations: Locations) {
     @AppStorage("settings.interface.animationEnabled") var animationEnabled: Bool = true
 
-    showPopover.wrappedValue = false
+//    showPopover.wrappedValue = false
 
     updateOnMain {
         appState.appInfo = .empty
@@ -277,7 +276,7 @@ func showAppInFiles(
         // Animate the view change and popover display.
         withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
             appState.currentView = .files
-            showPopover.wrappedValue = true
+//            showPopover.wrappedValue = true
         }
     }
 }

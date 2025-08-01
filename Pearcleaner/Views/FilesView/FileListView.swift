@@ -17,7 +17,6 @@ struct FileListView: View {
     @Binding var infoSidebar: Bool
     @Binding var selectedSortAlpha: Bool
     @Binding var isHoveredChevron: Bool
-    @Binding var showPopover: Bool
     let locations: Locations
     let windowController: WindowManager
     let handleUninstallAction: () -> Void
@@ -59,7 +58,7 @@ struct FileListView: View {
                                 selectedSortAlpha.toggle()
                                 updateSortedFiles()
                             } label: { EmptyView() }
-                                .buttonStyle(SimpleButtonStyle(
+                                .buttonStyle(SimpleButtonStyleFlipped(
                                     icon: "line.3.horizontal.decrease.circle",
                                     label: selectedSortAlpha ? "Name" : "Size",
                                     help: selectedSortAlpha ? "Sorted by Name" : "Sorted by Size",
@@ -120,7 +119,7 @@ struct FileListView: View {
                                                 updateOnMain {
                                                     appState.appInfo = newApp
                                                 }
-                                                showAppInFiles(appInfo: newApp, appState: appState, locations: locations, showPopover: $showPopover)
+                                                showAppInFiles(appInfo: newApp, appState: appState, locations: locations)
                                             }
                                             Button {
                                                 removePath(path)

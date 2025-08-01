@@ -12,16 +12,13 @@ import AlinFoundation
 struct TerminalSheetView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
-    @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     @AppStorage("settings.general.oneshot") private var oneShotMode: Bool = false
 
-    var showPopover: Binding<Bool>?
     let command: String?
     let homebrew: Bool
 
-    init(showPopover: Binding<Bool>? = nil, command: String? = nil, homebrew: Bool = false, caskName: String? = nil) {
-        self.showPopover = showPopover
+    init(command: String? = nil, homebrew: Bool = false, caskName: String? = nil) {
         self.command = homebrew ? getBrewCleanupCommand(for: caskName ?? "") : command
         self.homebrew = homebrew
     }
@@ -49,20 +46,7 @@ struct TerminalSheetView: View {
 
             Button("Close") {
 
-                // Handle close logic based on the presence of showPopover
-                if let showPopover = showPopover {
-                    // If popover is present
-                    if mini || menubarEnabled {
-                        appState.currentView = .apps
-                        showPopover.wrappedValue = false
-                    } else {
-                        appState.currentView = .empty
-                    }
-                } else {
-                    // No popover, so just clear the current view and app info
-                    appState.currentView = .empty
-                }
-                
+                appState.currentView = .empty
                 appState.appInfo = AppInfo.empty
 
                 // Check if there are more paths to process
@@ -74,7 +58,7 @@ struct TerminalSheetView: View {
                             updateOnMain {
                                 appState.appInfo = nextApp
                             }
-                            showAppInFiles(appInfo: nextApp, appState: appState, locations: locations, showPopover: showPopover ?? .constant(false))
+                            showAppInFiles(appInfo: nextApp, appState: appState, locations: locations)
                         }
                     }
                 } else if oneShotMode && !appState.multiMode {

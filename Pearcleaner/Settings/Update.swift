@@ -12,7 +12,6 @@ import AlinFoundation
 
 struct UpdateSettingsTab: View {
     @EnvironmentObject var appState: AppState
-    @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var updater: Updater
 
     var body: some View {

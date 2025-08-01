@@ -11,18 +11,14 @@ import Ifrit
 
 struct AppSearchView: View {
     @EnvironmentObject var appState: AppState
-    @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var locations: Locations
     @EnvironmentObject var fsm: FolderSettingsManager
     @EnvironmentObject var updater: Updater
     @EnvironmentObject var permissionManager: PermissionManager
+    @Environment(\.colorScheme) var colorScheme
     var glass: Bool
-    var menubarEnabled: Bool
-    var mini: Bool
     @Binding var search: String
-    @Binding var showPopover: Bool
     @State private var showMenu = false
-    @Binding var isMenuBar: Bool
     @AppStorage("settings.general.selectedSortAppsList") var selectedSortOption: SortOption = .alphabetical
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
@@ -38,8 +34,6 @@ struct AppSearchView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                Spacer()
-                    .frame(height: !isMenuBar ? 0 : 10)
 
                 searchBarComponent
                     .padding(8)
@@ -47,7 +41,7 @@ struct AppSearchView: View {
                 Divider()
                     .padding(.horizontal, 8)
 
-                AppsListView(search: $search, showPopover: $showPopover, filteredApps: filteredApps)
+                AppsListView(search: $search, filteredApps: filteredApps)
                     .padding(.vertical, 4)
 
                 if updater.updateAvailable {
@@ -72,20 +66,14 @@ struct AppSearchView: View {
 
         }
         .padding(.top, 22)
-        .background(backgroundView(themeManager: themeManager, darker: true, glass: glass))
-        .clipShape(LadderTopRoundedRectangle(cornerRadius: 8, ladderHeight: 22, ladderPosition: 58, isFlipped: true))
-        .overlay {
-            LadderTopRoundedRectangle(cornerRadius: 8, ladderHeight: 22, ladderPosition: 58, isFlipped: true)
-                .strokeBorder(.primary.opacity(0.05), lineWidth: 1)
-        }
 #if DEBUG
         .overlay {
             VStack {
                 HStack {
                     Text(verbatim: "DEBUG").foregroundStyle(.orange)
                         .help(Text(verbatim: "VERSION: \(Bundle.main.version) | BUILD: \(Bundle.main.buildVersion)"))
-                        .padding(.leading, 72)
-                        .padding(.top, 2)
+//                        .padding(.leading, 72)
+//                        .padding(.top, 2)
                     Spacer()
                 }
 
@@ -109,7 +97,6 @@ struct AppSearchView: View {
             if search.isEmpty {
                 Button("Refresh") {
                     withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                        showPopover = false
                         reloadAppsList(appState: appState, fsm: fsm)
                     }
                 }
@@ -117,127 +104,39 @@ struct AppSearchView: View {
             }
 
 
-            SearchBar(search: $search, darker: (mini || menubarEnabled) ? false : true, glass: glass, sidebar: false)
+            SearchBar(search: $search, darker: true, glass: glass, sidebar: false)
 
 
-            if search.isEmpty && (mini || menubarEnabled) {
-                Button("More") {
-                    self.showMenu.toggle()
-                }
-                .buttonStyle(SimpleButtonStyle(icon: "ellipsis.circle", help: String(localized: "More"), size: 16, rotate: false))
-                .popover(isPresented: $showMenu) {
-                    VStack(alignment: .leading) {
-
-//                        Button("Refresh") {
-//                            withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-//                                showPopover = false
-//                                reloadAppsList(appState: appState, fsm: fsm)
-//                            }
-//                        }
-//                        .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: "Refresh List", help: String(localized: "Refresh apps (⌘+R)"), size: 5))
-
-                        Button {
-                            withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                                // Cycle through all enum cases using `CaseIterable`
-                                if let nextSortOption = SortOption(rawValue: selectedSortOption.rawValue + 1) {
-                                    selectedSortOption = nextSortOption
-                                    showPopover = false
-                                    showMenu = false
-                                } else {
-                                    selectedSortOption = .alphabetical
-                                    showPopover = false
-                                    showMenu = false
-                                }
-                            }
-                        } label: { EmptyView() }
-                            .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: String(localized:"Sorting: \(selectedSortOption.title)"), help: String(localized: "Sort app list alphabetically by name or by size"), size: 5))
-
-                        if mini && !menubarEnabled {
-                            Button {
-                                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                                    appState.currentView = .empty
-                                    appState.appInfo = AppInfo.empty
-                                    showPopover = false
-                                }
-                            } label: { EmptyView() }
-                                .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: String(localized: "Drop Target"), help: String(localized: "Drop Target"), size: 5))
-                        }
-
-
-                        Button("Orphaned Files") {
-                            showMenu = false
-                            withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                                showPopover = false
-                                appState.appInfo = .empty
-                                if appState.zombieFile.fileSize.keys.isEmpty {
-                                    appState.currentView = .zombie
-                                    appState.showProgress.toggle()
-                                    showPopover.toggle()
-                                    reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, fsm: fsm)
-                                } else {
-                                    appState.currentView = .zombie
-                                    showPopover.toggle()
-                                }
-                            }
-                        }
-                        .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: String(localized: "Orphaned Files"), help: String(localized: "Orphaned Files"), size: 5))
-
-
-                        Button("Settings") {
-                            openAppSettings()
-                            showMenu = false
-                        }
-                        .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: String(localized: "Settings"), help: String(localized: "Settings"), size: 5))
-
-
-                        if menubarEnabled {
-                            Button("Quit") {
-                                NSApp.terminate(nil)
-                            }
-                            .buttonStyle(SimpleButtonStyle(icon: "circle.fill", label: String(localized: "Quit"), help: String(localized: "Quit Pearcleaner"), size: 5))                        }
-
-                    }
-                    .padding()
-                    .background(backgroundView(themeManager: themeManager, glass: glass).padding(-80))
-//                    .frame(width: 200)
-
-                }
-            } else if search.isEmpty && (!mini || !menubarEnabled) {
-
+            if search.isEmpty {
                 Button {
                     withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                         showMenu.toggle()
                     }
                 } label: { EmptyView() }
-                .buttonStyle(SimpleButtonStyle(icon: "line.3.horizontal.decrease.circle", help: selectedSortOption.title, size: 16))
-                .popover(isPresented: $showMenu, arrowEdge: .bottom) {
-                    VStack(alignment: .leading, spacing: 10) {
-                        HStack {
-                            Spacer()
-                            Text("Sorting Options").font(.subheadline).foregroundStyle(.secondary)
-                            Spacer()
+                    .buttonStyle(SimpleButtonStyle(icon: "line.3.horizontal.decrease.circle", help: selectedSortOption.title, size: 16))
+                    .popover(isPresented: $showMenu, arrowEdge: .bottom) {
+                        VStack(alignment: .leading, spacing: 10) {
+                            HStack {
+                                Spacer()
+                                Text("Sorting Options").font(.subheadline).foregroundStyle(.secondary)
+                                Spacer()
+                            }
+                            Divider()
+                            ForEach(SortOption.allCases) { option in
+                                Button {
+                                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                                        selectedSortOption = option
+                                        showMenu = false
+                                    }
+                                } label: { EmptyView() }
+                                    .buttonStyle(SimpleButtonStyle(icon: selectedSortOption == option ? "circle.inset.filled" : "circle", label: option.title, help: "", size: 5))
+                            }
                         }
-                        Divider()
-                        ForEach(SortOption.allCases) { option in
-                            Button {
-                                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                                    selectedSortOption = option
-                                    showMenu = false
-                                }
-                            } label: { EmptyView() }
-                            .buttonStyle(SimpleButtonStyle(icon: selectedSortOption == option ? "circle.inset.filled" : "circle", label: option.title, help: "", size: 5))
-
-
-                        }
+                        .padding()
+                        .background(backgroundView(color: theme(for: colorScheme).backgroundMain, glass: glass).padding(-80))
                     }
-                    .padding()
-                    .background(backgroundView(themeManager: themeManager, glass: glass).padding(-80))
-//                    .frame(width: 160)
-                }
 
             }
-
-
 
         }
         .frame(minHeight: 30)
@@ -293,7 +192,6 @@ struct SimpleSearchStyle: TextFieldStyle {
     @State var padding: CGFloat = 5
     @State var sidebar: Bool = true
     @EnvironmentObject var appState: AppState
-    @EnvironmentObject var themeManager: ThemeManager
     @AppStorage("settings.general.mini") private var mini: Bool = false
     @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
@@ -301,12 +199,6 @@ struct SimpleSearchStyle: TextFieldStyle {
     func _body(configuration: TextField<Self._Label>) -> some View {
 
         ZStack {
-//            RoundedRectangle(cornerRadius: 8)
-//                .fill(darker ? themeManager.pickerColor.adjustBrightness(5) : themeManager.pickerColor)
-//                .allowsHitTesting(false)
-//                .frame(height: 30)
-//                .opacity((glass && (sidebar || !mini && !menubarEnabled)) || mini || menubarEnabled ? 0.0 : 1.0)
-
 
             ZStack {
                 if text.isEmpty {

@@ -2011,6 +2011,9 @@
         }
       }
     },
+    "Apps" : {
+
+    },
     "Are you sure you want to remove these files?" : {
       "localizations" : {
         "de" : {
@@ -3992,6 +3995,9 @@
           }
         }
       }
+    },
+    "Dev" : {
+
     },
     "Development" : {
       "localizations" : {
@@ -10616,6 +10622,9 @@
           }
         }
       }
+    },
+    "Orphans" : {
+
     },
     "Pearcleaner and all of its files will be cleanly removed, are you sure?" : {
       "extractionState" : "manual",
@@ -18956,6 +18965,9 @@
           }
         }
       }
+    },
+    "Welcome" : {
+
     },
     "When applications are moved to Trash, Pearcleaner will launch and find related files and folders for deletion." : {
       "extractionState" : "manual",

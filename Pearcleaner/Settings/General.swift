@@ -14,7 +14,6 @@ import UniformTypeIdentifiers
 struct GeneralSettingsTab: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
-    @EnvironmentObject var themeManager: ThemeManager
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.general.brew") private var brew: Bool = false
     @AppStorage("settings.general.oneshot") private var oneShotMode: Bool = false
@@ -248,7 +247,6 @@ struct GeneralSettingsTab: View {
                             .frame(width: 20, height: 20)
                             .padding(.trailing)
                             .foregroundStyle(.primary)
-//                            .saturation(themeManager.displayMode.colorScheme == .dark ? 0.8 : 1)
                         Text("Detect when apps are moved to Trash")
                             .font(.callout)
                             .foregroundStyle(.primary)
@@ -370,7 +368,6 @@ struct GeneralSettingsTab: View {
                             .frame(width: 20, height: 20)
                             .padding(.trailing)
                             .foregroundStyle(.primary)
-//                            .saturation(themeManager.displayMode.colorScheme == .dark ? 0.8 : 1)
                         Text("Pearcleaner CLI support")
                             .font(.callout)
                             .foregroundStyle(.primary)
