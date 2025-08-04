@@ -130,7 +130,7 @@ struct AppDetails: View {
     private func badge(_ text: String) -> some View {
         Text(text)
             .font(.footnote)
-            .foregroundStyle(.primary.opacity(0.5))
+            .foregroundStyle(.primary)
             .padding(.horizontal, 6)
             .padding(.vertical, 2)
             .background(.primary.opacity(0.1))
@@ -168,7 +168,7 @@ struct ExtraOptions: View {
 
     var body: some View {
         HStack() {
-            Text("Click to dismiss").font(.caption).foregroundStyle(.secondary.opacity(0.5))
+            Text("Click to dismiss").font(.caption).foregroundStyle(.primary.opacity(0.5))
             Spacer()
             Menu {
                 if appState.appInfo.arch == .universal {

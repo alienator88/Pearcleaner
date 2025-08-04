@@ -479,12 +479,23 @@ private var caskLookupTable: [String: String]?
 private let caskLookupQueue = DispatchQueue(label: "com.pearcleaner.cask.lookup", attributes: .concurrent)
 
 func getCaskIdentifier(for appName: String) -> String? {
-    return caskLookupQueue.sync {
-        // Build lookup table once for all apps
-        if caskLookupTable == nil {
-            caskLookupTable = buildCaskLookupTable()
-        }
+    // First, try a read-only access
+    let existingTable = caskLookupQueue.sync {
+        return caskLookupTable
+    }
 
+    // If table doesn't exist, build it with a barrier write
+    if existingTable == nil {
+        caskLookupQueue.sync(flags: .barrier) {
+            // Double-check inside the barrier to avoid duplicate work
+            if caskLookupTable == nil {
+                caskLookupTable = buildCaskLookupTable()
+            }
+        }
+    }
+
+    // Now safely read the result
+    return caskLookupQueue.sync {
         return caskLookupTable?[appName.lowercased()]
     }
 }

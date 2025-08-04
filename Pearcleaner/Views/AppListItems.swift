@@ -17,6 +17,7 @@ struct AppListItems: View {
     @AppStorage("settings.general.glass") private var glass: Bool = true
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.interface.minimalist") private var minimalEnabled: Bool = true
+    @AppStorage("settings.interface.multiSelect") private var multiSelect: Bool = false
     @EnvironmentObject var locations: Locations
     let itemId = UUID()
     let appInfo: AppInfo
@@ -27,30 +28,33 @@ struct AppListItems: View {
 
         HStack {
 
-            Toggle(isOn: Binding(
-                get: { self.appState.externalPaths.contains(self.appInfo.path) },
-                set: { isChecked in
-                    if isChecked {
-                        if !self.appState.externalPaths.contains(self.appInfo.path) {
-                            let wasEmpty = self.appState.externalPaths.isEmpty
-                            self.appState.externalPaths.append(self.appInfo.path)
+            if multiSelect {
+                Toggle(isOn: Binding(
+                    get: { self.appState.externalPaths.contains(self.appInfo.path) },
+                    set: { isChecked in
+                        if isChecked {
+                            if !self.appState.externalPaths.contains(self.appInfo.path) {
+                                let wasEmpty = self.appState.externalPaths.isEmpty
+                                self.appState.externalPaths.append(self.appInfo.path)
 
-                            if wasEmpty && appState.currentView != .files {
-                                appState.multiMode = true
-                                showAppInFiles(appInfo: appInfo, appState: appState, locations: locations)
+                                if wasEmpty && appState.currentView != .files {
+                                    appState.multiMode = true
+                                    showAppInFiles(appInfo: appInfo, appState: appState, locations: locations)
+                                }
+                            }
+                        } else {
+                            self.appState.externalPaths.removeAll { $0 == self.appInfo.path }
+
+                            if self.appState.externalPaths.isEmpty {
+                                appState.multiMode = false
                             }
                         }
-                    } else {
-                        self.appState.externalPaths.removeAll { $0 == self.appInfo.path }
-
-                        if self.appState.externalPaths.isEmpty {
-                            appState.multiMode = false
-                        }
                     }
-                }
-            )) { EmptyView() }
-                .toggleStyle(SimpleCheckboxToggleStyle())
-                .padding(.leading)
+                )) { EmptyView() }
+                    .toggleStyle(SimpleCheckboxToggleStyle())
+                    .padding(.leading)
+            }
+
 
             Button(action: {
                 if !isSelected {
@@ -137,6 +141,7 @@ struct AppListItems: View {
             }
             .buttonStyle(.borderless)
             .foregroundStyle(.primary)
+            .padding(.leading, multiSelect ? 0 : 10)
             .onHover { hovering in
                 withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.20 : 0)) {
                     self.isHovered = hovering
@@ -147,9 +152,8 @@ struct AppListItems: View {
             
         }
         .background{
-            Rectangle()
-                .fill(.clear)
-//                .fill(isSelected && !glass ? theme(for: colorScheme).accentPrimary : .clear)
+            RoundedRectangle(cornerRadius: 8)
+                .fill(isSelected && !glass ? theme(for: colorScheme).surfaceCard : .clear)
         }
         .overlay{
             if (isHovered || isSelected) {

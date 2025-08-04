@@ -21,6 +21,8 @@ struct InterfaceSettingsTab: View {
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.interface.minimalist") private var minimalEnabled: Bool = true
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
+    @AppStorage("settings.interface.multiSelect") private var multiSelect: Bool = false
+
     @Binding var search: String
 
     var body: some View {
@@ -35,11 +37,11 @@ struct InterfaceSettingsTab: View {
                         Image(systemName: glass ? "cube.transparent" : "cube.transparent.fill")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 20, height: 20)
+                            .frame(width: 15, height: 15)
                             .padding(.trailing)
                             .foregroundStyle(.primary)
                         VStack(alignment: .leading, spacing: 5) {
-                            Text("Transparent material")
+                            Text("Transparent sidebar")
                                 .font(.callout)
                                 .foregroundStyle(.primary)
                         }
@@ -55,11 +57,12 @@ struct InterfaceSettingsTab: View {
                         Image(systemName: animationEnabled ? "play" : "play.slash")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 20, height: 20)
+                            .frame(width: 15, height: 15)
                             .padding(.trailing)
                             .foregroundStyle(.primary)
                         VStack(alignment: .leading, spacing: 5) {
-                            Text(animationEnabled ? String(localized: "Animations enabled") : String(localized: "Animations disabled"))         .font(.callout)
+                            Text(animationEnabled ? String(localized: "Transition animations enabled") : String(localized: "Transition animations disabled"))
+                                .font(.callout)
                                 .foregroundStyle(.primary)
                         }
                         Spacer()
@@ -74,7 +77,7 @@ struct InterfaceSettingsTab: View {
                         Image(systemName: scrollIndicators ? "computermouse.fill" : "computermouse")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 20, height: 20)
+                            .frame(width: 15, height: 15)
                             .padding(.trailing)
                             .foregroundStyle(.primary)
                         VStack(alignment: .leading, spacing: 5) {
@@ -94,7 +97,7 @@ struct InterfaceSettingsTab: View {
                         Image(systemName: minimalEnabled ? "list.dash.header.rectangle" : "list.bullet.rectangle")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 20, height: 20)
+                            .frame(width: 15, height: 15)
                             .padding(.trailing)
                             .foregroundStyle(.primary)
                         VStack(alignment: .leading, spacing: 5) {
@@ -111,21 +114,24 @@ struct InterfaceSettingsTab: View {
 
 
                     HStack(spacing: 0) {
-                        Image(systemName: "paintbrush")
+                        Image(systemName: multiSelect ? "checkmark.square.fill" : "square")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 20, height: 20)
+                            .frame(width: 15, height: 15)
                             .padding(.trailing)
                             .foregroundStyle(.primary)
                         VStack(alignment: .leading, spacing: 5) {
-                            Text("Theme Mode")
+                            Text(multiSelect ? String(localized: "Multi-select enabled in sidebar app list") : String(localized: "Multi-select disabled in sidebar app list"))
                                 .font(.callout)
                                 .foregroundStyle(.primary)
                         }
                         Spacer()
-//                        ThemeSettingsView(opacity: 1)
+                        Toggle(isOn: $multiSelect, label: {
+                        })
+                        .toggleStyle(SettingsToggle())
                     }
                     .padding(5)
+
                 }
             })
         }

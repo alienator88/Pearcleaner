@@ -16,8 +16,7 @@ class AppPathFinder {
     private var locations: Locations
     private var containerCollection: [URL] = []
     private let collectionAccessQueue = DispatchQueue(label: "com.alienator88.Pearcleaner.appPathFinder.collectionAccess")
-    @AppStorage("settings.general.namesearchstrict") var nameSearchStrict = true
-    @AppStorage("settings.general.spotlight") var spotlight = true
+    @AppStorage("settings.general.searchSensitivity") private var sensitivityLevel: SearchSensitivityLevel = .strict
 
     // GUI-specific properties (can be nil for CLI)
     private var appState: AppState?
@@ -45,7 +44,7 @@ class AppPathFinder {
         self.appState = appState
         self.undo = undo
         self.completion = completion
-        
+
         // Initialize cachedIdentifiers eagerly and thread-safely
         let bundleIdentifierL = appInfo.bundleIdentifier.pearFormat()
         let bundleComponents = appInfo.bundleIdentifier
@@ -184,9 +183,10 @@ class AppPathFinder {
             return itemL.contains(cached.bundleIdentifierL)
         }
         let bundleMatch = itemL.contains(cached.bundleIdentifierL) || itemL.contains(cached.bundle)
-        let nameLMatch = nameSearchStrict ? itemL == cached.nameL : itemL.contains(cached.nameL)
-        let namePMatch = nameSearchStrict ? itemL == cached.nameP : itemL.contains(cached.nameP)
-        let nameLFilteredMatch = nameSearchStrict ? itemL == cached.nameLFiltered : itemL.contains(cached.nameLFiltered)
+        let sensitivity = sensitivityLevel == .strict || sensitivityLevel == .enhanced
+        let nameLMatch = sensitivity ? itemL == cached.nameL : itemL.contains(cached.nameL)
+        let namePMatch = sensitivity ? itemL == cached.nameP : itemL.contains(cached.nameP)
+        let nameLFilteredMatch = sensitivity ? itemL == cached.nameLFiltered : itemL.contains(cached.nameLFiltered)
         return (cached.useBundleIdentifier && bundleMatch) || (nameLMatch || namePMatch || nameLFilteredMatch)
     }
 
@@ -207,7 +207,7 @@ class AppPathFinder {
 
     // Check spotlight index for leftovers missed by manual search
     private func spotlightSupplementalPaths() -> [URL] {
-        guard spotlight else { return [] }
+        guard sensitivityLevel == .enhanced || sensitivityLevel == .broad else { return [] }
         updateOnMain {
             self.appState?.progressStep = 1
         }
@@ -227,7 +227,7 @@ class AppPathFinder {
             }.compactMap {
                 URL(fileURLWithPath: $0 as! String)
             }
-            if self.nameSearchStrict {
+            if self.sensitivityLevel == .strict || self.sensitivityLevel == .enhanced {
                 let nameFormatted = appName.pearFormat()
                 let bundleFormatted = bundleID.pearFormat()
                 results = results.filter { url in
@@ -393,12 +393,12 @@ class AppPathFinder {
             }
         }
         group.wait()
-//        for path in tempCollection {
-//            let size = spotlightSizeForURL(path)
-//            fileSize[path] = size.real
-//            fileSizeLogical[path] = size.logical
-//            fileIcon[path] = getIconForFileOrFolderNS(atPath: path)
-//        }
+        //        for path in tempCollection {
+        //            let size = spotlightSizeForURL(path)
+        //            fileSize[path] = size.real
+        //            fileSizeLogical[path] = size.logical
+        //            fileIcon[path] = getIconForFileOrFolderNS(atPath: path)
+        //        }
         let arch = checkAppBundleArchitecture(at: self.appInfo.path.path)
         var updatedCollection = tempCollection
         if updatedCollection.count == 1, let firstURL = updatedCollection.first, firstURL.path.contains(".Trash") {
@@ -457,11 +457,11 @@ private func spotlightSizeForURL(_ url: URL) -> (real: Int64, logical: Int64) {
     let logical = metadataItem?.value(forAttribute: "kMDItemLogicalSize") as? Int64
 
     if let real = real, let logical = logical {
-//        print("Found Spotlight size")
+        //        print("Found Spotlight size")
         return (real, logical)
     }
 
     let fallback = totalSizeOnDisk(for: url)
-//    print("Fallback to manual calculation")
+    //    print("Fallback to manual calculation")
     return (real ?? fallback.real, logical ?? fallback.logical)
 }

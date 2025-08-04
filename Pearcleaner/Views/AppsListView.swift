@@ -41,7 +41,6 @@ struct SectionView: View {
     var count: Int
     var apps: [AppInfo]
     @Binding var search: String
-//    @Binding var showPopover: Bool
     @State private var showItems: Bool = true
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
@@ -74,9 +73,7 @@ struct Header: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
     @EnvironmentObject var fsm: FolderSettingsManager
-//    @Binding var showPopover: Bool
     @AppStorage("settings.general.glass") private var glass: Bool = true
-//    @AppStorage("settings.general.selectedSortAppsList") var selectedSortAlpha: Bool = true
 
 
     var body: some View {
@@ -94,6 +91,7 @@ struct Header: View {
             Spacer()
 
         }
+        .background(.black.opacity(0.0000000001))
         .frame(minHeight: 20)
         .padding(5)
 //        .help("Click header to change sorting order")

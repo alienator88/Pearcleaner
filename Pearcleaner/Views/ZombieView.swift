@@ -110,7 +110,7 @@ struct ZombieView: View {
                             .toggleStyle(SimpleCheckboxToggleStyle())
                             .help("All checkboxes")
 
-                        SearchBar(search: $searchZ, darker: true, glass: glass, sidebar: false)
+                        SearchBar(search: $searchZ, glass: glass)
                             .padding(.horizontal)
                             .onChange(of: searchZ) { newValue in
                                 updateMemoizedFiles(for: newValue, sizeType: sizeType, selectedSortAlpha: selectedSortAlpha)

@@ -14,6 +14,7 @@ import UniformTypeIdentifiers
 struct GeneralSettingsTab: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
+    @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.general.brew") private var brew: Bool = false
     @AppStorage("settings.general.oneshot") private var oneShotMode: Bool = false
@@ -23,6 +24,7 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.namesearchstrict") private var nameSearchStrict = false
     @AppStorage("settings.general.spotlight") private var spotlight = false
     @AppStorage("settings.general.permanentDelete") private var permanentDelete: Bool = false
+    @AppStorage("settings.general.searchSensitivity") private var sensitivityLevel: SearchSensitivityLevel = .strict
 
     var body: some View {
         VStack(spacing: 20) {
@@ -36,7 +38,7 @@ struct GeneralSettingsTab: View {
                             Image(systemName: brew ? "mug.fill" : "mug")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 20, height: 20)
+                                .frame(width: 15, height: 15)
                                 .padding(.trailing)
                                 .foregroundStyle(.primary.opacity(1))
                             VStack(alignment: .leading, spacing: 0) {
@@ -59,59 +61,11 @@ struct GeneralSettingsTab: View {
                         .padding(5)
 
 
-
-                        HStack(spacing: 0) {
-                            Image(systemName: nameSearchStrict ? "lock.fill" : "lock.open.fill")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 20, height: 20)
-                                .padding(.trailing)
-                                .foregroundStyle(.primary)
-                            VStack(alignment: .leading, spacing: 5) {
-                                Text("Strict app name search")
-                                    .font(.callout)
-                                    .foregroundStyle(.primary)
-                            }
-
-                            InfoButton(text: String(localized: "When searching for related application files, strict will check that the app name matches the found file exactly. Strict disabled will check if the app name is contained in the found file name. This can be useful when searching for multiple versions of the same app, or when searching for files that are not named after the app name. Strict disabled will likely find more files, but some unrelated as well, so make sure you check/uncheck the needed files."))
-
-                            Spacer()
-                            Toggle(isOn: $nameSearchStrict, label: {
-                            })
-                            .toggleStyle(SettingsToggle())
-                        }
-                        .padding(5)
-
-
-
-                        HStack(spacing: 0) {
-                            Image(systemName: spotlight ? "text.magnifyingglass" : "magnifyingglass")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 20, height: 20)
-                                .padding(.trailing)
-                                .foregroundStyle(.primary)
-                            VStack(alignment: .leading, spacing: 5) {
-                                Text("Search Spotlight index")
-                                    .font(.callout)
-                                    .foregroundStyle(.primary)
-                            }
-
-                            InfoButton(text: String(localized: "The search algorithm will cross-check the Spotlight metadata index for matches. This can be useful for fuzzy name searches and directories missed by the standard search. This will likely find a lot more unrelated files if the file names are very short or generic."))
-
-                            Spacer()
-                            Toggle(isOn: $spotlight, label: {
-                            })
-                            .toggleStyle(SettingsToggle())
-                        }
-                        .padding(5)
-
-
                         HStack(spacing: 0) {
                             Image(systemName: permanentDelete ? "trash.slash" : "trash")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 20, height: 20)
+                                .frame(width: 15, height: 15)
                                 .padding(.trailing)
                                 .foregroundStyle(.primary)
                             VStack(alignment: .leading, spacing: 5) {
@@ -135,7 +89,7 @@ struct GeneralSettingsTab: View {
                             Image(systemName: confirmAlert ? "exclamationmark.triangle.fill" : "exclamationmark.triangle")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 20, height: 20)
+                                .frame(width: 15, height: 15)
                                 .padding(.trailing)
                                 .foregroundStyle(.primary)
                             VStack(alignment: .leading, spacing: 5) {
@@ -159,7 +113,7 @@ struct GeneralSettingsTab: View {
                             Image(systemName: oneShotMode ? "scope" : "circlebadge")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 20, height: 20)
+                                .frame(width: 15, height: 15)
                                 .padding(.trailing)
                                 .foregroundStyle(.primary)
                             VStack(alignment: .leading, spacing: 5) {
@@ -178,37 +132,11 @@ struct GeneralSettingsTab: View {
                         .padding(5)
 
 
-
-//                        HStack(spacing: 0) {
-//                            Image(systemName: selectedSortAlpha ? "textformat.abc" : "textformat.123")
-//                                .resizable()
-//                                .scaledToFit()
-//                                .frame(width: 20, height: 20)
-//                                .padding(.trailing)
-//                                .foregroundStyle(.primary)
-//                            VStack(alignment: .leading, spacing: 5) {
-//                                Text("File list sorting order")
-//                                    .font(.callout)
-//                                    .foregroundStyle(.primary)
-//                            }
-//                            Spacer()
-//                            Picker("", selection: $selectedSortAlpha) {
-//                                Text("Alphabetical")
-//                                    .tag(true)
-//                                Text("File Size")
-//                                    .tag(false)
-//                            }
-//                            .buttonStyle(.borderless)
-//                        }
-//                        .padding(5)
-
-
-
                         HStack(spacing: 0) {
                             Image(systemName: "plus.forwardslash.minus")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 20, height: 20)
+                                .frame(width: 15, height: 15)
                                 .padding(.trailing)
                                 .foregroundStyle(.primary)
                             VStack(alignment: .leading, spacing: 5) {
@@ -223,10 +151,8 @@ struct GeneralSettingsTab: View {
                                     .tag("Real")
                                 Text("Logical")
                                     .tag("Logical")
-//                                Text("Finder")
-//                                    .tag("Finder")
                             } label: { EmptyView() }
-                            .buttonStyle(.borderless)
+                                .buttonStyle(.borderless)
 
                         }
                         .padding(5)
@@ -236,6 +162,48 @@ struct GeneralSettingsTab: View {
                 }
             )
 
+            // === Search Sensitivity =====================================================================================================
+            PearGroupBox(
+                header: {
+                    HStack(spacing: 0) {
+                        Text("Search Sensitivity").font(.title2)
+                        InfoButton(text: String(localized: """
+                    The search sensitivity level controls how strict or lenient Pearcleaner is when finding related files for an app:
+                    
+                    • Strict – \(SearchSensitivityLevel.strict.description)
+                    • Enhanced – \(SearchSensitivityLevel.enhanced.description)
+                    • Balanced – \(SearchSensitivityLevel.balanced.description)
+                    • Broad – \(SearchSensitivityLevel.broad.description)
+                    
+                    Higher levels may find more files but may include some unrelated results. It is recommended to check found files manually at these levels.
+                    """))
+                        Spacer()
+                        Text("\(sensitivityLevel.title)")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(sensitivityLevel.color)
+                            .padding(4)
+                            .padding(.horizontal, 2)
+                            .background {
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(theme(for: colorScheme).backgroundPanel)
+                            }
+                    }
+                },
+                content: {
+                    HStack {
+                        Text("Less files").textCase(.uppercase).font(.caption2).foregroundStyle(.secondary)
+                        Slider(value: Binding(
+                            get: { Double(sensitivityLevel.rawValue) },
+                            set: { sensitivityLevel = SearchSensitivityLevel(rawValue: Int($0)) ?? .strict }
+                        ), in: 0...Double(SearchSensitivityLevel.allCases.count - 1), step: 1)
+                        Text("Most files").textCase(.uppercase).font(.caption2).foregroundStyle(.secondary)
+                    }
+                    .padding(5)
+
+
+                })
+
             // === Sentinel =====================================================================================================
             PearGroupBox(
                 header: { Text("Sentinel Monitor").font(.title2) },
@@ -244,7 +212,7 @@ struct GeneralSettingsTab: View {
                         Image(systemName: sentinel ? "eye.circle" : "eye.slash.circle")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 20, height: 20)
+                            .frame(width: 15, height: 15)
                             .padding(.trailing)
                             .foregroundStyle(.primary)
                         Text("Detect when apps are moved to Trash")
@@ -266,7 +234,7 @@ struct GeneralSettingsTab: View {
 
                     }
                     .padding(5)
-            })
+                })
 
             // === Finder Extension =============================================================================================
             PearGroupBox(
@@ -277,7 +245,7 @@ struct GeneralSettingsTab: View {
                             Image(systemName: appState.finderExtensionEnabled ? "puzzlepiece.extension.fill" : "puzzlepiece.extension")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 20, height: 20)
+                                .frame(width: 15, height: 15)
                                 .padding(.trailing)
                                 .foregroundStyle(.primary)
 
@@ -328,34 +296,10 @@ struct GeneralSettingsTab: View {
 
                         }
 
-//                        HStack(alignment: .center, spacing: 0) {
-//
-////                            if let appIcon = NSImage(named: "AppIcon") {
-////                                Image(nsImage: appIcon)
-////                                    .resizable()
-////                                    .scaledToFit()
-////                                    .frame(width: 20, height: 20)
-////                                    .offset(x: -2)
-////                                    .padding(.trailing)
-////                            }
-//
-//
-//                            Text("Finder extension will only be enabled if app is running from Applications directory")
-//                                .font(.footnote)
-//                                .foregroundStyle(.secondary)
-//                                .padding(.trailing, 5)
-////                            Toggle("", isOn: $finderIconToggle)
-////                                .toggleStyle(SimpleCheckboxToggleStyle())
-////                                .onAppear {
-////                                    finderIconToggle = SharedData.finderIcon
-////                                }
-//                            Spacer()
-//                        }
-
                     }
                     .padding(5)
 
-            })
+                })
 
             // === CLI ==========================================================================================================
             PearGroupBox(
@@ -365,7 +309,7 @@ struct GeneralSettingsTab: View {
                         Image(systemName: "terminal")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 20, height: 20)
+                            .frame(width: 15, height: 15)
                             .padding(.trailing)
                             .foregroundStyle(.primary)
                         Text("Pearcleaner CLI support")
@@ -387,7 +331,7 @@ struct GeneralSettingsTab: View {
 
                     }
                     .padding(5)
-            })
+                })
 
         }
         .onAppear {
@@ -399,6 +343,46 @@ struct GeneralSettingsTab: View {
 
         }
 
+    }
+
+}
+
+
+
+enum SearchSensitivityLevel: Int, CaseIterable, Identifiable {
+    case strict, enhanced, balanced, broad
+
+    var id: Int { rawValue }
+
+    var title: String {
+        switch self {
+        case .strict: return "Strict"
+        case .enhanced: return "Enhanced"
+        case .balanced: return "Balanced"
+        case .broad: return "Broad"
+        }
+    }
+
+    var color: Color {
+        switch self {
+        case .strict: return .green
+        case .enhanced: return .blue
+        case .balanced: return .orange
+        case .broad: return .red
+        }
+    }
+
+    var description: String {
+        switch self {
+        case .strict:
+            return "Exact app name and bundle ID matches against found files (Less files, most accurate)"
+        case .enhanced:
+            return "Strict level and also includes Spotlight metadata search (Slightly more files, still accurate)"
+        case .balanced:
+            return "Strict level and it also allows partial matches (More files, slightly less accurate)"
+        case .broad:
+            return "Balanced level and also includes Spotlight metadata search (Most files, least accurate)"
+        }
     }
 
 }

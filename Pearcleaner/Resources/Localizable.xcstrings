@@ -464,6 +464,7 @@
       }
     },
     "⇧ + Scroll" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -6272,6 +6273,9 @@
         }
       }
     },
+    "Hide checkboxes" : {
+
+    },
     "Hide Details" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -7826,6 +7830,9 @@
         }
       }
     },
+    "Less files" : {
+
+    },
     "Link To" : {
       "localizations" : {
         "de" : {
@@ -7992,6 +7999,9 @@
           }
         }
       }
+    },
+    "Location:" : {
+
     },
     "Locations that will be searched for .app files. Click a non-default path to remove it. Default paths can't be removed." : {
       "extractionState" : "manual",
@@ -9212,6 +9222,15 @@
           }
         }
       }
+    },
+    "Most files" : {
+
+    },
+    "Multi-select disabled in sidebar app list" : {
+
+    },
+    "Multi-select enabled in sidebar app list" : {
+
     },
     "Name" : {
       "extractionState" : "manual",
@@ -11462,6 +11481,7 @@
       }
     },
     "Queue:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -11743,6 +11763,9 @@
           }
         }
       }
+    },
+    "Real size type will show how much actual allocated space the file has on disk.\n\nLogical type shows the binary size. The filesystem can compress and deduplicate sectors on disk, so real size is sometimes smaller (or bigger) than logical size.\n\nFinder size is similar to if you right click > Get Info on a file in Finder, which will show both the logical and real sizes together." : {
+
     },
     "Real size type will show how much actual allocated space the file has on disk.\n\nLogical type shows the binary size. The filesystem can compress and deduplicate sectors on disk, so real size is sometimes smaller(or bigger) than logical size.\n\nFinder size is similar to if you right click > Get Info on a file in Finder, which will show both the logical and real sizes together." : {
       "extractionState" : "manual",
@@ -12027,6 +12050,9 @@
           }
         }
       }
+    },
+    "Refresh List" : {
+
     },
     "Refresh updater" : {
       "extractionState" : "manual",
@@ -13327,7 +13353,14 @@
         }
       }
     },
+    "Search apps.." : {
+
+    },
+    "Search Sensitivity" : {
+
+    },
     "Search Spotlight index" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -14238,6 +14271,9 @@
         }
       }
     },
+    "Show checkboxes" : {
+
+    },
     "Show Details" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -14503,6 +14539,9 @@
         }
       }
     },
+    "Size:" : {
+
+    },
     "Sort app list alphabetically by name or by size" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -14715,6 +14754,9 @@
           }
         }
       }
+    },
+    "Sorting (%@)" : {
+
     },
     "Sorting Options" : {
       "extractionState" : "manual",
@@ -15080,6 +15122,7 @@
       }
     },
     "Strict app name search" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -15538,6 +15581,7 @@
       }
     },
     "The search algorithm will cross-check the Spotlight metadata index for matches. This can be useful for fuzzy name searches and directories missed by the standard search. This will likely find a lot more unrelated files if the file names are very short or generic." : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -15555,6 +15599,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "搜尋演算法會交叉檢查 Spotlight 元數據索引是否匹配。此功能對於模糊名稱搜尋與標準搜尋遺漏的目錄會非常實用。如檔案名稱過短或一般，可能會找到更多不相關的檔案。"
+          }
+        }
+      }
+    },
+    "The search sensitivity level controls how strict or lenient Pearcleaner is when finding related files for an app:\n\n• Strict – %@\n• Enhanced – %@\n• Balanced – %@\n• Broad – %@\n\nHigher levels may find more files but may include some unrelated results. It is recommended to check found files manually at these levels." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The search sensitivity level controls how strict or lenient Pearcleaner is when finding related files for an app:\n\n• Strict – %1$@\n• Enhanced – %2$@\n• Balanced – %3$@\n• Broad – %4$@\n\nHigher levels may find more files but may include some unrelated results. It is recommended to check found files manually at these levels."
           }
         }
       }
@@ -16540,6 +16594,12 @@
         }
       }
     },
+    "Transition animations disabled" : {
+
+    },
+    "Transition animations enabled" : {
+
+    },
     "Translation" : {
       "localizations" : {
         "de" : {
@@ -16644,6 +16704,9 @@
           }
         }
       }
+    },
+    "Transparent sidebar" : {
+
     },
     "Type a keyword to exclude, Enter ↵ to save" : {
       "localizations" : {
@@ -18966,7 +19029,7 @@
         }
       }
     },
-    "Welcome" : {
+    "Welcome, %@!" : {
 
     },
     "When applications are moved to Trash, Pearcleaner will launch and find related files and folders for deletion." : {
@@ -19306,6 +19369,7 @@
       }
     },
     "When searching for related application files, strict will check that the app name matches the found file exactly. Strict disabled will check if the app name is contained in the found file name. This can be useful when searching for multiple versions of the same app, or when searching for files that are not named after the app name. Strict disabled will likely find more files, but some unrelated as well, so make sure you check/uncheck the needed files." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

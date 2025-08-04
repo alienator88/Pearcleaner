@@ -18,12 +18,12 @@ struct AppSearchView: View {
     @Environment(\.colorScheme) var colorScheme
     var glass: Bool
     @Binding var search: String
-    @State private var showMenu = false
     @AppStorage("settings.general.selectedSortAppsList") var selectedSortOption: SortOption = .alphabetical
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+    @AppStorage("settings.interface.multiSelect") private var multiSelect: Bool = false
 
     var body: some View {
-        
+
         VStack(alignment: .center, spacing: 0) {
             if appState.reload || appState.sortedApps.isEmpty {
                 VStack {
@@ -35,11 +35,10 @@ struct AppSearchView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
 
-                searchBarComponent
-                    .padding(8)
-
-                Divider()
-                    .padding(.horizontal, 8)
+                SearchBarSidebar(search: $search, glass: glass)
+                    .frame(height: 30)
+                    .padding(.horizontal)
+                    .padding(.top, 8)
 
                 AppsListView(search: $search, filteredApps: filteredApps)
                     .padding(.vertical, 4)
@@ -62,84 +61,8 @@ struct AppSearchView: View {
                         .padding()
                 }
             }
-
-
         }
-        .padding(.top, 22)
-#if DEBUG
-        .overlay {
-            VStack {
-                HStack {
-                    Text(verbatim: "DEBUG").foregroundStyle(.orange)
-                        .help(Text(verbatim: "VERSION: \(Bundle.main.version) | BUILD: \(Bundle.main.buildVersion)"))
-//                        .padding(.leading, 72)
-//                        .padding(.top, 2)
-                    Spacer()
-                }
-
-                Spacer()
-            }
-        }
-#endif
-
         .padding(6)
-        .padding(.top, 1)
-
-
-
-
-    }
-
-
-    private var searchBarComponent: some View {
-        HStack(spacing: 10) {
-
-            if search.isEmpty {
-                Button("Refresh") {
-                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                        reloadAppsList(appState: appState, fsm: fsm)
-                    }
-                }
-                .buttonStyle(SimpleButtonStyle(icon: "arrow.counterclockwise.circle", help: String(localized: "Refresh apps (⌘+R)"), size: 16))
-            }
-
-
-            SearchBar(search: $search, darker: true, glass: glass, sidebar: false)
-
-
-            if search.isEmpty {
-                Button {
-                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                        showMenu.toggle()
-                    }
-                } label: { EmptyView() }
-                    .buttonStyle(SimpleButtonStyle(icon: "line.3.horizontal.decrease.circle", help: selectedSortOption.title, size: 16))
-                    .popover(isPresented: $showMenu, arrowEdge: .bottom) {
-                        VStack(alignment: .leading, spacing: 10) {
-                            HStack {
-                                Spacer()
-                                Text("Sorting Options").font(.subheadline).foregroundStyle(.secondary)
-                                Spacer()
-                            }
-                            Divider()
-                            ForEach(SortOption.allCases) { option in
-                                Button {
-                                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                                        selectedSortOption = option
-                                        showMenu = false
-                                    }
-                                } label: { EmptyView() }
-                                    .buttonStyle(SimpleButtonStyle(icon: selectedSortOption == option ? "circle.inset.filled" : "circle", label: option.title, help: "", size: 5))
-                            }
-                        }
-                        .padding()
-                        .background(backgroundView(color: theme(for: colorScheme).backgroundMain, glass: glass).padding(-80))
-                    }
-
-            }
-
-        }
-        .frame(minHeight: 30)
 
     }
 
@@ -176,10 +99,8 @@ struct AppSearchView: View {
         }
 
     }
-    
+
 }
-
-
 
 
 struct SimpleSearchStyle: TextFieldStyle {
@@ -187,13 +108,9 @@ struct SimpleSearchStyle: TextFieldStyle {
     @FocusState private var isFocused: Bool
     @State var trash: Bool = false
     @Binding var text: String
-    @State var darker: Bool = false
     @State var glass: Bool = false
     @State var padding: CGFloat = 5
-    @State var sidebar: Bool = true
     @EnvironmentObject var appState: AppState
-    @AppStorage("settings.general.mini") private var mini: Bool = false
-    @AppStorage("settings.menubar.enabled") private var menubarEnabled: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
     func _body(configuration: TextField<Self._Label>) -> some View {
@@ -221,13 +138,98 @@ struct SimpleSearchStyle: TextFieldStyle {
                         Button {
                             text = ""
                         } label: { EmptyView() }
-                        .buttonStyle(SimpleButtonStyle(icon: "delete.left.fill", help: String(localized: "Clear text"), size: 16, padding: 0))
+                            .buttonStyle(SimpleButtonStyle(icon: "delete.left.fill", help: String(localized: "Clear text"), size: 16, padding: 0))
                     }
                 }
 
             }
             .padding(.horizontal, 5)
 
+        }
+        .onHover { hovering in
+            withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                self.isHovered = hovering
+                self.isFocused = true
+            }
+        }
+        .focused($isFocused)
+        .onAppear {
+            updateOnMain {
+                self.isFocused = true
+            }
+        }
+    }
+}
+
+
+struct SimpleSearchStyleSidebar: TextFieldStyle {
+    @Environment(\.colorScheme) var colorScheme
+    @State private var isHovered = false
+    @FocusState private var isFocused: Bool
+    @State var trash: Bool = false
+    @Binding var text: String
+    @State var glass: Bool = false
+    @State var padding: CGFloat = 5
+    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var fsm: FolderSettingsManager
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+    @AppStorage("settings.general.selectedSortAppsList") var selectedSortOption: SortOption = .alphabetical
+    @AppStorage("settings.interface.multiSelect") private var multiSelect: Bool = false
+
+    func _body(configuration: TextField<Self._Label>) -> some View {
+
+        HStack {
+            configuration
+                .font(.title3)
+                .textFieldStyle(PlainTextFieldStyle())
+
+            Spacer()
+
+            if trash && text != "" {
+                Button {
+                    text = ""
+                } label: { EmptyView() }
+                    .buttonStyle(SimpleButtonStyle(icon: "delete.left.fill", help: String(localized: "Clear text"), size: 16, padding: 0))
+            }
+
+            Menu {
+                Section(header: Text("Sorting (\(selectedSortOption.title))")) {
+                    ForEach(SortOption.allCases) { option in
+                        Button {
+                            withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                                selectedSortOption = option
+                            }
+                        } label: {
+                            Label(option.title, systemImage: selectedSortOption == option ? "circle.inset.filled" : "circle")
+                        }
+                    }
+                }
+
+                Section(header: Text("Options")) {
+                    Button("Refresh List") {
+                        withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                            reloadAppsList(appState: appState, fsm: fsm)
+                        }
+                    }
+
+                    Button(multiSelect ? "Hide checkboxes" : "Show checkboxes") {
+                        withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                            multiSelect.toggle()
+                        }
+                    }
+                }
+            } label: {
+                Image(systemName: "line.3.horizontal")
+            }
+            .menuStyle(BorderlessButtonMenuStyle())
+            .menuIndicator(.hidden)
+            .frame(width: 16)
+        }
+        .padding(5)
+        .padding(.horizontal, 5)
+        .background {
+            RoundedRectangle(cornerRadius: 6)
+                .fill(ThemeColors.shared(for: colorScheme).backgroundPanel)
         }
         .onHover { hovering in
             withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
@@ -255,7 +257,21 @@ extension NSTextView {
 
 struct SearchBar: View {
     @Binding var search: String
-    @State var darker: Bool = false
+    @State var glass: Bool = false
+    @State var padding: CGFloat = 5
+    @EnvironmentObject var appState: AppState
+
+    var body: some View {
+        HStack {
+            TextField(text: $search) { EmptyView() }
+                .textFieldStyle(SimpleSearchStyle(trash: true, text: $search, glass: glass, padding: padding))
+        }
+    }
+}
+
+
+struct SearchBarSidebar: View {
+    @Binding var search: String
     @State var glass: Bool = false
     @State var padding: CGFloat = 5
     @State var sidebar: Bool = true
@@ -263,8 +279,8 @@ struct SearchBar: View {
 
     var body: some View {
         HStack {
-            TextField(text: $search) { EmptyView() }
-                .textFieldStyle(SimpleSearchStyle(trash: true, text: $search, darker: darker, glass: glass, padding: padding, sidebar: sidebar))
+            TextField("Search apps..", text: $search)
+                .textFieldStyle(SimpleSearchStyleSidebar(trash: true, text: $search, glass: glass, padding: padding))
         }
     }
 }

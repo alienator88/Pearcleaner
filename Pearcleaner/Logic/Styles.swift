@@ -727,13 +727,13 @@ public struct SimpleButtonStyleFlipped: ButtonStyle {
 
 
 //struct PearDropView: View {
-//    @ObservedObject private var theme = ThemeManager.shared
+//    @Environment(\.colorScheme) var colorScheme
 //
 //    var body: some View {
 //
 //        ZStack() {
-//            let shadow = theme.displayMode == .dark ? Color.white.opacity(0.2) : Color.black.opacity(0.3)
-//            let mainColor = theme.pickerColor.adjustBrightness(theme.displayMode == .dark ? 3 : 7)
+//            let shadow = colorScheme == .dark ? Color.white.opacity(0.2) : Color.black.opacity(0.3)
+//            let mainColor = theme(for: colorScheme).iconFolder
 //
 //            shadow
 //                .mask(
@@ -741,7 +741,7 @@ public struct SimpleButtonStyleFlipped: ButtonStyle {
 //                        .resizable()
 //                        .scaledToFit()
 //                )
-//                .offset(y: theme.displayMode == .dark ? 1 : -1)
+//                .offset(y: colorScheme == .dark ? 1 : -1)
 //
 //            mainColor
 //                .mask(

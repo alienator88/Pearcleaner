@@ -40,9 +40,19 @@ struct LeftNavigationSidebar: View {
 
             Spacer()
 
+#if DEBUG
+            VStack(alignment: .center, spacing: 5) {
+                Image(systemName: "ladybug.fill")
+                Text(verbatim: "v\(Bundle.main.version) (\(Bundle.main.buildVersion))")
+                    .font(.footnote)
+            }
+            .foregroundStyle(.orange)
+            .padding(.bottom)
+#endif
+
         }
         .frame(width: sidebarWidth)
-        .background(backgroundView(color: theme(for: colorScheme).backgroundMain, glass: glass))
+        .background(backgroundView(color: theme(for: colorScheme).backgroundPanel, glass: glass))
         .overlay(
             Rectangle()
                 .fill(Color.primary.opacity(0.1))

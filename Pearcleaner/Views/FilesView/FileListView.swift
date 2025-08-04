@@ -108,8 +108,8 @@ struct FileListView: View {
                 if !appState.externalPaths.isEmpty {
                     VStack {
                         HStack {
-                            Text("Queue:").font(.title3).opacity(0.5)
-                                .help("⇧ + Scroll")
+//                            Text("Queue:").font(.title3).opacity(0.5)
+//                                .help("⇧ + Scroll")
                             ScrollView(.horizontal, showsIndicators: false) {
                                 HStack(spacing: 10) {
                                     ForEach(appState.externalPaths, id: \.self) { path in
