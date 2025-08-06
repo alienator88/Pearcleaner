@@ -16,7 +16,8 @@ struct FilesView: View {
     @State private var windowController = WindowManager()
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.general.brew") private var brew: Bool = false
-    @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
+//    @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
+    @AppStorage("settings.general.selectedSort") var selectedSort: SortOptionList = .name
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @AppStorage("settings.general.filesWarning") private var warning: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
@@ -69,7 +70,7 @@ struct FilesView: View {
                     FileListView(
                         sortedFiles: $sortedFiles,
                         infoSidebar: $infoSidebar,
-                        selectedSortAlpha: $selectedSortAlpha,
+                        selectedSort: $selectedSort,
                         isHoveredChevron: $isHoveredChevron,
                         locations: locations,
                         windowController: windowController,
@@ -283,7 +284,27 @@ struct FilesView: View {
             }
         }
 
-        sortedFiles = selectedSortAlpha ? sortedFilesAlpha : sortedFilesSize
+        let sortedFilesByPath = appState.appInfo.fileSize.keys.sorted { firstURL, secondURL in
+            let isFirstPathApp = firstURL.pathExtension == "app"
+            let isSecondPathApp = secondURL.pathExtension == "app"
+            if isFirstPathApp, !isSecondPathApp {
+                return true
+            } else if !isFirstPathApp, isSecondPathApp {
+                return false
+            } else {
+                return firstURL.path.localizedCaseInsensitiveCompare(secondURL.path) == .orderedAscending
+            }
+        }
+
+        switch selectedSort {
+        case .size:
+            sortedFiles = sortedFilesSize
+        case .name:
+            sortedFiles = sortedFilesAlpha
+        case .path:
+            sortedFiles = sortedFilesByPath
+        }
+//        sortedFiles = selectedSortAlpha ? sortedFilesAlpha : sortedFilesSize
     }
 
     private func removeZombieAssociations() {

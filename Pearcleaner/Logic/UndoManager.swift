@@ -42,9 +42,7 @@ class FileManagerUndo {
 
             repeat {
                 if count > 0 {
-                    let base = file.deletingPathExtension().lastPathComponent
-                    let ext = file.pathExtension
-                    finalName = "\(base)\(count).\(ext)"
+                    finalName = "\(file.lastPathComponent)-\(count)"
                 }
                 count += 1
             } while FileManager.default.fileExists(atPath: (trashPath as NSString).appendingPathComponent(finalName))

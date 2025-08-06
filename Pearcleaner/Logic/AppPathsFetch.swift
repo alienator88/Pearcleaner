@@ -376,10 +376,14 @@ class AppPathFinder {
                 var localFileIcon: [URL: NSImage?] = [:]
 
                 for path in chunk {
+                    // Convert /var paths to /private/var before using as dictionary key
+                    let convertedPath = path.path.hasPrefix("/var/") ?
+                    URL(fileURLWithPath: "/private" + path.path) : path
+                    
                     let size = spotlightSizeForURL(path)
-                    localFileSize[path] = size.real
-                    localFileSizeLogical[path] = size.logical
-                    localFileIcon[path] = getIconForFileOrFolderNS(atPath: path)
+                    localFileSize[convertedPath] = size.real
+                    localFileSizeLogical[convertedPath] = size.logical
+                    localFileIcon[convertedPath] = getIconForFileOrFolderNS(atPath: path)
 
                 }
 

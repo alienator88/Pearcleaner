@@ -24,7 +24,7 @@ class Locations: ObservableObject {
         let (cacheDir, tempDir) = darwinCT()
         self.cacheDir = cacheDir
         self.tempDir = tempDir
-        
+
         self.apps = Category(name: "Apps", paths: [
             "\(home)",
             "\(home)/.config",
@@ -34,6 +34,16 @@ class Locations: ObservableObject {
             "\(home)/Library/Application Support",
             "\(home)/Library/Containers",
             "\(home)/Library/Caches",
+            "\(home)/Library/Caches/com.crashlytics",
+            "\(home)/Library/Caches/com.google.SoftwareUpdate",
+            "\(home)/Library/Caches/com.google.Keystone",
+            "\(home)/Library/Caches/org.sparkle-project.Sparkle",
+            "\(home)/Library/Caches/com.segment.analytics",
+            "\(home)/Library/Caches/SentryCrash",
+            "\(home)/Library/Caches/Rollbar",
+            "\(home)/Library/Caches/Amplitude",
+            "\(home)/Library/Caches/Realm",
+            "\(home)/Library/Caches/Parse",
             "\(home)/Library/Group Containers",
             "\(home)/Library/HTTPStorages",
             "\(home)/Library/Internet Plug-Ins",

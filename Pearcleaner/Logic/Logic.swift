@@ -157,6 +157,7 @@ func getSortedApps(paths: [String]) -> [AppInfo] {
 // Get directory path for darwin cache and temp directories
 func darwinCT() -> (String, String) {
     let command = "echo $(getconf DARWIN_USER_CACHE_DIR) $(getconf DARWIN_USER_TEMP_DIR)"
+//    let command = "echo $(realpath $(getconf DARWIN_USER_CACHE_DIR)) $(realpath $(getconf DARWIN_USER_TEMP_DIR))"
     let process = Process()
     process.launchPath = "/bin/bash"
     process.arguments = ["-c", command]

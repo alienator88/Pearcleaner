@@ -15,7 +15,7 @@ struct FileListView: View {
     @EnvironmentObject var appState: AppState
     @Binding var sortedFiles: [URL]
     @Binding var infoSidebar: Bool
-    @Binding var selectedSortAlpha: Bool
+    @Binding var selectedSort: SortOptionList
     @Binding var isHoveredChevron: Bool
     let locations: Locations
     let windowController: WindowManager
@@ -55,13 +55,20 @@ struct FileListView: View {
                             Spacer()
 
                             Button {
-                                selectedSortAlpha.toggle()
+                                switch selectedSort {
+                                case .size:
+                                    selectedSort = .name
+                                case .name:
+                                    selectedSort = .path
+                                case .path:
+                                    selectedSort = .size
+                                }
                                 updateSortedFiles()
                             } label: { EmptyView() }
                                 .buttonStyle(SimpleButtonStyleFlipped(
                                     icon: "line.3.horizontal.decrease.circle",
-                                    label: selectedSortAlpha ? "Name" : "Size",
-                                    help: selectedSortAlpha ? "Sorted by Name" : "Sorted by Size",
+                                    label: selectedSort.title,
+                                    help: "Sorted by \(selectedSort.rawValue.capitalized)",
                                     size: 16
                                 ))
                         }

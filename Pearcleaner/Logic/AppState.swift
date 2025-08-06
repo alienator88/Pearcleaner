@@ -284,6 +284,7 @@ enum CurrentPage:Int, CaseIterable, Identifiable
     var icon: String { details.icon }
 }
 
+//MARK: Sorting for sidebar apps list
 enum SortOption:Int, CaseIterable, Identifiable {
     case alphabetical
     case size
@@ -302,6 +303,21 @@ enum SortOption:Int, CaseIterable, Identifiable {
             String(localized: "Last Used Date")
         ]
         return titles[rawValue]
+    }
+}
+
+//MARK: Sorting for file list view
+enum SortOptionList: String, CaseIterable {
+    case size = "size"
+    case name = "name"
+    case path = "path"
+
+    var title: String {
+        switch self {
+        case .size: return String(localized: "Size")
+        case .name: return String(localized: "Name")
+        case .path: return String(localized: "Path")
+        }
     }
 }
 

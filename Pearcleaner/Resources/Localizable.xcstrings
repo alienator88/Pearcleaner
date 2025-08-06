@@ -10645,6 +10645,9 @@
     "Orphans" : {
 
     },
+    "Path" : {
+
+    },
     "Pearcleaner and all of its files will be cleanly removed, are you sure?" : {
       "extractionState" : "manual",
       "localizations" : {
