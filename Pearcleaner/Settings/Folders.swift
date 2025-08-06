@@ -378,7 +378,7 @@ class FolderSettingsManager: ObservableObject {
 
     // Orphaned files //////////////////////////////////////////////////////////////////////////////////
     func addPathZ(_ path: String) {
-        let sanitizedPath = path.hasPrefix("/private") ? String(path.dropFirst(8)) : path
+        let sanitizedPath = URL(fileURLWithPath: path).standardizedFileURL.path
 
         if !self.fileFolderPathsZ.contains(sanitizedPath) {
             self.fileFolderPathsZ.append(sanitizedPath)
