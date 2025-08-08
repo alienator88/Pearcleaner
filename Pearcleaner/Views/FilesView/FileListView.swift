@@ -16,7 +16,6 @@ struct FileListView: View {
     @Binding var sortedFiles: [URL]
     @Binding var infoSidebar: Bool
     @Binding var selectedSort: SortOptionList
-    @Binding var isHoveredChevron: Bool
     let locations: Locations
     let windowController: WindowManager
     let handleUninstallAction: () -> Void
@@ -90,21 +89,6 @@ struct FileListView: View {
                     }
                     .padding(.horizontal)
                     .blur(radius: infoSidebar ? 2 : 0)
-
-                    Button {
-                        infoSidebar.toggle()
-                    } label: {
-                        Image(systemName: isHoveredChevron ? "chevron.left.circle.fill" : "chevron.left.circle")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 18, height: 18)
-                    }
-                    .onHover { hovering in
-                        isHoveredChevron = hovering
-                    }
-                    .buttonStyle(.borderless)
-                    .transition(.move(edge: .trailing))
-                    .help("See app details")
                 }
             }
 
@@ -112,37 +96,12 @@ struct FileListView: View {
 
             HStack(alignment: .center) {
 
-                if !appState.externalPaths.isEmpty {
-                    VStack {
-                        HStack {
-//                            Text("Queue:").font(.title3).opacity(0.5)
-//                                .help("⇧ + Scroll")
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(spacing: 10) {
-                                    ForEach(appState.externalPaths, id: \.self) { path in
-                                        HStack(spacing: 0) {
-                                            Button(path.deletingPathExtension().lastPathComponent) {
-                                                let newApp = AppInfoFetcher.getAppInfo(atPath: path)!
-                                                updateOnMain {
-                                                    appState.appInfo = newApp
-                                                }
-                                                showAppInFiles(appInfo: newApp, appState: appState, locations: locations)
-                                            }
-                                            Button {
-                                                removePath(path)
-                                            } label: { EmptyView() }
-                                                .buttonStyle(SimpleButtonStyle(icon: "minus.circle", help: "Remove from queue", size: 14))
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                Spacer()
-
                 HStack(spacing: 10) {
+                    Text("\(appState.selectedItems.count) / \(appState.appInfo.fileSize.count)")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+
+                    Spacer()
 
                     if appState.trashError {
                         InfoButton(text: "A trash error has occurred, please open the debug window(⌘+D) to see what went wrong", color: .orange, label: "View Error", warning: true, extraView: {
@@ -155,19 +114,73 @@ struct FileListView: View {
                         }
                     }
 
-                    Text("\(appState.selectedItems.count) of \(appState.appInfo.fileSize.count) items")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
+                    bottomTrash
 
-                    // Trash Button
+                    Spacer()
+
                     Button {
-                        handleUninstallAction()
+                        infoSidebar.toggle()
                     } label: {
-                        Text(verbatim: "\(sizeType == "Logical" ? totalSelectedSize.logical : totalSelectedSize.real)")
+                        Image(systemName: "sidebar.trailing")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 18, height: 18)
                     }
-                    .buttonStyle(UninstallButton(isEnabled: !appState.selectedItems.isEmpty || (appState.selectedItems.isEmpty && brew)))
+                    .buttonStyle(.borderless)
+                    .transition(.move(edge: .trailing))
+                    .help("See app details")
+
+                }
+                .padding(.top)
+            }
+
+            if !appState.externalPaths.isEmpty {
+                ScrollView(.horizontal, showsIndicators: scrollIndicators) {
+                    HStack(spacing: 10) {
+                        ForEach(appState.externalPaths, id: \.self) { path in
+                            HStack(spacing: 5) {
+                                Button(path.deletingPathExtension().lastPathComponent) {
+                                    let newApp = AppInfoFetcher.getAppInfo(atPath: path)!
+                                    updateOnMain {
+                                        appState.appInfo = newApp
+                                    }
+                                    showAppInFiles(appInfo: newApp, appState: appState, locations: locations)
+                                }
+                                .buttonStyle(.link)
+                                Button {
+                                    removePath(path)
+                                } label: {
+                                    Image(systemName: "minus.circle")
+                                }
+                                .buttonStyle(.plain)
+                            }
+                            .controlSize(.small)
+                        }
+                    }
+                }
+                .padding(.top)
+            }
+
+        }
+    }
+
+    @ViewBuilder
+    private var bottomTrash: some View {
+        HStack(spacing: 10) {
+            Button {
+                handleUninstallAction()
+            } label: {
+                Label {
+                    Text(verbatim: "\(sizeType == "Logical" ? totalSelectedSize.logical : totalSelectedSize.real)")
+                } icon: {
+                    Image(systemName: "trash")
                 }
             }
         }
+        .controlSize(.small)
+        .buttonStyle(.link)
+        .padding(.vertical, 8)
+        .padding(.horizontal, 14)
+        .controlGroup(Capsule(style: .continuous), level: .secondary)
     }
 }

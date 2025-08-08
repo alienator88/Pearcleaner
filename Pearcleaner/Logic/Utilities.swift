@@ -379,6 +379,28 @@ extension String {
     }
 }
 
+extension String {
+    func pathWithArrows(separatorColor: Color = .secondary, separatorFont: Font = .caption) -> some View {
+        let components = self.dropFirst().components(separatedBy: "/").filter { !$0.isEmpty }
+
+        return HStack(spacing: 4) {
+            ForEach(Array(components.enumerated()), id: \.offset) { index, component in
+                Group {
+                    Text(component)
+
+                    if index < components.count - 1 {
+                        Image(systemName: "chevron.right")
+                            .font(separatorFont)
+                            .foregroundStyle(separatorColor)
+                    }
+                }
+                .lineLimit(1)
+                .truncationMode(.tail)
+            }
+        }
+    }
+}
+
 extension URL {
     /// Returns the bundle name of the container by its UUID if found.
     func containerNameByUUID() -> String {

@@ -173,7 +173,8 @@
             "value" : "%@"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "%@ (%lld)" : {
       "localizations" : {
@@ -201,7 +202,8 @@
             "value" : "%1$@ (%2$lld)"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "%@ (0)" : {
       "localizations" : {
@@ -223,7 +225,8 @@
             "value" : "%@ (0)"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "%@ is already on the latest release available" : {
       "extractionState" : "manual",
@@ -367,17 +370,18 @@
         }
       }
     },
-    "%lld of %lld items" : {
+    "%lld / %lld" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "%1$lld of %2$lld items"
+            "value" : "%1$lld / %2$lld"
           }
         }
       }
     },
     "%lld paths" : {
+      "extractionState" : "stale",
       "localizations" : {
         "tr" : {
           "stringUnit" : {
@@ -459,77 +463,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld 個通用應用程式"
-          }
-        }
-      }
-    },
-    "⇧ + Scroll" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "⇧ + Scrollen"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "⇧ + Faire défiler"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "⇧ + スクロール"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "⇧ + Прокрутка"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "⇧ + Rolovanie"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "⇧ + Scroll"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "⇧ + Скрол"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "⇧ + Cuộn chuột"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "⇧ + 滚动"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "⇧ + 捲動"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "⇧ + 捲動"
           }
         }
       }
@@ -2190,6 +2123,12 @@
         }
       }
     },
+    "Balanced" : {
+
+    },
+    "Balanced level and also includes Spotlight metadata search (Most files, least accurate)" : {
+
+    },
     "BETA" : {
       "localizations" : {
         "de" : {
@@ -2293,6 +2232,9 @@
           }
         }
       }
+    },
+    "Broad" : {
+
     },
     "Bundle Files..." : {
       "localizations" : {
@@ -2624,6 +2566,7 @@
       }
     },
     "Checked paths for %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2722,6 +2665,7 @@
       }
     },
     "Clean stored files and cache for common development environments" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2784,6 +2728,9 @@
           }
         }
       }
+    },
+    "Clean stored files and cache for common IDEs" : {
+
     },
     "Clear" : {
       "extractionState" : "manual",
@@ -3498,6 +3445,7 @@
       }
     },
     "Contents" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -3903,6 +3851,12 @@
           }
         }
       }
+    },
+    "Delete Contents" : {
+
+    },
+    "Delete Folder" : {
+
     },
     "Delete the folder" : {
       "localizations" : {
@@ -4828,6 +4782,9 @@
         }
       }
     },
+    "Enhanced" : {
+
+    },
     "Enter manual command here, Enter to run" : {
       "localizations" : {
         "de" : {
@@ -4881,6 +4838,7 @@
       }
     },
     "Environment" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4943,6 +4901,9 @@
           }
         }
       }
+    },
+    "Exact app name and bundle ID matches against found files (Less files, most accurate)" : {
+
     },
     "Example privileged commands" : {
       "localizations" : {
@@ -5632,6 +5593,7 @@
       }
     },
     "Folder" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -6276,130 +6238,6 @@
     "Hide checkboxes" : {
 
     },
-    "Hide Details" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verstecke Details"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Masquer les détails"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "詳細を隠す"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Скрыть детали"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skryť údaje"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Detayları Gizle"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Заховати деталі"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ẩn chi tiết"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "隐藏详细"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "隱藏詳細資料"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "隱藏詳細資料"
-          }
-        }
-      }
-    },
-    "homebrew" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Homebrew"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "homebrew"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "homebrew"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "homebrew"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "homebrew"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "homebrew"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Homebrew"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Homebrew"
-          }
-        }
-      }
-    },
     "Homebrew cleanup after uninstall" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6856,67 +6694,67 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Installationsdatum"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Date d’installation"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "インストール日"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Дата установки"
           }
         },
         "sk" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Dátum inštalácie"
           }
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Kurulum Tarihi"
           }
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Дата інсталяції"
           }
         },
         "vi" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Ngày cài đặt"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "安装日期"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "安裝日期"
           }
         },
         "zh-HK" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "安裝日期"
           }
         }
@@ -6952,77 +6790,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "安裝失敗：%@"
-          }
-        }
-      }
-    },
-    "Installed Date:" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Installationsdatum:"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Date d'installation :"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "インストール日:"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Дата установки:"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dátum inštalácie:"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kurulduğu Tarih:"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Дата інсталяції:"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ngày cài đặt:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "安装日期："
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "安裝日期："
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "安裝日期："
           }
         }
       }
@@ -7684,77 +7451,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "上次使用日期"
-          }
-        }
-      }
-    },
-    "Last Used Date:" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zuletzt benutzt am:"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Date de dernière utilisation :"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "最終使用日:"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Дата последнего использования:"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dátum posledného použitia:"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kullanıldığı Son Tarih:"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Використано востаннє: "
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ngày sử dụng gần nhất:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "上次使用日期："
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "上次使用日期："
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "上次使用日期："
           }
         }
       }
@@ -9010,77 +8706,6 @@
         }
       }
     },
-    "Modified Date:" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verändert am:"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Date de modification :"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "修正日:"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Дата изменения:"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dátum zmeny:"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Değiştirme Tarihi:"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Дата модифікації:"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ngày chỉnh sửa:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "修改日期："
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "修改日期"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "修改日期"
-          }
-        }
-      }
-    },
     "Monthly" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -10298,6 +9923,7 @@
       }
     },
     "Open" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -11483,77 +11109,6 @@
         }
       }
     },
-    "Queue:" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Warteschlange:"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "File d'attente :"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "キュー："
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Очередь:"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fronta:"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kuyruk:"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Черга:"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hàng đợi:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "队列:"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "佇列："
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "佇列："
-          }
-        }
-      }
-    },
     "Quit" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -12503,59 +12058,6 @@
         }
       }
     },
-    "Reset" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zurücksetzen"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "リセット"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sıfırla"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Скинути"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đặt lại"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重置"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重設"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重設"
-          }
-        }
-      }
-    },
     "Reset all settings to default" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -13362,29 +12864,6 @@
     "Search Sensitivity" : {
 
     },
-    "Search Spotlight index" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "搜索Spotlight 索引"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "搜尋 Spotlight 索引"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "搜尋 Spotlight 索引"
-          }
-        }
-      }
-    },
     "Search these folders for applications" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -13655,7 +13134,11 @@
         }
       }
     },
+    "Select an environment to view paths" : {
+
+    },
     "Select an environment to view paths." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -14277,77 +13760,6 @@
     "Show checkboxes" : {
 
     },
-    "Show Details" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zeige Details"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Afficher les détails"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "詳細を表示"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Показать детали"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zobraziť údaje"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Detayları Göster"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Показати Деталі"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Xem chi tiết"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "显示详细"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "顯示詳細資料"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "顯示詳細資料"
-          }
-        }
-      }
-    },
     "Showing last 3 releases" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -14615,6 +14027,9 @@
           }
         }
       }
+    },
+    "Sorted by %@" : {
+
     },
     "Sorted by Name" : {
       "extractionState" : "manual",
@@ -15124,58 +14539,14 @@
         }
       }
     },
-    "Strict app name search" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "strenge Suche nach App-Namen"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "厳密なアプリ名検索"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sert uygulama adı araması"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Суворий пошук за назвою програми"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tìm kiếm tên ứng dụng nghiêm ngặt"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "严格应用名称搜索"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "嚴格 App 名稱搜尋"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "嚴格 App 名稱搜尋"
-          }
-        }
-      }
+    "Strict" : {
+
+    },
+    "Strict level and also includes Spotlight metadata search (Slightly more files, still accurate)" : {
+
+    },
+    "Strict level and it also allows partial matches (More files, slightly less accurate)" : {
+
     },
     "Submit a bug or feature request" : {
       "extractionState" : "manual",
@@ -15583,29 +14954,6 @@
         }
       }
     },
-    "The search algorithm will cross-check the Spotlight metadata index for matches. This can be useful for fuzzy name searches and directories missed by the standard search. This will likely find a lot more unrelated files if the file names are very short or generic." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "搜索算法将交叉检查Spotlight元数据索引以查找匹配项。这可以用于模糊名称搜索和标准搜索遗漏的目录。如果文件名非常短或通用，这可能会找到更多无关的文件。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "搜尋演算法會交叉檢查 Spotlight 元數據索引是否匹配。此功能對於模糊名稱搜尋與標準搜尋遺漏的目錄會非常實用。如檔案名稱過短或一般，可能會找到更多不相關的檔案。"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "搜尋演算法會交叉檢查 Spotlight 元數據索引是否匹配。此功能對於模糊名稱搜尋與標準搜尋遺漏的目錄會非常實用。如檔案名稱過短或一般，可能會找到更多不相關的檔案。"
-          }
-        }
-      }
-    },
     "The search sensitivity level controls how strict or lenient Pearcleaner is when finding related files for an app:\n\n• Strict – %@\n• Enhanced – %@\n• Balanced – %@\n• Broad – %@\n\nHigher levels may find more files but may include some unrelated results. It is recommended to check found files manually at these levels." : {
       "localizations" : {
         "en" : {
@@ -15795,59 +15143,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "這樣會將檔案/資料夾加至排除列表中。透過「設定」>「資料夾」分頁編輯排除列表"
-          }
-        }
-      }
-    },
-    "This app is installed via Homebrew" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Programm wurde durch Homebrew installiert"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "このアプリは Homebrew を通してインストールされています"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bu uygulama Homebrew aracılığıyla yüklendi"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ця програма інстальована через Homebrew"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ứng dụng này được cài đặt thông qua Homebrew"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "此应用通过Homebrew安装"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "此 App 透過 HomeBrew 安裝"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "此 App 透過 HomeBrew 安裝"
           }
         }
       }
@@ -16412,6 +15707,7 @@
       }
     },
     "Total environment paths available" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -16527,7 +15823,11 @@
         }
       }
     },
+    "Total size of all orphaned files" : {
+
+    },
     "Total size of files:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -17875,77 +17175,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更新已停用"
-          }
-        }
-      }
-    },
-    "user" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Benutzer"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "utilisateur"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ユーザー"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "пользователь"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "používateľ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "kullanıcı"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "користувач"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "người dùng"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "user"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "用户"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "用户"
           }
         }
       }
@@ -19367,59 +18596,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "啟用選單欄圖示時，主要應用程式視窗與 Dock 圖示將停用，因為應用程式將設定為「配件模式」。"
-          }
-        }
-      }
-    },
-    "When searching for related application files, strict will check that the app name matches the found file exactly. Strict disabled will check if the app name is contained in the found file name. This can be useful when searching for multiple versions of the same app, or when searching for files that are not named after the app name. Strict disabled will likely find more files, but some unrelated as well, so make sure you check/uncheck the needed files." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bei der Suche nach zugehörigen Anwendungsdateien überprüft „Streng“, ob der Name der App genau mit dem Namen der gefundenen Datei übereinstimmt. „Streng deaktiviert“ überprüft, ob der Name der App im Namen der gefundenen Datei enthalten ist. Dies kann nützlich sein, wenn Sie nach mehreren Versionen derselben App suchen oder nach Dateien suchen, die nicht nach dem Namen der App benannt sind. „Streng deaktiviert“ findet wahrscheinlich mehr Dateien, darunter jedoch auch einige, die nicht relevant sind. Überprüfen Sie daher unbedingt, ob die gewünschten Dateien ausgewählt sind."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "関連するアプリケーションファイルを検索する際、「厳密」モードではアプリ名が見つかったファイルと完全に一致するかチェックします。「厳密」モードが無効の場合は、アプリ名が見つかったファイル名に含まれているかをチェックします。これは同じアプリの複数バージョンを検索する場合や、アプリ名で命名されていないファイルを検索する場合に便利です。「厳密」モードを無効にすると、より多くのファイルが見つかる可能性がありますが、関連のないファイルも含まれる場合があるため、必要なファイルをチェック/チェック解除するようにしてください。"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "İlgili uygulama dosyalarını ararken, sert arama, uygulama adının bulunan dosyayla tam olarak eşleşip eşleşmediğini kontrol edecektir. Sert arama devre dışı ise, uygulama adının bulunan dosya adında olup olmadığını kontrol edecektir. Bu, aynı uygulamanın birden fazla sürümünü ararken veya uygulama adıyla adlandırılmayan dosyaları ararken yararlı olabilir. Sıkı bir şekilde devre dışı bırakmak muhtemelen daha fazla dosya bulacaktır, ancak alakasız olanlar da olacaktır, bu yüzden gerekli dosyaları işaretlediğinizden/işaretini kaldırdığınızdan emin olun."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Під час пошуку пов'язаних файлів програми строго перевірятиметься, чи ім'я програми точно збігається з назвою знайденого файлу. Якщо вимкнено, буде перевірено, чи міститься назва програми у назві знайденого файлу. Це може бути корисно під час пошуку кількох версій однієї програми або під час пошуку файлів, назви яких не збігаються з назвою програми. У разі використання цього параметра буде знайдено більше файлів, але деякі з них можуть бути не пов'язані з програмою, тому переконайтеся, що ви встановили/зняли прапорець з потрібних файлів."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Khi tìm kiếm các tệp liên quan đến ứng dụng, nếu bật chế độ nghiêm ngặt (strict), hệ thống sẽ chỉ tìm các tệp có tên khớp chính xác với tên ứng dụng. Nếu tắt chế độ nghiêm ngặt, hệ thống sẽ tìm cả những tệp có chứa tên ứng dụng trong tên tệp. Cách này hữu ích khi bạn cần tìm nhiều phiên bản khác nhau của cùng một ứng dụng, hoặc tìm các tệp không đặt tên đúng theo tên ứng dụng. Khi tắt chế độ nghiêm ngặt, bạn sẽ tìm được nhiều tệp hơn, nhưng cũng dễ gặp phải một số tệp không liên quan, nên nhớ kiểm tra và chọn lọc kỹ các tệp cần thiết."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在搜索相关应用程序文件时，严格模式会检查应用名称是否与找到的文件完全匹配。严格模式禁用时会检查应用名称是否包含在找到的文件名中。这在搜索同一应用的多个版本或搜索不以应用名称命名的文件时可能很有用。严格模式禁用可能会找到更多文件，但也可能包括一些无关的文件，因此请确保检查/取消检查所需的文件。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在搜尋相關應用程式檔案時，「嚴格搜尋」將會檢查 App 名稱是否與找到的檔案完全相符。停用「嚴格搜尋」將會檢查 App 名稱是否包含在找到的檔名中。當搜尋同一個 App 的多個版本，或者搜尋未以 App 名稱命名的檔案時，此功能會非常實用。停用「嚴格搜尋」可能會找到更多檔案，但亦會找到一些不相關的檔案，因此請確定你已剔選/取消剔選所需的檔案。"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在搜尋相關應用程式檔案時，「嚴格搜尋」將會檢查 App 名稱是否與找到的檔案完全相符。停用「嚴格搜尋」將會檢查 App 名稱是否包含在找到的檔名中。當搜尋同一個 App 的多個版本，或者搜尋未以 App 名稱命名的檔案時，此功能會非常實用。停用「嚴格搜尋」可能會找到更多檔案，但亦會找到一些不相關的檔案，因此請確定你已剔選/取消剔選所需的檔案。"
           }
         }
       }

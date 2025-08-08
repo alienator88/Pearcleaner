@@ -30,7 +30,6 @@ struct FilesView: View {
     @Binding var search: String
     @State private var sortedFiles: [URL] = []
     @State private var infoSidebar: Bool = false
-    @State private var isHoveredChevron: Bool = false
 
     var body: some View {
 
@@ -63,15 +62,12 @@ struct FilesView: View {
                 .transition(.opacity)
             } else {
 
-//                Spacer().frame(height: 30) // So it doesn't go under the Applications button
-
                 ZStack {
 
                     FileListView(
                         sortedFiles: $sortedFiles,
                         infoSidebar: $infoSidebar,
                         selectedSort: $selectedSort,
-                        isHoveredChevron: $isHoveredChevron,
                         locations: locations,
                         windowController: windowController,
                         handleUninstallAction: handleUninstallAction,
@@ -87,7 +83,7 @@ struct FilesView: View {
 
                 }
                 .animation(.easeInOut(duration: animationEnabled ? 0.35 : 0), value: infoSidebar)
-                .padding()
+                .padding(20)
 
             }
 
@@ -366,6 +362,7 @@ enum DeleteType {
 
 struct FileDetailsItem: View {
     @EnvironmentObject var appState: AppState
+    @Environment(\.colorScheme) var colorScheme
     @State private var isHovered = false
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
@@ -441,11 +438,9 @@ struct FileDetailsItem: View {
 
                 }
 
-                Text(path.path)
+                path.path.pathWithArrows(separatorColor: .primary)
                     .font(.footnote)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
-                    .opacity(0.5)
+                    .foregroundStyle(.secondary)
                     .help(path.path)
 
             }

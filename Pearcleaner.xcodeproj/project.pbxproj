@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		C71449E52DA826610032B295 /* Lipo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C90DD22DA81C590056769A /* Lipo.swift */; };
 		C71848442B8D2D600046CB13 /* ZombieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71848432B8D2D600046CB13 /* ZombieView.swift */; };
+		C719DF832E467D1C00623462 /* ControlGroupChrome.swift in Sources */ = {isa = PBXBuildFile; fileRef = C719DF822E467D1500623462 /* ControlGroupChrome.swift */; };
+		C719DF852E467D4400623462 /* ChromeBorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C719DF842E467D3B00623462 /* ChromeBorder.swift */; };
 		C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72893042AFD42E600C8C1CD /* DeepLink.swift */; };
 		C72893122AFD51EA00C8C1CD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72893112AFD51EA00C8C1CD /* main.swift */; };
 		C72FDCB92D6D089100DE7D56 /* UndoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72FDCB82D6D088A00DE7D56 /* UndoManager.swift */; };
@@ -140,6 +142,8 @@
 
 /* Begin PBXFileReference section */
 		C71848432B8D2D600046CB13 /* ZombieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZombieView.swift; sourceTree = "<group>"; };
+		C719DF822E467D1500623462 /* ControlGroupChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlGroupChrome.swift; sourceTree = "<group>"; };
+		C719DF842E467D3B00623462 /* ChromeBorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChromeBorder.swift; sourceTree = "<group>"; };
 		C72893042AFD42E600C8C1CD /* DeepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLink.swift; sourceTree = "<group>"; };
 		C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PearcleanerSentinel; sourceTree = BUILT_PRODUCTS_DIR; };
 		C72893112AFD51EA00C8C1CD /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
@@ -258,6 +262,8 @@
 		C72893072AFD442600C8C1CD /* Logic */ = {
 			isa = PBXGroup;
 			children = (
+				C719DF842E467D3B00623462 /* ChromeBorder.swift */,
+				C719DF822E467D1500623462 /* ControlGroupChrome.swift */,
 				C7C90DD22DA81C590056769A /* Lipo.swift */,
 				C73545EA2D8496DA00A3DC0C /* HelperToolManager.swift */,
 				C72FDCB82D6D088A00DE7D56 /* UndoManager.swift */,
@@ -610,11 +616,13 @@
 				C7DD49EE2BAB7F6000CCBA16 /* ReversePathsFetch.swift in Sources */,
 				C7EA06332C1CBE2000F872FC /* ConditionBuilderView.swift in Sources */,
 				C7DD49F02BABA14400CCBA16 /* Folders.swift in Sources */,
+				C719DF852E467D4400623462 /* ChromeBorder.swift in Sources */,
 				C7C90DD32DA81C5D0056769A /* Lipo.swift in Sources */,
 				C7AC48EA2D8CAEF700A44C8E /* LipoView.swift in Sources */,
 				C7A2A4D62DDB957D006E05E4 /* CLI.swift in Sources */,
 				C7D31D512AFF00F300C7ED9E /* Locations.swift in Sources */,
 				C77B901A2AF1938F009CC655 /* Logic.swift in Sources */,
+				C719DF832E467D1C00623462 /* ControlGroupChrome.swift in Sources */,
 				C77B901C2AF193A3009CC655 /* Styles.swift in Sources */,
 				C78D7B212D556F1A003DD49F /* AppPathsFetch.swift in Sources */,
 				C770D7DB2CE7C9AD00B3492A /* DevelopmentView.swift in Sources */,

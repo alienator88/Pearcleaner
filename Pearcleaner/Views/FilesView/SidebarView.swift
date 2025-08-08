@@ -118,9 +118,9 @@ struct AppDetails: View {
             .padding(.bottom, 8)
 
             detailRow(label: "Location", value: appState.appInfo.path.deletingLastPathComponent().path, location: true)
-            detailRow(label: "Installed Date", value: appState.appInfo.creationDate.map { formattedMDDate(from: $0) })
+            detailRow(label: "Install Date", value: appState.appInfo.creationDate.map { formattedMDDate(from: $0) })
             detailRow(label: "Modified Date", value: appState.appInfo.contentChangeDate.map { formattedMDDate(from: $0) })
-            detailRow(label: "Last Used Date", value: appState.appInfo.lastUsedDate.map { formattedMDDate(from: $0) })
+            detailRow(label: "Last Used Date".localized(), value: appState.appInfo.lastUsedDate.map { formattedMDDate(from: $0) })
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, 5)
@@ -141,7 +141,7 @@ struct AppDetails: View {
     private func detailRow(label: String, value: String?, location: Bool = false) -> some View {
         VStack(alignment: .leading) {
             HStack(spacing: 2) {
-                Text(label)
+                Text(label.localized())
                 if location {
                     Button {
                         NSWorkspace.shared.selectFile(appState.appInfo.path.path, inFileViewerRootedAtPath: appState.appInfo.path.deletingLastPathComponent().path)

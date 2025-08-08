@@ -20,7 +20,7 @@ struct ZombieView: View {
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
-    @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
+    @AppStorage("settings.general.selectedSort") var selectedSort: SortOptionList = .name
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @AppStorage("settings.general.confirmAlert") private var confirmAlert: Bool = false
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
@@ -61,46 +61,14 @@ struct ZombieView: View {
                 VStack(spacing: 0) {
 
                     // Main Group
-                    HStack(alignment: .center) {
-
-                        VStack(alignment: .leading, spacing: 5){
-
-                            PearGroupBox(header: {
-                                HStack(alignment: .center, spacing: 15) {
-                                    Image(systemName: "doc.text.magnifyingglass")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 50, height: 50)
-                                        .symbolRenderingMode(.hierarchical)
-
-                                    VStack(alignment: .leading){
-                                        Text("Orphaned Files").font(.title).fontWeight(.bold)
-                                        Text("Remaining files and folders from previous applications")
-                                            .font(.callout).foregroundStyle(.primary.opacity(0.5))
-                                    }
-                                }
-                            }, content: {
-                                HStack(spacing: 20) {
-                                    VStack(alignment: .leading, spacing: 5) {
-                                        Text("Total size of files:")
-                                            .font(.callout).fontWeight(.bold)
-                                        Text(verbatim: "")
-                                            .font(.footnote)
-                                    }
-                                    Spacer()
-                                    VStack(alignment: .trailing, spacing: 5) {
-                                        Text(verbatim: "\(displaySizeTotal)").font(.callout).fontWeight(.bold)//.help("Total size on disk")
-
-                                        Text(verbatim: "\(selectedZombieItemsLocal.count) \(String(localized: "of")) \(searchZ.isEmpty ? appState.zombieFile.fileSize.count : memoizedFiles.count) \(appState.zombieFile.fileSize.count == 1 ? "\(String(localized: "item"))" : "\(String(localized: "items"))")")
-                                            .font(.footnote).foregroundStyle(.secondary)
-                                    }
-
-                                }
-                            })
-
+                    HStack(alignment: .center, spacing: 15) {
+                        VStack(alignment: .leading){
+                            Text("Orphaned Files").font(.title).fontWeight(.bold)
+                            Text("Remaining files and folders from previous applications")
+                                .font(.callout).foregroundStyle(.primary.opacity(0.5))
                         }
-                        .padding(.horizontal, 20)
-                        .padding(.top, 0)
+
+                        Spacer()
                     }
 
 
@@ -113,16 +81,23 @@ struct ZombieView: View {
                         SearchBar(search: $searchZ, glass: glass)
                             .padding(.horizontal)
                             .onChange(of: searchZ) { newValue in
-                                updateMemoizedFiles(for: newValue, sizeType: sizeType, selectedSortAlpha: selectedSortAlpha)
+                                updateMemoizedFiles(for: newValue, sizeType: sizeType, selectedSort: selectedSort)
                             }
 
 
 
                         Button {
-                            selectedSortAlpha.toggle()
-                            updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSortAlpha: selectedSortAlpha, force: true)
+                            switch selectedSort {
+                            case .size:
+                                selectedSort = .name
+                            case .name:
+                                selectedSort = .path
+                            case .path:
+                                selectedSort = .size
+                            }
+                            updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSort: selectedSort, force: true)
                         } label: { EmptyView() }
-                        .buttonStyle(SimpleButtonStyle(icon: "line.3.horizontal.decrease.circle", label: String(localized: selectedSortAlpha ? "Name" : "Size"), help: String(localized: selectedSortAlpha ? "Sorted alphabetically" : "Sorted by size"), size: 16))
+                        .buttonStyle(SimpleButtonStyle(icon: "line.3.horizontal.decrease.circle", label: selectedSort.title, help: String(localized: "Sorted by \(selectedSort.rawValue.capitalized)"), size: 16))
 
 
                     }
@@ -160,6 +135,10 @@ struct ZombieView: View {
 
                     HStack() {
 
+                        Text(verbatim: "\(selectedZombieItemsLocal.count) / \(searchZ.isEmpty ? appState.zombieFile.fileSize.count : memoizedFiles.count)")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+
                         Spacer()
 
                         if appState.trashError {
@@ -173,37 +152,20 @@ struct ZombieView: View {
                             }
                         }
 
-                        Button("Exclude Selected") {
-                            excludeAllSelectedItems()
-                        }
-                        .buttonStyle(ExcludeButton(isEnabled: !selectedZombieItemsLocal.isEmpty))
-                        .disabled(selectedZombieItemsLocal.isEmpty)
-                        .help("This will exclude selected items from future scans. Exclusion list can be edited from Settings > Folders tab.")
+                        bottomBar
 
-                        Button("Rescan") {
-                            updateOnMain {
-                                appState.zombieFile = .empty
-                                appState.showProgress.toggle()
-                                reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, fsm: fsm)
-                            }
-                        }
-                        .buttonStyle(RescanButton())
+                        Spacer()
 
-                        Button {
-                            handleUninstallAction()
-                        } label: { Text(verbatim: "\(sizeType == "Logical" ? totalLogicalSizeUninstallBtn : totalRealSizeUninstallBtn)") }
-                            .buttonStyle(UninstallButton(isEnabled: !selectedZombieItemsLocal.isEmpty))
-                            .disabled(selectedZombieItemsLocal.isEmpty)
+                        Text(verbatim: "\(displaySizeTotal)").font(.footnote).help("Total size of all orphaned files")
 
 
                     }
                     .padding(.top)
                 }
                 .transition(.opacity)
-                .padding([.horizontal, .bottom], 20)
-                .padding(.top)
+                .padding(20)
                 .onAppear {
-                    updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSortAlpha: selectedSortAlpha, force: true)
+                    updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSort: selectedSort, force: true)
                 }
                 .sheet(isPresented: $showAlert, content: {
                         VStack(spacing: 10) {
@@ -236,6 +198,41 @@ struct ZombieView: View {
 
     }
 
+    @ViewBuilder
+    private var bottomBar: some View {
+            HStack(spacing: 10) {
+                Button("Exclude Selected") {
+                    excludeAllSelectedItems()
+                }
+                .disabled(selectedZombieItemsLocal.isEmpty)
+                .help("This will exclude selected items from future scans. Exclusion list can be edited from Settings > Folders tab.")
+                Divider().frame(height: 10)
+                Button("Rescan") {
+                    updateOnMain {
+                        appState.zombieFile = .empty
+                        appState.showProgress.toggle()
+                        reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, fsm: fsm)
+                    }
+                }
+                Divider().frame(height: 10)
+                Button {
+                    handleUninstallAction()
+                } label: {
+                    Label {
+                        Text(verbatim: "\(sizeType == "Logical" ? totalLogicalSizeUninstallBtn : totalRealSizeUninstallBtn)")
+                    } icon: {
+                        Image(systemName: "trash")
+                    }
+                }
+                .disabled(selectedZombieItemsLocal.isEmpty)
+            }
+            .controlSize(.small)
+            .buttonStyle(.link)
+            .padding(.vertical, 8)
+            .padding(.horizontal, 14)
+            .controlGroup(Capsule(style: .continuous), level: .secondary)
+    }
+
     private func handleUninstallAction() {
         showCustomAlert(enabled: confirmAlert, title: String(localized: "Warning"), message: String(localized: "Are you sure you want to remove these files?"), style: .warning, onOk: {
             Task {
@@ -265,7 +262,7 @@ struct ZombieView: View {
                         selectedZombieItemsLocal.removeAll()
 
                         // Update memoized files and total sizes
-                        updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSortAlpha: selectedSortAlpha, force: true)
+                        updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSort: selectedSort, force: true)
                     }
                 }
 
@@ -322,22 +319,22 @@ struct ZombieView: View {
     }
 
 
-    private func updateMemoizedFiles(for searchTerm: String, sizeType: String, selectedSortAlpha: Bool, force: Bool = false) {
-        if !force && searchTerm == lastSearchTermUsed && self.sizeType == sizeType && self.selectedSortAlpha == selectedSortAlpha {
+    private func updateMemoizedFiles(for searchTerm: String, sizeType: String, selectedSort: SortOptionList, force: Bool = false) {
+        if !force && searchTerm == lastSearchTermUsed && self.sizeType == sizeType && self.selectedSort == selectedSort {
             return
         }
 
-        let results = filterAndSortFiles(for: searchTerm, sizeType: sizeType, selectedSortAlpha: selectedSortAlpha)
+        let results = filterAndSortFiles(for: searchTerm, sizeType: sizeType, selectedSort: selectedSort)
         memoizedFiles = results.files
         totalRealSize = results.totalRealSize
         totalLogicalSize = results.totalLogicalSize
         lastSearchTermUsed = searchTerm
         self.sizeType = sizeType
-        self.selectedSortAlpha = selectedSortAlpha
+        self.selectedSort = selectedSort
         updateTotalSizes()
     }
 
-    private func filterAndSortFiles(for searchTerm: String, sizeType: String, selectedSortAlpha: Bool) -> (files: [URL], totalRealSize: Int64, totalLogicalSize: Int64) {
+    private func filterAndSortFiles(for searchTerm: String, sizeType: String, selectedSort: SortOptionList) -> (files: [URL], totalRealSize: Int64, totalLogicalSize: Int64) {
         let fileSizeReal = appState.zombieFile.fileSize
         let fileSizeLogical = appState.zombieFile.fileSizeLogical
 
@@ -346,10 +343,13 @@ struct ZombieView: View {
 
         let filesToSort = sizeType == "Real" ? filteredFilesReal : filteredFilesLogical
         let sortedFilteredFiles = filesToSort.sorted { (left, right) -> Bool in
-            if selectedSortAlpha {
+            switch selectedSort {
+            case .name:
                 return left.key.lastPathComponent.pearFormat() < right.key.lastPathComponent.pearFormat()
-            } else {
+            case .size:
                 return left.value > right.value
+            case .path:
+                return left.key.path.localizedCaseInsensitiveCompare(right.key.path) == .orderedAscending
             }
         }.map(\.key)
 
@@ -372,7 +372,7 @@ struct ZombieView: View {
 
         return (formatByte(size: totalReal).human,
                 formatByte(size: totalLogical).human,
-                "\(formatByte(size: totalLogical).byte) (\(formatByte(size: totalReal).human))")
+                "\(formatByte(size: totalLogicalSize).byte) (\(formatByte(size: totalReal).human))")
     }
 
     private func updateTotalSizes() {
@@ -481,11 +481,9 @@ struct ZombieFileDetailsItem: View {
 
                 }
 
-                Text(path.path)
+                path.path.pathWithArrows(separatorColor: .primary)
                     .font(.footnote)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
-                    .opacity(0.5)
+                    .foregroundStyle(.secondary)
                     .help(path.path)
             }
             .onHover { hovering in

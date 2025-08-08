@@ -59,92 +59,41 @@ struct EnvironmentCleanerView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
 
-            PearGroupBox(header: {
-                HStack(alignment: .center, spacing: 15) {
-                    Image(systemName: "hammer.circle")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 50, height: 50)
-                        .symbolRenderingMode(.hierarchical)
+            HStack(alignment: .center, spacing: 15) {
 
-                    VStack(alignment: .leading){
-                        Text("Development Environments").font(.title).fontWeight(.bold)
-                        Text("Clean stored files and cache for common development environments")
-                            .font(.callout).foregroundStyle(.primary.opacity(0.5))
-                    }
+                VStack(alignment: .leading){
+                    Text("Development Environments").font(.title).fontWeight(.bold)
+                    Text("Clean stored files and cache for common IDEs")
+                        .font(.callout).foregroundStyle(.primary.opacity(0.5))
                 }
-            }, content: {
-                HStack(spacing: 20) {
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text("Environment")
-                            .font(.callout).fontWeight(.bold)
 
-                        if let selectedEnvironment = appState.selectedEnvironment {
-                            Text("Checked paths for \(selectedEnvironment.name)")
-                                .font(.footnote)
-                        } else {
-                            Text("Total environment paths available")
-                                .font(.footnote)
-                        }
+                Spacer()
 
-                    }
-
-                    Spacer()
-
-                    VStack(alignment: .trailing, spacing: 5) {
-                        HStack {
-                            Button {
-                                refreshPaths()
-                            } label: {
-                                Image(systemName: "arrow.clockwise")
-                            }
-                            .buttonStyle(.borderless)
-                            .help("Refresh")
-
-                            Menu {
-                                ForEach(paths, id: \.self) { environment in
-                                    Group {
-                                        if environment.paths.isEmpty {
-                                            Text("\(environment.name) (0)")
-                                                .foregroundColor(.gray)
-                                        } else {
-                                            Button("\(environment.name) (\(environment.paths.count))") {
-                                                appState.selectedEnvironment = environment
-                                            }
-                                        }
-                                    }
+                Menu {
+                    ForEach(paths, id: \.self) { environment in
+                        Group {
+                            if environment.paths.isEmpty {
+                                Text("\(environment.name) (0)")
+                                    .foregroundColor(.gray)
+                            } else {
+                                Button("\(environment.name) (\(environment.paths.count))") {
+                                    appState.selectedEnvironment = environment
                                 }
-                            } label: {
-                                Text(appState.selectedEnvironment?.name ?? "Select Environment")
                             }
-                            .frame(maxWidth: 300)
                         }
-
-
-                        if let selectedEnvironment = appState.selectedEnvironment {
-                            Text("\(selectedEnvironment.paths.count) paths")
-                                .font(.footnote).foregroundStyle(.secondary)
-                        } else {
-                            // Drop the "All" item (first) for the count
-                            Text("\(paths.dropFirst().reduce(0) { $0 + $1.paths.count }) paths")
-                                .font(.footnote).foregroundStyle(.secondary)
-                        }
-
                     }
-
-//                    Button {
-//                        refreshPaths()
-//                    } label: {
-//                        Text("Refresh")
-////                        Label("Refresh", systemImage: "arrow.counterclockwise")
-//                            .padding(8)
-//                    }
-////                    .buttonStyle()
-
-
+                } label: {
+                    Text(appState.selectedEnvironment?.name ?? "Select Environment")
                 }
-            })
+                .buttonStyle(.plain)
+                .controlSize(.small)
+                .padding(.vertical, 8)
+                .padding(.horizontal, 14)
+                .controlGroup(Capsule(style: .continuous), level: .secondary)
 
+            }
+
+            Divider()
 
             if let selectedEnvironment = appState.selectedEnvironment {
 
@@ -161,74 +110,92 @@ struct EnvironmentCleanerView: View {
                 }
                 .scrollIndicators(scrollIndicators ? .automatic : .never)
             } else {
-                Text("Select an environment to view paths.")
-                    .italic()
-                    .foregroundStyle(.secondary)
+                VStack(alignment: .center) {
+                    Spacer()
+                    Text("Select an environment to view paths")
+                        .font(.title2)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                }
+                .frame(maxWidth: .infinity)
+
             }
+
 
             // Add bulk delete buttons if selectedEnvironment and has valid paths
             if let selectedEnvironment = appState.selectedEnvironment, !selectedEnvironment.paths.isEmpty {
-                HStack(spacing: 20) {
+
+                HStack {
                     Spacer()
+                    HStack(spacing: 10) {
 
-//                    Button {
-//                        refreshPaths()
-//                    } label: {
-//                        Label("Refresh", systemImage: "arrow.counterclockwise")
-//                            .padding(8)
-//                    }
-//                    .buttonStyle(.borderedProminent)
-//                    .tint(.blue)
-
-                    Button {
-                        for path in selectedEnvironment.paths {
-                            let expanded = NSString(string: path).expandingTildeInPath
-                            let _ = try? FileManager.default.removeItem(atPath: expanded)
+                        Button {
+                            refreshPaths()
+                        } label: {
+                            Label("Refresh", systemImage: "arrow.clockwise")
                         }
-                        // Trigger refresh
-                        refreshPaths()
-                        if let env = appState.selectedEnvironment,
-                           paths.first(where: { $0.name == env.name })?.paths.isEmpty ?? true {
-                            appState.selectedEnvironment = nil
-                        }
-                    } label: {
-                        Label("Delete All Folders", systemImage: "trash")
-                            .padding(8)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.red)
+                        .help("Refresh")
 
-                    Button {
-                        for path in selectedEnvironment.paths {
-                            let expanded = NSString(string: path).expandingTildeInPath
-                            let fm = FileManager.default
-                            if let contents = try? fm.contentsOfDirectory(atPath: expanded) {
-                                for item in contents {
-                                    let itemPath = (expanded as NSString).appendingPathComponent(item)
-                                    let _ = try? fm.removeItem(atPath: itemPath)
+                        Divider().frame(height: 10)
+
+                        Button {
+                            showCustomAlert(title: "Warning", message: "This will delete all the selected folders. Are you sure?", style: .warning, onOk:  {
+                                for path in selectedEnvironment.paths {
+                                    let expanded = NSString(string: path).expandingTildeInPath
+                                    let _ = try? FileManager.default.removeItem(atPath: expanded)
                                 }
-                            }
+                                refreshPaths()
+                                if let env = appState.selectedEnvironment,
+                                   paths.first(where: { $0.name == env.name })?.paths.isEmpty ?? true {
+                                    appState.selectedEnvironment = nil
+                                }
+                            })
+
+                        } label: {
+                            Label("Delete All Folders", systemImage: "folder")
                         }
-                        // Trigger refresh
-                        refreshPaths()
-                        if let env = appState.selectedEnvironment,
-                           paths.first(where: { $0.name == env.name })?.paths.isEmpty ?? true {
-                            appState.selectedEnvironment = nil
+
+                        Divider().frame(height: 10)
+
+                        Button {
+                            showCustomAlert(title: "Warning", message: "This will delete all the contents of the selected folders. Are you sure?", style: .warning, onOk: {
+                                for path in selectedEnvironment.paths {
+                                    let expanded = NSString(string: path).expandingTildeInPath
+                                    let fm = FileManager.default
+                                    if let contents = try? fm.contentsOfDirectory(atPath: expanded) {
+                                        for item in contents {
+                                            let itemPath = (expanded as NSString).appendingPathComponent(item)
+                                            let _ = try? fm.removeItem(atPath: itemPath)
+                                        }
+                                    }
+                                }
+                                refreshPaths()
+                                if let env = appState.selectedEnvironment,
+                                   paths.first(where: { $0.name == env.name })?.paths.isEmpty ?? true {
+                                    appState.selectedEnvironment = nil
+                                }
+                            })
+                        } label: {
+                            Label("Delete All Contents", systemImage: "shippingbox")
                         }
-                    } label: {
-                        Label("Delete All Contents", systemImage: "trash")
-                            .padding(8)
+
                     }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.orange)
+                    .controlSize(.small)
+                    .buttonStyle(.link)
+                    .padding(.vertical, 8)
+                    .padding(.horizontal, 14)
+                    .controlGroup(Capsule(style: .continuous), level: .secondary)
+
+                    Spacer()
                 }
+
+            } else {
+                Spacer()
             }
 
-            Spacer()
         }
         .frame(maxWidth: .infinity)
-        .padding([.horizontal, .top], 30)
-        .padding(.top)
+        .padding(20)
         .onAppear {
             refreshPaths()
         }
@@ -253,16 +220,45 @@ struct PathRowView: View {
                     VStack(alignment: .leading, spacing: 10) {
                         HStack {
 
-                            Text(matchedPath)
+                            Button {
+                                openInFinder(matchedPath)
+                            } label: {
+                                Image(systemName: "folder")
+                            }
+                            .buttonStyle(.link)
+
+                            matchedPath.pathWithArrows()
                                 .font(.headline)
-                                .foregroundColor(.primary)
-                                .lineLimit(1)
-                                .truncationMode(.tail)
 
                             Spacer()
 
                             Text(formatByte(size: size).human)
                                 .foregroundColor(.secondary)
+
+                            HStack {
+                                Button {
+                                    deleteFolder(matchedPath)
+                                } label: {
+                                    Label("Delete Folder", systemImage: "folder")
+                                }
+                                .help("Delete the folder")
+
+                                Divider().frame(height: 10)
+
+                                Button {
+                                    deleteFolderContents(matchedPath)
+                                } label: {
+                                    Label("Delete Contents", systemImage: "shippingbox")
+                                }
+                                .disabled(isEmpty)
+                                .help("Delete all files within this folder")
+                            }
+                            .controlSize(.small)
+                            .buttonStyle(.link)
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 14)
+                            .controlGroup(Capsule(style: .continuous), level: .secondary)
+
                         }
                         .onAppear {
                             DispatchQueue.global(qos: .userInitiated).async {
@@ -274,44 +270,6 @@ struct PathRowView: View {
                                     }
                                 }
                             }
-                        }
-
-                        HStack {
-
-                            Button {
-                                openInFinder(matchedPath)
-                            } label: {
-                                Label("Open", systemImage: "folder")
-                                    .padding(4)
-                            }
-                            .buttonStyle(.borderedProminent)
-                            .tint(.blue)
-
-                            Spacer()
-
-                            HStack {
-                                Button {
-                                    deleteFolder(matchedPath)
-                                } label: {
-                                    Label("Folder", systemImage: "trash")
-                                        .padding(4)
-                                }
-                                .buttonStyle(.borderedProminent)
-                                .tint(.red)
-                                .help("Delete the folder")
-
-                                Button {
-                                    deleteFolderContents(matchedPath)
-                                } label: {
-                                    Label("Contents", systemImage: "trash")
-                                        .padding(4)
-                                }
-                                .buttonStyle(.borderedProminent)
-                                .tint(.orange)
-                                .disabled(isEmpty)
-                                .help("Delete all files within this folder")
-                            }
-
                         }
 
                     }

@@ -106,7 +106,7 @@ struct LipoView: View {
             // Button to start the lipo process on selected apps
             HStack {
 
-                Text("\(formatByte(size: Int64(savingsAllApps)).human)").foregroundStyle(.green)
+                Text(verbatim: "\(formatByte(size: Int64(savingsAllApps)).human)").foregroundStyle(.green)
                     .help("Total possible savings between all the apps")
 
                 Spacer()
@@ -131,7 +131,7 @@ struct LipoView: View {
 
                 Spacer()
 
-                Text("\(formatByte(size: Int64(binaryAllApps)).human)").foregroundStyle(.orange)
+                Text(verbatim: "\(formatByte(size: Int64(binaryAllApps)).human)").foregroundStyle(.orange)
                     .help("Total binary size between all the apps")
 
 
@@ -256,7 +256,7 @@ struct AppRowView: View {
                     HStack(spacing: 0) {
                         Text("Bundle Size: ")
                             .foregroundStyle(.gray)
-                        Text("\(formatByte(size: Int64(app.bundleSize)).human)")
+                        Text(verbatim: "\(formatByte(size: Int64(app.bundleSize)).human)")
                             .foregroundStyle(.primary)
                             .frame(minWidth: 50, alignment: .trailing)
                     }
@@ -268,12 +268,12 @@ struct AppRowView: View {
                     .frame(maxWidth: .infinity)
 
                 HStack {
-                    Text("\(formatByte(size: Int64(savingsSize)).human)")
+                    Text(verbatim: "\(formatByte(size: Int64(savingsSize)).human)")
                         .foregroundStyle(.green)
 
                     Spacer()
 
-                    Text("\(formatByte(size: Int64(binarySize)).human)")
+                    Text(verbatim: "\(formatByte(size: Int64(binarySize)).human)")
                         .foregroundStyle(.orange)
                 }
                 .font(.callout)

@@ -233,7 +233,7 @@ struct MountedVolumeView: View {
                 totalSpace: Int64(total),
                 usedSpace: Int64(used))
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.initialSize = Int64(used)
             }
         }

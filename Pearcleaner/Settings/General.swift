@@ -356,10 +356,10 @@ enum SearchSensitivityLevel: Int, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .strict: return "Strict"
-        case .enhanced: return "Enhanced"
-        case .balanced: return "Balanced"
-        case .broad: return "Broad"
+        case .strict: return String(localized: "Strict")
+        case .enhanced: return String(localized: "Enhanced")
+        case .balanced: return String(localized: "Balanced")
+        case .broad: return String(localized: "Broad")
         }
     }
 
@@ -375,13 +375,13 @@ enum SearchSensitivityLevel: Int, CaseIterable, Identifiable {
     var description: String {
         switch self {
         case .strict:
-            return "Exact app name and bundle ID matches against found files (Less files, most accurate)"
+            return String(localized: "Exact app name and bundle ID matches against found files (Less files, most accurate)")
         case .enhanced:
-            return "Strict level and also includes Spotlight metadata search (Slightly more files, still accurate)"
+            return String(localized: "Strict level and also includes Spotlight metadata search (Slightly more files, still accurate)")
         case .balanced:
-            return "Strict level and it also allows partial matches (More files, slightly less accurate)"
+            return String(localized: "Strict level and it also allows partial matches (More files, slightly less accurate)")
         case .broad:
-            return "Balanced level and also includes Spotlight metadata search (Most files, least accurate)"
+            return String(localized: "Balanced level and also includes Spotlight metadata search (Most files, least accurate)")
         }
     }
 
