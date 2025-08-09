@@ -475,6 +475,12 @@
             "value" : "Ein **riesiges** Dankeschön an alle, die bisher mitgewirkt haben!"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これまでにご協力いただいた皆さんへ、心からの大きな感謝を申し上げます！"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -989,6 +995,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nach dem Lipo-Vorgang wird der grüne Teil aus der Binärdatei Ihrer App entfernt. Es wird empfohlen, eine App vor dem Lipo-Vorgang mindestens einmal zu öffnen, um sicherzustellen, dass macOS die Signatur zwischengespeichert hat. **Für bestimmte Anwendungen ist „Privileged Helper” erforderlich, um diesen Vorgang auszuführen.**"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リポ（lipo）実行後、アプリのバイナリから緑色で示された部分が削除されます。macOS が署名をキャッシュできるように、lipo を実行する前に少なくとも一度はアプリを起動しておくことが推奨されています。特定のアプリケーションでは、この操作を行うために「Privileged Helper（権限付きヘルパー）」が必要です。"
           }
         },
         "zh-Hans" : {
@@ -2020,6 +2032,12 @@
     },
     "Authorization required in Settings > Login Items > %@.app." : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定 → ログイン項目 → %@.app で認証が必要です。"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2127,7 +2145,14 @@
 
     },
     "Balanced level and also includes Spotlight metadata search (Most files, least accurate)" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バランスの取れたレベルで、Spotlight メタデータ検索（ファイル数は多いですが精度は低め）も含まれます。"
+          }
+        }
+      }
     },
     "BETA" : {
       "localizations" : {
@@ -2632,6 +2657,12 @@
     },
     "Checking..." : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "確認中…"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2730,7 +2761,14 @@
       }
     },
     "Clean stored files and cache for common IDEs" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一般的なIDE用に保存されたファイルやキャッシュをクリーンアップします。"
+          }
+        }
+      }
     },
     "Clear" : {
       "extractionState" : "manual",
@@ -3017,7 +3055,14 @@
       }
     },
     "Click to dismiss" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "閉じるにはクリックしてください。"
+          }
+        }
+      }
     },
     "Click to search" : {
       "extractionState" : "manual",
@@ -3447,6 +3492,12 @@
     "Contents" : {
       "extractionState" : "stale",
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "内容"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3746,6 +3797,12 @@
     },
     "Delete All Contents" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべての内容を削除"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3832,6 +3889,12 @@
     },
     "Delete All Folders" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォルダをすべて削除"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3853,13 +3916,33 @@
       }
     },
     "Delete Contents" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "内容をすべて削除"
+          }
+        }
+      }
     },
     "Delete Folder" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォルダを削除"
+          }
+        }
+      }
     },
     "Delete the folder" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォルダを削除する"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4609,6 +4692,12 @@
             "value" : "Aktiviert"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有効化"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4783,7 +4872,14 @@
       }
     },
     "Enhanced" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "強化された"
+          }
+        }
+      }
     },
     "Enter manual command here, Enter to run" : {
       "localizations" : {
@@ -4903,7 +4999,14 @@
       }
     },
     "Exact app name and bundle ID matches against found files (Less files, most accurate)" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正確なアプリ名とバンドルIDで検索し、該当ファイルをマッチング（ファイル数は少ないですが精度が最高）"
+          }
+        }
+      }
     },
     "Example privileged commands" : {
       "localizations" : {
@@ -5430,6 +5533,12 @@
     },
     "File System" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイルシステム"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5595,6 +5704,12 @@
     "Folder" : {
       "extractionState" : "stale",
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォルダ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6236,7 +6351,14 @@
       }
     },
     "Hide checkboxes" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "チェックボックスを非表示にする"
+          }
+        }
+      }
     },
     "Homebrew cleanup after uninstall" : {
       "extractionState" : "manual",
@@ -6762,6 +6884,12 @@
     },
     "Installation failed: %@" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インストールに失敗しました：%@"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6866,7 +6994,14 @@
       }
     },
     "Instead of moving files to Trash folder, this will permanently remove them. With this setting enabled, the Undo function is also not active as there's no files in Trash folder to undo." : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイルをゴミ箱に移動する代わりに、完全に削除します。この設定を有効にすると、Undo（元に戻す）機能も使えなくなります。なぜなら、ゴミ箱に残るファイルがないため、取り消しできないからです。"
+          }
+        }
+      }
     },
     "Instructions" : {
       "extractionState" : "manual",
@@ -7015,6 +7150,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ungültige Signatur, stellen Sie sicher, dass die Anwendung und das Hilfsprogramm ordnungsgemäß signiert sind."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無効な署名です。アプリケーションおよびヘルパーツールが適切に署名されているか確認してください。"
           }
         },
         "tr" : {
@@ -7641,6 +7782,12 @@
             "value" : "Lipo Architektur"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リポ対象のアーキテクチャ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7670,6 +7817,12 @@
             "value" : "Lipo'd Datei:\n\n%@"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リポ済みファイル:\n\n%@"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7697,7 +7850,14 @@
       }
     },
     "Location:" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "場所："
+          }
+        }
+      }
     },
     "Locations that will be searched for .app files. Click a non-default path to remove it. Default paths can't be removed." : {
       "extractionState" : "manual",
@@ -8852,10 +9012,24 @@
 
     },
     "Multi-select disabled in sidebar app list" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サイドバーのアプリ一覧では、複数選択が無効になっています。"
+          }
+        }
+      }
     },
     "Multi-select enabled in sidebar app list" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サイドバーのアプリ一覧で、複数選択が可能になりました。"
+          }
+        }
+      }
     },
     "Name" : {
       "extractionState" : "manual",
@@ -10066,6 +10240,12 @@
             "value" : "Vorgang fehlgeschlagen: %@"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "操作に失敗しました：%@"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10104,6 +10284,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Optionen"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択肢"
           }
         },
         "zh-Hans" : {
@@ -10353,6 +10539,12 @@
             "value" : "Pearcleaner kann privilegierte Vorgänge auf folgende Weise ausführen:\n- Hilfsdienst 👍🏻\n- Autorisierungsdienste 👎🏻\n\nHilfsdienst: Pearcleaner fordert Sie nur einmal zur Eingabe Ihres Passworts auf, um den Hilfsdienst zu aktivieren. Anschließend werden alle nachfolgenden Vorgänge ohne weitere Aufforderungen ausgeführt, solange der Hilfsdienst in den Einstellungen > Anmeldeobjekte aktiviert bleibt. Diese Autorisierung wird vollständig von macOS über SMAppService verwaltet.\n\nAutorisierungsdienste: Pearcleaner fordert den Benutzer bei jedem privilegierten Vorgang zur Eingabe seines Passworts auf, was sehr lästig sein kann. Diese Autorisierungen werden von Pearcleaner und dem Benutzer verwaltet.\n\nWas ist ein privilegierter Vorgang: Immer wenn Pearcleaner Dateien aus einem Ordner löschen muss (z. B. /var), für den der Benutzer keine Berechtigungen hat, oder Dateien an einem privilegierten Speicherort rückgängig machen/wiederherstellen muss."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner が特権操作を実行できる方法は次の二つです。\n\n- Helper サービス 👍🏻  \n- Authorization Services（認証サービス） 👎🏻  \n\nHelper サービス\nPearcleaner は最初に「Helper」を有効化するためだけに一度パスワードを入力させます。その後は、設定 > ログイン項目 で Helper が有効である限り、すべての操作が自動的に実行され、プロンプトは表示されません。  \nこの認証は macOS の SMAppService により管理されています。\n\nAuthorization Services\nPearcleaner は特権操作ごとにパスワード入力を求めます。そのため、操作数が多い場合は煩わしくなることがあります。この認証は Pearcleaner とユーザーの両方で管理されます。\n\n 「特権操作」とは？\n\n- 例：`/var` のようなディレクトリからファイルを削除する  \n- 例：特権領域にファイルを復元・戻す\n\nいずれの場合も、ユーザーには通常の権限が無いため、パスワード認証（または Helper サービス）が必要になります。"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10543,6 +10735,12 @@
             "value" : "Pearcleaner will strip the %1$@ architecture from %2$@'s executable file to save space. Would you like to proceed?"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アーキテクチャを **%2$@** の実行ファイルから削除し、ディスク容量を確保します。  よろしいですか？"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10622,7 +10820,14 @@
       }
     },
     "Permanently delete files" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完全にファイルを削除"
+          }
+        }
+      }
     },
     "Permission required. Enable in System Settings > Login Items." : {
       "localizations" : {
@@ -10630,6 +10835,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Berechtigung notwendig. Einschalten in den Systemeinstellungen > Anmeldeobjekte"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "権限が必要です。設定 > ログイン項目 で有効化してください。"
           }
         },
         "tr" : {
@@ -11061,6 +11272,12 @@
             "value" : "um Übersetzungen kürzen"
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻訳の削除"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11087,6 +11304,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "kürze um alle nicht benötigten Sprachen"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未使用の言語翻訳を削除"
           }
         },
         "zh-Hans" : {
@@ -11323,7 +11546,14 @@
       }
     },
     "Real size type will show how much actual allocated space the file has on disk.\n\nLogical type shows the binary size. The filesystem can compress and deduplicate sectors on disk, so real size is sometimes smaller (or bigger) than logical size.\n\nFinder size is similar to if you right click > Get Info on a file in Finder, which will show both the logical and real sizes together." : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "実サイズ（Real Size）\n\nファイルがディスク上に実際に確保している容量を表示します。\n論理サイズ（Logical Size）\n\nバイナリの純粋なサイズです。\nファイルシステムはディスク上でセクタを圧縮・重複除去できるため、実サイズが論理サイズより小さい場合もありますし、大きい場合もあります。\nFinder のサイズ\n\nFinder でファイルを右クリックして「情報を見る」を選択したときに表示されるサイズです。\nこの表示では論理サイズと実サイズの両方が一緒に確認できます。"
+          }
+        }
+      }
     },
     "Real size type will show how much actual allocated space the file has on disk.\n\nLogical type shows the binary size. The filesystem can compress and deduplicate sectors on disk, so real size is sometimes smaller(or bigger) than logical size.\n\nFinder size is similar to if you right click > Get Info on a file in Finder, which will show both the logical and real sizes together." : {
       "extractionState" : "manual",
@@ -11610,7 +11840,14 @@
       }
     },
     "Refresh List" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リストを更新"
+          }
+        }
+      }
     },
     "Refresh updater" : {
       "extractionState" : "manual",
@@ -11689,6 +11926,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Registriert, muss jedoch in den Systemeinstellungen > Anmeldeobjekte aktiviert werden."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登録済みですが、設定 > ログイン項目 で有効化する必要があります。"
           }
         },
         "tr" : {
@@ -12859,7 +13102,14 @@
       }
     },
     "Search apps.." : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリを検索.."
+          }
+        }
+      }
     },
     "Search Sensitivity" : {
 
@@ -13007,6 +13257,12 @@
     },
     "Searching:" : {
       "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリを検索.."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13028,7 +13284,14 @@
       }
     },
     "See app details" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリの詳細を見る"
+          }
+        }
+      }
     },
     "Select All" : {
       "localizations" : {
@@ -13135,7 +13398,14 @@
       }
     },
     "Select an environment to view paths" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パスを表示する環境を選択してください。"
+          }
+        }
+      }
     },
     "Select an environment to view paths." : {
       "extractionState" : "stale",
@@ -13352,6 +13622,12 @@
             "value" : "Der Dienst wurde noch nicht registriert. Sie können ihn jetzt registrieren."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サービスはまだ登録されていません。今すぐ登録しますか？"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13390,6 +13666,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dienst ist bereits aktiviert."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サービスは既に有効化されています。"
           }
         },
         "tr" : {
@@ -13432,6 +13714,12 @@
             "value" : "Dienst ist bereits registriert und aktiviert."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サービスはすでに登録されており、かつ有効化されています。"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13472,6 +13760,12 @@
             "value" : "Dienst ist nicht installiert."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サービスはインストールされていません。"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13510,6 +13804,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dienst registriert, erfordert jedoch die Zustimmung des Benutzers unter „Einstellungen“ > „Anmeldeobjekte“ > %@.app."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定 > ログイン項目 > %@.app でユーザー承認が必要です（サービスは登録済み）。"
           }
         },
         "tr" : {
@@ -13758,7 +14058,14 @@
       }
     },
     "Show checkboxes" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "チェックボックスを表示"
+          }
+        }
+      }
     },
     "Showing last 3 releases" : {
       "extractionState" : "manual",
@@ -13955,7 +14262,14 @@
       }
     },
     "Size:" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サイズ:"
+          }
+        }
+      }
     },
     "Sort app list alphabetically by name or by size" : {
       "extractionState" : "manual",
@@ -14029,7 +14343,14 @@
       }
     },
     "Sorted by %@" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ で並び替え"
+          }
+        }
+      }
     },
     "Sorted by Name" : {
       "extractionState" : "manual",
@@ -14174,7 +14495,14 @@
       }
     },
     "Sorting (%@)" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "並び替え（%@）"
+          }
+        }
+      }
     },
     "Sorting Options" : {
       "extractionState" : "manual",
@@ -14325,6 +14653,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Platzersparnis: %d%%"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スペース節約率：%d％"
           }
         },
         "tr" : {
@@ -14543,10 +14877,24 @@
 
     },
     "Strict level and also includes Spotlight metadata search (Slightly more files, still accurate)" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "厳密なレベルで、Spotlight のメタデータ検索も含みます（ファイル数はやや増えますが、精度は保たれています）。"
+          }
+        }
+      }
     },
     "Strict level and it also allows partial matches (More files, slightly less accurate)" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "厳密なレベルで、部分一致も許可します（ファイル数は増えますが、精度はやや低下します）。"
+          }
+        }
+      }
     },
     "Submit a bug or feature request" : {
       "extractionState" : "manual",
@@ -14961,6 +15309,12 @@
             "state" : "new",
             "value" : "The search sensitivity level controls how strict or lenient Pearcleaner is when finding related files for an app:\n\n• Strict – %1$@\n• Enhanced – %2$@\n• Balanced – %3$@\n• Broad – %4$@\n\nHigher levels may find more files but may include some unrelated results. It is recommended to check found files manually at these levels."
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "検索感度レベルは、Pearcleaner がアプリに関連するファイルを検出するときの厳密さ・緩やかさを決定します。\n\n厳格 – %1$@\n強化 – %2$@\nバランス – %3$@\n広範囲 – %4$@\nレベルが高いほど、より多くのファイルが検出される可能性がありますが、関連性の低い結果も含まれることがあります。\n\nこのようなレベルでは、検出されたファイルを手動で確認することを推奨します。"
+          }
         }
       }
     },
@@ -14977,6 +15331,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "The total space savings between all the lipo'd apps\nSize Before: %1$@\nSize After: %2$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全ての LIPO 化されたアプリで得られた合計節約スペース\n\n前のサイズ：%1$@\n後のサイズ：%2$@"
           }
         },
         "tr" : {
@@ -15492,6 +15852,12 @@
             "value" : "Dadurch werden alle nicht verwendeten Sprachübersetzungsdateien entfernt."
           }
         },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これにより、未使用の言語翻訳ファイルをすべて削除します。"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -15824,7 +16190,14 @@
       }
     },
     "Total size of all orphaned files" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "孤立ファイル全体のサイズ"
+          }
+        }
+      }
     },
     "Total size of files:" : {
       "extractionState" : "stale",
@@ -15898,10 +16271,24 @@
       }
     },
     "Transition animations disabled" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "遷移アニメーションを無効化"
+          }
+        }
+      }
     },
     "Transition animations enabled" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "遷移アニメーションを有効化"
+          }
+        }
+      }
     },
     "Translation" : {
       "localizations" : {
@@ -15909,6 +16296,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Übersetzung"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻訳"
           }
         },
         "tr" : {
@@ -16487,6 +16880,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Unbekannter Dienst Zustand (%lld)."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不明なサービス状態（%lld）"
           }
         },
         "tr" : {
@@ -17255,6 +17654,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Benutzer hat die Berechtigung verweigert. Aktivieren Sie diese Option in den Systemeinstellungen > Anmeldeobjekte."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ユーザーが権限を拒否しました。\n\n設定 > ログイン項目 で有効化してください。"
           }
         },
         "tr" : {
@@ -18262,7 +18667,14 @@
       }
     },
     "Welcome, %@!" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ようこそ, %@!"
+          }
+        }
+      }
     },
     "When applications are moved to Trash, Pearcleaner will launch and find related files and folders for deletion." : {
       "extractionState" : "manual",
