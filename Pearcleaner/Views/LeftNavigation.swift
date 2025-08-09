@@ -43,7 +43,7 @@ struct LeftNavigationSidebar: View {
 #if DEBUG
             VStack(alignment: .center, spacing: 5) {
                 Image(systemName: "ladybug.fill")
-                Text(verbatim: "v\(Bundle.main.version) (\(Bundle.main.buildVersion))")
+                Text(verbatim: "\(Bundle.main.version) (\(Bundle.main.buildVersion))")
                     .font(.footnote)
             }
             .foregroundStyle(.orange)

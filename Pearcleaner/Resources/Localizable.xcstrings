@@ -123,6 +123,9 @@
         }
       }
     },
+    "/" : {
+
+    },
     "%@" : {
       "localizations" : {
         "de" : {
@@ -416,6 +419,7 @@
       }
     },
     "%lld universal apps" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -984,6 +988,7 @@
       }
     },
     "After lipo, the green portion will be removed from your app's binary. It's recommended to open an app at least once before lipo to make sure macOS has cached the signature. **Privileged Helper is required to perform this action on certain applications.**" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1472,6 +1477,7 @@
       }
     },
     "App lipo targets the Mach-O binaries inside your universal app bundles and removes any unused architectures, such as x86_64 or arm64, leaving only the architectures your computer actually supports. The list shows only universal type apps, not your full app list." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2182,6 +2188,7 @@
       }
     },
     "Binary Size" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2301,6 +2308,7 @@
       }
     },
     "Bundle Size: " : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3744,6 +3752,12 @@
         }
       }
     },
+    "Delete" : {
+
+    },
+    "Delete All" : {
+
+    },
     "Delete All Contents" : {
       "localizations" : {
         "zh-Hans" : {
@@ -5151,6 +5165,9 @@
         }
       }
     },
+    "Excluded Apps" : {
+
+    },
     "Export File Paths" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5756,6 +5773,19 @@
           }
         }
       }
+    },
+    "Found %lld orphaned workspace%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Found %1$lld orphaned workspace%2$@"
+          }
+        }
+      }
+    },
+    "Full app size" : {
+
     },
     "Full Disk Access" : {
       "extractionState" : "manual",
@@ -7526,6 +7556,9 @@
         }
       }
     },
+    "Less" : {
+
+    },
     "Less files" : {
 
     },
@@ -9193,6 +9226,9 @@
         }
       }
     },
+    "No apps excluded" : {
+
+    },
     "No command provided" : {
       "localizations" : {
         "de" : {
@@ -9451,6 +9487,9 @@
         }
       }
     },
+    "No orphaned workspaces found" : {
+
+    },
     "No releases to display" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -9522,7 +9561,11 @@
         }
       }
     },
+    "No universal apps found" : {
+
+    },
     "No universal apps found." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -11082,6 +11125,7 @@
       }
     },
     "Prune unused language translations" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -11987,6 +12031,18 @@
         }
       }
     },
+    "Remove from exclusion list" : {
+
+    },
+    "Remove unused architectures from your app binaries to reduce app size" : {
+
+    },
+    "Remove unused languages during lipo" : {
+
+    },
+    "Remove workspace storage for deleted project folders" : {
+
+    },
     "Rescan" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -12626,7 +12682,11 @@
         }
       }
     },
+    "Saved:" : {
+
+    },
     "Saved: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -12679,6 +12739,7 @@
       }
     },
     "Savings Size" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -12729,6 +12790,12 @@
           }
         }
       }
+    },
+    "Scan" : {
+
+    },
+    "Scanning..." : {
+
     },
     "Scrollbar is hidden in lists" : {
       "localizations" : {
@@ -13030,7 +13097,11 @@
     "See app details" : {
 
     },
+    "See lipo details" : {
+
+    },
     "Select All" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -13083,6 +13154,7 @@
       }
     },
     "Select all universal apps" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -13133,9 +13205,6 @@
           }
         }
       }
-    },
-    "Select an environment to view paths" : {
-
     },
     "Select an environment to view paths." : {
       "extractionState" : "stale",
@@ -13201,6 +13270,9 @@
           }
         }
       }
+    },
+    "Select an environment to view stored cache" : {
+
     },
     "Sentinel Monitor" : {
       "extractionState" : "manual",
@@ -15654,7 +15726,11 @@
         }
       }
     },
+    "Total Available Savings:" : {
+
+    },
     "Total binary size between all the apps" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -15772,6 +15848,7 @@
       }
     },
     "Total possible savings between all the apps" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -18670,6 +18747,9 @@
           }
         }
       }
+    },
+    "Workspace Storage Cleaner" : {
+
     }
   },
   "version" : "1.0"

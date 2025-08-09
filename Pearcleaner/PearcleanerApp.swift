@@ -21,7 +21,6 @@ struct PearcleanerApp: App {
     @StateObject var fsm = FolderSettingsManager.shared
     @StateObject private var updater = Updater(owner: "alienator88", repo: "Pearcleaner")
     //MARK: AppStorage
-    @AppStorage("settings.permissions.hasLaunched") private var hasLaunched: Bool = false
     @AppStorage("settings.general.brew") private var brew: Bool = false
     //MARK: States
     @State private var search = ""

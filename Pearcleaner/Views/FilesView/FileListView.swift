@@ -100,6 +100,7 @@ struct FileListView: View {
                     Text("\(appState.selectedItems.count) / \(appState.appInfo.fileSize.count)")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
+                        .frame(minWidth: 80, alignment: .leading)
 
                     Spacer()
 
@@ -129,6 +130,7 @@ struct FileListView: View {
                     .buttonStyle(.borderless)
                     .transition(.move(edge: .trailing))
                     .help("See app details")
+                    .frame(minWidth: 80, alignment: .trailing)
 
                 }
                 .padding(.top)

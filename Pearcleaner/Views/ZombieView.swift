@@ -79,7 +79,6 @@ struct ZombieView: View {
                             .help("All checkboxes")
 
                         SearchBar(search: $searchZ, glass: glass)
-                            .padding(.horizontal)
                             .onChange(of: searchZ) { newValue in
                                 updateMemoizedFiles(for: newValue, sizeType: sizeType, selectedSort: selectedSort)
                             }
@@ -101,7 +100,6 @@ struct ZombieView: View {
 
 
                     }
-                    .padding(.horizontal)
                     .padding(.vertical)
 
 
@@ -122,7 +120,6 @@ struct ZombieView: View {
                                 }
 
                             }
-                            .padding()
                         }
                         .scrollIndicators(scrollIndicators ? .automatic : .never)
                     } else {
@@ -138,6 +135,7 @@ struct ZombieView: View {
                         Text(verbatim: "\(selectedZombieItemsLocal.count) / \(searchZ.isEmpty ? appState.zombieFile.fileSize.count : memoizedFiles.count)")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
+                            .frame(minWidth: 80, alignment: .leading)
 
                         Spacer()
 
@@ -156,7 +154,10 @@ struct ZombieView: View {
 
                         Spacer()
 
-                        Text(verbatim: "\(displaySizeTotal)").font(.footnote).help("Total size of all orphaned files")
+                        Text(verbatim: "\(displaySizeTotal)")
+                            .font(.footnote)
+                            .help("Total size of all orphaned files")
+                            .frame(minWidth: 80, alignment: .trailing)
 
 
                     }

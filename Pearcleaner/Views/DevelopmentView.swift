@@ -93,17 +93,24 @@ struct EnvironmentCleanerView: View {
 
             }
 
-            Divider()
-
             if let selectedEnvironment = appState.selectedEnvironment {
 
+                // Add workspace storage cleaner for VS Code and Cursor
+                if selectedEnvironment.name == "VS Code" || selectedEnvironment.name == "Cursor" {
+                    WorkspaceStorageCleanerView(ideName: selectedEnvironment.name)
+                        .id(selectedEnvironment.name)
+                        .padding(.bottom, 10)
+                }
+
                 ScrollView {
-                    ForEach(selectedEnvironment.paths, id: \.self) { path in
-                        PathRowView(path: path) {
-                            refreshPaths()
-                            if let env = appState.selectedEnvironment,
-                               paths.first(where: { $0.name == env.name })?.paths.isEmpty ?? true {
-                                appState.selectedEnvironment = nil
+                    LazyVStack(spacing: 10) {
+                        ForEach(selectedEnvironment.paths, id: \.self) { path in
+                            PathRowView(path: path) {
+                                refreshPaths()
+                                if let env = appState.selectedEnvironment,
+                                   paths.first(where: { $0.name == env.name })?.paths.isEmpty ?? true {
+                                    appState.selectedEnvironment = nil
+                                }
                             }
                         }
                     }
@@ -112,7 +119,7 @@ struct EnvironmentCleanerView: View {
             } else {
                 VStack(alignment: .center) {
                     Spacer()
-                    Text("Select an environment to view paths")
+                    Text("Select an environment to view stored cache")
                         .font(.title2)
                         .foregroundStyle(.secondary)
                     Spacer()
@@ -416,6 +423,256 @@ struct PathRowView: View {
     }
 }
 
+struct WorkspaceStorageCleanerView: View {
+    let ideName: String
+    @State private var orphanedWorkspaces: [OrphanedWorkspace] = []
+    @State private var isScanning = false
+    @State private var lastScanDate: Date?
+    
+    struct OrphanedWorkspace {
+        let id = UUID()
+        let name: String
+        let path: String
+        let folderPath: String
+        let size: String
+    }
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Image(systemName: "macwindow")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 30, height: 30)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Workspace Storage Cleaner")
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    Text("Remove workspace storage for deleted project folders")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                
+                Spacer()
+                
+                Button(action: scanForOrphanedWorkspaces) {
+                    HStack(spacing: 6) {
+                        if isScanning {
+                            ProgressView()
+                                .scaleEffect(0.8)
+                        } else {
+                            Image(systemName: "magnifyingglass")
+                        }
+                        Text(isScanning ? "Scanning..." : "Scan")
+                    }
+                }
+                .disabled(isScanning)
+                .controlSize(.small)
+                .buttonStyle(.link)
+                .padding(.vertical, 8)
+                .padding(.horizontal, 14)
+                .controlGroup(Capsule(style: .continuous), level: .secondary)
+            }
+            
+            if !orphanedWorkspaces.isEmpty {
+                Divider()
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Text("Found \(orphanedWorkspaces.count) orphaned workspace\(orphanedWorkspaces.count == 1 ? "" : "s")")
+                            .font(.subheadline)
+                            .foregroundColor(.orange)
+                        
+                        Spacer()
+                    }
+                    
+                    ForEach(orphanedWorkspaces, id: \.id) { workspace in
+                        HStack {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(workspace.name)
+                                    .font(.caption)
+                                    .lineLimit(1)
+                                    .truncationMode(.middle)
+
+                                Text("\(workspace.folderPath)")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                    .lineLimit(1)
+                                    .truncationMode(.middle)
+
+                            }
+                            
+                            Spacer()
+                            
+                            Text(workspace.size)
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                            
+                            Button("Delete") {
+                                cleanOrphanedWorkspace(workspace)
+                            }
+                            .buttonStyle(.borderless)
+                            .controlSize(.mini)
+                            .foregroundColor(.red)
+                        }
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Color.secondary.opacity(0.1))
+                        .cornerRadius(6)
+                    }
+
+                    HStack {
+                        Spacer()
+
+                        Button("Delete All") {
+                            cleanAllOrphanedWorkspaces()
+                        }
+                        .disabled(isScanning)
+                        .controlSize(.small)
+                        .buttonStyle(.link)
+                        .foregroundColor(.red)
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 14)
+                        .controlGroup(Capsule(style: .continuous), level: .secondary)
+
+                        Button("Cancel") {
+                            cancelWorkspaceCleanup()
+                        }
+                        .disabled(isScanning)
+                        .controlSize(.small)
+                        .buttonStyle(.link)
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 14)
+                        .controlGroup(Capsule(style: .continuous), level: .secondary)
+                    }
+                }
+            } else if lastScanDate != nil {
+                Text("No orphaned workspaces found")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .italic()
+            }
+        }
+        .padding()
+        .background(Color.primary.opacity(0.05))
+        .cornerRadius(10)
+    }
+    
+    private func scanForOrphanedWorkspaces() {
+        isScanning = true
+        orphanedWorkspaces = []
+        
+        Task {
+            let found = await findOrphanedWorkspaces()
+            
+            await MainActor.run {
+                self.orphanedWorkspaces = found
+                self.lastScanDate = Date()
+                self.isScanning = false
+            }
+        }
+    }
+    
+    private func findOrphanedWorkspaces() async -> [OrphanedWorkspace] {
+        let configPath = ideName == "VS Code" ? 
+            "~/Library/Application Support/Code" : 
+            "~/Library/Application Support/Cursor"
+        
+        let expandedPath = NSString(string: configPath).expandingTildeInPath
+        let workspaceStoragePath = "\(expandedPath)/User/workspaceStorage"
+        
+        let fileManager = FileManager.default
+        var orphaned: [OrphanedWorkspace] = []
+        
+        guard let workspaceDirs = try? fileManager.contentsOfDirectory(atPath: workspaceStoragePath) else {
+            return orphaned
+        }
+        
+        for workspaceDir in workspaceDirs {
+            let workspacePath = "\(workspaceStoragePath)/\(workspaceDir)"
+            let workspaceJsonPath = "\(workspacePath)/workspace.json"
+            
+            if fileManager.fileExists(atPath: workspaceJsonPath) {
+                if let folderPath = extractFolderPath(from: workspaceJsonPath),
+                   !fileManager.fileExists(atPath: folderPath) {
+                    
+                    let size = calculateDirectorySize(at: workspacePath)
+                    
+                    orphaned.append(OrphanedWorkspace(
+                        name: workspaceDir,
+                        path: workspacePath,
+                        folderPath: folderPath,
+                        size: size
+                    ))
+                }
+            }
+        }
+        
+        return orphaned
+    }
+    
+    private func extractFolderPath(from workspaceJsonPath: String) -> String? {
+        guard let data = try? Data(contentsOf: URL(fileURLWithPath: workspaceJsonPath)),
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let folder = json["folder"] as? String else {
+            return nil
+        }
+        
+        // Remove file:// prefix and decode URL encoding
+        var cleanPath = folder.replacingOccurrences(of: "file://", with: "")
+        cleanPath = cleanPath.removingPercentEncoding ?? cleanPath
+        cleanPath = cleanPath.replacingOccurrences(of: "+", with: " ")
+        
+        return cleanPath
+    }
+    
+    private func calculateDirectorySize(at path: String) -> String {
+        let url = URL(fileURLWithPath: path)
+        
+        guard let enumerator = FileManager.default.enumerator(
+            at: url,
+            includingPropertiesForKeys: [.fileSizeKey, .isDirectoryKey],
+            options: [.skipsHiddenFiles]
+        ) else {
+            return "0 B"
+        }
+        
+        var totalSize: Int64 = 0
+        
+        for case let fileURL as URL in enumerator {
+            guard let resourceValues = try? fileURL.resourceValues(forKeys: [.fileSizeKey, .isDirectoryKey]),
+                  let fileSize = resourceValues.fileSize,
+                  let isDirectory = resourceValues.isDirectory,
+                  !isDirectory else {
+                continue
+            }
+            
+            totalSize += Int64(fileSize)
+        }
+        
+        return ByteCountFormatter.string(fromByteCount: totalSize, countStyle: .file)
+    }
+    
+    private func cleanOrphanedWorkspace(_ workspace: OrphanedWorkspace) {
+        do {
+            try FileManager.default.removeItem(atPath: workspace.path)
+            orphanedWorkspaces.removeAll { $0.id == workspace.id }
+        } catch {
+            print("Error removing workspace \(workspace.name): \(error)")
+        }
+    }
+    
+    private func cleanAllOrphanedWorkspaces() {
+        for workspace in orphanedWorkspaces {
+            cleanOrphanedWorkspace(workspace)
+        }
+    }
+
+    private func cancelWorkspaceCleanup() {
+        orphanedWorkspaces = []
+        lastScanDate = nil
+        isScanning = false
+    }
+}
 
 struct PathLibrary {
     static func getPaths() -> [PathEnv] {
@@ -448,6 +705,20 @@ struct PathLibrary {
             PathEnv(name: "CocoaPods", paths: [
                 "~/Library/Caches/CocoaPods/",
                 "~/.cocoapods/repos/"
+            ]),
+            PathEnv(name: "Cursor", paths: [
+                "~/Library/Application Support/Cursor/",
+                "~/Library/Application Support/Cursor/Cache",
+                "~/Library/Application Support/Cursor/GPUCache",
+                "~/Library/Application Support/Cursor/CachedConfigurations",
+                "~/Library/Application Support/Cursor/CachedData",
+                "~/Library/Application Support/Cursor/CachedExtensionVSIXs",
+                "~/Library/Application Support/Cursor/CachedExtensions",
+                "~/Library/Application Support/Cursor/CachedProfilesData",
+                "~/Library/Application Support/Cursor/Code Cache",
+                "~/Library/Application Support/Cursor/User",
+                "~/.cursor/",
+                "~/.cursor/extensions/"
             ]),
             PathEnv(name: "Go Modules", paths: [
                 "~/go/bin/",
@@ -500,7 +771,18 @@ struct PathLibrary {
             ]),
             PathEnv(name: "VS Code", paths: [
                 "~/Library/Application Support/Code/",
-                "~/.vscode/extensions/"
+                "~/Library/Application Support/Code/Cache",
+                "~/Library/Application Support/Code/GPUCache",
+                "~/Library/Application Support/Code/CachedConfigurations",
+                "~/Library/Application Support/Code/CachedData",
+                "~/Library/Application Support/Code/CachedExtensionVSIXs",
+                "~/Library/Application Support/Code/CachedExtensions",
+                "~/Library/Application Support/Code/CachedProfilesData",
+                "~/Library/Application Support/Code/Code Cache",
+                "~/Library/Application Support/Code/User",
+                "~/.vscode/",
+                "~/.vscode/extensions/",
+                "~/.vscode/cli/"
             ]),
             PathEnv(name: "Xcode", paths: [
                 "~/Library/Caches/com.apple.dt.xcodebuild/",
