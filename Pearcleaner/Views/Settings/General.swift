@@ -31,7 +31,7 @@ struct GeneralSettingsTab: View {
 
             // === Functionality ================================================================================================
             PearGroupBox(
-                header: { Text("Functionality").font(.title2) },
+                header: { Text("Functionality").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2) },
                 content: {
                     VStack {
                         HStack(spacing: 0) {
@@ -40,12 +40,12 @@ struct GeneralSettingsTab: View {
                                 .scaledToFit()
                                 .frame(width: 15, height: 15)
                                 .padding(.trailing)
-                                .foregroundStyle(.primary.opacity(1))
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText.opacity(1))
                             VStack(alignment: .leading, spacing: 0) {
                                 HStack(spacing: 0) {
                                     Text("Homebrew cleanup after uninstall")
                                         .font(.callout)
-                                        .foregroundStyle(.primary.opacity(1))
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText.opacity(1))
                                     InfoButton(text: String(localized: "When Homebrew cleanup is enabled, Pearcleaner will check if the app you are removing was installed via Homebrew and launch a built-in Terminal to execute a brew uninstall and cleanup command to let Homebrew know that the app is removed. This way your Homebrew list will be synced up correctly and caching will be removed.\n\nNOTE: If you undo the file delete with CMD+Z, the files will be put back but Homebrew will not be aware of it. To get the Homebrew list back in sync you'd need to run:\n\n> brew install APPNAME --force"))
                                 }
 
@@ -67,11 +67,11 @@ struct GeneralSettingsTab: View {
                                 .scaledToFit()
                                 .frame(width: 15, height: 15)
                                 .padding(.trailing)
-                                .foregroundStyle(.primary)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                             VStack(alignment: .leading, spacing: 5) {
                                 Text("Permanently delete files")
                                     .font(.callout)
-                                    .foregroundStyle(.primary)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                             }
 
                             InfoButton(text: String(localized: "Instead of moving files to Trash folder, this will permanently remove them. With this setting enabled, the Undo function is also not active as there's no files in Trash folder to undo."))
@@ -91,11 +91,11 @@ struct GeneralSettingsTab: View {
                                 .scaledToFit()
                                 .frame(width: 15, height: 15)
                                 .padding(.trailing)
-                                .foregroundStyle(.primary)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                             VStack(alignment: .leading, spacing: 5) {
                                 Text("Uninstall confirmation alerts")
                                     .font(.callout)
-                                    .foregroundStyle(.primary)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                             }
 
                             InfoButton(text: String(localized: "When deleting files using the Trash button, you can prevent accidental deletions by showing an alert before proceeding with the action."))
@@ -115,11 +115,11 @@ struct GeneralSettingsTab: View {
                                 .scaledToFit()
                                 .frame(width: 15, height: 15)
                                 .padding(.trailing)
-                                .foregroundStyle(.primary)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                             VStack(alignment: .leading, spacing: 5) {
                                 Text("Close after uninstall")
                                     .font(.callout)
-                                    .foregroundStyle(.primary)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                             }
 
                             InfoButton(text: String(localized: "When this mode is enabled, clicking the Uninstall button to remove an app will also close Pearcleaner right after.\nThis only affects Pearcleaner when it is opened via external means, like Sentinel Trash Monitor, Finder extension or a Deep Link.\nThis allows for single use of the app for a quick uninstall. When Pearcleaner is opened normally, this setting is ignored and will work as usual."))
@@ -138,11 +138,11 @@ struct GeneralSettingsTab: View {
                                 .scaledToFit()
                                 .frame(width: 15, height: 15)
                                 .padding(.trailing)
-                                .foregroundStyle(.primary)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                             VStack(alignment: .leading, spacing: 5) {
                                 Text("File size display options")
                                     .font(.callout)
-                                    .foregroundStyle(.primary)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                             }
                             InfoButton(text: String(localized: "Real size type will show how much actual allocated space the file has on disk.\n\nLogical type shows the binary size. The filesystem can compress and deduplicate sectors on disk, so real size is sometimes smaller (or bigger) than logical size.\n\nFinder size is similar to if you right click > Get Info on a file in Finder, which will show both the logical and real sizes together."))
                             Spacer()
@@ -153,9 +153,8 @@ struct GeneralSettingsTab: View {
                                     .tag("Logical")
                             } label: { EmptyView() }
                                 .buttonStyle(.borderless)
-
                         }
-                        .padding(5)
+                        .padding(.vertical, 5)
 
                     }
 
@@ -166,7 +165,7 @@ struct GeneralSettingsTab: View {
             PearGroupBox(
                 header: {
                     HStack(spacing: 0) {
-                        Text("Search Sensitivity").font(.title2)
+                        Text("Search Sensitivity").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2)
                         InfoButton(text: String(localized: """
                     The search sensitivity level controls how strict or lenient Pearcleaner is when finding related files for an app:
                     
@@ -186,18 +185,18 @@ struct GeneralSettingsTab: View {
                             .padding(.horizontal, 2)
                             .background {
                                 RoundedRectangle(cornerRadius: 8)
-                                    .fill(theme(for: colorScheme).backgroundPanel)
+                                    .fill(ThemeColors.shared(for: colorScheme).secondaryBG)
                             }
                     }
                 },
                 content: {
                     HStack {
-                        Text("Less files").textCase(.uppercase).font(.caption2).foregroundStyle(.secondary)
+                        Text("Less files").textCase(.uppercase).font(.caption2).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                         Slider(value: Binding(
                             get: { Double(sensitivityLevel.rawValue) },
                             set: { sensitivityLevel = SearchSensitivityLevel(rawValue: Int($0)) ?? .strict }
                         ), in: 0...Double(SearchSensitivityLevel.allCases.count - 1), step: 1)
-                        Text("Most files").textCase(.uppercase).font(.caption2).foregroundStyle(.secondary)
+                        Text("Most files").textCase(.uppercase).font(.caption2).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }
                     .padding(5)
 
@@ -206,7 +205,7 @@ struct GeneralSettingsTab: View {
 
             // === Sentinel =====================================================================================================
             PearGroupBox(
-                header: { Text("Sentinel Monitor").font(.title2) },
+                header: { Text("Sentinel Monitor").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2) },
                 content: {
                     HStack(spacing: 0) {
                         Image(systemName: sentinel ? "eye.circle" : "eye.slash.circle")
@@ -214,10 +213,10 @@ struct GeneralSettingsTab: View {
                             .scaledToFit()
                             .frame(width: 15, height: 15)
                             .padding(.trailing)
-                            .foregroundStyle(.primary)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                         Text("Detect when apps are moved to Trash")
                             .font(.callout)
-                            .foregroundStyle(.primary)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                         InfoButton(text: String(localized: "When applications are moved to Trash, Pearcleaner will launch and find related files and folders for deletion."))
                         Spacer()
 
@@ -238,7 +237,7 @@ struct GeneralSettingsTab: View {
 
             // === Finder Extension =============================================================================================
             PearGroupBox(
-                header: { Text("Finder Extension").font(.title2) },
+                header: { Text("Finder Extension").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2) },
                 content: {
                     VStack {
                         HStack(spacing: 0) {
@@ -247,14 +246,14 @@ struct GeneralSettingsTab: View {
                                 .scaledToFit()
                                 .frame(width: 15, height: 15)
                                 .padding(.trailing)
-                                .foregroundStyle(.primary)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
                             VStack {
 
                                 HStack(spacing: 0) {
                                     Text("Enable context menu extension for Finder")
                                         .font(.callout)
-                                        .foregroundStyle(.primary)
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
                                     InfoButton(text: String(localized: "Enabling this extension will allow you to right click apps in Finder to quickly uninstall them with Pearcleaner"))
                                     Spacer()
@@ -263,7 +262,7 @@ struct GeneralSettingsTab: View {
                                 HStack(spacing: 0) {
                                     Text("macOS only enables extensions if the main app is in Applications folder")
                                         .font(.footnote)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                                     Button {
                                         FIFinderSyncController.showExtensionManagementInterface()
                                     } label: {
@@ -303,7 +302,7 @@ struct GeneralSettingsTab: View {
 
             // === CLI ==========================================================================================================
             PearGroupBox(
-                header: { Text("Command Line").font(.title2) },
+                header: { Text("Command Line").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2) },
                 content: {
                     HStack(spacing: 0) {
                         Image(systemName: "terminal")
@@ -311,10 +310,10 @@ struct GeneralSettingsTab: View {
                             .scaledToFit()
                             .frame(width: 15, height: 15)
                             .padding(.trailing)
-                            .foregroundStyle(.primary)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                         Text("Pearcleaner CLI support")
                             .font(.callout)
-                            .foregroundStyle(.primary)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                         InfoButton(text: String(localized: "Enabling the CLI will allow you to execute Pearcleaner actions from the Terminal. This will add pearcleaner command into /usr/local/bin so it's available directly from your PATH environment variable. Try it after enabling:\n\n> pear --help"))
                         Spacer()
 

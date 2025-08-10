@@ -10,6 +10,7 @@ import Foundation
 import AlinFoundation
 
 struct HelperSettingsTab: View {
+    @Environment(\.colorScheme) var colorScheme
     @ObservedObject private var helperToolManager = HelperToolManager.shared
     @State private var commandOutput: String = "Command output will display here"
     @State private var commandToRun: String = "whoami"
@@ -23,7 +24,7 @@ struct HelperSettingsTab: View {
             PearGroupBox(
                 header: {
                     HStack {
-                        Text("Management").font(.title2)
+                        Text("Management").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2)
                         Spacer()
                         Button(action: {
                             helperToolManager.openSMSettings()
@@ -61,13 +62,13 @@ struct HelperSettingsTab: View {
                                 .scaledToFit()
                                 .frame(width: 20, height: 20)
                                 .padding(.trailing)
-                                .foregroundStyle(.primary)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                                 .onTapGesture {
                                     showTestingUI.toggle()
                                 }
                             Text("Perform privileged operations seamlessly without password prompts")
                                 .font(.callout)
-                                .foregroundStyle(.primary)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                                 .frame(minWidth: 450, maxWidth: .infinity, alignment: .leading)
 
 //                            Spacer()
@@ -96,7 +97,7 @@ struct HelperSettingsTab: View {
                         HStack {
                             Text(helperToolManager.message)
                                 .font(.footnote)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                             Spacer()
 
                         }
@@ -110,7 +111,7 @@ struct HelperSettingsTab: View {
 
             if !showTestingUI {
                 PearGroupBox(header: {
-                    Text("Information").font(.title2)
+                    Text("Information").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2)
                 }, content: {
                     let message: String.LocalizationValue = """
                 Pearcleaner can perform privileged operations in the following ways:
@@ -125,9 +126,9 @@ struct HelperSettingsTab: View {
                 """
                     
                     VStack(alignment: .leading, spacing: 20) {
-                        Text(String(localized: message)).font(.body).lineSpacing(5)
+                        Text(String(localized: message)).foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.body).lineSpacing(5)
 
-                        Text(String(localized: "Since Authorization services have been deprecated by Apple as a less secure authentication method, it will eventually be removed from Pearcleaner and the helper service will be the only option going forward. I recommend enabling the privileged helper service as soon as possible.")).font(.footnote).foregroundStyle(.secondary)
+                        Text(String(localized: "Since Authorization services have been deprecated by Apple as a less secure authentication method, it will eventually be removed from Pearcleaner and the helper service will be the only option going forward. I recommend enabling the privileged helper service as soon as possible.")).font(.footnote).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }
 
                 })
@@ -137,7 +138,7 @@ struct HelperSettingsTab: View {
 
             if showTestingUI {
                 PearGroupBox(header: {
-                    Text("Permission Testing").font(.title2)
+                    Text("Permission Testing").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2)
                 }, content: {
                     VStack {
 
@@ -146,6 +147,7 @@ struct HelperSettingsTab: View {
                             Text(verbatim: "systemsetup -getsleep").tag("systemsetup -getsleep")
                             Text(verbatim: "systemsetup -getcomputername").tag("systemsetup -getcomputername")
                         }
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                         .pickerStyle(MenuPickerStyle())
                         .onChange(of: commandToRun) { newValue in
                             if helperToolManager.isHelperToolInstalled {
@@ -174,7 +176,7 @@ struct HelperSettingsTab: View {
 
                         TextField("Enter manual command here, Enter to run", text: $commandToRunManual)
                             .padding(8)
-                            .background(RoundedRectangle(cornerRadius: 8).strokeBorder(Color.secondary.opacity(0.2), lineWidth: 1))
+                            .background(RoundedRectangle(cornerRadius: 8).strokeBorder(ThemeColors.shared(for: colorScheme).secondaryText.opacity(0.2), lineWidth: 1))
                             .textFieldStyle(.plain)
                             .onSubmit {
                                 Task {
@@ -190,7 +192,7 @@ struct HelperSettingsTab: View {
                         ScrollView {
                             Text(commandOutput)
                                 .font(.system(.body, design: .monospaced))
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
                                 .padding()
                         }
