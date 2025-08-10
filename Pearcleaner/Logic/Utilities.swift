@@ -494,13 +494,15 @@ struct MovableWindowAccessor: NSViewRepresentable {
 
 // Return image for different folders
 func folderImages(for path: String) -> AnyView? {
+    @Environment(\.colorScheme) var colorScheme
+
     if path.contains("/Library/Containers/") || path.contains("/Library/Group Containers/") {
         return AnyView(
             Image(systemName: "shippingbox.fill")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 13)
-                .foregroundStyle(.primary.opacity(0.5))
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.5))
                 .help("Container")
         )
     } else if path.contains("/Library/Application Scripts/") {
@@ -509,7 +511,7 @@ func folderImages(for path: String) -> AnyView? {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 13)
-                .foregroundStyle(.primary.opacity(0.5))
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.5))
                 .help("Application Script")
         )
     } else if path.contains(".plist") {
@@ -518,7 +520,7 @@ func folderImages(for path: String) -> AnyView? {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 13)
-                .foregroundStyle(.primary.opacity(0.5))
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.5))
                 .help("Plist File")
         )
     }

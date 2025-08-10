@@ -405,6 +405,7 @@ struct FileDetailsItem: View {
             VStack(alignment: .leading, spacing: 5) {
                 HStack(alignment: .center) {
                     Text(showLocalized(url: path))
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                         .font(.title3)
                         .lineLimit(1)
                         .truncationMode(.tail)
@@ -414,7 +415,7 @@ struct FileDetailsItem: View {
                                 VStack {
                                     Spacer()
                                     RoundedRectangle(cornerRadius: 10)
-                                        .fill(.primary.opacity(0.5))
+                                        .fill(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.5))
                                         .frame(height: 1.5)
                                         .offset(y: 3)
                                 }
@@ -433,14 +434,14 @@ struct FileDetailsItem: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 13)
-                            .foregroundStyle(.primary.opacity(0.5))
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.5))
                     }
 
                 }
 
-                path.path.pathWithArrows(separatorColor: .primary)
+                path.path.pathWithArrows(separatorColor: ThemeColors.shared(for: colorScheme).primaryText)
                     .font(.footnote)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     .help(path.path)
 
             }
@@ -459,6 +460,7 @@ struct FileDetailsItem: View {
             //            let displaySize = sizeType == "Real" ? formatByte(size: size!).human :
             //            formatByte(size: sizeL!).human
             Text(verbatim: "\(displaySize)")
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
         }
         .contextMenu {

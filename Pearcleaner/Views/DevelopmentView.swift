@@ -15,7 +15,7 @@ struct PathEnv: Identifiable, Hashable, Equatable {
 
 struct EnvironmentCleanerView: View {
     @EnvironmentObject var appState: AppState
-    //    @State private var selectedEnvironment: Path?
+    @Environment(\.colorScheme) var colorScheme
     @State private var paths: [PathEnv] = []
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
 
@@ -62,9 +62,9 @@ struct EnvironmentCleanerView: View {
             HStack(alignment: .center, spacing: 15) {
 
                 VStack(alignment: .leading){
-                    Text("Development Environments").font(.title).fontWeight(.bold)
+                    Text("Development Environments").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title).fontWeight(.bold)
                     Text("Clean stored files and cache for common IDEs")
-                        .font(.callout).foregroundStyle(.primary.opacity(0.5))
+                        .font(.callout).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
 
                 Spacer()
@@ -74,7 +74,7 @@ struct EnvironmentCleanerView: View {
                         Group {
                             if environment.paths.isEmpty {
                                 Text("\(environment.name) (0)")
-                                    .foregroundColor(.gray)
+                                    .foregroundStyle(.gray)
                             } else {
                                 Button("\(environment.name) (\(environment.paths.count))") {
                                     appState.selectedEnvironment = environment
@@ -86,6 +86,7 @@ struct EnvironmentCleanerView: View {
                     Text(appState.selectedEnvironment?.name ?? "Select Environment")
                 }
                 .buttonStyle(.plain)
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                 .controlSize(.small)
                 .padding(.vertical, 8)
                 .padding(.horizontal, 14)
@@ -121,7 +122,7 @@ struct EnvironmentCleanerView: View {
                     Spacer()
                     Text("Select an environment to view stored cache")
                         .font(.title2)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     Spacer()
                 }
                 .frame(maxWidth: .infinity)
@@ -188,7 +189,8 @@ struct EnvironmentCleanerView: View {
 
                     }
                     .controlSize(.small)
-                    .buttonStyle(.link)
+                    .buttonStyle(.plain)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
                     .padding(.vertical, 8)
                     .padding(.horizontal, 14)
                     .controlGroup(Capsule(style: .continuous), level: .secondary)
@@ -210,6 +212,7 @@ struct EnvironmentCleanerView: View {
 }
 
 struct PathRowView: View {
+    @Environment(\.colorScheme) var colorScheme
     let path: String
     let onDelete: () -> Void
     @State private var exists: Bool = false
@@ -232,15 +235,17 @@ struct PathRowView: View {
                             } label: {
                                 Image(systemName: "folder")
                             }
-                            .buttonStyle(.link)
+                            .buttonStyle(.plain)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
 
                             matchedPath.pathWithArrows()
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                                 .font(.headline)
 
                             Spacer()
 
                             Text(formatByte(size: size).human)
-                                .foregroundColor(.secondary)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
                             HStack {
                                 Button {
@@ -261,7 +266,8 @@ struct PathRowView: View {
                                 .help("Delete all files within this folder")
                             }
                             .controlSize(.small)
-                            .buttonStyle(.link)
+                            .buttonStyle(.plain)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
                             .padding(.vertical, 8)
                             .padding(.horizontal, 14)
                             .controlGroup(Capsule(style: .continuous), level: .secondary)
@@ -287,19 +293,17 @@ struct PathRowView: View {
                     Text(expandTilde(path))
                         .lineLimit(1)
                         .truncationMode(.middle)
-                        .foregroundColor(.gray)
+                        .foregroundStyle(.gray)
 
                     Spacer()
                     Text("Not Found")
-                        .foregroundColor(.gray)
+                        .foregroundStyle(.gray)
                 }
             }
         }
         .frame(maxWidth: .infinity)
         .padding()
-        .background(RoundedRectangle(cornerRadius: 10)
-            .fill(.quaternary.opacity(0.3))
-            .shadow(radius: 2))
+        .background(ThemeColors.shared(for: colorScheme).secondaryBG.clipShape(RoundedRectangle(cornerRadius: 8)))
         .onAppear {
             checkPath(path)
         }
@@ -424,6 +428,7 @@ struct PathRowView: View {
 }
 
 struct WorkspaceStorageCleanerView: View {
+    @Environment(\.colorScheme) var colorScheme
     let ideName: String
     @State private var orphanedWorkspaces: [OrphanedWorkspace] = []
     @State private var isScanning = false
@@ -447,10 +452,10 @@ struct WorkspaceStorageCleanerView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Workspace Storage Cleaner")
                         .font(.headline)
-                        .foregroundColor(.primary)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                     Text("Remove workspace storage for deleted project folders")
                         .font(.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
                 
                 Spacer()
@@ -468,7 +473,8 @@ struct WorkspaceStorageCleanerView: View {
                 }
                 .disabled(isScanning)
                 .controlSize(.small)
-                .buttonStyle(.link)
+                .buttonStyle(.plain)
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
                 .padding(.vertical, 8)
                 .padding(.horizontal, 14)
                 .controlGroup(Capsule(style: .continuous), level: .secondary)
@@ -480,7 +486,7 @@ struct WorkspaceStorageCleanerView: View {
                     HStack {
                         Text("Found \(orphanedWorkspaces.count) orphaned workspace\(orphanedWorkspaces.count == 1 ? "" : "s")")
                             .font(.subheadline)
-                            .foregroundColor(.orange)
+                            .foregroundStyle(.orange)
                         
                         Spacer()
                     }
@@ -495,7 +501,7 @@ struct WorkspaceStorageCleanerView: View {
 
                                 Text("\(workspace.folderPath)")
                                     .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                                     .lineLimit(1)
                                     .truncationMode(.middle)
 
@@ -505,18 +511,18 @@ struct WorkspaceStorageCleanerView: View {
                             
                             Text(workspace.size)
                                 .font(.caption2)
-                                .foregroundColor(.secondary)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                             
                             Button("Delete") {
                                 cleanOrphanedWorkspace(workspace)
                             }
                             .buttonStyle(.borderless)
                             .controlSize(.mini)
-                            .foregroundColor(.red)
+                            .foregroundStyle(.red)
                         }
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
-                        .background(Color.secondary.opacity(0.1))
+                        .background(ThemeColors.shared(for: colorScheme).secondaryText.opacity(0.1))
                         .cornerRadius(6)
                     }
 
@@ -528,8 +534,8 @@ struct WorkspaceStorageCleanerView: View {
                         }
                         .disabled(isScanning)
                         .controlSize(.small)
-                        .buttonStyle(.link)
-                        .foregroundColor(.red)
+                        .buttonStyle(.plain)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
                         .padding(.vertical, 8)
                         .padding(.horizontal, 14)
                         .controlGroup(Capsule(style: .continuous), level: .secondary)
@@ -539,7 +545,7 @@ struct WorkspaceStorageCleanerView: View {
                         }
                         .disabled(isScanning)
                         .controlSize(.small)
-                        .buttonStyle(.link)
+                        .buttonStyle(.plain)
                         .padding(.vertical, 8)
                         .padding(.horizontal, 14)
                         .controlGroup(Capsule(style: .continuous), level: .secondary)
@@ -548,12 +554,12 @@ struct WorkspaceStorageCleanerView: View {
             } else if lastScanDate != nil {
                 Text("No orphaned workspaces found")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     .italic()
             }
         }
         .padding()
-        .background(Color.primary.opacity(0.05))
+        .background(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.05))
         .cornerRadius(10)
     }
     

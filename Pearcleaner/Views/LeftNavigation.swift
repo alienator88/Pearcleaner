@@ -29,6 +29,12 @@ struct LeftNavigationSidebar: View {
                     isSelected: appState.currentPage == page,
                     isHovered: hoveredItem == page
                 ) {
+                    // Clear appInfo selection on tab switch
+                    if appState.currentPage != .applications {
+                        updateOnMain{
+                            appState.appInfo = .empty
+                        }
+                    }
                     selectPage(page)
                 }
                 .onHover { isHovering in
@@ -52,10 +58,10 @@ struct LeftNavigationSidebar: View {
 
         }
         .frame(width: sidebarWidth)
-        .background(backgroundView(color: theme(for: colorScheme).backgroundPanel, glass: glass))
+        .background(backgroundView(color: ThemeColors.shared(for: colorScheme).secondaryBG, glass: glass))
         .overlay(
             Rectangle()
-                .fill(Color.primary.opacity(0.1))
+                .fill(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.1))
                 .frame(width: 1)
                 .frame(maxWidth: .infinity, alignment: .trailing)
         )
@@ -88,53 +94,53 @@ struct NavigationItem: View {
                 Image(systemName: page.icon)
                     .font(.system(size: 20, weight: isSelected ? .semibold : .medium))
                     .frame(width: 28, height: 28)
-                    .foregroundColor(iconColor)
+                    .foregroundStyle(iconColor)
 
                 // Label
                 Text(page.title)
                     .font(.system(size: 9, weight: isSelected ? .semibold : .medium))
-                    .foregroundColor(textColor)
+                    .foregroundStyle(textColor)
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
                     .frame(width: 60)
 
             }
             .frame(width: 64, height: 56)
-            .background(
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(backgroundColor)
-            )
+//            .background(
+//                RoundedRectangle(cornerRadius: 8)
+//                    .fill(backgroundColor)
+//            )
         }
         .buttonStyle(PlainButtonStyle())
     }
 
     private var iconColor: Color {
         if isSelected {
-            return theme(for: colorScheme).iconFolder
+            return ThemeColors.shared(for: colorScheme).accent
         } else if isHovered {
-            return theme(for: colorScheme).iconFolder.opacity(0.8)
+            return ThemeColors.shared(for: colorScheme).accent.opacity(0.8)
         } else {
-            return theme(for: colorScheme).iconFolder.opacity(0.6)
+            return ThemeColors.shared(for: colorScheme).accent.opacity(0.6)
         }
     }
 
     private var textColor: Color {
         if isSelected {
-            return theme(for: colorScheme).textPrimary
+            return ThemeColors.shared(for: colorScheme).primaryText
         } else if isHovered {
-            return theme(for: colorScheme).textPrimary.opacity(0.8)
+            return ThemeColors.shared(for: colorScheme).primaryText.opacity(0.8)
         } else {
-            return theme(for: colorScheme).textPrimary.opacity(0.6)
+            return ThemeColors.shared(for: colorScheme).secondaryText
         }
     }
 
-    private var backgroundColor: Color {
-        if isSelected {
-            return theme(for: colorScheme).backgroundPanel.opacity(0.8)
-        } else if isHovered {
-            return theme(for: colorScheme).backgroundPanel.opacity(0.4)
-        } else {
-            return Color.clear
-        }
-    }
+//    private var backgroundColor: Color {
+//        if isSelected {
+//            return ThemeColors.shared(for: colorScheme).backgroundPanel.opacity(0.8)
+//        } else if isHovered {
+//            return ThemeColors.shared(for: colorScheme).backgroundPanel.opacity(0.4)
+//        } else {
+//            return Color.clear
+//        }
+//    }
 }

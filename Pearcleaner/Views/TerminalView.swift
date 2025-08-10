@@ -38,7 +38,7 @@ struct TerminalSheetView: View {
                     .padding()
             } else {
                 Text("No command provided")
-                    .foregroundColor(.gray)
+                    .foregroundStyle(.gray)
                     .padding()
             }
 

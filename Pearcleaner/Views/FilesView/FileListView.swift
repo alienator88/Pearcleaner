@@ -13,6 +13,7 @@ struct FileListView: View {
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.general.brew") private var brew: Bool = false
     @EnvironmentObject var appState: AppState
+    @Environment(\.colorScheme) var colorScheme
     @Binding var sortedFiles: [URL]
     @Binding var infoSidebar: Bool
     @Binding var selectedSort: SortOptionList
@@ -68,6 +69,7 @@ struct FileListView: View {
                                     icon: "line.3.horizontal.decrease.circle",
                                     label: selectedSort.title,
                                     help: "Sorted by \(selectedSort.rawValue.capitalized)",
+                                    color: ThemeColors.shared(for: colorScheme).primaryText,
                                     size: 16
                                 ))
                         }
@@ -99,7 +101,7 @@ struct FileListView: View {
                 HStack(spacing: 10) {
                     Text("\(appState.selectedItems.count) / \(appState.appInfo.fileSize.count)")
                         .font(.footnote)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                         .frame(minWidth: 80, alignment: .leading)
 
                     Spacer()
@@ -128,6 +130,7 @@ struct FileListView: View {
                             .frame(width: 18, height: 18)
                     }
                     .buttonStyle(.borderless)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     .transition(.move(edge: .trailing))
                     .help("See app details")
                     .frame(minWidth: 80, alignment: .trailing)
@@ -180,7 +183,8 @@ struct FileListView: View {
             }
         }
         .controlSize(.small)
-        .buttonStyle(.link)
+        .buttonStyle(.plain)
+        .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
         .padding(.vertical, 8)
         .padding(.horizontal, 14)
         .controlGroup(Capsule(style: .continuous), level: .secondary)

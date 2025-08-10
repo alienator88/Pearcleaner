@@ -123,9 +123,6 @@
         }
       }
     },
-    "/" : {
-
-    },
     "%@" : {
       "localizations" : {
         "de" : {
@@ -2187,6 +2184,9 @@
         }
       }
     },
+    "Binary" : {
+
+    },
     "Binary Size" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3239,6 +3239,9 @@
         }
       }
     },
+    "Color String" : {
+
+    },
     "Command Line" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3474,6 +3477,9 @@
           }
         }
       }
+    },
+    "Copy" : {
+
     },
     "Copy File Paths" : {
       "extractionState" : "manual",
@@ -4799,6 +4805,9 @@
     "Enhanced" : {
 
     },
+    "Enter exactly 5 hex colors separated by commas in the order above" : {
+
+    },
     "Enter manual command here, Enter to run" : {
       "localizations" : {
         "de" : {
@@ -5166,6 +5175,9 @@
       }
     },
     "Excluded Apps" : {
+
+    },
+    "Excluded Paths" : {
 
     },
     "Export File Paths" : {
@@ -9490,6 +9502,9 @@
     "No orphaned workspaces found" : {
 
     },
+    "No paths excluded" : {
+
+    },
     "No releases to display" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -9964,6 +9979,9 @@
           }
         }
       }
+    },
+    "Only show apps with savings of 1MB+" : {
+
     },
     "Open" : {
       "extractionState" : "stale",
@@ -12114,6 +12132,9 @@
         }
       }
     },
+    "Reset" : {
+
+    },
     "Reset all settings to default" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -12682,9 +12703,6 @@
         }
       }
     },
-    "Saved:" : {
-
-    },
     "Saved: %@" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -12737,6 +12755,9 @@
           }
         }
       }
+    },
+    "Savings" : {
+
     },
     "Savings Size" : {
       "extractionState" : "stale",
@@ -13097,6 +13118,9 @@
     "See app details" : {
 
     },
+    "See details" : {
+
+    },
     "See lipo details" : {
 
     },
@@ -13206,6 +13230,9 @@
         }
       }
     },
+    "Select an app from the sidebar to begin" : {
+
+    },
     "Select an environment to view paths." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -13272,6 +13299,9 @@
       }
     },
     "Select an environment to view stored cache" : {
+
+    },
+    "Selected Items:" : {
 
     },
     "Sentinel Monitor" : {
@@ -15077,6 +15107,9 @@
         }
       }
     },
+    "Theme" : {
+
+    },
     "Theme Mode" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -15900,7 +15933,7 @@
         }
       }
     },
-    "Total size of all orphaned files" : {
+    "Total Saved:" : {
 
     },
     "Total size of files:" : {
@@ -15973,6 +16006,9 @@
           }
         }
       }
+    },
+    "Total Size:" : {
+
     },
     "Transition animations disabled" : {
 
