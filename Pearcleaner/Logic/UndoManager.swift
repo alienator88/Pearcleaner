@@ -21,7 +21,6 @@ class FileManagerUndo {
     // NSUndoManager instance to handle undo/redo actions
     let undoManager = UndoManager()
 
-    // Delete a file and register an undo action to restore it
     func deleteFiles(at urls: [URL], isCLI: Bool = false) -> Bool {
         let trashPath = (NSHomeDirectory() as NSString).appendingPathComponent(".Trash")
         let dispatchSemaphore = DispatchSemaphore(value: 0)  // Semaphore to make it synchronous
@@ -32,24 +31,38 @@ class FileManagerUndo {
 
         let hasProtectedFiles = urls.contains { $0.isProtected }
 
+        // Create bundle folder name with app name and timestamp
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd_HH-mm-ss"
+        let timestamp = dateFormatter.string(from: Date())
+        let appName = AppState.shared.appInfo.appName.isEmpty ? "UnknownApp" : AppState.shared.appInfo.appName
+        let bundleFolderName = "\(appName)_\(timestamp)"
+        let bundleFolderPath = (trashPath as NSString).appendingPathComponent(bundleFolderName)
+        let bundleFolderURL = URL(fileURLWithPath: bundleFolderPath)
+
+        // Create the bundle folder first
+        let createFolderCommand = "/bin/mkdir -p \"\(bundleFolderPath)\""
+
         let mvCommands = urls.map { file -> String in
             if permanentDelete {
                 return "/bin/rm -rf \"\(file.path)\""
             }
             guard !permanentDelete else { return "" }
+            
             var finalName = file.lastPathComponent
             var count = seenFileNames[finalName] ?? 0
 
+            // Check for duplicate names within the bundle folder
             repeat {
                 if count > 0 {
                     finalName = "\(file.lastPathComponent)-\(count)"
                 }
                 count += 1
-            } while FileManager.default.fileExists(atPath: (trashPath as NSString).appendingPathComponent(finalName))
+            } while FileManager.default.fileExists(atPath: (bundleFolderPath as NSString).appendingPathComponent(finalName))
 
             seenFileNames[finalName] = count
 
-            let destinationURL = URL(fileURLWithPath: (trashPath as NSString).appendingPathComponent(finalName))
+            let destinationURL = bundleFolderURL.appendingPathComponent(finalName)
             tempFilePairs.append((trashURL: destinationURL, originalURL: file))
 
             let source = "\"\(file.path)\""
@@ -57,9 +70,11 @@ class FileManagerUndo {
             return "/bin/mv \(source) \(destination)"
         }.joined(separator: " ; ")
 
+        // Combine folder creation and file moves
+        let finalCommands = permanentDelete ? mvCommands : "\(createFolderCommand) ; \(mvCommands)"
         let filePairs = tempFilePairs
 
-        if executeFileCommands(mvCommands, isCLI: isCLI, hasProtectedFiles: hasProtectedFiles) {
+        if executeFileCommands(finalCommands, isCLI: isCLI, hasProtectedFiles: hasProtectedFiles) {
             if !permanentDelete {
                 undoManager.registerUndo(withTarget: self) { target in
                     let result = target.restoreFiles(filePairs: filePairs)
@@ -100,7 +115,24 @@ class FileManagerUndo {
             return "/bin/mv \(source) \(destination)"
         }.joined(separator: " ; ")
 
-        if executeFileCommands(commands, isCLI: isCLI, hasProtectedFiles: hasProtectedFiles, isRestore: true) {
+        // Determine the bundle folder to clean up after restore
+        var bundleFolderToRemove: String? = nil
+        if let firstFilePair = filePairs.first {
+            let bundleFolder = firstFilePair.trashURL.deletingLastPathComponent()
+            // Only remove if it looks like our generated bundle folder (contains underscore for timestamp)
+            if bundleFolder.lastPathComponent.contains("_") {
+                bundleFolderToRemove = bundleFolder.path
+            }
+        }
+
+        // Add bundle folder cleanup command if we have one to remove
+        let finalCommands = if let bundleFolder = bundleFolderToRemove {
+            "\(commands) ; /bin/rmdir \"\(bundleFolder)\""
+        } else {
+            commands
+        }
+
+        if executeFileCommands(finalCommands, isCLI: isCLI, hasProtectedFiles: hasProtectedFiles, isRestore: true) {
             finalStatus = true
         } else {
             //            printOS("Trash Error: \(isCLI ? "Failed to run restore CLI commands" : "Failed to run restore privileged commands")")

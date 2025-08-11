@@ -1,6 +1,16 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "(%lld/%lld)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "(%1$lld/%2$lld)"
+          }
+        }
+      }
+    },
     "(Build %@)" : {
       "localizations" : {
         "de" : {
@@ -380,6 +390,25 @@
         }
       }
     },
+    "%lld files" : {
+
+    },
+    "%lld loaded" : {
+
+    },
+    "%lld not loaded" : {
+
+    },
+    "%lld package%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld package%2$@"
+          }
+        }
+      }
+    },
     "%lld paths" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -411,6 +440,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld 個路徑"
+          }
+        }
+      }
+    },
+    "%lld service%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld service%2$@"
           }
         }
       }
@@ -467,6 +506,12 @@
           }
         }
       }
+    },
+    "•" : {
+
+    },
+    "• Loading..." : {
+
     },
     "A **huge** thank you to everyone who has contributed so far!" : {
       "localizations" : {
@@ -1083,6 +1128,12 @@
           }
         }
       }
+    },
+    "All package files from the BOM list have been removed. It's safe to Forget this package." : {
+
+    },
+    "Also in: %@" : {
+
     },
     "Always confirm the files marked for removal. In rare cases, unrelated files may be found when app names are too similar." : {
       "localizations" : {
@@ -2184,6 +2235,9 @@
         }
       }
     },
+    "Bill of Materials" : {
+
+    },
     "Binary" : {
 
     },
@@ -2359,6 +2413,9 @@
           }
         }
       }
+    },
+    "Bundle: %@" : {
+
     },
     "calculating" : {
       "extractionState" : "manual",
@@ -3872,6 +3929,9 @@
         }
       }
     },
+    "Delete all remaining package files" : {
+
+    },
     "Delete Contents" : {
 
     },
@@ -3899,6 +3959,12 @@
           }
         }
       }
+    },
+    "Delete this file" : {
+
+    },
+    "Details" : {
+
     },
     "Detect when apps are moved to Trash" : {
       "extractionState" : "manual",
@@ -5786,6 +5852,9 @@
         }
       }
     },
+    "Forget" : {
+
+    },
     "Found %lld orphaned workspace%@" : {
       "localizations" : {
         "en" : {
@@ -6280,6 +6349,9 @@
     "Hide checkboxes" : {
 
     },
+    "Hide details" : {
+
+    },
     "Homebrew cleanup after uninstall" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6466,6 +6538,9 @@
           }
         }
       }
+    },
+    "ID: %@" : {
+
     },
     "Important" : {
       "extractionState" : "manual",
@@ -6802,6 +6877,9 @@
         }
       }
     },
+    "Install Location:" : {
+
+    },
     "Installation failed: %@" : {
       "localizations" : {
         "tr" : {
@@ -6835,6 +6913,9 @@
           }
         }
       }
+    },
+    "Installed:" : {
+
     },
     "Installed: v%@" : {
       "extractionState" : "manual",
@@ -6906,6 +6987,9 @@
           }
         }
       }
+    },
+    "Installer:" : {
+
     },
     "Instead of moving files to Trash folder, this will permanently remove them. With this setting enabled, the Undo function is also not active as there's no files in Trash folder to undo." : {
 
@@ -7376,6 +7460,7 @@
       }
     },
     "Kickstart Service" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7568,6 +7653,9 @@
         }
       }
     },
+    "Launch Services Manager" : {
+
+    },
     "Less" : {
 
     },
@@ -7740,6 +7828,18 @@
           }
         }
       }
+    },
+    "Load the service" : {
+
+    },
+    "Loading files..." : {
+
+    },
+    "Loading launch services..." : {
+
+    },
+    "Loading packages..." : {
+
     },
     "Location:" : {
 
@@ -8060,6 +8160,12 @@
           }
         }
       }
+    },
+    "Manage launch agents, daemons, and XPC services" : {
+
+    },
+    "Manage packages installed via macOS Installer" : {
+
     },
     "Management" : {
       "localizations" : {
@@ -8973,6 +9079,9 @@
         }
       }
     },
+    "Name: %@" : {
+
+    },
     "Navigate To" : {
       "localizations" : {
         "de" : {
@@ -9364,6 +9473,12 @@
         }
       }
     },
+    "No items match the current filters" : {
+
+    },
+    "No launch services found" : {
+
+    },
     "No New Announcement" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -9500,6 +9615,9 @@
       }
     },
     "No orphaned workspaces found" : {
+
+    },
+    "No packages found" : {
 
     },
     "No paths excluded" : {
@@ -10119,6 +10237,9 @@
         }
       }
     },
+    "Open in Finder" : {
+
+    },
     "Operation failed: %@" : {
       "localizations" : {
         "de" : {
@@ -10330,6 +10451,12 @@
       }
     },
     "Orphans" : {
+
+    },
+    "Package Manager" : {
+
+    },
+    "Packages" : {
 
     },
     "Path" : {
@@ -10919,6 +11046,9 @@
         }
       }
     },
+    "PID: %@" : {
+
+    },
     "Pin popover window on top" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -11112,6 +11242,9 @@
           }
         }
       }
+    },
+    "Plist: %@" : {
+
     },
     "Prune Translations" : {
       "comment" : "Prune alert title",
@@ -11458,6 +11591,9 @@
         }
       }
     },
+    "Receipt Path:" : {
+
+    },
     "Refresh" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -11671,7 +11807,13 @@
         }
       }
     },
+    "Refresh launch services list" : {
+
+    },
     "Refresh List" : {
+
+    },
+    "Refresh package list" : {
 
     },
     "Refresh updater" : {
@@ -11997,6 +12139,12 @@
         }
       }
     },
+    "Remove" : {
+
+    },
+    "Remove All" : {
+
+    },
     "Remove all files/folders" : {
       "localizations" : {
         "de" : {
@@ -12050,6 +12198,12 @@
       }
     },
     "Remove from exclusion list" : {
+
+    },
+    "Remove package from system records (does not delete files)" : {
+
+    },
+    "Remove the service registration" : {
 
     },
     "Remove unused architectures from your app binaries to reduce app size" : {
@@ -12489,6 +12643,12 @@
           }
         }
       }
+    },
+    "Restart Service" : {
+
+    },
+    "Restart the service" : {
+
     },
     "Reverse search completed successfully" : {
       "extractionState" : "manual",
@@ -12949,7 +13109,13 @@
     "Search apps.." : {
 
     },
+    "Search packages..." : {
+
+    },
     "Search Sensitivity" : {
+
+    },
+    "Search services..." : {
 
     },
     "Search these folders for applications" : {
@@ -13646,6 +13812,9 @@
         }
       }
     },
+    "Services" : {
+
+    },
     "Settings" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -13860,6 +14029,12 @@
       }
     },
     "Show checkboxes" : {
+
+    },
+    "Show file details" : {
+
+    },
+    "Show file in Finder" : {
 
     },
     "Showing last 3 releases" : {
@@ -14129,6 +14304,9 @@
           }
         }
       }
+    },
+    "Sort packages" : {
+
     },
     "Sorted by %@" : {
 
@@ -14589,6 +14767,9 @@
         }
       }
     },
+    "Start" : {
+
+    },
     "Start Lipo" : {
       "localizations" : {
         "de" : {
@@ -14640,6 +14821,12 @@
           }
         }
       }
+    },
+    "Status:" : {
+
+    },
+    "Stop" : {
+
     },
     "Strict" : {
 
@@ -16124,6 +16311,9 @@
     "Transparent sidebar" : {
 
     },
+    "Try adjusting your search or filters" : {
+
+    },
     "Type a keyword to exclude, Enter ↵ to save" : {
       "localizations" : {
         "de" : {
@@ -16686,6 +16876,9 @@
         }
       }
     },
+    "Unload the service" : {
+
+    },
     "Unregister Service" : {
       "localizations" : {
         "de" : {
@@ -17150,6 +17343,9 @@
         }
       }
     },
+    "Updated %@" : {
+
+    },
     "Updater frequency is set to Never" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -17471,6 +17667,9 @@
           }
         }
       }
+    },
+    "Version: %@" : {
+
     },
     "View" : {
       "localizations" : {

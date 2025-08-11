@@ -264,6 +264,8 @@ enum CurrentPage:Int, CaseIterable, Identifiable
     case orphans
     case development
     case lipo
+    case launchItems
+    case package
 
     var id: Int { rawValue }
     
@@ -277,6 +279,10 @@ enum CurrentPage:Int, CaseIterable, Identifiable
             return (String(localized: "Dev"), "hammer.circle")
         case .lipo:
             return (String(localized: "Lipo"), "square.split.1x2")
+        case .launchItems:
+            return (String(localized: "Services"), "gearshape.2")
+        case .package:
+            return (String(localized: "Packages"), "shippingbox")
         }
     }
     

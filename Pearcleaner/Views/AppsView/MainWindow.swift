@@ -87,6 +87,14 @@ struct MainWindow: View {
 
                 case .lipo:
                     LipoView()
+
+                case .launchItems:
+                    DaemonView()
+
+                case .package:
+                    PackageView()
+
+
                 }
             }
         }

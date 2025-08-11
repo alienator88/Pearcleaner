@@ -32,9 +32,14 @@ struct HelperSettingsTab: View {
                             Label("Login Items", systemImage: "gear")
                                 .padding(4)
                         }
-                        .buttonStyle(ResetSettingsButtonStyle(isResetting: .constant(false), label: String(localized: "Login Items"), help: ""))
+                        .controlSize(.small)
+                        .buttonStyle(.plain)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 14)
+                        .controlGroup(Capsule(style: .continuous), level: .secondary)
                         .contextMenu {
-                            Button("Kickstart Service") {
+                            Button("Restart Service") {
                                 Task {
                                     let result = performPrivilegedCommands(commands: "launchctl kickstart -k system/com.alienator88.Pearcleaner.PearcleanerHelper")
 

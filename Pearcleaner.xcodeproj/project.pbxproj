@@ -14,6 +14,8 @@
 		C73545EB2D8496E000A3DC0C /* HelperToolManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C73545EA2D8496DA00A3DC0C /* HelperToolManager.swift */; };
 		C73545F92D849B5700A3DC0C /* PearcleanerHelper in CopyFiles */ = {isa = PBXBuildFile; fileRef = C73545F02D849A1B00A3DC0C /* PearcleanerHelper */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C73545FD2D84E5DD00A3DC0C /* com.alienator88.PearcleanerSentinel.plist in CopyFiles */ = {isa = PBXBuildFile; fileRef = C7B3AB072D83900B00D829C5 /* com.alienator88.PearcleanerSentinel.plist */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		C74422412E4936750002D277 /* DaemonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74422402E4936700002D277 /* DaemonView.swift */; };
+		C74422432E494D830002D277 /* PackageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74422422E494D7E0002D277 /* PackageView.swift */; };
 		C74E55512D0773190007EC2C /* IfritStatic in Frameworks */ = {isa = PBXBuildFile; productRef = C74E55502D0773190007EC2C /* IfritStatic */; };
 		C74FDC632BCD833D00B8960F /* Conditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74FDC622BCD833D00B8960F /* Conditions.swift */; };
 		C7575D392B0182DE006A600A /* PearcleanerSentinel in CopyFiles */ = {isa = PBXBuildFile; fileRef = C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -39,7 +41,6 @@
 		C7D31D512AFF00F300C7ED9E /* Locations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D502AFF00F300C7ED9E /* Locations.swift */; };
 		C7DD49EA2BAB4D8100CCBA16 /* AppInfoFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */; };
 		C7DD49EE2BAB7F6000CCBA16 /* ReversePathsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */; };
-		C7EA06332C1CBE2000F872FC /* ConditionBuilderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7EA06322C1CBE2000F872FC /* ConditionBuilderView.swift */; };
 		C7F539382AF60865007DF1B2 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F539372AF60865007DF1B2 /* Utilities.swift */; };
 		C7F8436B2CBF066F00E3E30A /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C7F8436A2CBF066F00E3E30A /* Localizable.xcstrings */; };
 		C7F8436C2CBF066F00E3E30A /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C7F8436A2CBF066F00E3E30A /* Localizable.xcstrings */; };
@@ -125,6 +126,8 @@
 		C72FDCB82D6D088A00DE7D56 /* UndoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoManager.swift; sourceTree = "<group>"; };
 		C73545EA2D8496DA00A3DC0C /* HelperToolManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelperToolManager.swift; sourceTree = "<group>"; };
 		C73545F02D849A1B00A3DC0C /* PearcleanerHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PearcleanerHelper; sourceTree = BUILT_PRODUCTS_DIR; };
+		C74422402E4936700002D277 /* DaemonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaemonView.swift; sourceTree = "<group>"; };
+		C74422422E494D7E0002D277 /* PackageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageView.swift; sourceTree = "<group>"; };
 		C74451F62D93774700146AF8 /* announcements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = announcements.json; sourceTree = "<group>"; };
 		C74FDC622BCD833D00B8960F /* Conditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conditions.swift; sourceTree = "<group>"; };
 		C770D7DA2CE7C9A100B3492A /* DevelopmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevelopmentView.swift; sourceTree = "<group>"; };
@@ -151,7 +154,6 @@
 		C7D31D502AFF00F300C7ED9E /* Locations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locations.swift; sourceTree = "<group>"; };
 		C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfoFetch.swift; sourceTree = "<group>"; };
 		C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReversePathsFetch.swift; sourceTree = "<group>"; };
-		C7EA06322C1CBE2000F872FC /* ConditionBuilderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionBuilderView.swift; sourceTree = "<group>"; };
 		C7F539372AF60865007DF1B2 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		C7F8436A2CBF066F00E3E30A /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -333,8 +335,9 @@
 				C74649E62E48000C002D1C63 /* LipoView */,
 				C76073F32E3C1C2C003957A7 /* FilesView */,
 				C7A269282D5D139200FA96EC /* TerminalView.swift */,
+				C74422402E4936700002D277 /* DaemonView.swift */,
 				C770D7DA2CE7C9A100B3492A /* DevelopmentView.swift */,
-				C7EA06322C1CBE2000F872FC /* ConditionBuilderView.swift */,
+				C74422422E494D7E0002D277 /* PackageView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -558,15 +561,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				C7DD49EA2BAB4D8100CCBA16 /* AppInfoFetch.swift in Sources */,
+				C74422432E494D830002D277 /* PackageView.swift in Sources */,
 				C77B90162AF19377009CC655 /* AppState.swift in Sources */,
 				C7DD49EE2BAB7F6000CCBA16 /* ReversePathsFetch.swift in Sources */,
-				C7EA06332C1CBE2000F872FC /* ConditionBuilderView.swift in Sources */,
 				C7C90DD32DA81C5D0056769A /* Lipo.swift in Sources */,
 				C7A2A4D62DDB957D006E05E4 /* CLI.swift in Sources */,
 				C7D31D512AFF00F300C7ED9E /* Locations.swift in Sources */,
 				C77B901A2AF1938F009CC655 /* Logic.swift in Sources */,
 				C78D7B212D556F1A003DD49F /* AppPathsFetch.swift in Sources */,
 				C770D7DB2CE7C9AD00B3492A /* DevelopmentView.swift in Sources */,
+				C74422412E4936750002D277 /* DaemonView.swift in Sources */,
 				C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */,
 				C73545EB2D8496E000A3DC0C /* HelperToolManager.swift in Sources */,
 				C72FDCB92D6D089100DE7D56 /* UndoManager.swift in Sources */,

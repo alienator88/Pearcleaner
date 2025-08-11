@@ -80,12 +80,41 @@ struct ZombieView: View {
                                 .toggleStyle(SimpleCheckboxToggleStyle())
                                 .help("All checkboxes")
 
-                            SearchBar(search: $searchZ, glass: glass)
-                                .onChange(of: searchZ) { newValue in
-                                    updateMemoizedFiles(for: newValue, sizeType: sizeType, selectedSort: selectedSort)
+//                            SearchBar(search: $searchZ, glass: glass)
+//                                .onChange(of: searchZ) { newValue in
+//                                    updateMemoizedFiles(for: newValue, sizeType: sizeType, selectedSort: selectedSort)
+//                                }
+
+                            Spacer()
+                            // Search bar
+                            HStack {
+                                Image(systemName: "magnifyingglass")
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                                TextField("Search packages...", text: $searchZ)
+                                    .onChange(of: searchZ) { newValue in
+                                        updateMemoizedFiles(for: newValue, sizeType: sizeType, selectedSort: selectedSort)
+                                    }
+                                    .textFieldStyle(.plain)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                                if !searchZ.isEmpty {
+                                    Button {
+                                        searchZ = ""
+                                    } label: {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                    }
+                                    .buttonStyle(.plain)
                                 }
+                            }
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                            .controlGroup(Capsule(style: .continuous), level: .secondary)
+                            .frame(maxWidth: 500)
 
-
+                            Spacer()
 
                             Button {
                                 switch selectedSort {
