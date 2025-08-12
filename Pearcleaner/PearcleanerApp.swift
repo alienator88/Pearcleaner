@@ -134,9 +134,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
         ensureApplicationSupportFolderExists()
 
-        //MARK: Remove this after a couple versions
-        removeOldSentinelPlist()
-
     }
 
     func applicationWillTerminate(_ notification: Notification) {

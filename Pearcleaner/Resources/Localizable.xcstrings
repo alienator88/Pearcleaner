@@ -1,16 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "(%lld/%lld)" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "(%1$lld/%2$lld)"
-          }
-        }
-      }
-    },
     "(Build %@)" : {
       "localizations" : {
         "de" : {
@@ -503,6 +493,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld 個通用應用程式"
+          }
+        }
+      }
+    },
+    "%lld valid %@ found" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld valid %2$@ found"
           }
         }
       }
@@ -1129,7 +1129,7 @@
         }
       }
     },
-    "All package files from the BOM list have been removed. It's safe to Forget this package." : {
+    "All valid package files from the BOM list have been removed. You may Forget this package." : {
 
     },
     "Also in: %@" : {
@@ -3963,6 +3963,9 @@
     "Delete this file" : {
 
     },
+    "DELETED" : {
+
+    },
     "Details" : {
 
     },
@@ -6346,10 +6349,10 @@
         }
       }
     },
-    "Hide checkboxes" : {
+    "Hide details" : {
 
     },
-    "Hide details" : {
+    "Hide multi-select" : {
 
     },
     "Homebrew cleanup after uninstall" : {
@@ -14028,13 +14031,13 @@
         }
       }
     },
-    "Show checkboxes" : {
-
-    },
     "Show file details" : {
 
     },
     "Show file in Finder" : {
+
+    },
+    "Show multi-select" : {
 
     },
     "Showing last 3 releases" : {
@@ -14107,6 +14110,12 @@
           }
         }
       }
+    },
+    "Simple app list disabled" : {
+
+    },
+    "Simple app list enabled" : {
+
     },
     "Since Authorization services have been deprecated by Apple as a less secure authentication method, it will eventually be removed from Pearcleaner and the helper service will be the only option going forward. I recommend enabling the privileged helper service as soon as possible." : {
       "localizations" : {

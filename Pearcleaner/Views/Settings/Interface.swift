@@ -102,7 +102,7 @@ struct InterfaceSettingsTab: View {
                             .padding(.trailing)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                         VStack(alignment: .leading, spacing: 5) {
-                            Text(minimalEnabled ? String(localized: "Minimalist app list rows enabled") : String(localized: "Minimalist app list rows disabled"))
+                            Text(minimalEnabled ? String(localized: "Simple app list enabled") : String(localized: "Simple app list disabled"))
                                 .font(.callout)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                         }

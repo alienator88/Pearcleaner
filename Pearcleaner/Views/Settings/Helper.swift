@@ -38,6 +38,7 @@ struct HelperSettingsTab: View {
                         .padding(.vertical, 8)
                         .padding(.horizontal, 14)
                         .controlGroup(Capsule(style: .continuous), level: .secondary)
+                        .padding(.trailing, 5)
                         .contextMenu {
                             Button("Restart Service") {
                                 Task {

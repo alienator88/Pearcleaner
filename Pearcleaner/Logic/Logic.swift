@@ -724,19 +724,6 @@ func launchctl(load: Bool, completion: @escaping () -> Void = {}) {
     completion()
 }
 
-// --- Remove old sentinel monitor plist if still exists after moving to SMAppService loading
-func removeOldSentinelPlist() {
-    let fileManager = FileManager.default
-    let plistPath = "\(home)/Library/LaunchAgents/com.alienator88.PearcleanerSentinel.plist"
-    if fileManager.fileExists(atPath: plistPath) {
-        do {
-            try fileManager.removeItem(atPath: plistPath)
-        } catch {
-            printOS("Failed to remove old sentinel plist: \(error)")
-        }
-    }
-}
-
 func createTarArchive(appState: AppState) {
     // Filter the array to include only paths under /Users/, /Applications/, or /Library/
     let allowedPaths = Array(appState.selectedItems).filter {

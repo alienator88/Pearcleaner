@@ -99,12 +99,7 @@ struct SettingsView: View {
         .padding(.bottom)
         .padding(.horizontal)
         .frame(width: 180)
-        .background(.ultraThickMaterial)
-        .background {
-            MetalView()
-                .frame(width: 180)
-                .ignoresSafeArea(.all)
-        }
+        .background(theme(for: colorScheme).secondaryBG)
     }
 
     /// Detail view content based on the selected tab

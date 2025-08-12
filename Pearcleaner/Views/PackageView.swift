@@ -21,16 +21,15 @@ struct PackageInfo: Identifiable, Hashable, Equatable {
     let id = UUID()
     let packageId: String
     let packageName: String
-    let packageFileName: String // New field for the actual package file name
+    let packageFileName: String
     let version: String
     let installDate: String
-    let installProcessName: String // New field for the process that installed it
-    var bomFiles: [String] // Made var for lazy loading
+    let installProcessName: String
+    var bomFiles: [String]
     let receiptPath: String
     let installLocation: String
-    var bomFilesLoaded: Bool = false // Track if BOM files have been loaded
-    
-    // Computed property for display name - prefer package file name over package name
+    var bomFilesLoaded: Bool = false
+
     var displayName: String {
         if !packageFileName.isEmpty {
             // Remove .pkg extension for cleaner display
@@ -48,7 +47,7 @@ struct PackageView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.colorScheme) var colorScheme
     @State private var packages: [PackageInfo] = []
-    @State private var packageIds: [String] = [] // Add this to store package IDs
+    @State private var packageIds: [String] = []
     @State private var isLoading: Bool = false
     @State private var lastRefreshDate: Date?
     @State private var searchText: String = ""
@@ -58,9 +57,8 @@ struct PackageView: View {
     @AppStorage("settings.general.permanentDelete") private var permanentDelete: Bool = false
 
     private var filteredPackages: [PackageInfo] {
-        var packages = self.packages.filter { !$0.packageId.hasPrefix("com.apple.") } // Only user-installed packages
+        var packages = self.packages.filter { !$0.packageId.hasPrefix("com.apple.") }
 
-        // Apply search filter
         if !searchText.isEmpty {
             packages = packages.filter { package in
                 package.displayName.localizedCaseInsensitiveContains(searchText) ||
@@ -69,7 +67,6 @@ struct PackageView: View {
             }
         }
 
-        // Apply sorting
         switch sortOption {
         case .packageName:
             packages = packages.sorted { first, second in
@@ -245,7 +242,6 @@ struct PackageView: View {
             expandedPackages.remove(packageId)
         } else {
             expandedPackages.insert(packageId)
-            // Load BOM files when expanding for the first time
             loadBOMFilesIfNeeded(for: packageId)
         }
     }
@@ -273,17 +269,27 @@ struct PackageView: View {
         return await withCheckedContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
                 // Use pkgutil --files to get just the file paths
-                let filesResult = runDirectShellCommand(command: "pkgutil --files \"\(packageId)\"")
+                // Try normal shell command first, fallback to fast method if it times out
+                var filesResult = runDirectShellCommandWithTimeout(command: "pkgutil --files \"\(packageId)\"", timeout: 2.0)
+                
+                if !filesResult.0 && filesResult.1.contains("timed out") {
+                    // Command timed out, use fast shell command as fallback
+                    filesResult = runFastShellCommand(command: "pkgutil --files \"\(packageId)\"")
+                }
                 
                 if filesResult.0 {
                     let allFiles = filesResult.1.components(separatedBy: .newlines).filter { !$0.isEmpty }
                     
-                    // Get the package install location to construct proper absolute paths
                     var installLocation = "/"
                     
                     // First try to get from receipt plist
                     let receiptPath = "/var/db/receipts/\(packageId).plist"
-                    let defaultsResult = runDirectShellCommand(command: "defaults read \"\(receiptPath)\"")
+                    
+                    var defaultsResult = runDirectShellCommandWithTimeout(command: "defaults read \"\(receiptPath)\"", timeout: 3.0)
+                    if !defaultsResult.0 && defaultsResult.1.contains("timed out") {
+                        defaultsResult = runFastShellCommand(command: "defaults read \"\(receiptPath)\"")
+                    }
+                    
                     if defaultsResult.0 {
                         let lines = defaultsResult.1.components(separatedBy: .newlines)
                         for line in lines {
@@ -302,7 +308,11 @@ struct PackageView: View {
                     
                     // Fallback to pkgutil --pkg-info if needed
                     if installLocation == "/" {
-                        let infoResult = runDirectShellCommand(command: "pkgutil --pkg-info \"\(packageId)\"")
+                        var infoResult = runDirectShellCommandWithTimeout(command: "pkgutil --pkg-info \"\(packageId)\"", timeout: 3.0)
+                        if !infoResult.0 && infoResult.1.contains("timed out") {
+                            infoResult = runFastShellCommand(command: "pkgutil --pkg-info \"\(packageId)\"")
+                        }
+                        
                         if infoResult.0 {
                             let lines = infoResult.1.components(separatedBy: .newlines)
                             for line in lines {
@@ -319,7 +329,6 @@ struct PackageView: View {
                     // If we find .app files and install location is "/", try /Applications
                     let hasAppFiles = allFiles.contains { $0.hasSuffix(".app") }
                     if hasAppFiles && installLocation == "/" {
-                        // Check if the app exists in /Applications
                         for file in allFiles {
                             if file.hasSuffix(".app") {
                                 let appPath = "/Applications/\(file)"
@@ -336,22 +345,18 @@ struct PackageView: View {
                         installLocation = "/" + installLocation
                     }
                     
-                    // Simple filtering - only remove Apple resource fork files
+                    // Remove Apple resource fork files
                     let filteredFiles = allFiles.compactMap { file -> String? in
                         let trimmedFile = file.trimmingCharacters(in: .whitespacesAndNewlines)
                         
-                        // Skip Apple resource fork files (._filename) 
                         if trimmedFile.contains("._") {
                             return nil
                         }
                         
-                        // Construct proper absolute path using install location
                         var absolutePath: String
                         if trimmedFile.hasPrefix("/") {
-                            // File path is already absolute
                             absolutePath = trimmedFile
                         } else {
-                            // File path is relative, combine with install location
                             if installLocation == "/" {
                                 absolutePath = "/" + trimmedFile
                             } else {
@@ -379,7 +384,6 @@ struct PackageView: View {
         packageIds = []
         
         Task {
-            // First, quickly get the list of package IDs
             let ids = await loadPackageIds()
             
             await MainActor.run {
@@ -387,7 +391,6 @@ struct PackageView: View {
                 self.lastRefreshDate = Date()
             }
             
-            // Then load each package's details progressively
             await loadPackageDetailsProgressively(for: ids)
             
             await MainActor.run {
@@ -418,7 +421,6 @@ struct PackageView: View {
             let endIndex = min(i + batchSize, packageIds.count)
             let batch = Array(packageIds[i..<endIndex])
             
-            // Load batch concurrently
             await withTaskGroup(of: PackageInfo?.self) { group in
                 for packageId in batch {
                     group.addTask {
@@ -433,13 +435,11 @@ struct PackageView: View {
                     }
                 }
                 
-                // Update UI with this batch
                 await MainActor.run {
                     self.packages.append(contentsOf: batchPackages)
                 }
             }
             
-            // Small delay between batches to keep UI responsive
             try? await Task.sleep(nanoseconds: 50_000_000) // 50ms
         }
     }
@@ -466,42 +466,36 @@ struct PackageView: View {
         var installProcessName = ""
         
         if defaultsResult.0 {
-            // Parse the defaults output
             let lines = defaultsResult.1.components(separatedBy: .newlines)
             
             for line in lines {
                 let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
                 
                 if trimmedLine.contains("InstallDate = ") {
-                    // Extract date between quotes
                     if let startQuote = trimmedLine.firstIndex(of: "\""),
                        let endQuote = trimmedLine.lastIndex(of: "\""),
                        startQuote != endQuote {
                         installDate = String(trimmedLine[trimmedLine.index(after: startQuote)..<endQuote])
                     }
                 } else if trimmedLine.contains("PackageFileName = ") {
-                    // Extract package filename between quotes
                     if let startQuote = trimmedLine.firstIndex(of: "\""),
                        let endQuote = trimmedLine.lastIndex(of: "\""),
                        startQuote != endQuote {
                         packageFileName = String(trimmedLine[trimmedLine.index(after: startQuote)..<endQuote])
                     }
                 } else if trimmedLine.contains("PackageVersion = ") {
-                    // Extract version between quotes
                     if let startQuote = trimmedLine.firstIndex(of: "\""),
                        let endQuote = trimmedLine.lastIndex(of: "\""),
                        startQuote != endQuote {
                         version = String(trimmedLine[trimmedLine.index(after: startQuote)..<endQuote])
                     }
                 } else if trimmedLine.contains("InstallPrefixPath = ") {
-                    // Extract install location between quotes
                     if let startQuote = trimmedLine.firstIndex(of: "\""),
                        let endQuote = trimmedLine.lastIndex(of: "\""),
                        startQuote != endQuote {
                         installLocation = String(trimmedLine[trimmedLine.index(after: startQuote)..<endQuote])
                     }
                 } else if trimmedLine.contains("InstallProcessName = ") {
-                    // Extract process name - might not have quotes
                     if trimmedLine.contains("\"") {
                         if let startQuote = trimmedLine.firstIndex(of: "\""),
                            let endQuote = trimmedLine.lastIndex(of: "\""),
@@ -509,7 +503,6 @@ struct PackageView: View {
                             installProcessName = String(trimmedLine[trimmedLine.index(after: startQuote)..<endQuote])
                         }
                     } else {
-                        // No quotes, extract after = and before ;
                         let parts = trimmedLine.components(separatedBy: " = ")
                         if parts.count > 1 {
                             let value = parts[1].trimmingCharacters(in: CharacterSet(charactersIn: "; "))
@@ -537,7 +530,6 @@ struct PackageView: View {
             }
         }
         
-        // Don't load BOM files upfront - load them on demand when package is expanded
         let bomFiles: [String] = []
         
         return PackageInfo(
@@ -626,7 +618,6 @@ struct PackageView: View {
         
         await MainActor.run {
             if success {
-                // Refresh the list
                 refreshPackages()
             } else {
                 showCustomAlert(
@@ -661,71 +652,13 @@ struct PackageView: View {
 
 }
 
-// Add a placeholder row for packages still loading
-struct PackagePlaceholderRowView: View {
-    @Environment(\.colorScheme) var colorScheme
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(alignment: .top, spacing: 12) {
-                // Package icon placeholder
-                VStack(spacing: 4) {
-                    ZStack {
-                        Circle()
-                            .fill(Color.gray.opacity(0.2))
-                            .frame(width: 32, height: 32)
-                        
-                        ProgressView()
-                            .scaleEffect(0.6)
-                    }
-                    
-                    Circle()
-                        .fill(.gray)
-                        .frame(width: 8, height: 8)
-                }
-                
-                // Package details placeholder
-                VStack(alignment: .leading, spacing: 6) {
-                    HStack {
-                        Rectangle()
-                            .fill(Color.gray.opacity(0.3))
-                            .frame(height: 20)
-                            .frame(maxWidth: 200)
-                        
-                        Spacer()
-                    }
-                    
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.2))
-                        .frame(height: 12)
-                        .frame(maxWidth: 150)
-                    
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.2))
-                        .frame(height: 12)
-                        .frame(maxWidth: 100)
-                }
-                
-                // Action buttons placeholder
-                VStack(spacing: 6) {
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.2))
-                        .frame(width: 60, height: 24)
-                }
-            }
-        }
-        .padding()
-        .background(ThemeColors.shared(for: colorScheme).secondaryBG.clipShape(RoundedRectangle(cornerRadius: 8)))
-        .redacted(reason: .placeholder)
-    }
-}
 
 struct PackageRowView: View {
     @Environment(\.colorScheme) var colorScheme
     let package: PackageInfo
     let isExpanded: Bool
     let permanentDelete: Bool
-    let sortOption: PackageSortOption // Add sort option parameter
+    let sortOption: PackageSortOption
     let onToggleExpansion: () -> Void
     let onRemove: () -> Void
     let onRefresh: () -> Void
@@ -749,25 +682,18 @@ struct PackageRowView: View {
                             .font(.system(size: 14, weight: .medium))
                             .foregroundStyle(packageColor)
                     }
-                    
-                    Circle()
-                        .fill(.green)
-                        .frame(width: 8, height: 8)
                 }
                 
                 // Package details
                 VStack(alignment: .leading, spacing: 6) {
                     
                     HStack(alignment: .center) {
-                        // Display based on sort option
                         if sortOption == .packageId {
-                            // When sorting by package ID, show package ID in bold at top
                             Text(package.packageId)
                                 .font(.headline)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                                 .lineLimit(1)
                         } else {
-                            // When sorting by package name, show display name in bold at top
                             Text(package.displayName)
                                 .font(.headline)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
@@ -779,16 +705,13 @@ struct PackageRowView: View {
                     
                     // Package details
                     VStack(alignment: .leading, spacing: 4) {
-                        // Display the secondary info at bottom based on sort option
                         if sortOption == .packageId {
-                            // When sorting by package ID, show "Name: displayName" at bottom
                             Text("Name: \(package.displayName)")
                                 .font(.caption)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                                 .lineLimit(1)
                                 .truncationMode(.middle)
                         } else {
-                            // When sorting by package name, show "ID: packageId" at bottom
                             Text("ID: \(package.packageId)")
                                 .font(.caption)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
@@ -831,7 +754,6 @@ struct PackageRowView: View {
                             }
                         }
                         
-                        // First location - in the main package details (around line 771)
                         // Install location (if not default)
                         if !package.installLocation.isEmpty && package.installLocation != "/" {
                             HStack {
@@ -882,15 +804,8 @@ struct PackageRowView: View {
                         .disabled(isPerformingAction)
                         .help(isExpanded ? "Hide details" : "Show file details")
                         
-                        Button("Remove All") {
-                            removeAllBomFiles()
-                        }
-                        .buttonStyle(.borderless)
-                        .controlSize(.mini)
-                        .foregroundStyle(.red)
-                        .disabled(isPerformingAction)
-                        .help("Delete all remaining package files")
-                        
+                        Divider().frame(height: 10)
+
                         Button("Forget") {
                             onRemove()
                         }
@@ -913,20 +828,39 @@ struct PackageRowView: View {
                 Divider()
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    HStack {
+                    HStack(spacing: 0) {
+
+                        InfoButton(text: "By default, pkgutil shows all file paths from the package which might include system paths like /Library/Application Support, /usr/local, etc. and even files that are already deleted from the system.\n\nThis list of BOM files is filtered as follows:\n- Shows directories that are not system directories. \n- Doesn't show files that are duplicated by listing out all contents of parent directories.\n- Doesn't show files that are already deleted.")
+
                         Text("Bill of Materials")
                             .font(.headline)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                        
+                            .padding(.horizontal, 5)
+
                         if package.bomFilesLoaded {
-                            let filteredFiles = getFilteredBomFiles(for: package)
-                            let existingCount = filteredFiles.count
-                            let totalCount = package.bomFiles.count
+                            let (existingFiles, _) = getBomFilesByExistence(for: package)
+                            let count = existingFiles.count
                             
-                            Text("(\(existingCount)/\(totalCount))")
-                                .font(.headline)
+                            Text("\(count) valid \(count == 1 ? "file" : "files") found")
+                                .font(.caption2)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                            Spacer()
+
+                            if count > 1 {
+                                Button("Remove All") {
+                                    removeAllBomFiles()
+                                }
+                                .buttonStyle(.borderless)
+                                .controlSize(.mini)
+                                .foregroundStyle(.red)
+                                .disabled(isPerformingAction)
+                                .help("Delete all remaining package files")
+                            }
                         }
+
+
+
                     }
                     
                     // Receipt information
@@ -945,7 +879,6 @@ struct PackageRowView: View {
                             Spacer()
                         }
                         
-                        // Second location - in the expanded details (around line 870)
                         if !package.installLocation.isEmpty {
                             HStack {
                                 Text("Install Location:")
@@ -964,7 +897,6 @@ struct PackageRowView: View {
                     }
                     .padding(.bottom, 8)
                     
-                    // Update the BOM files display section (around lines 890-925)
                     if !package.bomFilesLoaded {
                         HStack {
                             ProgressView()
@@ -975,11 +907,11 @@ struct PackageRowView: View {
                         }
                         .frame(height: 40)
                     } else {
-                        let filteredFiles = getFilteredBomFiles(for: package)
+                        let (existingFiles, _) = getBomFilesByExistence(for: package)
                         
-                        if filteredFiles.isEmpty {
+                        if existingFiles.isEmpty {
                             VStack(alignment: .leading, spacing: 8) {
-                                Text("All package files from the BOM list have been removed. It's safe to Forget this package.")
+                                Text("All valid package files from the BOM list have been removed. You may Forget this package.")
                                     .font(.caption2)
                                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                                     .opacity(0.8)
@@ -989,41 +921,15 @@ struct PackageRowView: View {
                         } else {
                             ScrollView {
                                 LazyVStack(alignment: .leading, spacing: 4) {
-                                    ForEach(Array(filteredFiles.enumerated()), id: \.offset) { index, file in
-                                        HStack {
-                                            Image(systemName: "doc.text")
-                                                .font(.caption)
-                                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                                            
-                                            Text(file)
-                                                .font(.caption)
-                                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                                                .lineLimit(1)
-                                                .truncationMode(.middle)
-                                            
-                                            Spacer()
-                                            
-                                            // Action buttons
-                                            HStack(spacing: 10) {
-                                                Button("View") {
-                                                    openFileInFinder(file)
-                                                }
-                                                .buttonStyle(.borderless)
-                                                .controlSize(.mini)
-                                                .foregroundStyle(.blue)
-                                                .help("Show file in Finder")
-                                                
-                                                Button("Remove") {
-                                                    removeFile(file, from: package)
-                                                }
-                                                .buttonStyle(.borderless)
-                                                .controlSize(.mini)
-                                                .foregroundStyle(.red)
-                                                .help("Delete this file")
-                                            }
-                                        }
-                                        .padding(.vertical, 2)
-                                        .background(index % 2 == 0 ? Color.clear : ThemeColors.shared(for: colorScheme).secondaryText.opacity(0.05))
+                                    ForEach(Array(existingFiles.enumerated()), id: \.offset) { index, file in
+                                        BomFileRowView(
+                                            file: file,
+                                            exists: true,
+                                            index: index,
+                                            colorScheme: colorScheme,
+                                            onView: { openFileInFinder(file) },
+                                            onRemove: { removeFile(file, from: package) }
+                                        )
                                     }
                                 }
                             }
@@ -1045,7 +951,7 @@ struct PackageRowView: View {
     }
 
     private func formatInstallDate(_ dateString: String) -> String {
-        // Parse the install date format from pkgutil (usually Unix timestamp)
+        // Parse the install date format from pkgutil
         if let timestamp = Double(dateString) {
             let date = Date(timeIntervalSince1970: timestamp)
             let formatter = DateFormatter()
@@ -1053,12 +959,10 @@ struct PackageRowView: View {
             formatter.timeStyle = .short
             return formatter.string(from: date)
         } else {
-            // If it's already a formatted string, return as is
             return dateString
         }
     }
     
-    // Move these functions INSIDE the PackageRowView struct
     private func openFileInFinder(_ filePath: String) {
         let url = URL(fileURLWithPath: filePath)
         NSWorkspace.shared.activateFileViewerSelecting([url])
@@ -1106,7 +1010,6 @@ struct PackageRowView: View {
         
         await MainActor.run {
             if success {
-                // Now onRefresh is accessible since we're inside PackageRowView
                 onRefresh()
             } else {
                 showCustomAlert(
@@ -1147,7 +1050,6 @@ struct PackageRowView: View {
         
         let success = await withCheckedContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
-                // Build command to remove all files
                 let quotedPaths = filePaths.map { "\"\($0)\"" }.joined(separator: " ")
                 let command = "rm -rf \(quotedPaths)"
                 
@@ -1177,7 +1079,6 @@ struct PackageRowView: View {
             isPerformingAction = false
             
             if success {
-                // Refresh the package to update the BOM files list
                 onRefresh()
             } else {
                 showCustomAlert(
@@ -1191,60 +1092,8 @@ struct PackageRowView: View {
 }
 
 private func getFilteredBomFiles(for package: PackageInfo) -> [String] {
-    let systemDirectoriesToFilter = [
-        "/Applications", // Only filter the bare Applications directory
-        "/Library",
-        "/Library/Application Support",
-        "/Library/Frameworks",
-        "/Library/LaunchAgents",
-        "/Library/LaunchDaemons",
-        "/Library/PreferencePanes",
-        "/Library/PrivilegedHelperTools",
-        "/Library/QuickLook",
-        "/Library/Receipts",
-        "/Library/StartupItems",
-        "/System",
-        "/System/Library",
-        "/root",
-        "/",
-        "/usr",
-        "/usr/bin",
-        "/usr/lib",
-        "/usr/libexec",
-        "/usr/local",
-        "/usr/local/bin",
-        "/usr/local/lib",
-        "/usr/local/share",
-        "/usr/sbin",
-        "/usr/share",
-        "/var",
-        "/var/db",
-        "/var/log",
-        "/private",
-        "/private/etc",
-        "/private/tmp",
-        "/private/var",
-        "/etc",
-        "/tmp",
-        "/opt",
-        "/opt/local",
-        "/opt/local/bin",
-        "/opt/local/lib"
-    ]
-    
-
-    let filteredFiles = package.bomFiles.filter { file in
-        // Filter out system directories (exact matches only)
-        if systemDirectoriesToFilter.contains(file) {
-            return false
-        }
-        
-        // Check if file still exists
-        let exists = FileManager.default.fileExists(atPath: file)
-        return exists
-    }
-    
-    return filteredFiles
+    let (existingFiles, _) = getBomFilesByExistence(for: package)
+    return existingFiles
 }
 
 // Helper function to run shell commands
@@ -1266,6 +1115,75 @@ private func runDirectShellCommand(command: String) -> (Bool, String) {
     return (task.terminationStatus == 0, output)
 }
 
+private func runDirectShellCommandWithTimeout(command: String, timeout: TimeInterval) -> (Bool, String) {
+    let task = Process()
+    task.launchPath = "/bin/bash"
+    task.arguments = ["-c", command]
+    
+    let pipe = Pipe()
+    task.standardOutput = pipe
+    task.standardError = pipe
+    
+    task.launch()
+    
+    let group = DispatchGroup()
+    group.enter()
+    
+    var completed = false
+    var result: (Bool, String) = (false, "")
+    
+    DispatchQueue.global().async {
+        task.waitUntilExit()
+        
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        let output = String(data: data, encoding: .utf8) ?? ""
+        
+        if !completed {
+            result = (task.terminationStatus == 0, output)
+        }
+        completed = true
+        group.leave()
+    }
+    
+    let waitResult = group.wait(timeout: .now() + timeout)
+    
+    if waitResult == .timedOut {
+        task.terminate()
+        return (false, "Command timed out")
+    }
+    
+    return result
+}
+
+private func runFastShellCommand(command: String) -> (Bool, String) {
+    let tempFile = "/tmp/pearcleaner_getBOMlist_\(UUID().uuidString)"
+    let redirectedCommand = "\(command) > \"\(tempFile)\" 2>&1"
+    
+    let process = Process()
+    process.executableURL = URL(fileURLWithPath: "/bin/bash")
+    process.arguments = ["-c", redirectedCommand]
+    
+    do {
+        try process.run()
+        process.waitUntilExit()
+        
+        let success = process.terminationStatus == 0
+        
+        let output: String
+        if FileManager.default.fileExists(atPath: tempFile) {
+            output = (try? String(contentsOfFile: tempFile)) ?? ""
+            try? FileManager.default.removeItem(atPath: tempFile)
+        } else {
+            output = ""
+        }
+        
+        return (success, output)
+    } catch {
+        try? FileManager.default.removeItem(atPath: tempFile)
+        return (false, "Error: \(error)")
+    }
+}
+
 extension String {
     var expandingTildeInPath: String {
         return NSString(string: self).expandingTildeInPath
@@ -1276,7 +1194,6 @@ private func filterAppBundleInternals(_ files: [String]) -> [String] {
     var appBundles: Set<String> = []
     var filteredFiles: [String] = []
     
-    // First, identify all .app bundles
     for file in files {
         if file.hasSuffix(".app") {
             appBundles.insert(file)
@@ -1287,10 +1204,8 @@ private func filterAppBundleInternals(_ files: [String]) -> [String] {
     for file in files {
         var shouldInclude = true
         
-        // Check if this file is inside any .app bundle
         for appBundle in appBundles {
             if file.hasPrefix(appBundle + "/") {
-                // This file is inside an app bundle, don't include it
                 shouldInclude = false
                 break
             }
@@ -1302,5 +1217,139 @@ private func filterAppBundleInternals(_ files: [String]) -> [String] {
     }
     
     return filteredFiles
+}
+
+private func getBomFilesByExistence(for package: PackageInfo) -> (existing: [String], deleted: [String]) {
+    let systemDirectoriesToFilter = [
+        "/Applications", "/Library", "/Library/Application Support", "/Library/Frameworks",
+        "/Library/LaunchAgents", "/Library/LaunchDaemons", "/Library/PreferencePanes",
+        "/Library/PrivilegedHelperTools", "/Library/QuickLook", "/Library/Receipts",
+        "/Library/StartupItems", "/System", "/System/Library", "/root", "/",
+        "/usr", "/usr/bin", "/usr/lib", "/usr/libexec", "/usr/local", "/usr/local/bin",
+        "/usr/local/lib", "/usr/local/share", "/usr/sbin", "/usr/share", "/var",
+        "/var/db", "/var/log", "/private", "/private/etc", "/private/tmp",
+        "/private/var", "/etc", "/tmp", "/opt", "/opt/local", "/opt/local/bin", "/opt/local/lib"
+    ]
+    
+    var existingFiles: [String] = []
+    var deletedFiles: [String] = []
+    
+    // Create a list that includes the install location (if not root) plus all BOM files
+    var filesToProcess = package.bomFiles
+    
+    // Add install location to the list if it's meaningful and not a system directory
+    if !package.installLocation.isEmpty && package.installLocation != "/" {
+        var installLocationPath = package.installLocation
+        if !installLocationPath.hasPrefix("/") {
+            installLocationPath = "/" + installLocationPath
+        }
+        
+        if !systemDirectoriesToFilter.contains(installLocationPath) && !filesToProcess.contains(installLocationPath) {
+            filesToProcess.append(installLocationPath)
+        }
+    }
+    
+    for file in filesToProcess {
+        // Filter out system directories
+        if systemDirectoriesToFilter.contains(file) {
+            continue
+        }
+        
+        // Check if file exists
+        if FileManager.default.fileExists(atPath: file) {
+            existingFiles.append(file)
+        } else {
+            deletedFiles.append(file)
+        }
+    }
+    
+    // Remove redundant child paths from both existing and deleted files
+    let filteredExistingFiles = removeRedundantChildPaths(existingFiles)
+    let filteredDeletedFiles = removeRedundantChildPaths(deletedFiles)
+    
+    return (filteredExistingFiles.sorted(), filteredDeletedFiles.sorted())
+}
+
+// Helper function to remove redundant child paths when parent directories are already in the list
+private func removeRedundantChildPaths(_ paths: [String]) -> [String] {
+    let sortedPaths = paths.sorted()
+    var result: [String] = []
+    
+    for path in sortedPaths {
+        var isRedundant = false
+        
+        for existingPath in result {
+            if path.hasPrefix(existingPath + "/") {
+                isRedundant = true
+                break
+            }
+        }
+        
+        if !isRedundant {
+            result.append(path)
+        }
+    }
+    
+    return result
+}
+
+struct BomFileRowView: View {
+    let file: String
+    let exists: Bool
+    let index: Int
+    let colorScheme: ColorScheme
+    let onView: () -> Void
+    let onRemove: () -> Void
+    
+    var body: some View {
+        HStack {
+            Image(systemName: exists ? "doc.text" : "doc.text.fill")
+                .font(.caption)
+                .foregroundStyle(exists ? 
+                    ThemeColors.shared(for: colorScheme).secondaryText : 
+                    ThemeColors.shared(for: colorScheme).secondaryText.opacity(0.4))
+            
+            Text(file)
+                .font(.caption)
+                .foregroundStyle(exists ? 
+                    ThemeColors.shared(for: colorScheme).primaryText : 
+                    ThemeColors.shared(for: colorScheme).secondaryText.opacity(0.5))
+                .lineLimit(1)
+                .truncationMode(.middle)
+                .strikethrough(exists ? false : true)
+            
+            Spacer()
+            
+            if exists {
+                HStack(spacing: 10) {
+                    Button("View") {
+                        onView()
+                    }
+                    .buttonStyle(.borderless)
+                    .controlSize(.mini)
+                    .foregroundStyle(.blue)
+                    .help("Show file in Finder")
+
+                    Divider().frame(height: 10)
+
+                    Button("Remove") {
+                        onRemove()
+                    }
+                    .buttonStyle(.borderless)
+                    .controlSize(.mini)
+                    .foregroundStyle(.red)
+                    .help("Delete this file")
+                }
+            } else {
+                Text("DELETED")
+                    .font(.caption2)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText.opacity(0.4))
+                    .fontWeight(.medium)
+            }
+        }
+        .padding(.vertical, 2)
+        .background(index % 2 == 0 ? Color.clear : ThemeColors.shared(for: colorScheme).secondaryText.opacity(0.05))
+        .opacity(exists ? 1.0 : 0.6)
+    }
 }
 

@@ -210,7 +210,7 @@ struct SimpleSearchStyleSidebar: TextFieldStyle {
                         }
                     }
 
-                    Button(multiSelect ? "Hide checkboxes" : "Show checkboxes") {
+                    Button(multiSelect ? "Hide multi-select" : "Show multi-select") {
                         withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                             multiSelect.toggle()
                         }

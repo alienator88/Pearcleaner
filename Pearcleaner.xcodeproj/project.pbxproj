@@ -164,10 +164,6 @@
 			membershipExceptions = (
 				ChromeBorder.swift,
 				ControlGroupChrome.swift,
-				Metal/AnimatedGradient.metal,
-				Metal/AnimatedGradientView.swift,
-				Metal/LavaLampShader.metal,
-				Metal/LavaLampView.swift,
 				PearGroupBox.swift,
 				Styles.swift,
 				Theme.swift,
@@ -700,8 +696,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 86;
-				APP_VERSION = 4.5.3;
+				APP_BUILD = 87;
+				APP_VERSION = 5.0.0;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -772,8 +768,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 86;
-				APP_VERSION = 4.5.3;
+				APP_BUILD = 87;
+				APP_VERSION = 5.0.0;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
