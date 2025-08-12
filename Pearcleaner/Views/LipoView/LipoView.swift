@@ -161,6 +161,12 @@ struct LipoView: View {
                                 .frame(minWidth: 80)
                             }
                             .disabled(selectedApps.isEmpty)
+                            .buttonStyle(ControlGroupButtonStyle(
+                                foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                                shape: Capsule(style: .continuous),
+                                skipControlGroup: true,
+                                disabled: selectedApps.isEmpty
+                            ))
 
                             Divider().frame(height: 10)
 
@@ -181,12 +187,13 @@ struct LipoView: View {
                                 }
                             }
                             .disabled(selectedApps.isEmpty)
+                            .buttonStyle(ControlGroupButtonStyle(
+                                foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                                shape: Capsule(style: .continuous),
+                                skipControlGroup: true,
+                                disabled: selectedApps.isEmpty
+                            ))
                         }
-                        .controlSize(.small)
-                        .buttonStyle(.plain)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 14)
                         .controlGroup(Capsule(style: .continuous), level: .secondary)
 
                         Spacer()

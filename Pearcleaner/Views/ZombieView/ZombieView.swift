@@ -255,8 +255,17 @@ struct ZombieView: View {
                     excludeAllSelectedItems()
                 }
                 .disabled(selectedZombieItemsLocal.isEmpty)
+                .buttonStyle(ControlGroupButtonStyle(
+                    foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                    shape: Capsule(style: .continuous),
+                    level: .secondary,
+                    skipControlGroup: true,
+                    disabled: selectedZombieItemsLocal.isEmpty
+                ))
                 .help("This will exclude selected items from future scans. Exclusion list can be edited from Settings > Folders tab.")
+
                 Divider().frame(height: 10)
+
                 Button("Rescan") {
                     updateOnMain {
                         appState.zombieFile = .empty
@@ -264,7 +273,15 @@ struct ZombieView: View {
                         reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, fsm: fsm)
                     }
                 }
+                .buttonStyle(ControlGroupButtonStyle(
+                    foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                    shape: Capsule(style: .continuous),
+                    level: .secondary,
+                    skipControlGroup: true
+                ))
+
                 Divider().frame(height: 10)
+
                 Button {
                     handleUninstallAction()
                 } label: {
@@ -275,12 +292,14 @@ struct ZombieView: View {
                     }
                 }
                 .disabled(selectedZombieItemsLocal.isEmpty)
+                .buttonStyle(ControlGroupButtonStyle(
+                    foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                    shape: Capsule(style: .continuous),
+                    level: .secondary,
+                    skipControlGroup: true,
+                    disabled: selectedZombieItemsLocal.isEmpty
+                ))
             }
-            .controlSize(.small)
-            .buttonStyle(.plain)
-            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-            .padding(.vertical, 8)
-            .padding(.horizontal, 14)
             .controlGroup(Capsule(style: .continuous), level: .secondary)
     }
 

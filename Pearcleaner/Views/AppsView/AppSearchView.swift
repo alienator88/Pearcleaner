@@ -191,14 +191,17 @@ struct SimpleSearchStyleSidebar: TextFieldStyle {
             }
 
             Menu {
-                Section(header: Text("Sorting (\(selectedSortOption.title))")) {
+                Section(header: Text("Sorting")) {
                     ForEach(SortOption.allCases) { option in
                         Button {
                             withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                                 selectedSortOption = option
                             }
                         } label: {
-                            Label(option.title, systemImage: selectedSortOption == option ? "circle.inset.filled" : "circle")
+                            HStack {
+                                Image(systemName: selectedSortOption == option ? "circle.inset.filled" : "circle")
+                                Text(option.title)
+                            }
                         }
                     }
                 }
@@ -219,6 +222,8 @@ struct SimpleSearchStyleSidebar: TextFieldStyle {
             } label: {
                 Image(systemName: "line.3.horizontal")
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    .padding(2)
+                    .contentShape(Rectangle())
             }
             .menuStyle(BorderlessButtonMenuStyle())
             .menuIndicator(.hidden)

@@ -324,12 +324,12 @@
 		C77B901F2AF1B390009CC655 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				C7A6C8E62E3D5F5C0072858F /* LeftNavigation.swift */,
 				C74649FA2E48076B002D1C63 /* Settings */,
 				C74649EE2E4800BB002D1C63 /* AppsView */,
 				C74649EA2E48008A002D1C63 /* ZombieView */,
 				C74649E62E48000C002D1C63 /* LipoView */,
 				C76073F32E3C1C2C003957A7 /* FilesView */,
+				C7A6C8E62E3D5F5C0072858F /* LeftNavigation.swift */,
 				C7A269282D5D139200FA96EC /* TerminalView.swift */,
 				C74422402E4936700002D277 /* DaemonView.swift */,
 				C770D7DA2CE7C9A100B3492A /* DevelopmentView.swift */,

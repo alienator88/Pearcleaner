@@ -170,25 +170,24 @@ struct DaemonView: View {
                         } label: {
                             Label(selectedFilter.rawValue, systemImage: selectedFilter.systemImage)
                         }
-                        .buttonStyle(.plain)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                        .controlSize(.small)
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 14)
-                        .controlGroup(Capsule(style: .continuous), level: .secondary)
-                        
+                        .buttonStyle(ControlGroupButtonStyle(
+                            foregroundColor: ThemeColors.shared(for: colorScheme).primaryText,
+                            shape: Capsule(style: .continuous),
+                            level: .secondary
+                        ))
+
                         Button {
                             refreshLaunchItems()
                         } label: {
                             Label("Refresh", systemImage: isLoading ? "arrow.clockwise" : "arrow.clockwise")
                         }
                         .disabled(isLoading)
-                        .buttonStyle(.plain)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-                        .controlSize(.small)
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 14)
-                        .controlGroup(Capsule(style: .continuous), level: .secondary)
+                        .buttonStyle(ControlGroupButtonStyle(
+                            foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                            shape: Capsule(style: .continuous),
+                            level: .secondary,
+                            disabled: isLoading
+                        ))
                         .help("Refresh launch services list")
                     }
                 }
@@ -712,8 +711,7 @@ struct LaunchItemRowView: View {
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                             .lineLimit(1)
                         
-                        Spacer()
-                        
+
                         Text(item.type.rawValue)
                             .font(.caption)
                             .padding(.horizontal, 6)
@@ -721,6 +719,9 @@ struct LaunchItemRowView: View {
                             .background(typeColor.opacity(0.2))
                             .foregroundStyle(typeColor)
                             .cornerRadius(4)
+
+                        Spacer()
+
                     }
                     
                     // Status and PID

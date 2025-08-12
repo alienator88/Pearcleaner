@@ -87,31 +87,26 @@ struct NavigationItem: View {
     let action: () -> Void
 
     var body: some View {
-        Button(action: action) {
-            VStack(spacing: 6) {
+        VStack(spacing: 6) {
+            // Icon
+            Image(systemName: page.icon)
+                .font(.system(size: 20, weight: isSelected ? .semibold : .medium))
+                .frame(width: 28, height: 28)
+                .foregroundStyle(iconColor)
 
-                // Icon
-                Image(systemName: page.icon)
-                    .font(.system(size: 20, weight: isSelected ? .semibold : .medium))
-                    .frame(width: 28, height: 28)
-                    .foregroundStyle(iconColor)
-
-                // Label
-                Text(page.title)
-                    .font(.system(size: 9, weight: isSelected ? .semibold : .medium))
-                    .foregroundStyle(textColor)
-                    .multilineTextAlignment(.center)
-                    .lineLimit(2)
-                    .frame(width: 60)
-
-            }
-            .frame(width: 64, height: 56)
-//            .background(
-//                RoundedRectangle(cornerRadius: 8)
-//                    .fill(backgroundColor)
-//            )
+            // Label
+            Text(page.title)
+                .font(.system(size: 9, weight: isSelected ? .semibold : .medium))
+                .foregroundStyle(textColor)
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+                .frame(width: 60)
         }
-        .buttonStyle(PlainButtonStyle())
+        .frame(width: 64, height: 56)
+        .contentShape(Rectangle())  // Makes entire frame clickable
+        .onTapGesture {
+            action()
+        }
     }
 
     private var iconColor: Color {
@@ -143,4 +138,13 @@ struct NavigationItem: View {
 //            return Color.clear
 //        }
 //    }
+}
+
+struct NavigationButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .contentShape(Rectangle())  // Ensures full area is clickable
+            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
+    }
 }

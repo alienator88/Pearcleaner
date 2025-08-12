@@ -85,12 +85,11 @@ struct EnvironmentCleanerView: View {
                 } label: {
                     Text(appState.selectedEnvironment?.name ?? "Select Environment")
                 }
-                .buttonStyle(.plain)
-                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                .controlSize(.small)
-                .padding(.vertical, 8)
-                .padding(.horizontal, 14)
-                .controlGroup(Capsule(style: .continuous), level: .secondary)
+                .buttonStyle(ControlGroupButtonStyle(
+                    foregroundColor: ThemeColors.shared(for: colorScheme).primaryText,
+                    shape: Capsule(style: .continuous),
+                    level: .secondary
+                ))
 
             }
 

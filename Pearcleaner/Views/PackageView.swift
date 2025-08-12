@@ -115,12 +115,11 @@ struct PackageView: View {
                     } label: {
                         Label(sortOption.displayName, systemImage: "list.bullet")
                     }
-                    .buttonStyle(.plain)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                    .controlSize(.small)
-                    .padding(.vertical, 8)
-                    .padding(.horizontal, 14)
-                    .controlGroup(Capsule(style: .continuous), level: .secondary)
+                    .buttonStyle(ControlGroupButtonStyle(
+                        foregroundColor: ThemeColors.shared(for: colorScheme).primaryText,
+                        shape: Capsule(style: .continuous),
+                        level: .secondary
+                    ))
                     .help("Sort packages")
                     
                     Button {
@@ -129,12 +128,12 @@ struct PackageView: View {
                         Label("Refresh", systemImage: isLoading ? "arrow.clockwise" : "arrow.clockwise")
                     }
                     .disabled(isLoading)
-                    .buttonStyle(.plain)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-                    .controlSize(.small)
-                    .padding(.vertical, 8)
-                    .padding(.horizontal, 14)
-                    .controlGroup(Capsule(style: .continuous), level: .secondary)
+                    .buttonStyle(ControlGroupButtonStyle(
+                        foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                        shape: Capsule(style: .continuous),
+                        level: .secondary,
+                        disabled: isLoading
+                    ))
                     .help("Refresh package list")
                 }
                 

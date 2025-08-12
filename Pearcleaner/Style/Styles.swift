@@ -303,7 +303,50 @@ struct SettingsControlButtonGroup: View {
 }
 
 
-
+struct ControlGroupButtonStyle<Shape: InsettableShape>: ButtonStyle {
+    let foregroundColor: Color
+    let shape: Shape
+    let level: ControlGroupLevel
+    let verticalPadding: CGFloat
+    let horizontalPadding: CGFloat
+    let skipControlGroup: Bool
+    let disabled: Bool
+    
+    init(
+        foregroundColor: Color,
+        shape: Shape,
+        level: ControlGroupLevel = .secondary,
+        verticalPadding: CGFloat = 8,
+        horizontalPadding: CGFloat = 14,
+        skipControlGroup: Bool = false,
+        disabled: Bool = false
+    ) {
+        self.foregroundColor = foregroundColor
+        self.shape = shape
+        self.level = level
+        self.verticalPadding = verticalPadding
+        self.horizontalPadding = horizontalPadding
+        self.skipControlGroup = skipControlGroup
+        self.disabled = disabled
+    }
+    
+    func makeBody(configuration: Self.Configuration) -> some View {
+        let styledContent = configuration.label
+            .foregroundStyle(foregroundColor)
+            .opacity(disabled ? 0.5 : 1.0)  // 50% opacity when disabled
+            .controlSize(.small)
+            .padding(.vertical, verticalPadding)
+            .padding(.horizontal, horizontalPadding)
+//            .scaleEffect(configuration.isPressed && !disabled ? 0.98 : 1.0)  // Only scale if not disabled
+//            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
+        
+        if skipControlGroup {
+            styledContent
+        } else {
+            styledContent.controlGroup(shape, level: level)
+        }
+    }
+}
 
 struct SimpleCheckboxToggleStyle: ToggleStyle {
     @Environment(\.colorScheme) var colorScheme

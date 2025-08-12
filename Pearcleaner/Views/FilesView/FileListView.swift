@@ -117,7 +117,21 @@ struct FileListView: View {
                         }
                     }
 
-                    bottomTrash
+                    Button {
+                        handleUninstallAction()
+                    } label: {
+                        Label {
+                            Text(verbatim: "\(sizeType == "Logical" ? totalSelectedSize.logical : totalSelectedSize.real)")
+                        } icon: {
+                            Image(systemName: "trash")
+                        }
+                    }
+                    .buttonStyle(ControlGroupButtonStyle(
+                        foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                        shape: Capsule(style: .continuous),
+                        level: .secondary,
+                        disabled: appState.selectedItems.isEmpty
+                    ))
 
                     Spacer()
 
@@ -167,26 +181,5 @@ struct FileListView: View {
             }
 
         }
-    }
-
-    @ViewBuilder
-    private var bottomTrash: some View {
-        HStack(spacing: 10) {
-            Button {
-                handleUninstallAction()
-            } label: {
-                Label {
-                    Text(verbatim: "\(sizeType == "Logical" ? totalSelectedSize.logical : totalSelectedSize.real)")
-                } icon: {
-                    Image(systemName: "trash")
-                }
-            }
-        }
-        .controlSize(.small)
-        .buttonStyle(.plain)
-        .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-        .padding(.vertical, 8)
-        .padding(.horizontal, 14)
-        .controlGroup(Capsule(style: .continuous), level: .secondary)
     }
 }
