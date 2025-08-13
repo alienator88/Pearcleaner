@@ -208,7 +208,9 @@ struct ZombieView: View {
                         displaySizeTotal: displaySizeTotal,
                         selectedCount: selectedZombieItemsLocal.count,
                         totalCount: memoizedFiles.count,
-                        fsm: fsm
+                        fsm: fsm,
+                        memoizedFiles: $memoizedFiles,
+                        onRestoreFile: restoreFileToZombieList
                     )
                 }
                 .animation(.easeInOut(duration: animationEnabled ? 0.35 : 0), value: infoSidebar)
@@ -243,6 +245,13 @@ struct ZombieView: View {
         .onAppear {
             if !warning {
                 showAlert = true
+            }
+
+            // Always trigger rescan when view appears
+            updateOnMain {
+                appState.zombieFile = .empty
+                appState.showProgress = true
+                reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, fsm: fsm)
             }
         }
 
@@ -492,6 +501,40 @@ struct ZombieView: View {
         selectedZombieItemsLocal.removeAll()
     }
 
+    private func restoreFileToZombieList(_ fileURL: URL) {
+        // Add back to zombie file data if it exists
+        if FileManager.default.fileExists(atPath: fileURL.path) {
+            if let fileSize = getFileSize(path: fileURL) {
+                appState.zombieFile.fileSize[fileURL] = fileSize.real
+                appState.zombieFile.fileSizeLogical[fileURL] = fileSize.logical
+                appState.zombieFile.fileIcon[fileURL] = getFileIcon(for: fileURL)
+            }
+            
+            // Add back to memoized files if it matches current search
+            if (searchZ.isEmpty || fileURL.lastPathComponent.localizedCaseInsensitiveContains(searchZ)) && 
+               !memoizedFiles.contains(fileURL) {
+                memoizedFiles.append(fileURL)
+                // Re-sort to maintain proper order
+                updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSort: selectedSort, force: true)
+            }
+        }
+    }
+
+    private func getFileSize(path: URL) -> (real: Int64, logical: Int64)? {
+        do {
+            let resourceValues = try path.resourceValues(forKeys: [.fileSizeKey, .fileAllocatedSizeKey])
+            let logical = Int64(resourceValues.fileSize ?? 0)
+            let real = Int64(resourceValues.fileAllocatedSize ?? 0)
+            return (real: real, logical: logical)
+        } catch {
+            return nil
+        }
+    }
+
+    private func getFileIcon(for url: URL) -> NSImage? {
+        return NSWorkspace.shared.icon(forFile: url.path)
+    }
+
 }
 
 
@@ -596,15 +639,29 @@ struct ZombieFileDetailsItem: View {
 
                     Button {
                         if isAssociated {
+                            // Unlinking - remove association and unexclude
                             ZombieFileStorage.shared.removeAssociation(appPath: app.path, zombieFilePath: path)
+                            fsm.removePathZ(path.path)
                         } else {
+                            // Linking - add association and exclude (same as exclude button)
                             ZombieFileStorage.shared.addAssociation(appPath: app.path, zombieFilePath: path)
+                            
+                            // Run the same exclude code
+                            fsm.addPathZ(path.path)
+                            memoizedFiles.removeAll { $0 == path }
+                            appState.zombieFile.fileSize.removeValue(forKey: path)
+                            appState.zombieFile.fileSizeLogical.removeValue(forKey: path)
+                            appState.zombieFile.fileIcon.removeValue(forKey: path)
+                            
+                            if isSelected {
+                                isSelected = false
+                            }
                         }
                     } label: {
                         HStack {
                             Text(app.appName)
                             if isAssociated {
-                                Image(systemName: "checkmark") // Show checkmark if associated
+                                Image(systemName: "checkmark")
                             }
                         }
                     }

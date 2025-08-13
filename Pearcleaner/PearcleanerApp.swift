@@ -35,6 +35,8 @@ struct PearcleanerApp: App {
             let sortedApps = getSortedApps(paths: fsm.folderPaths)
             DispatchQueue.main.async {
                 AppState.shared.sortedApps = sortedApps
+                // Restore zombie file associations after apps are loaded
+                AppState.shared.restoreZombieAssociations()
             }
         }
 

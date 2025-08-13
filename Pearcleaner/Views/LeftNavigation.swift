@@ -14,6 +14,7 @@ struct LeftNavigationSidebar: View {
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @State private var hoveredItem: CurrentPage?
+    @Binding var isFullscreen: Bool
 
     private let sidebarWidth: CGFloat = 80
 
@@ -21,7 +22,7 @@ struct LeftNavigationSidebar: View {
         VStack(spacing: 12) {
 
             Spacer()
-                .frame(height: 20)
+                .frame(height: isFullscreen ? 0 : 20)
 
             ForEach(CurrentPage.allCases, id: \.self) { page in
                 NavigationItem(
@@ -43,6 +44,7 @@ struct LeftNavigationSidebar: View {
                     }
                 }
             }
+
 
             Spacer()
 

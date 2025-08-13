@@ -37,28 +37,29 @@ struct UpdateSettingsTab: View {
             HStack(alignment: .center, spacing: 20) {
 
                 Button {
-                    updater.checkForUpdates(sheet: false)
-                } label: { EmptyView() }
-                .buttonStyle(SimpleButtonStyle(icon: "arrow.uturn.left.circle", label: String(localized: "Refresh"), help: String(localized: "Refresh updater"), color: ThemeColors.shared(for: colorScheme).primaryText))
-                .contextMenu {
-                    Button("Force Refresh") {
-                        updater.checkForUpdates(sheet: true, force: true)
-                    }
+                    updater.checkForUpdates(sheet: true, force: true)
+                } label: {
+                    Label("Refresh", systemImage: "arrow.uturn.left.circle")
                 }
+                    .buttonStyle(ControlGroupButtonStyle(foregroundColor: ThemeColors.shared(for: colorScheme).primaryText, shape: .capsule))
 
 
                 Button {
                     updater.resetAnnouncementAlert()
-                } label: { EmptyView() }
-                .buttonStyle(SimpleButtonStyle(icon: "star", label: String(localized: "Announcement"), help: String(localized: "Show announcements badge again"), color: ThemeColors.shared(for: colorScheme).primaryText))
+                } label: {
+                    Label("Announcement", systemImage: "star")
+                }
+                    .buttonStyle(ControlGroupButtonStyle(foregroundColor: ThemeColors.shared(for: colorScheme).primaryText, shape: .capsule))
 
 
                 Button {
                     NSWorkspace.shared.open(URL(string: "https://github.com/alienator88/Pearcleaner/releases")!)
-                } label: { EmptyView() }
-                .buttonStyle(SimpleButtonStyle(icon: "link", label: String(localized: "Releases"), help: String(localized: "View releases on GitHub"), color: ThemeColors.shared(for: colorScheme).primaryText))
+                } label: {
+                    Label("Releases", systemImage: "link")
+                }
+                    .buttonStyle(ControlGroupButtonStyle(foregroundColor: ThemeColors.shared(for: colorScheme).primaryText, shape: .capsule))
+
             }
-            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
         }
 

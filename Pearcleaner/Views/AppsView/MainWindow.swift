@@ -23,6 +23,7 @@ struct MainWindow: View {
     @State private var showSys: Bool = true
     @State private var showUsr: Bool = true
     @State private var showMenu = false
+    @State private var isFullscreen = false
 
     var body: some View {
 
@@ -30,57 +31,15 @@ struct MainWindow: View {
         ZStack() {
 
             HStack(alignment: .center, spacing: 0) {
-                LeftNavigationSidebar()
+                LeftNavigationSidebar(isFullscreen: $isFullscreen)
                     .zIndex(1)
 
                 switch appState.currentPage {
                 case .applications:
-                    HStack(alignment: .center, spacing: 0) {
-
-                        // App List
-                        AppSearchView(glass: glass, search: $search)
-                            .frame(width: sidebarWidth)
-                            .transition(.opacity)
-
-                        SlideableDivider(dimension: $sidebarWidth)
-                            .zIndex(3)
-
-                        // Details View
-                        HStack(spacing: 0) {
-                            Group {
-                                switch appState.currentView {
-                                case .empty:
-                                    MountedVolumeView()
-//                                    AppDetailsEmptyView()
-                                case .files:
-                                    FilesView(search: $search)
-                                        .id(appState.appInfo.id)
-                                case .zombie:
-                                    ZombieView(search: $search)
-                                        .id(appState.appInfo.id)
-                                case .terminal:
-                                    TerminalSheetView(homebrew: true, caskName: appState.appInfo.cask)
-                                        .id(appState.appInfo.id)
-                                }
-                            }
-                            .transition(.opacity)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        }
-                        .zIndex(2)
-                    }
+                    applicationsView
 
                 case .orphans:
                     ZombieView(search: $search)
-                        .onAppear {
-                            if appState.zombieFile.fileSize.keys.isEmpty {
-                                appState.showProgress.toggle()
-                            }
-                            withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                                if appState.zombieFile.fileSize.keys.isEmpty {
-                                    reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, fsm: fsm)
-                                }
-                            }
-                        }
 
                 case .development:
                     EnvironmentCleanerView()
@@ -100,9 +59,53 @@ struct MainWindow: View {
         }
         .background(backgroundView(color: ThemeColors.shared(for: colorScheme).primaryBG))
         .frame(minWidth: appState.currentPage == .orphans ? 700 : 900, minHeight: 600)
-        .edgesIgnoringSafeArea(.all)
+        .edgesIgnoringSafeArea(isFullscreen ? [] : .top)
+        .onReceive(NotificationCenter.default.publisher(for: NSWindow.didEnterFullScreenNotification)) { _ in
+            isFullscreen = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSWindow.didExitFullScreenNotification)) { _ in
+            isFullscreen = false
+        }
     }
+
+    @ViewBuilder
+    private var applicationsView: some View {
+        HStack(alignment: .center, spacing: 0) {
+
+            // App List
+            AppSearchView(glass: glass, search: $search)
+                .frame(width: sidebarWidth)
+                .transition(.opacity)
+
+            SlideableDivider(dimension: $sidebarWidth)
+                .zIndex(3)
+
+            // Details View
+            HStack(spacing: 0) {
+                Group {
+                    switch appState.currentView {
+                    case .empty:
+                        MountedVolumeView()
+                    case .files:
+                        FilesView(search: $search)
+                            .id(appState.appInfo.id)
+                    case .zombie:
+                        ZombieView(search: $search)
+                            .id(appState.appInfo.id)
+                    case .terminal:
+                        TerminalSheetView(homebrew: true, caskName: appState.appInfo.cask)
+                            .id(appState.appInfo.id)
+                    }
+                }
+                .transition(.opacity)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+            .zIndex(2)
+        }
+    }
+    
 }
+
 
 
 
@@ -115,6 +118,7 @@ struct MountedVolumeView: View {
         let totalSpace: Int64
         let usedSpace: Int64
     }
+    @AppStorage("settings.interface.greetingEnabled") private var greetingEnabled: Bool = true
     @Environment(\.colorScheme) var colorScheme
     @ObservedObject private var themeManager = ThemeManager.shared
     @State private var volume: Volume?
@@ -125,7 +129,8 @@ struct MountedVolumeView: View {
             VStack {
                 HStack {
                     Spacer()
-                    if let username = NSFullUserName().components(separatedBy: " ").first {
+
+                    if greetingEnabled, let username = NSFullUserName().components(separatedBy: " ").first {
                         Text("Welcome, \(username)!")
                             .font(.largeTitle)
                             .fontWeight(.semibold)

@@ -115,6 +115,34 @@ class AppState: ObservableObject {
         self.showUninstallAlert = true
     }
     
+    // Add this method to restore zombie file associations
+    func restoreZombieAssociations() {
+        let zombieStorage = ZombieFileStorage.shared
+        
+        // Clean up invalid associations first
+        let validAppPaths = sortedApps.map { $0.path }
+        zombieStorage.cleanupInvalidAssociations(validAppPaths: validAppPaths)
+        
+        // For each app that has associations, add the zombie file URLs to their fileSize dictionary
+        // The actual sizes will be calculated later during the scan
+        for appInfo in sortedApps {
+            let associatedFiles = zombieStorage.getAssociatedFiles(for: appInfo.path)
+            
+            // Add zombie files to this app's file tracking
+            // We'll add them with size 0 - the real sizes will be calculated during scan
+            for zombieFile in associatedFiles {
+                // Only add if the file still exists
+                if FileManager.default.fileExists(atPath: zombieFile.path) {
+                    // Add to the current appInfo if it matches, or find and update the correct one
+                    if let appIndex = sortedApps.firstIndex(where: { $0.path == appInfo.path }) {
+                        sortedApps[appIndex].fileSize[zombieFile] = 0 // Placeholder size
+                        sortedApps[appIndex].fileSizeLogical[zombieFile] = 0 // Placeholder size
+                        // Icon will be fetched during normal scan process
+                    }
+                }
+            }
+        }
+    }
 }
 
 
@@ -204,12 +232,44 @@ class ZombieFileStorage {
     static let shared = ZombieFileStorage()
     var associatedFiles: [URL: [URL]] = [:] // Key: App Path, Value: Zombie File URLs
     
+    // UserDefaults key for persistence
+    private let associationsKey = "settings.general.zombie.associations"
+    
+    private init() {
+        loadAssociations()
+    }
+    
+    // Load associations from UserDefaults
+    private func loadAssociations() {
+        if let data = UserDefaults.standard.data(forKey: associationsKey),
+           let storedAssociations = try? JSONDecoder().decode([String: [String]].self, from: data) {
+            
+            associatedFiles = storedAssociations.reduce(into: [URL: [URL]]()) { result, pair in
+                let appURL = URL(fileURLWithPath: pair.key)
+                let zombieURLs = pair.value.map { URL(fileURLWithPath: $0) }
+                result[appURL] = zombieURLs
+            }
+        }
+    }
+    
+    // Save associations to UserDefaults
+    private func saveAssociations() {
+        let storableAssociations = associatedFiles.reduce(into: [String: [String]]()) { result, pair in
+            result[pair.key.path] = pair.value.map { $0.path }
+        }
+        
+        if let encoded = try? JSONEncoder().encode(storableAssociations) {
+            UserDefaults.standard.set(encoded, forKey: associationsKey)
+        }
+    }
+    
     func addAssociation(appPath: URL, zombieFilePath: URL) {
         if associatedFiles[appPath] == nil {
             associatedFiles[appPath] = []
         }
         if !associatedFiles[appPath]!.contains(zombieFilePath) {
             associatedFiles[appPath]?.append(zombieFilePath)
+            saveAssociations()
         }
     }
     
@@ -223,6 +283,7 @@ class ZombieFileStorage {
     
     func clearAssociations(for appPath: URL) {
         associatedFiles[appPath] = nil
+        saveAssociations()
     }
     
     func removeAssociation(appPath: URL, zombieFilePath: URL) {
@@ -233,6 +294,22 @@ class ZombieFileStorage {
             associatedFiles.removeValue(forKey: appPath) // Remove key if no files are left
         } else {
             associatedFiles[appPath] = associatedFilesList
+        }
+        saveAssociations()
+    }
+    
+    // Clean up associations for apps that no longer exist
+    func cleanupInvalidAssociations(validAppPaths: [URL]) {
+        let currentAppPaths = Set(associatedFiles.keys)
+        let validAppPathsSet = Set(validAppPaths)
+        let invalidPaths = currentAppPaths.subtracting(validAppPathsSet)
+        
+        for invalidPath in invalidPaths {
+            associatedFiles.removeValue(forKey: invalidPath)
+        }
+        
+        if !invalidPaths.isEmpty {
+            saveAssociations()
         }
     }
 }
@@ -355,4 +432,23 @@ enum CurrentDetailsView:Int
     case files
     case zombie
     case terminal
+}
+
+extension AppState {
+    // Call this when switching to view an app to ensure associated files are loaded
+    func loadAssociatedFilesForCurrentApp() {
+        guard !appInfo.isEmpty else { return }
+        
+        let associatedFiles = ZombieFileStorage.shared.getAssociatedFiles(for: appInfo.path)
+        
+        for zombieFile in associatedFiles {
+            if FileManager.default.fileExists(atPath: zombieFile.path) {
+                // Add to current app's tracking if not already present
+                if appInfo.fileSize[zombieFile] == nil {
+                    appInfo.fileSize[zombieFile] = 0 // Will be calculated during scan
+                    appInfo.fileSizeLogical[zombieFile] = 0
+                }
+            }
+        }
+    }
 }

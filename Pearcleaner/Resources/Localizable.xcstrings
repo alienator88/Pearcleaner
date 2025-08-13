@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "(%@)" : {
+
+    },
     "(Build %@)" : {
       "localizations" : {
         "de" : {
@@ -77,6 +80,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "**%lld%%** savings"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**%lld%%** de gain"
           }
         },
         "ja" : {
@@ -381,13 +390,34 @@
       }
     },
     "%lld files" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld fichiers"
+          }
+        }
+      }
     },
     "%lld loaded" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld chargé(e)s"
+          }
+        }
+      }
     },
     "%lld not loaded" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld non chargé(e)s"
+          }
+        }
+      }
     },
     "%lld package%@" : {
       "localizations" : {
@@ -396,40 +426,11 @@
             "state" : "new",
             "value" : "%1$lld package%2$@"
           }
-        }
-      }
-    },
-    "%lld paths" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld dizin"
-          }
         },
-        "vi" : {
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld đường dẫn"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld 路径"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld 個路徑"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld 個路徑"
+            "value" : "%1$lld package%2$@"
           }
         }
       }
@@ -441,58 +442,11 @@
             "state" : "new",
             "value" : "%1$lld service%2$@"
           }
-        }
-      }
-    },
-    "%lld universal apps" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld universal apps"
-          }
         },
-        "ja" : {
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld 個のユニバーサルアプリ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld evrensel uygulama"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld універсальні програми"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld ứng dụng universal"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld 通用应用程序"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld 個通用應用程式"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld 個通用應用程式"
+            "value" : "%1$lld service%2$@"
           }
         }
       }
@@ -504,14 +458,34 @@
             "state" : "new",
             "value" : "%1$lld valid %2$@ found"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld valide(s) %2$@ trouvé(es)"
+          }
         }
       }
     },
     "•" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "•"
+          }
+        }
+      }
     },
     "• Loading..." : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Chargement…"
+          }
+        }
+      }
     },
     "A **huge** thank you to everyone who has contributed so far!" : {
       "localizations" : {
@@ -519,6 +493,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ein **riesiges** Dankeschön an alle, die bisher mitgewirkt haben!"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un **grand** merci à tous ceux qui ont contribué jusqu'à présent !"
           }
         },
         "tr" : {
@@ -1029,35 +1009,6 @@
         }
       }
     },
-    "After lipo, the green portion will be removed from your app's binary. It's recommended to open an app at least once before lipo to make sure macOS has cached the signature. **Privileged Helper is required to perform this action on certain applications.**" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nach dem Lipo-Vorgang wird der grüne Teil aus der Binärdatei Ihrer App entfernt. Es wird empfohlen, eine App vor dem Lipo-Vorgang mindestens einmal zu öffnen, um sicherzustellen, dass macOS die Signatur zwischengespeichert hat. **Für bestimmte Anwendungen ist „Privileged Helper” erforderlich, um diesen Vorgang auszuführen.**"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "瘦身后，绿色部分将从您的应用二进制文件中移除。建议在瘦身前至少打开应用一次，以确保macOS已缓存签名。**执行此操作需要特权助手**。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "節省之後，綠色部分將會從你的應用程式的二進位檔移除。確保在節省之前至少開啟一次應用程式，以讓 macOS 快取應用程式簽名。**在某些應用程式上，需要使用輔助應用程式執行這項動作。**"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "節省之後，綠色部分將會從你的應用程式的二進位檔移除。確保在節省之前至少開啟一次應用程式，以讓 macOS 快取應用程式簽名。**在某些應用程式上，需要使用輔助應用程式執行這項動作。**"
-          }
-        }
-      }
-    },
     "All checkboxes" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1130,10 +1081,24 @@
       }
     },
     "All valid package files from the BOM list have been removed. You may Forget this package." : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tous les fichiers de package valides de la liste BOM ont été supprimés. Vous pouvez oublier ce package."
+          }
+        }
+      }
     },
     "Also in: %@" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aussi dans: %@"
+          }
+        }
+      }
     },
     "Always confirm the files marked for removal. In rare cases, unrelated files may be found when app names are too similar." : {
       "localizations" : {
@@ -1141,6 +1106,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bestätigen Sie immer die markierten Dateien zum löschen. In seltenen Fällen können Dateien gefunden werden, die nichts mit der App zu tun haben, wenn die App-Namen zu ähnlich sind."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifiez toujours les fichiers marqués pour suppression. Dans de rares cas, des fichiers sans rapport peuvent être détectés lorsque les noms d'applications sont trop similaires."
           }
         },
         "ja" : {
@@ -1480,6 +1451,12 @@
             "value" : "App Lipo"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Lipo"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1520,59 +1497,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "App 節省"
-          }
-        }
-      }
-    },
-    "App lipo targets the Mach-O binaries inside your universal app bundles and removes any unused architectures, such as x86_64 or arm64, leaving only the architectures your computer actually supports. The list shows only universal type apps, not your full app list." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App Lipo zielt auf die Mach-O-Binärdateien in Ihren Universal-App-Bundles ab und entfernt alle nicht verwendeten Architekturen, wie z. B. x86_64 oder arm64, so dass nur die Architekturen übrig bleiben, die Ihr Computer tatsächlich unterstützt. Die Liste zeigt nur Apps vom Typ „Universal“, nicht Ihre vollständige App-Liste."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App lipo はユニバーサルアプリバンドル内の Mach-O バイナリをターゲットにし、x86_64 や arm64 などの未使用のアーキテクチャを削除して、お使いのコンピュータが実際にサポートしているアーキテクチャのみを残します。リストには、すべてのアプリリストではなく、ユニバーサル形式のアプリのみが表示されます。"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uygulama lipo’su, evrensel uygulama paketlerinizdeki Mach-O ikili dosyalarını hedefler ve kullanılmayan mimarileri (x86_64 veya arm64 gibi) kaldırarak yalnızca bilgisayarınızın gerçekten desteklediği mimarileri bırakır. Liste yalnızca evrensel tipteki uygulamaları gösterir, tüm uygulama listenizi göstermez."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Програма lipo перевіряє бінарні файли Mach-O у ваших універсальних програмах і видаляє всі невикористовувані архітектури, такі як x86_64 або arm64, залишаючи лише ті архітектури, які ваш комп'ютер дійсно підтримує. У списку показано лише програми універсального типу, а не повний список ваших програм."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App lipo nhắm vào các tệp Mach-O bên trong các gói ứng dụng đa nền tảng và loại bỏ bất kỳ kiến trúc không sử dụng nào, như x86_64 hoặc arm64, chỉ giữ lại các kiến trúc mà máy tính thực sự hỗ trợ. Danh sách chỉ hiển thị các ứng dụng kiểu đa nền tảng, không phải toàn bộ danh sách ứng dụng.\n"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App 瘦身针对您通用应用包内的Mach-O二进制文件，移除任何未使用的架构，例如x86_64或arm64，仅保留您的计算机实际支持的架构。列表仅显示通用类型应用，而不是您的完整应用列表。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "「App 節省」針對你的通用應用程式套裝的 Mach-O 二進位檔，移除任何未使用的架構（例如 x86_64 或 arm64），只保留你的電腦實際支援的架構。此列表只顯示通用種類的應用程式，而非你的完整應用程式列表。"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "「App 節省」針對你的通用應用程式套裝的 Mach-O 二進位檔，移除任何未使用的架構（例如 x86_64 或 arm64），只保留你的電腦實際支援的架構。此列表只顯示通用種類的應用程式，而非你的完整應用程式列表。"
           }
         }
       }
@@ -2000,7 +1924,14 @@
       }
     },
     "Apps" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apps"
+          }
+        }
+      }
     },
     "Are you sure you want to remove these files?" : {
       "localizations" : {
@@ -2074,6 +2005,12 @@
     },
     "Authorization required in Settings > Login Items > %@.app." : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisation requise dans Paramètres > Éléments de connexion > %@.app."
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2178,14 +2115,34 @@
       }
     },
     "Balanced" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Equilibré(es)"
+          }
+        }
+      }
     },
     "Balanced level and also includes Spotlight metadata search (Most files, least accurate)" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Niveau équilibré et inclut également la recherche de métadonnées Spotlight (la plupart des fichiers, la moins précise)"
+          }
+        }
+      }
     },
     "BETA" : {
       "localizations" : {
         "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BETA"
+          }
+        },
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "BETA"
@@ -2236,66 +2193,34 @@
       }
     },
     "Bill of Materials" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nomenclature"
+          }
+        }
+      }
     },
     "Binary" : {
-
-    },
-    "Binary Size" : {
-      "extractionState" : "stale",
       "localizations" : {
-        "de" : {
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Binary Grösse"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "バンドルサイズ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "İkili Boyut"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Розмір бінарного файла"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kích thước nhị phân"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "二进制大小"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "二進位大小"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "二進位大小"
+            "value" : "Binaire"
           }
         }
       }
     },
     "Broad" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Large"
+          }
+        }
+      }
     },
     "Bundle Files..." : {
       "localizations" : {
@@ -2361,61 +2286,15 @@
         }
       }
     },
-    "Bundle Size: " : {
-      "extractionState" : "stale",
+    "Bundle: %@" : {
       "localizations" : {
-        "de" : {
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bundle Grösse:"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "バンドルサイズ:"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Paket Boyutu: "
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Розмір Пакету"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kích thước nhóm tệp"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "包大小："
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "套裝大小："
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "套裝大小："
+            "value" : "Paquet: %@"
           }
         }
       }
-    },
-    "Bundle: %@" : {
-
     },
     "calculating" : {
       "extractionState" : "manual",
@@ -2630,73 +2509,14 @@
         }
       }
     },
-    "Checked paths for %@" : {
-      "extractionState" : "stale",
+    "Checking..." : {
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Überprüfte Pfade für %@"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chemin(s) vérifié(s) pour %@"
+            "value" : "Vérification..."
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "パスを確認しました: %@"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skontrolované cesty pre %@"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ için dizinler kontrol edildi"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Перевірені шляхи для %@"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đã kiểm tra đường dẫn cho %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已检查路径：%@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已檢查路徑：%@"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已檢查路徑：%@"
-          }
-        }
-      }
-    },
-    "Checking..." : {
-      "localizations" : {
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2729,73 +2549,15 @@
         }
       }
     },
-    "Clean stored files and cache for common development environments" : {
-      "extractionState" : "stale",
+    "Clean stored files and cache for common IDEs" : {
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gespeicherte Dateien und Cache für gängige Entwicklungsumgebungen bereinigen"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nettoyer les fichiers stockés et le cache pour les environnements de développement courants"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "一般的な開発環境で使用されるファイルとキャッシュをクリーンアップ"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vyčistiť uložené súbory a vyrovnávaciu pamäť pre bežné vývojárske prostredia"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yaygın geliştirme ortamları için depolanan dosyaları ve önbelleği temizleyin"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Очищення збережених файлів і кешу для поширених середовищ розробки"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dọn dẹp các tệp lưu trữ và bộ nhớ cache cho các môi trường phát triển phổ biến"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "清理常用开发环境的存储文件和缓存"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "為常見開發環境清理儲存的檔案與快取"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "為常見開發環境清理儲存的檔案與快取"
+            "value" : "Nettoyer les fichiers stockés et le cache pour les IDE courants"
           }
         }
       }
-    },
-    "Clean stored files and cache for common IDEs" : {
-
     },
     "Clear" : {
       "extractionState" : "manual",
@@ -3082,7 +2844,14 @@
       }
     },
     "Click to dismiss" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cliquez pour ignorer"
+          }
+        }
+      }
     },
     "Click to search" : {
       "extractionState" : "manual",
@@ -3297,7 +3066,14 @@
       }
     },
     "Color String" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chaîne de couleurs"
+          }
+        }
+      }
     },
     "Command Line" : {
       "extractionState" : "manual",
@@ -3512,31 +3288,15 @@
         }
       }
     },
-    "Contents" : {
-      "extractionState" : "stale",
+    "Copy" : {
       "localizations" : {
-        "zh-Hans" : {
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "内容"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "內容"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "內容"
+            "value" : "Copier"
           }
         }
       }
-    },
-    "Copy" : {
-
     },
     "Copy File Paths" : {
       "extractionState" : "manual",
@@ -3816,13 +3576,33 @@
       }
     },
     "Delete" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer"
+          }
+        }
+      }
     },
     "Delete All" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tout supprimer"
+          }
+        }
+      }
     },
     "Delete All Contents" : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer tous les contenus"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3909,6 +3689,12 @@
     },
     "Delete All Folders" : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer tous les dossiers"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3930,16 +3716,43 @@
       }
     },
     "Delete all remaining package files" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer tous les fichiers de package restants"
+          }
+        }
+      }
     },
     "Delete Contents" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suppression de contenu"
+          }
+        }
+      }
     },
     "Delete Folder" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suppression de dossier"
+          }
+        }
+      }
     },
     "Delete the folder" : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer le dossier"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3961,13 +3774,34 @@
       }
     },
     "Delete this file" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer cd fichier"
+          }
+        }
+      }
     },
     "DELETED" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SUPPRIME(ES)"
+          }
+        }
+      }
     },
     "Details" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Détails"
+          }
+        }
+      }
     },
     "Detect when apps are moved to Trash" : {
       "extractionState" : "manual",
@@ -4041,7 +3875,14 @@
       }
     },
     "Dev" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dev"
+          }
+        }
+      }
     },
     "Development" : {
       "localizations" : {
@@ -4115,6 +3956,12 @@
             "value" : "Entwicklung Umgebung"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Environnements de développement"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4161,6 +4008,12 @@
     },
     "Disabled" : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désactivé(es)"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4698,6 +4551,12 @@
             "value" : "Aktiviert"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activé(es)"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4872,10 +4731,24 @@
       }
     },
     "Enhanced" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amélioré(es)"
+          }
+        }
+      }
     },
     "Enter exactly 5 hex colors separated by commas in the order above" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saisissez 5 couleurs hexadécimales séparées par des virgules dans l'ordre ci-dessus"
+          }
+        }
+      }
     },
     "Enter manual command here, Enter to run" : {
       "localizations" : {
@@ -4883,6 +4756,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Geben Sie hier manuelle Befehle ein, drücken Sie die Eingabetaste, um diese auszuführen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entrez la commande manuelle ici, Entrée pour exécuter"
           }
         },
         "ja" : {
@@ -4929,73 +4808,15 @@
         }
       }
     },
-    "Environment" : {
-      "extractionState" : "stale",
+    "Exact app name and bundle ID matches against found files (Less files, most accurate)" : {
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Umgebung"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Environnement"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "環境"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prostredie"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ortam"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Оточення"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Môi trường"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "环境"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "環境"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "環境"
+            "value" : "Le nom exact de l'application et l'ID du bundle correspondent aux fichiers trouvés (moins de fichiers, plus précis)"
           }
         }
       }
-    },
-    "Exact app name and bundle ID matches against found files (Less files, most accurate)" : {
-
     },
     "Example privileged commands" : {
       "localizations" : {
@@ -5003,6 +4824,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Beispiel für privilegierte Befehle"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exemples de commandes avec priviléges"
           }
         },
         "ja" : {
@@ -5128,6 +4955,12 @@
             "value" : "Ausgewählte ausschliessen"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exclure la sélection"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5244,10 +5077,24 @@
       }
     },
     "Excluded Apps" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applications exclues"
+          }
+        }
+      }
     },
     "Excluded Paths" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chemins d’accès exclus"
+          }
+        }
+      }
     },
     "Export File Paths" : {
       "extractionState" : "manual",
@@ -5528,6 +5375,12 @@
     },
     "File System" : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fichier Système"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5690,29 +5543,6 @@
         }
       }
     },
-    "Folder" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "文件夹"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "資料夾"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "資料夾"
-          }
-        }
-      }
-    },
     "Folders" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5856,7 +5686,14 @@
       }
     },
     "Forget" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oublier"
+          }
+        }
+      }
     },
     "Found %lld orphaned workspace%@" : {
       "localizations" : {
@@ -5865,11 +5702,24 @@
             "state" : "new",
             "value" : "Found %1$lld orphaned workspace%2$@"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld espace(s) de travail orphelin trouvé(s)%2$@"
+          }
         }
       }
     },
     "Full app size" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taille totale de l’application"
+          }
+        }
+      }
     },
     "Full Disk Access" : {
       "extractionState" : "manual",
@@ -6297,9 +6147,21 @@
         }
       }
     },
+    "Greeting disabled on main page" : {
+
+    },
+    "Greeting enabled on main page" : {
+
+    },
     "Helper" : {
       "localizations" : {
         "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Helper"
+          }
+        },
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Helper"
@@ -6350,10 +6212,24 @@
       }
     },
     "Hide details" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cacher les détails"
+          }
+        }
+      }
     },
     "Hide multi-select" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cacher la sélection multiple"
+          }
+        }
+      }
     },
     "Homebrew cleanup after uninstall" : {
       "extractionState" : "manual",
@@ -6432,6 +6308,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Homebrew-Bereinigung: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nettoyage Homebrew : %@"
           }
         },
         "ja" : {
@@ -6543,7 +6425,14 @@
       }
     },
     "ID: %@" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID: %@"
+          }
+        }
+      }
     },
     "Important" : {
       "extractionState" : "manual",
@@ -6766,6 +6655,12 @@
             "value" : "Information"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Information"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6881,10 +6776,23 @@
       }
     },
     "Install Location:" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Emplacement de l’installation :"
+          }
+        }
+      }
     },
     "Installation failed: %@" : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Echec de l’installation: %@"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6918,7 +6826,14 @@
       }
     },
     "Installed:" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installé(es):"
+          }
+        }
+      }
     },
     "Installed: v%@" : {
       "extractionState" : "manual",
@@ -6992,10 +6907,24 @@
       }
     },
     "Installer:" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moyen d’installation"
+          }
+        }
+      }
     },
     "Instead of moving files to Trash folder, this will permanently remove them. With this setting enabled, the Undo function is also not active as there's no files in Trash folder to undo." : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plutôt que déplacer les fichiers dans la corbeille ils sont supprimés de façon définitive. Cette option activée ne permet pas l’annulation des suppressions, aucun fichiers ne se trouvant dans la corbeille."
+          }
+        }
+      }
     },
     "Instructions" : {
       "extractionState" : "manual",
@@ -7144,6 +7073,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ungültige Signatur, stellen Sie sicher, dass die Anwendung und das Hilfsprogramm ordnungsgemäß signiert sind."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signature invalide. Vérifiez que l’application  porte votre signature correcte  et l'outil d'aide."
           }
         },
         "tr" : {
@@ -7462,59 +7397,6 @@
         }
       }
     },
-    "Kickstart Service" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kickstart Service"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サービスを開始"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kickstart Servisi"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Запустити Сервіс"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dịch vụ Kickstart"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "启动服务"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開始服務"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開始服務"
-          }
-        }
-      }
-    },
     "Last Used Date" : {
       "localizations" : {
         "de" : {
@@ -7657,13 +7539,34 @@
       }
     },
     "Launch Services Manager" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestionnaire des services de lancement"
+          }
+        }
+      }
     },
     "Less" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moins"
+          }
+        }
+      }
     },
     "Less files" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moins de fichiers"
+          }
+        }
+      }
     },
     "Link To" : {
       "localizations" : {
@@ -7671,6 +7574,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Link zu"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lien vers"
           }
         },
         "ja" : {
@@ -7720,6 +7629,12 @@
     "Lipo" : {
       "localizations" : {
         "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lipo"
+          }
+        },
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lipo"
@@ -7777,6 +7692,12 @@
             "value" : "Lipo Architektur"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Architectures Lipo"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7806,6 +7727,12 @@
             "value" : "Lipo'd Datei:\n\n%@"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fichier Lipo'd:\n\n%@"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7833,19 +7760,54 @@
       }
     },
     "Load the service" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charger le service"
+          }
+        }
+      }
     },
     "Loading files..." : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chargement de fichiers…"
+          }
+        }
+      }
     },
     "Loading launch services..." : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chargement des services de lancement..."
+          }
+        }
+      }
     },
     "Loading packages..." : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chargement des paquets..."
+          }
+        }
+      }
     },
     "Location:" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Emplacement:"
+          }
+        }
+      }
     },
     "Locations that will be searched for .app files. Click a non-default path to remove it. Default paths can't be removed." : {
       "extractionState" : "manual",
@@ -7997,6 +7959,12 @@
             "value" : "Anmeldeobjekte"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Éléments de connexion"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8047,6 +8015,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "MacOS aktiviert Erweiterungen nur, wenn sich die Hauptanwendung im Ordner „Programme“ befindet."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS n'active les extensions que si l'application principale se trouve dans le dossier Applications"
           }
         },
         "ja" : {
@@ -8165,10 +8139,24 @@
       }
     },
     "Manage launch agents, daemons, and XPC services" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gérer les agents de lancement, les démons et les services XPC"
+          }
+        }
+      }
     },
     "Manage packages installed via macOS Installer" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gérer les packages installés via macOS Installer"
+          }
+        }
+      }
     },
     "Management" : {
       "localizations" : {
@@ -8176,6 +8164,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Management"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestion"
           }
         },
         "ja" : {
@@ -9003,13 +8997,34 @@
       }
     },
     "Most files" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La pluspart des fichiers"
+          }
+        }
+      }
     },
     "Multi-select disabled in sidebar app list" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sélection multiple désactivée dans la liste des applications de la barre latérale"
+          }
+        }
+      }
     },
     "Multi-select enabled in sidebar app list" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sélection multiple activée dans la liste des applications de la barre latérale"
+          }
+        }
+      }
     },
     "Name" : {
       "extractionState" : "manual",
@@ -9083,7 +9098,14 @@
       }
     },
     "Name: %@" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nom: %@"
+          }
+        }
+      }
     },
     "Navigate To" : {
       "localizations" : {
@@ -9091,6 +9113,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Navigiere zu"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accéder à"
           }
         },
         "ja" : {
@@ -9351,7 +9379,14 @@
       }
     },
     "No apps excluded" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune application exclue"
+          }
+        }
+      }
     },
     "No command provided" : {
       "localizations" : {
@@ -9359,6 +9394,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kein Befehl angegeben"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune commande fournie"
           }
         },
         "ja" : {
@@ -9477,10 +9518,24 @@
       }
     },
     "No items match the current filters" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun élément correspondant au filtre"
+          }
+        }
+      }
     },
     "No launch services found" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun service de lancement trouvé"
+          }
+        }
+      }
     },
     "No New Announcement" : {
       "extractionState" : "manual",
@@ -9618,13 +9673,34 @@
       }
     },
     "No orphaned workspaces found" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun espace de travail orphelin trouvé"
+          }
+        }
+      }
     },
     "No packages found" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun paquet trouvé"
+          }
+        }
+      }
     },
     "No paths excluded" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun chemin d’accès exclu"
+          }
+        }
+      }
     },
     "No releases to display" : {
       "extractionState" : "manual",
@@ -9698,57 +9774,11 @@
       }
     },
     "No universal apps found" : {
-
-    },
-    "No universal apps found." : {
-      "extractionState" : "stale",
       "localizations" : {
-        "de" : {
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Keine universellen Apps gefunden."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ユニバーサルアプリが見つかりませんでした。"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Evrensel uygulama bulunamadı."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Не знайдено універсальних програм"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Không có ứng dụng universal nào được tìm thấy."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未找到通用应用程序。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未找到通用應用程式。"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未找到通用應用程式。"
+            "value" : "Aucune application universelle trouvée"
           }
         }
       }
@@ -10102,69 +10132,11 @@
       }
     },
     "Only show apps with savings of 1MB+" : {
-
-    },
-    "Open" : {
-      "extractionState" : "stale",
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Öffnen"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ouvrir"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開く"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Otvoriť"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aç"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Відкрити"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mở"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "打开"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開啟󠄁"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開啟󠄁"
+            "value" : "Afficher uniquement les applications avec gain de 1 Mo ou plus"
           }
         }
       }
@@ -10241,7 +10213,14 @@
       }
     },
     "Open in Finder" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir le Finder"
+          }
+        }
+      }
     },
     "Operation failed: %@" : {
       "localizations" : {
@@ -10249,6 +10228,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vorgang fehlgeschlagen: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Echec de l’opération: %@"
           }
         },
         "tr" : {
@@ -10289,6 +10274,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Optionen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Options"
           }
         },
         "zh-Hans" : {
@@ -10454,16 +10445,44 @@
       }
     },
     "Orphans" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orphelin(e)s"
+          }
+        }
+      }
     },
     "Package Manager" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestionnaire de paquets"
+          }
+        }
+      }
     },
     "Packages" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paquets"
+          }
+        }
+      }
     },
     "Path" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chemin d’accès"
+          }
+        }
+      }
     },
     "Pearcleaner and all of its files will be cleanly removed, are you sure?" : {
       "extractionState" : "manual",
@@ -10542,6 +10561,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pearcleaner kann privilegierte Vorgänge auf folgende Weise ausführen:\n- Hilfsdienst 👍🏻\n- Autorisierungsdienste 👎🏻\n\nHilfsdienst: Pearcleaner fordert Sie nur einmal zur Eingabe Ihres Passworts auf, um den Hilfsdienst zu aktivieren. Anschließend werden alle nachfolgenden Vorgänge ohne weitere Aufforderungen ausgeführt, solange der Hilfsdienst in den Einstellungen > Anmeldeobjekte aktiviert bleibt. Diese Autorisierung wird vollständig von macOS über SMAppService verwaltet.\n\nAutorisierungsdienste: Pearcleaner fordert den Benutzer bei jedem privilegierten Vorgang zur Eingabe seines Passworts auf, was sehr lästig sein kann. Diese Autorisierungen werden von Pearcleaner und dem Benutzer verwaltet.\n\nWas ist ein privilegierter Vorgang: Immer wenn Pearcleaner Dateien aus einem Ordner löschen muss (z. B. /var), für den der Benutzer keine Berechtigungen hat, oder Dateien an einem privilegierten Speicherort rückgängig machen/wiederherstellen muss."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner peut effectuer des opérations privilégiées des manières suivantes :\n- Service d'assistance 👍🏻\n- Services d'autorisation 👎🏻\n\nService d'assistance : Pearcleaner vous demandera une seule fois votre mot de passe pour activer l'assistance. Toutes les opérations suivantes s'exécuteront ensuite sans aucune invite tant que l'assistance reste activée dans Paramètres > Éléments de connexion. Cette autorisation est entièrement gérée par macOS via SMAppService.\n\nServices d'autorisation : Pearcleaner demandera à l'utilisateur de saisir son mot de passe à chaque opération privilégiée, ce qui peut s'avérer fastidieux. Ces autorisations sont gérées par Pearcleaner et par l'utilisateur.\n\nQu'est-ce qu'une opération privilégiée : lorsque Pearcleaner doit supprimer des fichiers d'un dossier (par exemple, /var), l'utilisateur n'a pas les privilèges nécessaires pour annuler ou restaurer des fichiers vers un emplacement privilégié."
           }
         },
         "tr" : {
@@ -10734,6 +10759,12 @@
             "value" : "Pearcleaner will strip the %1$@ architecture from %2$@'s executable file to save space. Would you like to proceed?"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner va supprimer l'architecture %1$@ du fichier exécutable de %2$@ pour gagner de la place. Voulez-vous continuer ?"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10766,6 +10797,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Führt privilegierte Vorgänge nahtlos und ohne Passwortabfrage aus."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effectuez des opérations nessécitant les privilégiées admin de manière transparente sans invite de mot de passe"
           }
         },
         "ja" : {
@@ -10813,7 +10850,14 @@
       }
     },
     "Permanently delete files" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer définitivement les fichiers"
+          }
+        }
+      }
     },
     "Permission required. Enable in System Settings > Login Items." : {
       "localizations" : {
@@ -10821,6 +10865,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Berechtigung notwendig. Einschalten in den Systemeinstellungen > Anmeldeobjekte"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisation requise. Activer dans Paramètres système > Éléments de connexion."
           }
         },
         "tr" : {
@@ -10932,6 +10982,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Berechtigungsprüfung"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tester les autorisations"
           }
         },
         "ja" : {
@@ -11050,7 +11106,14 @@
       }
     },
     "PID: %@" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PID: %@"
+          }
+        }
+      }
     },
     "Pin popover window on top" : {
       "extractionState" : "manual",
@@ -11129,6 +11192,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bitte installieren Sie den Hilfsdienst"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veuillez installer le service d'autorisation"
           }
         },
         "ja" : {
@@ -11247,7 +11316,14 @@
       }
     },
     "Plist: %@" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plist: %@"
+          }
+        }
+      }
     },
     "Prune Translations" : {
       "comment" : "Prune alert title",
@@ -11256,6 +11332,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "um Übersetzungen kürzen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer des traductions"
           }
         },
         "zh-Hans" : {
@@ -11274,35 +11356,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "刪除翻譯"
-          }
-        }
-      }
-    },
-    "Prune unused language translations" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "kürze um alle nicht benötigten Sprachen"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "删除未使用的语言翻译"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "刪除未使用的語言翻譯"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "刪除未使用的語言翻譯"
           }
         }
       }
@@ -11521,7 +11574,14 @@
       }
     },
     "Real size type will show how much actual allocated space the file has on disk.\n\nLogical type shows the binary size. The filesystem can compress and deduplicate sectors on disk, so real size is sometimes smaller (or bigger) than logical size.\n\nFinder size is similar to if you right click > Get Info on a file in Finder, which will show both the logical and real sizes together." : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le type de taille réelle indique l'espace réellement alloué au fichier sur le disque.\n\nLe type logique montre la taille binaire. Le système de fichiers peut compresser et dédupliquer les secteurs sur le disque, de sorte que la taille réelle est parfois plus petite (ou plus grande) que la taille logique.\n\nLa taille du Finder est similaire à celle que vous obtiendriez en faisant un clic droit > Lire les informations sur un fichier dans le Finder, qui affichera les tailles logique et réelle ensemble."
+          }
+        }
+      }
     },
     "Real size type will show how much actual allocated space the file has on disk.\n\nLogical type shows the binary size. The filesystem can compress and deduplicate sectors on disk, so real size is sometimes smaller(or bigger) than logical size.\n\nFinder size is similar to if you right click > Get Info on a file in Finder, which will show both the logical and real sizes together." : {
       "extractionState" : "manual",
@@ -11595,7 +11655,14 @@
       }
     },
     "Receipt Path:" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chemin d’accès du récepteur"
+          }
+        }
+      }
     },
     "Refresh" : {
       "extractionState" : "manual",
@@ -11811,13 +11878,34 @@
       }
     },
     "Refresh launch services list" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualiser la liste des services de lancement"
+          }
+        }
+      }
     },
     "Refresh List" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualiser la liste"
+          }
+        }
+      }
     },
     "Refresh package list" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualiser la liste des paquets"
+          }
+        }
+      }
     },
     "Refresh updater" : {
       "extractionState" : "manual",
@@ -11896,6 +11984,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Registriert, muss jedoch in den Systemeinstellungen > Anmeldeobjekte aktiviert werden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bien enregistré(e) mais doit être activé(e) dans Registered but requires enabling in System Settings > Login Items."
           }
         },
         "tr" : {
@@ -12143,10 +12237,24 @@
       }
     },
     "Remove" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer"
+          }
+        }
+      }
     },
     "Remove All" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tout supprimer"
+          }
+        }
+      }
     },
     "Remove all files/folders" : {
       "localizations" : {
@@ -12154,6 +12262,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Alle Dateien/Ordner entfernen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer tous les fichiers ou répertoires"
           }
         },
         "ja" : {
@@ -12200,23 +12314,68 @@
         }
       }
     },
-    "Remove from exclusion list" : {
+    "Remove association and exclusion" : {
 
+    },
+    "Remove from exclusion list" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer d’après la liste d’exclusions"
+          }
+        }
+      }
     },
     "Remove package from system records (does not delete files)" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer le package des enregistrements système (ne supprime pas les fichiers)"
+          }
+        }
+      }
     },
     "Remove the service registration" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer l'enregistrement du service"
+          }
+        }
+      }
     },
     "Remove unused architectures from your app binaries to reduce app size" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimez les architectures inutilisées des binaires de votre application pour réduire la taille de l'application"
+          }
+        }
+      }
     },
     "Remove unused languages during lipo" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer les langues inutilisées pendant la lipo"
+          }
+        }
+      }
     },
     "Remove workspace storage for deleted project folders" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer le stockage de l'espace de travail pour les dossiers de projet supprimés"
+          }
+        }
+      }
     },
     "Rescan" : {
       "extractionState" : "manual",
@@ -12290,7 +12449,14 @@
       }
     },
     "Reset" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réinitaliser"
+          }
+        }
+      }
     },
     "Reset all settings to default" : {
       "extractionState" : "manual",
@@ -12648,10 +12814,24 @@
       }
     },
     "Restart Service" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redémarrage de service"
+          }
+        }
+      }
     },
     "Restart the service" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redémarrer le service"
+          }
+        }
+      }
     },
     "Reverse search completed successfully" : {
       "extractionState" : "manual",
@@ -12866,120 +13046,35 @@
         }
       }
     },
-    "Saved: %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gesichert: %@"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "保存しました: %@"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kaydedildi: %@"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Збережено: %@"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đã lưu %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已瘦身: %@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已儲存：%@"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已儲存：%@"
-          }
-        }
-      }
-    },
     "Savings" : {
-
-    },
-    "Savings Size" : {
-      "extractionState" : "stale",
       "localizations" : {
-        "de" : {
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gesicherte Grösse"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "保存サイズ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tasarruf Boyutu"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Збережено"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lưu trữ kích thước"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "瘦身大小"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已節省大小"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已節省大小"
+            "value" : "Sauvegardes"
           }
         }
       }
     },
     "Scan" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scruter"
+          }
+        }
+      }
     },
     "Scanning..." : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Balayage…"
+          }
+        }
+      }
     },
     "Scrollbar is hidden in lists" : {
       "localizations" : {
@@ -13110,16 +13205,44 @@
       }
     },
     "Search apps.." : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recherche d’applications…"
+          }
+        }
+      }
     },
     "Search packages..." : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recherche de paquets…"
+          }
+        }
+      }
     },
     "Search Sensitivity" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sensibilité de la recherche"
+          }
+        }
+      }
     },
     "Search services..." : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recherche de services…"
+          }
+        }
+      }
     },
     "Search these folders for applications" : {
       "extractionState" : "manual",
@@ -13264,6 +13387,12 @@
     },
     "Searching:" : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recherche en cours…"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13285,193 +13414,64 @@
       }
     },
     "See app details" : {
-
-    },
-    "See details" : {
-
-    },
-    "See lipo details" : {
-
-    },
-    "Select All" : {
-      "extractionState" : "stale",
       "localizations" : {
-        "de" : {
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alles auswählen"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "全てを選択"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tümünü Seç"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Вибрати все"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chọn tất cả"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "全选"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "全選"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "全選"
+            "value" : "Détails de l’application"
           }
         }
       }
     },
-    "Select all universal apps" : {
-      "extractionState" : "stale",
+    "See details" : {
       "localizations" : {
-        "de" : {
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alle Universellen Apps auswählen"
+            "value" : "Voir les détails"
           }
-        },
-        "ja" : {
+        }
+      }
+    },
+    "See lipo details" : {
+      "localizations" : {
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "すべてのユニバーサルアプリを選択"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tüm evrensel uygulamaları seç"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Вибрати всі універсальні програми"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chọn tất cả ứng dụng universal"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "选择所有通用应用程序"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選擇全部通用應用程式"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選擇全部通用應用程式"
+            "value" : "Voir les détails lipo"
           }
         }
       }
     },
     "Select an app from the sidebar to begin" : {
-
-    },
-    "Select an environment to view paths." : {
-      "extractionState" : "stale",
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wählen Sie eine Umgebung aus, um Pfade anzuzeigen."
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sélectionnez un environnement pour afficher les chemins d’accès."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "パスを表示する環境を選択してください。"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vyber prostredie na zobrazenie ciest."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dizinleri görüntülemek için bir ortam seç."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Вибрати оточення для перегляду шляхів."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chọn một môi trường để xem các đường dẫn."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "选择一个环境了来查看路径。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選擇一個環境以檢視路徑。"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選擇一個環境以檢視路徑。"
+            "value" : "Sélectionnez une application dans la barre latérale pour commencer"
           }
         }
       }
     },
     "Select an environment to view stored cache" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sélectionnez un environnement pour afficher le cache stocké"
+          }
+        }
+      }
     },
     "Selected Items:" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eléments sélectionnés"
+          }
+        }
+      }
     },
     "Sentinel Monitor" : {
       "extractionState" : "manual",
@@ -13485,7 +13485,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sentinel Monitor"
+            "value" : "Moniteur Sentinel"
           }
         },
         "ja" : {
@@ -13623,6 +13623,12 @@
             "value" : "Der Dienst wurde noch nicht registriert. Sie können ihn jetzt registrieren."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Service non enregistré. Enregistrez-le maintenant."
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13661,6 +13667,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dienst ist bereits aktiviert."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Service déjà activé."
           }
         },
         "tr" : {
@@ -13703,6 +13715,12 @@
             "value" : "Dienst ist bereits registriert und aktiviert."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Service déjà enregistré et activé."
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13741,6 +13759,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dienst ist nicht installiert."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Service non installé."
           }
         },
         "tr" : {
@@ -13783,6 +13807,12 @@
             "value" : "Dienst registriert, erfordert jedoch die Zustimmung des Benutzers unter „Einstellungen“ > „Anmeldeobjekte“ > %@.app."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Service enregistré mais nécessite une autorisation dans  Settings > Login Items > %@.app."
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13816,7 +13846,14 @@
       }
     },
     "Services" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Services"
+          }
+        }
+      }
     },
     "Settings" : {
       "extractionState" : "manual",
@@ -14032,13 +14069,34 @@
       }
     },
     "Show file details" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Détails du fichier"
+          }
+        }
+      }
     },
     "Show file in Finder" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher le fichier dans la Finder"
+          }
+        }
+      }
     },
     "Show multi-select" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Montrer la sélection multiple"
+          }
+        }
+      }
     },
     "Showing last 3 releases" : {
       "extractionState" : "manual",
@@ -14112,10 +14170,24 @@
       }
     },
     "Simple app list disabled" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liste simple d’application désactivée"
+          }
+        }
+      }
     },
     "Simple app list enabled" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liste simple d’application activée"
+          }
+        }
+      }
     },
     "Since Authorization services have been deprecated by Apple as a less secure authentication method, it will eventually be removed from Pearcleaner and the helper service will be the only option going forward. I recommend enabling the privileged helper service as soon as possible." : {
       "localizations" : {
@@ -14123,6 +14195,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Da die Autorisierungsdienste von Apple als weniger sichere Authentifizierungsmethode bezeichnet, werden sie letztendlich aus Pearcleaner entfernt und der Hilfsdienst wird künftig die einzige Option sein. Ich empfehle, den privilegierten Hilfsdienst so bald wie möglich zu aktivieren."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les services d'autorisation ayant été abandonnés par Apple, considérés comme une méthode d'authentification moins sécurisée, ils seront à terme supprimés de Pearcleaner et le service d'assistance constituera désormais la seule option. Je recommande d'activer le service d'assistance privilégié dès que possible."
           }
         },
         "ja" : {
@@ -14241,7 +14319,14 @@
       }
     },
     "Size:" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taille:"
+          }
+        }
+      }
     },
     "Sort app list alphabetically by name or by size" : {
       "extractionState" : "manual",
@@ -14315,10 +14400,24 @@
       }
     },
     "Sort packages" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trier les paquets"
+          }
+        }
+      }
     },
     "Sorted by %@" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trier sur %@"
+          }
+        }
+      }
     },
     "Sorted by Name" : {
       "extractionState" : "manual",
@@ -14463,7 +14562,14 @@
       }
     },
     "Sorting" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tri"
+          }
+        }
+      }
     },
     "Sorting Options" : {
       "extractionState" : "manual",
@@ -14616,6 +14722,12 @@
             "value" : "Platzersparnis: %d%%"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gain de place:  %d%%"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -14655,6 +14767,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Space Savings: %1$d%%\nTotal Space Saved: %2$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gain de place : %1$d%%\nEspace total gagné : %2$@"
           }
         },
         "tr" : {
@@ -14756,6 +14874,12 @@
     },
     "Spotlight Index" : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Index Spotlight"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -14777,7 +14901,14 @@
       }
     },
     "Start" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Démarrer"
+          }
+        }
+      }
     },
     "Start Lipo" : {
       "localizations" : {
@@ -14785,6 +14916,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Start Lipo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Démarrer Lipo"
           }
         },
         "ja" : {
@@ -14832,19 +14969,54 @@
       }
     },
     "Status:" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Statut:"
+          }
+        }
+      }
     },
     "Stop" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arrêter"
+          }
+        }
+      }
     },
     "Strict" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Strict(e)"
+          }
+        }
+      }
     },
     "Strict level and also includes Spotlight metadata search (Slightly more files, still accurate)" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Niveau strict et inclut également la recherche de métadonnées Spotlight (un peu plus de fichiers, toujours précis)"
+          }
+        }
+      }
     },
     "Strict level and it also allows partial matches (More files, slightly less accurate)" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Niveau strict et permet également des correspondances partielles (plus de fichiers, légèrement moins précis)"
+          }
+        }
+      }
     },
     "Submit a bug or feature request" : {
       "extractionState" : "manual",
@@ -15208,6 +15380,12 @@
             "value" : "Terminal"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminal"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -15259,6 +15437,12 @@
             "state" : "new",
             "value" : "The search sensitivity level controls how strict or lenient Pearcleaner is when finding related files for an app:\n\n• Strict – %1$@\n• Enhanced – %2$@\n• Balanced – %3$@\n• Broad – %4$@\n\nHigher levels may find more files but may include some unrelated results. It is recommended to check found files manually at these levels."
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le niveau de sensibilité de la recherche détermine la rigueur avec laquelle Pearcleaner recherche les fichiers associés à une application :\n\n• Strict – %1$@\n• Amélioré – %2$@\n• Équilibré – %3$@\n• Large – %4$@\n\nLes niveaux supérieurs peuvent trouver davantage de fichiers, mais peuvent inclure des résultats sans rapport. Il est recommandé de vérifier manuellement les fichiers trouvés à ces niveaux."
+          }
         }
       }
     },
@@ -15275,6 +15459,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "The total space savings between all the lipo'd apps\nSize Before: %1$@\nSize After: %2$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gain total d'espace entre toutes les applications lipo'd\nTaille avant : %1$@\nTaille après : %2$@"
           }
         },
         "tr" : {
@@ -15304,7 +15494,14 @@
       }
     },
     "Theme" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thème"
+          }
+        }
+      }
     },
     "Theme Mode" : {
       "extractionState" : "manual",
@@ -15318,7 +15515,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thème"
+            "value" : "Mode thème"
           }
         },
         "ja" : {
@@ -15740,6 +15937,12 @@
             "value" : "Dadurch werden ausgewählte Elemente von zukünftigen Scans ausgeschlossen. Die Ausschlussliste kann unter „Einstellungen“ > „Ordner“ bearbeitet werden."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cela exclura les éléments sélectionnés des analyses futures. La liste d'exclusion peut être modifiée depuis l'onglet « Paramètres > Dossiers »."
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -15791,6 +15994,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dadurch werden alle nicht verwendeten Sprachübersetzungsdateien entfernt."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cela supprimera tous les fichiers de traduction de langue inutilisés"
           }
         },
         "zh-Hans" : {
@@ -15956,261 +16165,54 @@
       }
     },
     "Total Available Savings:" : {
-
-    },
-    "Total binary size between all the apps" : {
-      "extractionState" : "stale",
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gesamtgrösse aller Apps"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "すべてのアプリの合計バイナリサイズ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tüm uygulamalar arasındaki toplam ikili boyut"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Загальний розмір бінарного файлу для всіх програм"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tổng kích thước nhị phân của tất cả các ứng dụng"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "所有应用之间的总二进制大小"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "所有應用程式二進位大小的總數"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "所有應用程式二進位大小的總數"
-          }
-        }
-      }
-    },
-    "Total environment paths available" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Insgesamt verfügbare Umgebungspfade"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nombre total de chemins d'environnement disponibles"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "利用可能な環境パスの合計"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Všetky dostupné cesty k prostrediu"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mevcut olan toplam ortam dizinleri"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Загальна кількість доступних шляхів до середовища"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tổng số đường dẫn môi trường có sẵn"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "总环境路径可用"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "可用環境路徑總計"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "可用環境路徑總計"
-          }
-        }
-      }
-    },
-    "Total possible savings between all the apps" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gesamte Einsparungen aller Apps"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "すべてのアプリで可能な合計節約量"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tüm uygulamalar arasındaki toplam olası tasarruf"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Загальний обсяг доступного звільнення для всіх програм"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tổng mức tiết kiệm có thể có giữa tất cả các ứng dụng"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "所有应用程序的总可能瘦身"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "所有應用程式可節省大小的總和"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "所有應用程式可節省大小的總和"
+            "value" : "Gain total possible:"
           }
         }
       }
     },
     "Total Saved:" : {
-
-    },
-    "Total size of files:" : {
-      "extractionState" : "stale",
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gesamtgrösse der Dateien:"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Taille totale des fichiers :"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ファイルの合計サイズ："
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Общий размер файлов:"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Celková veľkosť súborov:"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dosyaların toplam boyutu:"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Загальний розмір файлів:"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tổng dung lượng"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "文件总大小："
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "檔案大小總計："
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "檔案大小總計："
+            "value" : "Gain total:"
           }
         }
       }
     },
     "Total Size:" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taille totale:"
+          }
+        }
+      }
     },
     "Transition animations disabled" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animations de transition désactivé"
+          }
+        }
+      }
     },
     "Transition animations enabled" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animations de transition activé"
+          }
+        }
+      }
     },
     "Translation" : {
       "localizations" : {
@@ -16218,6 +16220,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Übersetzung"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traduction"
           }
         },
         "tr" : {
@@ -16318,10 +16326,24 @@
       }
     },
     "Transparent sidebar" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Barre latérale transparente"
+          }
+        }
+      }
     },
     "Try adjusting your search or filters" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Essayez d'ajuster votre recherche ou vos filtres"
+          }
+        }
+      }
     },
     "Type a keyword to exclude, Enter ↵ to save" : {
       "localizations" : {
@@ -16329,6 +16351,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Geben Sie ein zu ausschliessendes Stichwort ein und drücken Sie die Zeilenschaltung, um zu speichern."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saisissez un mot-clé pour exclusion, Entrée ↵ pour sauvegarder"
           }
         },
         "ja" : {
@@ -16801,6 +16829,12 @@
             "value" : "Unbekannter Dienst Zustand (%lld)."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Statut de service inconnu (%lld)."
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -16839,6 +16873,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dateiverknüpfung aufheben"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dissocier le fichier"
           }
         },
         "ja" : {
@@ -16886,7 +16926,14 @@
       }
     },
     "Unload the service" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Décharger le service"
+          }
+        }
+      }
     },
     "Unregister Service" : {
       "localizations" : {
@@ -16894,6 +16941,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nicht registrierter Dienst"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désinscrire le service"
           }
         },
         "ja" : {
@@ -17353,7 +17406,14 @@
       }
     },
     "Updated %@" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mis à jour %@"
+          }
+        }
+      }
     },
     "Updater frequency is set to Never" : {
       "extractionState" : "manual",
@@ -17575,6 +17635,12 @@
             "value" : "Benutzer hat die Berechtigung verweigert. Aktivieren Sie diese Option in den Systemeinstellungen > Anmeldeobjekte."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisation refusée à l'utilisateur. Activer dans Paramètres système > Éléments de connexion."
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -17678,7 +17744,14 @@
       }
     },
     "Version: %@" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version: %@"
+          }
+        }
+      }
     },
     "View" : {
       "localizations" : {
@@ -17756,6 +17829,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zeige Debug Fenster"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher la fenêtre de débogage"
           }
         },
         "ja" : {
@@ -18087,6 +18166,7 @@
       }
     },
     "View releases on GitHub" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -18583,7 +18663,14 @@
       }
     },
     "Welcome, %@!" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bienvenu(e), %@!"
+          }
+        }
+      }
     },
     "When applications are moved to Trash, Pearcleaner will launch and find related files and folders for deletion." : {
       "extractionState" : "manual",
@@ -18733,6 +18820,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wenn die Homebrew-Bereinigung aktiviert ist, überprüft Pearcleaner, ob die zu entfernende Programme über Homebrew installiert wurde, und startet ein integriertes Terminal, um einen Befehl zum Deinstallieren und Bereinigen von Homebrew auszuführen, damit Homebrew weiß, dass die App entfernt wurde. Auf diese Weise wird Ihre Homebrew-Liste korrekt synchronisiert und der Cache wird entfernt.\n\nHINWEIS: Wenn Sie das Löschen der Datei mit CMD+Z rückgängig machen, werden die Dateien wiederhergestellt, aber Homebrew wird davon nicht informiert. Um die Homebrew-Liste wieder zu synchronisieren, müssen Sie folgenden Befehl ausführen:\n\n> brew install APPNAME --force"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lorsque le nettoyage Homebrew est activé, Pearcleaner vérifie si l'application que vous supprimez a été installée via Homebrew et lance un terminal intégré pour exécuter une commande brew uninstall and cleanup afin d'informer Homebrew de la suppression. Ainsi, votre liste Homebrew sera correctement synchronisée et le cache supprimé.\n\nREMARQUE : Si vous annulez la suppression du fichier avec CMD+Z, les fichiers seront réinstallés, mais Homebrew n'en sera pas informé. Pour resynchroniser la liste Homebrew, exécutez :\n\n> brew install APPNAME --force"
           }
         },
         "ja" : {
@@ -18993,7 +19086,14 @@
       }
     },
     "Workspace Storage Cleaner" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nettoyage d’espace de travail"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

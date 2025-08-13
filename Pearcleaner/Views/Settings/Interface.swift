@@ -23,6 +23,8 @@ struct InterfaceSettingsTab: View {
     @AppStorage("settings.interface.minimalist") private var minimalEnabled: Bool = true
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.interface.multiSelect") private var multiSelect: Bool = false
+    @AppStorage("settings.interface.greetingEnabled") private var greetingEnabled: Bool = true
+
 
     @Binding var search: String
 
@@ -128,6 +130,26 @@ struct InterfaceSettingsTab: View {
                         }
                         Spacer()
                         Toggle(isOn: $multiSelect, label: {
+                        })
+                        .toggleStyle(SettingsToggle())
+                    }
+                    .padding(5)
+
+
+                    HStack(spacing: 0) {
+                        Image(systemName: greetingEnabled ? "hand.raised.fill" : "hand.raised")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 15, height: 15)
+                            .padding(.trailing)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text(greetingEnabled ? String(localized: "Greeting enabled on main page") : String(localized: "Greeting disabled on main page"))
+                                .font(.callout)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                        }
+                        Spacer()
+                        Toggle(isOn: $greetingEnabled, label: {
                         })
                         .toggleStyle(SettingsToggle())
                     }

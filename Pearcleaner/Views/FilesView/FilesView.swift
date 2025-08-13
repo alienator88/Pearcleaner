@@ -11,6 +11,7 @@ import AlinFoundation
 
 struct FilesView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var fsm: FolderSettingsManager
     @EnvironmentObject var locations: Locations
     @State private var showPop: Bool = false
     @State private var windowController = WindowManager()
@@ -348,6 +349,11 @@ struct FilesView: View {
             } else {
                 ZombieFileStorage.shared.associatedFiles[appState.appInfo.path] = associatedFiles
             }
+
+            // Remove from exclusion list
+            fsm.removePathZ(path.path)
+
+            // Final update
             updateSortedFiles()
         }
     }
