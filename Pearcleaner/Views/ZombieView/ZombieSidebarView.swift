@@ -95,7 +95,7 @@ struct ZombieExcludedPathsSection: View {
                 .fontWeight(.medium)
 
             if fsm.fileFolderPathsZ.isEmpty {
-                Text("No paths excluded")
+                Text("No paths excluded or linked to an app")
                     .font(.caption)
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     .italic()
@@ -122,27 +122,19 @@ struct ZombieExcludedPathRow: View {
     let onRestoreFile: (URL) -> Void
     @State private var isHovered = false
     
-    // Check if this path is associated with any app
-    private var isAssociated: Bool {
-        ZombieFileStorage.shared.isPathAssociated(URL(fileURLWithPath: path))
-    }
-    
-    // Get the app name that this file is associated with
-    private var associatedAppName: String? {
+    private var associationInfo: (isAssociated: Bool, appName: String?) {
         let pathURL = URL(fileURLWithPath: path)
         for (appPath, associatedFiles) in ZombieFileStorage.shared.associatedFiles {
             if associatedFiles.contains(pathURL) {
-                // Find the app in sortedApps to get its name
-                if let app = appState.sortedApps.first(where: { $0.path == appPath }) {
-                    return app.appName
-                }
-                // Fallback to the app path's last component if not found in sortedApps
-                return appPath.lastPathComponent.replacingOccurrences(of: ".app", with: "")
+                // File is associated, now get the app name
+                let appName = appState.sortedApps.first(where: { $0.path == appPath })?.appName
+                ?? appPath.lastPathComponent.replacingOccurrences(of: ".app", with: "")
+                return (true, appName)
             }
         }
-        return nil
+        return (false, nil)
     }
-    
+
     var body: some View {
         HStack {
             HStack(spacing: 4) {
@@ -154,14 +146,14 @@ struct ZombieExcludedPathRow: View {
                             .lineLimit(1)
 
                         // Show link icon if this path is associated
-                        if isAssociated {
+                        if associationInfo.isAssociated {
                             Image(systemName: "link")
                                 .font(.caption2)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
                         }
 
                         // Show associated app name in parentheses
-                        if let appName = associatedAppName {
+                        if let appName = associationInfo.appName {
                             Text("(\(appName))")
                                 .font(.caption2)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
@@ -193,7 +185,7 @@ struct ZombieExcludedPathRow: View {
                 fsm.removePathZ(path)
                 
                 // If this was an associated file, also remove the association
-                if isAssociated {
+                if associationInfo.isAssociated {
                     // Find which app this is associated with and remove the association
                     for (appPath, associatedFiles) in ZombieFileStorage.shared.associatedFiles {
                         if associatedFiles.contains(pathURL) {
@@ -210,7 +202,7 @@ struct ZombieExcludedPathRow: View {
                     .foregroundStyle(.red)
             }
             .buttonStyle(.borderless)
-            .help(isAssociated ? "Remove association and exclusion" : "Remove from exclusion list")
+            .help(associationInfo.isAssociated ? "Remove association and exclusion" : "Remove from exclusion list")
         }
         .padding(8)
         .background(ThemeColors.shared(for: colorScheme).secondaryText.opacity(0.1))
@@ -225,7 +217,7 @@ struct ZombieSidebarFooter: View {
         HStack {
             Text("Click to dismiss")
                 .font(.caption)
-                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.5))
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
             Spacer()
         }
     }

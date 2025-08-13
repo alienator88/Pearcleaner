@@ -220,6 +220,7 @@ struct MountedVolumeView: View {
                         .fill(ThemeColors.shared(for: colorScheme).secondaryBG)
                 )
                 .padding()
+                .frame(maxWidth: 500)
             } else {
                 ProgressView()
                     .controlSize(.small)

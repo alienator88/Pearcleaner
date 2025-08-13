@@ -9693,6 +9693,7 @@
       }
     },
     "No paths excluded" : {
+      "extractionState" : "stale",
       "localizations" : {
         "fr" : {
           "stringUnit" : {
@@ -9701,6 +9702,9 @@
           }
         }
       }
+    },
+    "No paths excluded or linked to an app" : {
+
     },
     "No releases to display" : {
       "extractionState" : "manual",
