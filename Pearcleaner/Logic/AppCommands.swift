@@ -28,7 +28,12 @@ struct AppCommands: Commands {
         
         // Pearcleaner Menu
         CommandGroup(replacing: .appInfo) {
-
+            Button ("About Pearcleaner...") {
+                NSApplication.shared.orderFrontStandardAboutPanel()
+            }
+            
+            Divider()
+            
             Button {
                 updater.checkForUpdates(sheet: true)
             } label: {
