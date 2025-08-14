@@ -15,6 +15,7 @@ struct AppCommands: Commands {
     let fsm: FolderSettingsManager
     let updater: Updater
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+    @AppStorage("settings.general.selectedTab") private var selectedTab: CurrentTabView = .general
     @State private var windowController = WindowManager()
 
     init(appState: AppState, locations: Locations, fsm: FolderSettingsManager, updater: Updater) {
@@ -28,6 +29,13 @@ struct AppCommands: Commands {
         
         // Pearcleaner Menu
         CommandGroup(replacing: .appInfo) {
+
+            Button ("About \(Bundle.main.name)") {
+                selectedTab = .about
+                openAppSettings()
+            }
+
+            Divider()
 
             Button {
                 updater.checkForUpdates(sheet: true)
