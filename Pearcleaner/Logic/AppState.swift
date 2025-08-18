@@ -78,6 +78,7 @@ class AppState: ObservableObject {
             system: false,
             arch: .empty,
             cask: nil,
+            steam: false,
             bundleSize: 0,
             fileSize: [:],
             fileSizeLogical: [:],
@@ -148,8 +149,6 @@ class AppState: ObservableObject {
 
 
 
-
-
 struct AppInfo: Identifiable, Equatable, Hashable {
     let id: UUID
     let path: URL
@@ -162,6 +161,7 @@ struct AppInfo: Identifiable, Equatable, Hashable {
     let system: Bool
     var arch: Arch
     let cask: String?
+    let steam: Bool // New property to mark Steam games
     var bundleSize: Int64 // Only used in the app list view
     var fileSize: [URL:Int64]
     var fileSizeLogical: [URL:Int64]
@@ -197,7 +197,7 @@ struct AppInfo: Identifiable, Equatable, Hashable {
         return path == URL(fileURLWithPath: "./") && bundleIdentifier.isEmpty && appName.isEmpty
     }
     
-    static let empty = AppInfo(id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "", appVersion: "", appIcon: nil, webApp: false, wrapped: false, system: false, arch: .empty, cask: nil, bundleSize: 0, fileSize: [:], fileSizeLogical: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil)
+    static let empty = AppInfo(id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "", appVersion: "", appIcon: nil, webApp: false, wrapped: false, system: false, arch: .empty, cask: nil, steam: false, bundleSize: 0, fileSize: [:], fileSizeLogical: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil)
     
 }
 

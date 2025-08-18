@@ -116,6 +116,7 @@ struct AppDetails: View {
                 if appState.appInfo.arch != .empty { badge(appState.appInfo.arch.type) }
                 badge(appState.appInfo.system ? "system" : "user")
                 if appState.appInfo.cask != nil { badge("brew") }
+                if appState.appInfo.steam { badge("steam") }
 
             }
             .padding(.bottom, 8)

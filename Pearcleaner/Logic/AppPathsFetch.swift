@@ -178,6 +178,20 @@ class AppPathFinder {
             }
         }
         
+        // Special handling for Steam game manifest files
+        if self.appInfo.steam && itemURL.path.contains("/Library/Application Support/Steam/steamapps/") && 
+           itemURL.lastPathComponent.hasPrefix("appmanifest_") && itemURL.pathExtension == "acf" {
+            
+            // Extract the game ID from the filename (e.g., "appmanifest_1289310.acf" -> "1289310")
+            let filename = itemURL.lastPathComponent
+            if let gameIdFromFile = extractGameId(from: filename) {
+                // Get the game ID from the Steam launcher's run.sh file
+                if let gameIdFromLauncher = getSteamGameId(from: self.appInfo.path) {
+                    return gameIdFromFile == gameIdFromLauncher
+                }
+            }
+        }
+        
         for condition in conditions {
             if cached.useBundleIdentifier && cached.bundleIdentifierL.contains(condition.bundle_id) {
                 if condition.exclude.contains(where: { itemL.pearFormat().contains($0.pearFormat()) }) {
@@ -197,6 +211,41 @@ class AppPathFinder {
         let namePMatch = sensitivity ? itemL == cached.nameP : itemL.contains(cached.nameP)
         let nameLFilteredMatch = sensitivity ? itemL == cached.nameLFiltered : itemL.contains(cached.nameLFiltered)
         return (cached.useBundleIdentifier && bundleMatch) || (nameLMatch || namePMatch || nameLFilteredMatch)
+    }
+    
+    // Helper function to extract game ID from manifest filename
+    private func extractGameId(from filename: String) -> String? {
+        // Extract from "appmanifest_1289310.acf" -> "1289310"
+        let components = filename.components(separatedBy: "_")
+        if components.count >= 2 {
+            let gameIdWithExtension = components[1]
+            return gameIdWithExtension.components(separatedBy: ".").first
+        }
+        return nil
+    }
+    
+    // Helper function to get Steam game ID from the launcher's run.sh file
+    private func getSteamGameId(from appPath: URL) -> String? {
+        let runShPath = appPath.appendingPathComponent("Contents/MacOS/run.sh")
+        
+        guard FileManager.default.fileExists(atPath: runShPath.path) else {
+            return nil
+        }
+        
+        do {
+            let content = try String(contentsOf: runShPath, encoding: .utf8)
+            // Look for "steam://run/" pattern and extract the number after it
+            if let range = content.range(of: "steam://run/") {
+                let afterRun = String(content[range.upperBound...])
+                // Extract the number (game ID) which should be at the beginning
+                let gameId = afterRun.components(separatedBy: CharacterSet.decimalDigits.inverted).first
+                return gameId?.isEmpty == false ? gameId : nil
+            }
+        } catch {
+            printOS("Error reading run.sh file: \(error)")
+        }
+        
+        return nil
     }
 
     // Check for associated zombie files

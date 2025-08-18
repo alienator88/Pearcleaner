@@ -48,7 +48,7 @@ class MetadataAppInfoFetcher {
 
         return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName,
                        appVersion: version, appIcon: appIcon, webApp: webApp, wrapped: wrapped, system: system,
-                       arch: arch, cask: cask, bundleSize: logicalSize, fileSize: [:],
+                       arch: arch, cask: cask, steam: false, bundleSize: logicalSize, fileSize: [:],
                        fileSizeLogical: [:], fileIcon: [:], creationDate: creationDate, contentChangeDate: contentChangeDate, lastUsedDate: lastUsedDate)
     }
 }
@@ -222,7 +222,7 @@ class AppInfoFetcher {
         let arch = checkAppBundleArchitecture(at: path.path)
 
         return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName, appVersion: appVersion, appIcon: appIcon,
-                       webApp: webApp, wrapped: wrapped, system: system, arch: arch, cask: cask, bundleSize: 0, fileSize: [:], fileSizeLogical: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil)
+                       webApp: webApp, wrapped: wrapped, system: system, arch: arch, cask: cask, steam: false, bundleSize: 0, fileSize: [:], fileSizeLogical: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil)
     }
 
 }
@@ -305,7 +305,7 @@ class SteamAppInfoFetcher {
         // but store the actual bundle path info
         return AppInfo(id: UUID(), path: launcherPath, bundleIdentifier: bundleIdentifier, appName: appName, 
                        appVersion: appVersion, appIcon: appIcon, webApp: webApp, wrapped: false, 
-                       system: system, arch: arch, cask: nil, bundleSize: 0, fileSize: [:], 
+                       system: system, arch: arch, cask: nil, steam: true, bundleSize: 0, fileSize: [:], 
                        fileSizeLogical: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil)
     }
 }

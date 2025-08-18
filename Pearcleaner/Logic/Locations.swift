@@ -33,7 +33,7 @@ class Locations: ObservableObject {
             "\(home)/Library",
             "\(home)/Library/Application Scripts",
             "\(home)/Library/Application Support",
-            "\(home)/Library/Application Support/Steam/steamapps/common",
+            "\(home)/Library/Application Support/Steam/steamapps",
             "\(home)/Library/Containers",
             "\(home)/Library/Caches",
             "\(home)/Library/Caches/com.crashlytics",
