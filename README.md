@@ -6,7 +6,7 @@
    <br />
    <strong>Status: </strong>Maintained
    <br />
-   <strong>Version: </strong>5.0.1
+   <strong>Version: </strong>5.0.2
    <br />
    <a href="https://github.com/alienator88/Pearcleaner/releases"><strong>Download</strong></a>
     · 
@@ -41,6 +41,7 @@ If you are able to contribute to translations for the app, please see this discu
 - Prune unused translation files from app bundles keeping only the preferred language set on macOS
 - Sentinel monitor helper that can be enabled to watch Trash folder for deleted apps to cleanup after the fact(Extremely small (210KB) and uses ~2mb of ram to run in the background and file watch)
 - CLI support
+- Basic Steam games support
 - Drag/drop applications support
 - Deep link support for automation, see [wiki guide](https://github.com/alienator88/Pearcleaner/wiki/Deep-Link-Guide) for instructions
 - Optional Finder Extension which allows you to uninstall an app directly from Finder by `right click > Pearcleaner Uninstall`
