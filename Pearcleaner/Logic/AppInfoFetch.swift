@@ -56,8 +56,6 @@ class MetadataAppInfoFetcher {
 
 
 
-
-
 class AppInfoUtils {
     /// Determines if the app is a web application by directly reading its `Info.plist` using the app path.
     static func isWebApp(appPath: URL) -> Bool {
@@ -200,6 +198,11 @@ class AppInfoFetcher {
 
     private static func createAppInfoFromBundle(atPath path: URL, wrapped: Bool) -> AppInfo? {
         guard let bundle = Bundle(url: path), let bundleIdentifier = bundle.bundleIdentifier else {
+            // Check if this might be a Steam game and try to find the actual bundle
+            if let steamAppInfo = SteamAppInfoFetcher.checkForSteamGame(launcherPath: path) {
+                return steamAppInfo
+            }
+            
             printOS("Bundle not found or missing bundle identifier at path: \(path)")
             return nil
         }
@@ -222,4 +225,87 @@ class AppInfoFetcher {
                        webApp: webApp, wrapped: wrapped, system: system, arch: arch, cask: cask, bundleSize: 0, fileSize: [:], fileSizeLogical: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil)
     }
 
+}
+
+//MARK: Steam Games Support
+class SteamAppInfoFetcher {
+    static let fileManager = FileManager.default
+    
+    /// Check if a failed app bundle is actually a Steam game launcher and find the real bundle
+    static func checkForSteamGame(launcherPath: URL) -> AppInfo? {
+        // Extract the app name from the launcher path (e.g., "Helltaker" from "Helltaker.app")
+        let appName = launcherPath.deletingPathExtension().lastPathComponent
+        
+        // Check if this app exists in the Steam common directory
+        let steamCommonPath = "\(NSHomeDirectory())/Library/Application Support/Steam/steamapps/common"
+        let steamGamePath = steamCommonPath + "/" + appName
+        
+        guard fileManager.fileExists(atPath: steamGamePath) else {
+            return nil
+        }
+        
+        // Look for the actual .app bundle within the Steam game directory
+        guard let actualAppBundle = findAppBundle(in: steamGamePath) else {
+            return nil
+        }
+        
+        // Create AppInfo using the actual Steam game bundle but keep the launcher path
+        return createSteamAppInfo(launcherPath: launcherPath, actualBundlePath: actualAppBundle, gameFolderName: appName)
+    }
+    
+    /// Find the .app bundle within a Steam game directory
+    private static func findAppBundle(in directory: String) -> URL? {
+        do {
+            let contents = try fileManager.contentsOfDirectory(atPath: directory)
+            
+            // Look for .app files
+            for item in contents {
+                if item.hasSuffix(".app") {
+                    let appPath = directory + "/" + item
+                    let appURL = URL(fileURLWithPath: appPath)
+                    
+                    // Verify it has an Info.plist
+                    let infoPlistPath = appPath + "/Contents/Info.plist"
+                    if fileManager.fileExists(atPath: infoPlistPath) {
+                        return appURL
+                    }
+                }
+            }
+        } catch {
+            printOS("Error searching for app bundle in \(directory): \(error)")
+        }
+        
+        return nil
+    }
+    
+    /// Create AppInfo for Steam games using the launcher path but actual bundle info
+    private static func createSteamAppInfo(launcherPath: URL, actualBundlePath: URL, gameFolderName: String) -> AppInfo? {
+        guard let bundle = Bundle(url: actualBundlePath) else {
+            printOS("Steam game bundle not found at path: \(actualBundlePath)")
+            return nil
+        }
+        
+        // Handle missing bundle identifier by providing a fallback
+        let bundleIdentifier = bundle.bundleIdentifier?.isEmpty == false ? bundle.bundleIdentifier! : "com.no.bundleid"
+        
+        // Use the game folder name as the app name
+        let appName = gameFolderName.capitalizingFirstLetter()
+        
+        let appVersion = (bundle.infoDictionary?["CFBundleShortVersionString"] as? String)?.isEmpty ?? true
+        ? bundle.infoDictionary?["CFBundleVersion"] as? String ?? ""
+        : bundle.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+        
+        // Use the actual bundle path for the icon (proper game icon) instead of launcher
+        let appIcon = AppInfoUtils.fetchAppIcon(for: actualBundlePath, wrapped: false)
+        let webApp = false
+        let system = false // Steam games are never system apps
+        let arch = checkAppBundleArchitecture(at: actualBundlePath.path)
+        
+        // Use the launcher path as the main path (so users see the ~/Applications version)
+        // but store the actual bundle path info
+        return AppInfo(id: UUID(), path: launcherPath, bundleIdentifier: bundleIdentifier, appName: appName, 
+                       appVersion: appVersion, appIcon: appIcon, webApp: webApp, wrapped: false, 
+                       system: system, arch: arch, cask: nil, bundleSize: 0, fileSize: [:], 
+                       fileSizeLogical: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil)
+    }
 }

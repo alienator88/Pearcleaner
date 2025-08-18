@@ -19,11 +19,26 @@ struct LipoView: View {
     @State private var sliceSizesByPath = [String:(binary: UInt32,savings:UInt32)]()
     @State private var totalSpaceSaved: UInt64 = 0
     @State private var infoSidebar: Bool = false
+    @State private var selectedSort: LipoSortOption = .name
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.lipo.pruneTranslations") private var prune = false
     @AppStorage("settings.lipo.filterMinSavings") private var filterMinSavings = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.lipo.excludedApps") private var excludedAppsData: Data = Data()
+
+    enum LipoSortOption: String, CaseIterable {
+        case name = "Name"
+        case savings = "Savings Size"
+        case binary = "Binary Size"
+        
+        var systemImage: String {
+            switch self {
+            case .name: return "list.bullet"
+            case .savings: return "arrow.down.circle"
+            case .binary: return "doc.circle"
+            }
+        }
+    }
 
     // Change to a computed property without setter
     private var excludedApps: Set<String> {
@@ -52,14 +67,15 @@ struct LipoView: View {
         calculateAllSizes() // Recalculate after removal
     }
 
-    // Filter the apps to only include universal ones, exclude excluded apps, and optionally filter by minimum savings
+    // Filter and sort the apps
     var universalApps: [AppInfo] {
         let filtered = appState.sortedApps.filter { $0.arch == .universal && !excludedApps.contains($0.path.path) }
         
+        var result = filtered
         if filterMinSavings {
             // Only apply the filter if we have size data calculated
             if !sliceSizesByPath.isEmpty {
-                return filtered.filter { app in
+                result = filtered.filter { app in
                     if let sizes = sliceSizesByPath[app.path.path] {
                         return sizes.savings >= 1024 * 1024 // 1MB in bytes
                     }
@@ -67,11 +83,25 @@ struct LipoView: View {
                 }
             } else {
                 // Return all apps while sizes are being calculated
-                return filtered
+                result = filtered
             }
         }
         
-        return filtered
+        // Apply sorting
+        return result.sorted { app1, app2 in
+            switch selectedSort {
+            case .name:
+                return app1.appName.localizedCaseInsensitiveCompare(app2.appName) == .orderedAscending
+            case .savings:
+                let savings1 = sliceSizesByPath[app1.path.path]?.savings ?? 0
+                let savings2 = sliceSizesByPath[app2.path.path]?.savings ?? 0
+                return savings1 > savings2 // Descending order for savings
+            case .binary:
+                let binary1 = sliceSizesByPath[app1.path.path]?.binary ?? 0
+                let binary2 = sliceSizesByPath[app2.path.path]?.binary ?? 0
+                return binary1 > binary2 // Descending order for binary size
+            }
+        }
     }
 
     var body: some View {
@@ -79,7 +109,7 @@ struct LipoView: View {
 
             VStack(alignment: .leading, spacing: 0) {
 
-                HStack {
+                HStack(alignment: .center, spacing: 15) {
                     VStack(alignment: .leading){
                         Text("Lipo").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title).fontWeight(.bold)
                         Text("Remove unused architectures from your app binaries to reduce app size")
@@ -87,6 +117,24 @@ struct LipoView: View {
                     }
 
                     Spacer()
+                    
+                    // Sort dropdown menu
+                    Menu {
+                        ForEach(LipoSortOption.allCases, id: \.self) { sortOption in
+                            Button {
+                                selectedSort = sortOption
+                            } label: {
+                                Label(sortOption.rawValue, systemImage: sortOption.systemImage)
+                            }
+                        }
+                    } label: {
+                        Label(selectedSort.rawValue, systemImage: selectedSort.systemImage)
+                    }
+                    .buttonStyle(ControlGroupButtonStyle(
+                        foregroundColor: ThemeColors.shared(for: colorScheme).primaryText,
+                        shape: Capsule(style: .continuous),
+                        level: .secondary
+                    ))
                 }
 
                 VStack(alignment: .leading, spacing: 0) {

@@ -29,6 +29,7 @@ class Locations: ObservableObject {
             "\(home)",
             "\(home)/.config",
             "\(home)/Documents",
+            "\(home)/Desktop", // for steam game shortcuts
             "\(home)/Library",
             "\(home)/Library/Application Scripts",
             "\(home)/Library/Application Support",

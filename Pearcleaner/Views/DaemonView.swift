@@ -48,6 +48,7 @@ struct DaemonView: View {
         case all = "All"
         case loaded = "Loaded"
         case unloaded = "Unloaded"
+        case running = "Running"
         case agents = "Launch Agents"
         case daemons = "Launch Daemons"
         case services = "XPC Services"
@@ -57,6 +58,7 @@ struct DaemonView: View {
             case .all: return "list.bullet"
             case .loaded: return "checkmark.circle"
             case .unloaded: return "xmark.circle"
+            case .running: return "play.circle"
             case .agents: return "person.circle"
             case .daemons: return "gear.circle"
             case .services: return "network"
@@ -84,6 +86,8 @@ struct DaemonView: View {
             return items.filter { isItemLoaded($0) }
         case .unloaded:
             return items.filter { !isItemLoaded($0) }
+        case .running:
+            return items.filter { isItemRunning($0) }
         case .agents:
             return items.filter { $0.type == .agent }
         case .daemons:
@@ -97,6 +101,19 @@ struct DaemonView: View {
         // Simple logic: if status is "Not Loaded", it's not loaded
         // If it has any other status, it was found in launchctl list and is loaded
         return item.status != "Not Loaded"
+    }
+
+    private func isItemRunning(_ item: LaunchItem) -> Bool {
+        // An item is running if it's loaded AND has a PID (same logic as friendlyStatus)
+        if item.status == "Not Loaded" {
+            return false
+        }
+        
+        if let statusCode = Int(item.status), statusCode == 0 {
+            return item.pid != nil && item.pid != "-" && !item.pid!.isEmpty
+        }
+        
+        return false
     }
     
     private func friendlyStatus(for item: LaunchItem) -> String {

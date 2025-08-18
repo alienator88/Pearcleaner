@@ -51,7 +51,7 @@ struct PearcleanerApp: App {
 
         WindowGroup {
             MainWindow(search: $search)
-                .toolbar { Color.clear }
+//                .toolbar { Color.clear }
                 .environmentObject(appState)
                 .environmentObject(locations)
                 .environmentObject(fsm)
@@ -99,6 +99,7 @@ struct PearcleanerApp: App {
                     /// This will show the update sheet based on the frequency check function only
                     updater.getUpdateView()
                 })
+
         }
         .windowStyle(.hiddenTitleBar)
         .windowToolbarStyle(.unifiedCompact)

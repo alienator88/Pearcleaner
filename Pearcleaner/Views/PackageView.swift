@@ -11,6 +11,7 @@ import AlinFoundation
 enum PackageSortOption: String, CaseIterable {
     case packageName = "Package Name"
     case packageId = "Package ID"
+    case installer = "Installer"
     
     var displayName: String {
         return self.rawValue
@@ -75,6 +76,19 @@ struct PackageView: View {
         case .packageId:
             packages = packages.sorted { first, second in
                 return first.packageId.localizedCaseInsensitiveCompare(second.packageId) == .orderedAscending
+            }
+        case .installer:
+            packages = packages.sorted { first, second in
+                // Handle empty installer names by putting them at the end
+                if first.installProcessName.isEmpty && second.installProcessName.isEmpty {
+                    return first.displayName.localizedCaseInsensitiveCompare(second.displayName) == .orderedAscending
+                } else if first.installProcessName.isEmpty {
+                    return false
+                } else if second.installProcessName.isEmpty {
+                    return true
+                } else {
+                    return first.installProcessName.localizedCaseInsensitiveCompare(second.installProcessName) == .orderedAscending
+                }
             }
         }
 

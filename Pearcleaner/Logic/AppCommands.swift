@@ -38,7 +38,7 @@ struct AppCommands: Commands {
             Divider()
 
             Button {
-                updater.checkForUpdates(sheet: true)
+                updater.checkForUpdates(sheet: true, force: true)
             } label: {
                 Text("Check for Updates")
             }

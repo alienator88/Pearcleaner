@@ -427,6 +427,7 @@ struct PathRowView: View {
 }
 
 struct WorkspaceStorageCleanerView: View {
+    @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @Environment(\.colorScheme) var colorScheme
     let ideName: String
     @State private var orphanedWorkspaces: [OrphanedWorkspace] = []
@@ -489,41 +490,45 @@ struct WorkspaceStorageCleanerView: View {
                         
                         Spacer()
                     }
-                    
-                    ForEach(orphanedWorkspaces, id: \.id) { workspace in
-                        HStack {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(workspace.name)
-                                    .font(.caption)
-                                    .lineLimit(1)
-                                    .truncationMode(.middle)
 
-                                Text("\(workspace.folderPath)")
-                                    .font(.caption)
+                    ScrollView {
+                        ForEach(orphanedWorkspaces, id: \.id) { workspace in
+                            HStack {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(workspace.name)
+                                        .font(.caption)
+                                        .lineLimit(1)
+                                        .truncationMode(.middle)
+
+                                    Text("\(workspace.folderPath)")
+                                        .font(.caption)
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                        .lineLimit(1)
+                                        .truncationMode(.middle)
+
+                                }
+
+                                Spacer()
+
+                                Text(workspace.size)
+                                    .font(.caption2)
                                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                                    .lineLimit(1)
-                                    .truncationMode(.middle)
 
+                                Button("Delete") {
+                                    cleanOrphanedWorkspace(workspace)
+                                }
+                                .buttonStyle(.borderless)
+                                .controlSize(.mini)
+                                .foregroundStyle(.red)
                             }
-                            
-                            Spacer()
-                            
-                            Text(workspace.size)
-                                .font(.caption2)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                            
-                            Button("Delete") {
-                                cleanOrphanedWorkspace(workspace)
-                            }
-                            .buttonStyle(.borderless)
-                            .controlSize(.mini)
-                            .foregroundStyle(.red)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(ThemeColors.shared(for: colorScheme).secondaryText.opacity(0.1))
+                            .cornerRadius(6)
                         }
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(ThemeColors.shared(for: colorScheme).secondaryText.opacity(0.1))
-                        .cornerRadius(6)
                     }
+                    .scrollIndicators(scrollIndicators ? .automatic : .never)
+                    .frame(height: 180)
 
                     HStack {
                         Spacer()

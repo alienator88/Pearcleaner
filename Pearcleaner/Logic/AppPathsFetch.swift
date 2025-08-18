@@ -169,6 +169,15 @@ class AppPathFinder {
     // Check if an item meets specific conditions using cached identifiers
     private func specificCondition(itemL: String, itemURL: URL) -> Bool {
         let cached = self.cachedIdentifiers
+        
+        // Special handling for Steam games: also check Desktop for shortcuts
+        if itemURL.path.contains("/Desktop/") && itemURL.pathExtension == "app" {
+            let desktopAppName = itemURL.deletingPathExtension().lastPathComponent.pearFormat()
+            if desktopAppName == cached.nameL || desktopAppName == cached.nameLFiltered {
+                return true
+            }
+        }
+        
         for condition in conditions {
             if cached.useBundleIdentifier && cached.bundleIdentifierL.contains(condition.bundle_id) {
                 if condition.exclude.contains(where: { itemL.pearFormat().contains($0.pearFormat()) }) {
