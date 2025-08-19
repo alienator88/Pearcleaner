@@ -177,7 +177,7 @@ var conditions: [Condition] = [
 let skipConditions: [SkipCondition] = [
     SkipCondition(
         skipPrefix: ["comapple", "mobiledocuments", "reminders", "dsstore", ".DS_Store"],
-        allowPrefixes: ["comappleconfigurator", "comappledt", "comappleiwork", "comapplesfsymbols", "comappletestflight"]
+        allowPrefixes: ["comappleconfigurator", "comappledt", "comappleiwork", "comapplesfsymbols", "comappletestflight", "comapplesharedfilelist", "comapplelssharedfilelist"]
     )
 ]
 

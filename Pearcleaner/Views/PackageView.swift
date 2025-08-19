@@ -233,6 +233,11 @@ struct PackageView: View {
                                 removePackage(package)
                             } onRefresh: {
                                 refreshPackages()
+                            } onUpdateBomFiles: { updatedBomFiles in
+                                // Update the local BOM files for this package
+                                if let packageIndex = packages.firstIndex(where: { $0.packageId == package.packageId }) {
+                                    packages[packageIndex].bomFiles = updatedBomFiles
+                                }
                             }
                         }
                     }
@@ -560,16 +565,9 @@ struct PackageView: View {
     }
     
     private func removePackage(_ package: PackageInfo) {
-        showCustomAlert(
-            title: "Forget Package",
-            message: "Are you sure you want to forget package '\(package.displayName)'? This will remove the package from the system's records but will not delete any files. Use the Apps tab to remove the actual app if needed.",
-            style: .warning,
-            onOk: {
-                Task {
-                    await performPackageRemoval(package)
-                }
-            }
-        )
+        Task {
+            await performPackageRemoval(package)
+        }
     }
 
     private func performPackageRemoval(_ package: PackageInfo) async {
@@ -631,7 +629,12 @@ struct PackageView: View {
         
         await MainActor.run {
             if success {
-                refreshPackages()
+                // Remove the package from the local array
+                packages.removeAll { $0.packageId == package.packageId }
+                packageIds.removeAll { $0 == package.packageId }
+                
+                // Also remove from expanded packages if it was expanded
+                expandedPackages.remove(package.packageId)
             } else {
                 showCustomAlert(
                     title: "Forget Failed",
@@ -675,7 +678,9 @@ struct PackageRowView: View {
     let onToggleExpansion: () -> Void
     let onRemove: () -> Void
     let onRefresh: () -> Void
+    let onUpdateBomFiles: ([String]) -> Void
     @State private var isPerformingAction = false
+    @State private var isHovered = false
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     
     var body: some View {
@@ -956,7 +961,21 @@ struct PackageRowView: View {
             }
         }
         .padding()
-        .background(ThemeColors.shared(for: colorScheme).secondaryBG.clipShape(RoundedRectangle(cornerRadius: 8)))
+        .background(
+            RoundedRectangle(cornerRadius: 8)
+                .fill(isHovered ? 
+                    ThemeColors.shared(for: colorScheme).secondaryBG.opacity(0.8) :
+                    ThemeColors.shared(for: colorScheme).secondaryBG
+                )
+        )
+        .onTapGesture {
+            onToggleExpansion()
+        }
+        .onHover { hovering in
+            withAnimation(.easeInOut(duration: 0.2)) {
+                isHovered = hovering
+            }
+        }
     }
     
     private var packageColor: Color {
@@ -982,19 +1001,12 @@ struct PackageRowView: View {
     }
 
     private func removeFile(_ filePath: String, from package: PackageInfo) {
-        showCustomAlert(
-            title: "Remove File",
-            message: "Are you sure you want to permanently delete '\(filePath)'? This action cannot be undone.",
-            style: .warning,
-            onOk: {
-                Task {
-                    await performFileRemoval(filePath)
-                }
-            }
-        )
+        Task {
+            await performFileRemoval(filePath, from: package)
+        }
     }
 
-    private func performFileRemoval(_ filePath: String) async {
+    private func performFileRemoval(_ filePath: String, from package: PackageInfo) async {
         let success = await withCheckedContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
                 let command = "rm -rf \"\(filePath)\""
@@ -1023,7 +1035,9 @@ struct PackageRowView: View {
         
         await MainActor.run {
             if success {
-                onRefresh()
+                // Update BOM files locally using callback
+                let updatedBomFiles = package.bomFiles.filter { $0 != filePath }
+                onUpdateBomFiles(updatedBomFiles)
             } else {
                 showCustomAlert(
                     title: "Removal Failed",
@@ -1046,21 +1060,12 @@ struct PackageRowView: View {
             return
         }
         
-        showCustomAlert(
-            title: "Remove All Package Files",
-            message: "Are you sure you want to permanently delete all \(filteredFiles.count) remaining files from this package? This action cannot be undone.\n\nFiles to be removed:\n\(filteredFiles.prefix(5).joined(separator: "\n"))\(filteredFiles.count > 5 ? "\n... and \(filteredFiles.count - 5) more" : "")",
-            style: .warning,
-            onOk: {
-                Task {
-                    await performBulkFileRemoval(filteredFiles)
-                }
-            }
-        )
+        Task {
+            await performBulkFileRemoval(filteredFiles)
+        }
     }
 
     private func performBulkFileRemoval(_ filePaths: [String]) async {
-        isPerformingAction = true
-        
         let success = await withCheckedContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
                 let quotedPaths = filePaths.map { "\"\($0)\"" }.joined(separator: " ")
@@ -1092,7 +1097,9 @@ struct PackageRowView: View {
             isPerformingAction = false
             
             if success {
-                onRefresh()
+                // Update BOM files locally using callback
+                let updatedBomFiles = package.bomFiles.filter { !filePaths.contains($0) }
+                onUpdateBomFiles(updatedBomFiles)
             } else {
                 showCustomAlert(
                     title: "Removal Failed",

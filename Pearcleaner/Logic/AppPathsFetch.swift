@@ -109,9 +109,14 @@ class AppPathFinder {
             var localResults: [URL] = []
             for item in contents {
                 let itemURL = URL(fileURLWithPath: location).appendingPathComponent(item)
-                let itemL = item.replacingOccurrences(of: ".", with: "")
-                    .replacingOccurrences(of: " ", with: "")
-                    .lowercased()
+                let itemL: String
+                if itemURL.hasDirectoryPath || itemURL.pathExtension.isEmpty {
+                    // It's a directory or has no extension - don't remove anything
+                    itemL = item.pearFormat()
+                } else {
+                    // It's a file with an extension - remove the extension
+                    itemL = (item as NSString).deletingPathExtension.pearFormat()
+                }
                 var isDirectory: ObjCBool = false
                 if FileManager.default.fileExists(atPath: itemURL.path, isDirectory: &isDirectory) {
                     if shouldSkipItem(itemL, at: itemURL) { continue }
@@ -177,7 +182,16 @@ class AppPathFinder {
                 return true
             }
         }
-        
+
+        // Special handling for Steam game main folder
+        if self.appInfo.steam && itemURL.path.contains("/Library/Application Support/Steam/steamapps/common/") {
+            let folderName = itemURL.lastPathComponent.pearFormat()
+            // Check if this folder matches the game name
+            if folderName == cached.nameL || folderName == cached.nameLFiltered {
+                return true
+            }
+        }
+
         // Special handling for Steam game manifest files
         if self.appInfo.steam && itemURL.path.contains("/Library/Application Support/Steam/steamapps/") && 
            itemURL.lastPathComponent.hasPrefix("appmanifest_") && itemURL.pathExtension == "acf" {
