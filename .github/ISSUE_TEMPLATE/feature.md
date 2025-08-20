@@ -1,5 +1,5 @@
 ---
-name: Feature
+name: New Feature
 about: For submitting feature requests
 title: "[FR] ENTER ISSUE TITLE HERE"
 labels: ''
