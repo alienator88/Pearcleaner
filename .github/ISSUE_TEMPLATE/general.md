@@ -7,5 +7,4 @@ assignees: ''
 
 ---
 
-Go to the Discussions tab and create a new question there where the community can assist:
-https://github.com/alienator88/Pearcleaner/discussions
+Go to the [Discussions](https://github.com/alienator88/Pearcleaner/discussions) tab and create a new question there where the community can assist.
