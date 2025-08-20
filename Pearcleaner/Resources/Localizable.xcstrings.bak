@@ -331,82 +331,10 @@
     },
     "%@ (%lld)" : {
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ (%lld)"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ (%lld)"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ (%lld)"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@（%lld）"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ (%lld)"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ (%lld)"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ (%lld)"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ (%lld)"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ (%lld)"
-          }
-        },
         "vi" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ (%lld)"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@（%lld）"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@（%lld）"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ (%lld)"
+            "state" : "needs_review",
+            "value" : "%1$@ (%2$lld)"
           }
         }
       }
@@ -661,82 +589,10 @@
     },
     "%lld / %lld" : {
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld / %lld"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld / %lld"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld / %lld"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld / %lld"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld / %lld"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld / %lld"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld / %lld"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld / %lld"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld / %lld"
-          }
-        },
         "vi" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld / %lld"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld / %lld"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld / %lld"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld / %lld"
+            "state" : "needs_review",
+            "value" : "%1$lld / %2$lld"
           }
         }
       }
@@ -989,246 +845,30 @@
     },
     "%lld package%@" : {
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld Paket%@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld paquete%@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld package%@"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld パッケージ%@"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld pacote%@"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld пакет%@"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld balík%@"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld paket%@"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld пакет%@"
-          }
-        },
         "vi" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld gói%@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld 个包%@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld 個套件%@"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld 個套件%@"
+            "state" : "needs_review",
+            "value" : "%1$lld gói%2$@"
           }
         }
       }
     },
     "%lld service%@" : {
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld Dienst%@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld servicio%@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld service%@"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld サービス%@"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld serviço%@"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld служба%@"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld služba%@"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld hizmet%@"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld служба%@"
-          }
-        },
         "vi" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld dịch vụ%@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld 服务%@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld 服務%@"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld 服務%@"
+            "state" : "needs_review",
+            "value" : "%1$lld dịch vụ%2$@"
           }
         }
       }
     },
     "%lld valid %@ found" : {
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld gültige %@ gefunden"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld %@ válidos encontrados"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld %@ valides trouvées"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld 個の有効な %@ が見つかりました"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld %@ válidos encontrados"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld действительных %@ найдено"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld platných %@ nájdených"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld geçerli %@ bulundu"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld дійсних %@ знайдено"
-          }
-        },
         "vi" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đã tìm thấy %lld %@ hợp lệ"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld 个有效的 %@ 找到"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld 個有效的 %@ 找到"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld 個有效的 %@ 已找到"
+            "state" : "needs_review",
+            "value" : "Đã tìm thấy %1$lld %2$@ hợp lệ"
           }
         }
       }
@@ -9972,82 +9612,10 @@
     },
     "Found %lld orphaned workspace%@" : {
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld verwaiste Arbeitsumgebung%@ gefunden"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se encontró %lld espacio de trabajo huérfano%@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld espace de travail orphelin trouvé%@"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld 個の孤立したワークスペース%@が見つかりました"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Encontrado %lld espaço de trabalho órfão%@"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Найдено %lld осиротевшее рабочее пространство%@"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Našiel sa %lld osirelý pracovný priestor%@"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld yetim çalışma alanı bulundu%@"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Знайдено %lld осиротілий робочий простір%@"
-          }
-        },
         "vi" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đã tìm thấy %lld không gian làm việc mồ côi%@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "找到%lld个孤立工作区%@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "找到 %lld 個孤立的工作區%@"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "找到 %lld 個孤立的工作區%@"
+            "state" : "needs_review",
+            "value" : "Đã tìm thấy %1$lld không gian làm việc mồ côi%2$@"
           }
         }
       }
@@ -18213,82 +17781,10 @@
     "Pearcleaner will strip the %@ architecture from %@'s executable file to save space. Would you like to proceed?" : {
       "comment" : "Lipo alert message",
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pearcleaner wird die %@-Architektur aus der ausführbaren Datei von %@ entfernen, um Speicherplatz zu sparen. Möchten Sie fortfahren?"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pearcleaner eliminará la arquitectura %@ del archivo ejecutable de %@ para ahorrar espacio. ¿Desea continuar?"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pearcleaner supprimera l'architecture %@ du fichier exécutable de %@ pour économiser de l'espace. Voulez-vous continuer ?"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pearcleanerは、スペースを節約するために%@の実行可能ファイルから%@アーキテクチャを削除します。続行しますか？"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pearcleaner removerá a arquitetura %@ do arquivo executável de %@ para economizar espaço. Deseja continuar?"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pearcleaner удалит архитектуру %@ из исполняемого файла %@, чтобы сэкономить место. Хотите продолжить?"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pearcleaner odstráni architektúru %@ z vykonávacieho súboru %@, aby ušetril miesto. Chcete pokračovať?"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pearcleaner, alan kazanmak için %@'nin çalıştırılabilir dosyasından %@ mimarisini kaldıracak. Devam etmek istiyor musunuz?"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pearcleaner видалить архітектуру %@ з виконуваного файлу %@, щоб заощадити місце. Бажаєте продовжити?"
-          }
-        },
         "vi" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pearcleaner sẽ loại bỏ kiến trúc %@ khỏi tập tin thực thi của %@ để tiết kiệm không gian. Bạn có muốn tiếp tục không?"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pearcleaner将从%@的可执行文件中剥离%@架构以节省空间。您想继续吗？"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pearcleaner將從%@的可執行文件中剝離%@架構以節省空間。您想繼續嗎？"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pearcleaner將會從%@的可執行檔中移除%@架構以節省空間。你想繼續嗎？"
+            "state" : "needs_review",
+            "value" : "Pearcleaner sẽ loại bỏ kiến trúc %1$@ khỏi tập tin thực thi của %2$@ để tiết kiệm không gian. Bạn có muốn tiếp tục không?"
           }
         }
       }
@@ -26370,82 +25866,10 @@
     "Space Savings: %d%%\nTotal Space Saved: %@" : {
       "comment" : "Lipo completion title",
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Platzersparnis: %d%%\nGesamteingesparter Speicherplatz: %@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ahorro de espacio: %d%% Espacio total ahorrado: %@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Économie d'espace : %d%%\nEspace total économisé : %@"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "スペース節約: %d%%\n合計節約スペース: %@"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Economia de Espaço: %d%% Espaço Total Economizado: %@"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Экономия места: %d%% Общий объем сэкономленного пространства: %@"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Úspora miesta: %d%%\nCelková ušetrená kapacita: %@"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alan Tasarrufu: %d%%\nToplam Tasarruf Edilen Alan: %@"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Економія простору: %d%% Загальний збережений простір: %@"
-          }
-        },
         "vi" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tiết kiệm dung lượng: %d%% \nTổng dung lượng đã tiết kiệm: %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "空间节省：%d%% 总节省空间：%@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "節省空間：%d%%\n總共節省空間：%@"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "節省空間：%d%%\n總共節省空間：%@"
+            "state" : "needs_review",
+            "value" : "Tiết kiệm dung lượng: %1$d%% \nTổng dung lượng đã tiết kiệm: %2$@"
           }
         }
       }
@@ -27687,76 +27111,10 @@
     },
     "The search sensitivity level controls how strict or lenient Pearcleaner is when finding related files for an app:\n\n• Strict – %@\n• Enhanced – %@\n• Balanced – %@\n• Broad – %@\n\nHigher levels may find more files but may include some unrelated results. It is recommended to check found files manually at these levels." : {
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Das Suchsensitivitätsniveau steuert, wie strikt oder nachsichtig Pearcleaner beim Finden verwandter Dateien für eine App ist:\n\n• Strikt – %@\n• Erweitert – %@\n• Ausgewogen – %@\n• Breit – %@\n\nHöhere Stufen können mehr Dateien finden, aber möglicherweise einige nicht verwandte Ergebnisse enthalten. Es wird empfohlen, die gefundenen Dateien auf diesen Ebenen manuell zu überprüfen."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El nivel de sensibilidad de búsqueda controla cuán estricto o flexible es Pearcleaner al encontrar archivos relacionados para una aplicación:\n\n• Estricto – %@\n• Mejorado – %@\n• Equilibrado – %@\n• Amplio – %@\n\nNiveles más altos pueden encontrar más archivos pero pueden incluir algunos resultados no relacionados. Se recomienda verificar manualmente los archivos encontrados en estos niveles."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Le niveau de sensibilité de la recherche contrôle la rigueur ou la tolérance de Pearcleaner lors de la recherche de fichiers liés à une application :\n\n• Strict – %@\n• Amélioré – %@\n• Équilibré – %@\n• Large – %@\n\nDes niveaux plus élevés peuvent trouver plus de fichiers mais peuvent inclure certains résultats non liés. Il est recommandé de vérifier manuellement les fichiers trouvés à ces niveaux."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "検索感度レベルは、アプリに関連するファイルを見つける際のPearcleanerの厳しさや寛容さを制御します:\n\n• 厳密 – %@\n• 強化 – %@\n• バランス – %@\n• 広範 – %@\n\n高いレベルではより多くのファイルを見つけることができますが、無関係な結果が含まれる可能性があります。これらのレベルでは見つかったファイルを手動で確認することをお勧めします。"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O nível de sensibilidade da pesquisa controla o quão rigoroso ou flexível o Pearcleaner é ao encontrar arquivos relacionados para um aplicativo:\n\n• Rigoroso – %@\n• Aprimorado – %@\n• Balanceado – %@\n• Amplo – %@\n\nNíveis mais altos podem encontrar mais arquivos, mas podem incluir alguns resultados não relacionados. Recomenda-se verificar manualmente os arquivos encontrados nesses níveis."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Уровень чувствительности поиска контролирует, насколько строго или мягко Pearcleaner находит связанные файлы для приложения:\n\n• Строгий – %@\n• Усиленный – %@\n• Сбалансированный – %@\n• Широкий – %@\n\nБолее высокие уровни могут находить больше файлов, но могут включать некоторые несвязанные результаты. Рекомендуется проверять найденные файлы вручную на этих уровнях."
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Úroveň citlivosti vyhľadávania určuje, ako prísny alebo zhovievavý je Pearcleaner pri hľadaní súvisiacich súborov pre aplikáciu:\n\n• Prísne – %@\n• Vylepšené – %@\n• Vyvážené – %@\n• Široké – %@\n\nVyššie úrovne môžu nájsť viac súborov, ale môžu zahŕňať aj niektoré nesúvisiace výsledky. Na týchto úrovniach sa odporúča skontrolovať nájdené súbory manuálne."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Arama duyarlılık seviyesi, Pearcleaner'ın bir uygulama için ilgili dosyaları bulurken ne kadar katı veya esnek olduğunu kontrol eder:\n\n• Katı – %@\n• Gelişmiş – %@\n• Dengeli – %@\n• Geniş – %@\n\nDaha yüksek seviyeler daha fazla dosya bulabilir ancak bazı ilgisiz sonuçları da içerebilir. Bu seviyelerde bulunan dosyaları manuel olarak kontrol etmeniz önerilir."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Рівень чутливості пошуку контролює, наскільки суворо або поблажливо Pearcleaner знаходить пов'язані файли для програми:\n\n• Суворий – %@\n• Покращений – %@\n• Збалансований – %@\n• Широкий – %@\n\nВищі рівні можуть знаходити більше файлів, але можуть включати деякі нерелевантні результати. Рекомендується перевіряти знайдені файли вручну на цих рівнях."
-          }
-        },
         "vi" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mức độ nhạy cảm của tìm kiếm kiểm soát độ nghiêm ngặt hoặc linh hoạt của Pearcleaner khi tìm các tệp liên quan cho một ứng dụng:\n\n• Nghiêm ngặt – %@\n• Nâng cao – %@\n• Cân bằng – %@\n• Rộng rãi – %@\n\nCác mức cao hơn có thể tìm thấy nhiều tệp hơn nhưng có thể bao gồm một số kết quả không liên quan. Nên kiểm tra các tệp đã tìm thấy một cách thủ công ở các mức này."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "搜索敏感度级别控制 Pearcleaner 在查找应用程序相关文件时的严格或宽松程度：\n\n• 严格 – %@\n• 增强 – %@\n• 平衡 – %@\n• 宽泛 – %@\n\n较高级别可能会找到更多文件，但可能包括一些不相关的结果。建议在这些级别手动检查找到的文件。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "搜尋靈敏度等級控制 Pearcleaner 在尋找應用程式相關檔案時的嚴格或寬鬆程度：\n\n• 嚴格 – %@\n• 增強 – %@\n• 平衡 – %@\n• 寬鬆 – %@\n\n較高的等級可能會找到更多檔案，但可能包含一些不相關的結果。建議在這些等級手動檢查找到的檔案。"
+            "state" : "needs_review",
+            "value" : "Mức độ nhạy cảm của tìm kiếm kiểm soát độ nghiêm ngặt hoặc linh hoạt của Pearcleaner khi tìm các tệp liên quan cho một ứng dụng:\n\n• Nghiêm ngặt – %1$@\n• Nâng cao – %2$@\n• Cân bằng – %3$@\n• Rộng rãi – %4$@\n\nCác mức cao hơn có thể tìm thấy nhiều tệp hơn nhưng có thể bao gồm một số kết quả không liên quan. Nên kiểm tra các tệp đã tìm thấy một cách thủ công ở các mức này."
           }
         },
         "zh-HK" : {
@@ -27770,82 +27128,10 @@
     "The total space savings between all the lipo'd apps\nSize Before: %@\nSize After: %@" : {
       "comment" : "Lipo completion message",
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Der gesamte Speicherplatz, der durch alle lipo'd Apps eingespart wurde  \nGröße vorher: %@  \nGröße nachher: %@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El ahorro total de espacio entre todas las aplicaciones lipo'd Tamaño antes: %@ Tamaño después: %@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "L'économie totale d'espace entre toutes les applications lipo'd Taille avant : %@ Taille après : %@"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "すべてのlipoされたアプリ間の合計スペース節約量\nサイズ前: %@\nサイズ後: %@"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A economia total de espaço entre todos os aplicativos lipo'd Tamanho Antes: %@ Tamanho Depois: %@"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Общая экономия пространства между всеми lipo'd приложениями Размер до: %@ Размер после: %@"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Celková úspora miesta medzi všetkými lipo aplikáciami\nVeľkosť pred: %@\nVeľkosť po: %@"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tüm lipo'lanmış uygulamalar arasındaki toplam alan tasarrufu\nÖnceki Boyut: %@\nSonraki Boyut: %@"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Загальна економія місця між усіма об'єднаними додатками Розмір до: %@ Розмір після: %@"
-          }
-        },
         "vi" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tổng dung lượng tiết kiệm giữa tất cả các ứng dụng đã lipo Kích thước trước: %@ Kích thước sau: %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "所有精简应用的总空间节省\n精简前大小：%@\n精简后大小：%@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "所有經過 lipo 處理的應用程式之間的總空間節省\n處理前大小：%@\n處理後大小：%@"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "所有已進行 lipo 處理的應用程式總共節省的空間\n處理前大小：%@\n處理後大小：%@"
+            "state" : "needs_review",
+            "value" : "Tổng dung lượng tiết kiệm giữa tất cả các ứng dụng đã lipo Kích thước trước: %1$@ Kích thước sau: %2$@"
           }
         }
       }
