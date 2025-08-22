@@ -49,18 +49,19 @@ class FileManagerUndo {
             }
             guard !permanentDelete else { return "" }
             
-            var finalName = file.lastPathComponent
-            var count = seenFileNames[finalName] ?? 0
+            let baseName = file.lastPathComponent
+            var count = seenFileNames[baseName] ?? 0
+            var finalName = baseName
 
             // Check for duplicate names within the bundle folder
             repeat {
                 if count > 0 {
-                    finalName = "\(file.lastPathComponent)-\(count)"
+                    finalName = "\(baseName)-\(count)"
                 }
                 count += 1
             } while FileManager.default.fileExists(atPath: (bundleFolderPath as NSString).appendingPathComponent(finalName))
 
-            seenFileNames[finalName] = count
+            seenFileNames[baseName] = count
 
             let destinationURL = bundleFolderURL.appendingPathComponent(finalName)
             tempFilePairs.append((trashURL: destinationURL, originalURL: file))

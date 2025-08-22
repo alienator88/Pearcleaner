@@ -34,9 +34,45 @@ struct FileListView: View {
                     .font(.title3)
                     .opacity(0.5)
             } else {
-                HStack {
+                VStack(alignment: .leading, spacing: 0) {
+                    
+                    // Header with title, subtitle, and sort dropdown
+                    HStack(alignment: .center, spacing: 15) {
+                        VStack(alignment: .leading) {
+                            Text("Files")
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                                .font(.title)
+                                .fontWeight(.bold)
+                            Text("Select files to remove for \(appState.appInfo.appName)")
+                                .font(.callout)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        }
+                        
+                        Spacer()
+                        
+                        // Sort dropdown menu
+                        Menu {
+                            ForEach(SortOptionList.allCases, id: \.self) { sortOption in
+                                Button {
+                                    selectedSort = sortOption
+                                    updateSortedFiles()
+                                } label: {
+                                    Label(sortOption.title, systemImage: sortOption.systemImage)
+                                }
+                            }
+                        } label: {
+                            Label(selectedSort.title, systemImage: selectedSort.systemImage)
+                        }
+                        .buttonStyle(ControlGroupButtonStyle(
+                            foregroundColor: ThemeColors.shared(for: colorScheme).primaryText,
+                            shape: Capsule(style: .continuous),
+                            level: .secondary
+                        ))
+                    }
+                    
                     VStack(spacing: 0) {
-                        HStack {
+                        // Select all checkbox row
+                        HStack() {
                             Toggle(
                                 isOn: Binding(
                                     get: {
@@ -51,106 +87,77 @@ struct FileListView: View {
                             ) { EmptyView() }
                                 .toggleStyle(SimpleCheckboxToggleStyle())
                                 .help("All checkboxes")
-
+                                .padding([.vertical, .trailing])
+                            
                             Spacer()
-
-                            Button {
-                                switch selectedSort {
-                                case .size:
-                                    selectedSort = .name
-                                case .name:
-                                    selectedSort = .path
-                                case .path:
-                                    selectedSort = .size
-                                }
-                                updateSortedFiles()
-                            } label: { EmptyView() }
-                                .buttonStyle(SimpleButtonStyleFlipped(
-                                    icon: "line.3.horizontal.decrease.circle",
-                                    label: selectedSort.title,
-                                    help: "Sorted by \(selectedSort.rawValue.capitalized)",
-                                    color: ThemeColors.shared(for: colorScheme).primaryText,
-                                    size: 16
-                                ))
                         }
 
-                        Divider().padding(.vertical, 5)
-
+                        // File list
                         ScrollView {
-                            LazyVStack {
+                            LazyVStack(spacing: 14) {
                                 ForEach(Array(sortedFiles.enumerated()), id: \.element) { index, path in
-                                    VStack {
-                                        FileDetailsItem(path: path, removeAssociation: removeSingleZombieAssociation)
-                                            .padding(.vertical, 5)
-                                    }
+                                    FileDetailsItem(path: path, removeAssociation: removeSingleZombieAssociation)
                                 }
                             }
                             .onAppear { updateSortedFiles() }
                         }
                         .scrollIndicators(scrollIndicators ? .automatic : .never)
+                        .padding(.bottom)
                     }
-                    .padding(.horizontal)
-                    .blur(radius: infoSidebar ? 2 : 0)
-                }
-            }
 
-            Spacer()
+                    // Bottom toolbar
+                    HStack(spacing: 10) {
+                        Text("\(appState.selectedItems.count) / \(appState.appInfo.fileSize.count)")
+                            .font(.footnote)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            .frame(minWidth: 80, alignment: .leading)
 
-            HStack(alignment: .center) {
+                        Spacer()
 
-                HStack(spacing: 10) {
-                    Text("\(appState.selectedItems.count) / \(appState.appInfo.fileSize.count)")
-                        .font(.footnote)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        .frame(minWidth: 80, alignment: .leading)
-
-                    Spacer()
-
-                    if appState.trashError {
-                        InfoButton(text: "A trash error has occurred, please open the debug window(⌘+D) to see what went wrong", color: .orange, label: "View Error", warning: true, extraView: {
-                            Button("View Debug Window") {
-                                windowController.open(with: ConsoleView(), width: 600, height: 400)
+                        if appState.trashError {
+                            InfoButton(text: "A trash error has occurred, please open the debug window(⌘+D) to see what went wrong or try again", color: .orange, label: "View Error", warning: true, extraView: {
+                                Button("View Debug Window") {
+                                    windowController.open(with: ConsoleView(), width: 600, height: 400)
+                                }
+                            })
+                            .onDisappear {
+                                appState.trashError = false
                             }
-                        })
-                        .onDisappear {
-                            appState.trashError = false
                         }
-                    }
 
-                    Button {
-                        handleUninstallAction()
-                    } label: {
-                        Label {
-                            Text(verbatim: "\(sizeType == "Logical" ? totalSelectedSize.logical : totalSelectedSize.real)")
-                        } icon: {
-                            Image(systemName: "trash")
+                        Button {
+                            handleUninstallAction()
+                        } label: {
+                            Label {
+                                Text(verbatim: "\(sizeType == "Logical" ? totalSelectedSize.logical : totalSelectedSize.real)")
+                            } icon: {
+                                Image(systemName: "trash")
+                            }
                         }
+                        .buttonStyle(ControlGroupButtonStyle(
+                            foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                            shape: Capsule(style: .continuous),
+                            level: .secondary,
+                            disabled: appState.selectedItems.isEmpty
+                        ))
+
+                        Spacer()
+
+                        Button {
+                            infoSidebar.toggle()
+                        } label: {
+                            Image(systemName: "sidebar.trailing")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 18, height: 18)
+                        }
+                        .buttonStyle(.borderless)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        .transition(.move(edge: .trailing))
+                        .help("See app details")
                     }
-                    .buttonStyle(ControlGroupButtonStyle(
-                        foregroundColor: ThemeColors.shared(for: colorScheme).accent,
-                        shape: Capsule(style: .continuous),
-                        level: .secondary,
-                        disabled: appState.selectedItems.isEmpty
-                    ))
-
-                    Spacer()
-
-                    Button {
-                        infoSidebar.toggle()
-                    } label: {
-                        Image(systemName: "sidebar.trailing")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 18, height: 18)
-                    }
-                    .buttonStyle(.borderless)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    .transition(.move(edge: .trailing))
-                    .help("See app details")
-                    .frame(minWidth: 80, alignment: .trailing)
-
                 }
-                .padding(.top)
+                .blur(radius: infoSidebar ? 2 : 0)
             }
 
             if !appState.externalPaths.isEmpty {
@@ -179,7 +186,8 @@ struct FileListView: View {
                 }
                 .padding(.top)
             }
-
         }
+        .frame(maxWidth: .infinity)
+        .padding(20)
     }
 }

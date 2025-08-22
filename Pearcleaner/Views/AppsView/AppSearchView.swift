@@ -281,7 +281,7 @@ struct SearchBarSidebar: View {
 
     var body: some View {
         HStack {
-            TextField("Search apps..", text: $search)
+            TextField("Search...", text: $search)
                 .textFieldStyle(SimpleSearchStyleSidebar(trash: true, text: $search))
         }
     }

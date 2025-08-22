@@ -71,27 +71,41 @@ struct ZombieView: View {
                             }
 
                             Spacer()
+                            
+                            // Sort dropdown menu - moved here and restyled to match LipoView
+                            Menu {
+                                ForEach(SortOptionList.allCases, id: \.self) { sortOption in
+                                    Button {
+                                        selectedSort = sortOption
+                                        updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSort: selectedSort, force: true)
+                                    } label: {
+                                        Label(sortOption.title, systemImage: sortOption.systemImage)
+                                    }
+                                }
+                            } label: {
+                                Label(selectedSort.title, systemImage: selectedSort.systemImage)
+                            }
+                            .buttonStyle(ControlGroupButtonStyle(
+                                foregroundColor: ThemeColors.shared(for: colorScheme).primaryText,
+                                shape: Capsule(style: .continuous),
+                                level: .secondary
+                            ))
                         }
 
 
-                        // Item selection and sorting toolbar
-                        HStack {
+                        // Item selection and search toolbar
+                        HStack(spacing: 0) {
                             Toggle(isOn: selectAllBinding) { EmptyView() }
                                 .toggleStyle(SimpleCheckboxToggleStyle())
                                 .help("All checkboxes")
+                                .padding(.trailing)
 
-//                            SearchBar(search: $searchZ, glass: glass)
-//                                .onChange(of: searchZ) { newValue in
-//                                    updateMemoizedFiles(for: newValue, sizeType: sizeType, selectedSort: selectedSort)
-//                                }
-
-                            Spacer()
                             // Search bar
                             HStack {
                                 Image(systemName: "magnifyingglass")
                                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
-                                TextField("Search packages...", text: $searchZ)
+                                TextField("Search...", text: $searchZ)
                                     .onChange(of: searchZ) { newValue in
                                         updateMemoizedFiles(for: newValue, sizeType: sizeType, selectedSort: selectedSort)
                                     }
@@ -112,30 +126,9 @@ struct ZombieView: View {
                             .padding(.vertical, 8)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
                             .controlGroup(Capsule(style: .continuous), level: .secondary)
-                            .frame(maxWidth: 500)
-
-                            Spacer()
-
-                            Button {
-                                switch selectedSort {
-                                case .size:
-                                    selectedSort = .name
-                                case .name:
-                                    selectedSort = .path
-                                case .path:
-                                    selectedSort = .size
-                                }
-                                updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSort: selectedSort, force: true)
-                            } label: { EmptyView() }
-                                .buttonStyle(SimpleButtonStyle(icon: "line.3.horizontal.decrease.circle", label: selectedSort.title, help: String(localized: "Sorted by \(selectedSort.rawValue.capitalized)"), color: ThemeColors.shared(for: colorScheme).primaryText, size: 16))
-
-
                         }
                         .padding(.vertical)
-
-
-                        Divider()
-                            .padding(.horizontal)
+                        .frame(maxWidth: .infinity, alignment: .leading)
 
 
                         if !memoizedFiles.isEmpty {
@@ -171,7 +164,7 @@ struct ZombieView: View {
                             Spacer()
 
                             if appState.trashError {
-                                InfoButton(text: "A trash error has occurred, please open the debug window(⌘+D) to see what went wrong", color: .orange, label: "View Error", warning: true, extraView: {
+                                InfoButton(text: "A trash error has occurred, please open the debug window(⌘+D) to see what went wrong or try again", color: .orange, label: "View Error", warning: true, extraView: {
                                     Button("View Debug Window") {
                                         windowController.open(with: ConsoleView(), width: 600, height: 400)
                                     }

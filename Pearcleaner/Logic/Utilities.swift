@@ -560,8 +560,20 @@ func formattedMDDate(from date: Date) -> String {
 // --- Extend String to remove periods, spaces and lowercase the string
 extension String {
     func pearFormat() -> String {
-        // Remove all non-alphanumeric characters using regular expression and convert to lowercase
-        return self.replacingOccurrences(of: "[^a-zA-Z0-9]", with: "", options: .regularExpression).lowercased()
+        // First, handle non-Latin scripts by preserving Unicode letters
+        let preserveUnicode = self.unicodeScalars.compactMap { scalar in
+            if CharacterSet.alphanumerics.contains(scalar) {
+                return Character(scalar)
+            } else {
+                return nil
+            }
+        }
+        
+        let result = String(preserveUnicode).lowercased()
+        
+        // If the result is empty after processing, return the original string
+        // to avoid false matches with empty string comparisons
+        return result.isEmpty ? self : result
     }
 }
 

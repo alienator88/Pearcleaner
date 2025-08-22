@@ -214,7 +214,7 @@ struct DaemonView: View {
                     Image(systemName: "magnifyingglass")
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     
-                    TextField("Search services...", text: $searchText)
+                    TextField("Search...", text: $searchText)
                         .textFieldStyle(.plain)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                     

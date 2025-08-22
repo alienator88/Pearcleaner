@@ -230,9 +230,12 @@ class AppPathFinder {
         }
         let bundleMatch = itemL.contains(cached.bundleIdentifierL) || itemL.contains(cached.bundle)
         let sensitivity = effectiveSensitivityLevel == .strict || effectiveSensitivityLevel == .enhanced
-        let nameLMatch = sensitivity ? itemL == cached.nameL : itemL.contains(cached.nameL)
-        let namePMatch = sensitivity ? itemL == cached.nameP : itemL.contains(cached.nameP)
-        let nameLFilteredMatch = sensitivity ? itemL == cached.nameLFiltered : itemL.contains(cached.nameLFiltered)
+        
+        // Prevent false matches when cached values are empty strings
+        let nameLMatch = !cached.nameL.isEmpty && (sensitivity ? itemL == cached.nameL : itemL.contains(cached.nameL))
+        let namePMatch = !cached.nameP.isEmpty && (sensitivity ? itemL == cached.nameP : itemL.contains(cached.nameP))
+        let nameLFilteredMatch = !cached.nameLFiltered.isEmpty && (sensitivity ? itemL == cached.nameLFiltered : itemL.contains(cached.nameLFiltered))
+        
         return (cached.useBundleIdentifier && bundleMatch) || (nameLMatch || namePMatch || nameLFilteredMatch)
     }
     
@@ -460,8 +463,7 @@ class AppPathFinder {
                     let size = spotlightSizeForURL(path)
                     localFileSize[path] = size.real
                     localFileSizeLogical[path] = size.logical
-                    localFileIcon[path] = getIconForFileOrFolderNS(atPath: path)
-
+                    localFileIcon[path] = self.getSmartIcon(for: path)
                 }
 
                 // Merge results safely
@@ -527,6 +529,27 @@ class AppPathFinder {
             self.initialURLProcessing()
             self.collectLocationsCLI()
             return finalizeCollectionCLI()
+        }
+    }
+
+    // Custom icon function that handles .app folders intelligently
+    private func getSmartIcon(for path: URL) -> NSImage? {
+        // Check if this is a .app folder
+        if path.pathExtension == "app" {
+            // Check if it has a Contents folder (indicating it's a real app bundle)
+            let contentsPath = path.appendingPathComponent("Contents")
+            var isDirectory: ObjCBool = false
+            
+            if FileManager.default.fileExists(atPath: contentsPath.path, isDirectory: &isDirectory) && isDirectory.boolValue {
+                // It's a real app bundle, get the app icon
+                return getIconForFileOrFolderNS(atPath: path)
+            } else {
+                // It's just a folder that ends with .app, get the folder icon
+                return NSWorkspace.shared.icon(for: .folder)
+            }
+        } else {
+            // For all other files/folders, use the standard function
+            return getIconForFileOrFolderNS(atPath: path)
         }
     }
 }

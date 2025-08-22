@@ -84,7 +84,6 @@ struct FilesView: View {
 
                 }
                 .animation(.easeInOut(duration: animationEnabled ? 0.35 : 0), value: infoSidebar)
-                .padding(20)
 
             }
 

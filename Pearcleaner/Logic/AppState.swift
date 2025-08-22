@@ -394,15 +394,23 @@ enum SortOption:Int, CaseIterable, Identifiable {
 
 //MARK: Sorting for file list view
 enum SortOptionList: String, CaseIterable {
-    case size = "size"
     case name = "name"
     case path = "path"
+    case size = "size"
 
     var title: String {
         switch self {
-        case .size: return String(localized: "Size")
         case .name: return String(localized: "Name")
         case .path: return String(localized: "Path")
+        case .size: return String(localized: "Size")
+        }
+    }
+    
+    var systemImage: String {
+        switch self {
+        case .name: return "list.bullet"
+        case .path: return "folder"
+        case .size: return "number"
         }
     }
 }
