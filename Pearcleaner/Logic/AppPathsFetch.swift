@@ -157,7 +157,7 @@ class AppPathFinder {
         collectionAccessQueue.sync {
             containsItem = self.collectionSet.contains(itemURL)
         }
-        if containsItem || !isSupportedFileType(at: itemURL.path) {
+        if containsItem { //}|| !isSupportedFileType(at: itemURL.path) {
             return true
         }
         for skipCondition in skipConditions {
