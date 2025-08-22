@@ -6016,6 +6016,9 @@
         }
       }
     },
+    "Custom Sensitivity" : {
+
+    },
     "Daily" : {
       "extractionState" : "manual",
       "localizations" : {

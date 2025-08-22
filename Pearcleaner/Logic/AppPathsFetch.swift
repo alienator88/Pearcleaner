@@ -17,6 +17,9 @@ class AppPathFinder {
     private var containerCollection: [URL] = []
     private let collectionAccessQueue = DispatchQueue(label: "com.alienator88.Pearcleaner.appPathFinder.collectionAccess")
     @AppStorage("settings.general.searchSensitivity") private var sensitivityLevel: SearchSensitivityLevel = .strict
+    
+    // Optional override sensitivity level for per-app settings
+    private var overrideSensitivityLevel: SearchSensitivityLevel?
 
     // GUI-specific properties (can be nil for CLI)
     private var appState: AppState?
@@ -37,12 +40,18 @@ class AppPathFinder {
     // Change from lazy var to regular property initialized in init
     private let cachedIdentifiers: (bundleIdentifierL: String, bundle: String, nameL: String, nameLFiltered: String, nameP: String, useBundleIdentifier: Bool)
 
+    // Computed property to get the effective sensitivity level
+    private var effectiveSensitivityLevel: SearchSensitivityLevel {
+        return overrideSensitivityLevel ?? sensitivityLevel
+    }
+
     // Initializer for both CLI and GUI
-    init(appInfo: AppInfo, locations: Locations, appState: AppState? = nil, undo: Bool = false, completion: (() -> Void)? = nil) {
+    init(appInfo: AppInfo, locations: Locations, appState: AppState? = nil, undo: Bool = false, sensitivityOverride: SearchSensitivityLevel? = nil, completion: (() -> Void)? = nil) {
         self.appInfo = appInfo
         self.locations = locations
         self.appState = appState
         self.undo = undo
+        self.overrideSensitivityLevel = sensitivityOverride
         self.completion = completion
 
         // Initialize cachedIdentifiers eagerly and thread-safely
@@ -157,7 +166,7 @@ class AppPathFinder {
         collectionAccessQueue.sync {
             containsItem = self.collectionSet.contains(itemURL)
         }
-        if containsItem { //}|| !isSupportedFileType(at: itemURL.path) {
+        if containsItem {
             return true
         }
         for skipCondition in skipConditions {
@@ -220,7 +229,7 @@ class AppPathFinder {
             return itemL.contains(cached.bundleIdentifierL)
         }
         let bundleMatch = itemL.contains(cached.bundleIdentifierL) || itemL.contains(cached.bundle)
-        let sensitivity = sensitivityLevel == .strict || sensitivityLevel == .enhanced
+        let sensitivity = effectiveSensitivityLevel == .strict || effectiveSensitivityLevel == .enhanced
         let nameLMatch = sensitivity ? itemL == cached.nameL : itemL.contains(cached.nameL)
         let namePMatch = sensitivity ? itemL == cached.nameP : itemL.contains(cached.nameP)
         let nameLFilteredMatch = sensitivity ? itemL == cached.nameLFiltered : itemL.contains(cached.nameLFiltered)
@@ -279,7 +288,7 @@ class AppPathFinder {
 
     // Check spotlight index for leftovers missed by manual search
     private func spotlightSupplementalPaths() -> [URL] {
-        guard sensitivityLevel == .enhanced || sensitivityLevel == .broad else { return [] }
+        guard effectiveSensitivityLevel == .enhanced || effectiveSensitivityLevel == .broad else { return [] }
         updateOnMain {
             self.appState?.progressStep = 1
         }
@@ -299,7 +308,7 @@ class AppPathFinder {
             }.compactMap {
                 URL(fileURLWithPath: $0 as! String)
             }
-            if self.sensitivityLevel == .strict || self.sensitivityLevel == .enhanced {
+            if self.effectiveSensitivityLevel == .strict || self.effectiveSensitivityLevel == .enhanced {
                 let nameFormatted = appName.pearFormat()
                 let bundleFormatted = bundleID.pearFormat()
                 results = results.filter { url in

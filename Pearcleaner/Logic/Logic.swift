@@ -252,7 +252,7 @@ func reversePreloader(
 
 // Load item in Files view
 func showAppInFiles(
-    appInfo: AppInfo, appState: AppState, locations: Locations) {
+    appInfo: AppInfo, appState: AppState, locations: Locations, sensitivityOverride: SearchSensitivityLevel? = nil) {
     @AppStorage("settings.interface.animationEnabled") var animationEnabled: Bool = true
 
 //    showPopover.wrappedValue = false
@@ -265,7 +265,7 @@ func showAppInFiles(
         appState.showProgress = true
 
         // Initialize the path finder and execute its search.
-        AppPathFinder(appInfo: appInfo, locations: locations, appState: appState) {
+        AppPathFinder(appInfo: appInfo, locations: locations, appState: appState, sensitivityOverride: sensitivityOverride) {
             updateOnMain {
                 // Update the progress indicator on the main thread once the search completes.
                 appState.showProgress = false

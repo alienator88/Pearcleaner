@@ -36,6 +36,9 @@ class AppState: ObservableObject {
     @Published var selectedEnvironment: PathEnv? // for handling dev environments
     @Published var trashError: Bool = false
     
+    // Per-app sensitivity level storage
+    @Published var perAppSensitivity: [String: SearchSensitivityLevel] = [:]
+
     func getBundleSize(for appInfo: AppInfo, updateState: @escaping (Int64) -> Void) {
         DispatchQueue.global(qos: .userInitiated).async {
             // Step 1: Check if the size is available and not 0 in the sortedApps cache
