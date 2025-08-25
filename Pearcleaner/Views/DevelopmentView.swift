@@ -730,6 +730,9 @@ struct PathLibrary {
                 "~/.cursor/",
                 "~/.cursor/extensions/"
             ]),
+            PathEnv(name: "Deno", paths: [
+                "~/Library/Caches/deno"
+            ]),
             PathEnv(name: "Go Modules", paths: [
                 "~/go/bin/",
                 "~/go/pkg/mod/"
@@ -759,7 +762,8 @@ struct PathLibrary {
                 "/usr/local/lib/node_modules/",
                 "~/.nvm/versions/node/*/",
                 "~/.npm/",
-                "~/.nvm/"
+                "~/.nvm/",
+                "~/Library/pnpm/store"
             ]),
             PathEnv(name: "Pip", paths: [
                 "~/.cache/pip/"
