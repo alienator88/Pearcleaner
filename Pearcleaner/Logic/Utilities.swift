@@ -588,8 +588,6 @@ extension String {
     }
 }
 
-
-
 func sendStartNotificationFW() {
     DistributedNotificationCenter.default().postNotificationName(Notification.Name("Pearcleaner.StartFileWatcher"), object: nil, userInfo: nil, deliverImmediately: true)
 }

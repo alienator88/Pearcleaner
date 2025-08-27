@@ -53,6 +53,7 @@ class Locations: ObservableObject {
             "\(home)/Library/Internet Plug-Ins",
             "\(home)/Library/LaunchAgents",
             "\(home)/Library/Logs",
+            "\(home)/Library/Logs/DiagnosticReports",
             "\(home)/Library/Preferences",
             "\(home)/Library/PreferencePanes",
             "\(home)/Library/Preferences/ByHost",

@@ -965,7 +965,7 @@ struct HelperBadge: View {
     @AppStorage("settings.general.selectedTab") private var selectedTab: CurrentTabView = .general
 
     var body: some View {
-        AlertNotification(label: "Helper Not Installed".localized(), icon: "key", buttonAction: {
+        AlertNotification(label: String(localized:"Helper Not Installed"), icon: "key", buttonAction: {
             selectedTab = .helper
             openAppSettings()
         }, btnColor: Color.orange, hideLabel: false)
