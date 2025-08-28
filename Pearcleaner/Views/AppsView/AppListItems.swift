@@ -157,25 +157,26 @@ struct AppListItems: View {
         }
         .overlay{
             if (isHovered || isSelected) {
-                if !minimalEnabled {
-                    HStack {
-                        RoundedRectangle(cornerRadius: 50)
+                HStack {
+                    Spacer()
+                    ZStack {
+                        // Morphing shape that animates between rectangle and square
+                        RoundedRectangle(cornerRadius: isSelected ? 6 : 50)
                             .fill(isSelected ? Color("AccentColor") : ThemeColors.shared(for: colorScheme).primaryText.opacity(0.5))
-                            .frame(width: isSelected ? 4 : 2, height: 25)
-                            .padding(.leading, 9)
-                        Spacer()
+                            .frame(width: isSelected ? 20 : 2, height: isSelected ? 20 : 25)
+                            .animation(animationEnabled ? .spring(response: 0.4, dampingFraction: 0.7, blendDuration: 0) : .linear(duration: 0), value: isSelected)
+                        
+                        if isSelected {
+                            Image(systemName: "xmark")
+                                .font(.system(size: 10, weight: .medium))
+                                .foregroundColor(.white)
+                                .opacity(isSelected ? 1 : 0)
+                                .animation(animationEnabled ? .easeInOut(duration: 0.2).delay(0.2) : .linear(duration: 0), value: isSelected)
+                        }
                     }
-                } else {
-                    HStack {
-                        Spacer()
-                        RoundedRectangle(cornerRadius: 50)
-                            .fill(isSelected ? Color("AccentColor") : ThemeColors.shared(for: colorScheme).primaryText.opacity(0.5))
-                            .frame(width: isSelected ? 4 : 2, height: 25)
-                            .padding(.trailing, 7)
-                    }
+                    .padding(.trailing, 7)
                 }
-
-
+                .allowsHitTesting(false)
             }
         }
         .onAppear {

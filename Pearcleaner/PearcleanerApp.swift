@@ -45,6 +45,9 @@ struct PearcleanerApp: App {
         permissionManager.checkPermissions(types: [.fullDiskAccess]) { results in
             permissionManager.results = results
         }
+        
+        //MARK: Pre-load volume information
+        AppState.shared.loadVolumeInfo()
     }
 
     var body: some Scene {

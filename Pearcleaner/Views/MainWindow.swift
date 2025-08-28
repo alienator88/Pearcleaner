@@ -110,21 +110,13 @@ struct MainWindow: View {
 
 
 struct MountedVolumeView: View {
-    struct Volume: Identifiable {
-        let id = UUID()
-        let name: String
-        let path: String
-        let icon: Image
-        let totalSpace: Int64
-        let usedSpace: Int64
-        let realAvailableSpace: Int64
-        let purgeableSpace: Int64
-    }
     @AppStorage("settings.interface.greetingEnabled") private var greetingEnabled: Bool = true
     @Environment(\.colorScheme) var colorScheme
     @ObservedObject private var themeManager = ThemeManager.shared
-    @State private var volume: Volume?
-    @State private var initialSize: Int64 = 0
+    @EnvironmentObject var appState: AppState
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+    @State private var purgeableSize: Int64 = 0
+    @State private var usedSize: Int64 = 0
     @State private var hoverAvailable: Bool = false
     @State private var hoverPurgeable: Bool = false
     @State private var hoverUsed: Bool = false
@@ -151,7 +143,7 @@ struct MountedVolumeView: View {
 
             Spacer()
 
-            if let volume = volume {
+            if let volume = appState.volumeInfo {
                 VStack(alignment: .center, spacing: 20) {
 
                     HStack(alignment: .center) {
@@ -240,6 +232,7 @@ struct MountedVolumeView: View {
                         Text(ByteCountFormatter.string(fromByteCount: volume.usedSpace, countStyle: .file))
                             .font(.caption)
                             .foregroundStyle(hoverUsed ? ThemeColors.shared(for: colorScheme).accent : ThemeColors.shared(for: colorScheme).secondaryText)
+                            .offset(y: -1)
 
                         GeometryReader { geo in
                             ZStack(alignment: .leading) {
@@ -253,15 +246,15 @@ struct MountedVolumeView: View {
                                     .brightness(-0.3)
                                     .saturation(0.5)
                                     .padding(3)
-                                    .frame(width: geo.size.width * CGFloat(volume.usedSpace + volume.purgeableSpace) / CGFloat(volume.totalSpace))
-                                    .animation(.easeOut(duration: 1.0).delay(0.2), value: initialSize)
+                                    .frame(width: geo.size.width * CGFloat(purgeableSize) / CGFloat(volume.totalSpace))
+                                    .animation(animationEnabled && !appState.volumeAnimationShown ? .spring(response: 0.7, dampingFraction: 0.6, blendDuration: 0) : .linear(duration: 0), value: purgeableSize)
                                 
                                 // Blue bar: Just used space (top layer)
                                 RoundedRectangle(cornerRadius: 5)
                                     .fill(ThemeColors.shared(for: colorScheme).accent)
                                     .padding(3)
-                                    .frame(width: geo.size.width * CGFloat(initialSize) / CGFloat(volume.totalSpace))
-                                    .animation(.easeOut(duration: 1.0), value: initialSize)
+                                    .frame(width: geo.size.width * CGFloat(usedSize) / CGFloat(volume.totalSpace))
+                                    .animation(animationEnabled && !appState.volumeAnimationShown ? .spring(response: 0.7, dampingFraction: 0.6, blendDuration: 0) : .linear(duration: 0), value: usedSize)
                                 
                                 // Transparent overlay for precise hover detection
                                 HStack(spacing: 0) {
@@ -297,6 +290,7 @@ struct MountedVolumeView: View {
                         Text(ByteCountFormatter.string(fromByteCount: volume.totalSpace, countStyle: .file))
                             .font(.caption)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            .offset(y: -1)
                     }
                     .frame(height: 10)
                 }
@@ -316,40 +310,54 @@ struct MountedVolumeView: View {
         }
         .padding()
         .onAppear {
-            let keys: [URLResourceKey] = [
-                .volumeNameKey,
-                .volumeAvailableCapacityKey,
-                .volumeAvailableCapacityForImportantUsageKey,
-                .volumeTotalCapacityKey
-            ]
-            let url = URL(fileURLWithPath: "/")
-
-            guard let resource = try? url.resourceValues(forKeys: Set(keys)),
-                  let total = resource.volumeTotalCapacity,
-                  let availableWithPurgeable = resource.volumeAvailableCapacity,
-                  let realAvailable = resource.volumeAvailableCapacityForImportantUsage else { return }
-
-            let finderTotalAvailable = Int64(realAvailable)
-            let realAvailableSpace = Int64(availableWithPurgeable)
-            let purgeableSpace = finderTotalAvailable - realAvailableSpace
-            let realUsedSpace = Int64(total) - finderTotalAvailable
-            let name = resource.volumeName ?? url.lastPathComponent
-            let icon = NSWorkspace.shared.icon(forFile: url.path)
-            icon.size = NSSize(width: 32, height: 32)
-
-            self.volume = Volume(
-                name: name,
-                path: url.path,
-                icon: Image(nsImage: icon),
-                totalSpace: Int64(total),
-                usedSpace: realUsedSpace,
-                realAvailableSpace: realAvailableSpace,
-                purgeableSpace: purgeableSpace)
-
-            self.initialSize = realUsedSpace
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-//                self.initialSize = Int64(used)
-//            }
+            if !appState.volumeAnimationShown {
+                startVolumeAnimation()
+            } else {
+                // Set bars immediately without animation
+                if let volume = appState.volumeInfo {
+                    purgeableSize = volume.usedSpace + volume.purgeableSpace
+                    usedSize = volume.usedSpace
+                }
+            }
+        }
+        .onChange(of: appState.volumeInfo) { volume in
+            if volume != nil && !appState.volumeAnimationShown {
+                startVolumeAnimation()
+            }
+        }
+    }
+    
+    private func startVolumeAnimation() {
+        guard let volume = appState.volumeInfo else { return }
+        
+        // Only animate if we haven't animated for this volume yet
+        if appState.volumeAnimationShown {
+            // Just set the values immediately without animation
+            purgeableSize = volume.usedSpace + volume.purgeableSpace
+            usedSize = volume.usedSpace
+            return
+        }
+        
+        // Reset bars to 0
+        purgeableSize = 0
+        usedSize = 0
+        
+        if animationEnabled {
+            // Start purgeable bar animation first
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.purgeableSize = volume.usedSpace + volume.purgeableSpace
+            }
+            
+            // Start used space bar animation with delay so it chases the purgeable bar
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.usedSize = volume.usedSpace
+                self.appState.volumeAnimationShown = true
+            }
+        } else {
+            // No animation - set both bars immediately
+            self.purgeableSize = volume.usedSpace + volume.purgeableSpace
+            self.usedSize = volume.usedSpace
+            self.appState.volumeAnimationShown = true
         }
     }
 }

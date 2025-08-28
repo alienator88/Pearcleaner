@@ -36,6 +36,10 @@ class AppState: ObservableObject {
     @Published var selectedEnvironment: PathEnv? // for handling dev environments
     @Published var trashError: Bool = false
     
+    // Volume information
+    @Published var volumeInfo: VolumeInfo?
+    @Published var volumeAnimationShown: Bool = false
+    
     // Per-app sensitivity level storage
     @Published var perAppSensitivity: [String: SearchSensitivityLevel] = [:]
 
@@ -146,6 +150,66 @@ class AppState: ObservableObject {
                 }
             }
         }
+    }
+    
+    func loadVolumeInfo() {
+        DispatchQueue.global(qos: .userInitiated).async {
+            let keys: [URLResourceKey] = [
+                .volumeNameKey,
+                .volumeAvailableCapacityKey,
+                .volumeAvailableCapacityForImportantUsageKey,
+                .volumeTotalCapacityKey
+            ]
+            let url = URL(fileURLWithPath: "/")
+
+            guard let resource = try? url.resourceValues(forKeys: Set(keys)),
+                  let total = resource.volumeTotalCapacity,
+                  let availableWithPurgeable = resource.volumeAvailableCapacity,
+                  let realAvailable = resource.volumeAvailableCapacityForImportantUsage else { return }
+
+            let finderTotalAvailable = Int64(realAvailable)
+            let realAvailableSpace = Int64(availableWithPurgeable)
+            let purgeableSpace = finderTotalAvailable - realAvailableSpace
+            let realUsedSpace = Int64(total) - finderTotalAvailable
+            let name = resource.volumeName ?? url.lastPathComponent
+            let icon = NSWorkspace.shared.icon(forFile: url.path)
+            icon.size = NSSize(width: 32, height: 32)
+
+            let volumeInfo = VolumeInfo(
+                name: name,
+                path: url.path,
+                icon: Image(nsImage: icon),
+                totalSpace: Int64(total),
+                usedSpace: realUsedSpace,
+                realAvailableSpace: realAvailableSpace,
+                purgeableSpace: purgeableSpace
+            )
+            
+            DispatchQueue.main.async {
+                self.volumeInfo = volumeInfo
+            }
+        }
+    }
+}
+
+struct VolumeInfo: Identifiable, Equatable {
+    let id = UUID()
+    let name: String
+    let path: String
+    let icon: Image
+    let totalSpace: Int64
+    let usedSpace: Int64
+    let realAvailableSpace: Int64
+    let purgeableSpace: Int64
+    
+    static func == (lhs: VolumeInfo, rhs: VolumeInfo) -> Bool {
+        return lhs.id == rhs.id &&
+               lhs.name == rhs.name &&
+               lhs.path == rhs.path &&
+               lhs.totalSpace == rhs.totalSpace &&
+               lhs.usedSpace == rhs.usedSpace &&
+               lhs.realAvailableSpace == rhs.realAvailableSpace &&
+               lhs.purgeableSpace == rhs.purgeableSpace
     }
 }
 
