@@ -14748,6 +14748,9 @@
         }
       }
     },
+    "Min Opacity:" : {
+
+    },
     "Missing Permissions" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -17304,6 +17307,9 @@
         }
       }
     },
+    "Opacity Fade:" : {
+
+    },
     "Open %@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -19035,6 +19041,9 @@
           }
         }
       }
+    },
+    "Perspective:" : {
+
     },
     "PID: %@" : {
       "localizations" : {
@@ -22668,6 +22677,9 @@
         }
       }
     },
+    "Rotation:" : {
+
+    },
     "Save" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -22832,6 +22844,9 @@
           }
         }
       }
+    },
+    "Scale:" : {
+
     },
     "Scan" : {
       "localizations" : {
@@ -26539,6 +26554,9 @@
         }
       }
     },
+    "Spacing:" : {
+
+    },
     "Sponsor" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -28600,6 +28618,9 @@
           }
         }
       }
+    },
+    "Toggle Debug" : {
+
     },
     "Tools" : {
       "extractionState" : "manual",

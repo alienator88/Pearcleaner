@@ -37,7 +37,7 @@ class AppState: ObservableObject {
     @Published var trashError: Bool = false
     
     // Volume information
-    @Published var volumeInfo: VolumeInfo?
+    @Published var volumeInfos: [VolumeInfo] = []
     @Published var volumeAnimationShown: Bool = false
     
     // Per-app sensitivity level storage
@@ -154,41 +154,134 @@ class AppState: ObservableObject {
     
     func loadVolumeInfo() {
         DispatchQueue.global(qos: .userInitiated).async {
-            let keys: [URLResourceKey] = [
-                .volumeNameKey,
-                .volumeAvailableCapacityKey,
-                .volumeAvailableCapacityForImportantUsageKey,
-                .volumeTotalCapacityKey
-            ]
-            let url = URL(fileURLWithPath: "/")
-
-            guard let resource = try? url.resourceValues(forKeys: Set(keys)),
-                  let total = resource.volumeTotalCapacity,
-                  let availableWithPurgeable = resource.volumeAvailableCapacity,
-                  let realAvailable = resource.volumeAvailableCapacityForImportantUsage else { return }
-
-            let finderTotalAvailable = Int64(realAvailable)
-            let realAvailableSpace = Int64(availableWithPurgeable)
-            let purgeableSpace = finderTotalAvailable - realAvailableSpace
-            let realUsedSpace = Int64(total) - finderTotalAvailable
-            let name = resource.volumeName ?? url.lastPathComponent
-            let icon = NSWorkspace.shared.icon(forFile: url.path)
-            icon.size = NSSize(width: 32, height: 32)
-
-            let volumeInfo = VolumeInfo(
-                name: name,
-                path: url.path,
-                icon: Image(nsImage: icon),
-                totalSpace: Int64(total),
-                usedSpace: realUsedSpace,
-                realAvailableSpace: realAvailableSpace,
-                purgeableSpace: purgeableSpace
-            )
+            var volumes: [VolumeInfo] = []
+            
+            // First, add root volume (/)
+            if let rootVolume = self.getVolumeInfo(for: URL(fileURLWithPath: "/")) {
+                volumes.append(rootVolume)
+            }
+            
+            // Then enumerate all mounted volumes in /Volumes
+            let volumesPath = "/Volumes"
+            if let volumeContents = try? FileManager.default.contentsOfDirectory(atPath: volumesPath) {
+                for volumeName in volumeContents {
+                    // Skip dot folders (hidden folders like .timemachine)
+                    if volumeName.hasPrefix(".") {
+                        continue
+                    }
+                    
+                    let volumePath = "\(volumesPath)/\(volumeName)"
+                    let volumeURL = URL(fileURLWithPath: volumePath)
+                    
+                    // Resolve symlinks
+                    let resolvedURL = volumeURL.resolvingSymlinksInPath()
+                    
+                    // Skip if it's the same as root (to avoid duplicates)
+                    if resolvedURL.path == "/" {
+                        continue
+                    }
+                    
+                    if let volumeInfo = self.getVolumeInfo(for: resolvedURL, displayName: volumeName) {
+                        volumes.append(volumeInfo)
+                    }
+                }
+            }
             
             DispatchQueue.main.async {
-                self.volumeInfo = volumeInfo
+                self.volumeInfos = volumes
             }
         }
+    }
+    
+    private func getVolumeInfo(for url: URL, displayName: String? = nil) -> VolumeInfo? {
+        let keys: [URLResourceKey] = [
+            .volumeNameKey,
+            .volumeAvailableCapacityKey,
+            .volumeAvailableCapacityForImportantUsageKey,
+            .volumeTotalCapacityKey
+        ]
+        
+        guard let resource = try? url.resourceValues(forKeys: Set(keys)),
+              let total = resource.volumeTotalCapacity,
+              let availableWithPurgeable = resource.volumeAvailableCapacity,
+              let realAvailable = resource.volumeAvailableCapacityForImportantUsage else { 
+            return nil 
+        }
+        
+        let finderTotalAvailable = Int64(realAvailable)
+        let realAvailableSpace = Int64(availableWithPurgeable)
+        let purgeableSpace = finderTotalAvailable - realAvailableSpace
+        let realUsedSpace = Int64(total) - finderTotalAvailable
+        let name = displayName ?? resource.volumeName ?? url.lastPathComponent
+        let icon = NSWorkspace.shared.icon(forFile: url.path)
+        icon.size = NSSize(width: 32, height: 32)
+        
+        // Special handling for Time Machine volumes
+        var adjustedUsedSpace = realUsedSpace
+        var adjustedTotalSpace = Int64(total)
+        
+        if self.isTimeMachineVolume(url: url) {
+            if let tmSizes = self.getTimeMachineActualSizes(url: url) {
+                adjustedUsedSpace = tmSizes.used
+                adjustedTotalSpace = tmSizes.total
+            }
+        }
+        
+        return VolumeInfo(
+            name: name,
+            path: url.path,
+            icon: Image(nsImage: icon),
+            totalSpace: adjustedTotalSpace,
+            usedSpace: adjustedUsedSpace,
+            realAvailableSpace: realAvailableSpace,
+            purgeableSpace: purgeableSpace
+        )
+    }
+    
+    private func isTimeMachineVolume(url: URL) -> Bool {
+        let backupsPath = url.appendingPathComponent("Backups.backupdb")
+        let tmDirectoryPath = url.appendingPathComponent(".com.apple.timemachine")
+        return FileManager.default.fileExists(atPath: backupsPath.path) || 
+               FileManager.default.fileExists(atPath: tmDirectoryPath.path)
+    }
+    
+    private func getTimeMachineActualSizes(url: URL) -> (used: Int64, total: Int64)? {
+        // Look for .sparsebundle files in the volume
+        guard let contents = try? FileManager.default.contentsOfDirectory(atPath: url.path) else { return nil }
+        
+        for item in contents {
+            if item.hasSuffix(".sparsebundle") {
+                let sparseBundlePath = url.appendingPathComponent(item)
+                let bandsPath = sparseBundlePath.appendingPathComponent("bands")
+                
+                if FileManager.default.fileExists(atPath: bandsPath.path) {
+                    // Sum up all band files to get actual used space
+                    if let bandContents = try? FileManager.default.contentsOfDirectory(atPath: bandsPath.path) {
+                        var totalUsed: Int64 = 0
+                        for band in bandContents {
+                            let bandPath = bandsPath.appendingPathComponent(band)
+                            if let attributes = try? FileManager.default.attributesOfItem(atPath: bandPath.path),
+                               let fileSize = attributes[.size] as? Int64 {
+                                totalUsed += fileSize
+                            }
+                        }
+                        
+                        // Read Info.plist for total capacity if available
+                        let infoPlistPath = sparseBundlePath.appendingPathComponent("Info.plist")
+                        if let plistData = try? Data(contentsOf: infoPlistPath),
+                           let plist = try? PropertyListSerialization.propertyList(from: plistData, options: [], format: nil) as? [String: Any],
+                           let bandSize = plist["band-size"] as? Int64 {
+                            // Estimate total capacity based on band size and available bands
+                            return (used: totalUsed, total: totalUsed + (bandSize * 1000)) // Rough estimate
+                        }
+                        
+                        return (used: totalUsed, total: totalUsed)
+                    }
+                }
+            }
+        }
+        
+        return nil
     }
 }
 
