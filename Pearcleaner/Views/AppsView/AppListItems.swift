@@ -58,10 +58,17 @@ struct AppListItems: View {
 
             Button(action: {
                 if !isSelected {
+                    // Selecting a new item - no exit animation, just set immediately then animate entry
+                    updateOnMain {
+                        appState.appInfo = .empty
+                        appState.selectedItems = []
+                        appState.currentView = .empty
+                    }
                     withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                         showAppInFiles(appInfo: appInfo, appState: appState, locations: locations)
                     }
                 } else {
+                    // Closing the same item - animate the close
                     withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                         updateOnMain {
                             appState.appInfo = .empty
@@ -164,16 +171,15 @@ struct AppListItems: View {
                         RoundedRectangle(cornerRadius: isSelected ? 6 : 50)
                             .fill(isSelected ? Color("AccentColor") : ThemeColors.shared(for: colorScheme).primaryText.opacity(0.5))
                             .frame(width: isSelected ? 20 : 2, height: isSelected ? 20 : 25)
-                            .animation(animationEnabled ? .spring(response: 0.4, dampingFraction: 0.7, blendDuration: 0) : .linear(duration: 0), value: isSelected)
-                        
+
                         if isSelected {
                             Image(systemName: "xmark")
                                 .font(.system(size: 10, weight: .medium))
                                 .foregroundColor(.white)
                                 .opacity(isSelected ? 1 : 0)
-                                .animation(animationEnabled ? .easeInOut(duration: 0.2).delay(0.2) : .linear(duration: 0), value: isSelected)
                         }
                     }
+                    .animation(animationEnabled ? .spring(response: 0.2, dampingFraction: 0.7, blendDuration: 0) : .linear(duration: 0), value: isSelected)
                     .padding(.trailing, 7)
                 }
                 .allowsHitTesting(false)

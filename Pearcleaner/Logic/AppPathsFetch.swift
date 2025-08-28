@@ -498,6 +498,7 @@ class AppPathFinder {
                 self.appState?.selectedItems = Set(updatedCollection)
             }
             self.appState?.progressStep = 0
+            self.appState?.showProgress = false
             self.completion?()
         }
     }

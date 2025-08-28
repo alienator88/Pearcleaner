@@ -255,8 +255,6 @@ func showAppInFiles(
     appInfo: AppInfo, appState: AppState, locations: Locations, sensitivityOverride: SearchSensitivityLevel? = nil) {
     @AppStorage("settings.interface.animationEnabled") var animationEnabled: Bool = true
 
-//    showPopover.wrappedValue = false
-
     updateOnMain {
         appState.appInfo = .empty
         appState.selectedItems = []
@@ -265,19 +263,13 @@ func showAppInFiles(
         appState.showProgress = true
 
         // Initialize the path finder and execute its search.
-        AppPathFinder(appInfo: appInfo, locations: locations, appState: appState, sensitivityOverride: sensitivityOverride) {
-            updateOnMain {
-                // Update the progress indicator on the main thread once the search completes.
-                appState.showProgress = false
-            }
-        }.findPaths()
+        AppPathFinder(appInfo: appInfo, locations: locations, appState: appState, sensitivityOverride: sensitivityOverride).findPaths()
 
         appState.appInfo = appInfo
 
         // Animate the view change and popover display.
         withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
             appState.currentView = .files
-//            showPopover.wrappedValue = true
         }
     }
 }

@@ -61,6 +61,7 @@ struct FilesView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .transition(.opacity)
+                .animation(.none, value: appState.showProgress)
             } else {
 
                 ZStack {
