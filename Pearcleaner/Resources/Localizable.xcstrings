@@ -8076,6 +8076,9 @@
         }
       }
     },
+    "Eject %@" : {
+
+    },
     "Enable context menu extension for Finder" : {
       "extractionState" : "manual",
       "localizations" : {

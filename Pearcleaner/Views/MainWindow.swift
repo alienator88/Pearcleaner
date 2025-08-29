@@ -166,7 +166,7 @@ struct MountedVolumeView: View {
                             let perspective = isCenter ? 0.0 : (offset > 0 ? -perspectiveValue : perspectiveValue)
                             let rotationX = isCenter ? 0.0 : (offset > 0 ? rotationValue : rotationValue)
                             
-                            VolumeItemView(volume: volume, isCenter: isCenter)
+                            VolumeItemView(volume: volume, isCenter: isCenter, onEject: ejectVolume)
                                 .scaleEffect(scale)
                                 .opacity(opacity)
                                 .offset(y: yOffset)
@@ -240,11 +240,35 @@ struct MountedVolumeView: View {
             selectedVolumeIndex = 0
         }
     }
+    
+    private func ejectVolume(_ volume: VolumeInfo) {
+        let workspace = NSWorkspace.shared
+        let success = workspace.unmountAndEjectDevice(atPath: volume.path)
+        
+        if !success {
+            print("Failed to eject volume: \(volume.name)")
+        } else {
+            // Find the current volume's index before ejection
+            if let currentIndex = appState.volumeInfos.firstIndex(where: { $0.id == volume.id }) {
+                // Refresh volume list after successful ejection
+                appState.loadVolumeInfo()
+                
+                // Adjust selected index after volume removal
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    let newCount = appState.volumeInfos.count
+                    if newCount > 0 {
+                        selectedVolumeIndex = min(currentIndex, newCount - 1)
+                    }
+                }
+            }
+        }
+    }
 }
 
 struct VolumeItemView: View {
     let volume: VolumeInfo
     let isCenter: Bool
+    let onEject: (VolumeInfo) -> Void
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var appState: AppState
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
@@ -253,7 +277,6 @@ struct VolumeItemView: View {
     @State private var hoverAvailable: Bool = false
     @State private var hoverPurgeable: Bool = false
     @State private var hoverUsed: Bool = false
-    @State private var animationShown: Bool = false
     @State private var isHovered: Bool = false
     
     var body: some View {
@@ -267,10 +290,24 @@ struct VolumeItemView: View {
 
                 VStack(alignment: .leading) {
                     HStack {
-                        Text(volume.name)
-                            .font(.title)
-                            .fontWeight(.bold)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                        HStack(spacing: 8) {
+                            Text(volume.name)
+                                .font(.title)
+                                .fontWeight(.bold)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            
+                            if volume.isExternal {
+                                Button(action: {
+                                    onEject(volume)
+                                }) {
+                                    Image(systemName: "eject")
+                                        .font(.title3)
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                                .help("Eject \(volume.name)")
+                            }
+                        }
 
                         Spacer()
 
@@ -332,13 +369,13 @@ struct VolumeItemView: View {
                             .saturation(0.5)
                             .padding(3)
                             .frame(width: geo.size.width * CGFloat(purgeableSize) / CGFloat(volume.totalSpace))
-                            .animation(animationEnabled && !animationShown ? .spring(response: 0.7, dampingFraction: 0.6, blendDuration: 0) : .linear(duration: 0), value: purgeableSize)
+                            .animation(animationEnabled && !volume.hasAnimated ? .spring(response: 0.7, dampingFraction: 0.6, blendDuration: 0) : .linear(duration: 0), value: purgeableSize)
                         
                         RoundedRectangle(cornerRadius: 5)
                             .fill(ThemeColors.shared(for: colorScheme).accent)
                             .padding(3)
                             .frame(width: geo.size.width * CGFloat(usedSize) / CGFloat(volume.totalSpace))
-                            .animation(animationEnabled && !animationShown ? .spring(response: 0.7, dampingFraction: 0.6, blendDuration: 0) : .linear(duration: 0), value: usedSize)
+                            .animation(animationEnabled && !volume.hasAnimated ? .spring(response: 0.7, dampingFraction: 0.6, blendDuration: 0) : .linear(duration: 0), value: usedSize)
                         
                         HStack(spacing: 0) {
                             Rectangle()
@@ -395,23 +432,27 @@ struct VolumeItemView: View {
             }
         }
         .onAppear {
-            if isCenter && !animationShown {
-                startVolumeAnimation()
-            } else {
+            if volume.hasAnimated {
                 purgeableSize = volume.usedSpace + volume.purgeableSpace
                 usedSize = volume.usedSpace
+            } else if isCenter {
+                startVolumeAnimation()
+            } else {
+                purgeableSize = 0
+                usedSize = 0
             }
         }
         .onChange(of: isCenter) { centered in
-            if centered && !animationShown {
+            if centered && !volume.hasAnimated {
                 startVolumeAnimation()
+            } else if !centered {
+                purgeableSize = volume.usedSpace + volume.purgeableSpace
+                usedSize = volume.usedSpace
             }
         }
     }
     
     private func startVolumeAnimation() {
-        guard !animationShown else { return }
-        
         purgeableSize = 0
         usedSize = 0
         
@@ -422,12 +463,19 @@ struct VolumeItemView: View {
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.usedSize = volume.usedSpace
-                self.animationShown = true
+                self.markVolumeAsAnimated()
             }
         } else {
             self.purgeableSize = volume.usedSpace + volume.purgeableSpace
             self.usedSize = volume.usedSpace
-            self.animationShown = true
+            self.markVolumeAsAnimated()
         }
     }
+    
+    private func markVolumeAsAnimated() {
+        if let index = appState.volumeInfos.firstIndex(where: { $0.id == volume.id }) {
+            appState.volumeInfos[index].hasAnimated = true
+        }
+    }
+    
 }

@@ -159,17 +159,21 @@ class AppState: ObservableObject {
             // First, add root volume (/)
             if let rootVolume = self.getVolumeInfo(for: URL(fileURLWithPath: "/")) {
                 volumes.append(rootVolume)
+                
+                #if DEBUG
                 // Duplicate for testing
                 let duplicateRoot = VolumeInfo(
-                    name: "\(rootVolume.name) Copy",
+                    name: "\(rootVolume.name) Debug",
                     path: rootVolume.path,
                     icon: rootVolume.icon,
                     totalSpace: rootVolume.totalSpace,
                     usedSpace: rootVolume.usedSpace,
                     realAvailableSpace: rootVolume.realAvailableSpace,
-                    purgeableSpace: rootVolume.purgeableSpace
+                    purgeableSpace: rootVolume.purgeableSpace,
+                    isExternal: false
                 )
                 volumes.append(duplicateRoot)
+                #endif
             }
             
             // Then enumerate all mounted volumes in /Volumes
@@ -192,13 +196,22 @@ class AppState: ObservableObject {
                         continue
                     }
                     
-                    if let volumeInfo = self.getVolumeInfo(for: resolvedURL, displayName: volumeName) {
-                        volumes.append(volumeInfo)
+                    // Skip Time Machine volumes
+                    if !self.isTimeMachineVolume(url: resolvedURL) {
+                        if let volumeInfo = self.getVolumeInfo(for: resolvedURL, displayName: volumeName) {
+                            volumes.append(volumeInfo)
+                        }
                     }
                 }
             }
             
             DispatchQueue.main.async {
+                // Preserve hasAnimated state from existing volumes
+                for i in 0..<volumes.count {
+                    if let existingVolume = self.volumeInfos.first(where: { $0.path == volumes[i].path }) {
+                        volumes[i].hasAnimated = existingVolume.hasAnimated
+                    }
+                }
                 self.volumeInfos = volumes
             }
         }
@@ -209,7 +222,9 @@ class AppState: ObservableObject {
             .volumeNameKey,
             .volumeAvailableCapacityKey,
             .volumeAvailableCapacityForImportantUsageKey,
-            .volumeTotalCapacityKey
+            .volumeTotalCapacityKey,
+            .volumeIsRemovableKey,
+            .volumeIsEjectableKey
         ]
         
         guard let resource = try? url.resourceValues(forKeys: Set(keys)),
@@ -219,81 +234,60 @@ class AppState: ObservableObject {
             return nil 
         }
         
-        let finderTotalAvailable = Int64(realAvailable)
+        // Use regular available capacity if important usage capacity is 0 (common for DMGs)
+        let effectiveAvailable = realAvailable > 0 ? Int(realAvailable) : availableWithPurgeable
+        let finderTotalAvailable = Int64(effectiveAvailable)
         let realAvailableSpace = Int64(availableWithPurgeable)
-        let purgeableSpace = finderTotalAvailable - realAvailableSpace
+        let purgeableSpace = max(0, finderTotalAvailable - realAvailableSpace)
         let realUsedSpace = Int64(total) - finderTotalAvailable
         let name = displayName ?? resource.volumeName ?? url.lastPathComponent
         let icon = NSWorkspace.shared.icon(forFile: url.path)
         icon.size = NSSize(width: 32, height: 32)
         
-        // Special handling for Time Machine volumes
-        var adjustedUsedSpace = realUsedSpace
-        var adjustedTotalSpace = Int64(total)
+        // Debug prints
+//        print("=== Volume: \(name) ===")
+//        print("Total: \(ByteCountFormatter.string(fromByteCount: Int64(total), countStyle: .file))")
+//        print("Available (with purgeable): \(ByteCountFormatter.string(fromByteCount: Int64(availableWithPurgeable), countStyle: .file))")
+//        print("Available (important usage): \(ByteCountFormatter.string(fromByteCount: Int64(realAvailable), countStyle: .file))")
+//        print("Calculated used: \(ByteCountFormatter.string(fromByteCount: realUsedSpace, countStyle: .file))")
+//        print("Calculated purgeable: \(ByteCountFormatter.string(fromByteCount: purgeableSpace, countStyle: .file))")
+//        print("========================")
         
-        if self.isTimeMachineVolume(url: url) {
-            if let tmSizes = self.getTimeMachineActualSizes(url: url) {
-                adjustedUsedSpace = tmSizes.used
-                adjustedTotalSpace = tmSizes.total
-            }
-        }
+        // Check if volume is external (removable or ejectable)
+        let isRemovable = resource.volumeIsRemovable ?? false
+        let isEjectable = resource.volumeIsEjectable ?? false
+        let isExternal = isRemovable || isEjectable
         
         return VolumeInfo(
             name: name,
             path: url.path,
             icon: Image(nsImage: icon),
-            totalSpace: adjustedTotalSpace,
-            usedSpace: adjustedUsedSpace,
+            totalSpace: Int64(total),
+            usedSpace: realUsedSpace,
             realAvailableSpace: realAvailableSpace,
-            purgeableSpace: purgeableSpace
+            purgeableSpace: purgeableSpace,
+            isExternal: isExternal
         )
     }
     
     private func isTimeMachineVolume(url: URL) -> Bool {
         let backupsPath = url.appendingPathComponent("Backups.backupdb")
         let tmDirectoryPath = url.appendingPathComponent(".com.apple.timemachine")
-        return FileManager.default.fileExists(atPath: backupsPath.path) || 
-               FileManager.default.fileExists(atPath: tmDirectoryPath.path)
+        
+        // Check for common Time Machine indicators
+        let hasBackupsDB = FileManager.default.fileExists(atPath: backupsPath.path)
+        let hasTMDirectory = FileManager.default.fileExists(atPath: tmDirectoryPath.path)
+        
+        // Check if volume name contains "TimeMachine"
+        let volumeName = url.lastPathComponent.lowercased()
+        let isNamedTimeMachine = volumeName.contains("timemachine") ||
+                                 volumeName.contains("time machine") ||
+                                 volumeName.contains("time_machine")
+
+        return hasBackupsDB || hasTMDirectory || isNamedTimeMachine
     }
     
-    private func getTimeMachineActualSizes(url: URL) -> (used: Int64, total: Int64)? {
-        // Look for .sparsebundle files in the volume
-        guard let contents = try? FileManager.default.contentsOfDirectory(atPath: url.path) else { return nil }
-        
-        for item in contents {
-            if item.hasSuffix(".sparsebundle") {
-                let sparseBundlePath = url.appendingPathComponent(item)
-                let bandsPath = sparseBundlePath.appendingPathComponent("bands")
-                
-                if FileManager.default.fileExists(atPath: bandsPath.path) {
-                    // Sum up all band files to get actual used space
-                    if let bandContents = try? FileManager.default.contentsOfDirectory(atPath: bandsPath.path) {
-                        var totalUsed: Int64 = 0
-                        for band in bandContents {
-                            let bandPath = bandsPath.appendingPathComponent(band)
-                            if let attributes = try? FileManager.default.attributesOfItem(atPath: bandPath.path),
-                               let fileSize = attributes[.size] as? Int64 {
-                                totalUsed += fileSize
-                            }
-                        }
-                        
-                        // Read Info.plist for total capacity if available
-                        let infoPlistPath = sparseBundlePath.appendingPathComponent("Info.plist")
-                        if let plistData = try? Data(contentsOf: infoPlistPath),
-                           let plist = try? PropertyListSerialization.propertyList(from: plistData, options: [], format: nil) as? [String: Any],
-                           let bandSize = plist["band-size"] as? Int64 {
-                            // Estimate total capacity based on band size and available bands
-                            return (used: totalUsed, total: totalUsed + (bandSize * 1000)) // Rough estimate
-                        }
-                        
-                        return (used: totalUsed, total: totalUsed)
-                    }
-                }
-            }
-        }
-        
-        return nil
-    }
+
 }
 
 struct VolumeInfo: Identifiable, Equatable {
@@ -305,6 +299,8 @@ struct VolumeInfo: Identifiable, Equatable {
     let usedSpace: Int64
     let realAvailableSpace: Int64
     let purgeableSpace: Int64
+    let isExternal: Bool
+    var hasAnimated: Bool = false
     
     static func == (lhs: VolumeInfo, rhs: VolumeInfo) -> Bool {
         return lhs.id == rhs.id &&
@@ -313,12 +309,11 @@ struct VolumeInfo: Identifiable, Equatable {
                lhs.totalSpace == rhs.totalSpace &&
                lhs.usedSpace == rhs.usedSpace &&
                lhs.realAvailableSpace == rhs.realAvailableSpace &&
-               lhs.purgeableSpace == rhs.purgeableSpace
+               lhs.purgeableSpace == rhs.purgeableSpace &&
+               lhs.isExternal == rhs.isExternal &&
+               lhs.hasAnimated == rhs.hasAnimated
     }
 }
-
-
-
 
 struct AppInfo: Identifiable, Equatable, Hashable {
     let id: UUID
@@ -372,8 +367,6 @@ struct AppInfo: Identifiable, Equatable, Hashable {
     
 }
 
-
-
 struct ZombieFile: Identifiable, Equatable, Hashable {
     let id: UUID
     var fileSize: [URL:Int64]
@@ -392,7 +385,6 @@ struct ZombieFile: Identifiable, Equatable, Hashable {
     static let empty = ZombieFile(id: UUID(), fileSize: [:], fileSizeLogical: [:], fileIcon: [:])
     
 }
-
 
 struct AssociatedZombieFile: Codable {
     let appPath: URL  // Unique identifier for the app
