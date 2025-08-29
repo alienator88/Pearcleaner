@@ -193,45 +193,45 @@ struct MountedVolumeView: View {
 
             
             // Debug controls at bottom (only show if debug mode enabled)
-            if debugMode {
-                VStack {
-                    Spacer()
-                    VStack(spacing: 10) {
-                        HStack {
-                            Text("Perspective:")
-                            Slider(value: $perspectiveValue, in: 0.0...1.0, step: 0.1)
-                            Text(String(format: "%.1f", perspectiveValue))
-                        }
-                        HStack {
-                            Text("Rotation:")
-                            Slider(value: $rotationValue, in: 0.0...45.0, step: 1.0)
-                            Text(String(format: "%.0f°", rotationValue))
-                        }
-                        HStack {
-                            Text("Spacing:")
-                            Slider(value: $spacingValue, in: 30.0...120.0, step: 5.0)
-                            Text(String(format: "%.0f", spacingValue))
-                        }
-                        HStack {
-                            Text("Scale:")
-                            Slider(value: $scaleValue, in: 0.3...1.0, step: 0.05)
-                            Text(String(format: "%.2f", scaleValue))
-                        }
-                        HStack {
-                            Text("Min Opacity:")
-                            Slider(value: $minOpacity, in: 0.1...0.9, step: 0.05)
-                            Text(String(format: "%.2f", minOpacity))
-                        }
-                        Button("Toggle Debug") {
-                            debugMode = false
-                        }
-                    }
-                    .padding()
-                    .background(ThemeColors.shared(for: colorScheme).secondaryBG)
-                    .cornerRadius(8)
-                    .frame(maxWidth: 400)
-                }
-            }
+//            if debugMode {
+//                VStack {
+//                    Spacer()
+//                    VStack(spacing: 10) {
+//                        HStack {
+//                            Text("Perspective:")
+//                            Slider(value: $perspectiveValue, in: 0.0...1.0, step: 0.1)
+//                            Text(String(format: "%.1f", perspectiveValue))
+//                        }
+//                        HStack {
+//                            Text("Rotation:")
+//                            Slider(value: $rotationValue, in: 0.0...45.0, step: 1.0)
+//                            Text(String(format: "%.0f°", rotationValue))
+//                        }
+//                        HStack {
+//                            Text("Spacing:")
+//                            Slider(value: $spacingValue, in: 30.0...120.0, step: 5.0)
+//                            Text(String(format: "%.0f", spacingValue))
+//                        }
+//                        HStack {
+//                            Text("Scale:")
+//                            Slider(value: $scaleValue, in: 0.3...1.0, step: 0.05)
+//                            Text(String(format: "%.2f", scaleValue))
+//                        }
+//                        HStack {
+//                            Text("Min Opacity:")
+//                            Slider(value: $minOpacity, in: 0.1...0.9, step: 0.05)
+//                            Text(String(format: "%.2f", minOpacity))
+//                        }
+//                        Button("Toggle Debug") {
+//                            debugMode = false
+//                        }
+//                    }
+//                    .padding()
+//                    .background(ThemeColors.shared(for: colorScheme).secondaryBG)
+//                    .cornerRadius(8)
+//                    .frame(maxWidth: 400)
+//                }
+//            }
 
         }
         .padding()
@@ -305,7 +305,6 @@ struct VolumeItemView: View {
                                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                                 }
                                 .buttonStyle(PlainButtonStyle())
-                                .help("Eject \(volume.name)")
                             }
                         }
 

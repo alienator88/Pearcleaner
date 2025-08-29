@@ -58,7 +58,6 @@ struct AppListItems: View {
 
             Button(action: {
                 if !isSelected {
-                    // Selecting a new item - no exit animation, just set immediately then animate entry
                     updateOnMain {
                         appState.appInfo = .empty
                         appState.selectedItems = []
@@ -179,7 +178,7 @@ struct AppListItems: View {
                                 .opacity(isSelected ? 1 : 0)
                         }
                     }
-                    .animation(animationEnabled ? .spring(response: 0.2, dampingFraction: 0.7, blendDuration: 0) : .linear(duration: 0), value: isSelected)
+                    .animation(animationEnabled ? .spring(response: 0.4, dampingFraction: 0.7, blendDuration: 0) : .linear(duration: 0), value: isSelected)
                     .padding(.trailing, 7)
                 }
                 .allowsHitTesting(false)

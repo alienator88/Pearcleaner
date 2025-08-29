@@ -213,28 +213,30 @@ struct ZombieView: View {
                     updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSort: selectedSort, force: true)
                 }
                 .sheet(isPresented: $showAlert, content: {
-                        VStack(spacing: 10) {
-                            Text("Important")
-                                .font(.headline)
-                            Divider()
-                            Spacer()
-                            Text("Orphaned file search is not 100% accurate as it doesn't have any uninstalled app bundles to check against for file exclusion. This does a best guess search for files/folders and excludes the ones that have overlap with your currently installed applications. Please confirm files marked for deletion really do belong to uninstalled applications.")
-                                .font(.subheadline)
-                            Spacer()
-                            Button("Close") {
-                                warning = true
-                                showAlert = false
-                            }
-                            .buttonStyle(SimpleButtonStyle(icon: "x.circle.fill", label: String(localized: "Close"), help: String(localized: "Dismiss")))
-                            Spacer()
+                    VStack(spacing: 10) {
+                        Text("Important")
+                            .font(.headline)
+                        Divider()
+                        Spacer()
+                        Text("Orphaned file search is not 100% accurate as it doesn't have any uninstalled app bundles to check against for file exclusion. This does a best guess search for files/folders and excludes the ones that have overlap with your currently installed applications. Please confirm files marked for deletion really do belong to uninstalled applications.")
+                            .font(.subheadline)
+                        Spacer()
+                        Button("Close") {
+                            warning = true
+                            showAlert = false
                         }
-                        .padding(15)
-                        .frame(width: 400, height: 250)
-                        .background(GlassEffect(material: .hudWindow, blendingMode: .behindWindow))
+                        .buttonStyle(SimpleButtonStyle(icon: "x.circle.fill", label: String(localized: "Close"), help: String(localized: "Dismiss")))
+                        Spacer()
+                    }
+                    .padding(15)
+                    .frame(width: 400, height: 250)
+                    .background(GlassEffect(material: .hudWindow, blendingMode: .behindWindow))
                 })
 
             }
+
         }
+
         .onAppear {
             if !warning {
                 showAlert = true
