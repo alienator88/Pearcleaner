@@ -154,31 +154,36 @@ struct MountedVolumeView: View {
                 ZStack {
                     ForEach(Array(appState.volumeInfos.enumerated()), id: \.element.id) { index, volume in
                         let offset = index - selectedVolumeIndex
-                        let isCenter = offset == 0
-                        let scale = isCenter ? 1.0 : max(scaleValue, 1.0 - abs(Double(offset)) * 0.1)
-                        let opacity = isCenter ? 1.0 : max(minOpacity, 1.0 - abs(Double(offset)) * opacityFade)
-                        let yOffset = Double(offset) * spacingValue
                         
-                        // 3D perspective skew - adjustable
-                        let perspective = isCenter ? 0.0 : (offset > 0 ? -perspectiveValue : perspectiveValue)
-                        let rotationX = isCenter ? 0.0 : (offset > 0 ? rotationValue : rotationValue)
-                        
-                        VolumeItemView(volume: volume, isCenter: isCenter)
-                            .scaleEffect(scale)
-                            .opacity(opacity)
-                            .offset(y: yOffset)
-                            .rotation3DEffect(
-                                .degrees(rotationX),
-                                axis: (x: 1, y: 0, z: 0),
-                                perspective: perspective
-                            )
-                            .zIndex(isCenter ? 10 : Double(10 - abs(offset)))
-                            .onTapGesture {
-                                withAnimation(Animation.spring(response: 0.4, dampingFraction: 0.6)) {
-                                    selectedVolumeIndex = index
+                        // Only show tiles within 1 position of center
+                        if abs(offset) <= 1 {
+                            let isCenter = offset == 0
+                            let scale = isCenter ? 1.0 : scaleValue
+                            let opacity = isCenter ? 1.0 : minOpacity
+                            let yOffset = Double(offset) * spacingValue
+                            
+                            // 3D perspective skew - adjustable
+                            let perspective = isCenter ? 0.0 : (offset > 0 ? -perspectiveValue : perspectiveValue)
+                            let rotationX = isCenter ? 0.0 : (offset > 0 ? rotationValue : rotationValue)
+                            
+                            VolumeItemView(volume: volume, isCenter: isCenter)
+                                .scaleEffect(scale)
+                                .opacity(opacity)
+                                .offset(y: yOffset)
+                                .rotation3DEffect(
+                                    .degrees(rotationX),
+                                    axis: (x: 1, y: 0, z: 0),
+                                    perspective: perspective
+                                )
+                                .shadow(color: isCenter ? .black.opacity(0.3) : .clear, radius: isCenter ? 10 : 0, x: 0, y: isCenter ? 5 : 0)
+                                .zIndex(isCenter ? 10 : Double(10 - abs(offset)))
+                                .onTapGesture {
+                                    withAnimation(Animation.spring(response: 0.4, dampingFraction: 0.6)) {
+                                        selectedVolumeIndex = index
+                                    }
                                 }
-                            }
-                            .animation(animationEnabled ? .spring(response: 0.4, dampingFraction: 0.6) : .linear(duration: 0), value: selectedVolumeIndex)
+                                .animation(animationEnabled ? .spring(response: 0.4, dampingFraction: 0.6) : .linear(duration: 0), value: selectedVolumeIndex)
+                        }
                     }
                 }
             } else {
@@ -216,11 +221,6 @@ struct MountedVolumeView: View {
                             Text("Min Opacity:")
                             Slider(value: $minOpacity, in: 0.1...0.9, step: 0.05)
                             Text(String(format: "%.2f", minOpacity))
-                        }
-                        HStack {
-                            Text("Opacity Fade:")
-                            Slider(value: $opacityFade, in: 0.1...0.5, step: 0.05)
-                            Text(String(format: "%.2f", opacityFade))
                         }
                         Button("Toggle Debug") {
                             debugMode = false

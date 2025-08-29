@@ -159,6 +159,17 @@ class AppState: ObservableObject {
             // First, add root volume (/)
             if let rootVolume = self.getVolumeInfo(for: URL(fileURLWithPath: "/")) {
                 volumes.append(rootVolume)
+                // Duplicate for testing
+                let duplicateRoot = VolumeInfo(
+                    name: "\(rootVolume.name) Copy",
+                    path: rootVolume.path,
+                    icon: rootVolume.icon,
+                    totalSpace: rootVolume.totalSpace,
+                    usedSpace: rootVolume.usedSpace,
+                    realAvailableSpace: rootVolume.realAvailableSpace,
+                    purgeableSpace: rootVolume.purgeableSpace
+                )
+                volumes.append(duplicateRoot)
             }
             
             // Then enumerate all mounted volumes in /Volumes
