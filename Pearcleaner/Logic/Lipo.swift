@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import AlinFoundation
 
 
 // Helper structs for Mach-O parsing
@@ -68,7 +67,7 @@ func recursivelyThinBundle(at path: URL, dryRun: Bool = false) -> (success: Bool
     guard let enumerator = fileManager.enumerator(at: path, 
                                                   includingPropertiesForKeys: [.isDirectoryKey, .isExecutableKey],
                                                   options: [.skipsHiddenFiles]) else {
-        printOS("Bundle Error: Could not enumerate bundle contents")
+        print("Bundle Error: Could not enumerate bundle contents")
         return (false, nil)
     }
     
@@ -285,7 +284,7 @@ public func thinBinaryUsingMachO(executablePath: String) -> Bool {
         return true
         
     } catch {
-        printOS("Mach-O Error: \(error)")
+        print("Mach-O Error: \(error)")
         return false
     }
 }
@@ -368,4 +367,59 @@ public func getArchitectureSliceSizes(from executablePath: String) throws -> (ar
     }
 
     return (arm: armSize, intel: intelSize, full: fullSize)
+}
+
+
+
+// Get size of files
+public func totalSizeOnDisk(for paths: [URL]) -> (real: Int64, logical: Int64) {
+    let fileManager = FileManager.default
+    var totalAllocatedSize: Int64 = 0
+    var totalFileSize: Int64 = 0
+
+    for url in paths {
+        var isDirectory: ObjCBool = false
+        if fileManager.fileExists(atPath: url.path, isDirectory: &isDirectory) {
+            let keys: [URLResourceKey] = [.totalFileAllocatedSizeKey, .fileSizeKey]
+            if isDirectory.boolValue {
+                // It's a directory, recurse into it
+                if let enumerator = fileManager.enumerator(at: url, includingPropertiesForKeys: keys, errorHandler: nil) {
+                    for case let fileURL as URL in enumerator {
+                        do {
+                            let fileAttributes = try fileURL.resourceValues(forKeys: Set(keys))
+                            if let allocatedSize = fileAttributes.totalFileAllocatedSize {
+                                totalAllocatedSize += Int64(allocatedSize)
+                            }
+                            if let fileSize = fileAttributes.fileSize {
+                                totalFileSize += Int64(fileSize)
+                            }
+                        } catch {
+                            print("Error getting file attributes for \(fileURL): \(error)")
+                        }
+                    }
+                }
+            } else {
+                // It's a file
+                do {
+                    let fileAttributes = try url.resourceValues(forKeys: Set(keys))
+                    if let allocatedSize = fileAttributes.totalFileAllocatedSize {
+                        totalAllocatedSize += Int64(allocatedSize)
+                    }
+                    if let fileSize = fileAttributes.fileSize {
+                        totalFileSize += Int64(fileSize)
+                    }
+                } catch {
+                    print("Error getting file attributes for \(url): \(error)")
+                }
+            }
+        }
+    }
+
+    return (real: totalAllocatedSize, logical: totalFileSize)
+}
+
+
+
+public func totalSizeOnDisk(for path: URL) -> (real: Int64, logical: Int64) {
+    return totalSizeOnDisk(for: [path])
 }
