@@ -19,7 +19,7 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.brew") private var brew: Bool = false
     @AppStorage("settings.general.oneshot") private var oneShotMode: Bool = false
     @AppStorage("settings.general.confirmAlert") private var confirmAlert: Bool = false
-    @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
+    @AppStorage("settings.general.sizeType") var sizeType: String = "Logical"
     @AppStorage("settings.general.cli") private var isCLISymlinked = false
     @AppStorage("settings.general.namesearchstrict") private var nameSearchStrict = false
     @AppStorage("settings.general.spotlight") private var spotlight = false

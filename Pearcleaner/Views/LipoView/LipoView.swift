@@ -74,18 +74,26 @@ struct LipoView: View {
         let filtered = appState.sortedApps.filter { !excludedApps.contains($0.path.path) }
         
         var result = filtered
+        
+        // Always hide apps with 0 savings once calculated
+        if !sliceSizesByPath.isEmpty {
+            result = result.filter { app in
+                if let sizes = sliceSizesByPath[app.path.path] {
+                    return sizes.savings > 0
+                }
+                return true // Show uncalculated apps
+            }
+        }
+        
         if filterMinSavings {
-            // Only apply the filter if we have size data calculated
+            // Only apply the 1MB+ filter if we have size data calculated
             if !sliceSizesByPath.isEmpty {
-                result = filtered.filter { app in
+                result = result.filter { app in
                     if let sizes = sliceSizesByPath[app.path.path] {
                         return sizes.savings >= 1024 * 1024 // 1MB in bytes
                     }
                     return false
                 }
-            } else {
-                // Return all apps while sizes are being calculated
-                result = filtered
             }
         }
         
@@ -323,6 +331,59 @@ struct LipoView: View {
                 self.totalSpaceSaved += actualSpaceSaved
                 showCustomAlert(title: title, message: message, style: .informational)
                 self.isProcessing = false
+                
+                // Recalculate savings for processed apps to update their display and filter them out
+                self.recalculateProcessedApps()
+            }
+        }
+    }
+    
+    private func recalculateProcessedApps() {
+        // Get a copy of currently selected apps before clearing the selection
+        let processedAppPaths = Array(selectedApps)
+        
+        // Clear selections since these apps were processed
+        selectedApps.removeAll()
+        selectAll = false
+        
+        // Recalculate savings for each processed app in the background
+        Task {
+            for appPath in processedAppPaths {
+                // Find the app info
+                if let app = appState.sortedApps.first(where: { $0.path.path == appPath }) {
+                    let savings = await calculateBundleSavings(for: app)
+                    
+                    await MainActor.run {
+                        // Update the shared state with new (likely 0) savings
+                        sliceSizesByPath[appPath] = (bundle: UInt64(app.bundleSize), savings: savings)
+                        
+                        // Update totals - subtract old savings and add new (likely 0)
+                        if savings == 0 {
+                            // App was successfully processed and now has 0 savings - it will be filtered out
+                            savingsAllApps = sliceSizesByPath.values.reduce(0) { $0 + $1.savings }
+                            bundleAllApps = sliceSizesByPath.values.reduce(0) { $0 + $1.bundle }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private func calculateBundleSavings(for app: AppInfo) async -> UInt64 {
+        return await withCheckedContinuation { continuation in
+            let appPath = app.path
+            let appArch = app.arch
+            DispatchQueue.global(qos: .utility).async {
+                let (success, sizes) = thinAppBundleArchitecture(at: appPath, of: appArch, multi: true, dryRun: true)
+
+                if success, let sizes = sizes {
+                    let preSize = sizes["pre"] ?? 0
+                    let postSize = sizes["post"] ?? 0
+                    let savings = preSize > postSize ? preSize - postSize : 0
+                    continuation.resume(returning: savings)
+                } else {
+                    continuation.resume(returning: 0)
+                }
             }
         }
     }

@@ -68,7 +68,7 @@ func recursivelyThinBundle(at path: URL, dryRun: Bool = false) -> (success: Bool
     guard let enumerator = fileManager.enumerator(at: path, 
                                                   includingPropertiesForKeys: [.isDirectoryKey, .isExecutableKey],
                                                   options: [.skipsHiddenFiles]) else {
-        print("Bundle Error: Could not enumerate bundle contents")
+        printOS("Bundle Error: Could not enumerate bundle contents")
         return (false, nil)
     }
     
@@ -242,7 +242,7 @@ public func thinBinaryUsingMachO(executablePath: String) -> Bool {
         }
         
         guard fatHeader.magic == FAT_MAGIC else {
-            print("Mach-O Error: Not a universal binary, skipping thinning.")
+//            printOS("Mach-O Error: Not a universal binary, skipping thinning.")
             return false
         }
         
@@ -270,7 +270,7 @@ public func thinBinaryUsingMachO(executablePath: String) -> Bool {
         }
         
         guard let targetArchData = foundArch else {
-            print("Mach-O Error: Target architecture \(targetArch) not found in binary.")
+//            printOS("Mach-O Error: Target architecture \(targetArch) not found in binary.")
             return false
         }
         
@@ -285,7 +285,7 @@ public func thinBinaryUsingMachO(executablePath: String) -> Bool {
         return true
         
     } catch {
-        print("Mach-O Error: \(error)")
+        printOS("Mach-O Error: \(error)")
         return false
     }
 }
