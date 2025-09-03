@@ -155,7 +155,7 @@ struct LipoView: View {
                         HStack {
                             Toggle(isOn: $selectAll) {}
                                 .toggleStyle(SimpleCheckboxToggleStyle())
-                                .padding()
+                                .padding(.vertical)
                                 .onChange(of: selectAll) { newValue in
                                     if newValue {
                                         selectedApps = Set(universalApps.map { $0.path.path })
@@ -167,7 +167,7 @@ struct LipoView: View {
                             Spacer()
 
                             LipoLegend()
-                                .padding()
+                                .padding(.vertical)
 
                         }
 
@@ -291,12 +291,13 @@ struct LipoView: View {
             var totalPostSize: UInt64 = 0
 
             for app in universalApps where selectedApps.contains(app.path.path) {
+                // Use the updated thinAppBundleArchitecture function with multi=true
                 let (success, sizes) = thinAppBundleArchitecture(at: app.path, of: app.arch, multi: true)
                 if success, let sizes = sizes {
                     totalPreSize += sizes["pre"] ?? 0
                     totalPostSize += sizes["post"] ?? 0
-                    totalSpaceSaved += (sizes["pre"] ?? 0) - (sizes["post"] ?? 0)
                 }
+                
                 // Prune languages if enabled
                 if prune {
                     do {
@@ -314,14 +315,15 @@ struct LipoView: View {
             let titleFormat = NSLocalizedString("Space Savings: %d%%\nTotal Space Saved: %@", comment: "Lipo completion title")
             let messageFormat = NSLocalizedString("The total space savings between all the lipo'd apps\nSize Before: %@\nSize After: %@", comment: "Lipo completion message")
 
-            let title = String(format: titleFormat, overallSavings, formatByte(size: Int64(totalSpaceSaved)).human)
+            let actualSpaceSaved = totalPreSize - totalPostSize
+            let title = String(format: titleFormat, overallSavings, formatByte(size: Int64(actualSpaceSaved)).human)
             let message = String(format: messageFormat, formatByte(size: Int64(totalPreSize)).human, formatByte(size: Int64(totalPostSize)).human)
 
-
             DispatchQueue.main.async {
+                self.totalSpaceSaved += actualSpaceSaved
                 showCustomAlert(title: title, message: message, style: .informational)
+                self.isProcessing = false
             }
-            isProcessing = false
         }
     }
 
@@ -385,7 +387,7 @@ struct LipoAppRowView: View {
                 Spacer()
                 sizesDisplay
             }
-            .padding(5)
+            .padding()
         }
         .background(ThemeColors.shared(for: colorScheme).secondaryBG)
         .clipShape(RoundedRectangle(cornerRadius: 8))
@@ -426,17 +428,17 @@ struct LipoAppRowView: View {
             if let savings = calculatedSavings {
                 Text(verbatim: "\(formatByte(size: Int64(savings)).human)")
                     .foregroundStyle(.green)
-                    .frame(minWidth: 100, alignment: .leading)
+//                    .frame(minWidth: 100, alignment: .leading)
                     .help("Potential savings from bundle thinning")
             } else if isCalculating {
                 Text("Calculating...")
                     .font(.caption)
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    .frame(minWidth: 100, alignment: .leading)
+//                    .frame(minWidth: 100, alignment: .leading)
             } else {
                 Text("0 bytes")
                     .foregroundStyle(.green)
-                    .frame(minWidth: 100, alignment: .leading)
+//                    .frame(minWidth: 100, alignment: .leading)
                     .help("No savings available from bundle thinning")
             }
         }
@@ -471,42 +473,17 @@ struct LipoAppRowView: View {
     private func calculateBundleSavings(at bundlePath: URL) async -> UInt64 {
         return await withCheckedContinuation { continuation in
             DispatchQueue.global(qos: .utility).async {
-                let fileManager = FileManager.default
-                
-                guard let enumerator = fileManager.enumerator(at: bundlePath, 
-                                                              includingPropertiesForKeys: [.isDirectoryKey],
-                                                              options: [.skipsHiddenFiles]) else {
+                // Use the same function as actual lipo operation, but in dry-run mode
+                let (success, sizes) = thinAppBundleArchitecture(at: bundlePath, of: app.arch, multi: true, dryRun: true)
+
+                if success, let sizes = sizes {
+                    let preSize = sizes["pre"] ?? 0
+                    let postSize = sizes["post"] ?? 0
+                    let savings = preSize > postSize ? preSize - postSize : 0
+                    continuation.resume(returning: savings)
+                } else {
                     continuation.resume(returning: 0)
-                    return
                 }
-                
-                var totalSavings: UInt64 = 0
-                
-                while let fileURL = enumerator.nextObject() as? URL {
-                    // Skip directories early
-                    let resourceValues = try? fileURL.resourceValues(forKeys: [.isDirectoryKey])
-                    if resourceValues?.isDirectory == true { 
-                        continue 
-                    }
-                    
-                    // Check if this file would be processed by our bundle thinning
-                    if isExecutableBinary(fileURL) {
-                        do {
-                            if let sizes = try getArchitectureSliceSizes(from: fileURL.path) {
-#if arch(arm64)
-                                totalSavings += UInt64(sizes.intel)
-#else
-                                totalSavings += UInt64(sizes.arm)
-#endif
-                            }
-                        } catch {
-                            // Continue with other files if one fails
-                            continue
-                        }
-                    }
-                }
-                
-                continuation.resume(returning: totalSavings)
             }
         }
     }
@@ -517,82 +494,3 @@ struct LipoAppRowView: View {
 
 
 
-
-public func getArchitectureSliceSizes(from executablePath: String) throws -> (arm: UInt32, intel: UInt32, full: UInt32)? {
-    guard !executablePath.isEmpty else {
-        throw NSError(domain: "LipoError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Empty executable path"])
-    }
-    
-    let fileURL = URL(fileURLWithPath: executablePath)
-    let fileData = try Data(contentsOf: fileURL)
-    
-    guard fileData.count >= 8 else {
-        throw NSError(domain: "LipoError", code: 2, userInfo: [NSLocalizedDescriptionKey: "File too small to contain valid header"])
-    }
-    
-    let fullSize = UInt32(fileData.count)
-    let FAT_MAGIC: UInt32 = 0xcafebabe
-    
-    let header = try fileData.subdata(in: 0..<8).withUnsafeBytes { ptr -> FatHeader in
-        guard ptr.count >= 8 else {
-            throw NSError(domain: "LipoError", code: 3, userInfo: [NSLocalizedDescriptionKey: "Insufficient data for header"])
-        }
-        return FatHeader(
-            magic: ptr.load(fromByteOffset: 0, as: UInt32.self).bigEndian,
-            numArchitectures: ptr.load(fromByteOffset: 4, as: UInt32.self).bigEndian
-        )
-    }
-
-    var armSize: UInt32 = 0
-    var intelSize: UInt32 = 0
-
-    if header.magic == FAT_MAGIC {
-        guard header.numArchitectures > 0 && header.numArchitectures < 100 else {
-            throw NSError(domain: "LipoError", code: 4, userInfo: [NSLocalizedDescriptionKey: "Invalid number of architectures"])
-        }
-        
-        var offset = 8
-        for _ in 0..<header.numArchitectures {
-            let endOffset = offset + 20
-            guard endOffset <= fileData.count else {
-                throw NSError(domain: "LipoError", code: 5, userInfo: [NSLocalizedDescriptionKey: "Architecture data extends beyond file"])
-            }
-            
-            let arch = try fileData.subdata(in: offset..<endOffset).withUnsafeBytes { ptr -> FatArch in
-                guard ptr.count >= 20 else {
-                    throw NSError(domain: "LipoError", code: 6, userInfo: [NSLocalizedDescriptionKey: "Insufficient data for architecture"])
-                }
-                return FatArch(
-                    cpuType: ptr.load(fromByteOffset: 0, as: UInt32.self).bigEndian,
-                    cpuSubtype: ptr.load(fromByteOffset: 4, as: UInt32.self).bigEndian,
-                    offset: ptr.load(fromByteOffset: 8, as: UInt32.self).bigEndian,
-                    size: ptr.load(fromByteOffset: 12, as: UInt32.self).bigEndian,
-                    align: ptr.load(fromByteOffset: 16, as: UInt32.self).bigEndian
-                )
-            }
-
-            if arch.cpuType == 0x100000C {
-                armSize = arch.size
-            } else if arch.cpuType == 0x01000007 {
-                intelSize = arch.size
-            }
-            offset += 20
-        }
-    } else {
-        // For a lipo'd binary, assume the whole file is the slice.
-        guard fileData.count >= 8 else {
-            return (arm: 0, intel: 0, full: fullSize)
-        }
-        
-        let cpuType = fileData.subdata(in: 4..<8).withUnsafeBytes { 
-            $0.count >= 4 ? $0.load(as: UInt32.self).bigEndian : 0
-        }
-        if cpuType == 0x100000C {
-            armSize = fullSize
-        } else if cpuType == 0x01000007 {
-            intelSize = fullSize
-        }
-    }
-
-    return (arm: armSize, intel: intelSize, full: fullSize)
-}

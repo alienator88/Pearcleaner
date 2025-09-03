@@ -91,7 +91,7 @@ struct LipoSavingsSection: View {
                     .foregroundStyle(.green)
             }
             HStack(spacing: 0) {
-                Text("Total Available Savings:")
+                Text("Approximate Savings:")
                 Spacer()
                 Text(formatByte(size: Int64(savingsAllApps)).human)
                     .foregroundStyle(.orange)
@@ -229,9 +229,7 @@ struct LipoLegend: View {
     var body: some View {
         HStack {
             Rectangle().fill(.green).frame(width: 12, height: 12)
-            Text("Savings").foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText).padding(.trailing)
-            Rectangle().fill(.orange).frame(width: 12, height: 12)
-            Text("Binary").foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+            Text("Approximate Savings").foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
         }
     }
 }

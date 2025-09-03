@@ -6,7 +6,8 @@
 //
 
 import Foundation
-//import AlinFoundation
+import AlinFoundation
+
 
 // Helper structs for Mach-O parsing
 public struct FatHeader {
@@ -36,13 +37,32 @@ public struct FatArch {
 }
 
 // Function to thin an entire app bundle with size tracking
-public func thinAppBundle(at bundlePath: URL) -> (Bool, [String: UInt64]?) {
-    let result = recursivelyThinBundle(at: bundlePath)
-    return (result.success, result.sizes)
+public func thinAppBundle(at bundlePath: URL, dryRun: Bool = false) -> (Bool, [String: UInt64]?) {
+    // Get the total bundle size before thinning
+    let preTotalSize = UInt64(totalSizeOnDisk(for: bundlePath).logical)
+    
+    let result = recursivelyThinBundle(at: bundlePath, dryRun: dryRun)
+    
+    if result.success {
+        if dryRun {
+            // For dry run, calculate estimated post-size based on binary savings
+            let binarySavings = result.sizes?["binarySavings"] ?? 0
+            let estimatedPostSize = preTotalSize > binarySavings ? preTotalSize - binarySavings : preTotalSize
+            let sizes = ["pre": preTotalSize, "post": estimatedPostSize]
+            return (true, sizes)
+        } else {
+            // For real thinning, get the actual bundle size after thinning
+            let postTotalSize = UInt64(totalSizeOnDisk(for: bundlePath).logical)
+            let sizes = ["pre": preTotalSize, "post": postTotalSize]
+            return (true, sizes)
+        }
+    } else {
+        return (result.success, result.sizes)
+    }
 }
 
 // Recursively thin all binaries in a bundle
-func recursivelyThinBundle(at path: URL) -> (success: Bool, sizes: [String: UInt64]?) {
+func recursivelyThinBundle(at path: URL, dryRun: Bool = false) -> (success: Bool, sizes: [String: UInt64]?) {
     let fileManager = FileManager.default
     
     guard let enumerator = fileManager.enumerator(at: path, 
@@ -70,16 +90,38 @@ func recursivelyThinBundle(at path: URL) -> (success: Bool, sizes: [String: UInt
             if let preAttributes = try? fileManager.attributesOfItem(atPath: fileURL.path),
                let preSize = preAttributes[.size] as? UInt64 {
                 
-                if thinBinaryUsingMachO(executablePath: fileURL.path) {
-                    // Get file size after thinning
-                    if let postAttributes = try? fileManager.attributesOfItem(atPath: fileURL.path),
-                       let postSize = postAttributes[.size] as? UInt64 {
-                        totalPreSize += preSize
-                        totalPostSize += postSize
+                if dryRun {
+                    // For dry run, calculate potential savings without modifying files
+                    do {
+                        if let sizes = try getArchitectureSliceSizes(from: fileURL.path) {
+                            totalPreSize += preSize
+#if arch(arm64)
+                            let removedSize = UInt64(sizes.intel)
+#else
+                            let removedSize = UInt64(sizes.arm)
+#endif
+                            let estimatedPostSize = preSize > removedSize ? preSize - removedSize : preSize
+                            totalPostSize += estimatedPostSize
+                            processedFiles.append(fileURL.path)
+                        } else {
+                            skippedFiles.append(fileURL.path)
+                        }
+                    } catch {
+                        skippedFiles.append(fileURL.path)
                     }
-                    processedFiles.append(fileURL.path)
                 } else {
-                    skippedFiles.append(fileURL.path)
+                    // Real thinning
+                    if thinBinaryUsingMachO(executablePath: fileURL.path) {
+                        // Get file size after thinning
+                        if let postAttributes = try? fileManager.attributesOfItem(atPath: fileURL.path),
+                           let postSize = postAttributes[.size] as? UInt64 {
+                            totalPreSize += preSize
+                            totalPostSize += postSize
+                        }
+                        processedFiles.append(fileURL.path)
+                    } else {
+                        skippedFiles.append(fileURL.path)
+                    }
                 }
             } else {
                 skippedFiles.append(fileURL.path)
@@ -87,12 +129,19 @@ func recursivelyThinBundle(at path: URL) -> (success: Bool, sizes: [String: UInt
         }
     }
     
-    print("Bundle thinning complete:")
-    print("  Processed: \(processedFiles.count) files")
-    print("  Skipped: \(skippedFiles.count) files")
-    
     let success = processedFiles.count > 0 || (processedFiles.count == 0 && skippedFiles.count >= 0)
-    let sizes = totalPreSize > 0 ? ["pre": totalPreSize, "post": totalPostSize] : nil
+    var sizes: [String: UInt64]? = nil
+    
+    if totalPreSize > 0 {
+        if dryRun {
+            // For dry run, include the binary savings calculation
+            let binarySavings = totalPreSize > totalPostSize ? totalPreSize - totalPostSize : 0
+            sizes = ["pre": totalPreSize, "post": totalPostSize, "binarySavings": binarySavings]
+        } else {
+            // For real thinning, just include pre/post
+            sizes = ["pre": totalPreSize, "post": totalPostSize]
+        }
+    }
     
     return (success, sizes)
 }
@@ -239,4 +288,84 @@ public func thinBinaryUsingMachO(executablePath: String) -> Bool {
         print("Mach-O Error: \(error)")
         return false
     }
+}
+
+// Get the size of different architecture slices in a Mach-O binary
+public func getArchitectureSliceSizes(from executablePath: String) throws -> (arm: UInt32, intel: UInt32, full: UInt32)? {
+    guard !executablePath.isEmpty else {
+        throw NSError(domain: "LipoError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Empty executable path"])
+    }
+    
+    let fileURL = URL(fileURLWithPath: executablePath)
+    let fileData = try Data(contentsOf: fileURL)
+    
+    guard fileData.count >= 8 else {
+        throw NSError(domain: "LipoError", code: 2, userInfo: [NSLocalizedDescriptionKey: "File too small to contain valid header"])
+    }
+    
+    let fullSize = UInt32(fileData.count)
+    let FAT_MAGIC: UInt32 = 0xcafebabe
+    
+    let header = try fileData.subdata(in: 0..<8).withUnsafeBytes { ptr -> FatHeader in
+        guard ptr.count >= 8 else {
+            throw NSError(domain: "LipoError", code: 3, userInfo: [NSLocalizedDescriptionKey: "Insufficient data for header"])
+        }
+        return FatHeader(
+            magic: ptr.load(fromByteOffset: 0, as: UInt32.self).bigEndian,
+            numArchitectures: ptr.load(fromByteOffset: 4, as: UInt32.self).bigEndian
+        )
+    }
+
+    var armSize: UInt32 = 0
+    var intelSize: UInt32 = 0
+
+    if header.magic == FAT_MAGIC {
+        guard header.numArchitectures > 0 && header.numArchitectures < 100 else {
+            throw NSError(domain: "LipoError", code: 4, userInfo: [NSLocalizedDescriptionKey: "Invalid number of architectures"])
+        }
+        
+        var offset = 8
+        for _ in 0..<header.numArchitectures {
+            let endOffset = offset + 20
+            guard endOffset <= fileData.count else {
+                throw NSError(domain: "LipoError", code: 5, userInfo: [NSLocalizedDescriptionKey: "Architecture data extends beyond file"])
+            }
+            
+            let arch = try fileData.subdata(in: offset..<endOffset).withUnsafeBytes { ptr -> FatArch in
+                guard ptr.count >= 20 else {
+                    throw NSError(domain: "LipoError", code: 6, userInfo: [NSLocalizedDescriptionKey: "Insufficient data for architecture"])
+                }
+                return FatArch(
+                    cpuType: ptr.load(fromByteOffset: 0, as: UInt32.self).bigEndian,
+                    cpuSubtype: ptr.load(fromByteOffset: 4, as: UInt32.self).bigEndian,
+                    offset: ptr.load(fromByteOffset: 8, as: UInt32.self).bigEndian,
+                    size: ptr.load(fromByteOffset: 12, as: UInt32.self).bigEndian,
+                    align: ptr.load(fromByteOffset: 16, as: UInt32.self).bigEndian
+                )
+            }
+
+            if arch.cpuType == 0x100000C {
+                armSize = arch.size
+            } else if arch.cpuType == 0x01000007 {
+                intelSize = arch.size
+            }
+            offset += 20
+        }
+    } else {
+        // For a lipo'd binary, assume the whole file is the slice.
+        guard fileData.count >= 8 else {
+            return (arm: 0, intel: 0, full: fullSize)
+        }
+        
+        let cpuType = fileData.subdata(in: 4..<8).withUnsafeBytes { 
+            $0.count >= 4 ? $0.load(as: UInt32.self).bigEndian : 0
+        }
+        if cpuType == 0x100000C {
+            armSize = fullSize
+        } else if cpuType == 0x01000007 {
+            intelSize = fullSize
+        }
+    }
+
+    return (arm: armSize, intel: intelSize, full: fullSize)
 }

@@ -211,13 +211,15 @@ func checkAppBundleArchitecture(at appBundlePath: String) -> Arch {
 
 
 // Main function that now directly uses the Mach-O helper
-func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool = false) -> (Bool, [String: UInt64]?) {
-    // Reset bundle size to 0 before starting
-    updateOnMain {
-        if let index = AppState.shared.sortedApps.firstIndex(where: { $0.path == appBundlePath }) {
-            var updatedAppInfo = AppState.shared.sortedApps[index]
-            updatedAppInfo.bundleSize = 0
-            AppState.shared.sortedApps[index] = updatedAppInfo
+func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool = false, dryRun: Bool = false) -> (Bool, [String: UInt64]?) {
+    // Reset bundle size to 0 before starting (only for real thinning)
+    if !dryRun {
+        updateOnMain {
+            if let index = AppState.shared.sortedApps.firstIndex(where: { $0.path == appBundlePath }) {
+                var updatedAppInfo = AppState.shared.sortedApps[index]
+                updatedAppInfo.bundleSize = 0
+                AppState.shared.sortedApps[index] = updatedAppInfo
+            }
         }
     }
     
@@ -225,7 +227,12 @@ func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool
     var success: Bool
     var sizes: [String: UInt64]?
     
-    if HelperToolManager.shared.isHelperToolInstalled {
+    if dryRun {
+        // For dry run, always use direct calculation without helper tools
+        let result = thinAppBundle(at: appBundlePath, dryRun: true)
+        success = result.0
+        sizes = result.1
+    } else if HelperToolManager.shared.isHelperToolInstalled {
         // Use privileged bundle thinning - helper handles the entire bundle with elevated privileges
         let semaphore = DispatchSemaphore(value: 0)
         success = false
@@ -254,8 +261,8 @@ func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool
         sizes = result.1
     }
 
-    // Update the app bundle timestamp to refresh Finder
-    if success {
+    // Update the app bundle timestamp to refresh Finder (only for real thinning)
+    if success && !dryRun {
         if !multi {
             // Update app sizes after lipo in sortedApps array and the AppInfo active object
             AppState.shared.getBundleSize(for: AppState.shared.appInfo) { newSize in
@@ -293,11 +300,9 @@ func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool
                 }
             }
         }
-
-        return (success, sizes)
     }
 
-    return (success, nil)
+    return (success, sizes)
 }
 
 

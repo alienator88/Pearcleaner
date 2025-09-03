@@ -3380,6 +3380,12 @@
         }
       }
     },
+    "Approximate Savings" : {
+
+    },
+    "Approximate Savings:" : {
+
+    },
     "Apps" : {
       "localizations" : {
         "de" : {
@@ -4120,6 +4126,7 @@
       }
     },
     "Binary" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -22930,6 +22937,7 @@
       }
     },
     "Savings" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -28780,6 +28788,7 @@
       }
     },
     "Total Available Savings:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
