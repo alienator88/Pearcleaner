@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C71449E52DA826610032B295 /* Lipo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C90DD22DA81C590056769A /* Lipo.swift */; };
+		C7149E792E68DE7E00A15356 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C7149E782E68DE7E00A15356 /* Localizable.xcstrings */; };
 		C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72893042AFD42E600C8C1CD /* DeepLink.swift */; };
 		C72893122AFD51EA00C8C1CD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72893112AFD51EA00C8C1CD /* main.swift */; };
 		C72D03B52E4D3FB900ADC1B4 /* MainWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72D03B22E4D3FB900ADC1B4 /* MainWindow.swift */; };
@@ -44,7 +45,6 @@
 		C7DD49EE2BAB7F6000CCBA16 /* ReversePathsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */; };
 		C7F539382AF60865007DF1B2 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F539372AF60865007DF1B2 /* Utilities.swift */; };
 		C7F8436B2CBF066F00E3E30A /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C7F8436A2CBF066F00E3E30A /* Localizable.xcstrings */; };
-		C7F8436C2CBF066F00E3E30A /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C7F8436A2CBF066F00E3E30A /* Localizable.xcstrings */; };
 		C7FBD9DF2DAD66D500151934 /* AlinFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = C7C90DDD2DA8221B0056769A /* AlinFoundation */; };
 /* End PBXBuildFile section */
 
@@ -121,6 +121,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C7149E782E68DE7E00A15356 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		C72893042AFD42E600C8C1CD /* DeepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLink.swift; sourceTree = "<group>"; };
 		C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PearcleanerSentinel; sourceTree = BUILT_PRODUCTS_DIR; };
 		C72893112AFD51EA00C8C1CD /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
@@ -349,6 +350,7 @@
 				C78121672BC892A000BE06BD /* Info.plist */,
 				C78121682BC892A000BE06BD /* FinderOpen.entitlements */,
 				C7A6DBF02C9DD27200CFA042 /* Assets.xcassets */,
+				C7149E782E68DE7E00A15356 /* Localizable.xcstrings */,
 			);
 			path = FinderOpen;
 			sourceTree = "<group>";
@@ -530,7 +532,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C7F8436C2CBF066F00E3E30A /* Localizable.xcstrings in Resources */,
+				C7149E792E68DE7E00A15356 /* Localizable.xcstrings in Resources */,
 				C7A6DBF12C9DD27200CFA042 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
