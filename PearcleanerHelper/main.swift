@@ -12,6 +12,7 @@ import ObjectiveC
 public protocol HelperToolProtocol {
     func runCommand(command: String, withReply reply: @escaping (Bool, String) -> Void)
     func runThinning(atPath: String, withReply reply: @escaping (Bool, String) -> Void)
+    func runBundleThinning(bundlePath: String, withReply reply: @escaping (Bool, String, [String: UInt64]) -> Void)
 }
 
 // XPC Communication setup
@@ -68,6 +69,17 @@ class HelperToolDelegate: NSObject, NSXPCListenerDelegate, HelperToolProtocol {
     func runThinning(atPath: String, withReply reply: @escaping (Bool, String) -> Void) {
         let success = thinBinaryUsingMachO(executablePath: atPath)
         reply(success, success ? "Success" : "Failed")
+    }
+    
+    func runBundleThinning(bundlePath: String, withReply reply: @escaping (Bool, String, [String: UInt64]) -> Void) {
+        let bundleURL = URL(fileURLWithPath: bundlePath)
+        let result = thinAppBundle(at: bundleURL)
+        
+        let success = result.0
+        let message = success ? "Bundle thinning completed successfully" : "Bundle thinning failed"
+        let sizes = result.1 ?? [:]
+        
+        reply(success, message, sizes)
     }
 
     // Check that the codesigning matches between the main app and the helper app

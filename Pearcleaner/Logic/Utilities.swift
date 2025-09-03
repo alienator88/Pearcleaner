@@ -220,57 +220,42 @@ func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool
             AppState.shared.sortedApps[index] = updatedAppInfo
         }
     }
-    // Skip if already single architecture
-    guard arch == .universal else {
-        printOS("Lipo: Skipping, app is already single architecture: \(arch)")
-        return (false, nil)
-    }
-    // Extract executable name from Info.plist
-    let executableName: String
-    let infoPlistPath = appBundlePath.appendingPathComponent("Contents/Info.plist")
-
-    if let infoPlist = NSDictionary(contentsOf: infoPlistPath) as? [String: Any],
-       let bundleExecutable = infoPlist["CFBundleExecutable"] as? String {
-        executableName = bundleExecutable
-    } else {
-        printOS("Lipo: Failed to read Info.plist or CFBundleExecutable not found")
-        return (false, nil)
-    }
-
-    // Get full path to executable
-    let executablePath = appBundlePath.appendingPathComponent("Contents/MacOS/\(executableName)").path
-
-    // Get size before lipo (lipo/Mach-O)
-    guard let preAttributes = try? FileManager.default.attributesOfItem(atPath: executablePath),
-          let preLipoSize = preAttributes[.size] as? UInt64 else {
-        printOS("Lipo: Failed to get pre-lipo size for executable at \(executablePath)")
-        return (false, nil)
-    }
-
-    // Use privileged thinning if helper is installed, otherwise fallback to Mach-O thinning
+    
+    // Use privileged helper if installed and needed, otherwise fallback to bundle thinning
     var success: Bool
+    var sizes: [String: UInt64]?
+    
     if HelperToolManager.shared.isHelperToolInstalled {
+        // Use privileged bundle thinning - helper handles the entire bundle with elevated privileges
         let semaphore = DispatchSemaphore(value: 0)
         success = false
+        sizes = nil
+        
         Task {
-            let result = await HelperToolManager.shared.runThinning(atPath: executablePath)
+            let result = await HelperToolManager.shared.runBundleThinning(bundlePath: appBundlePath.path)
             success = result.0
+            if result.0, !result.2.isEmpty {
+                sizes = result.2
+            }
             semaphore.signal()
         }
         semaphore.wait()
+        
+        if !success {
+            // Helper tool failed, fallback to bundle thinning
+            let result = thinAppBundle(at: appBundlePath)
+            success = result.0
+            sizes = result.1
+        }
     } else {
-        success = thinBinaryUsingMachO(executablePath: executablePath)
+        // No helper tool installed, use comprehensive bundle thinning
+        let result = thinAppBundle(at: appBundlePath)
+        success = result.0
+        sizes = result.1
     }
 
     // Update the app bundle timestamp to refresh Finder
     if success {
-        // Get size after lipo
-        guard let postAttributes = try? FileManager.default.attributesOfItem(atPath: executablePath),
-              let postLipoSize = postAttributes[.size] as? UInt64 else {
-            printOS("Lipo: Failed to get post-lipo size for executable at \(executablePath)")
-            return (success, nil)
-        }
-
         if !multi {
             // Update app sizes after lipo in sortedApps array and the AppInfo active object
             AppState.shared.getBundleSize(for: AppState.shared.appInfo) { newSize in
@@ -285,10 +270,15 @@ func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool
                     // Replace the whole appInfo object
                     AppState.shared.appInfo = updatedAppInfo
 
-                    let savingsPercentage = Int((Double(preLipoSize - postLipoSize) / Double(preLipoSize)) * 100)
-                    let title = String(format: NSLocalizedString("Space Savings: %d%%", comment: "Lipo result title"), savingsPercentage)
-                    let message = String(format: NSLocalizedString("Lipo'd File:\n\n%@", comment: "Lipo result message"), executablePath)
-                    showCustomAlert(title: title, message: message, style: .informational)
+                    // Show savings information if we have size data
+                    if let bundleSizes = sizes,
+                       let preSize = bundleSizes["pre"],
+                       let postSize = bundleSizes["post"] {
+                        let savingsPercentage = Int((Double(preSize - postSize) / Double(preSize)) * 100)
+                        let title = String(format: NSLocalizedString("Space Savings: %d%%", comment: "Lipo result title"), savingsPercentage)
+                        let message = String(format: NSLocalizedString("Bundle thinning complete.\nTotal space saved from all binaries in bundle.", comment: "Lipo result message"))
+                        showCustomAlert(title: title, message: message, style: .informational)
+                    }
                 }
             }
         } else { // Update the appInfo in sortedApps array
@@ -304,8 +294,7 @@ func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool
             }
         }
 
-        return (success, ["pre": preLipoSize, "post": postLipoSize])
-
+        return (success, sizes)
     }
 
     return (success, nil)

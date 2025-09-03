@@ -1397,6 +1397,9 @@
         }
       }
     },
+    "0 bytes" : {
+
+    },
     "A **huge** thank you to everyone who has contributed so far!" : {
       "localizations" : {
         "de" : {
@@ -4362,6 +4365,9 @@
         }
       }
     },
+    "Bundle thinning complete.\nTotal space saved from all binaries in bundle." : {
+      "comment" : "Lipo result message"
+    },
     "Bundle: %@" : {
       "localizations" : {
         "de" : {
@@ -4526,6 +4532,9 @@
           }
         }
       }
+    },
+    "Calculating..." : {
+
     },
     "Cancel" : {
       "extractionState" : "manual",
@@ -13677,6 +13686,7 @@
     },
     "Lipo'd File:\n\n%@" : {
       "comment" : "Lipo result message",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -15900,6 +15910,9 @@
         }
       }
     },
+    "No apps available for thinning" : {
+
+    },
     "No apps excluded" : {
       "localizations" : {
         "de" : {
@@ -16805,7 +16818,11 @@
         }
       }
     },
+    "No savings available from bundle thinning" : {
+
+    },
     "No universal apps found" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -19526,6 +19543,9 @@
           }
         }
       }
+    },
+    "Potential savings from bundle thinning" : {
+
     },
     "Prune Translations" : {
       "comment" : "Prune alert title",

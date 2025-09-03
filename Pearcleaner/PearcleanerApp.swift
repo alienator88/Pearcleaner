@@ -48,6 +48,7 @@ struct PearcleanerApp: App {
         
         //MARK: Pre-load volume information
         AppState.shared.loadVolumeInfo()
+
     }
 
     var body: some Scene {

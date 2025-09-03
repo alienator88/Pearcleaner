@@ -18,7 +18,7 @@ struct LipoSidebarView: View {
     @Binding var filterMinSavings: Bool
     let onRemoveExcluded: (String) -> Void
     let totalSpaceSaved: UInt64
-    let savingsAllApps: UInt32
+    let savingsAllApps: UInt64
 
     var body: some View {
         if infoSidebar {
@@ -80,7 +80,7 @@ struct LipoDescriptionSection: View {
 
 struct LipoSavingsSection: View {
     let totalSpaceSaved: UInt64
-    let savingsAllApps: UInt32
+    let savingsAllApps: UInt64
 
     var body: some View {
         VStack(alignment: .leading) {

@@ -12,6 +12,7 @@ import AlinFoundation
 public protocol HelperToolProtocol {
     func runCommand(command: String, withReply reply: @escaping (Bool, String) -> Void)
     func runThinning(atPath: String, withReply reply: @escaping (Bool, String) -> Void)
+    func runBundleThinning(bundlePath: String, withReply reply: @escaping (Bool, String, [String: UInt64]) -> Void)
 }
 
 enum HelperToolAction {
@@ -154,6 +155,26 @@ class HelperToolManager: ObservableObject {
 
             proxy.runThinning(atPath: path) { success, output in
                 continuation.resume(returning: (success, output))
+            }
+        }
+    }
+    
+    // Function to run privileged bundle thinning on entire app bundles
+    func runBundleThinning(bundlePath path: String) async -> (Bool, String, [String: UInt64]) {
+        guard let connection = getConnection() else {
+            return (false, "XPC: No helper connection", [:])
+        }
+
+        return await withCheckedContinuation { continuation in
+            guard let proxy = connection.remoteObjectProxyWithErrorHandler({ error in
+                continuation.resume(returning: (false, "XPC: Error: \(error.localizedDescription)", [:]))
+            }) as? HelperToolProtocol else {
+                continuation.resume(returning: (false, "XPC: Proxy failure", [:]))
+                return
+            }
+
+            proxy.runBundleThinning(bundlePath: path) { success, output, sizes in
+                continuation.resume(returning: (success, output, sizes))
             }
         }
     }

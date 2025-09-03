@@ -14,13 +14,12 @@ struct LipoView: View {
     @State private var selectAll: Bool = false
     @State private var selectedApps: Set<String> = []
     @State private var isProcessing: Bool = false
-    @State private var savingsAllApps: UInt32 = 0
-    @State private var binaryAllApps: UInt32 = 0
-    @State private var sliceSizesByPath = [String:(binary: UInt32,savings:UInt32)]()
+    @State private var savingsAllApps: UInt64 = 0
+    @State private var bundleAllApps: UInt64 = 0
+    @State private var sliceSizesByPath = [String:(bundle: UInt64,savings:UInt64)]()
     @State private var totalSpaceSaved: UInt64 = 0
     @State private var infoSidebar: Bool = false
     @State private var selectedSort: LipoSortOption = .name
-    @State private var sizeCalculationTask: Task<Void, Never>?
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.lipo.pruneTranslations") private var prune = false
     @AppStorage("settings.lipo.filterMinSavings") private var filterMinSavings = false
@@ -30,7 +29,7 @@ struct LipoView: View {
     enum LipoSortOption: String, CaseIterable {
         case name = "Name"
         case savings = "Savings Size"
-        case binary = "Binary Size"
+        case binary = "Bundle Size"
         
         var systemImage: String {
             switch self {
@@ -65,12 +64,14 @@ struct LipoView: View {
         if let encoded = try? JSONEncoder().encode(current) {
             excludedAppsData = encoded
         }
-        calculateAllSizes() // Recalculate after removal
+        // Sizes will be recalculated per-app on-demand
     }
 
-    // Filter and sort the apps
+    // Filter and sort the apps (Note: "universalApps" name is legacy - now includes all apps)
     var universalApps: [AppInfo] {
-        let filtered = appState.sortedApps.filter { $0.arch == .universal && !excludedApps.contains($0.path.path) }
+        // Show all apps since our new bundle thinning can find savings even in apps
+        // whose main executable isn't universal (frameworks, plugins, etc. might be)
+        let filtered = appState.sortedApps.filter { !excludedApps.contains($0.path.path) }
         
         var result = filtered
         if filterMinSavings {
@@ -98,9 +99,9 @@ struct LipoView: View {
                 let savings2 = sliceSizesByPath[app2.path.path]?.savings ?? 0
                 return savings1 > savings2 // Descending order for savings
             case .binary:
-                let binary1 = sliceSizesByPath[app1.path.path]?.binary ?? 0
-                let binary2 = sliceSizesByPath[app2.path.path]?.binary ?? 0
-                return binary1 > binary2 // Descending order for binary size
+                let bundle1 = UInt64(app1.bundleSize)
+                let bundle2 = UInt64(app2.bundleSize)
+                return bundle1 > bundle2 // Descending order for bundle size
             }
         }
     }
@@ -144,7 +145,7 @@ struct LipoView: View {
                     if universalApps.isEmpty {
                         VStack {
                             Spacer()
-                            Text("No universal apps found")
+                            Text("No apps available for thinning")
                                 .font(.title2)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                             Spacer()
@@ -173,14 +174,13 @@ struct LipoView: View {
                         ScrollView {
                             LazyVStack(spacing: 10) {
                                 ForEach(universalApps, id: \.path) { app in
-                                    if let sizes = sliceSizesByPath[app.path.path] {
-                                        AppRowView(
-                                            app: app,
-                                            selectedApps: $selectedApps,
-                                            savingsSize: sizes.savings,
-                                            binarySize: sizes.binary
-                                        )
-                                    }
+                                    LipoAppRowView(
+                                        app: app,
+                                        selectedApps: $selectedApps,
+                                        sliceSizesByPath: $sliceSizesByPath,
+                                        savingsAllApps: $savingsAllApps,
+                                        bundleAllApps: $bundleAllApps
+                                    )
                                 }
                             }
                         }
@@ -271,18 +271,17 @@ struct LipoView: View {
         .frame(maxWidth: .infinity)
         .padding(20)
         .onAppear { 
-            calculateAllSizes() 
+            // Sizes will be calculated per-app on-demand
         }
         .onDisappear {
-            sizeCalculationTask?.cancel()
-            sizeCalculationTask = nil
+            // No background tasks to cancel with per-app calculation
         }
     }
 
     private func excludeSelectedApps() {
         addToExcluded(selectedApps)
         selectedApps.removeAll()
-        calculateAllSizes() // Recalculate after exclusion
+        // Sizes will be recalculated per-app on-demand
     }
 
     private func startLipo() {
@@ -326,175 +325,196 @@ struct LipoView: View {
         }
     }
 
-    private func calculateAllSizes() {
-        // Cancel any existing task
-        sizeCalculationTask?.cancel()
-        
-        sizeCalculationTask = Task {
-            let apps = self.universalApps // Capture apps at start to avoid accessing changing state
-            var temp = [String:(UInt32,UInt32)]()
-            
-            for app in apps {
-                // Check for cancellation
-                guard !Task.isCancelled else {
-                    printOS("Size calculation task was cancelled")
-                    return
-                }
-                
-                // Add safety checks
-                guard let execURL = app.executableURL else {
-                    printOS("Warning: No executable URL for app: \(app.appName)")
-                    continue
-                }
-                
-                guard FileManager.default.fileExists(atPath: execURL.path) else {
-                    printOS("Warning: Executable not found for app: \(app.appName) at path: \(execURL.path)")
-                    continue
-                }
-                
-                do {
-                    if let sizes = try getArchitectureSliceSizes(from: execURL.path) {
-                        temp[app.path.path] = (sizes.full, isOSArm() ? sizes.intel : sizes.arm)
-                    }
-                } catch {
-                    printOS("Error calculating sizes for \(app.appName): \(error)")
-                }
-            }
-            
-            // Final cancellation check before updating UI
-            guard !Task.isCancelled else {
-                printOS("Size calculation task was cancelled before UI update")
-                return
-            }
-            
-            // Update UI on main thread
-            await MainActor.run {
-                guard !Task.isCancelled else { return }
-                self.sliceSizesByPath = temp
-                self.savingsAllApps = temp.values.reduce(0) { $0 + $1.1 }
-                self.binaryAllApps = temp.values.reduce(0) { $0 + $1.0 }
-            }
-        }
-    }
+    // Old bulk calculation function removed - now using per-app calculation
 }
 
 
 
-struct AppRowView: View {
+// New per-app row view that calculates bundle savings on-demand
+struct LipoAppRowView: View {
     @Environment(\.colorScheme) var colorScheme
     let app: AppInfo
     @Binding var selectedApps: Set<String>
-    let savingsSize: UInt32
-    let binarySize: UInt32
-    @State private var sizeLoading: Bool = true
+    @Binding var sliceSizesByPath: [String:(bundle: UInt64,savings:UInt64)]
+    @Binding var savingsAllApps: UInt64
+    @Binding var bundleAllApps: UInt64
+    @State private var isCalculating: Bool = false
+    @State private var calculatedSavings: UInt64?
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
 
     var body: some View {
         HStack(spacing: 15) {
-            Toggle(isOn: Binding(
-                get: { selectedApps.contains(app.path.path) },
-                set: { isSelected in
-                    if isSelected {
-                        selectedApps.insert(app.path.path)
-                    } else {
-                        selectedApps.remove(app.path.path)
-                    }
-                }
-            )) {
-                EmptyView()
-            }
-            .toggleStyle(SimpleCheckboxToggleStyle())
-
-            VStack {
-                HStack {
-
-                    if let icon = app.appIcon {
-                        Image(nsImage: icon)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 20, height: 20)
-                    }
-
-                    Text(app.appName).font(.title3)
-
-                    Divider()
-
-                    Text(verbatim: "\(formatByte(size: Int64(app.bundleSize)).human)")
-                        .font(.caption)
-                        .help("Full app size")
-
-                    Divider()
-
-                    if binarySize > 0 && savingsSize > 0 {
-                        Text("**\(Int((Double(savingsSize) / Double(binarySize)) * 100))%** savings")
-                            .font(.footnote)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    }
-
-                    Spacer()
-
-                    HStack {
-                        Text(verbatim: "\(formatByte(size: Int64(savingsSize)).human)")
-                            .foregroundStyle(.green)
-                            .padding(.trailing, 30)
-                            .frame(minWidth: 50, alignment: .leading)
-
-                        Text(verbatim: "\(formatByte(size: Int64(binarySize)).human)")
-                            .foregroundStyle(.orange)
-                            .frame(minWidth: 50, alignment: .trailing)
-                    }
-                    .font(.callout)
-
-
-                }
-
-                HorizontalSizeBarView(binarySize: binarySize, savingsSize: savingsSize)
-                    .frame(maxWidth: .infinity)
-
-
-            }
-
+            appToggle
+            appContentView
         }
-        .padding()
-        .background(ThemeColors.shared(for: colorScheme).secondaryBG.clipShape(RoundedRectangle(cornerRadius: 8)))
-        .onTapGesture {
-            NSWorkspace.shared.selectFile(app.path.path, inFileViewerRootedAtPath: app.path.deletingLastPathComponent().path)
+        .onAppear {
+            // Check if we already have savings calculated
+            if let existingSizes = sliceSizesByPath[app.path.path] {
+                calculatedSavings = existingSizes.savings
+            } else if !isCalculating {
+                // Automatically calculate when row appears in view
+                calculateBundleSavings()
+            }
+        }
+    }
+    
+    private var appToggle: some View {
+        Toggle(isOn: Binding(
+            get: { selectedApps.contains(app.path.path) },
+            set: { isSelected in
+                if isSelected {
+                    selectedApps.insert(app.path.path)
+                } else {
+                    selectedApps.remove(app.path.path)
+                }
+            }
+        )) {
+            EmptyView()
+        }
+        .toggleStyle(SimpleCheckboxToggleStyle())
+    }
+    
+    private var appContentView: some View {
+        VStack {
+            HStack {
+                appIconAndName
+                Divider()
+                appSizeInfo
+                Divider()
+                savingsPercentage
+                Spacer()
+                sizesDisplay
+            }
+            .padding(5)
+        }
+        .background(ThemeColors.shared(for: colorScheme).secondaryBG)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+    }
+    
+    private var appIconAndName: some View {
+        HStack {
+            if let icon = app.appIcon {
+                Image(nsImage: icon)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 20, height: 20)
+            }
+            Text(app.appName).font(.title3)
+        }
+    }
+    
+    private var appSizeInfo: some View {
+        Text(verbatim: "\(formatByte(size: Int64(app.bundleSize)).human)")
+            .font(.caption)
+            .help("Full app size")
+    }
+    
+    @ViewBuilder
+    private var savingsPercentage: some View {
+        if let savings = calculatedSavings {
+            if app.bundleSize > 0 && savings > 0 {
+                Text("**\(Int((Double(savings) / Double(app.bundleSize)) * 100))%** savings")
+                    .font(.footnote)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var sizesDisplay: some View {
+        HStack {
+            if let savings = calculatedSavings {
+                Text(verbatim: "\(formatByte(size: Int64(savings)).human)")
+                    .foregroundStyle(.green)
+                    .frame(minWidth: 100, alignment: .leading)
+                    .help("Potential savings from bundle thinning")
+            } else if isCalculating {
+                Text("Calculating...")
+                    .font(.caption)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    .frame(minWidth: 100, alignment: .leading)
+            } else {
+                Text("0 bytes")
+                    .foregroundStyle(.green)
+                    .frame(minWidth: 100, alignment: .leading)
+                    .help("No savings available from bundle thinning")
+            }
+        }
+    }
+    
+    private func calculateBundleSavings() {
+        isCalculating = true
+        
+        Task {
+            // Use our new bundle thinning approach to calculate potential savings
+            let bundlePath = app.path
+            let savings = await calculateBundleSavings(at: bundlePath)
+            
+            await MainActor.run {
+                let wasAlreadyCalculated = calculatedSavings != nil
+                calculatedSavings = savings
+                
+                // Update the shared state (always, even for 0 savings)
+                sliceSizesByPath[app.path.path] = (bundle: UInt64(app.bundleSize), savings: savings)
+                
+                // Update totals (only add if not already counted)
+                if !wasAlreadyCalculated {
+                    savingsAllApps += savings
+                    bundleAllApps += UInt64(app.bundleSize)
+                }
+                
+                isCalculating = false
+            }
+        }
+    }
+    
+    private func calculateBundleSavings(at bundlePath: URL) async -> UInt64 {
+        return await withCheckedContinuation { continuation in
+            DispatchQueue.global(qos: .utility).async {
+                let fileManager = FileManager.default
+                
+                guard let enumerator = fileManager.enumerator(at: bundlePath, 
+                                                              includingPropertiesForKeys: [.isDirectoryKey],
+                                                              options: [.skipsHiddenFiles]) else {
+                    continuation.resume(returning: 0)
+                    return
+                }
+                
+                var totalSavings: UInt64 = 0
+                
+                while let fileURL = enumerator.nextObject() as? URL {
+                    // Skip directories early
+                    let resourceValues = try? fileURL.resourceValues(forKeys: [.isDirectoryKey])
+                    if resourceValues?.isDirectory == true { 
+                        continue 
+                    }
+                    
+                    // Check if this file would be processed by our bundle thinning
+                    if isExecutableBinary(fileURL) {
+                        do {
+                            if let sizes = try getArchitectureSliceSizes(from: fileURL.path) {
+#if arch(arm64)
+                                totalSavings += UInt64(sizes.intel)
+#else
+                                totalSavings += UInt64(sizes.arm)
+#endif
+                            }
+                        } catch {
+                            // Continue with other files if one fails
+                            continue
+                        }
+                    }
+                }
+                
+                continuation.resume(returning: totalSavings)
+            }
         }
     }
 }
 
 
 
-struct HorizontalSizeBarView: View {
-    let binarySize: UInt32
-    let savingsSize: UInt32
-    @Environment(\.colorScheme) var colorScheme
 
-    var body: some View {
-        GeometryReader { geo in
-            let totalWidth = geo.size.width
-            let safeBinary = max(1.0, Double(binarySize)) // avoid 0/0
-            let ratio = Double(savingsSize) / safeBinary
-            let savingsWidth = (ratio.isFinite ? ratio : 0) * totalWidth
-//            let binaryWidth = totalWidth * (Double(binarySize) / Double(binarySize))
-//            let savingsWidth = binaryWidth * (Double(savingsSize) / Double(binarySize))
-
-            RoundedRectangle(cornerRadius: 4).fill(Color.clear)
-                .frame(width: .infinity, height: 4)
-                .padding(2)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 4).strokeBorder(ThemeColors.shared(for: colorScheme).secondaryText.opacity(0.5), lineWidth: 1),
-                    alignment: .center
-                )
-                .overlay (
-                    RoundedRectangle(cornerRadius: 4).fill(Color.green)
-                        .frame(width: savingsWidth, height: 4)
-                        .padding(2),
-                    alignment: .leading
-                )
-        }
-    }
-}
 
 
 
