@@ -1,5 +1,5 @@
 {
-  "originHash" : "56760e4dc5609cb8f9a700b0a46e679280626ad36bf6440ae9cd3393e6463d4e",
+  "originHash" : "e6d2324441a722e21ddb2dbc89f0ef2c08739170d85ad44287b8d87fb349cd9f",
   "pins" : [
     {
       "identity" : "alinfoundation",
@@ -7,16 +7,7 @@
       "location" : "https://github.com/alienator88/AlinFoundation",
       "state" : {
         "branch" : "main",
-        "revision" : "5d64bf2e29e067f22f862c9b58eb006da6ecf350"
-      }
-    },
-    {
-      "identity" : "filewatcher",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/eonist/FileWatcher.git",
-      "state" : {
-        "revision" : "e67c2a99502eade343fecabeca8c57e749a55b59",
-        "version" : "0.2.3"
+        "revision" : "9eefa4807a527eafd64058fa820e202c56d46084"
       }
     },
     {

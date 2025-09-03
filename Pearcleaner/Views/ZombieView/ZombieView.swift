@@ -206,7 +206,7 @@ struct ZombieView: View {
                         onRestoreFile: restoreFileToZombieList
                     )
                 }
-                .animation(.easeInOut(duration: animationEnabled ? 0.35 : 0), value: infoSidebar)
+                .animation(animationEnabled ? .spring(response: 0.35, dampingFraction: 0.8) : .none, value: infoSidebar)
                 .transition(.opacity)
                 .padding(20)
                 .onAppear {

@@ -84,7 +84,8 @@ struct FilesView: View {
                     SidebarView(infoSidebar: $infoSidebar, displaySizeTotal: displaySizeTotal)
 
                 }
-                .animation(.easeInOut(duration: animationEnabled ? 0.35 : 0), value: infoSidebar)
+                .animation(animationEnabled ? .spring(response: 0.35, dampingFraction: 0.8) : .none, value: infoSidebar)
+                .padding(20)
 
             }
 

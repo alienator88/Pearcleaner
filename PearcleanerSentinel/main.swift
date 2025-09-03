@@ -7,7 +7,6 @@
 
 
 import AppKit
-import FileWatcher
 
 main()
 

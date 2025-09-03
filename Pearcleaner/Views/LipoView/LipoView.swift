@@ -267,7 +267,7 @@ struct LipoView: View {
             // Add the sidebar view
             LipoSidebarView(infoSidebar: $infoSidebar, excludedApps: excludedApps, prune: $prune, filterMinSavings: $filterMinSavings, onRemoveExcluded: removeAppFromExcluded, totalSpaceSaved: totalSpaceSaved, savingsAllApps: savingsAllApps)
         }
-        .animation(.easeInOut(duration: animationEnabled ? 0.35 : 0), value: infoSidebar)
+        .animation(animationEnabled ? .spring(response: 0.35, dampingFraction: 0.8) : .none, value: infoSidebar)
         .frame(maxWidth: .infinity)
         .padding(20)
         .onAppear { 
@@ -473,8 +473,11 @@ struct HorizontalSizeBarView: View {
     var body: some View {
         GeometryReader { geo in
             let totalWidth = geo.size.width
-            let binaryWidth = totalWidth * (Double(binarySize) / Double(binarySize))
-            let savingsWidth = binaryWidth * (Double(savingsSize) / Double(binarySize))
+            let safeBinary = max(1.0, Double(binarySize)) // avoid 0/0
+            let ratio = Double(savingsSize) / safeBinary
+            let savingsWidth = (ratio.isFinite ? ratio : 0) * totalWidth
+//            let binaryWidth = totalWidth * (Double(binarySize) / Double(binarySize))
+//            let savingsWidth = binaryWidth * (Double(savingsSize) / Double(binarySize))
 
             RoundedRectangle(cornerRadius: 4).fill(Color.clear)
                 .frame(width: .infinity, height: 4)
