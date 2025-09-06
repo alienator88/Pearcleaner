@@ -210,7 +210,10 @@ struct ZombieView: View {
                 .transition(.opacity)
                 .padding(20)
                 .onAppear {
-                    updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSort: selectedSort, force: true)
+                    // Only update memoized files if we have data (scan has been completed)
+                    if !appState.zombieFile.fileSize.isEmpty {
+                        updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSort: selectedSort, force: true)
+                    }
                 }
                 .sheet(isPresented: $showAlert, content: {
                     VStack(spacing: 10) {
@@ -224,6 +227,8 @@ struct ZombieView: View {
                         Button("Close") {
                             warning = true
                             showAlert = false
+                            // Start the file scan after user acknowledges the warning
+                            startFileScan()
                         }
                         .buttonStyle(SimpleButtonStyle(icon: "x.circle.fill", label: String(localized: "Close"), help: String(localized: "Dismiss")))
                         Spacer()
@@ -240,16 +245,20 @@ struct ZombieView: View {
         .onAppear {
             if !warning {
                 showAlert = true
-            }
-
-            // Always trigger rescan when view appears
-            updateOnMain {
-                appState.zombieFile = .empty
-                appState.showProgress = true
-                reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, fsm: fsm)
+            } else {
+                // Only trigger scan if warning has been acknowledged
+                startFileScan()
             }
         }
 
+    }
+
+    private func startFileScan() {
+        updateOnMain {
+            appState.zombieFile = .empty
+            appState.showProgress = true
+            reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, fsm: fsm)
+        }
     }
 
     @ViewBuilder

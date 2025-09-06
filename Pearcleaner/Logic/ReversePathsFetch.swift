@@ -112,7 +112,7 @@ class ReversePathsSearcher {
 
         for condition in conditions {
             // Ensure the condition's bundle_id matches an installed app
-            guard sortedApps.contains(where: { $0.bundleIdentifier.pearFormat() == condition.bundle_id.pearFormat() }) else {
+            guard sortedApps.contains(where: { $0.bundleIdentifier.pearFormat() == condition.bundle_id.pearFormat() || $0.bundleIdentifier.pearFormat().contains(condition.bundle_id.pearFormat()) }) else {
                 continue
             }
 

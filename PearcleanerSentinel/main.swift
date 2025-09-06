@@ -78,34 +78,3 @@ extension FileManager {
         }
     }
 }
-
-
-
-
-
-
-// For testing and outputing logging to file from cmd line tool
-func writeLogMon(string: String) {
-    let fileManager = FileManager.default
-    let home = fileManager.homeDirectoryForCurrentUser.path
-    let logFilePath = "\(home)/Downloads/monitor.txt"
-    
-    // Check if the log file exists, and create it if it doesn't
-    if !fileManager.fileExists(atPath: logFilePath) {
-        if !fileManager.createFile(atPath: logFilePath, contents: nil, attributes: nil) {
-            print("Failed to create the log file.")
-            return
-        }
-    }
-    
-    do {
-        if let fileHandle = FileHandle(forWritingAtPath: logFilePath) {
-            let ns = "\(string)\n"
-            fileHandle.seekToEndOfFile()
-            fileHandle.write(ns.data(using: .utf8)!)
-            fileHandle.closeFile()
-        } else {
-            print("Error opening file for appending")
-        }
-    }
-}
