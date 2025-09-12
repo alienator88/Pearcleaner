@@ -93,12 +93,21 @@ struct AppCommands: Commands {
 
                 Button
                 {
+                    appState.currentPage = .orphans
+
+                } label: {
+                    Text("Orphaned Files")
+                }
+                .keyboardShortcut("2", modifiers: .command)
+
+                Button
+                {
                     appState.currentPage = .development
 
                 } label: {
                     Text("Development")
                 }
-                .keyboardShortcut("2", modifiers: .command)
+                .keyboardShortcut("3", modifiers: .command)
 
                 Button
                 {
@@ -107,16 +116,27 @@ struct AppCommands: Commands {
                 } label: {
                     Text("App Lipo")
                 }
-                .keyboardShortcut("3", modifiers: .command)
+                .keyboardShortcut("4", modifiers: .command)
 
                 Button
                 {
-                    appState.currentPage = .orphans
+                    appState.currentPage = .launchItems
 
                 } label: {
-                    Text("Orphaned Files")
+                    Text("Services")
                 }
-                .keyboardShortcut("4", modifiers: .command)
+                .keyboardShortcut("5", modifiers: .command)
+
+                Button
+                {
+                    appState.currentPage = .package
+
+                } label: {
+                    Text("Packages")
+                }
+                .keyboardShortcut("6", modifiers: .command)
+
+
             }
 
         }
@@ -176,40 +196,37 @@ struct AppCommands: Commands {
             }
             .keyboardShortcut("d", modifiers: .command)
 
-
-
         }
 
-        
-        // GitHub Menu
-        CommandMenu(Text(verbatim: "GitHub")) {
+        CommandGroup(after: .help) {
+            // GitHub Menu
             Button
             {
                 NSWorkspace.shared.open(URL(string: "https://github.com/alienator88/Pearcleaner")!)
             } label: {
                 Label("View Repository", systemImage: "paperplane")
             }
-            
-            
+
+
             Button
             {
                 NSWorkspace.shared.open(URL(string: "https://github.com/alienator88/Pearcleaner/releases")!)
             } label: {
                 Label("View Releases", systemImage: "paperplane")
             }
-            
-            
+
+
             Button
             {
                 NSWorkspace.shared.open(URL(string: "https://github.com/alienator88/Pearcleaner/issues")!)
             } label: {
                 Label("View Issues", systemImage: "paperplane")
             }
-            
-            
+
+
             Divider()
-            
-            
+
+
             Button
             {
                 NSWorkspace.shared.open(URL(string: "https://github.com/alienator88/Pearcleaner/issues/new/choose")!)
@@ -217,8 +234,7 @@ struct AppCommands: Commands {
                 Label("Submit New Issue", systemImage: "paperplane")
             }
         }
-        
-        
-        
+
+
     }
 }

@@ -264,8 +264,24 @@ struct ZombieView: View {
     @ViewBuilder
     private var bottomBar: some View {
             HStack(spacing: 10) {
-                Button("Exclude Selected") {
-                    excludeAllSelectedItems()
+                Menu {
+                    Button("Exclude Selected") {
+                        excludeAllSelectedItems()
+                    }
+                    .disabled(selectedZombieItemsLocal.isEmpty)
+                    .help("This will exclude selected items from future scans. Exclusion list can be edited from Settings > Folders tab or the sidebar in this view.")
+
+                    Menu("Link Selected to App") {
+                        ForEach(appState.sortedApps, id: \.id) { app in
+                            Button(app.appName) {
+                                linkSelectedItemsToApp(app.path)
+                            }
+                        }
+                    }
+                    .disabled(selectedZombieItemsLocal.isEmpty)
+                    .help("Link all selected items to the chosen app and remove from orphan scans.")
+                } label: {
+                    Text("Actions")
                 }
                 .disabled(selectedZombieItemsLocal.isEmpty)
                 .buttonStyle(ControlGroupButtonStyle(
@@ -275,7 +291,6 @@ struct ZombieView: View {
                     skipControlGroup: true,
                     disabled: selectedZombieItemsLocal.isEmpty
                 ))
-                .help("This will exclude selected items from future scans. Exclusion list can be edited from Settings > Folders tab.")
 
                 Divider().frame(height: 10)
 
@@ -501,6 +516,27 @@ struct ZombieView: View {
             appState.zombieFile.fileIcon.removeValue(forKey: path)
         }
 
+        // Clear all selected items
+        selectedZombieItemsLocal.removeAll()
+    }
+    
+    private func linkSelectedItemsToApp(_ appPath: URL) {
+        for path in selectedZombieItemsLocal {
+            // Add association (same logic as individual file linking)
+            ZombieFileStorage.shared.addAssociation(appPath: appPath, zombieFilePath: path)
+            
+            // Exclude from future scans (same as exclude button)
+            fsm.addPathZ(path.path)
+            
+            // Remove from memoizedFiles
+            memoizedFiles.removeAll { $0 == path }
+            
+            // Remove from appState zombie file details
+            appState.zombieFile.fileSize.removeValue(forKey: path)
+            appState.zombieFile.fileSizeLogical.removeValue(forKey: path)
+            appState.zombieFile.fileIcon.removeValue(forKey: path)
+        }
+        
         // Clear all selected items
         selectedZombieItemsLocal.removeAll()
     }
