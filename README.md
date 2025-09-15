@@ -71,9 +71,17 @@ If you are able to contribute to translations for the app, please see this discu
 
 ## Requirements
 > [!NOTE]
-> - MacOS 13.0+ [Non-beta releases]
 > - Full Disk permission to search for files
+> - Privileged Helper to perform actions on system folders
 
+| macOS Version | Codename | Supported |
+|---------------|----------|-----------|
+| 13.x          | Ventura  | ✅        |
+| 14.x          | Sonoma   | ✅        |
+| 15.x          | Sequoia  | ✅        |
+| 26.x          | Tahoe    | ✅        |
+| TBD           | Beta     | ❌        |
+> Versions prior to macOS 13.0 are not supported due to missing Swift/SwiftUI APIs required by the app.
 
 ## Getting Pearcleaner
 
