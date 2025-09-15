@@ -25,6 +25,8 @@ struct LipoView: View {
     @AppStorage("settings.lipo.filterMinSavings") private var filterMinSavings = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.lipo.excludedApps") private var excludedAppsData: Data = Data()
+    @AppStorage("settings.lipo.warning") private var warning: Bool = false
+    @State private var showAlert = false
 
     enum LipoSortOption: String, CaseIterable {
         case name = "Name"
@@ -279,11 +281,34 @@ struct LipoView: View {
         .frame(maxWidth: .infinity)
         .padding(20)
         .onAppear { 
+            if !warning {
+                showAlert = true
+            }
             // Sizes will be calculated per-app on-demand
         }
         .onDisappear {
             // No background tasks to cancel with per-app calculation
         }
+        .sheet(isPresented: $showAlert, content: {
+            VStack(spacing: 10) {
+                Text("Important")
+                    .font(.headline)
+                Divider()
+                Spacer()
+                Text("Bundle thinning (lipo) is an aggressive operation that modifies the binaries within app bundles by removing unused architectures. While generally safe, some applications may experience issues or fail to launch after this process. It is strongly recommended to create a backup of your applications before proceeding, especially for critical or frequently used apps.")
+                    .font(.subheadline)
+                Spacer()
+                Button("Close") {
+                    warning = true
+                    showAlert = false
+                }
+                .buttonStyle(SimpleButtonStyle(icon: "x.circle.fill", label: String(localized: "Close"), help: String(localized: "Dismiss")))
+                Spacer()
+            }
+            .padding(15)
+            .frame(width: 400, height: 250)
+            .background(GlassEffect(material: .hudWindow, blendingMode: .behindWindow))
+        })
     }
 
     private func excludeSelectedApps() {

@@ -178,7 +178,7 @@ struct AppListItems: View {
                                 .opacity(isSelected ? 1 : 0)
                         }
                     }
-                    .animation(animationEnabled ? .spring(response: 0.4, dampingFraction: 0.7, blendDuration: 0) : .linear(duration: 0), value: isSelected)
+//                    .animation(animationEnabled ? .spring(response: 0.4, dampingFraction: 0.7, blendDuration: 0) : .linear(duration: 0), value: isSelected)
                     .padding(.trailing, 7)
                 }
                 .allowsHitTesting(false)
