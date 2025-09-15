@@ -4944,6 +4944,9 @@
         }
       }
     },
+    "Bundle thinning (lipo) is an aggressive operation that modifies the binaries within app bundles by removing unused architectures. While generally safe, some applications may experience issues or fail to launch after this process. It is strongly recommended to create a backup of your applications before proceeding, especially for critical or frequently used apps." : {
+
+    },
     "Bundle thinning complete.\nTotal space saved from all binaries in bundle." : {
       "comment" : "Lipo result message",
       "localizations" : {
@@ -7863,6 +7866,9 @@
           }
         }
       }
+    },
+    "Delete File" : {
+
     },
     "Delete Folder" : {
       "localizations" : {
@@ -14849,11 +14855,18 @@
       }
     },
     "Link all selected items to the chosen app" : {
+      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Verknüpfen Sie alle ausgewählten Elemente mit der gewählten App"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Link all selected items to the chosen app"
           }
         },
         "es" : {
@@ -14935,6 +14948,9 @@
           }
         }
       }
+    },
+    "Link all selected items to the chosen app and remove from orphan scans." : {
+
     },
     "Link Selected to App" : {
       "localizations" : {
@@ -20259,8 +20275,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "error",
-            "value" : ""
+            "state" : "translated",
+            "value" : "Pearcleaner dapat melakukan operasi istimewa dengan cara berikut: - Layanan pembantu 👍🏻 - Layanan otorisasi 👎🏻\n\nLayanan pembantu: Pearcleaner hanya akan meminta Anda memasukkan kata sandi sekali untuk mengaktifkan pembantu, kemudian semua operasi berikutnya akan berjalan tanpa permintaan selama pembantu tetap diaktifkan di Pengaturan > Item Masuk. Otorisasi ini semua dikelola oleh macOS melalui SMAppService.\n\nLayanan otorisasi: Pearcleaner akan meminta pengguna untuk memasukkan kata sandi pada setiap operasi istimewa, yang dapat menjadi berlebihan. Otorisasi ini dikelola oleh Pearcleaner dan pengguna.\n\nApa itu operasi istimewa: Setiap kali Pearcleaner perlu menghapus file dari folder (Contoh: /var) yang pengguna tidak memiliki hak istimewa untuk atau membatalkan/memulihkan file kembali ke lokasi istimewa."
           }
         },
         "ja" : {
@@ -31203,12 +31219,22 @@
         }
       }
     },
+    "This will exclude selected items from future scans. Exclusion list can be edited from Settings > Folders tab or the sidebar in this view." : {
+
+    },
     "This will exclude selected items from future scans. Exclusion list can be edited from Settings > Folders tab." : {
+      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dadurch werden ausgewählte Elemente von zukünftigen Scans ausgeschlossen. Die Ausschlussliste kann unter „Einstellungen“ > „Ordner“ bearbeitet werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This will exclude selected items from future scans. Exclusion list can be edited from Settings > Folders tab."
           }
         },
         "es" : {
@@ -31314,8 +31340,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "error",
-            "value" : ""
+            "state" : "translated",
+            "value" : "Ini akan menghapus semua file terjemahan bahasa yang tidak digunakan"
           }
         },
         "ja" : {
@@ -35007,6 +35033,9 @@
       }
     },
     "Warning!" : {
+
+    },
+    "Warning2" : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {

@@ -10,15 +10,27 @@
       "layers" : [
         {
           "blend-mode" : "normal",
-          "glass" : false,
+          "glass-specializations" : [
+            {
+              "value" : false
+            },
+            {
+              "appearance" : "dark",
+              "value" : true
+            },
+            {
+              "appearance" : "tinted",
+              "value" : true
+            }
+          ],
           "hidden" : false,
           "image-name" : "new-pear.png",
           "name" : "new-pear",
           "position" : {
-            "scale" : 1,
+            "scale" : 0.85,
             "translation-in-points" : [
-              25.8125,
-              7.0390625
+              11.3046875,
+              3.296875
             ]
           }
         }
