@@ -168,7 +168,7 @@ struct AppListItems: View {
                     ZStack {
                         // Morphing shape that animates between rectangle and square
                         RoundedRectangle(cornerRadius: isSelected ? 6 : 50)
-                            .fill(isSelected ? Color("AccentColor") : ThemeColors.shared(for: colorScheme).primaryText.opacity(0.5))
+                            .fill(isSelected ? ThemeColors.shared(for: colorScheme).accent : ThemeColors.shared(for: colorScheme).primaryText.opacity(0.5))
                             .frame(width: isSelected ? 20 : 2, height: isSelected ? 20 : 25)
 
                         if isSelected {

@@ -429,145 +429,145 @@ struct SimpleCheckboxToggleStyle: ToggleStyle {
 
 
 
-struct UninstallButton: ButtonStyle {
-    @State private var hovered: Bool = false
-    var isEnabled: Bool
-
-    func makeBody(configuration: Configuration) -> some View {
-        HStack(alignment: .center, spacing: 0) {
-            Image(systemName: !hovered ? "trash" : "trash.fill")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .foregroundStyle(isEnabled ? .white.opacity(1) : .white.opacity(0.3))
-                .frame(width: 18, height: 18)
-                .frame(width: 20, alignment: .center)
-                .animation(.easeInOut(duration: 0.1), value: hovered)
-
-            Divider()
-                .frame(height: 24)
-                .opacity(0.5)
-                .padding(.horizontal, 8)
-
-            configuration.label
-                .frame(minWidth: 50)
-                .foregroundStyle(isEnabled ? .white.opacity(1) : .white.opacity(0.3))
-
-        }
-        .frame(height: 24)
-        .padding(.horizontal, 8)
-        .padding(.vertical, 4)
-        .background(configuration.isPressed ? Color("uninstall").opacity(0.8) : Color("uninstall"))
-        .cornerRadius(8)
-        .onHover { over in
-            hovered = over
-        }
-    }
-}
-
-
-
-struct RescanButton: ButtonStyle {
-    @State private var hovered: Bool = false
-
-    func makeBody(configuration: Configuration) -> some View {
-        HStack(alignment: .center, spacing: 0) {
-            Image(systemName: !hovered ? "arrow.counterclockwise.circle" : "arrow.counterclockwise.circle.fill")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 18, height: 18)
-                .frame(width: 20, alignment: .center)
-                .foregroundStyle(.white)
-                .animation(.easeInOut(duration: 0.1), value: hovered)
-
-            Divider()
-                .frame(height: 24)
-                .foregroundStyle(.white)
-                .opacity(0.5)
-                .padding(.horizontal, 8)
-
-            configuration.label
-                .foregroundStyle(.white)
-
-        }
-        .frame(height: 24)
-        .padding(.horizontal, 8)
-        .padding(.vertical, 4)
-        .background(configuration.isPressed ? Color("button").opacity(0.8) : Color("button"))
-        .cornerRadius(8)
-        .onHover { over in
-            hovered = over
-        }
-    }
-}
-
-struct ExcludeButton: ButtonStyle {
-    @State private var hovered: Bool = false
-    var isEnabled: Bool
-
-    func makeBody(configuration: Configuration) -> some View {
-        HStack(alignment: .center, spacing: 0) {
-            Image(systemName: !hovered ? "minus.circle" : "minus.circle.fill")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 18, height: 18)
-                .frame(width: 20, alignment: .center)
-                .foregroundStyle(isEnabled ? .white.opacity(1) : .white.opacity(0.3))
-                .animation(.easeInOut(duration: 0.1), value: hovered)
-
-            Divider()
-                .frame(height: 24)
-                .foregroundStyle(.white)
-                .opacity(0.5)
-                .padding(.horizontal, 8)
-
-            configuration.label
-                .foregroundStyle(isEnabled ? .white.opacity(1) : .white.opacity(0.3))
-
-        }
-        .frame(height: 24)
-        .padding(.horizontal, 8)
-        .padding(.vertical, 4)
-        .background(configuration.isPressed ? Color("grayButton").opacity(0.8) : Color("grayButton"))
-        .cornerRadius(8)
-        .onHover { over in
-            hovered = over
-        }
-    }
-}
+//struct UninstallButton: ButtonStyle {
+//    @State private var hovered: Bool = false
+//    var isEnabled: Bool
+//
+//    func makeBody(configuration: Configuration) -> some View {
+//        HStack(alignment: .center, spacing: 0) {
+//            Image(systemName: !hovered ? "trash" : "trash.fill")
+//                .resizable()
+//                .aspectRatio(contentMode: .fit)
+//                .foregroundStyle(isEnabled ? .white.opacity(1) : .white.opacity(0.3))
+//                .frame(width: 18, height: 18)
+//                .frame(width: 20, alignment: .center)
+//                .animation(.easeInOut(duration: 0.1), value: hovered)
+//
+//            Divider()
+//                .frame(height: 24)
+//                .opacity(0.5)
+//                .padding(.horizontal, 8)
+//
+//            configuration.label
+//                .frame(minWidth: 50)
+//                .foregroundStyle(isEnabled ? .white.opacity(1) : .white.opacity(0.3))
+//
+//        }
+//        .frame(height: 24)
+//        .padding(.horizontal, 8)
+//        .padding(.vertical, 4)
+//        .background(configuration.isPressed ? Color("uninstall").opacity(0.8) : Color("uninstall"))
+//        .cornerRadius(8)
+//        .onHover { over in
+//            hovered = over
+//        }
+//    }
+//}
 
 
-struct LipoButton: ButtonStyle {
-    @State private var hovered: Bool = false
 
-    func makeBody(configuration: Configuration) -> some View {
-        HStack(alignment: .center, spacing: 0) {
-            Image(systemName: hovered ? "square.split.1x2.fill" : "square.split.1x2")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 18, height: 18)
-                .frame(width: 20, alignment: .center)
-                .foregroundStyle(.white.opacity(1))
-                .animation(.easeInOut(duration: 0.1), value: hovered)
-            Divider()
-                .frame(height: 24)
-                .foregroundStyle(.white)
-                .opacity(0.5)
-                .padding(.horizontal, 8)
+//struct RescanButton: ButtonStyle {
+//    @State private var hovered: Bool = false
+//
+//    func makeBody(configuration: Configuration) -> some View {
+//        HStack(alignment: .center, spacing: 0) {
+//            Image(systemName: !hovered ? "arrow.counterclockwise.circle" : "arrow.counterclockwise.circle.fill")
+//                .resizable()
+//                .aspectRatio(contentMode: .fit)
+//                .frame(width: 18, height: 18)
+//                .frame(width: 20, alignment: .center)
+//                .foregroundStyle(.white)
+//                .animation(.easeInOut(duration: 0.1), value: hovered)
+//
+//            Divider()
+//                .frame(height: 24)
+//                .foregroundStyle(.white)
+//                .opacity(0.5)
+//                .padding(.horizontal, 8)
+//
+//            configuration.label
+//                .foregroundStyle(.white)
+//
+//        }
+//        .frame(height: 24)
+//        .padding(.horizontal, 8)
+//        .padding(.vertical, 4)
+//        .background(configuration.isPressed ? Color("button").opacity(0.8) : Color("button"))
+//        .cornerRadius(8)
+//        .onHover { over in
+//            hovered = over
+//        }
+//    }
+//}
+//
+//struct ExcludeButton: ButtonStyle {
+//    @State private var hovered: Bool = false
+//    var isEnabled: Bool
+//
+//    func makeBody(configuration: Configuration) -> some View {
+//        HStack(alignment: .center, spacing: 0) {
+//            Image(systemName: !hovered ? "minus.circle" : "minus.circle.fill")
+//                .resizable()
+//                .aspectRatio(contentMode: .fit)
+//                .frame(width: 18, height: 18)
+//                .frame(width: 20, alignment: .center)
+//                .foregroundStyle(isEnabled ? .white.opacity(1) : .white.opacity(0.3))
+//                .animation(.easeInOut(duration: 0.1), value: hovered)
+//
+//            Divider()
+//                .frame(height: 24)
+//                .foregroundStyle(.white)
+//                .opacity(0.5)
+//                .padding(.horizontal, 8)
+//
+//            configuration.label
+//                .foregroundStyle(isEnabled ? .white.opacity(1) : .white.opacity(0.3))
+//
+//        }
+//        .frame(height: 24)
+//        .padding(.horizontal, 8)
+//        .padding(.vertical, 4)
+//        .background(configuration.isPressed ? Color("grayButton").opacity(0.8) : Color("grayButton"))
+//        .cornerRadius(8)
+//        .onHover { over in
+//            hovered = over
+//        }
+//    }
+//}
 
-            configuration.label
-                .foregroundStyle(.white.opacity(1))
 
-        }
-        .frame(height: 24)
-        .padding(.horizontal, 8)
-        .padding(.vertical, 4)
-        .background(configuration.isPressed ? Color("grayButton").opacity(0.8) : Color("grayButton"))
-        .cornerRadius(8)
-        .onHover { over in
-            hovered = over
-        }
-    }
-}
+//struct LipoButton: ButtonStyle {
+//    @State private var hovered: Bool = false
+//
+//    func makeBody(configuration: Configuration) -> some View {
+//        HStack(alignment: .center, spacing: 0) {
+//            Image(systemName: hovered ? "square.split.1x2.fill" : "square.split.1x2")
+//                .resizable()
+//                .aspectRatio(contentMode: .fit)
+//                .frame(width: 18, height: 18)
+//                .frame(width: 20, alignment: .center)
+//                .foregroundStyle(.white.opacity(1))
+//                .animation(.easeInOut(duration: 0.1), value: hovered)
+//            Divider()
+//                .frame(height: 24)
+//                .foregroundStyle(.white)
+//                .opacity(0.5)
+//                .padding(.horizontal, 8)
+//
+//            configuration.label
+//                .foregroundStyle(.white.opacity(1))
+//
+//        }
+//        .frame(height: 24)
+//        .padding(.horizontal, 8)
+//        .padding(.vertical, 4)
+//        .background(configuration.isPressed ? Color("grayButton").opacity(0.8) : Color("grayButton"))
+//        .cornerRadius(8)
+//        .onHover { over in
+//            hovered = over
+//        }
+//    }
+//}
 
 
 
