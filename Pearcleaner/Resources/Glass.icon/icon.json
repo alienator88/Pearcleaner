@@ -24,10 +24,10 @@
             }
           ],
           "hidden" : false,
-          "image-name" : "new-pear.png",
-          "name" : "new-pear",
+          "image-name" : "pear.heic",
+          "name" : "pear",
           "position" : {
-            "scale" : 0.85,
+            "scale" : 1.5,
             "translation-in-points" : [
               11.3046875,
               3.296875

@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		C71449E52DA826610032B295 /* Lipo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C90DD22DA81C590056769A /* Lipo.swift */; };
 		C7149E792E68DE7E00A15356 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C7149E782E68DE7E00A15356 /* Localizable.xcstrings */; };
-		C7151D552E78D53400469E3A /* Glass.icon in Resources */ = {isa = PBXBuildFile; fileRef = C7151D542E78D53400469E3A /* Glass.icon */; };
 		C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72893042AFD42E600C8C1CD /* DeepLink.swift */; };
 		C72893122AFD51EA00C8C1CD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72893112AFD51EA00C8C1CD /* main.swift */; };
 		C72D03B52E4D3FB900ADC1B4 /* MainWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72D03B22E4D3FB900ADC1B4 /* MainWindow.swift */; };
@@ -23,6 +22,7 @@
 		C74FDC632BCD833D00B8960F /* Conditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74FDC622BCD833D00B8960F /* Conditions.swift */; };
 		C7575D392B0182DE006A600A /* PearcleanerSentinel in CopyFiles */ = {isa = PBXBuildFile; fileRef = C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C76EDCD62C45DC82000CF29D /* AlinFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = C76EDCD52C45DC82000CF29D /* AlinFoundation */; };
+		C770B6ED2E78DF9D005A0ABD /* Glass.icon in Resources */ = {isa = PBXBuildFile; fileRef = C770B6EC2E78DF9D005A0ABD /* Glass.icon */; };
 		C770D7DB2CE7C9AD00B3492A /* DevelopmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C770D7DA2CE7C9A100B3492A /* DevelopmentView.swift */; };
 		C7736E4F2C49A44200917293 /* AlinFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = C7736E4E2C49A44200917293 /* AlinFoundation */; };
 		C77B90042AF18E2E009CC655 /* PearcleanerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90032AF18E2E009CC655 /* PearcleanerApp.swift */; };
@@ -123,7 +123,6 @@
 
 /* Begin PBXFileReference section */
 		C7149E782E68DE7E00A15356 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
-		C7151D542E78D53400469E3A /* Glass.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Glass.icon; sourceTree = "<group>"; };
 		C72893042AFD42E600C8C1CD /* DeepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLink.swift; sourceTree = "<group>"; };
 		C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PearcleanerSentinel; sourceTree = BUILT_PRODUCTS_DIR; };
 		C72893112AFD51EA00C8C1CD /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
@@ -135,6 +134,7 @@
 		C74422422E494D7E0002D277 /* PackageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageView.swift; sourceTree = "<group>"; };
 		C74451F62D93774700146AF8 /* announcements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = announcements.json; sourceTree = "<group>"; };
 		C74FDC622BCD833D00B8960F /* Conditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conditions.swift; sourceTree = "<group>"; };
+		C770B6EC2E78DF9D005A0ABD /* Glass.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Glass.icon; sourceTree = "<group>"; };
 		C770D7DA2CE7C9A100B3492A /* DevelopmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevelopmentView.swift; sourceTree = "<group>"; };
 		C77B90002AF18E2E009CC655 /* Pearcleaner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pearcleaner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C77B90032AF18E2E009CC655 /* PearcleanerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PearcleanerApp.swift; sourceTree = "<group>"; };
@@ -284,7 +284,7 @@
 			children = (
 				C77B90142AF18E7C009CC655 /* Info.plist */,
 				C77B90242AF2D796009CC655 /* Pearcleaner.entitlements */,
-				C7151D542E78D53400469E3A /* Glass.icon */,
+				C770B6EC2E78DF9D005A0ABD /* Glass.icon */,
 				C77B90072AF18E2F009CC655 /* Assets.xcassets */,
 				C7F8436A2CBF066F00E3E30A /* Localizable.xcstrings */,
 			);
@@ -527,7 +527,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C7151D552E78D53400469E3A /* Glass.icon in Resources */,
+				C770B6ED2E78DF9D005A0ABD /* Glass.icon in Resources */,
 				C77B90082AF18E2F009CC655 /* Assets.xcassets in Resources */,
 				C7F8436B2CBF066F00E3E30A /* Localizable.xcstrings in Resources */,
 			);
@@ -849,6 +849,8 @@
 				APP_VERSION = "$(APP_VERSION)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = Glass;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_OPTIMIZATION = time;
+				ASSETCATALOG_COMPILER_SKIP_APP_STORE_DEPLOYMENT = YES;
 				CODE_SIGN_ENTITLEMENTS = Pearcleaner/Resources/Pearcleaner.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
@@ -892,6 +894,8 @@
 				APP_VERSION = "$(APP_VERSION)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = Glass;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_OPTIMIZATION = space;
+				ASSETCATALOG_COMPILER_SKIP_APP_STORE_DEPLOYMENT = YES;
 				CODE_SIGN_ENTITLEMENTS = Pearcleaner/Resources/Pearcleaner.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
