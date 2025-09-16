@@ -46,10 +46,13 @@ class MetadataAppInfoFetcher {
         let system = !path.path.contains(NSHomeDirectory())
         let cask = getCaskIdentifier(for: appName)
 
+        // Get entitlements for the app
+        let entitlements = getEntitlements(for: path.path)
+
         return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName,
                        appVersion: version, appIcon: appIcon, webApp: webApp, wrapped: wrapped, system: system,
                        arch: arch, cask: cask, steam: false, bundleSize: logicalSize, fileSize: [:],
-                       fileSizeLogical: [:], fileIcon: [:], creationDate: creationDate, contentChangeDate: contentChangeDate, lastUsedDate: lastUsedDate)
+                       fileSizeLogical: [:], fileIcon: [:], creationDate: creationDate, contentChangeDate: contentChangeDate, lastUsedDate: lastUsedDate, entitlements: entitlements)
     }
 }
 
@@ -221,8 +224,11 @@ class AppInfoFetcher {
         let cask = getCaskIdentifier(for: appName)
         let arch = checkAppBundleArchitecture(at: path.path)
 
+        // Get entitlements for the app
+        let entitlements = getEntitlements(for: path.path)
+
         return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName, appVersion: appVersion, appIcon: appIcon,
-                       webApp: webApp, wrapped: wrapped, system: system, arch: arch, cask: cask, steam: false, bundleSize: 0, fileSize: [:], fileSizeLogical: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil)
+                       webApp: webApp, wrapped: wrapped, system: system, arch: arch, cask: cask, steam: false, bundleSize: 0, fileSize: [:], fileSizeLogical: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, entitlements: entitlements)
     }
 
 }
@@ -303,9 +309,65 @@ class SteamAppInfoFetcher {
         
         // Use the launcher path as the main path (so users see the ~/Applications version)
         // but store the actual bundle path info
-        return AppInfo(id: UUID(), path: launcherPath, bundleIdentifier: bundleIdentifier, appName: appName, 
-                       appVersion: appVersion, appIcon: appIcon, webApp: webApp, wrapped: false, 
-                       system: system, arch: arch, cask: nil, steam: true, bundleSize: 0, fileSize: [:], 
-                       fileSizeLogical: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil)
+        // Get entitlements for the Steam app
+        let entitlements = getEntitlements(for: actualBundlePath.path)
+
+        return AppInfo(id: UUID(), path: launcherPath, bundleIdentifier: bundleIdentifier, appName: appName,
+                       appVersion: appVersion, appIcon: appIcon, webApp: webApp, wrapped: false,
+                       system: system, arch: arch, cask: nil, steam: true, bundleSize: 0, fileSize: [:],
+                       fileSizeLogical: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, entitlements: entitlements)
     }
 }
+
+
+
+private func getEntitlements(for appPath: String) -> [String]? {
+    let appURL = URL(fileURLWithPath: appPath) as CFURL
+    var staticCode: SecStaticCode?
+
+    // Create a static code object for the app
+    guard SecStaticCodeCreateWithPath(appURL, [], &staticCode) == errSecSuccess,
+          let code = staticCode else {
+        return nil
+    }
+
+    // 1 << 2 is the bitmask for entitlements (kSecCSEntitlements)
+    var info: CFDictionary?
+    if SecCodeCopySigningInformation(code,
+                                     SecCSFlags(rawValue: 1 << 2),
+                                     &info) == errSecSuccess,
+       let dict = info as? [String: Any],
+       let entitlements = dict[kSecCodeInfoEntitlementsDict as String] as? [String: Any] {
+
+        var results: [String] = []
+
+        // com.apple.developer.team-identifier
+        if let teamIdentifier = entitlements["com.apple.developer.team-identifier"] as? String {
+            results.append(teamIdentifier)
+        }
+
+        // com.apple.security.temporary-exception.files.home-relative-path.read-write
+        if let tempExceptionPaths = entitlements["com.apple.security.temporary-exception.files.home-relative-path.read-write"] as? [String] {
+            for path in tempExceptionPaths {
+                let lastComponent = URL(fileURLWithPath: path).lastPathComponent
+                results.append(lastComponent)
+            }
+        }
+
+        // com.apple.security.application-groups
+        if let appGroups = entitlements["com.apple.security.application-groups"] as? [String] {
+            results.append(contentsOf: appGroups)
+        }
+
+        // com.apple.developer.icloud-container-identifiers
+        if let icloudContainers = entitlements["com.apple.developer.icloud-container-identifiers"] as? [String] {
+            results.append(contentsOf: icloudContainers)
+        }
+
+        return results.isEmpty ? nil : results
+    }
+
+    return nil
+}
+
+

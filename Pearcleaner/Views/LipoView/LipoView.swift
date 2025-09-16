@@ -272,7 +272,7 @@ struct LipoView: View {
                     }
                 }
             }
-            .blur(radius: infoSidebar ? 2 : 0)
+            .blur(radius: infoSidebar ? 1 : 0)
 
             // Add the sidebar view
             LipoSidebarView(infoSidebar: $infoSidebar, excludedApps: excludedApps, prune: $prune, filterMinSavings: $filterMinSavings, onRemoveExcluded: removeAppFromExcluded, totalSpaceSaved: totalSpaceSaved, savingsAllApps: savingsAllApps)

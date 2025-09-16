@@ -92,9 +92,19 @@ class ReversePathsSearcher {
         let itemPath = itemURL.path.pearFormat()
 
         for app in sortedApps {
-            if itemPath.contains(app.bundleIdentifier.pearFormat()) || 
+            if itemPath.contains(app.bundleIdentifier.pearFormat()) ||
                 itemPath.contains(app.appName.pearFormat()) {
                 return true
+            }
+
+            // Check entitlements-based matching
+            if let entitlements = app.entitlements {
+                for entitlement in entitlements {
+                    let entitlementFormatted = entitlement.pearFormat()
+                    if !entitlementFormatted.isEmpty && itemPath.contains(entitlementFormatted) {
+                        return true
+                    }
+                }
             }
 
             // Check if the path contains /Containers or /Group Containers

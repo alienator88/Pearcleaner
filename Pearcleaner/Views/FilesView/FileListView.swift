@@ -157,7 +157,7 @@ struct FileListView: View {
                         .help("See app details")
                     }
                 }
-                .blur(radius: infoSidebar ? 2 : 0)
+                .blur(radius: infoSidebar ? 1 : 0)
             }
 
             if !appState.externalPaths.isEmpty {

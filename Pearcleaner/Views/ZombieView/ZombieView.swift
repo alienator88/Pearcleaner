@@ -194,7 +194,7 @@ struct ZombieView: View {
                         }
                         .padding(.top)
                     }
-                    .blur(radius: infoSidebar ? 2 : 0)
+                    .blur(radius: infoSidebar ? 1 : 0)
 
                     ZombieSidebarView(
                         infoSidebar: $infoSidebar,

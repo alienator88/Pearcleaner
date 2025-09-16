@@ -214,7 +214,17 @@ class AppPathFinder {
                 }
             }
         }
-        
+
+        // Check entitlements-based matching
+        if let entitlements = self.appInfo.entitlements {
+            for entitlement in entitlements {
+                let entitlementFormatted = entitlement.pearFormat()
+                if !entitlementFormatted.isEmpty && itemL.contains(entitlementFormatted) {
+                    return true
+                }
+            }
+        }
+
         for condition in conditions {
             if cached.useBundleIdentifier && cached.bundleIdentifierL.contains(condition.bundle_id) {
                 if condition.exclude.contains(where: { itemL.pearFormat().contains($0.pearFormat()) }) {

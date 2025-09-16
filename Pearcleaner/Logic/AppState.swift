@@ -92,7 +92,8 @@ class AppState: ObservableObject {
             fileIcon: [:],
             creationDate: nil,
             contentChangeDate: nil,
-            lastUsedDate: nil
+            lastUsedDate: nil,
+            entitlements: nil
         )
         
         self.zombieFile = ZombieFile(
@@ -335,6 +336,7 @@ struct AppInfo: Identifiable, Equatable, Hashable {
     let creationDate: Date?
     let contentChangeDate: Date?
     let lastUsedDate: Date?
+    let entitlements: [String]?
 
     var totalSize: Int64
     {
@@ -363,7 +365,7 @@ struct AppInfo: Identifiable, Equatable, Hashable {
         return path == URL(fileURLWithPath: "./") && bundleIdentifier.isEmpty && appName.isEmpty
     }
     
-    static let empty = AppInfo(id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "", appVersion: "", appIcon: nil, webApp: false, wrapped: false, system: false, arch: .empty, cask: nil, steam: false, bundleSize: 0, fileSize: [:], fileSizeLogical: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil)
+    static let empty = AppInfo(id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "", appVersion: "", appIcon: nil, webApp: false, wrapped: false, system: false, arch: .empty, cask: nil, steam: false, bundleSize: 0, fileSize: [:], fileSizeLogical: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, entitlements: nil)
     
 }
 
