@@ -190,7 +190,7 @@ struct DaemonView: View {
                         .buttonStyle(ControlGroupButtonStyle(
                             foregroundColor: ThemeColors.shared(for: colorScheme).primaryText,
                             shape: Capsule(style: .continuous),
-                            level: .secondary
+                            level: .primary
                         ))
 
                         Button {
@@ -202,7 +202,7 @@ struct DaemonView: View {
                         .buttonStyle(ControlGroupButtonStyle(
                             foregroundColor: ThemeColors.shared(for: colorScheme).accent,
                             shape: Capsule(style: .continuous),
-                            level: .secondary,
+                            level: .primary,
                             disabled: isLoading
                         ))
                         .help("Refresh launch services list")
@@ -231,7 +231,7 @@ struct DaemonView: View {
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
                 .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-                .controlGroup(Capsule(style: .continuous), level: .secondary)
+                .controlGroup(Capsule(style: .continuous), level: .primary)
             }
             
             if isLoading {

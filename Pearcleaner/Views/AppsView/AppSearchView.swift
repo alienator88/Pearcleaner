@@ -35,7 +35,7 @@ struct AppSearchView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
 
-                SearchBarSidebar(search: $search, glass: glass)
+                SearchBarSidebar(search: $search)
                     .padding()
 
                 AppsListView(search: $search, filteredApps: filteredApps)
@@ -232,7 +232,7 @@ struct SimpleSearchStyleSidebar: TextFieldStyle {
         .buttonStyle(.plain)
         .padding(.vertical, 8)
         .padding(.horizontal, 14)
-        .controlGroup(Capsule(style: .continuous), level: .secondary)
+        .controlGroup(Capsule(style: .continuous), level: .primary)
         .onHover { hovering in
             withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                 self.isHovered = hovering
@@ -257,24 +257,9 @@ extension NSTextView {
     }
 }
 
-struct SearchBar: View {
-    @Binding var search: String
-    @State var glass: Bool = false
-    @State var padding: CGFloat = 5
-    @EnvironmentObject var appState: AppState
-
-    var body: some View {
-        HStack {
-            TextField(text: $search) { EmptyView() }
-                .textFieldStyle(SimpleSearchStyle(trash: true, text: $search, glass: glass, padding: padding))
-        }
-    }
-}
-
 
 struct SearchBarSidebar: View {
     @Binding var search: String
-    @State var glass: Bool = false
     @State var padding: CGFloat = 5
     @State var sidebar: Bool = true
     @EnvironmentObject var appState: AppState

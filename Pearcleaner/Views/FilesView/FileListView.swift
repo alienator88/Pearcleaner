@@ -66,7 +66,7 @@ struct FileListView: View {
                         .buttonStyle(ControlGroupButtonStyle(
                             foregroundColor: ThemeColors.shared(for: colorScheme).primaryText,
                             shape: Capsule(style: .continuous),
-                            level: .secondary
+                            level: .primary
                         ))
                     }
                     
@@ -137,7 +137,7 @@ struct FileListView: View {
                         .buttonStyle(ControlGroupButtonStyle(
                             foregroundColor: ThemeColors.shared(for: colorScheme).accent,
                             shape: Capsule(style: .continuous),
-                            level: .secondary,
+                            level: .primary,
                             disabled: appState.selectedItems.isEmpty
                         ))
 
@@ -157,7 +157,7 @@ struct FileListView: View {
                         .help("See app details")
                     }
                 }
-                .blur(radius: infoSidebar ? 1 : 0)
+                .opacity(infoSidebar ? 0.5 : 1)
             }
 
             if !appState.externalPaths.isEmpty {

@@ -12287,6 +12287,9 @@
         }
       }
     },
+    "Glass Effect" : {
+
+    },
     "Greeting disabled on main page" : {
       "localizations" : {
         "de" : {
@@ -23340,6 +23343,9 @@
           }
         }
       }
+    },
+    "Regular" : {
+
     },
     "Release Notes" : {
       "localizations" : {

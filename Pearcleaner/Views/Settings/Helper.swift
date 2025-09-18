@@ -37,7 +37,7 @@ struct HelperSettingsTab: View {
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
                         .padding(.vertical, 8)
                         .padding(.horizontal, 14)
-                        .controlGroup(Capsule(style: .continuous), level: .secondary)
+                        .controlGroup(Capsule(style: .continuous), level: .primary)
                         .padding(.trailing, 5)
                         .contextMenu {
                             Button("Restart Service") {

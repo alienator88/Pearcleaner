@@ -31,11 +31,14 @@ struct LeftNavigationSidebar: View {
                     isHovered: hoveredItem == page
                 ) {
                     // Clear appInfo selection on tab switch
-                    if appState.currentPage != .applications {
-                        updateOnMain{
-                            appState.appInfo = .empty
-                        }
-                    }
+//                    if appState.currentPage != .applications {
+//                        updateOnMain{
+//                            appState.appInfo = .empty
+//                        }
+//                    }
+//                    updateOnMain{
+//                        appState.appInfo = .empty
+//                    }
                     selectPage(page)
                 }
                 .onHover { isHovering in
@@ -60,23 +63,18 @@ struct LeftNavigationSidebar: View {
 
         }
         .frame(width: sidebarWidth)
-        .background(backgroundView(color: ThemeColors.shared(for: colorScheme).secondaryBG, glass: glass))
-        .overlay(
-            Rectangle()
-                .fill(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.1))
-                .frame(width: 1)
-                .frame(maxWidth: .infinity, alignment: .trailing)
-        )
+        .preTahoeSidebarBG()
     }
 
     private func selectPage(_ page: CurrentPage) {
         withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
+            // Reset appInfo when changing pages
+            if page == .applications {
+                appState.appInfo = .empty
+            }
+            // Change page
             appState.currentPage = page
 
-            // Reset view state when changing pages
-            if page == .applications {
-                appState.currentView = .empty
-            }
         }
     }
 }

@@ -88,7 +88,7 @@ struct EnvironmentCleanerView: View {
                 .buttonStyle(ControlGroupButtonStyle(
                     foregroundColor: ThemeColors.shared(for: colorScheme).primaryText,
                     shape: Capsule(style: .continuous),
-                    level: .secondary
+                    level: .primary
                 ))
 
             }
@@ -192,7 +192,7 @@ struct EnvironmentCleanerView: View {
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
                     .padding(.vertical, 8)
                     .padding(.horizontal, 14)
-                    .controlGroup(Capsule(style: .continuous), level: .secondary)
+                    .controlGroup(Capsule(style: .continuous), level: .primary)
 
                     Spacer()
                 }
@@ -269,7 +269,7 @@ struct PathRowView: View {
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
                             .padding(.vertical, 8)
                             .padding(.horizontal, 14)
-                            .controlGroup(Capsule(style: .continuous), level: .secondary)
+                            .controlGroup(Capsule(style: .continuous), level: .primary)
 
                         }
                         .onAppear {
@@ -477,7 +477,7 @@ struct WorkspaceStorageCleanerView: View {
                 .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
                 .padding(.vertical, 8)
                 .padding(.horizontal, 14)
-                .controlGroup(Capsule(style: .continuous), level: .secondary)
+                .controlGroup(Capsule(style: .continuous), level: .primary)
             }
             
             if !orphanedWorkspaces.isEmpty {
@@ -542,7 +542,7 @@ struct WorkspaceStorageCleanerView: View {
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
                         .padding(.vertical, 8)
                         .padding(.horizontal, 14)
-                        .controlGroup(Capsule(style: .continuous), level: .secondary)
+                        .controlGroup(Capsule(style: .continuous), level: .primary)
 
                         Button("Cancel") {
                             cancelWorkspaceCleanup()
@@ -552,7 +552,7 @@ struct WorkspaceStorageCleanerView: View {
                         .buttonStyle(.plain)
                         .padding(.vertical, 8)
                         .padding(.horizontal, 14)
-                        .controlGroup(Capsule(style: .continuous), level: .secondary)
+                        .controlGroup(Capsule(style: .continuous), level: .primary)
                     }
                 }
             } else if lastScanDate != nil {

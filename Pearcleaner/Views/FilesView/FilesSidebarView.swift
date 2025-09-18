@@ -29,12 +29,7 @@ struct SidebarView: View {
                 }
                 .padding()
                 .frame(width: 250)
-                .background(.ultraThinMaterial)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 8)
-                        .strokeBorder(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.2), lineWidth: 1)
-                }
+                .ifGlassSidebar()
             }
             .background(.black.opacity(0.00000000001))
             .transition(.move(edge: .trailing))

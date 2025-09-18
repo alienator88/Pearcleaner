@@ -88,7 +88,7 @@ struct ZombieView: View {
                             .buttonStyle(ControlGroupButtonStyle(
                                 foregroundColor: ThemeColors.shared(for: colorScheme).primaryText,
                                 shape: Capsule(style: .continuous),
-                                level: .secondary
+                                level: .primary
                             ))
                         }
 
@@ -125,7 +125,7 @@ struct ZombieView: View {
                             .padding(.horizontal, 12)
                             .padding(.vertical, 8)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-                            .controlGroup(Capsule(style: .continuous), level: .secondary)
+                            .controlGroup(Capsule(style: .continuous), level: .primary)
                         }
                         .padding(.vertical)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -194,7 +194,7 @@ struct ZombieView: View {
                         }
                         .padding(.top)
                     }
-                    .blur(radius: infoSidebar ? 1 : 0)
+                    .opacity(infoSidebar ? 0.5 : 1)
 
                     ZombieSidebarView(
                         infoSidebar: $infoSidebar,
@@ -287,7 +287,7 @@ struct ZombieView: View {
                 .buttonStyle(ControlGroupButtonStyle(
                     foregroundColor: ThemeColors.shared(for: colorScheme).accent,
                     shape: Capsule(style: .continuous),
-                    level: .secondary,
+                    level: .primary,
                     skipControlGroup: true,
                     disabled: selectedZombieItemsLocal.isEmpty
                 ))
@@ -304,7 +304,7 @@ struct ZombieView: View {
                 .buttonStyle(ControlGroupButtonStyle(
                     foregroundColor: ThemeColors.shared(for: colorScheme).accent,
                     shape: Capsule(style: .continuous),
-                    level: .secondary,
+                    level: .primary,
                     skipControlGroup: true
                 ))
 
@@ -323,12 +323,12 @@ struct ZombieView: View {
                 .buttonStyle(ControlGroupButtonStyle(
                     foregroundColor: ThemeColors.shared(for: colorScheme).accent,
                     shape: Capsule(style: .continuous),
-                    level: .secondary,
+                    level: .primary,
                     skipControlGroup: true,
                     disabled: selectedZombieItemsLocal.isEmpty
                 ))
             }
-            .controlGroup(Capsule(style: .continuous), level: .secondary)
+            .controlGroup(Capsule(style: .continuous), level: .primary)
     }
 
     private func handleUninstallAction() {

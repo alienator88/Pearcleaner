@@ -93,7 +93,7 @@ struct SettingsView: View {
             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
             .padding(.vertical, 8)
             .padding(.horizontal, 14)
-            .controlGroup(Capsule(style: .continuous), level: .secondary)
+            .controlGroup(Capsule(style: .continuous), level: .primary)
 
         }
         .padding(.bottom)

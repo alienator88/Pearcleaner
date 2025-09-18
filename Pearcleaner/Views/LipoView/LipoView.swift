@@ -145,7 +145,7 @@ struct LipoView: View {
                     .buttonStyle(ControlGroupButtonStyle(
                         foregroundColor: ThemeColors.shared(for: colorScheme).primaryText,
                         shape: Capsule(style: .continuous),
-                        level: .secondary
+                        level: .primary
                     ))
                 }
 
@@ -253,7 +253,7 @@ struct LipoView: View {
                                 disabled: selectedApps.isEmpty
                             ))
                         }
-                        .controlGroup(Capsule(style: .continuous), level: .secondary)
+                        .controlGroup(Capsule(style: .continuous), level: .primary)
 
                         Spacer()
 
@@ -272,7 +272,7 @@ struct LipoView: View {
                     }
                 }
             }
-            .blur(radius: infoSidebar ? 1 : 0)
+            .opacity(infoSidebar ? 0.5 : 1)
 
             // Add the sidebar view
             LipoSidebarView(infoSidebar: $infoSidebar, excludedApps: excludedApps, prune: $prune, filterMinSavings: $filterMinSavings, onRemoveExcluded: removeAppFromExcluded, totalSpaceSaved: totalSpaceSaved, savingsAllApps: savingsAllApps)

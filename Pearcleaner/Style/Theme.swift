@@ -405,7 +405,7 @@ struct ClickableColorSquare: View {
                         .foregroundStyle(theme(for: colorScheme).accent)
                         .padding(.vertical, 8)
                         .padding(.horizontal, 14)
-                        .controlGroup(Capsule(style: .continuous), level: .secondary)
+                        .controlGroup(Capsule(style: .continuous), level: .primary)
                     }
                     .padding()
                     .background(selectedColor.padding(-80))
@@ -532,7 +532,7 @@ struct ThemeCustomizationView: View {
                 .foregroundStyle(theme(for: colorScheme).accent)
                 .padding(.vertical, 8)
                 .padding(.horizontal, 14)
-                .controlGroup(Capsule(style: .continuous), level: .secondary)
+                .controlGroup(Capsule(style: .continuous), level: .primary)
                 Spacer()
             }
 

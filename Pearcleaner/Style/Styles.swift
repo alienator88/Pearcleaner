@@ -139,78 +139,7 @@ struct LadderTopRoundedRectangle: InsettableShape {
     }
 }
 
-//struct LadderTopRoundedRectangle: InsettableShape {
-//    var cornerRadius: CGFloat
-//    var ladderHeight: CGFloat
-//    var ladderPosition: CGFloat
-//    var insetAmount: CGFloat = 0
-//
-//    func inset(by amount: CGFloat) -> some InsettableShape {
-//        var shape = self
-//        shape.insetAmount += amount
-//        return shape
-//    }
-//
-//    func path(in rect: CGRect) -> Path {
-//        var path = Path()
-//
-//        // Calculate the middle x position for the vertical section
-//        //        let ladderStartX = rect.maxX - cornerRadius - (rect.width / ladderPosition)
-//        let ladderStartX = rect.minX + cornerRadius + ladderPosition
-//
-//        // Start at the top-right corner
-//        path.move(to: CGPoint(x: rect.maxX - cornerRadius, y: rect.minY))
-//
-//        // 1. Top-right rounded corner
-//        path.addQuadCurve(to: CGPoint(x: rect.maxX, y: rect.minY + cornerRadius),
-//                          control: CGPoint(x: rect.maxX, y: rect.minY))
-//
-//        // 2. Right side straight line down
-//        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY - cornerRadius))
-//
-//        // 3. Bottom-right rounded corner
-//        path.addQuadCurve(to: CGPoint(x: rect.maxX - cornerRadius, y: rect.maxY),
-//                          control: CGPoint(x: rect.maxX, y: rect.maxY))
-//
-//        // 4. Straight line across bottom
-//        path.addLine(to: CGPoint(x: rect.minX + cornerRadius, y: rect.maxY))
-//
-//        // 5. Bottom-left rounded corner
-//        path.addQuadCurve(to: CGPoint(x: rect.minX, y: rect.maxY - cornerRadius),
-//                          control: CGPoint(x: rect.minX, y: rect.maxY))
-//
-//        // 6. Left side straight line going up
-//        path.addLine(to: CGPoint(x: rect.minX, y: rect.minY + ladderHeight + cornerRadius))
-//
-//        // 7. Top-left rounded corner
-//        path.addQuadCurve(to: CGPoint(x: rect.minX + cornerRadius, y: rect.minY + ladderHeight),
-//                          control: CGPoint(x: rect.minX, y: rect.minY + ladderHeight))
-//
-//        // 8. Straight line right to the start of the vertical section
-//        path.addLine(to: CGPoint(x: ladderStartX - cornerRadius, y: rect.minY + ladderHeight))
-//
-//        // 9. Curved transition into the vertical section (left side)
-//        path.addQuadCurve(
-//            to: CGPoint(x: ladderStartX, y: rect.minY + ladderHeight - cornerRadius),
-//            control: CGPoint(x: ladderStartX, y: rect.minY + ladderHeight)
-//        )
-//
-//        // 10. Vertical line
-//        path.addLine(to: CGPoint(x: ladderStartX, y: rect.minY + cornerRadius))
-//
-//        // 11. Curved transition from vertical to top (right side)
-//        path.addQuadCurve(
-//            to: CGPoint(x: ladderStartX + cornerRadius, y: rect.minY),
-//            control: CGPoint(x: ladderStartX, y: rect.minY)
-//        )
-//
-//        // 12. Final line to close the shape
-//        path.addLine(to: CGPoint(x: rect.maxX - cornerRadius, y: rect.minY))
-//
-//        path.closeSubpath()
-//        return path
-//    }
-//}
+
 
 struct ResetSettingsButtonStyle: ButtonStyle {
     @Environment(\.colorScheme) var colorScheme
@@ -298,7 +227,7 @@ struct SettingsControlButtonGroup: View {
         .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
         .padding(.vertical, 8)
         .padding(.horizontal, 14)
-        .controlGroup(Capsule(style: .continuous), level: .secondary)
+        .controlGroup(Capsule(style: .continuous), level: .primary)
     }
 }
 
@@ -386,203 +315,22 @@ struct SimpleCheckboxToggleStyle: ToggleStyle {
 }
 
 
-//struct CircleCheckboxToggleStyle: ToggleStyle {
-//    @State private var isHovered: Bool = false
-//    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
-//
-//    func makeBody(configuration: Configuration) -> some View {
-//        HStack {
-//            Circle()
-//                .fill(themeManager.pickerColor.adjustBrightness(5))
-//                .frame(width: 18, height: 18)
-//                .overlay {
-//                    if configuration.isOn {
-//                        ZStack {
-//                            //                            Circle()
-//                            //                                .fill(themeManager.pickerColor.adjustBrightness(-15))
-//                            //                                .frame(width: 18, height: 18)
-//                            Image(systemName: "checkmark")
-//                                .resizable()
-//                                .aspectRatio(contentMode: .fit)
-//                                .frame(width: 8, height: 8)
-//                                .foregroundStyle(ThemeColors.shared(for: colorScheme).textPrimary)
-//                        }
-//
-//                    }
-//                }
-//                .overlay {
-//                    Circle()
-//                        .strokeBorder(themeManager.pickerColor.adjustBrightness(isHovered ? -10 : -5.0), lineWidth: 1)
-//                }
-//                .onTapGesture {
-//                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-//                        configuration.isOn.toggle()
-//                    }
-//                }
-//            configuration.label
-//        }
-//        .onHover(perform: { hovering in
-//            self.isHovered = hovering
-//        })
-//    }
-//}
-
-
-
-//struct UninstallButton: ButtonStyle {
-//    @State private var hovered: Bool = false
-//    var isEnabled: Bool
-//
-//    func makeBody(configuration: Configuration) -> some View {
-//        HStack(alignment: .center, spacing: 0) {
-//            Image(systemName: !hovered ? "trash" : "trash.fill")
-//                .resizable()
-//                .aspectRatio(contentMode: .fit)
-//                .foregroundStyle(isEnabled ? .white.opacity(1) : .white.opacity(0.3))
-//                .frame(width: 18, height: 18)
-//                .frame(width: 20, alignment: .center)
-//                .animation(.easeInOut(duration: 0.1), value: hovered)
-//
-//            Divider()
-//                .frame(height: 24)
-//                .opacity(0.5)
-//                .padding(.horizontal, 8)
-//
-//            configuration.label
-//                .frame(minWidth: 50)
-//                .foregroundStyle(isEnabled ? .white.opacity(1) : .white.opacity(0.3))
-//
-//        }
-//        .frame(height: 24)
-//        .padding(.horizontal, 8)
-//        .padding(.vertical, 4)
-//        .background(configuration.isPressed ? Color("uninstall").opacity(0.8) : Color("uninstall"))
-//        .cornerRadius(8)
-//        .onHover { over in
-//            hovered = over
-//        }
-//    }
-//}
-
-
-
-//struct RescanButton: ButtonStyle {
-//    @State private var hovered: Bool = false
-//
-//    func makeBody(configuration: Configuration) -> some View {
-//        HStack(alignment: .center, spacing: 0) {
-//            Image(systemName: !hovered ? "arrow.counterclockwise.circle" : "arrow.counterclockwise.circle.fill")
-//                .resizable()
-//                .aspectRatio(contentMode: .fit)
-//                .frame(width: 18, height: 18)
-//                .frame(width: 20, alignment: .center)
-//                .foregroundStyle(.white)
-//                .animation(.easeInOut(duration: 0.1), value: hovered)
-//
-//            Divider()
-//                .frame(height: 24)
-//                .foregroundStyle(.white)
-//                .opacity(0.5)
-//                .padding(.horizontal, 8)
-//
-//            configuration.label
-//                .foregroundStyle(.white)
-//
-//        }
-//        .frame(height: 24)
-//        .padding(.horizontal, 8)
-//        .padding(.vertical, 4)
-//        .background(configuration.isPressed ? Color("button").opacity(0.8) : Color("button"))
-//        .cornerRadius(8)
-//        .onHover { over in
-//            hovered = over
-//        }
-//    }
-//}
-//
-//struct ExcludeButton: ButtonStyle {
-//    @State private var hovered: Bool = false
-//    var isEnabled: Bool
-//
-//    func makeBody(configuration: Configuration) -> some View {
-//        HStack(alignment: .center, spacing: 0) {
-//            Image(systemName: !hovered ? "minus.circle" : "minus.circle.fill")
-//                .resizable()
-//                .aspectRatio(contentMode: .fit)
-//                .frame(width: 18, height: 18)
-//                .frame(width: 20, alignment: .center)
-//                .foregroundStyle(isEnabled ? .white.opacity(1) : .white.opacity(0.3))
-//                .animation(.easeInOut(duration: 0.1), value: hovered)
-//
-//            Divider()
-//                .frame(height: 24)
-//                .foregroundStyle(.white)
-//                .opacity(0.5)
-//                .padding(.horizontal, 8)
-//
-//            configuration.label
-//                .foregroundStyle(isEnabled ? .white.opacity(1) : .white.opacity(0.3))
-//
-//        }
-//        .frame(height: 24)
-//        .padding(.horizontal, 8)
-//        .padding(.vertical, 4)
-//        .background(configuration.isPressed ? Color("grayButton").opacity(0.8) : Color("grayButton"))
-//        .cornerRadius(8)
-//        .onHover { over in
-//            hovered = over
-//        }
-//    }
-//}
-
-
-//struct LipoButton: ButtonStyle {
-//    @State private var hovered: Bool = false
-//
-//    func makeBody(configuration: Configuration) -> some View {
-//        HStack(alignment: .center, spacing: 0) {
-//            Image(systemName: hovered ? "square.split.1x2.fill" : "square.split.1x2")
-//                .resizable()
-//                .aspectRatio(contentMode: .fit)
-//                .frame(width: 18, height: 18)
-//                .frame(width: 20, alignment: .center)
-//                .foregroundStyle(.white.opacity(1))
-//                .animation(.easeInOut(duration: 0.1), value: hovered)
-//            Divider()
-//                .frame(height: 24)
-//                .foregroundStyle(.white)
-//                .opacity(0.5)
-//                .padding(.horizontal, 8)
-//
-//            configuration.label
-//                .foregroundStyle(.white.opacity(1))
-//
-//        }
-//        .frame(height: 24)
-//        .padding(.horizontal, 8)
-//        .padding(.vertical, 4)
-//        .background(configuration.isPressed ? Color("grayButton").opacity(0.8) : Color("grayButton"))
-//        .cornerRadius(8)
-//        .onHover { over in
-//            hovered = over
-//        }
-//    }
-//}
-
-
 
 public struct SlideableDivider: View {
     @Binding var dimension: Double
+    @State private var color: Color
     @State private var dimensionStart: Double?
     @State private var handleWidth: Double = 4
     @State private var handleHeight: Double = 30
     @State private var isHovered: Bool = false
-    public init(dimension: Binding<Double>) {
+    public init(dimension: Binding<Double>, color: Color = .primary ) {
         self._dimension = dimension
+        self.color = color
     }
 
     public var body: some View {
         Divider()
+            .foregroundStyle(color)
             .background(
                 // Invisible wider hover area
                 Rectangle()
@@ -763,58 +511,6 @@ public struct SimpleButtonStyleFlipped: ButtonStyle {
 }
 
 
-//struct PearDropView: View {
-//    @Environment(\.colorScheme) var colorScheme
-//
-//    var body: some View {
-//
-//        ZStack() {
-//            let shadow = colorScheme == .dark ? Color.white.opacity(0.2) : Color.black.opacity(0.3)
-//            let mainColor = ThemeColors.shared(for: colorScheme).iconFolder
-//
-//            shadow
-//                .mask(
-//                    Image("pearLogo")
-//                        .resizable()
-//                        .scaledToFit()
-//                )
-//                .offset(y: colorScheme == .dark ? 1 : -1)
-//
-//            mainColor
-//                .mask(
-//                    Image("pearLogo")
-//                        .resizable()
-//                        .scaledToFit()
-//                )
-//        }
-//        //            AnimatedGradientView(colors: [.orange, .green, .yellow], direction: .horizontal)
-//    }
-//}
-
-//struct PearDropViewSmall: View {
-//
-//    var body: some View {
-//        VStack(alignment: .center, spacing: 0) {
-//            HStack(spacing: 0) {
-//                LinearGradient(gradient: Gradient(colors: [.green, .orange]), startPoint: .leading, endPoint: .trailing)
-//                    .frame(width: 60)
-//                LinearGradient(gradient: Gradient(colors: [.orange, ThemeColors.shared(for: colorScheme).textPrimary.opacity(0.5)]), startPoint: .leading, endPoint: .trailing)
-//                    .frame(width: 10)
-//                LinearGradient(gradient: Gradient(colors: [ThemeColors.shared(for: colorScheme).textPrimary.opacity(0.5), ThemeColors.shared(for: colorScheme).textPrimary.opacity(0.5)]), startPoint: .leading, endPoint: .trailing)
-//                    .frame(width: 100)
-//            }
-//            .mask(
-//                Image("logo_text_small")
-//                    .resizable()
-//                    .scaledToFit()
-//                    .frame(width: 180)
-//            )
-//        }
-//        .frame(height: 50)
-//    }
-//}
-
-
 // Background color/glass setter
 @ViewBuilder
 func backgroundView(color: Color, glass: Bool = false) -> some View {
@@ -827,112 +523,85 @@ func backgroundView(color: Color, glass: Bool = false) -> some View {
 }
 
 
+struct preTahoeSidebar: ViewModifier {
+    @Environment(\.colorScheme) var colorScheme
+    @AppStorage("settings.general.glass") private var glass: Bool = false
+
+    func body(content: Content) -> some View {
+        if #available(macOS 26.0, *) {
+            content
+                .background {
+                    LinearGradient(colors: [ThemeColors.shared(for: colorScheme).secondaryBG, ThemeColors.shared(for: colorScheme).primaryBG], startPoint: .leading, endPoint: .trailing)
+                }
+        } else {
+            content
+                .background(backgroundView(color: ThemeColors.shared(for: colorScheme).secondaryBG, glass: glass))
+                .overlay(
+                    Rectangle()
+                        .fill(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.1))
+                        .frame(width: 1)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                )
+        }
+    }
+}
+
+extension View {
+    func preTahoeSidebarBG() -> some View {
+        self.modifier(preTahoeSidebar())
+    }
+}
 
 
-//struct CustomPickerButton: View {
-//    @EnvironmentObject var themeManager: ThemeManager
-//
-//    // Selected option binding to allow external state management
-//    @Binding var selectedOption: CurrentPage
-//    @Binding var isExpanded: Bool
-//    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
-//
-//    // Options array with names and icons
-//    let options: [CurrentPage]
-//
-//    // Action callback when an option is selected
-//    var onSelect: ((String) -> Void)?
-//
-//    @State private var hoveredItem: String? // Tracks the currently hovered option
-//
-//    var body: some View {
-//        Button(action: {
-//            withAnimation(Animation.spring(duration: animationEnabled ? 0.35 : 0)) {
-//                isExpanded.toggle()
-//            }
-//        }) {
-//            ZStack {
-//                // Background and overlay styling
-//                VStack {
-//                    if isExpanded {
-//                        // Expanded menu with selectable options
-//                        VStack(alignment: .leading, spacing: 0) {
-//                            ForEach(Array(options.enumerated()), id: \.element.title) { index, option in
-//                                Button(action: {
-//                                    selectedOption = option
-//                                    onSelect?(option.title)
-//                                    withAnimation {
-//                                        isExpanded = false
-//                                    }
-//                                }) {
-//                                    HStack {
-//                                        Image(systemName: option.icon)
-//                                        Text(option.title)
-//                                        if option.title == "Lipo" {
-//                                            BetaBadge()
-//                                        }
-//                                        Spacer()
-//                                        switch option.title {
-//                                        case "Applications":
-//                                            Text(verbatim: "⌘1").font(.footnote).opacity(0.3)
-//                                        case "Development":
-//                                            Text(verbatim: "⌘2").font(.footnote).opacity(0.3)
-//                                        case "Lipo":
-//                                            Text(verbatim: "⌘3").font(.footnote).opacity(0.3)
-//                                        case "Orphaned Files":
-//                                            Text(verbatim: "⌘4").font(.footnote).opacity(0.3)
-//
-//                                        default:
-//                                            EmptyView()
-//                                        }
-//
-//                                    }
-//                                    .contentShape(Rectangle())
-//                                    .opacity(hoveredItem == option.title ? 0.7 : 1.0)
-//                                }
-//                                .buttonStyle(.borderless)
-//                                .foregroundStyle(ThemeColors.shared(for: colorScheme).textPrimary)
-//                                .onHover { isHovering in
-//                                    hoveredItem = isHovering ? option.title : nil
-//                                }
-//
-//                                if index < options.count - 1 {
-//                                    Divider()
-//                                        .padding(.vertical, 8)
-//                                        .opacity(0.3)
-//                                }
-//
-//                            }
-//                        }
-//                        .frame(maxWidth: 140, alignment: .leading)
-//                    } else {
-//                        // Display the selected option when collapsed
-//                        HStack {
-//                            Image(systemName: selectedOption.icon)
-//                            Text(selectedOption.title)
-//                        }
-//                        .padding(8)
-//                        .contentShape(Rectangle())
-//                        .opacity(hoveredItem == selectedOption.title ? 0.7 : 1.0) // Change opacity on hover
-//                        .onHover { isHovering in
-//                            // Update hoveredItem based on whether this HStack is hovered
-//                            hoveredItem = isHovering ? selectedOption.title : nil
-//                        }
-//                    }
-//                }
-//                .padding(isExpanded ? 10 : 0)
-//                .background(backgroundView(color: .blue, glass: false))
-//                .cornerRadius(8)
-//                .overlay(
-//                    RoundedRectangle(cornerRadius: 8)
-//                        .strokeBorder(ColorThemeColors.shared(for: colorScheme).textPrimary.opacity(0.2), lineWidth: 1)
-//                )
-//                .transition(.scale)
-//            }
-//        }
-//        .buttonStyle(.plain)
-//    }
-//}
+struct ifGlassAvailable: ViewModifier {
+    @AppStorage("settings.general.glassEffect") private var glassEffect: String = "Regular"
+
+    func body(content: Content) -> some View {
+        if #available(macOS 26.0, *) {
+            content
+                .glassEffect(glassEffect == "Regular" ? .regular : .clear, in: .rect(cornerRadius: 8))
+        }
+        else {
+            content
+        }
+    }
+}
+
+extension View {
+    func ifGlass() -> some View {
+        self.modifier(ifGlassAvailable())
+    }
+}
+
+
+struct ifGlassAvailableSidebar: ViewModifier {
+    @Environment(\.colorScheme) var colorScheme
+    @AppStorage("settings.general.glassEffect") private var glassEffect: String = "Regular"
+
+    func body(content: Content) -> some View {
+        if #available(macOS 26.0, *) {
+            content
+                .background(.ultraThinMaterial.opacity(glassEffect == "Regular" ? 0 : 0.7))
+                .glassEffect(glassEffect == "Regular" ? .regular : .clear, in: .rect(cornerRadius: 8))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+        }
+        else {
+            content
+                .background(.ultraThinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 8)
+                        .strokeBorder(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.2), lineWidth: 1)
+                }
+        }
+    }
+}
+
+extension View {
+    func ifGlassSidebar() -> some View {
+        self.modifier(ifGlassAvailableSidebar())
+    }
+}
 
 
 struct SettingsToggle: ToggleStyle {

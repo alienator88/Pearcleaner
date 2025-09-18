@@ -36,12 +36,7 @@ struct LipoSidebarView: View {
                 }
                 .padding()
                 .frame(width: 280)
-                .background(.ultraThinMaterial)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 8)
-                        .strokeBorder(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.2), lineWidth: 1)
-                }
+                .ifGlassSidebar()
             }
             .background(.black.opacity(0.00000000001))
             .transition(.move(edge: .trailing))
@@ -228,7 +223,7 @@ struct LipoLegend: View {
     @Environment(\.colorScheme) var colorScheme
     var body: some View {
         HStack {
-            Rectangle().fill(.green).frame(width: 12, height: 12)
+            RoundedRectangle(cornerRadius: 4).fill(.green).frame(width: 12, height: 12)
             Text("Approximate Savings").foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
         }
     }

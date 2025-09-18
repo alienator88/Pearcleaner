@@ -76,9 +76,16 @@ struct MainWindow: View {
             AppSearchView(glass: glass, search: $search)
                 .frame(width: sidebarWidth)
                 .transition(.opacity)
+                .ifGlass()
+                .padding(.vertical, 10)
 
-            SlideableDivider(dimension: $sidebarWidth)
-                .zIndex(3)
+            if #available(macOS 26.0, *) {
+                SlideableDivider(dimension: $sidebarWidth, color: .clear)
+                    .zIndex(3)
+            } else {
+                SlideableDivider(dimension: $sidebarWidth)
+                    .zIndex(3)
+            }
 
             // Details View
             HStack(spacing: 0) {
