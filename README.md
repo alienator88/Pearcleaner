@@ -58,8 +58,8 @@ If you are able to contribute to translations for the app, please see this discu
 
 ## Screenshots
 
-<img src="https://github.com/user-attachments/assets/743f170b-a80e-43f7-9626-3d1acd004396" align="left" width="400" />
-<img src="https://github.com/user-attachments/assets/eaa7d326-6eaa-4702-a3bf-9ad56cbba832" align="center" width="400" />
+<img src="https://github.com/user-attachments/assets/dc235893-9987-4981-9a3c-b021c02d9bd2" align="left" width="400" />
+<img src="https://github.com/user-attachments/assets/a76e366b-6a83-4fb5-b4be-eebeaceb9f81" align="center" width="400" />
 <p></p>
 
 
