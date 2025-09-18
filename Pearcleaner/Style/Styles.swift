@@ -584,6 +584,10 @@ struct ifGlassAvailableSidebar: ViewModifier {
                 .background(.ultraThinMaterial.opacity(glassEffect == "Regular" ? 0 : 0.7))
                 .glassEffect(glassEffect == "Regular" ? .regular : .clear, in: .rect(cornerRadius: 8))
                 .clipShape(RoundedRectangle(cornerRadius: 8))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 8)
+                        .strokeBorder(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.2), lineWidth: colorScheme == .light ? 1 : 0)
+                }
         }
         else {
             content

@@ -34,6 +34,10 @@ struct MainWindow: View {
                 LeftNavigationSidebar(isFullscreen: $isFullscreen)
                     .zIndex(1)
 
+                if appState.currentPage != .applications {
+                    Divider()
+                }
+
                 switch appState.currentPage {
                 case .applications:
                     applicationsView
@@ -77,6 +81,13 @@ struct MainWindow: View {
                 .frame(width: sidebarWidth)
                 .transition(.opacity)
                 .ifGlass()
+                .overlay {
+                    if colorScheme == .light {
+                        RoundedRectangle(cornerRadius: 8)
+                            .strokeBorder(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.1), lineWidth: 1)
+                    }
+                    
+                }
                 .padding(.vertical, 10)
 
             if #available(macOS 26.0, *) {
@@ -93,6 +104,7 @@ struct MainWindow: View {
                     switch appState.currentView {
                     case .empty:
                         MountedVolumeView()
+                            .id(appState.appInfo.id)
                     case .files:
                         FilesView(search: $search)
                             .id(appState.appInfo.id)
@@ -423,7 +435,8 @@ struct VolumeItemView: View {
                 .fill(ThemeColors.shared(for: colorScheme).secondaryBG)
         )
         .frame(maxWidth: 500)
-        .brightness((!isCenter && isHovered) ? 0.2 : 0.0)
+        .disabled(!isCenter)
+        .scaleEffect((!isCenter && isHovered) ? 1.01 : 1.0)
         .onHover { hovering in
             if !isCenter {
                 withAnimation(.easeInOut(duration: 0.2)) {

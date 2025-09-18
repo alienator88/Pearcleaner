@@ -30,15 +30,6 @@ struct LeftNavigationSidebar: View {
                     isSelected: appState.currentPage == page,
                     isHovered: hoveredItem == page
                 ) {
-                    // Clear appInfo selection on tab switch
-//                    if appState.currentPage != .applications {
-//                        updateOnMain{
-//                            appState.appInfo = .empty
-//                        }
-//                    }
-//                    updateOnMain{
-//                        appState.appInfo = .empty
-//                    }
                     selectPage(page)
                 }
                 .onHover { isHovering in
@@ -63,7 +54,7 @@ struct LeftNavigationSidebar: View {
 
         }
         .frame(width: sidebarWidth)
-        .preTahoeSidebarBG()
+//        .preTahoeSidebarBG()
     }
 
     private func selectPage(_ page: CurrentPage) {
@@ -71,6 +62,7 @@ struct LeftNavigationSidebar: View {
             // Reset appInfo when changing pages
             if page == .applications {
                 appState.appInfo = .empty
+                appState.currentView = .empty
             }
             // Change page
             appState.currentPage = page
