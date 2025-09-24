@@ -7,7 +7,10 @@ assignees: ''
 
 ---
 
-## Please note that feature request acceptance has slowed down and Pearcleaner is mostly in maintenance/bug fixing mode. Unless the feature really adds something awesome to the scope of the app, it will likely not be worked on
+> [!WARNING]
+> This is a personal/hobby app, therefore the project is fairly opinionated.  
+> Only new feature requests will be considered.  
+> Opinion-based requests (e.g., “the layout would look better this way”) will be closed.
 
 **Is your feature request related to a problem? Please describe.**
 
