@@ -6,6 +6,10 @@ labels: ''
 assignees: ''
 
 ---
+> [!WARNING]
+> This is a personal/hobby app, therefore the project is fairly opinionated.  
+> Only actual application bugs will be considered.  
+> Opinion-based requests (e.g., “the layout would look better this way”) will be closed.
 
 ### Describe the bug:
 A clear and concise description of what the bug is.
