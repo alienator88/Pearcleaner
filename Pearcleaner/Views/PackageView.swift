@@ -96,85 +96,32 @@ struct PackageView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            
-            // Header with title and controls
-            VStack(alignment: .leading, spacing: 15) {
-                
-                HStack(alignment: .center, spacing: 15) {
-                    
-                    VStack(alignment: .leading) {
-                        Text("Package Manager")
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                            .font(.title)
-                            .fontWeight(.bold)
-                        Text("Manage packages installed via macOS Installer")
-                            .font(.callout)
+        VStack(alignment: .leading, spacing: 0) {
+
+            // Search bar
+            HStack {
+                Image(systemName: "magnifyingglass")
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                TextField("Search...", text: $searchText)
+                    .textFieldStyle(.plain)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                if !searchText.isEmpty {
+                    Button {
+                        searchText = ""
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }
-
-                    BetaBadge(fontSize: 20)
-
-                    Spacer()
-                    
-                    // Sort menu button
-                    Menu {
-                        ForEach(PackageSortOption.allCases, id: \.self) { option in
-                            Button {
-                                sortOption = option
-                            } label: {
-                                Label(option.displayName, systemImage: "list.bullet")
-                            }
-                        }
-                    } label: {
-                        Label(sortOption.displayName, systemImage: "list.bullet")
-                    }
-                    .buttonStyle(ControlGroupButtonStyle(
-                        foregroundColor: ThemeColors.shared(for: colorScheme).primaryText,
-                        shape: Capsule(style: .continuous),
-                        level: .primary
-                    ))
-                    .help("Sort packages")
-                    
-                    Button {
-                        refreshPackages()
-                    } label: {
-                        Label("Refresh", systemImage: isLoading ? "arrow.clockwise" : "arrow.clockwise")
-                    }
-                    .disabled(isLoading)
-                    .buttonStyle(ControlGroupButtonStyle(
-                        foregroundColor: ThemeColors.shared(for: colorScheme).accent,
-                        shape: Capsule(style: .continuous),
-                        level: .primary,
-                        disabled: isLoading
-                    ))
-                    .help("Refresh package list")
+                    .buttonStyle(.plain)
                 }
-                
-                // Search bar
-                HStack {
-                    Image(systemName: "magnifyingglass")
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    
-                    TextField("Search...", text: $searchText)
-                        .textFieldStyle(.plain)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                    
-                    if !searchText.isEmpty {
-                        Button {
-                            searchText = ""
-                        } label: {
-                            Image(systemName: "xmark.circle.fill")
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-                .controlGroup(Capsule(style: .continuous), level: .primary)
             }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+            .controlGroup(Capsule(style: .continuous), level: .primary)
+            .padding(.top, 5)
 
             if isLoading && packages.isEmpty {
                 VStack(alignment: .center, spacing: 10) {
@@ -218,7 +165,8 @@ struct PackageView: View {
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }
                 }
-                
+                .padding(.vertical)
+
                 ScrollView {
                     LazyVStack(spacing: 8) {
                         ForEach(filteredPackages, id: \.id) { package in
@@ -247,10 +195,66 @@ struct PackageView: View {
 
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(20)
+        .padding([.horizontal, .bottom], 20)
         .onAppear {
             if packages.isEmpty {
                 refreshPackages()
+            }
+        }
+        .toolbarBackground(.hidden, for: .windowToolbar)
+        .toolbar {
+            if #available(macOS 26.0, *) {
+                ToolbarItem {
+                    VStack(alignment: .leading) {
+                        Text("Package Manager")
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            .font(.title)
+                            .fontWeight(.bold)
+                        Text("Manage packages installed via macOS Installer")
+                            .font(.callout)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                }
+                .sharedBackgroundVisibility(.hidden)
+            } else {
+                ToolbarItem {
+                    VStack(alignment: .leading) {
+                        Text("Package Manager")
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            .font(.title)
+                            .fontWeight(.bold)
+                        Text("Manage packages installed via macOS Installer")
+                            .font(.callout)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                }
+            }
+
+
+            ToolbarItem { Spacer() }
+
+            ToolbarItem {
+                Menu {
+                    ForEach(PackageSortOption.allCases, id: \.self) { option in
+                        Button {
+                            sortOption = option
+                        } label: {
+                            Label(option.displayName, systemImage: "list.bullet")
+                        }
+                    }
+                } label: {
+                    Label(sortOption.displayName, systemImage: "list.bullet")
+                }
+                .labelStyle(.titleAndIcon)
+            }
+
+            ToolbarItem {
+                Button {
+                    refreshPackages()
+                } label: {
+                    Label("Refresh", systemImage: isLoading ? "arrow.clockwise" : "arrow.clockwise")
+                }
+                .disabled(isLoading)
             }
         }
     }

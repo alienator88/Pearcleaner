@@ -19,6 +19,8 @@ struct MainWindow: View {
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 265
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+    @AppStorage("settings.interface.leftNavigationSidebar") private var leftNavigationSidebar: Bool = true
+
     @Binding var search: String
     @State private var showSys: Bool = true
     @State private var showUsr: Bool = true
@@ -31,39 +33,44 @@ struct MainWindow: View {
         ZStack() {
 
             HStack(alignment: .center, spacing: 0) {
-                LeftNavigationSidebar(isFullscreen: $isFullscreen)
-                    .zIndex(1)
+//                if leftNavigationSidebar {
+//                    LeftNavigationSidebar(isFullscreen: $isFullscreen)
+//                        .zIndex(1)
+//                }
+//
+//
+//                if appState.currentPage != .applications {
+//                    Divider()
+//                }
 
-                if appState.currentPage != .applications {
-                    Divider()
+                Group {
+                    switch appState.currentPage {
+                    case .applications:
+                        applicationsView
+
+                    case .orphans:
+                        ZombieView(search: $search)
+
+                    case .development:
+                        EnvironmentCleanerView()
+
+                    case .lipo:
+                        LipoView()
+
+                    case .launchItems:
+                        DaemonView()
+
+                    case .package:
+                        PackageView()
+                    }
                 }
+//                .padding(.top, leftNavigationSidebar ? 0 : (appState.currentPage == .applications ? 20 : 15))
+//                .padding(.leading, (!leftNavigationSidebar && appState.currentPage == .applications) ? 10 : 0)
 
-                switch appState.currentPage {
-                case .applications:
-                    applicationsView
-
-                case .orphans:
-                    ZombieView(search: $search)
-
-                case .development:
-                    EnvironmentCleanerView()
-
-                case .lipo:
-                    LipoView()
-
-                case .launchItems:
-                    DaemonView()
-
-                case .package:
-                    PackageView()
-
-
-                }
             }
         }
         .background(backgroundView(color: ThemeColors.shared(for: colorScheme).primaryBG))
         .frame(minWidth: appState.currentPage == .orphans ? 700 : 900, minHeight: 600)
-        .edgesIgnoringSafeArea(isFullscreen ? [] : .top)
         .onReceive(NotificationCenter.default.publisher(for: NSWindow.didEnterFullScreenNotification)) { _ in
             isFullscreen = true
         }
@@ -89,6 +96,8 @@ struct MainWindow: View {
                     
                 }
                 .padding(.vertical, 10)
+                .ignoresSafeArea(edges: .top)
+
 
             if #available(macOS 26.0, *) {
                 SlideableDivider(dimension: $sidebarWidth, color: .clear)
@@ -122,7 +131,7 @@ struct MainWindow: View {
             .zIndex(2)
         }
     }
-    
+
 }
 
 
@@ -135,7 +144,8 @@ struct MountedVolumeView: View {
     @EnvironmentObject var appState: AppState
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @State private var selectedVolumeIndex: Int = 0
-    
+
+    #if DEBUG
     // Debug sliders
     @State private var perspectiveValue: Double = 0.7
     @State private var rotationValue: Double = 35.0
@@ -144,20 +154,21 @@ struct MountedVolumeView: View {
     @State private var minOpacity: Double = 0.5
     @State private var opacityFade: Double = 0.5
     @State private var debugMode: Bool = false
-
+    #endif
+    
     var body: some View {
         ZStack(alignment: .center) {
             VStack {
-                HStack {
-                    Spacer()
-
-                    if greetingEnabled, let username = NSFullUserName().components(separatedBy: " ").first {
-                        Text("Welcome, \(username)!")
-                            .font(.largeTitle)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    }
-                }
+//                HStack {
+//                    Spacer()
+//
+//                    if greetingEnabled, let username = NSFullUserName().components(separatedBy: " ").first {
+//                        Text("Welcome, \(username)!")
+//                            .font(.largeTitle)
+//                            .fontWeight(.semibold)
+//                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+//                    }
+//                }
                 Spacer()
 
                 Text("Select an app from the sidebar to begin")
@@ -168,7 +179,6 @@ struct MountedVolumeView: View {
                 // Triple-tap to toggle debug mode
 //                debugMode.toggle()
             }
-
             if !appState.volumeInfos.isEmpty {
                 ZStack {
                     ForEach(Array(appState.volumeInfos.enumerated()), id: \.element.id) { index, volume in
@@ -212,51 +222,82 @@ struct MountedVolumeView: View {
 
             
             // Debug controls at bottom (only show if debug mode enabled)
-//            if debugMode {
-//                VStack {
-//                    Spacer()
-//                    VStack(spacing: 10) {
-//                        HStack {
-//                            Text("Perspective:")
-//                            Slider(value: $perspectiveValue, in: 0.0...1.0, step: 0.1)
-//                            Text(String(format: "%.1f", perspectiveValue))
-//                        }
-//                        HStack {
-//                            Text("Rotation:")
-//                            Slider(value: $rotationValue, in: 0.0...45.0, step: 1.0)
-//                            Text(String(format: "%.0f°", rotationValue))
-//                        }
-//                        HStack {
-//                            Text("Spacing:")
-//                            Slider(value: $spacingValue, in: 30.0...120.0, step: 5.0)
-//                            Text(String(format: "%.0f", spacingValue))
-//                        }
-//                        HStack {
-//                            Text("Scale:")
-//                            Slider(value: $scaleValue, in: 0.3...1.0, step: 0.05)
-//                            Text(String(format: "%.2f", scaleValue))
-//                        }
-//                        HStack {
-//                            Text("Min Opacity:")
-//                            Slider(value: $minOpacity, in: 0.1...0.9, step: 0.05)
-//                            Text(String(format: "%.2f", minOpacity))
-//                        }
-//                        Button("Toggle Debug") {
-//                            debugMode = false
-//                        }
-//                    }
-//                    .padding()
-//                    .background(ThemeColors.shared(for: colorScheme).secondaryBG)
-//                    .cornerRadius(8)
-//                    .frame(maxWidth: 400)
-//                }
-//            }
-
+            #if DEBUG
+            if debugMode {
+                VStack {
+                    Spacer()
+                    VStack(spacing: 10) {
+                        HStack {
+                            Text("Perspective:")
+                            Slider(value: $perspectiveValue, in: 0.0...1.0, step: 0.1)
+                            Text(String(format: "%.1f", perspectiveValue))
+                        }
+                        HStack {
+                            Text("Rotation:")
+                            Slider(value: $rotationValue, in: 0.0...45.0, step: 1.0)
+                            Text(String(format: "%.0f°", rotationValue))
+                        }
+                        HStack {
+                            Text("Spacing:")
+                            Slider(value: $spacingValue, in: 30.0...120.0, step: 5.0)
+                            Text(String(format: "%.0f", spacingValue))
+                        }
+                        HStack {
+                            Text("Scale:")
+                            Slider(value: $scaleValue, in: 0.3...1.0, step: 0.05)
+                            Text(String(format: "%.2f", scaleValue))
+                        }
+                        HStack {
+                            Text("Min Opacity:")
+                            Slider(value: $minOpacity, in: 0.1...0.9, step: 0.05)
+                            Text(String(format: "%.2f", minOpacity))
+                        }
+                        Button("Toggle Debug") {
+                            debugMode = false
+                        }
+                    }
+                    .padding()
+                    .background(ThemeColors.shared(for: colorScheme).secondaryBG)
+                    .cornerRadius(8)
+                    .frame(maxWidth: 400)
+                }
+            }
+            #endif
         }
         .padding()
+//        .ignoresSafeArea(edges: .top)
         .onAppear {
             // Start with root volume (index 0) selected
             selectedVolumeIndex = 0
+        }
+        .toolbarBackground(.hidden, for: .windowToolbar)
+        .toolbar {
+
+            ToolbarItem { Spacer() }
+
+            if #available(macOS 26.0, *) {
+                ToolbarItem {
+                    if greetingEnabled, let username = NSFullUserName().components(separatedBy: " ").first {
+                        Text("Welcome, \(username)!")
+                            .font(.largeTitle)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                }
+                .sharedBackgroundVisibility(.hidden)
+            } else {
+                ToolbarItem {
+                    if greetingEnabled, let username = NSFullUserName().components(separatedBy: " ").first {
+                        Text("Welcome, \(username)!")
+                            .font(.largeTitle)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                }
+            }
+
+
+
         }
     }
     
@@ -297,7 +338,9 @@ struct VolumeItemView: View {
     @State private var hoverPurgeable: Bool = false
     @State private var hoverUsed: Bool = false
     @State private var isHovered: Bool = false
-    
+    @State private var isHoveredName: Bool = false
+
+
     var body: some View {
         VStack(alignment: .center, spacing: 20) {
             HStack(alignment: .center) {
@@ -314,7 +357,14 @@ struct VolumeItemView: View {
                                 .font(.title)
                                 .fontWeight(.bold)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                            
+                                .underline(isHoveredName)
+                                .onTapGesture {
+                                    NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.settings.Storage")!)
+                                }
+                                .onHover(perform: { isHovered in
+                                    self.isHoveredName = isHovered
+                                })
+
                             if volume.isExternal {
                                 Button(action: {
                                     onEject(volume)
@@ -366,6 +416,7 @@ struct VolumeItemView: View {
                                 .foregroundStyle(hoverPurgeable ? ThemeColors.shared(for: colorScheme).accent : ThemeColors.shared(for: colorScheme).primaryText)
                                 .animation(.easeInOut(duration: 0.2), value: hoverPurgeable)
                         }
+                        .help("Purgeable space refers to the System Data taken up by macOS. This cannot be manually freed and is automatically managed by your system.")
                     }
                 }
             }
@@ -388,7 +439,8 @@ struct VolumeItemView: View {
                             .padding(3)
                             .frame(width: geo.size.width * CGFloat(purgeableSize) / CGFloat(volume.totalSpace))
                             .animation(animationEnabled && !volume.hasAnimated ? .spring(response: 0.7, dampingFraction: 0.6, blendDuration: 0) : .linear(duration: 0), value: purgeableSize)
-                        
+                            .help("Purgeable space refers to the System Data taken up by macOS. This cannot be manually freed and is automatically managed by your system.")
+
                         RoundedRectangle(cornerRadius: 5)
                             .fill(ThemeColors.shared(for: colorScheme).accent)
                             .padding(3)

@@ -152,88 +152,33 @@ struct DaemonView: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .leading, spacing: 0) {
             
-            // Header with title and controls
-            VStack(alignment: .leading, spacing: 15) {
-                
-                HStack(alignment: .center, spacing: 15) {
-                    
-                    VStack(alignment: .leading) {
-                        Text("Launch Services Manager")
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                            .font(.title)
-                            .fontWeight(.bold)
-                        Text("Manage launch agents, daemons, and XPC services")
-                            .font(.callout)
+            // Search bar
+            HStack {
+                Image(systemName: "magnifyingglass")
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                TextField("Search...", text: $searchText)
+                    .textFieldStyle(.plain)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                if !searchText.isEmpty {
+                    Button {
+                        searchText = ""
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }
-
-                    BetaBadge(fontSize: 20)
-
-                    Spacer()
-                    
-                    HStack(spacing: 10) {
-
-                        // Type/Status filter
-                        Menu {
-                            ForEach(LaunchItemFilter.allCases, id: \.self) { filter in
-                                Button {
-                                    selectedFilter = filter
-                                } label: {
-                                    Label(filter.rawValue, systemImage: filter.systemImage)
-                                }
-                            }
-                        } label: {
-                            Label(selectedFilter.rawValue, systemImage: selectedFilter.systemImage)
-                        }
-                        .buttonStyle(ControlGroupButtonStyle(
-                            foregroundColor: ThemeColors.shared(for: colorScheme).primaryText,
-                            shape: Capsule(style: .continuous),
-                            level: .primary
-                        ))
-
-                        Button {
-                            refreshLaunchItems()
-                        } label: {
-                            Label("Refresh", systemImage: isLoading ? "arrow.clockwise" : "arrow.clockwise")
-                        }
-                        .disabled(isLoading)
-                        .buttonStyle(ControlGroupButtonStyle(
-                            foregroundColor: ThemeColors.shared(for: colorScheme).accent,
-                            shape: Capsule(style: .continuous),
-                            level: .primary,
-                            disabled: isLoading
-                        ))
-                        .help("Refresh launch services list")
-                    }
+                    .buttonStyle(.plain)
                 }
-                
-                // Search bar
-                HStack {
-                    Image(systemName: "magnifyingglass")
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    
-                    TextField("Search...", text: $searchText)
-                        .textFieldStyle(.plain)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                    
-                    if !searchText.isEmpty {
-                        Button {
-                            searchText = ""
-                        } label: {
-                            Image(systemName: "xmark.circle.fill")
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-                .controlGroup(Capsule(style: .continuous), level: .primary)
             }
-            
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+            .controlGroup(Capsule(style: .continuous), level: .primary)
+            .padding(.top, 5)
+
             if isLoading {
                 VStack(alignment: .center, spacing: 10) {
                     Spacer()
@@ -297,7 +242,8 @@ struct DaemonView: View {
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }
                 }
-                
+                .padding(.vertical)
+
                 ScrollView {
                     LazyVStack(spacing: 8) {
                         ForEach(filteredItems, id: \.id) { item in
@@ -313,10 +259,66 @@ struct DaemonView: View {
 //            Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(20)
+        .padding([.horizontal, .bottom], 20)
         .onAppear {
             if launchItems.isEmpty {
                 refreshLaunchItems()
+            }
+        }
+        .toolbarBackground(.hidden, for: .windowToolbar)
+        .toolbar {
+            if #available(macOS 26.0, *) {
+                ToolbarItem {
+                    VStack(alignment: .leading) {
+                        Text("Launch Services Manager")
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            .font(.title)
+                            .fontWeight(.bold)
+                        Text("Manage launch agents, daemons, and XPC services")
+                            .font(.callout)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                }
+                .sharedBackgroundVisibility(.hidden)
+            } else {
+                ToolbarItem {
+                    VStack(alignment: .leading) {
+                        Text("Launch Services Manager")
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            .font(.title)
+                            .fontWeight(.bold)
+                        Text("Manage launch agents, daemons, and XPC services")
+                            .font(.callout)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                }
+            }
+
+
+            ToolbarItem { Spacer() }
+
+            ToolbarItem {
+                Menu {
+                    ForEach(LaunchItemFilter.allCases, id: \.self) { filter in
+                        Button {
+                            selectedFilter = filter
+                        } label: {
+                            Label(filter.rawValue, systemImage: filter.systemImage)
+                        }
+                    }
+                } label: {
+                    Label(selectedFilter.rawValue, systemImage: selectedFilter.systemImage)
+                }
+                .labelStyle(.titleAndIcon)
+            }
+
+            ToolbarItem {
+                Button {
+                    refreshLaunchItems()
+                } label: {
+                    Label("Refresh", systemImage: isLoading ? "arrow.clockwise" : "arrow.clockwise")
+                }
+                .disabled(isLoading)
             }
         }
     }

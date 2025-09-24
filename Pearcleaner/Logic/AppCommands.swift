@@ -16,6 +16,7 @@ struct AppCommands: Commands {
     let updater: Updater
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.general.selectedTab") private var selectedTab: CurrentTabView = .general
+    @AppStorage("settings.interface.leftNavigationSidebar") private var leftNavigationSidebar: Bool = true
     @State private var windowController = WindowManager()
 
     init(appState: AppState, locations: Locations, fsm: FolderSettingsManager, updater: Updater) {
@@ -30,9 +31,11 @@ struct AppCommands: Commands {
         // Pearcleaner Menu
         CommandGroup(replacing: .appInfo) {
 
-            Button ("About \(Bundle.main.name)") {
+            Button {
                 selectedTab = .about
                 openAppSettings()
+            } label: {
+                Label("About \(Bundle.main.name)", systemImage: "info.circle.fill")
             }
 
             Divider()
@@ -40,14 +43,14 @@ struct AppCommands: Commands {
             Button {
                 updater.checkForUpdates(sheet: true, force: true)
             } label: {
-                Text("Check for Updates")
+                Label("Check for Updates", systemImage: "tray.and.arrow.down.fill")
             }
             .keyboardShortcut("u", modifiers: .command)
 
             Button {
                 appState.triggerUninstallAlert()
             } label: {
-                Text("Uninstall Pearcleaner")
+                Label("Uninstall Pearcleaner", systemImage: "trash.fill")
             }
 
         }
@@ -81,7 +84,7 @@ struct AppCommands: Commands {
         // Window Menu
         CommandGroup(after: .sidebar) {
 
-            Menu("Navigate To") {
+            Menu {
                 Button
                 {
                     appState.currentPage = .applications
@@ -136,8 +139,17 @@ struct AppCommands: Commands {
                 }
                 .keyboardShortcut("6", modifiers: .command)
 
-
+            } label: {
+                Label("Navigate To", systemImage: "location.north.fill")
             }
+
+            Button
+            {
+                leftNavigationSidebar.toggle()
+            } label: {
+                Label("\(leftNavigationSidebar ? "Hide" : "Show") Sidebar", systemImage: "sidebar.left")
+            }
+            .keyboardShortcut("/", modifiers: .command)
 
         }
 
@@ -150,7 +162,7 @@ struct AppCommands: Commands {
                     reloadAppsList(appState: appState, fsm: fsm)
                 }
             } label: {
-                Text("Refresh Apps")
+                Label("Refresh Apps", systemImage: "arrow.counterclockwise.circle")
             }
             .keyboardShortcut("r", modifiers: .command)
 
@@ -192,7 +204,7 @@ struct AppCommands: Commands {
                     windowController.open(with: ConsoleView(), width: 600, height: 400)
                 }
             } label: {
-                Text("Debug Console")
+                Label("Debug Console", systemImage: "ladybug")
             }
             .keyboardShortcut("d", modifiers: .command)
 

@@ -59,40 +59,6 @@ struct EnvironmentCleanerView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
 
-            HStack(alignment: .center, spacing: 15) {
-
-                VStack(alignment: .leading){
-                    Text("Development Environments").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title).fontWeight(.bold)
-                    Text("Clean stored files and cache for common IDEs")
-                        .font(.callout).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                }
-
-                Spacer()
-
-                Menu {
-                    ForEach(paths, id: \.self) { environment in
-                        Group {
-                            if environment.paths.isEmpty {
-                                Text("\(environment.name) (0)")
-                                    .foregroundStyle(.gray)
-                            } else {
-                                Button("\(environment.name) (\(environment.paths.count))") {
-                                    appState.selectedEnvironment = environment
-                                }
-                            }
-                        }
-                    }
-                } label: {
-                    Text(appState.selectedEnvironment?.name ?? "Select Environment")
-                }
-                .buttonStyle(ControlGroupButtonStyle(
-                    foregroundColor: ThemeColors.shared(for: colorScheme).primaryText,
-                    shape: Capsule(style: .continuous),
-                    level: .primary
-                ))
-
-            }
-
             if let selectedEnvironment = appState.selectedEnvironment {
 
                 // Add workspace storage cleaner for VS Code and Cursor
@@ -136,14 +102,14 @@ struct EnvironmentCleanerView: View {
                     Spacer()
                     HStack(spacing: 10) {
 
-                        Button {
-                            refreshPaths()
-                        } label: {
-                            Label("Refresh", systemImage: "arrow.clockwise")
-                        }
-                        .help("Refresh")
-
-                        Divider().frame(height: 10)
+//                        Button {
+//                            refreshPaths()
+//                        } label: {
+//                            Label("Refresh", systemImage: "arrow.clockwise")
+//                        }
+//                        .help("Refresh")
+//
+//                        Divider().frame(height: 10)
 
                         Button {
                             showCustomAlert(title: "Warning", message: "This will delete all the selected folders. Are you sure?", style: .warning, onOk:  {
@@ -206,6 +172,58 @@ struct EnvironmentCleanerView: View {
         .padding(20)
         .onAppear {
             refreshPaths()
+        }
+        .toolbarBackground(.hidden, for: .windowToolbar)
+        .toolbar {
+            if #available(macOS 26.0, *) {
+                ToolbarItem {
+                    VStack(alignment: .leading){
+                        Text("Development Environments").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title).fontWeight(.bold)
+                        Text("Clean stored files and cache for common IDEs")
+                            .font(.callout).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                }
+                .sharedBackgroundVisibility(.hidden)
+            } else {
+                ToolbarItem {
+                    VStack(alignment: .leading){
+                        Text("Development Environments").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title).fontWeight(.bold)
+                        Text("Clean stored files and cache for common IDEs")
+                            .font(.callout).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                }
+            }
+
+
+            ToolbarItem { Spacer() }
+
+            ToolbarItem {
+                Menu {
+                    ForEach(paths, id: \.self) { environment in
+                        Group {
+                            if environment.paths.isEmpty {
+                                Text("\(environment.name) (0)")
+                                    .foregroundStyle(.gray)
+                            } else {
+                                Button("\(environment.name) (\(environment.paths.count))") {
+                                    appState.selectedEnvironment = environment
+                                }
+                            }
+                        }
+                    }
+                } label: {
+                    Text(appState.selectedEnvironment?.name ?? "Select Environment")
+                }
+                .labelStyle(.titleAndIcon)
+            }
+
+            ToolbarItem {
+                Button {
+                    refreshPaths()
+                } label: {
+                    Label("Refresh", systemImage: "arrow.clockwise")
+                }
+            }
         }
     }
 }

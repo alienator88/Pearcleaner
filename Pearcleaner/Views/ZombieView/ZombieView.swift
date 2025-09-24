@@ -62,37 +62,6 @@ struct ZombieView: View {
                 ZStack {
                     VStack(spacing: 0) {
 
-                        // Main Group
-                        HStack(alignment: .center, spacing: 15) {
-                            VStack(alignment: .leading){
-                                Text("Orphaned Files").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title).fontWeight(.bold)
-                                Text("Remaining files and folders from previous applications")
-                                    .font(.callout).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                            }
-
-                            Spacer()
-                            
-                            // Sort dropdown menu - moved here and restyled to match LipoView
-                            Menu {
-                                ForEach(SortOptionList.allCases, id: \.self) { sortOption in
-                                    Button {
-                                        selectedSort = sortOption
-                                        updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSort: selectedSort, force: true)
-                                    } label: {
-                                        Label(sortOption.title, systemImage: sortOption.systemImage)
-                                    }
-                                }
-                            } label: {
-                                Label(selectedSort.title, systemImage: selectedSort.systemImage)
-                            }
-                            .buttonStyle(ControlGroupButtonStyle(
-                                foregroundColor: ThemeColors.shared(for: colorScheme).primaryText,
-                                shape: Capsule(style: .continuous),
-                                level: .primary
-                            ))
-                        }
-
-
                         // Item selection and search toolbar
                         HStack(spacing: 0) {
                             Toggle(isOn: selectAllBinding) { EmptyView() }
@@ -208,7 +177,7 @@ struct ZombieView: View {
                 }
                 .animation(animationEnabled ? .spring(response: 0.35, dampingFraction: 0.8) : .none, value: infoSidebar)
                 .transition(.opacity)
-                .padding(20)
+                .padding([.horizontal, .bottom], 20)
                 .onAppear {
                     // Only update memoized files if we have data (scan has been completed)
                     if !appState.zombieFile.fileSize.isEmpty {
@@ -241,13 +210,64 @@ struct ZombieView: View {
             }
 
         }
-
         .onAppear {
             if !warning {
                 showAlert = true
             } else {
                 // Only trigger scan if warning has been acknowledged
                 startFileScan()
+            }
+        }
+        .toolbarBackground(.hidden, for: .windowToolbar)
+        .toolbar {
+            if #available(macOS 26.0, *) {
+                ToolbarItem {
+                    VStack(alignment: .leading){
+                        Text("Orphaned Files").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title).fontWeight(.bold)
+                        Text("Remaining files and folders from previous applications")
+                            .font(.callout).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                }
+                .sharedBackgroundVisibility(.hidden)
+            } else {
+                ToolbarItem {
+                    VStack(alignment: .leading){
+                        Text("Orphaned Files").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title).fontWeight(.bold)
+                        Text("Remaining files and folders from previous applications")
+                            .font(.callout).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                }
+            }
+
+
+            ToolbarItem { Spacer() }
+
+            ToolbarItem {
+                Menu {
+                    ForEach(SortOptionList.allCases, id: \.self) { sortOption in
+                        Button {
+                            selectedSort = sortOption
+                            updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSort: selectedSort, force: true)
+                        } label: {
+                            Label(sortOption.title, systemImage: sortOption.systemImage)
+                        }
+                    }
+                } label: {
+                    Label(selectedSort.title, systemImage: selectedSort.systemImage)
+                }
+                .labelStyle(.titleAndIcon)
+            }
+
+            ToolbarItem {
+                Button {
+                    updateOnMain {
+                        appState.zombieFile = .empty
+                        appState.showProgress.toggle()
+                        reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, fsm: fsm)
+                    }
+                } label: {
+                    Label("Refresh", systemImage: "arrow.clockwise")
+                }
             }
         }
 
@@ -294,21 +314,21 @@ struct ZombieView: View {
 
                 Divider().frame(height: 10)
 
-                Button("Rescan") {
-                    updateOnMain {
-                        appState.zombieFile = .empty
-                        appState.showProgress.toggle()
-                        reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, fsm: fsm)
-                    }
-                }
-                .buttonStyle(ControlGroupButtonStyle(
-                    foregroundColor: ThemeColors.shared(for: colorScheme).accent,
-                    shape: Capsule(style: .continuous),
-                    level: .primary,
-                    skipControlGroup: true
-                ))
-
-                Divider().frame(height: 10)
+//                Button("Rescan") {
+//                    updateOnMain {
+//                        appState.zombieFile = .empty
+//                        appState.showProgress.toggle()
+//                        reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, fsm: fsm)
+//                    }
+//                }
+//                .buttonStyle(ControlGroupButtonStyle(
+//                    foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+//                    shape: Capsule(style: .continuous),
+//                    level: .primary,
+//                    skipControlGroup: true
+//                ))
+//
+//                Divider().frame(height: 10)
 
                 Button {
                     handleUninstallAction()

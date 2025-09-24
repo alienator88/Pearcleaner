@@ -5,8 +5,8 @@
 //  Created by Alin Lupascu on 3/20/25.
 //
 
-import SwiftUI
 import AlinFoundation
+import SwiftUI
 
 struct LipoView: View {
     @EnvironmentObject var appState: AppState
@@ -16,13 +16,16 @@ struct LipoView: View {
     @State private var isProcessing: Bool = false
     @State private var savingsAllApps: UInt64 = 0
     @State private var bundleAllApps: UInt64 = 0
-    @State private var sliceSizesByPath = [String:(bundle: UInt64,savings:UInt64)]()
+    @State private var sliceSizesByPath = [String: (bundle: UInt64, savings: UInt64)]()
     @State private var totalSpaceSaved: UInt64 = 0
     @State private var infoSidebar: Bool = false
     @State private var selectedSort: LipoSortOption = .name
+    @State private var searchText: String = ""
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.lipo.pruneTranslations") private var prune = false
     @AppStorage("settings.lipo.filterMinSavings") private var filterMinSavings = false
+    @AppStorage("settings.lipo.showZeroPercentSavings") private var showZeroPercentSavings: Bool =
+        false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.lipo.excludedApps") private var excludedAppsData: Data = Data()
     @AppStorage("settings.lipo.warning") private var warning: Bool = false
@@ -32,7 +35,7 @@ struct LipoView: View {
         case name = "Name"
         case savings = "Savings Size"
         case binary = "Bundle Size"
-        
+
         var systemImage: String {
             switch self {
             case .name: return "list.bullet"
@@ -73,45 +76,58 @@ struct LipoView: View {
     var universalApps: [AppInfo] {
         // Show all apps since our new bundle thinning can find savings even in apps
         // whose main executable isn't universal (frameworks, plugins, etc. might be)
-        let filtered = appState.sortedApps.filter { !excludedApps.contains($0.path.path) }
-        
-        var result = filtered
-        
-        // Always hide apps with 0 savings once calculated
-        if !sliceSizesByPath.isEmpty {
-            result = result.filter { app in
-                if let sizes = sliceSizesByPath[app.path.path] {
-                    return sizes.savings > 0
-                }
-                return true // Show uncalculated apps
+        var filtered = appState.sortedApps.filter { !excludedApps.contains($0.path.path) }
+
+        // Apply search filter
+        if !searchText.isEmpty {
+            filtered = filtered.filter { app in
+                app.appName.localizedCaseInsensitiveContains(searchText)
+                    || app.path.path.localizedCaseInsensitiveContains(searchText)
             }
         }
-        
+
+        var result = filtered
+
+        // Hide apps with 0% savings unless user chooses to show them
+        if !showZeroPercentSavings && !sliceSizesByPath.isEmpty {
+            result = result.filter { app in
+                if let sizes = sliceSizesByPath[app.path.path] {
+                    // Calculate percentage savings like in the UI
+                    let percentSavings =
+                        app.bundleSize > 0
+                        ? Int((Double(sizes.savings) / Double(app.bundleSize)) * 100) : 0
+                    return percentSavings > 0
+                }
+                return true  // Show uncalculated apps
+            }
+        }
+
         if filterMinSavings {
             // Only apply the 1MB+ filter if we have size data calculated
             if !sliceSizesByPath.isEmpty {
                 result = result.filter { app in
                     if let sizes = sliceSizesByPath[app.path.path] {
-                        return sizes.savings >= 1024 * 1024 // 1MB in bytes
+                        return sizes.savings >= 1024 * 1024  // 1MB in bytes
                     }
                     return false
                 }
             }
         }
-        
+
         // Apply sorting
         return result.sorted { app1, app2 in
             switch selectedSort {
             case .name:
-                return app1.appName.localizedCaseInsensitiveCompare(app2.appName) == .orderedAscending
+                return app1.appName.localizedCaseInsensitiveCompare(app2.appName)
+                    == .orderedAscending
             case .savings:
                 let savings1 = sliceSizesByPath[app1.path.path]?.savings ?? 0
                 let savings2 = sliceSizesByPath[app2.path.path]?.savings ?? 0
-                return savings1 > savings2 // Descending order for savings
+                return savings1 > savings2  // Descending order for savings
             case .binary:
                 let bundle1 = UInt64(app1.bundleSize)
                 let bundle2 = UInt64(app2.bundleSize)
-                return bundle1 > bundle2 // Descending order for bundle size
+                return bundle1 > bundle2  // Descending order for bundle size
             }
         }
     }
@@ -120,34 +136,6 @@ struct LipoView: View {
         ZStack {
 
             VStack(alignment: .leading, spacing: 0) {
-
-                HStack(alignment: .center, spacing: 15) {
-                    VStack(alignment: .leading){
-                        Text("Lipo").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title).fontWeight(.bold)
-                        Text("Remove unused architectures from your app binaries to reduce app size")
-                            .font(.callout).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    }
-
-                    Spacer()
-                    
-                    // Sort dropdown menu
-                    Menu {
-                        ForEach(LipoSortOption.allCases, id: \.self) { sortOption in
-                            Button {
-                                selectedSort = sortOption
-                            } label: {
-                                Label(sortOption.rawValue, systemImage: sortOption.systemImage)
-                            }
-                        }
-                    } label: {
-                        Label(selectedSort.rawValue, systemImage: selectedSort.systemImage)
-                    }
-                    .buttonStyle(ControlGroupButtonStyle(
-                        foregroundColor: ThemeColors.shared(for: colorScheme).primaryText,
-                        shape: Capsule(style: .continuous),
-                        level: .primary
-                    ))
-                }
 
                 VStack(alignment: .leading, spacing: 0) {
 
@@ -162,7 +150,7 @@ struct LipoView: View {
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                     } else {
-                        HStack {
+                        HStack(spacing: 16) {
                             Toggle(isOn: $selectAll) {}
                                 .toggleStyle(SimpleCheckboxToggleStyle())
                                 .padding(.vertical)
@@ -174,15 +162,41 @@ struct LipoView: View {
                                     }
                                 }
 
-                            Spacer()
+                            // Search bar
+                            HStack {
+                                Image(systemName: "magnifyingglass")
+                                    .foregroundStyle(
+                                        ThemeColors.shared(for: colorScheme).secondaryText)
+
+                                TextField("Search...", text: $searchText)
+                                    .textFieldStyle(.plain)
+                                    .foregroundStyle(
+                                        ThemeColors.shared(for: colorScheme).primaryText)
+
+                                if !searchText.isEmpty {
+                                    Button {
+                                        searchText = ""
+                                    } label: {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .foregroundStyle(
+                                                ThemeColors.shared(for: colorScheme).secondaryText)
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                            }
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                            .controlGroup(Capsule(style: .continuous), level: .primary)
+
 
                             LipoLegend()
-                                .padding(.vertical)
+//                                .padding(.vertical)
 
                         }
 
                         ScrollView {
-                            LazyVStack(spacing: 10) {
+                            VStack(spacing: 10) {
                                 ForEach(universalApps, id: \.path) { app in
                                     LipoAppRowView(
                                         app: app,
@@ -220,12 +234,13 @@ struct LipoView: View {
                                 .frame(minWidth: 80)
                             }
                             .disabled(selectedApps.isEmpty)
-                            .buttonStyle(ControlGroupButtonStyle(
-                                foregroundColor: ThemeColors.shared(for: colorScheme).accent,
-                                shape: Capsule(style: .continuous),
-                                skipControlGroup: true,
-                                disabled: selectedApps.isEmpty
-                            ))
+                            .buttonStyle(
+                                ControlGroupButtonStyle(
+                                    foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                                    shape: Capsule(style: .continuous),
+                                    skipControlGroup: true,
+                                    disabled: selectedApps.isEmpty
+                                ))
 
                             Divider().frame(height: 10)
 
@@ -239,19 +254,20 @@ struct LipoView: View {
                                         Image(systemName: "scissors")
                                     }
                                     .frame(minWidth: 100)
-                                }else {
+                                } else {
                                     ProgressView()
                                         .controlSize(.mini)
                                         .frame(minWidth: 100)
                                 }
                             }
                             .disabled(selectedApps.isEmpty)
-                            .buttonStyle(ControlGroupButtonStyle(
-                                foregroundColor: ThemeColors.shared(for: colorScheme).accent,
-                                shape: Capsule(style: .continuous),
-                                skipControlGroup: true,
-                                disabled: selectedApps.isEmpty
-                            ))
+                            .buttonStyle(
+                                ControlGroupButtonStyle(
+                                    foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                                    shape: Capsule(style: .continuous),
+                                    skipControlGroup: true,
+                                    disabled: selectedApps.isEmpty
+                                ))
                         }
                         .controlGroup(Capsule(style: .continuous), level: .primary)
 
@@ -275,12 +291,18 @@ struct LipoView: View {
             .opacity(infoSidebar ? 0.5 : 1)
 
             // Add the sidebar view
-            LipoSidebarView(infoSidebar: $infoSidebar, excludedApps: excludedApps, prune: $prune, filterMinSavings: $filterMinSavings, onRemoveExcluded: removeAppFromExcluded, totalSpaceSaved: totalSpaceSaved, savingsAllApps: savingsAllApps)
+            LipoSidebarView(
+                infoSidebar: $infoSidebar, excludedApps: excludedApps, prune: $prune,
+                filterMinSavings: $filterMinSavings, onRemoveExcluded: removeAppFromExcluded,
+                totalSpaceSaved: totalSpaceSaved, savingsAllApps: savingsAllApps)
         }
-        .animation(animationEnabled ? .spring(response: 0.35, dampingFraction: 0.8) : .none, value: infoSidebar)
+        .animation(
+            animationEnabled ? .spring(response: 0.35, dampingFraction: 0.8) : .none,
+            value: infoSidebar
+        )
         .frame(maxWidth: .infinity)
-        .padding(20)
-        .onAppear { 
+        .padding([.horizontal, .bottom], 20)
+        .onAppear {
             if !warning {
                 showAlert = true
             }
@@ -289,26 +311,83 @@ struct LipoView: View {
         .onDisappear {
             // No background tasks to cancel with per-app calculation
         }
-        .sheet(isPresented: $showAlert, content: {
-            VStack(spacing: 10) {
-                Text("Important")
-                    .font(.headline)
-                Divider()
-                Spacer()
-                Text("Bundle thinning (lipo) is an aggressive operation that modifies the binaries within app bundles by removing unused architectures. While generally safe, some applications may experience issues or fail to launch after this process. It is strongly recommended to create a backup of your applications before proceeding, especially for critical or frequently used apps.")
+        .sheet(
+            isPresented: $showAlert,
+            content: {
+                VStack(spacing: 10) {
+                    Text("Important")
+                        .font(.headline)
+                    Divider()
+                    Spacer()
+                    Text(
+                        "Bundle thinning (lipo) is an aggressive operation that modifies the binaries within app bundles by removing unused architectures. While generally safe, some applications may experience issues or fail to launch after this process. It is strongly recommended to create a backup of your applications before proceeding, especially for critical or frequently used apps."
+                    )
                     .font(.subheadline)
-                Spacer()
-                Button("Close") {
-                    warning = true
-                    showAlert = false
+                    Spacer()
+                    Button("Close") {
+                        warning = true
+                        showAlert = false
+                    }
+                    .buttonStyle(
+                        SimpleButtonStyle(
+                            icon: "x.circle.fill", label: String(localized: "Close"),
+                            help: String(localized: "Dismiss")))
+                    Spacer()
                 }
-                .buttonStyle(SimpleButtonStyle(icon: "x.circle.fill", label: String(localized: "Close"), help: String(localized: "Dismiss")))
-                Spacer()
+                .padding(15)
+                .frame(width: 400, height: 250)
+                .background(GlassEffect(material: .hudWindow, blendingMode: .behindWindow))
+            })
+        .toolbarBackground(.hidden, for: .windowToolbar)
+        .toolbar {
+            if #available(macOS 26.0, *) {
+                ToolbarItem {
+                    VStack(alignment: .leading) {
+                        Text("Lipo").foregroundStyle(
+                            ThemeColors.shared(for: colorScheme).primaryText
+                        ).font(.title).fontWeight(.bold)
+                        Text(
+                            "Remove unused architectures from your app binaries to reduce app size"
+                        )
+                        .font(.callout).foregroundStyle(
+                            ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                }
+                .sharedBackgroundVisibility(.hidden)
+            } else {
+                ToolbarItem {
+                    VStack(alignment: .leading) {
+                        Text("Lipo").foregroundStyle(
+                            ThemeColors.shared(for: colorScheme).primaryText
+                        ).font(.title).fontWeight(.bold)
+                        Text(
+                            "Remove unused architectures from your app binaries to reduce app size"
+                        )
+                        .font(.callout).foregroundStyle(
+                            ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                }
             }
-            .padding(15)
-            .frame(width: 400, height: 250)
-            .background(GlassEffect(material: .hudWindow, blendingMode: .behindWindow))
-        })
+
+
+            ToolbarItem { Spacer() }
+
+            ToolbarItem {
+                Menu {
+                    ForEach(LipoSortOption.allCases, id: \.self) { sortOption in
+                        Button {
+                            selectedSort = sortOption
+                        } label: {
+                            Label(sortOption.rawValue, systemImage: sortOption.systemImage)
+                        }
+                    }
+                } label: {
+                    Label(selectedSort.rawValue, systemImage: selectedSort.systemImage)
+                }
+                .labelStyle(.titleAndIcon)
+            }
+
+        }
     }
 
     private func excludeSelectedApps() {
@@ -325,12 +404,13 @@ struct LipoView: View {
 
             for app in universalApps where selectedApps.contains(app.path.path) {
                 // Use the updated thinAppBundleArchitecture function with multi=true
-                let (success, sizes) = thinAppBundleArchitecture(at: app.path, of: app.arch, multi: true)
+                let (success, sizes) = thinAppBundleArchitecture(
+                    at: app.path, of: app.arch, multi: true)
                 if success, let sizes = sizes {
                     totalPreSize += sizes["pre"] ?? 0
                     totalPostSize += sizes["post"] ?? 0
                 }
-                
+
                 // Prune languages if enabled
                 if prune {
                     do {
@@ -341,47 +421,56 @@ struct LipoView: View {
                 }
             }
 
+            let overallSavings =
+                totalPreSize > 0
+                ? Int((Double(totalPreSize - totalPostSize) / Double(totalPreSize)) * 100) : 0
 
-
-            let overallSavings = totalPreSize > 0 ? Int((Double(totalPreSize - totalPostSize) / Double(totalPreSize)) * 100) : 0
-
-            let titleFormat = NSLocalizedString("Space Savings: %d%%\nTotal Space Saved: %@", comment: "Lipo completion title")
-            let messageFormat = NSLocalizedString("The total space savings between all the lipo'd apps\nSize Before: %@\nSize After: %@", comment: "Lipo completion message")
+            let titleFormat = NSLocalizedString(
+                "Space Savings: %d%%\nTotal Space Saved: %@", comment: "Lipo completion title")
+            let messageFormat = NSLocalizedString(
+                "The total space savings between all the lipo'd apps\nSize Before: %@\nSize After: %@",
+                comment: "Lipo completion message")
 
             let actualSpaceSaved = totalPreSize - totalPostSize
-            let title = String(format: titleFormat, overallSavings, formatByte(size: Int64(actualSpaceSaved)).human)
-            let message = String(format: messageFormat, formatByte(size: Int64(totalPreSize)).human, formatByte(size: Int64(totalPostSize)).human)
+            let title = String(
+                format: titleFormat, overallSavings, formatByte(size: Int64(actualSpaceSaved)).human
+            )
+            let message = String(
+                format: messageFormat, formatByte(size: Int64(totalPreSize)).human,
+                formatByte(size: Int64(totalPostSize)).human)
 
             DispatchQueue.main.async {
                 self.totalSpaceSaved += actualSpaceSaved
                 showCustomAlert(title: title, message: message, style: .informational)
                 self.isProcessing = false
-                
+
                 // Recalculate savings for processed apps to update their display and filter them out
                 self.recalculateProcessedApps()
             }
         }
     }
-    
+
     private func recalculateProcessedApps() {
         // Get a copy of currently selected apps before clearing the selection
         let processedAppPaths = Array(selectedApps)
-        
+
         // Clear selections since these apps were processed
         selectedApps.removeAll()
         selectAll = false
-        
+
         // Recalculate savings for each processed app in the background
         Task {
             for appPath in processedAppPaths {
                 // Find the app info
                 if let app = appState.sortedApps.first(where: { $0.path.path == appPath }) {
                     let savings = await calculateBundleSavings(for: app)
-                    
+
                     await MainActor.run {
                         // Update the shared state with new (likely 0) savings
-                        sliceSizesByPath[appPath] = (bundle: UInt64(app.bundleSize), savings: savings)
-                        
+                        sliceSizesByPath[appPath] = (
+                            bundle: UInt64(app.bundleSize), savings: savings
+                        )
+
                         // Update totals - subtract old savings and add new (likely 0)
                         if savings == 0 {
                             // App was successfully processed and now has 0 savings - it will be filtered out
@@ -393,13 +482,14 @@ struct LipoView: View {
             }
         }
     }
-    
+
     private func calculateBundleSavings(for app: AppInfo) async -> UInt64 {
         return await withCheckedContinuation { continuation in
             let appPath = app.path
             let appArch = app.arch
             DispatchQueue.global(qos: .utility).async {
-                let (success, sizes) = thinAppBundleArchitecture(at: appPath, of: appArch, multi: true, dryRun: true)
+                let (success, sizes) = thinAppBundleArchitecture(
+                    at: appPath, of: appArch, multi: true, dryRun: true)
 
                 if success, let sizes = sizes {
                     let preSize = sizes["pre"] ?? 0
@@ -416,14 +506,12 @@ struct LipoView: View {
     // Old bulk calculation function removed - now using per-app calculation
 }
 
-
-
 // New per-app row view that calculates bundle savings on-demand
 struct LipoAppRowView: View {
     @Environment(\.colorScheme) var colorScheme
     let app: AppInfo
     @Binding var selectedApps: Set<String>
-    @Binding var sliceSizesByPath: [String:(bundle: UInt64,savings:UInt64)]
+    @Binding var sliceSizesByPath: [String: (bundle: UInt64, savings: UInt64)]
     @Binding var savingsAllApps: UInt64
     @Binding var bundleAllApps: UInt64
     @State private var isCalculating: Bool = false
@@ -445,23 +533,25 @@ struct LipoAppRowView: View {
             }
         }
     }
-    
+
     private var appToggle: some View {
-        Toggle(isOn: Binding(
-            get: { selectedApps.contains(app.path.path) },
-            set: { isSelected in
-                if isSelected {
-                    selectedApps.insert(app.path.path)
-                } else {
-                    selectedApps.remove(app.path.path)
+        Toggle(
+            isOn: Binding(
+                get: { selectedApps.contains(app.path.path) },
+                set: { isSelected in
+                    if isSelected {
+                        selectedApps.insert(app.path.path)
+                    } else {
+                        selectedApps.remove(app.path.path)
+                    }
                 }
-            }
-        )) {
+            )
+        ) {
             EmptyView()
         }
         .toggleStyle(SimpleCheckboxToggleStyle())
     }
-    
+
     private var appContentView: some View {
         VStack {
             HStack {
@@ -478,7 +568,7 @@ struct LipoAppRowView: View {
         .background(ThemeColors.shared(for: colorScheme).secondaryBG)
         .clipShape(RoundedRectangle(cornerRadius: 8))
     }
-    
+
     private var appIconAndName: some View {
         HStack {
             if let icon = app.appIcon {
@@ -490,13 +580,13 @@ struct LipoAppRowView: View {
             Text(app.appName).font(.title3)
         }
     }
-    
+
     private var appSizeInfo: some View {
         Text(verbatim: "\(formatByte(size: Int64(app.bundleSize)).human)")
             .font(.caption)
             .help("Full app size")
     }
-    
+
     @ViewBuilder
     private var savingsPercentage: some View {
         if let savings = calculatedSavings {
@@ -507,60 +597,61 @@ struct LipoAppRowView: View {
             }
         }
     }
-    
+
     @ViewBuilder
     private var sizesDisplay: some View {
         HStack {
             if let savings = calculatedSavings {
                 Text(verbatim: "\(formatByte(size: Int64(savings)).human)")
                     .foregroundStyle(.green)
-//                    .frame(minWidth: 100, alignment: .leading)
+                    //                    .frame(minWidth: 100, alignment: .leading)
                     .help("Potential savings from bundle thinning")
             } else if isCalculating {
                 Text("Calculating...")
                     .font(.caption)
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-//                    .frame(minWidth: 100, alignment: .leading)
+                //                    .frame(minWidth: 100, alignment: .leading)
             } else {
                 Text("0 bytes")
                     .foregroundStyle(.green)
-//                    .frame(minWidth: 100, alignment: .leading)
+                    //                    .frame(minWidth: 100, alignment: .leading)
                     .help("No savings available from bundle thinning")
             }
         }
     }
-    
+
     private func calculateBundleSavings() {
         isCalculating = true
-        
+
         Task {
             // Use our new bundle thinning approach to calculate potential savings
             let bundlePath = app.path
             let savings = await calculateBundleSavings(at: bundlePath)
-            
+
             await MainActor.run {
                 let wasAlreadyCalculated = calculatedSavings != nil
                 calculatedSavings = savings
-                
+
                 // Update the shared state (always, even for 0 savings)
                 sliceSizesByPath[app.path.path] = (bundle: UInt64(app.bundleSize), savings: savings)
-                
+
                 // Update totals (only add if not already counted)
                 if !wasAlreadyCalculated {
                     savingsAllApps += savings
                     bundleAllApps += UInt64(app.bundleSize)
                 }
-                
+
                 isCalculating = false
             }
         }
     }
-    
+
     private func calculateBundleSavings(at bundlePath: URL) async -> UInt64 {
         return await withCheckedContinuation { continuation in
             DispatchQueue.global(qos: .utility).async {
                 // Use the same function as actual lipo operation, but in dry-run mode
-                let (success, sizes) = thinAppBundleArchitecture(at: bundlePath, of: app.arch, multi: true, dryRun: true)
+                let (success, sizes) = thinAppBundleArchitecture(
+                    at: bundlePath, of: app.arch, multi: true, dryRun: true)
 
                 if success, let sizes = sizes {
                     let preSize = sizes["pre"] ?? 0
@@ -574,9 +665,3 @@ struct LipoAppRowView: View {
         }
     }
 }
-
-
-
-
-
-

@@ -5,8 +5,8 @@
 //  Created by Alin Lupascu on 8/9/25.
 //
 
-import SwiftUI
 import AlinFoundation
+import SwiftUI
 
 // Break up the sidebar into smaller components
 struct LipoSidebarView: View {
@@ -28,9 +28,11 @@ struct LipoSidebarView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     LipoDescriptionSection()
                     Divider()
-                    LipoSavingsSection(totalSpaceSaved: totalSpaceSaved, savingsAllApps: savingsAllApps)
+                    LipoSavingsSection(
+                        totalSpaceSaved: totalSpaceSaved, savingsAllApps: savingsAllApps)
                     Divider()
-                    LipoExcludedAppsSection(excludedApps: excludedApps, onRemoveExcluded: onRemoveExcluded)
+                    LipoExcludedAppsSection(
+                        excludedApps: excludedApps, onRemoveExcluded: onRemoveExcluded)
                     Spacer()
                     LipoOptionsSection(prune: $prune, filterMinSavings: $filterMinSavings)
                 }
@@ -47,13 +49,14 @@ struct LipoSidebarView: View {
     }
 }
 
-
 // Description component
 struct LipoDescriptionSection: View {
     @State private var showFullDescription = false
     @Environment(\.colorScheme) var colorScheme
-    private let shortDescription = "App lipo targets the Mach-O binaries inside your universal app bundles and removes any unused architectures..."
-    private let fullDescription = "App lipo targets the Mach-O binaries inside your universal app bundles and removes any unused architectures, such as x86_64 or arm64, leaving only the architectures your computer actually supports. The list shows only universal type apps, not your full app list. After lipo, the green portion will be removed from your app's binary. It's recommended to open an app at least once before lipo to make sure macOS has cached the signature. Privileged Helper is required to perform this action on certain applications."
+    private let shortDescription =
+        "App lipo targets the Mach-O binaries inside your universal app bundles and removes any unused architectures..."
+    private let fullDescription =
+        "App lipo targets the Mach-O binaries inside your universal app bundles and removes any unused architectures, such as x86_64 or arm64, leaving only the architectures your computer actually supports. The list shows only universal type apps, not your full app list. After lipo, the green portion will be removed from your app's binary. It's recommended to open an app at least once before lipo to make sure macOS has cached the signature. Privileged Helper is required to perform this action on certain applications."
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -185,7 +188,6 @@ struct LipoExcludedAppRow: View {
     }
 }
 
-
 // Prune toggle component
 struct LipoOptionsSection: View {
     @Binding var prune: Bool
@@ -194,18 +196,23 @@ struct LipoOptionsSection: View {
 
     var body: some View {
         HStack {
-            Text("Click to dismiss").font(.caption).foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.5))
+            Text("Click to dismiss").font(.caption).foregroundStyle(
+                ThemeColors.shared(for: colorScheme).primaryText.opacity(0.5))
             Spacer()
             Menu {
-                Toggle(isOn: $prune, label: {
-                    Text("Remove unused languages during lipo")
-                        .font(.caption)
-                })
+                Toggle(
+                    isOn: $prune,
+                    label: {
+                        Text("Remove unused languages during lipo")
+                            .font(.caption)
+                    })
 
-                Toggle(isOn: $filterMinSavings, label: {
-                    Text("Only show apps with savings of 1MB+")
-                        .font(.caption)
-                })
+                Toggle(
+                    isOn: $filterMinSavings,
+                    label: {
+                        Text("Only show apps with savings of 1MB+")
+                            .font(.caption)
+                    })
             } label: {
                 Label("Options", systemImage: "ellipsis.circle")
             }
@@ -218,14 +225,13 @@ struct LipoOptionsSection: View {
     }
 }
 
-
 struct LipoLegend: View {
     @Environment(\.colorScheme) var colorScheme
     var body: some View {
         HStack {
             RoundedRectangle(cornerRadius: 4).fill(.green).frame(width: 12, height: 12)
-            Text("Approximate Savings").foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+            Text("Approximate Savings").foregroundStyle(
+                ThemeColors.shared(for: colorScheme).secondaryText)
         }
     }
 }
-

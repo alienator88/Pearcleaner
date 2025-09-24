@@ -82,10 +82,10 @@ struct FilesView: View {
                     )
                     
                     SidebarView(infoSidebar: $infoSidebar, displaySizeTotal: displaySizeTotal)
+                        .padding([.trailing, .bottom], 20)
 
                 }
                 .animation(animationEnabled ? .spring(response: 0.35, dampingFraction: 0.8) : .none, value: infoSidebar)
-                .padding(20)
 
             }
 
@@ -112,6 +112,69 @@ struct FilesView: View {
         .onAppear {
             if !warning {
                 showAlert = true
+            }
+        }
+        .toolbarBackground(.hidden, for: .windowToolbar)
+        .toolbar {
+            //            if #available(macOS 26.0, *) {
+            //                ToolbarItem {
+            //                    VStack(alignment: .leading) {
+            //                        Text("Files")
+            //                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+            //                            .font(.title)
+            //                            .fontWeight(.bold)
+            //                        Text("Select files to remove for \(appState.appInfo.appName)")
+            //                            .font(.callout)
+            //                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+            //                    }
+            //                }
+            //                .sharedBackgroundVisibility(.hidden)
+            //            } else {
+            //                ToolbarItem {
+            //                    VStack(alignment: .leading) {
+            //                        Text("Files")
+            //                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+            //                            .font(.title)
+            //                            .fontWeight(.bold)
+            //                        Text("Select files to remove for \(appState.appInfo.appName)")
+            //                            .font(.callout)
+            //                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+            //                    }
+            //                }
+            //            }
+
+
+            ToolbarItem { Spacer() }
+
+            ToolbarItem {
+                Menu {
+                    ForEach(SortOptionList.allCases, id: \.self) { sortOption in
+                        Button {
+                            selectedSort = sortOption
+                            updateSortedFiles()
+                        } label: {
+                            Label(sortOption.title, systemImage: sortOption.systemImage)
+                        }
+                    }
+                } label: {
+                    Label(selectedSort.title, systemImage: selectedSort.systemImage)
+                }
+                .labelStyle(.titleAndIcon)
+            }
+
+            ToolbarItem {
+                Button {
+                    updateOnMain {
+                        appState.appInfo = .empty
+                        appState.selectedItems = []
+                        appState.currentView = .empty
+                    }
+                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                        showAppInFiles(appInfo: AppState.shared.appInfo, appState: appState, locations: locations)
+                    }
+                } label: {
+                    Label("Refresh", systemImage: "arrow.clockwise")
+                }
             }
         }
 
@@ -208,6 +271,7 @@ struct FilesView: View {
                     search = ""
                     withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                         appState.currentView = .empty
+                        appState.currentPage = .applications
                         appState.appInfo = AppInfo.empty
                     }
                 }

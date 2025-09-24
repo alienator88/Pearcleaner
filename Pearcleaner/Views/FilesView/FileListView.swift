@@ -12,11 +12,13 @@ import AlinFoundation
 struct FileListView: View {
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.general.brew") private var brew: Bool = false
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @EnvironmentObject var appState: AppState
     @Environment(\.colorScheme) var colorScheme
     @Binding var sortedFiles: [URL]
     @Binding var infoSidebar: Bool
     @Binding var selectedSort: SortOptionList
+    @State private var searchText: String = ""
     let locations: Locations
     let windowController: WindowManager
     let handleUninstallAction: () -> Void
@@ -36,40 +38,6 @@ struct FileListView: View {
             } else {
                 VStack(alignment: .leading, spacing: 0) {
                     
-                    // Header with title, subtitle, and sort dropdown
-                    HStack(alignment: .center, spacing: 15) {
-                        VStack(alignment: .leading) {
-                            Text("Files")
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                                .font(.title)
-                                .fontWeight(.bold)
-                            Text("Select files to remove for \(appState.appInfo.appName)")
-                                .font(.callout)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        }
-                        
-                        Spacer()
-                        
-                        // Sort dropdown menu
-                        Menu {
-                            ForEach(SortOptionList.allCases, id: \.self) { sortOption in
-                                Button {
-                                    selectedSort = sortOption
-                                    updateSortedFiles()
-                                } label: {
-                                    Label(sortOption.title, systemImage: sortOption.systemImage)
-                                }
-                            }
-                        } label: {
-                            Label(selectedSort.title, systemImage: selectedSort.systemImage)
-                        }
-                        .buttonStyle(ControlGroupButtonStyle(
-                            foregroundColor: ThemeColors.shared(for: colorScheme).primaryText,
-                            shape: Capsule(style: .continuous),
-                            level: .primary
-                        ))
-                    }
-                    
                     VStack(spacing: 0) {
                         // Select all checkbox row
                         HStack() {
@@ -87,9 +55,35 @@ struct FileListView: View {
                             ) { EmptyView() }
                                 .toggleStyle(SimpleCheckboxToggleStyle())
                                 .help("All checkboxes")
-                                .padding([.vertical, .trailing])
-                            
-                            Spacer()
+                                .padding([.bottom, .trailing])
+
+//                            Spacer()
+// Search bar
+                            HStack {
+                                Image(systemName: "magnifyingglass")
+                                    .foregroundStyle(
+                                        ThemeColors.shared(for: colorScheme).secondaryText)
+
+                                TextField("Search...", text: $searchText)
+                                    .textFieldStyle(.plain)
+                                    .foregroundStyle(
+                                        ThemeColors.shared(for: colorScheme).primaryText)
+
+                                if !searchText.isEmpty {
+                                    Button {
+                                        searchText = ""
+                                    } label: {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .foregroundStyle(
+                                                ThemeColors.shared(for: colorScheme).secondaryText)
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                            }
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                            .controlGroup(Capsule(style: .continuous), level: .primary)
                         }
 
                         // File list
@@ -188,6 +182,7 @@ struct FileListView: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .padding(20)
+        .padding([.horizontal, .bottom], 20)
+
     }
 }

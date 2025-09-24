@@ -55,7 +55,7 @@ struct PearcleanerApp: App {
 
         WindowGroup {
             MainWindow(search: $search)
-//                .toolbar { Color.clear }
+//                .toolbar { ToolbarItem {Spacer()} }
                 .environmentObject(appState)
                 .environmentObject(locations)
                 .environmentObject(fsm)
@@ -106,7 +106,7 @@ struct PearcleanerApp: App {
 
         }
         .windowStyle(.hiddenTitleBar)
-        .windowToolbarStyle(.unifiedCompact)
+        .windowToolbarStyle(.unified)
         .windowResizability(.contentMinSize)
         .commands {
             AppCommands(appState: appState, locations: locations, fsm: fsm, updater: updater)

@@ -555,11 +555,12 @@ extension View {
 
 struct ifGlassAvailable: ViewModifier {
     @AppStorage("settings.general.glassEffect") private var glassEffect: String = "Regular"
+    @AppStorage("settings.interface.leftNavigationSidebar") private var leftNavigationSidebar: Bool = true
 
     func body(content: Content) -> some View {
         if #available(macOS 26.0, *) {
             content
-                .glassEffect(glassEffect == "Regular" ? .regular : .clear, in: .rect(cornerRadius: 8))
+                .glassEffect(glassEffect == "Regular" ? .regular : .clear, in: .rect(cornerRadius: leftNavigationSidebar ? 8 : 12))
         }
         else {
             content
