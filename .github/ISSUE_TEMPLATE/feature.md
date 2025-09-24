@@ -1,6 +1,6 @@
 ---
 name: New Feature
-about: For submitting feature requests
+about: For submitting new feature requests (No opinionated requests please)
 title: "[FR] ENTER ISSUE TITLE HERE"
 labels: ''
 assignees: ''
