@@ -1,6 +1,6 @@
 ---
 name: New Bug
-about: For submitting bugs related to the application functionality.
+about: For submitting bugs related to the application functionality (No opinionated requests please).
 title: "[BUG] ENTER ISSUE TITLE HERE"
 labels: ''
 assignees: ''
