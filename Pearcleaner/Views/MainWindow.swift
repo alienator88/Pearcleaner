@@ -29,6 +29,12 @@ struct MainWindow: View {
     @State private var isFullscreen = false
     @State private var selectedPage: CurrentPage = .applications
 
+    // Badges
+    @State private var showUpdateView = false
+    @State private var showFeatureView = false
+    @State private var showPermissionList = false
+    @State private var glowRadius = 0.0
+
     var body: some View {
 
         // Main App Window
@@ -69,79 +75,103 @@ struct MainWindow: View {
             isFullscreen = false
         }
         .toolbar {
-            if #available(macOS 26.0, *) {
-                ToolbarItemGroup(placement: .navigation) {
-                    Menu {
-                        ForEach(CurrentPage.allCases, id: \.self) { page in
-                            Button {
-                                selectedPage = page
-                            } label: {
-                                HStack {
-                                    Image(systemName: page.icon)
-                                    Text(page.title)
-                                }
+            TahoeToolbarItem(placement: .navigation, isGroup: true) {
+                Menu {
+                    ForEach(CurrentPage.allCases, id: \.self) { page in
+                        Button {
+                            selectedPage = page
+                        } label: {
+                            HStack {
+                                Image(systemName: page.icon)
+                                Text(page.title)
                             }
                         }
-                    } label: {
-                        HStack {
-                            Image(systemName: selectedPage.icon)
-                        }
-                        .tint(ThemeColors.shared(for: colorScheme).accent)
                     }
-                    .menuIndicator(.hidden)
-                    .onChange(of: selectedPage) { page in
-                        withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
-                            // Reset appInfo when changing pages
-                            if page == .applications {
-                                appState.appInfo = .empty
-                                appState.currentView = .empty
-                            }
-                            // Change page
-                            appState.currentPage = page
-
-                        }
+                } label: {
+                    HStack {
+                        Image(systemName: selectedPage.icon)
                     }
-
-                   NoticeView()
-                        .environmentObject(updater)
-                        .environmentObject(permissionManager)
+                    .tint(ThemeColors.shared(for: colorScheme).accent)
                 }
-                .sharedBackgroundVisibility(.hidden)
-            } else {
-                ToolbarItem(placement: .navigation) {
-                    Menu {
-                        ForEach(CurrentPage.allCases, id: \.self) { page in
-                            Button {
-                                selectedPage = page
-                            } label: {
-                                HStack {
-                                    Image(systemName: page.icon)
-                                    Text(page.title)
-                                }
-                            }
+                .menuIndicator(.hidden)
+                .onChange(of: selectedPage) { page in
+                    withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
+                        // Reset appInfo when changing pages
+                        if page == .applications {
+                            appState.appInfo = .empty
+                            appState.currentView = .empty
                         }
-                    } label: {
-                        HStack {
-                            Image(systemName: selectedPage.icon)
-                        }
-                        .tint(ThemeColors.shared(for: colorScheme).accent)
-                    }
-                    .menuIndicator(.hidden)
-                    .onChange(of: selectedPage) { page in
-                        withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
-                            // Reset appInfo when changing pages
-                            if page == .applications {
-                                appState.appInfo = .empty
-                                appState.currentView = .empty
-                            }
-                            // Change page
-                            appState.currentPage = page
+                        // Change page
+                        appState.currentPage = page
 
-                        }
                     }
                 }
+
+                if updater.updateAvailable {
+                    noticeButton(
+                        image: "icloud.and.arrow.down",
+                        color: .green,
+                        help: "Update Available"
+                    ) {
+                        showUpdateView.toggle()
+                    }
+                    .sheet(isPresented: $showUpdateView) {
+                        updater.getUpdateView()
+                    }
+                } else if updater.announcementAvailable {
+                    noticeButton(
+                        image: "sparkles.2",
+                        color: .purple,
+                        help: "New Feature"
+                    ) {
+                        showFeatureView.toggle()
+                    }
+                    .sheet(isPresented: $showFeatureView) {
+                        updater.getAnnouncementView()
+                    }
+                } else if let _ = permissionManager.results, !permissionManager.allPermissionsGranted {
+                    noticeButton(
+                        image: "lock.slash",
+                        color: .red,
+                        help: "Permissions Missing"
+                    ) {
+                        showPermissionList.toggle()
+                    }
+                    .sheet(isPresented: $showPermissionList) {
+                        PermissionsListView()
+                    }
+                } else if HelperToolManager.shared.shouldShowHelperBadge {
+                    noticeButton(
+                        image: "gear",
+                        color: .orange,
+                        help: "Helper Not Installed"
+                    ) {
+                        openAppSettingsWindow(tab: .helper)
+                    }
+                }
+
+
             }
 
+        }
+    }
+
+    @ViewBuilder
+    private func noticeButton(image: String, color: Color, help: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            VStack(spacing: 4) {
+                Image(systemName: image)
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(color)
+            }
+            .shadow(color: Color(NSColor.windowBackgroundColor).opacity(1), radius: 1, x: 0, y: 0)
+            .shadow(color: color.opacity(1), radius: glowRadius, x: 0, y: 0)
+            .animation(.easeInOut(duration: 1).repeatForever(autoreverses: true), value: glowRadius)
+        }
+        .buttonStyle(.plain)
+        .help(help)
+        .onAppear {
+            glowRadius = 5.0
         }
     }
 
@@ -154,13 +184,6 @@ struct MainWindow: View {
                 .frame(width: sidebarWidth)
                 .transition(.opacity)
                 .ifGlassMain()
-                .overlay {
-                    if colorScheme == .light {
-                        RoundedRectangle(cornerRadius: 8)
-                            .strokeBorder(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.1), lineWidth: 1)
-                    }
-                    
-                }
                 .padding(8)
                 .ignoresSafeArea(edges: .top)
 
@@ -336,29 +359,16 @@ struct MountedVolumeView: View {
 
             ToolbarItem { Spacer() }
 
-            if #available(macOS 26.0, *) {
-                ToolbarItem {
-                    if greetingEnabled, let username = NSFullUserName().components(separatedBy: " ").first {
-                        Text("Welcome, \(username)!")
-                            .font(.largeTitle)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    }
+
+            if greetingEnabled, let username = NSFullUserName().components(separatedBy: " ").first {
+                TahoeToolbarItem {
+                    Text("Welcome, \(username)!")
+                        .font(.largeTitle)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
-                .sharedBackgroundVisibility(.hidden)
-            } else {
-                ToolbarItem {
-                    if greetingEnabled, let username = NSFullUserName().components(separatedBy: " ").first {
-                        Text("Welcome, \(username)!")
-                            .font(.largeTitle)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    }
-                }
+
             }
-
-
-
         }
     }
     

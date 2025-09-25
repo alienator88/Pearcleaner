@@ -130,32 +130,6 @@ struct FilesView: View {
         }
         .toolbarBackground(.hidden, for: .windowToolbar)
         .toolbar {
-            //            if #available(macOS 26.0, *) {
-            //                ToolbarItem {
-            //                    VStack(alignment: .leading) {
-            //                        Text("Files")
-            //                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-            //                            .font(.title)
-            //                            .fontWeight(.bold)
-            //                        Text("Select files to remove for \(appState.appInfo.appName)")
-            //                            .font(.callout)
-            //                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-            //                    }
-            //                }
-            //                .sharedBackgroundVisibility(.hidden)
-            //            } else {
-            //                ToolbarItem {
-            //                    VStack(alignment: .leading) {
-            //                        Text("Files")
-            //                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-            //                            .font(.title)
-            //                            .fontWeight(.bold)
-            //                        Text("Select files to remove for \(appState.appInfo.appName)")
-            //                            .font(.callout)
-            //                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-            //                    }
-            //                }
-            //            }
 
             ToolbarItem { Spacer() }
 

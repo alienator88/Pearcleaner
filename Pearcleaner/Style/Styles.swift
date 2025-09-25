@@ -552,6 +552,40 @@ extension View {
     }
 }
 
+struct TahoeToolbarItem<Content: View>: ToolbarContent {
+    var id: String? = nil
+    var placement: ToolbarItemPlacement = .automatic
+    var isGroup: Bool = false
+    @ViewBuilder let content: () -> Content
+
+    var body: some ToolbarContent {
+        if isGroup {
+            if #available(macOS 26.0, *) {
+                ToolbarItemGroup(placement: placement) { content() }
+                    .sharedBackgroundVisibility(.hidden)
+            } else {
+                ToolbarItemGroup(placement: placement) { content() }
+            }
+        } else {
+            if #available(macOS 26.0, *) {
+                if let id {
+                    ToolbarItem(id: id, placement: placement) { content() }
+                        .sharedBackgroundVisibility(.hidden)
+                } else {
+                    ToolbarItem(placement: placement) { content() }
+                        .sharedBackgroundVisibility(.hidden)
+                }
+            } else {
+                if let id {
+                    ToolbarItem(id: id, placement: placement) { content() }
+                } else {
+                    ToolbarItem(placement: placement) { content() }
+                }
+            }
+        }
+    }
+}
+
 
 struct ifGlassAvailable: ViewModifier {
     @AppStorage("settings.general.glassEffect") private var glassEffect: String = "Regular"

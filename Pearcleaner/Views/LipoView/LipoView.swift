@@ -340,35 +340,18 @@ struct LipoView: View {
             })
         .toolbarBackground(.hidden, for: .windowToolbar)
         .toolbar {
-            if #available(macOS 26.0, *) {
-                ToolbarItem(placement: .navigation) {
-                    VStack(alignment: .leading) {
-                        Text("Lipo").foregroundStyle(
-                            ThemeColors.shared(for: colorScheme).primaryText
-                        ).font(.title2).fontWeight(.bold)
-                        Text(
-                            "Remove unused architectures from your app binaries to reduce app size"
-                        )
-                        .font(.callout).foregroundStyle(
-                            ThemeColors.shared(for: colorScheme).secondaryText)
-                    }
-                }
-                .sharedBackgroundVisibility(.hidden)
-            } else {
-                ToolbarItem(placement: .navigation) {
-                    VStack(alignment: .leading) {
-                        Text("Lipo").foregroundStyle(
-                            ThemeColors.shared(for: colorScheme).primaryText
-                        ).font(.title2).fontWeight(.bold)
-                        Text(
-                            "Remove unused architectures from your app binaries to reduce app size"
-                        )
-                        .font(.callout).foregroundStyle(
-                            ThemeColors.shared(for: colorScheme).secondaryText)
-                    }
+            TahoeToolbarItem(placement: .navigation) {
+                VStack(alignment: .leading) {
+                    Text("Lipo").foregroundStyle(
+                        ThemeColors.shared(for: colorScheme).primaryText
+                    ).font(.title2).fontWeight(.bold)
+                    Text(
+                        "Remove unused architectures from your app binaries to reduce app size"
+                    )
+                    .font(.callout).foregroundStyle(
+                        ThemeColors.shared(for: colorScheme).secondaryText)
                 }
             }
-
 
             ToolbarItem { Spacer() }
 

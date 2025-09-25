@@ -203,37 +203,21 @@ struct PackageView: View {
         }
         .toolbarBackground(.hidden, for: .windowToolbar)
         .toolbar {
-            if #available(macOS 26.0, *) {
-                ToolbarItem(placement: .navigation) {
-                    VStack(alignment: .leading) {
-                        Text("Package Manager")
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                            .font(.title2)
-                            .fontWeight(.bold)
-                        Text("Manage packages installed via macOS Installer")
-                            .font(.callout)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    }
-                }
-                .sharedBackgroundVisibility(.hidden)
-            } else {
-                ToolbarItem(placement: .navigation) {
-                    VStack(alignment: .leading) {
-                        Text("Package Manager")
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                            .font(.title2)
-                            .fontWeight(.bold)
-                        Text("Manage packages installed via macOS Installer")
-                            .font(.callout)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    }
+            TahoeToolbarItem(placement: .navigation) {
+                VStack(alignment: .leading) {
+                    Text("Package Manager")
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                        .font(.title2)
+                        .fontWeight(.bold)
+                    Text("Manage packages installed via macOS Installer")
+                        .font(.callout)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
             }
 
-
             ToolbarItem { Spacer() }
 
-            ToolbarItemGroup {
+            TahoeToolbarItem(isGroup: true) {
                 Menu {
                     ForEach(PackageSortOption.allCases, id: \.self) { option in
                         Button {

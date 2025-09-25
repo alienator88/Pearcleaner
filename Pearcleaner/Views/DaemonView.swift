@@ -267,37 +267,21 @@ struct DaemonView: View {
         }
         .toolbarBackground(.hidden, for: .windowToolbar)
         .toolbar {
-            if #available(macOS 26.0, *) {
-                ToolbarItem(placement: .navigation) {
-                    VStack(alignment: .leading) {
-                        Text("Launch Services Manager")
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                            .font(.title2)
-                            .fontWeight(.bold)
-                        Text("Manage launch agents, daemons, and XPC services")
-                            .font(.callout)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    }
-                }
-                .sharedBackgroundVisibility(.hidden)
-            } else {
-                ToolbarItem(placement: .navigation) {
-                    VStack(alignment: .leading) {
-                        Text("Launch Services Manager")
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                            .font(.title2)
-                            .fontWeight(.bold)
-                        Text("Manage launch agents, daemons, and XPC services")
-                            .font(.callout)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    }
+            TahoeToolbarItem(placement: .navigation) {
+                VStack(alignment: .leading) {
+                    Text("Launch Services Manager")
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                        .font(.title2)
+                        .fontWeight(.bold)
+                    Text("Manage launch agents, daemons, and XPC services")
+                        .font(.callout)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
             }
 
-
             ToolbarItem { Spacer() }
 
-            ToolbarItemGroup {
+            TahoeToolbarItem(isGroup: true) {
                 Menu {
                     ForEach(LaunchItemFilter.allCases, id: \.self) { filter in
                         Button {
@@ -318,6 +302,7 @@ struct DaemonView: View {
                 }
                 .disabled(isLoading)
             }
+
         }
     }
     
