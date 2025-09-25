@@ -5,9 +5,9 @@
 //  Created by Alin Lupascu on 7/31/25.
 //
 
+import AlinFoundation
 import Foundation
 import SwiftUI
-import AlinFoundation
 
 struct FileListView: View {
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
@@ -19,6 +19,8 @@ struct FileListView: View {
     @Binding var infoSidebar: Bool
     @Binding var selectedSort: SortOptionList
     @State private var searchText: String = ""
+    @State private var selectedFileItemsLocal: Set<URL> = []
+    @State private var memoizedFiles: [URL] = []
     let locations: Locations
     let windowController: WindowManager
     let handleUninstallAction: () -> Void
@@ -29,6 +31,18 @@ struct FileListView: View {
     let removeSingleZombieAssociation: (URL) -> Void
     let removePath: (URL) -> Void
 
+
+    var filteredFiles: [URL] {
+        if searchText.isEmpty {
+            return memoizedFiles
+        } else {
+            return memoizedFiles.filter { path in
+                path.lastPathComponent.localizedCaseInsensitiveContains(searchText)
+                    || path.path.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             if appState.appInfo.fileSize.keys.count == 0 {
@@ -37,28 +51,46 @@ struct FileListView: View {
                     .opacity(0.5)
             } else {
                 VStack(alignment: .leading, spacing: 0) {
-                    
+
                     VStack(spacing: 0) {
                         // Select all checkbox row
-                        HStack() {
+                        HStack {
                             Toggle(
                                 isOn: Binding(
                                     get: {
-                                        appState.selectedItems.count == appState.appInfo.fileSize.count
+                                        if searchText.isEmpty {
+                                            return selectedFileItemsLocal.count
+                                                == appState.appInfo.fileSize.count
+                                        } else {
+                                            let currentlyVisibleFiles = Set(filteredFiles)
+                                            let selectedVisibleFiles =
+                                                selectedFileItemsLocal.intersection(
+                                                    currentlyVisibleFiles)
+                                            return !currentlyVisibleFiles.isEmpty
+                                                && selectedVisibleFiles.count
+                                                    == currentlyVisibleFiles.count
+                                        }
                                     },
                                     set: { newValue in
                                         updateOnMain {
-                                            appState.selectedItems = newValue ? Set(appState.appInfo.fileSize.keys) : []
+                                            if newValue {
+                                                selectedFileItemsLocal = Set(filteredFiles)
+                                            } else {
+                                                let filesToDeselect = Set(filteredFiles)
+                                                selectedFileItemsLocal.subtract(filesToDeselect)
+                                            }
+                                            // Sync with appState
+                                            appState.selectedItems = selectedFileItemsLocal
                                         }
                                     }
                                 )
                             ) { EmptyView() }
-                                .toggleStyle(SimpleCheckboxToggleStyle())
-                                .help("All checkboxes")
-                                .padding([.bottom, .trailing])
+                            .toggleStyle(SimpleCheckboxToggleStyle())
+                            .help("All checkboxes")
+                            .padding([.bottom, .trailing])
 
-//                            Spacer()
-// Search bar
+                            //                            Spacer()
+                            // Search bar
                             HStack {
                                 Image(systemName: "magnifyingglass")
                                     .foregroundStyle(
@@ -84,16 +116,28 @@ struct FileListView: View {
                             .padding(.vertical, 8)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
                             .controlGroup(Capsule(style: .continuous), level: .primary)
+                            .padding(.bottom)
                         }
 
                         // File list
                         ScrollView {
                             LazyVStack(spacing: 14) {
-                                ForEach(Array(sortedFiles.enumerated()), id: \.element) { index, path in
-                                    FileDetailsItem(path: path, removeAssociation: removeSingleZombieAssociation)
+                                ForEach(Array(filteredFiles.enumerated()), id: \.element) {
+                                    index, path in
+                                    FileDetailsItem(
+                                        path: path,
+                                        removeAssociation: removeSingleZombieAssociation,
+                                        isSelected: binding(for: path)
+                                    )
                                 }
                             }
-                            .onAppear { updateSortedFiles() }
+                            .onAppear {
+                                updateSortedFiles()
+                                updateMemoizedFiles()
+                            }
+                            .onChange(of: sortedFiles) { newVal in
+                                updateMemoizedFiles()
+                            }
                         }
                         .scrollIndicators(scrollIndicators ? .automatic : .never)
                         .padding(.bottom)
@@ -101,19 +145,27 @@ struct FileListView: View {
 
                     // Bottom toolbar
                     HStack(spacing: 10) {
-                        Text("\(appState.selectedItems.count) / \(appState.appInfo.fileSize.count)")
-                            .font(.footnote)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                            .frame(minWidth: 80, alignment: .leading)
+                        Text(
+                            "\(selectedFileItemsLocal.intersection(Set(filteredFiles)).count) / \(filteredFiles.count)"
+                        )
+                        .font(.footnote)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        .frame(minWidth: 80, alignment: .leading)
 
                         Spacer()
 
                         if appState.trashError {
-                            InfoButton(text: "A trash error has occurred, please open the debug window(⌘+D) to see what went wrong or try again", color: .orange, label: "View Error", warning: true, extraView: {
-                                Button("View Debug Window") {
-                                    windowController.open(with: ConsoleView(), width: 600, height: 400)
+                            InfoButton(
+                                text:
+                                    "A trash error has occurred, please open the debug window(⌘+D) to see what went wrong or try again",
+                                color: .orange, label: "View Error", warning: true,
+                                extraView: {
+                                    Button("View Debug Window") {
+                                        windowController.open(
+                                            with: ConsoleView(), width: 600, height: 400)
+                                    }
                                 }
-                            })
+                            )
                             .onDisappear {
                                 appState.trashError = false
                             }
@@ -123,17 +175,21 @@ struct FileListView: View {
                             handleUninstallAction()
                         } label: {
                             Label {
-                                Text(verbatim: "\(sizeType == "Logical" ? totalSelectedSize.logical : totalSelectedSize.real)")
+                                Text(
+                                    verbatim:
+                                        "\(sizeType == "Logical" ? totalSelectedSize.logical : totalSelectedSize.real)"
+                                )
                             } icon: {
                                 Image(systemName: "trash")
                             }
                         }
-                        .buttonStyle(ControlGroupButtonStyle(
-                            foregroundColor: ThemeColors.shared(for: colorScheme).accent,
-                            shape: Capsule(style: .continuous),
-                            level: .primary,
-                            disabled: appState.selectedItems.isEmpty
-                        ))
+                        .buttonStyle(
+                            ControlGroupButtonStyle(
+                                foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                                shape: Capsule(style: .continuous),
+                                level: .primary,
+                                disabled: appState.selectedItems.isEmpty
+                            ))
 
                         Spacer()
 
@@ -164,7 +220,8 @@ struct FileListView: View {
                                     updateOnMain {
                                         appState.appInfo = newApp
                                     }
-                                    showAppInFiles(appInfo: newApp, appState: appState, locations: locations)
+                                    showAppInFiles(
+                                        appInfo: newApp, appState: appState, locations: locations)
                                 }
                                 .buttonStyle(.link)
                                 Button {
@@ -184,5 +241,32 @@ struct FileListView: View {
         .frame(maxWidth: .infinity)
         .padding([.horizontal, .bottom], 20)
 
+    }
+
+    // Helper function to create binding for individual files
+    private func binding(for file: URL) -> Binding<Bool> {
+        Binding<Bool>(
+            get: {
+                selectedFileItemsLocal.contains(file) && filteredFiles.contains(file)
+            },
+            set: { isSelected in
+                if isSelected {
+                    if filteredFiles.contains(file) {
+                        selectedFileItemsLocal.insert(file)
+                    }
+                } else {
+                    selectedFileItemsLocal.remove(file)
+                }
+                // Sync with appState
+                appState.selectedItems = selectedFileItemsLocal
+            }
+        )
+    }
+
+    // Helper function to update memoized files
+    private func updateMemoizedFiles() {
+        memoizedFiles = sortedFiles
+        // Sync local selection with appState
+        selectedFileItemsLocal = appState.selectedItems
     }
 }

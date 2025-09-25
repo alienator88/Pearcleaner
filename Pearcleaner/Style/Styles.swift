@@ -560,7 +560,7 @@ struct ifGlassAvailable: ViewModifier {
     func body(content: Content) -> some View {
         if #available(macOS 26.0, *) {
             content
-                .glassEffect(glassEffect == "Regular" ? .regular : .clear, in: .rect(cornerRadius: leftNavigationSidebar ? 8 : 12))
+                .glassEffect(glassEffect == "Regular" ? .regular : .clear, in: .rect(cornerRadius: 20))
         }
         else {
             content
@@ -571,6 +571,36 @@ struct ifGlassAvailable: ViewModifier {
 extension View {
     func ifGlass() -> some View {
         self.modifier(ifGlassAvailable())
+    }
+}
+
+
+struct ifGlassAvailableMain: ViewModifier {
+    @AppStorage("settings.general.glassEffect") private var glassEffect: String = "Regular"
+    @AppStorage("settings.interface.leftNavigationSidebar") private var leftNavigationSidebar: Bool = true
+    @AppStorage("settings.general.glass") private var glass: Bool = false
+    @Environment(\.colorScheme) var colorScheme
+
+    func body(content: Content) -> some View {
+        if #available(macOS 26.0, *) {
+            content
+                .glassEffect(glassEffect == "Regular" ? .regular : .clear, in: .rect(cornerRadius: 20))
+        }
+        else {
+            content
+                .background(backgroundView(color: ThemeColors.shared(for: colorScheme).secondaryBG, glass: glass))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 8)
+                        .strokeBorder(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.2), lineWidth: 1)
+                }
+        }
+    }
+}
+
+extension View {
+    func ifGlassMain() -> some View {
+        self.modifier(ifGlassAvailableMain())
     }
 }
 

@@ -54,7 +54,6 @@ struct LeftNavigationSidebar: View {
 
         }
         .frame(width: sidebarWidth)
-//        .preTahoeSidebarBG()
     }
 
     private func selectPage(_ page: CurrentPage) {

@@ -5,9 +5,9 @@
 //  Created by Alin Lupascu on 11/1/23.
 //
 
+import AlinFoundation
 import Foundation
 import SwiftUI
-import AlinFoundation
 
 struct FilesView: View {
     @EnvironmentObject var appState: AppState
@@ -17,7 +17,7 @@ struct FilesView: View {
     @State private var windowController = WindowManager()
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.general.brew") private var brew: Bool = false
-//    @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
+    //    @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
     @AppStorage("settings.general.selectedSort") var selectedSort: SortOptionList = .name
     @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @AppStorage("settings.general.filesWarning") private var warning: Bool = false
@@ -34,7 +34,6 @@ struct FilesView: View {
 
     var body: some View {
 
-
         var totalSelectedSize: (real: String, logical: String) {
             var totalReal: Int64 = 0
             var totalLogical: Int64 = 0
@@ -44,11 +43,16 @@ struct FilesView: View {
                 totalReal += realSize
                 totalLogical += logicalSize
             }
-            return (real: formatByte(size: totalReal).human, logical: formatByte(size: totalLogical).human)
+            return (
+                real: formatByte(size: totalReal).human,
+                logical: formatByte(size: totalLogical).human
+            )
         }
 
-        let displaySizeTotal = sizeType == "Real" ? formatByte(size: appState.appInfo.totalSize).human :
-        formatByte(size: appState.appInfo.totalSizeLogical).human
+        let displaySizeTotal =
+            sizeType == "Real"
+            ? formatByte(size: appState.appInfo.totalSize).human
+            : formatByte(size: appState.appInfo.totalSizeLogical).human
 
         VStack(alignment: .center) {
             if appState.showProgress {
@@ -80,35 +84,45 @@ struct FilesView: View {
                         removeSingleZombieAssociation: removeSingleZombieAssociation,
                         removePath: removePath
                     )
-                    
+
                     SidebarView(infoSidebar: $infoSidebar, displaySizeTotal: displaySizeTotal)
                         .padding([.trailing, .bottom], 20)
 
                 }
-                .animation(animationEnabled ? .spring(response: 0.35, dampingFraction: 0.8) : .none, value: infoSidebar)
+                .animation(
+                    animationEnabled ? .spring(response: 0.35, dampingFraction: 0.8) : .none,
+                    value: infoSidebar)
 
             }
 
         }
-        .sheet(isPresented: $showAlert, content: {
-            VStack(spacing: 10) {
-                Text("Important")
-                    .font(.headline)
-                Divider()
-                Spacer()
-                Text("Always confirm the files marked for removal. In rare cases, unrelated files may be found when app names are too similar.")
+        .sheet(
+            isPresented: $showAlert,
+            content: {
+                VStack(spacing: 10) {
+                    Text("Important")
+                        .font(.headline)
+                    Divider()
+                    Spacer()
+                    Text(
+                        "Always confirm the files marked for removal. In rare cases, unrelated files may be found when app names are too similar."
+                    )
                     .font(.subheadline)
-                Spacer()
-                Button("Close") {
-                    warning = true
-                    showAlert = false
+                    Spacer()
+                    Button("Close") {
+                        warning = true
+                        showAlert = false
+                    }
+                    .buttonStyle(
+                        SimpleButtonStyle(
+                            icon: "x.circle.fill", label: String(localized: "Close"),
+                            help: String(localized: "Dismiss")))  //                Spacer()
                 }
-                .buttonStyle(SimpleButtonStyle(icon: "x.circle.fill", label: String(localized: "Close"), help: String(localized: "Dismiss")))//                Spacer()
+                .padding(15)
+                .frame(width: 400, height: 250)
+                .background(GlassEffect(material: .hudWindow, blendingMode: .behindWindow))
             }
-            .padding(15)
-            .frame(width: 400, height: 250)
-            .background(GlassEffect(material: .hudWindow, blendingMode: .behindWindow))
-        })
+        )
         .onAppear {
             if !warning {
                 showAlert = true
@@ -143,7 +157,6 @@ struct FilesView: View {
             //                }
             //            }
 
-
             ToolbarItem { Spacer() }
 
             ToolbarItem {
@@ -170,7 +183,9 @@ struct FilesView: View {
                         appState.currentView = .empty
                     }
                     withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                        showAppInFiles(appInfo: AppState.shared.appInfo, appState: appState, locations: locations)
+                        showAppInFiles(
+                            appInfo: AppState.shared.appInfo, appState: appState,
+                            locations: locations)
                     }
                 } label: {
                     Label("Refresh", systemImage: "arrow.clockwise")
@@ -182,66 +197,78 @@ struct FilesView: View {
 
     // Function to handle the uninstall action
     private func handleUninstallAction() {
-        showCustomAlert(enabled: confirmAlert, title: String(localized: "Warning"), message: String(localized: "Are you sure you want to remove these files?"), style: .warning, onOk: {
-            Task {
-                let selectedItemsArray = Array(appState.selectedItems)
-                var appWasRemoved = false
+        showCustomAlert(
+            enabled: confirmAlert, title: String(localized: "Warning"),
+            message: String(localized: "Are you sure you want to remove these files?"),
+            style: .warning,
+            onOk: {
+                Task {
+                    let selectedItemsArray = Array(appState.selectedItems)
+                    var appWasRemoved = false
 
-                // Stop Sentinel FileWatcher momentarily to ignore .app bundle being sent to Trash
-                sendStopNotificationFW()
+                    // Stop Sentinel FileWatcher momentarily to ignore .app bundle being sent to Trash
+                    sendStopNotificationFW()
 
-                killApp(appId: appState.appInfo.bundleIdentifier) {
+                    killApp(appId: appState.appInfo.bundleIdentifier) {
 
-                    let result = moveFilesToTrash(appState: appState, at: selectedItemsArray)
-                    if result {
-                        // Update the app's file list by removing the deleted files
-                        updateOnMain {
-                            appState.appInfo.fileSize = appState.appInfo.fileSize.filter { !selectedItemsArray.contains($0.key) }
-                            appState.appInfo.fileSizeLogical = appState.appInfo.fileSizeLogical.filter { !selectedItemsArray.contains($0.key) }
-                            appState.appInfo.fileIcon = appState.appInfo.fileIcon.filter { !selectedItemsArray.contains($0.key) }
-                            appState.selectedItems.removeAll()
-                            updateSortedFiles()
+                        let result = moveFilesToTrash(appState: appState, at: selectedItemsArray)
+                        if result {
+                            // Update the app's file list by removing the deleted files
+                            updateOnMain {
+                                appState.appInfo.fileSize = appState.appInfo.fileSize.filter {
+                                    !selectedItemsArray.contains($0.key)
+                                }
+                                appState.appInfo.fileSizeLogical = appState.appInfo.fileSizeLogical
+                                    .filter { !selectedItemsArray.contains($0.key) }
+                                appState.appInfo.fileIcon = appState.appInfo.fileIcon.filter {
+                                    !selectedItemsArray.contains($0.key)
+                                }
+                                appState.selectedItems.removeAll()
+                                updateSortedFiles()
+                            }
+
+                            // Determine if it's a full delete
+                            let appPath = appState.appInfo.path.absoluteString
+                            let appRemoved = selectedItemsArray.contains(where: {
+                                $0.absoluteString == appPath
+                            })
+
+                            let mainAppRemoved = !appState.appInfo.wrapped && appRemoved
+                            let wrappedAppRemoved = appState.appInfo.wrapped && appRemoved
+
+                            let isInTrash = appState.appInfo.path.path.contains(".Trash")
+
+                            var deleteType: DeleteType
+
+                            if mainAppRemoved || wrappedAppRemoved || isInTrash {
+                                deleteType = .fullDelete
+                            } else {
+                                deleteType = .semiDelete
+                            }
+
+                            switch deleteType {
+                            case .fullDelete:
+                                // The main app bundle is deleted or is already in Trash (Sentinel delete)
+                                appWasRemoved = true
+                                // Remove the app from the app list
+                                removeApp(appState: appState, withPath: appState.appInfo.path)
+
+                            case .semiDelete:
+                                // Some files deleted but main app bundle remains
+                                // App remains in the list; removes only deleted items
+                                break
+                            }
+
+                            // Process the next app if in external mode
+                            processNextExternalApp(
+                                appWasRemoved: appWasRemoved, isInTrash: isInTrash)
                         }
 
-                        // Determine if it's a full delete
-                        let appPath = appState.appInfo.path.absoluteString
-                        let appRemoved = selectedItemsArray.contains(where: { $0.absoluteString == appPath })
-
-                        let mainAppRemoved = !appState.appInfo.wrapped && appRemoved
-                        let wrappedAppRemoved = appState.appInfo.wrapped && appRemoved
-
-                        let isInTrash = appState.appInfo.path.path.contains(".Trash")
-
-                        var deleteType: DeleteType
-
-                        if mainAppRemoved || wrappedAppRemoved || isInTrash {
-                            deleteType = .fullDelete
-                        } else {
-                            deleteType = .semiDelete
-                        }
-
-                        switch deleteType {
-                        case .fullDelete:
-                            // The main app bundle is deleted or is already in Trash (Sentinel delete)
-                            appWasRemoved = true
-                            // Remove the app from the app list
-                            removeApp(appState: appState, withPath: appState.appInfo.path)
-
-                        case .semiDelete:
-                            // Some files deleted but main app bundle remains
-                            // App remains in the list; removes only deleted items
-                            break
-                        }
-
-                        // Process the next app if in external mode
-                        processNextExternalApp(appWasRemoved: appWasRemoved, isInTrash: isInTrash)
+                        // Send Sentinel FileWatcher start notification
+                        sendStartNotificationFW()
                     }
-
-                    // Send Sentinel FileWatcher start notification
-                    sendStartNotificationFW()
                 }
-            }
-        })
+            })
     }
 
     // Helper function to process the next external app
@@ -279,7 +306,7 @@ struct FilesView: View {
 
             // Terminate if oneShotMode is enabled
             if oneShotMode && !appState.multiMode {
-                updateOnMain() {
+                updateOnMain {
                     NSApp.terminate(nil)
                 }
             } else {
@@ -342,7 +369,8 @@ struct FilesView: View {
                 return false
             } else {
                 //                return firstURL.lastPathComponent.pearFormat() < secondURL.lastPathComponent.pearFormat()
-                return showLocalized(url: firstURL).localizedCaseInsensitiveCompare(showLocalized(url: secondURL)) == .orderedAscending
+                return showLocalized(url: firstURL).localizedCaseInsensitiveCompare(
+                    showLocalized(url: secondURL)) == .orderedAscending
             }
         }
 
@@ -354,7 +382,8 @@ struct FilesView: View {
             } else if !isFirstPathApp, isSecondPathApp {
                 return false
             } else {
-                return firstURL.path.localizedCaseInsensitiveCompare(secondURL.path) == .orderedAscending
+                return firstURL.path.localizedCaseInsensitiveCompare(secondURL.path)
+                    == .orderedAscending
             }
         }
 
@@ -366,17 +395,24 @@ struct FilesView: View {
         case .path:
             sortedFiles = sortedFilesByPath
         }
-//        sortedFiles = selectedSortAlpha ? sortedFilesAlpha : sortedFilesSize
+        //        sortedFiles = selectedSortAlpha ? sortedFilesAlpha : sortedFilesSize
     }
 
     private func removeZombieAssociations() {
         updateOnMain {
-            let associatedFiles = ZombieFileStorage.shared.getAssociatedFiles(for: appState.appInfo.path)
+            let associatedFiles = ZombieFileStorage.shared.getAssociatedFiles(
+                for: appState.appInfo.path)
 
             // Remove associated files from appInfo storage
-            appState.appInfo.fileSize = appState.appInfo.fileSize.filter { !associatedFiles.contains($0.key) }
-            appState.appInfo.fileSizeLogical = appState.appInfo.fileSizeLogical.filter { !associatedFiles.contains($0.key) }
-            appState.appInfo.fileIcon = appState.appInfo.fileIcon.filter { !associatedFiles.contains($0.key) }
+            appState.appInfo.fileSize = appState.appInfo.fileSize.filter {
+                !associatedFiles.contains($0.key)
+            }
+            appState.appInfo.fileSizeLogical = appState.appInfo.fileSizeLogical.filter {
+                !associatedFiles.contains($0.key)
+            }
+            appState.appInfo.fileIcon = appState.appInfo.fileIcon.filter {
+                !associatedFiles.contains($0.key)
+            }
 
             // Remove from sorted list
             sortedFiles.removeAll { associatedFiles.contains($0) }
@@ -392,7 +428,8 @@ struct FilesView: View {
 
     private func removeSingleZombieAssociation(_ path: URL) {
         updateOnMain {
-            var associatedFiles = ZombieFileStorage.shared.getAssociatedFiles(for: appState.appInfo.path)
+            var associatedFiles = ZombieFileStorage.shared.getAssociatedFiles(
+                for: appState.appInfo.path)
 
             // Remove only the specified path
             associatedFiles.removeAll { $0 == path }
@@ -439,6 +476,7 @@ struct FileDetailsItem: View {
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     let path: URL
     let removeAssociation: (URL) -> Void
+    @Binding var isSelected: Bool
 
     var body: some View {
 
@@ -447,19 +485,12 @@ struct FileDetailsItem: View {
         let fileIcon = appState.appInfo.fileIcon[path]
         let iconImage = fileIcon.flatMap { $0.map(Image.init(nsImage:)) }
 
-        let displaySize = sizeType == "Real" ? formatByte(size: realSize).human : formatByte(size: logicalSize).human
+        let displaySize =
+            sizeType == "Real"
+            ? formatByte(size: realSize).human : formatByte(size: logicalSize).human
 
         HStack(alignment: .center, spacing: 20) {
-            Toggle(isOn: Binding(
-                get: { self.appState.selectedItems.contains(self.path) },
-                set: { isChecked in
-                    if isChecked {
-                        self.appState.selectedItems.insert(self.path)
-                    } else {
-                        self.appState.selectedItems.remove(self.path)
-                    }
-                }
-            )) { EmptyView() }
+            Toggle(isOn: $isSelected) { EmptyView() }
                 .toggleStyle(SimpleCheckboxToggleStyle())
                 .disabled(self.path.path.contains(".Trash"))
 
@@ -472,7 +503,6 @@ struct FileDetailsItem: View {
 
             }
 
-
             VStack(alignment: .leading, spacing: 5) {
                 HStack(alignment: .center) {
                     Text(showLocalized(url: path))
@@ -481,12 +511,15 @@ struct FileDetailsItem: View {
                         .lineLimit(1)
                         .truncationMode(.tail)
                         .help(path.lastPathComponent)
-                        .overlay{
-                            if (isHovered) {
+                        .overlay {
+                            if isHovered {
                                 VStack {
                                     Spacer()
                                     RoundedRectangle(cornerRadius: 10)
-                                        .fill(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.5))
+                                        .fill(
+                                            ThemeColors.shared(for: colorScheme).primaryText
+                                                .opacity(0.5)
+                                        )
                                         .frame(height: 1.5)
                                         .offset(y: 3)
                                 }
@@ -494,7 +527,12 @@ struct FileDetailsItem: View {
                         }
 
                     if isNested(path: path) {
-                        InfoButton(text: String(localized: "Application file is nested within subdirectories. To prevent deleting incorrect folders, Pearcleaner will leave these alone. You may manually delete the remaining folders if required."))                    }
+                        InfoButton(
+                            text: String(
+                                localized:
+                                    "Application file is nested within subdirectories. To prevent deleting incorrect folders, Pearcleaner will leave these alone. You may manually delete the remaining folders if required."
+                            ))
+                    }
 
                     if let imageView = folderImages(for: path.path) {
                         imageView
@@ -505,26 +543,29 @@ struct FileDetailsItem: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 13)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.5))
+                            .foregroundStyle(
+                                ThemeColors.shared(for: colorScheme).primaryText.opacity(0.5))
                     }
 
                 }
 
-                path.path.pathWithArrows(separatorColor: ThemeColors.shared(for: colorScheme).primaryText)
-                    .font(.footnote)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    .help(path.path)
+                path.path.pathWithArrows(
+                    separatorColor: ThemeColors.shared(for: colorScheme).primaryText
+                )
+                .font(.footnote)
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                .help(path.path)
 
             }
             .onTapGesture {
-                NSWorkspace.shared.selectFile(path.path, inFileViewerRootedAtPath: path.deletingLastPathComponent().path)
+                NSWorkspace.shared.selectFile(
+                    path.path, inFileViewerRootedAtPath: path.deletingLastPathComponent().path)
             }
             .onHover { hovering in
                 withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                     self.isHovered = hovering
                 }
             }
-
 
             Spacer()
 
@@ -545,7 +586,8 @@ struct FileDetailsItem: View {
                 copyToClipboard(text: path.path)
             }
             Button("View in Finder") {
-                NSWorkspace.shared.selectFile(path.path, inFileViewerRootedAtPath: path.deletingLastPathComponent().path)
+                NSWorkspace.shared.selectFile(
+                    path.path, inFileViewerRootedAtPath: path.deletingLastPathComponent().path)
             }
             if ZombieFileStorage.shared.isPathAssociated(path) {
                 Button("Unlink File") {

@@ -345,7 +345,7 @@ struct LipoView: View {
                     VStack(alignment: .leading) {
                         Text("Lipo").foregroundStyle(
                             ThemeColors.shared(for: colorScheme).primaryText
-                        ).font(.title).fontWeight(.bold)
+                        ).font(.title2).fontWeight(.bold)
                         Text(
                             "Remove unused architectures from your app binaries to reduce app size"
                         )
@@ -359,7 +359,7 @@ struct LipoView: View {
                     VStack(alignment: .leading) {
                         Text("Lipo").foregroundStyle(
                             ThemeColors.shared(for: colorScheme).primaryText
-                        ).font(.title).fontWeight(.bold)
+                        ).font(.title2).fontWeight(.bold)
                         Text(
                             "Remove unused architectures from your app binaries to reduce app size"
                         )

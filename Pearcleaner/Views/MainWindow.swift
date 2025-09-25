@@ -41,6 +41,7 @@ struct MainWindow: View {
 //
 //                if appState.currentPage != .applications {
 //                    Divider()
+//                        .ignoresSafeArea()
 //                }
 
                 Group {
@@ -64,8 +65,6 @@ struct MainWindow: View {
                         PackageView()
                     }
                 }
-//                .padding(.top, leftNavigationSidebar ? 0 : (appState.currentPage == .applications ? 20 : 15))
-//                .padding(.leading, (!leftNavigationSidebar && appState.currentPage == .applications) ? 10 : 0)
 
             }
         }
@@ -87,7 +86,7 @@ struct MainWindow: View {
             AppSearchView(glass: glass, search: $search)
                 .frame(width: sidebarWidth)
                 .transition(.opacity)
-                .ifGlass()
+                .ifGlassMain()
                 .overlay {
                     if colorScheme == .light {
                         RoundedRectangle(cornerRadius: 8)
@@ -95,17 +94,12 @@ struct MainWindow: View {
                     }
                     
                 }
-                .padding(.vertical, 10)
+                .padding(8)
                 .ignoresSafeArea(edges: .top)
 
 
-            if #available(macOS 26.0, *) {
-                SlideableDivider(dimension: $sidebarWidth, color: .clear)
-                    .zIndex(3)
-            } else {
-                SlideableDivider(dimension: $sidebarWidth)
-                    .zIndex(3)
-            }
+            SlideableDivider(dimension: $sidebarWidth, color: .clear)
+                .zIndex(3)
 
             // Details View
             HStack(spacing: 0) {

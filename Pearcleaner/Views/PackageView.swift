@@ -208,7 +208,7 @@ struct PackageView: View {
                     VStack(alignment: .leading) {
                         Text("Package Manager")
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                            .font(.title)
+                            .font(.title2)
                             .fontWeight(.bold)
                         Text("Manage packages installed via macOS Installer")
                             .font(.callout)
@@ -221,7 +221,7 @@ struct PackageView: View {
                     VStack(alignment: .leading) {
                         Text("Package Manager")
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                            .font(.title)
+                            .font(.title2)
                             .fontWeight(.bold)
                         Text("Manage packages installed via macOS Installer")
                             .font(.callout)

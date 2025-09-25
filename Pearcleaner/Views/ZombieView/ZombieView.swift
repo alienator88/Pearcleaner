@@ -223,7 +223,7 @@ struct ZombieView: View {
             if #available(macOS 26.0, *) {
                 ToolbarItem {
                     VStack(alignment: .leading){
-                        Text("Orphaned Files").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title).fontWeight(.bold)
+                        Text("Orphaned Files").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2).fontWeight(.bold)
                         Text("Remaining files and folders from previous applications")
                             .font(.callout).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }
@@ -232,7 +232,7 @@ struct ZombieView: View {
             } else {
                 ToolbarItem {
                     VStack(alignment: .leading){
-                        Text("Orphaned Files").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title).fontWeight(.bold)
+                        Text("Orphaned Files").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2).fontWeight(.bold)
                         Text("Remaining files and folders from previous applications")
                             .font(.callout).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }

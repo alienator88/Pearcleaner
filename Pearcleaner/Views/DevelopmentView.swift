@@ -178,7 +178,7 @@ struct EnvironmentCleanerView: View {
             if #available(macOS 26.0, *) {
                 ToolbarItem {
                     VStack(alignment: .leading){
-                        Text("Development Environments").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title).fontWeight(.bold)
+                        Text("Development Environments").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2).fontWeight(.bold)
                         Text("Clean stored files and cache for common IDEs")
                             .font(.callout).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }
@@ -187,7 +187,7 @@ struct EnvironmentCleanerView: View {
             } else {
                 ToolbarItem {
                     VStack(alignment: .leading){
-                        Text("Development Environments").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title).fontWeight(.bold)
+                        Text("Development Environments").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2).fontWeight(.bold)
                         Text("Clean stored files and cache for common IDEs")
                             .font(.callout).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }

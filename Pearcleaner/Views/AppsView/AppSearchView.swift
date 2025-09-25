@@ -37,6 +37,8 @@ struct AppSearchView: View {
 
                 SearchBarSidebar(search: $search)
                     .padding()
+                    .padding(.top, 20)
+
 
                 AppsListView(search: $search, filteredApps: filteredApps)
                     .padding([.bottom, .horizontal], 5)

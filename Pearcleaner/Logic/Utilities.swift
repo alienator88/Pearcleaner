@@ -11,6 +11,15 @@ import AlinFoundation
 import AppKit
 import AudioToolbox
 
+func ifOSBelow(macOS major: Int, _ minor: Int = 0, _ patch: Int = 0) -> Bool {
+    if !ProcessInfo.processInfo.isOperatingSystemAtLeast(
+        OperatingSystemVersion(majorVersion: major, minorVersion: minor, patchVersion: patch)
+    ) {
+        return true
+    } else {
+        return false
+    }
+}
 
 func playTrashSound(undo: Bool = false) {
     let soundName = undo ? "poof item off dock.aif" : "drag to trash.aif"

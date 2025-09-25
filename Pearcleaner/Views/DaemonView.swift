@@ -272,7 +272,7 @@ struct DaemonView: View {
                     VStack(alignment: .leading) {
                         Text("Launch Services Manager")
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                            .font(.title)
+                            .font(.title2)
                             .fontWeight(.bold)
                         Text("Manage launch agents, daemons, and XPC services")
                             .font(.callout)
@@ -285,7 +285,7 @@ struct DaemonView: View {
                     VStack(alignment: .leading) {
                         Text("Launch Services Manager")
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                            .font(.title)
+                            .font(.title2)
                             .fontWeight(.bold)
                         Text("Manage launch agents, daemons, and XPC services")
                             .font(.callout)
