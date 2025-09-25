@@ -15,17 +15,19 @@ struct MainWindow: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
     @EnvironmentObject var fsm: FolderSettingsManager
+    @EnvironmentObject var updater: Updater
+    @EnvironmentObject var permissionManager: PermissionManager
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 265
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
-    @AppStorage("settings.interface.leftNavigationSidebar") private var leftNavigationSidebar: Bool = true
 
     @Binding var search: String
     @State private var showSys: Bool = true
     @State private var showUsr: Bool = true
     @State private var showMenu = false
     @State private var isFullscreen = false
+    @State private var selectedPage: CurrentPage = .applications
 
     var body: some View {
 
@@ -33,16 +35,6 @@ struct MainWindow: View {
         ZStack() {
 
             HStack(alignment: .center, spacing: 0) {
-//                if leftNavigationSidebar {
-//                    LeftNavigationSidebar(isFullscreen: $isFullscreen)
-//                        .zIndex(1)
-//                }
-//
-//
-//                if appState.currentPage != .applications {
-//                    Divider()
-//                        .ignoresSafeArea()
-//                }
 
                 Group {
                     switch appState.currentPage {
@@ -75,6 +67,81 @@ struct MainWindow: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: NSWindow.didExitFullScreenNotification)) { _ in
             isFullscreen = false
+        }
+        .toolbar {
+            if #available(macOS 26.0, *) {
+                ToolbarItemGroup(placement: .navigation) {
+                    Menu {
+                        ForEach(CurrentPage.allCases, id: \.self) { page in
+                            Button {
+                                selectedPage = page
+                            } label: {
+                                HStack {
+                                    Image(systemName: page.icon)
+                                    Text(page.title)
+                                }
+                            }
+                        }
+                    } label: {
+                        HStack {
+                            Image(systemName: selectedPage.icon)
+                        }
+                        .tint(ThemeColors.shared(for: colorScheme).accent)
+                    }
+                    .menuIndicator(.hidden)
+                    .onChange(of: selectedPage) { page in
+                        withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
+                            // Reset appInfo when changing pages
+                            if page == .applications {
+                                appState.appInfo = .empty
+                                appState.currentView = .empty
+                            }
+                            // Change page
+                            appState.currentPage = page
+
+                        }
+                    }
+
+                   NoticeView()
+                        .environmentObject(updater)
+                        .environmentObject(permissionManager)
+                }
+                .sharedBackgroundVisibility(.hidden)
+            } else {
+                ToolbarItem(placement: .navigation) {
+                    Menu {
+                        ForEach(CurrentPage.allCases, id: \.self) { page in
+                            Button {
+                                selectedPage = page
+                            } label: {
+                                HStack {
+                                    Image(systemName: page.icon)
+                                    Text(page.title)
+                                }
+                            }
+                        }
+                    } label: {
+                        HStack {
+                            Image(systemName: selectedPage.icon)
+                        }
+                        .tint(ThemeColors.shared(for: colorScheme).accent)
+                    }
+                    .menuIndicator(.hidden)
+                    .onChange(of: selectedPage) { page in
+                        withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
+                            // Reset appInfo when changing pages
+                            if page == .applications {
+                                appState.appInfo = .empty
+                                appState.currentView = .empty
+                            }
+                            // Change page
+                            appState.currentPage = page
+
+                        }
+                    }
+                }
+            }
+
         }
     }
 

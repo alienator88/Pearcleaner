@@ -176,7 +176,7 @@ struct EnvironmentCleanerView: View {
         .toolbarBackground(.hidden, for: .windowToolbar)
         .toolbar {
             if #available(macOS 26.0, *) {
-                ToolbarItem {
+                ToolbarItem(placement: .navigation) {
                     VStack(alignment: .leading){
                         Text("Development Environments").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2).fontWeight(.bold)
                         Text("Clean stored files and cache for common IDEs")
@@ -185,7 +185,7 @@ struct EnvironmentCleanerView: View {
                 }
                 .sharedBackgroundVisibility(.hidden)
             } else {
-                ToolbarItem {
+                ToolbarItem(placement: .navigation) {
                     VStack(alignment: .leading){
                         Text("Development Environments").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2).fontWeight(.bold)
                         Text("Clean stored files and cache for common IDEs")
@@ -197,7 +197,7 @@ struct EnvironmentCleanerView: View {
 
             ToolbarItem { Spacer() }
 
-            ToolbarItem {
+            ToolbarItemGroup {
                 Menu {
                     ForEach(paths, id: \.self) { environment in
                         Group {
@@ -215,13 +215,11 @@ struct EnvironmentCleanerView: View {
                     Text(appState.selectedEnvironment?.name ?? "Select Environment")
                 }
                 .labelStyle(.titleAndIcon)
-            }
 
-            ToolbarItem {
                 Button {
                     refreshPaths()
                 } label: {
-                    Label("Refresh", systemImage: "arrow.clockwise")
+                    Label("Refresh", systemImage: "arrow.counterclockwise")
                 }
             }
         }

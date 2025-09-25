@@ -19,31 +19,6 @@ struct AboutSettingsTab: View {
 
         VStack(alignment: .center) {
 
-            Button(action: {
-                NSWorkspace.shared.open(URL(string: "https://github.com/sponsors/alienator88")!)
-            }, label: {
-                Label {
-                    Text("Sponsor")
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                        .font(.body)
-                        .bold()
-                } icon: {
-                    Image(systemName: "heart")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 16, height: 16)
-                        .foregroundStyle(.pink)
-                }
-            })
-            .controlSize(.small)
-            .buttonStyle(.plain)
-            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-            .padding(.vertical, 8)
-            .padding(.horizontal, 14)
-            .controlGroup(Capsule(style: .continuous), level: .primary)
-            .padding(.trailing, 5)
-            .frame(maxWidth: .infinity, alignment: .trailing)
-
             VStack(spacing: 10) {
                 Image(nsImage: NSApp.applicationIconImage)
                 Text(Bundle.main.name)
@@ -140,6 +115,28 @@ struct AboutSettingsTab: View {
                 })
             }
 
+        }
+        .toolbar {
+            ToolbarItem { Spacer() }
+            ToolbarItem {
+                Button(action: {
+                    NSWorkspace.shared.open(URL(string: "https://github.com/sponsors/alienator88")!)
+                }, label: {
+                    Label {
+                        Text("Sponsor")
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            .font(.body)
+                            .bold()
+                    } icon: {
+                        Image(systemName: "heart")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 16, height: 16)
+                            .foregroundStyle(.pink)
+                    }
+                    .labelStyle(.titleAndIcon)
+                })
+            }
         }
     }
 

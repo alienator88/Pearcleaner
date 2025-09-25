@@ -159,7 +159,7 @@ struct FilesView: View {
 
             ToolbarItem { Spacer() }
 
-            ToolbarItem {
+            ToolbarItemGroup {
                 Menu {
                     ForEach(SortOptionList.allCases, id: \.self) { sortOption in
                         Button {
@@ -173,9 +173,7 @@ struct FilesView: View {
                     Label(selectedSort.title, systemImage: selectedSort.systemImage)
                 }
                 .labelStyle(.titleAndIcon)
-            }
 
-            ToolbarItem {
                 Button {
                     updateOnMain {
                         appState.appInfo = .empty
@@ -188,9 +186,11 @@ struct FilesView: View {
                             locations: locations)
                     }
                 } label: {
-                    Label("Refresh", systemImage: "arrow.clockwise")
+                    Label("Refresh", systemImage: "arrow.counterclockwise")
                 }
             }
+
+
         }
 
     }
@@ -305,7 +305,7 @@ struct FilesView: View {
             }
 
             // Terminate if oneShotMode is enabled
-            if oneShotMode && !appState.multiMode {
+            if oneShotMode && !appState.multiMode && appState.externalMode {
                 updateOnMain {
                     NSApp.terminate(nil)
                 }

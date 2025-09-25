@@ -29,7 +29,6 @@ struct FolderSettingsTab: View {
             PearGroupBox(header: {
                 HStack(alignment: .center, spacing: 0) {
                     Text("Search these folders for applications").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2)
-                    InfoButton(text: String(localized: "Locations that will be searched for .app files. Click a non-default path to remove it. Default paths can't be removed."))
                         .padding(.leading, 5)
                     Spacer()
                 }
@@ -126,7 +125,6 @@ struct FolderSettingsTab: View {
             PearGroupBox(header: {
                 HStack(spacing: 0) {
                     Text("Exclude these files and folders from orphaned file search").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2)
-                    InfoButton(text: String(localized: "Add files or folders that will be ignored when searching for orphaned files. Click a path to remove it from the list."))
                         .padding(.leading, 5)
                     Spacer()
                 }

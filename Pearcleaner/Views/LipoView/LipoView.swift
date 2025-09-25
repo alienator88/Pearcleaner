@@ -341,7 +341,7 @@ struct LipoView: View {
         .toolbarBackground(.hidden, for: .windowToolbar)
         .toolbar {
             if #available(macOS 26.0, *) {
-                ToolbarItem {
+                ToolbarItem(placement: .navigation) {
                     VStack(alignment: .leading) {
                         Text("Lipo").foregroundStyle(
                             ThemeColors.shared(for: colorScheme).primaryText
@@ -355,7 +355,7 @@ struct LipoView: View {
                 }
                 .sharedBackgroundVisibility(.hidden)
             } else {
-                ToolbarItem {
+                ToolbarItem(placement: .navigation) {
                     VStack(alignment: .leading) {
                         Text("Lipo").foregroundStyle(
                             ThemeColors.shared(for: colorScheme).primaryText

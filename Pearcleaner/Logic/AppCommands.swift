@@ -16,7 +16,6 @@ struct AppCommands: Commands {
     let updater: Updater
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.general.selectedTab") private var selectedTab: CurrentTabView = .general
-    @AppStorage("settings.interface.leftNavigationSidebar") private var leftNavigationSidebar: Bool = true
     @State private var windowController = WindowManager()
 
     init(appState: AppState, locations: Locations, fsm: FolderSettingsManager, updater: Updater) {
@@ -32,13 +31,20 @@ struct AppCommands: Commands {
         CommandGroup(replacing: .appInfo) {
 
             Button {
-                selectedTab = .about
-                openAppSettings()
+//                selectedTab = .about
+                openAppSettingsWindow(tab: .about)
             } label: {
                 Label("About \(Bundle.main.name)", systemImage: "info.circle.fill")
             }
 
             Divider()
+
+            Button {
+                openAppSettingsWindow()
+            } label: {
+                Label("Settings", systemImage: "gearshape")
+            }
+            .keyboardShortcut(",", modifiers: .command)
 
             Button {
                 updater.checkForUpdates(sheet: true, force: true)
@@ -142,14 +148,6 @@ struct AppCommands: Commands {
             } label: {
                 Label("Navigate To", systemImage: "location.north.fill")
             }
-
-            Button
-            {
-                leftNavigationSidebar.toggle()
-            } label: {
-                Label("\(leftNavigationSidebar ? "Hide" : "Show") Sidebar", systemImage: "sidebar.left")
-            }
-            .keyboardShortcut("/", modifiers: .command)
 
         }
 

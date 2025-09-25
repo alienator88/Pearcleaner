@@ -204,7 +204,7 @@ struct PackageView: View {
         .toolbarBackground(.hidden, for: .windowToolbar)
         .toolbar {
             if #available(macOS 26.0, *) {
-                ToolbarItem {
+                ToolbarItem(placement: .navigation) {
                     VStack(alignment: .leading) {
                         Text("Package Manager")
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
@@ -217,7 +217,7 @@ struct PackageView: View {
                 }
                 .sharedBackgroundVisibility(.hidden)
             } else {
-                ToolbarItem {
+                ToolbarItem(placement: .navigation) {
                     VStack(alignment: .leading) {
                         Text("Package Manager")
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
@@ -233,7 +233,7 @@ struct PackageView: View {
 
             ToolbarItem { Spacer() }
 
-            ToolbarItem {
+            ToolbarItemGroup {
                 Menu {
                     ForEach(PackageSortOption.allCases, id: \.self) { option in
                         Button {
@@ -246,16 +246,15 @@ struct PackageView: View {
                     Label(sortOption.displayName, systemImage: "list.bullet")
                 }
                 .labelStyle(.titleAndIcon)
-            }
 
-            ToolbarItem {
                 Button {
                     refreshPackages()
                 } label: {
-                    Label("Refresh", systemImage: isLoading ? "arrow.clockwise" : "arrow.clockwise")
+                    Label("Refresh", systemImage: "arrow.counterclockwise")
                 }
                 .disabled(isLoading)
             }
+
         }
     }
     

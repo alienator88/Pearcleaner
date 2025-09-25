@@ -25,8 +25,6 @@ struct InterfaceSettingsTab: View {
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.interface.multiSelect") private var multiSelect: Bool = false
     @AppStorage("settings.interface.greetingEnabled") private var greetingEnabled: Bool = true
-    @AppStorage("settings.interface.leftNavigationSidebar") private var leftNavigationSidebar: Bool = true
-
 
     @Binding var search: String
 
@@ -140,26 +138,6 @@ struct InterfaceSettingsTab: View {
                         }
                         Spacer()
                         Toggle(isOn: $minimalEnabled, label: {
-                        })
-                        .toggleStyle(SettingsToggle())
-                    }
-                    .padding(5)
-
-
-                    HStack(spacing: 0) {
-                        Image(systemName: leftNavigationSidebar ? "sidebar.left" : "macwindow")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 15, height: 15)
-                            .padding(.trailing)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text(leftNavigationSidebar ? String(localized: "Extra tools sidebar enabled") : String(localized: "Extra tools sidebar disabled"))
-                                .font(.callout)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                        }
-                        Spacer()
-                        Toggle(isOn: $leftNavigationSidebar, label: {
                         })
                         .toggleStyle(SettingsToggle())
                     }

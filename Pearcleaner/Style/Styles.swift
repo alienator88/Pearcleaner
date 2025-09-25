@@ -555,7 +555,6 @@ extension View {
 
 struct ifGlassAvailable: ViewModifier {
     @AppStorage("settings.general.glassEffect") private var glassEffect: String = "Regular"
-    @AppStorage("settings.interface.leftNavigationSidebar") private var leftNavigationSidebar: Bool = true
 
     func body(content: Content) -> some View {
         if #available(macOS 26.0, *) {
@@ -577,7 +576,6 @@ extension View {
 
 struct ifGlassAvailableMain: ViewModifier {
     @AppStorage("settings.general.glassEffect") private var glassEffect: String = "Regular"
-    @AppStorage("settings.interface.leftNavigationSidebar") private var leftNavigationSidebar: Bool = true
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @Environment(\.colorScheme) var colorScheme
 

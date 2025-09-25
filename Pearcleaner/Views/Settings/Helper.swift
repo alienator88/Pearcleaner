@@ -26,36 +26,36 @@ struct HelperSettingsTab: View {
                     HStack {
                         Text("Management").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2)
                         Spacer()
-                        Button(action: {
-                            helperToolManager.openSMSettings()
-                        }) {
-                            Label("Login Items", systemImage: "gear")
-                                .padding(4)
-                        }
-                        .controlSize(.small)
-                        .buttonStyle(.plain)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 14)
-                        .controlGroup(Capsule(style: .continuous), level: .primary)
-                        .padding(.trailing, 5)
-                        .contextMenu {
-                            Button("Restart Service") {
-                                Task {
-                                    let result = performPrivilegedCommands(commands: "launchctl kickstart -k system/com.alienator88.Pearcleaner.PearcleanerHelper")
-
-                                    if !result.0 {
-                                        printOS("Helper Kickstart Error: \(result.1)")
-                                    }
-                                }
-
-                            }
-                            Button("Unregister Service") {
-                                Task {
-                                    await helperToolManager.manageHelperTool(action: .uninstall)
-                                }
-                            }
-                        }
+//                        Button(action: {
+//                            helperToolManager.openSMSettings()
+//                        }) {
+//                            Label("Login Items", systemImage: "gear")
+//                                .padding(4)
+//                        }
+//                        .controlSize(.small)
+//                        .buttonStyle(.plain)
+//                        .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+//                        .padding(.vertical, 8)
+//                        .padding(.horizontal, 14)
+//                        .controlGroup(Capsule(style: .continuous), level: .primary)
+//                        .padding(.trailing, 5)
+//                        .contextMenu {
+//                            Button("Restart Service") {
+//                                Task {
+//                                    let result = performPrivilegedCommands(commands: "launchctl kickstart -k system/com.alienator88.Pearcleaner.PearcleanerHelper")
+//
+//                                    if !result.0 {
+//                                        printOS("Helper Kickstart Error: \(result.1)")
+//                                    }
+//                                }
+//
+//                            }
+//                            Button("Unregister Service") {
+//                                Task {
+//                                    await helperToolManager.manageHelperTool(action: .uninstall)
+//                                }
+//                            }
+//                        }
                     }
 
                 },
@@ -214,6 +214,42 @@ struct HelperSettingsTab: View {
             }
 
 
+        }
+        .toolbar {
+            ToolbarItem { Spacer() }
+            ToolbarItemGroup {
+                Button{
+                    helperToolManager.openSMSettings()
+                } label: {
+                    Label("Login Items", systemImage: "gear")
+                        .labelStyle(.iconOnly)
+                        .help("Login Items")
+                }
+
+                Button {
+                    Task {
+                        let result = performPrivilegedCommands(commands: "launchctl kickstart -k system/com.alienator88.Pearcleaner.PearcleanerHelper")
+
+                        if !result.0 {
+                            printOS("Helper Kickstart Error: \(result.1)")
+                        }
+                    }
+                } label: {
+                    Label("Restart Service", systemImage: "arrow.counterclockwise.circle")
+                        .labelStyle(.iconOnly)
+                        .help("Restart Service")
+                }
+
+                Button {
+                    Task {
+                        await helperToolManager.manageHelperTool(action: .uninstall)
+                    }
+                } label: {
+                    Label("Unregister Service", systemImage: "scissors")
+                        .labelStyle(.iconOnly)
+                        .help("Unregister Service")
+                }
+            }
         }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
             Task {

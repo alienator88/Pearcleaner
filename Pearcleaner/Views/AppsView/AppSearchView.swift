@@ -43,23 +43,6 @@ struct AppSearchView: View {
                 AppsListView(search: $search, filteredApps: filteredApps)
                     .padding([.bottom, .horizontal], 5)
 
-                if updater.updateAvailable {
-                    Divider()
-                    UpdateBadge(updater: updater)
-                        .padding(8)
-                } else if updater.announcementAvailable {
-                    Divider()
-                    FeatureBadge(updater: updater)
-                        .padding(8)
-                } else if let _ = permissionManager.results, !permissionManager.allPermissionsGranted {
-                    Divider()
-                    PermissionsBadge()
-                        .padding(8)
-                } else if HelperToolManager.shared.shouldShowHelperBadge {
-                    Divider()
-                    HelperBadge()
-                        .padding(8)
-                }
             }
         }
 

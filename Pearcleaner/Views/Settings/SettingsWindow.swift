@@ -21,15 +21,18 @@ struct SettingsView: View {
 
     var body: some View {
 
-        NavigationStack {
-            HStack(spacing: 0) {
-                sidebarView
-                Divider().edgesIgnoringSafeArea(.top)
-                detailView
-            }
+        HStack(spacing: 0) {
+            sidebarView
+                .padding(8)
+            detailView
+                .padding(.top)
         }
-        .navigationTitle(Text(verbatim: ""))
-        .frame(width: 800, height: 720)
+        .ignoresSafeArea(edges: .top)
+        .background(backgroundView(color: ThemeColors.shared(for: colorScheme).primaryBG))
+        .toolbarBackground(.hidden, for: .windowToolbar)
+        .toolbar {
+            ToolbarItem { Spacer() }
+        }
     }
 
 
@@ -38,7 +41,7 @@ struct SettingsView: View {
     private var sidebarView: some View {
         VStack(alignment: .center, spacing: 4) {
 
-            Spacer().frame(height: 10)
+            Spacer().frame(height: 35)
 
             VStack(alignment: .leading, spacing: 0) {
                 SidebarItemView(title: CurrentTabView.general.title, systemImage: "gear", isSelected: selectedTab == .general) {
@@ -99,7 +102,7 @@ struct SettingsView: View {
         .padding(.bottom)
         .padding(.horizontal)
         .frame(width: 180)
-        .background(theme(for: colorScheme).secondaryBG)
+        .ifGlassMain()
     }
 
     /// Detail view content based on the selected tab
@@ -127,8 +130,6 @@ struct SettingsView: View {
         .scrollIndicators(scrollIndicators ? .automatic : .never)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding()
-        .offset(y: -22)
-        .background(backgroundView(color: ThemeColors.shared(for: colorScheme).primaryBG))
 
     }
 

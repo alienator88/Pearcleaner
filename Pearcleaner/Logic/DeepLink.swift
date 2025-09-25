@@ -15,7 +15,6 @@ class DeeplinkManager {
     let updater: Updater
     let fsm: FolderSettingsManager
     @AppStorage("settings.general.oneshot") private var oneShotMode: Bool = false
-    @AppStorage("settings.general.selectedTab") private var selectedTab: CurrentTabView = .general
     @State private var windowController = WindowManager()
 
     init(updater: Updater, fsm: FolderSettingsManager) {
@@ -212,14 +211,12 @@ class DeeplinkManager {
             appState.currentPage = .applications
             break
         case DeepLinkActions.openSettings:
-            openAppSettings()
+
             if let page = queryItems.first(where: { $0.name == "name" })?.value {
                 let search = page.lowercased()
                 let allPages = CurrentTabView.allCases
                 if let matchedPage = allPages.first(where: { $0.title.lowercased().contains(search) }) {
-                    updateOnMain() {
-                        self.selectedTab = matchedPage
-                    }
+                    openAppSettingsWindow(tab: matchedPage)
                 }
             }
             break

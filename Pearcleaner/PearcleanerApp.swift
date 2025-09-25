@@ -55,7 +55,6 @@ struct PearcleanerApp: App {
 
         WindowGroup {
             MainWindow(search: $search)
-//                .toolbar { ToolbarItem {Spacer()} }
                 .environmentObject(appState)
                 .environmentObject(locations)
                 .environmentObject(fsm)
@@ -112,17 +111,20 @@ struct PearcleanerApp: App {
             AppCommands(appState: appState, locations: locations, fsm: fsm, updater: updater)
         }
 
-
-        Settings {
+        
+        Window("Settings", id: "settings") {
                 SettingsView(search: $search)
                     .environmentObject(appState)
                     .environmentObject(locations)
                     .environmentObject(fsm)
                     .environmentObject(updater)
                     .environmentObject(permissionManager)
-                    .toolbarBackground(.clear)
                     .movableByWindowBackground()
+                    .frame(width: 800, height: 720)
         }
+        .windowStyle(.hiddenTitleBar)
+        .windowToolbarStyle(.unified)
+        .windowResizability(.contentSize)
 
     }
 }
@@ -145,6 +147,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     func applicationWillTerminate(_ notification: Notification) {
 
+    }
+
+    func applicationShouldRestoreApplicationState(_ app: NSApplication) -> Bool {
+        return false
     }
 
 

@@ -339,6 +339,15 @@ func openAppSettings() {
 }
 
 
+func openAppSettingsWindow(tab: CurrentTabView = .general) {
+    @Environment(\.openWindow) var openWindow
+    @AppStorage("settings.general.selectedTab") var selectedTab: CurrentTabView = .general
+
+    selectedTab = tab
+    openWindow(id: "settings")
+}
+
+
 // Check if file/folder name has localized variant
 func showLocalized(url: URL) -> String {
     guard FileManager.default.fileExists(atPath: url.path) else {

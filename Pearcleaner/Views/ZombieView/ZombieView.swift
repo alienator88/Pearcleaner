@@ -221,7 +221,7 @@ struct ZombieView: View {
         .toolbarBackground(.hidden, for: .windowToolbar)
         .toolbar {
             if #available(macOS 26.0, *) {
-                ToolbarItem {
+                ToolbarItem(placement: .navigation) {
                     VStack(alignment: .leading){
                         Text("Orphaned Files").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2).fontWeight(.bold)
                         Text("Remaining files and folders from previous applications")
@@ -230,7 +230,7 @@ struct ZombieView: View {
                 }
                 .sharedBackgroundVisibility(.hidden)
             } else {
-                ToolbarItem {
+                ToolbarItem(placement: .navigation) {
                     VStack(alignment: .leading){
                         Text("Orphaned Files").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2).fontWeight(.bold)
                         Text("Remaining files and folders from previous applications")
@@ -242,7 +242,7 @@ struct ZombieView: View {
 
             ToolbarItem { Spacer() }
 
-            ToolbarItem {
+            ToolbarItemGroup {
                 Menu {
                     ForEach(SortOptionList.allCases, id: \.self) { sortOption in
                         Button {
@@ -256,9 +256,7 @@ struct ZombieView: View {
                     Label(selectedSort.title, systemImage: selectedSort.systemImage)
                 }
                 .labelStyle(.titleAndIcon)
-            }
 
-            ToolbarItem {
                 Button {
                     updateOnMain {
                         appState.zombieFile = .empty
@@ -266,9 +264,10 @@ struct ZombieView: View {
                         reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, fsm: fsm)
                     }
                 } label: {
-                    Label("Refresh", systemImage: "arrow.clockwise")
+                    Label("Refresh", systemImage: "arrow.counterclockwise")
                 }
             }
+
         }
 
     }
