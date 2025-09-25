@@ -5,9 +5,9 @@
 //  Created by Alin Lupascu on 4/26/24.
 //
 
-import SwiftUI
 import AlinFoundation
 import Ifrit
+import SwiftUI
 
 struct AppSearchView: View {
     @EnvironmentObject var appState: AppState
@@ -16,11 +16,13 @@ struct AppSearchView: View {
     @EnvironmentObject var updater: Updater
     @EnvironmentObject var permissionManager: PermissionManager
     @Environment(\.colorScheme) var colorScheme
-    var glass: Bool
     @Binding var search: String
-    @AppStorage("settings.general.selectedSortAppsList") var selectedSortOption: SortOption = .alphabetical
+    @AppStorage("settings.general.selectedSortAppsList") var selectedSortOption: SortOption =
+        .alphabetical
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.interface.multiSelect") private var multiSelect: Bool = false
+    @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 265
+    @State private var dimensionStart: Double?
 
     var body: some View {
 
@@ -39,15 +41,56 @@ struct AppSearchView: View {
                     .padding()
                     .padding(.top, 20)
 
-
                 AppsListView(search: $search, filteredApps: filteredApps)
                     .padding([.bottom, .horizontal], 5)
 
             }
         }
+        .overlay(alignment: .trailing) {
+            // Invisible resize handle on the trailing edge
+            Rectangle()
+                .fill(Color.clear)
+                .frame(width: 10)
+                .contentShape(Rectangle())
+                .offset(x: 5)  // Center on the edge
+                .onHover { inside in
+                    if inside {
+                        NSCursor.resizeLeftRight.push()
+                    } else {
+                        NSCursor.pop()
+                    }
+                }
+                .contextMenu {
+                    Button("Reset Size") {
+                        sidebarWidth = 265
+                    }
+                }
+                .gesture(sidebarDragGesture)
+                .help("Right click to reset size")
+        }
 
     }
 
+    private var sidebarDragGesture: some Gesture {
+        DragGesture(minimumDistance: 5, coordinateSpace: .global)
+            .onChanged { val in
+                if dimensionStart == nil {
+                    dimensionStart = sidebarWidth
+                }
+                let delta = val.location.x - val.startLocation.x
+                let newDimension = dimensionStart! + Double(delta)
+
+                // Set minimum and maximum width
+                let minWidth: Double = 240
+                let maxWidth: Double = 300
+                sidebarWidth = max(minWidth, min(maxWidth, newDimension))
+                NSCursor.closedHand.set()
+            }
+            .onEnded { val in
+                dimensionStart = nil
+                NSCursor.arrow.set()
+            }
+    }
 
     private var filteredApps: [AppInfo] {
         let apps: [AppInfo]
@@ -60,7 +103,7 @@ struct AppSearchView: View {
                     return true
                 }
                 let result = fuse.searchSync(search, in: app.appName)
-                return result?.score ?? 1.0 < 0.4 // Adjust threshold as needed (lower = stricter)
+                return result?.score ?? 1.0 < 0.4  // Adjust threshold as needed (lower = stricter)
             }
         }
 
@@ -68,22 +111,29 @@ struct AppSearchView: View {
         switch selectedSortOption {
         case .alphabetical:
             return apps.sorted {
-                $0.appName.replacingOccurrences(of: ".", with: "").lowercased() < $1.appName.replacingOccurrences(of: ".", with: "").lowercased()
+                $0.appName.replacingOccurrences(of: ".", with: "").lowercased()
+                    < $1.appName.replacingOccurrences(of: ".", with: "").lowercased()
             }
         case .size:
             return apps.sorted { $0.bundleSize > $1.bundleSize }
         case .creationDate:
-            return apps.sorted { ($0.creationDate ?? Date.distantPast) > ($1.creationDate ?? Date.distantPast) }
+            return apps.sorted {
+                ($0.creationDate ?? Date.distantPast) > ($1.creationDate ?? Date.distantPast)
+            }
         case .contentChangeDate:
-            return apps.sorted { ($0.contentChangeDate ?? Date.distantPast) > ($1.contentChangeDate ?? Date.distantPast) }
+            return apps.sorted {
+                ($0.contentChangeDate ?? Date.distantPast)
+                    > ($1.contentChangeDate ?? Date.distantPast)
+            }
         case .lastUsedDate:
-            return apps.sorted { ($0.lastUsedDate ?? Date.distantPast) > ($1.lastUsedDate ?? Date.distantPast) }
+            return apps.sorted {
+                ($0.lastUsedDate ?? Date.distantPast) > ($1.lastUsedDate ?? Date.distantPast)
+            }
         }
 
     }
 
 }
-
 
 struct SimpleSearchStyle: TextFieldStyle {
     @Environment(\.colorScheme) var colorScheme
@@ -104,9 +154,13 @@ struct SimpleSearchStyle: TextFieldStyle {
                 if text.isEmpty {
                     HStack {
                         Spacer()
-                        Text(isFocused ? String(localized: "Type to search") : String(localized: "Hover to search"))
-                            .font(.subheadline)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        Text(
+                            isFocused
+                                ? String(localized: "Type to search")
+                                : String(localized: "Hover to search")
+                        )
+                        .font(.subheadline)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                         Spacer()
                     }
                 }
@@ -120,8 +174,13 @@ struct SimpleSearchStyle: TextFieldStyle {
                     if trash && text != "" {
                         Button {
                             text = ""
-                        } label: { EmptyView() }
-                            .buttonStyle(SimpleButtonStyle(icon: "delete.left.fill", help: String(localized: "Clear text"), size: 16, padding: 0))
+                        } label: {
+                            EmptyView()
+                        }
+                        .buttonStyle(
+                            SimpleButtonStyle(
+                                icon: "delete.left.fill", help: String(localized: "Clear text"),
+                                size: 16, padding: 0))
                     }
                 }
 
@@ -144,7 +203,6 @@ struct SimpleSearchStyle: TextFieldStyle {
     }
 }
 
-
 struct SimpleSearchStyleSidebar: TextFieldStyle {
     @Environment(\.colorScheme) var colorScheme
     @State private var isHovered = false
@@ -154,7 +212,8 @@ struct SimpleSearchStyleSidebar: TextFieldStyle {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var fsm: FolderSettingsManager
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
-    @AppStorage("settings.general.selectedSortAppsList") var selectedSortOption: SortOption = .alphabetical
+    @AppStorage("settings.general.selectedSortAppsList") var selectedSortOption: SortOption =
+        .alphabetical
     @AppStorage("settings.interface.multiSelect") private var multiSelect: Bool = false
 
     func _body(configuration: TextField<Self._Label>) -> some View {
@@ -179,12 +238,16 @@ struct SimpleSearchStyleSidebar: TextFieldStyle {
                 Section(header: Text("Sorting")) {
                     ForEach(SortOption.allCases) { option in
                         Button {
-                            withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                            withAnimation(
+                                Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)
+                            ) {
                                 selectedSortOption = option
                             }
                         } label: {
                             HStack {
-                                Image(systemName: selectedSortOption == option ? "circle.inset.filled" : "circle")
+                                Image(
+                                    systemName: selectedSortOption == option
+                                        ? "circle.inset.filled" : "circle")
                                 Text(option.title)
                             }
                         }
@@ -237,11 +300,10 @@ struct SimpleSearchStyleSidebar: TextFieldStyle {
 extension NSTextView {
     open override var frame: CGRect {
         didSet {
-            insertionPointColor = NSColor(.primary.opacity(0.2))//.clear
+            insertionPointColor = NSColor(.primary.opacity(0.2))  //.clear
         }
     }
 }
-
 
 struct SearchBarSidebar: View {
     @Binding var search: String

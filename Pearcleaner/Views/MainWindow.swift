@@ -5,10 +5,10 @@
 //  Created by Alin Lupascu on 11/5/23.
 //
 
-import Foundation
-import SwiftUI
 import AlinFoundation
 import FinderSync
+import Foundation
+import SwiftUI
 
 struct MainWindow: View {
     @ObservedObject private var themeManager = ThemeManager.shared
@@ -38,7 +38,7 @@ struct MainWindow: View {
     var body: some View {
 
         // Main App Window
-        ZStack() {
+        ZStack {
 
             HStack(alignment: .center, spacing: 0) {
 
@@ -68,10 +68,14 @@ struct MainWindow: View {
         }
         .background(backgroundView(color: ThemeColors.shared(for: colorScheme).primaryBG))
         .frame(minWidth: appState.currentPage == .orphans ? 700 : 900, minHeight: 600)
-        .onReceive(NotificationCenter.default.publisher(for: NSWindow.didEnterFullScreenNotification)) { _ in
+        .onReceive(
+            NotificationCenter.default.publisher(for: NSWindow.didEnterFullScreenNotification)
+        ) { _ in
             isFullscreen = true
         }
-        .onReceive(NotificationCenter.default.publisher(for: NSWindow.didExitFullScreenNotification)) { _ in
+        .onReceive(
+            NotificationCenter.default.publisher(for: NSWindow.didExitFullScreenNotification)
+        ) { _ in
             isFullscreen = false
         }
         .toolbar {
@@ -129,7 +133,8 @@ struct MainWindow: View {
                     .sheet(isPresented: $showFeatureView) {
                         updater.getAnnouncementView()
                     }
-                } else if let _ = permissionManager.results, !permissionManager.allPermissionsGranted {
+                } else if permissionManager.results != nil, !permissionManager.allPermissionsGranted
+                {
                     noticeButton(
                         image: "lock.slash",
                         color: .red,
@@ -150,14 +155,15 @@ struct MainWindow: View {
                     }
                 }
 
-
             }
 
         }
     }
 
     @ViewBuilder
-    private func noticeButton(image: String, color: Color, help: String, action: @escaping () -> Void) -> some View {
+    private func noticeButton(
+        image: String, color: Color, help: String, action: @escaping () -> Void
+    ) -> some View {
         Button(action: action) {
             VStack(spacing: 4) {
                 Image(systemName: image)
@@ -180,16 +186,12 @@ struct MainWindow: View {
         HStack(alignment: .center, spacing: 0) {
 
             // App List
-            AppSearchView(glass: glass, search: $search)
+            AppSearchView(search: $search)
                 .frame(width: sidebarWidth)
                 .transition(.opacity)
                 .ifGlassMain()
                 .padding(8)
                 .ignoresSafeArea(edges: .top)
-
-
-            SlideableDivider(dimension: $sidebarWidth, color: .clear)
-                .zIndex(3)
 
             // Details View
             HStack(spacing: 0) {
@@ -218,9 +220,6 @@ struct MainWindow: View {
 
 }
 
-
-
-
 struct MountedVolumeView: View {
     @AppStorage("settings.interface.greetingEnabled") private var greetingEnabled: Bool = true
     @Environment(\.colorScheme) var colorScheme
@@ -230,29 +229,29 @@ struct MountedVolumeView: View {
     @State private var selectedVolumeIndex: Int = 0
 
     #if DEBUG
-    // Debug sliders
-    @State private var perspectiveValue: Double = 0.7
-    @State private var rotationValue: Double = 35.0
-    @State private var spacingValue: Double = 100.0
-    @State private var scaleValue: Double = 0.95
-    @State private var minOpacity: Double = 0.5
-    @State private var opacityFade: Double = 0.5
-    @State private var debugMode: Bool = false
+        // Debug sliders
+        @State private var perspectiveValue: Double = 0.7
+        @State private var rotationValue: Double = 35.0
+        @State private var spacingValue: Double = 100.0
+        @State private var scaleValue: Double = 0.95
+        @State private var minOpacity: Double = 0.5
+        @State private var opacityFade: Double = 0.5
+        @State private var debugMode: Bool = false
     #endif
-    
+
     var body: some View {
         ZStack(alignment: .center) {
             VStack {
-//                HStack {
-//                    Spacer()
-//
-//                    if greetingEnabled, let username = NSFullUserName().components(separatedBy: " ").first {
-//                        Text("Welcome, \(username)!")
-//                            .font(.largeTitle)
-//                            .fontWeight(.semibold)
-//                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-//                    }
-//                }
+                //                HStack {
+                //                    Spacer()
+                //
+                //                    if greetingEnabled, let username = NSFullUserName().components(separatedBy: " ").first {
+                //                        Text("Welcome, \(username)!")
+                //                            .font(.largeTitle)
+                //                            .fontWeight(.semibold)
+                //                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                //                    }
+                //                }
                 Spacer()
 
                 Text("Select an app from the sidebar to begin")
@@ -261,24 +260,27 @@ struct MountedVolumeView: View {
             }
             .onTapGesture(count: 3) {
                 // Triple-tap to toggle debug mode
-//                debugMode.toggle()
+                //                debugMode.toggle()
             }
             if !appState.volumeInfos.isEmpty {
                 ZStack {
-                    ForEach(Array(appState.volumeInfos.enumerated()), id: \.element.id) { index, volume in
+                    ForEach(Array(appState.volumeInfos.enumerated()), id: \.element.id) {
+                        index, volume in
                         let offset = index - selectedVolumeIndex
-                        
+
                         // Only show tiles within 1 position of center
                         if abs(offset) <= 1 {
                             let isCenter = offset == 0
                             let scale = isCenter ? 1.0 : scaleValue
                             let opacity = isCenter ? 1.0 : minOpacity
                             let yOffset = Double(offset) * spacingValue
-                            
+
                             // 3D perspective skew - adjustable
-                            let perspective = isCenter ? 0.0 : (offset > 0 ? -perspectiveValue : perspectiveValue)
-                            let rotationX = isCenter ? 0.0 : (offset > 0 ? rotationValue : rotationValue)
-                            
+                            let perspective =
+                                isCenter ? 0.0 : (offset > 0 ? -perspectiveValue : perspectiveValue)
+                            let rotationX =
+                                isCenter ? 0.0 : (offset > 0 ? rotationValue : rotationValue)
+
                             VolumeItemView(volume: volume, isCenter: isCenter, onEject: ejectVolume)
                                 .scaleEffect(scale)
                                 .opacity(opacity)
@@ -288,14 +290,22 @@ struct MountedVolumeView: View {
                                     axis: (x: 1, y: 0, z: 0),
                                     perspective: perspective
                                 )
-                                .shadow(color: isCenter ? .black.opacity(0.3) : .clear, radius: isCenter ? 10 : 0, x: 0, y: isCenter ? 5 : 0)
+                                .shadow(
+                                    color: isCenter ? .black.opacity(0.3) : .clear,
+                                    radius: isCenter ? 10 : 0, x: 0, y: isCenter ? 5 : 0
+                                )
                                 .zIndex(isCenter ? 10 : Double(10 - abs(offset)))
                                 .onTapGesture {
-                                    withAnimation(Animation.spring(response: 0.4, dampingFraction: 0.6)) {
+                                    withAnimation(
+                                        Animation.spring(response: 0.4, dampingFraction: 0.6)
+                                    ) {
                                         selectedVolumeIndex = index
                                     }
                                 }
-                                .animation(animationEnabled ? .spring(response: 0.4, dampingFraction: 0.6) : .linear(duration: 0), value: selectedVolumeIndex)
+                                .animation(
+                                    animationEnabled
+                                        ? .spring(response: 0.4, dampingFraction: 0.6)
+                                        : .linear(duration: 0), value: selectedVolumeIndex)
                         }
                     }
                 }
@@ -304,52 +314,51 @@ struct MountedVolumeView: View {
                     .controlSize(.small)
             }
 
-            
             // Debug controls at bottom (only show if debug mode enabled)
             #if DEBUG
-            if debugMode {
-                VStack {
-                    Spacer()
-                    VStack(spacing: 10) {
-                        HStack {
-                            Text("Perspective:")
-                            Slider(value: $perspectiveValue, in: 0.0...1.0, step: 0.1)
-                            Text(String(format: "%.1f", perspectiveValue))
+                if debugMode {
+                    VStack {
+                        Spacer()
+                        VStack(spacing: 10) {
+                            HStack {
+                                Text("Perspective:")
+                                Slider(value: $perspectiveValue, in: 0.0...1.0, step: 0.1)
+                                Text(String(format: "%.1f", perspectiveValue))
+                            }
+                            HStack {
+                                Text("Rotation:")
+                                Slider(value: $rotationValue, in: 0.0...45.0, step: 1.0)
+                                Text(String(format: "%.0f°", rotationValue))
+                            }
+                            HStack {
+                                Text("Spacing:")
+                                Slider(value: $spacingValue, in: 30.0...120.0, step: 5.0)
+                                Text(String(format: "%.0f", spacingValue))
+                            }
+                            HStack {
+                                Text("Scale:")
+                                Slider(value: $scaleValue, in: 0.3...1.0, step: 0.05)
+                                Text(String(format: "%.2f", scaleValue))
+                            }
+                            HStack {
+                                Text("Min Opacity:")
+                                Slider(value: $minOpacity, in: 0.1...0.9, step: 0.05)
+                                Text(String(format: "%.2f", minOpacity))
+                            }
+                            Button("Toggle Debug") {
+                                debugMode = false
+                            }
                         }
-                        HStack {
-                            Text("Rotation:")
-                            Slider(value: $rotationValue, in: 0.0...45.0, step: 1.0)
-                            Text(String(format: "%.0f°", rotationValue))
-                        }
-                        HStack {
-                            Text("Spacing:")
-                            Slider(value: $spacingValue, in: 30.0...120.0, step: 5.0)
-                            Text(String(format: "%.0f", spacingValue))
-                        }
-                        HStack {
-                            Text("Scale:")
-                            Slider(value: $scaleValue, in: 0.3...1.0, step: 0.05)
-                            Text(String(format: "%.2f", scaleValue))
-                        }
-                        HStack {
-                            Text("Min Opacity:")
-                            Slider(value: $minOpacity, in: 0.1...0.9, step: 0.05)
-                            Text(String(format: "%.2f", minOpacity))
-                        }
-                        Button("Toggle Debug") {
-                            debugMode = false
-                        }
+                        .padding()
+                        .background(ThemeColors.shared(for: colorScheme).secondaryBG)
+                        .cornerRadius(8)
+                        .frame(maxWidth: 400)
                     }
-                    .padding()
-                    .background(ThemeColors.shared(for: colorScheme).secondaryBG)
-                    .cornerRadius(8)
-                    .frame(maxWidth: 400)
                 }
-            }
             #endif
         }
         .padding()
-//        .ignoresSafeArea(edges: .top)
+        //        .ignoresSafeArea(edges: .top)
         .onAppear {
             // Start with root volume (index 0) selected
             selectedVolumeIndex = 0
@@ -358,7 +367,6 @@ struct MountedVolumeView: View {
         .toolbar {
 
             ToolbarItem { Spacer() }
-
 
             if greetingEnabled, let username = NSFullUserName().components(separatedBy: " ").first {
                 TahoeToolbarItem {
@@ -371,11 +379,11 @@ struct MountedVolumeView: View {
             }
         }
     }
-    
+
     private func ejectVolume(_ volume: VolumeInfo) {
         let workspace = NSWorkspace.shared
         let success = workspace.unmountAndEjectDevice(atPath: volume.path)
-        
+
         if !success {
             print("Failed to eject volume: \(volume.name)")
         } else {
@@ -383,7 +391,7 @@ struct MountedVolumeView: View {
             if let currentIndex = appState.volumeInfos.firstIndex(where: { $0.id == volume.id }) {
                 // Refresh volume list after successful ejection
                 appState.loadVolumeInfo()
-                
+
                 // Adjust selected index after volume removal
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     let newCount = appState.volumeInfos.count
@@ -411,7 +419,6 @@ struct VolumeItemView: View {
     @State private var isHovered: Bool = false
     @State private var isHoveredName: Bool = false
 
-
     var body: some View {
         VStack(alignment: .center, spacing: 20) {
             HStack(alignment: .center) {
@@ -430,7 +437,11 @@ struct VolumeItemView: View {
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                                 .underline(isHoveredName)
                                 .onTapGesture {
-                                    NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.settings.Storage")!)
+                                    NSWorkspace.shared.open(
+                                        URL(
+                                            string:
+                                                "x-apple.systempreferences:com.apple.settings.Storage"
+                                        )!)
                                 }
                                 .onHover(perform: { isHovered in
                                     self.isHoveredName = isHovered
@@ -442,7 +453,8 @@ struct VolumeItemView: View {
                                 }) {
                                     Image(systemName: "eject")
                                         .font(.title3)
-                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                        .foregroundStyle(
+                                            ThemeColors.shared(for: colorScheme).secondaryText)
                                 }
                                 .buttonStyle(PlainButtonStyle())
                             }
@@ -466,28 +478,43 @@ struct VolumeItemView: View {
                             .font(.subheadline)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                     }
-                    
+
                     HStack {
                         Text("Available:")
                             .font(.caption)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        Text(ByteCountFormatter.string(fromByteCount: volume.realAvailableSpace, countStyle: .file))
-                            .font(.subheadline)
-                            .foregroundStyle(hoverAvailable ? Color.green : ThemeColors.shared(for: colorScheme).primaryText)
-                            .animation(.easeInOut(duration: 0.2), value: hoverAvailable)
+                        Text(
+                            ByteCountFormatter.string(
+                                fromByteCount: volume.realAvailableSpace, countStyle: .file)
+                        )
+                        .font(.subheadline)
+                        .foregroundStyle(
+                            hoverAvailable
+                                ? Color.green : ThemeColors.shared(for: colorScheme).primaryText
+                        )
+                        .animation(.easeInOut(duration: 0.2), value: hoverAvailable)
                     }
-                    
+
                     if volume.purgeableSpace > 0 {
                         HStack {
                             Text("Purgeable:")
                                 .font(.caption)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                            Text(ByteCountFormatter.string(fromByteCount: volume.purgeableSpace, countStyle: .file))
-                                .font(.subheadline)
-                                .foregroundStyle(hoverPurgeable ? ThemeColors.shared(for: colorScheme).accent : ThemeColors.shared(for: colorScheme).primaryText)
-                                .animation(.easeInOut(duration: 0.2), value: hoverPurgeable)
+                            Text(
+                                ByteCountFormatter.string(
+                                    fromByteCount: volume.purgeableSpace, countStyle: .file)
+                            )
+                            .font(.subheadline)
+                            .foregroundStyle(
+                                hoverPurgeable
+                                    ? ThemeColors.shared(for: colorScheme).accent
+                                    : ThemeColors.shared(for: colorScheme).primaryText
+                            )
+                            .animation(.easeInOut(duration: 0.2), value: hoverPurgeable)
                         }
-                        .help("Purgeable space refers to the System Data taken up by macOS. This cannot be manually freed and is automatically managed by your system.")
+                        .help(
+                            "Purgeable space refers to the System Data taken up by macOS. This cannot be manually freed and is automatically managed by your system."
+                        )
                     }
                 }
             }
@@ -495,51 +522,76 @@ struct VolumeItemView: View {
             HStack(alignment: .center) {
                 Text(ByteCountFormatter.string(fromByteCount: volume.usedSpace, countStyle: .file))
                     .font(.caption)
-                    .foregroundStyle(hoverUsed ? ThemeColors.shared(for: colorScheme).accent : ThemeColors.shared(for: colorScheme).secondaryText)
+                    .foregroundStyle(
+                        hoverUsed
+                            ? ThemeColors.shared(for: colorScheme).accent
+                            : ThemeColors.shared(for: colorScheme).secondaryText
+                    )
                     .offset(y: -1)
 
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
                         RoundedRectangle(cornerRadius: 5)
                             .fill(ThemeColors.shared(for: colorScheme).primaryBG)
-                        
+
                         RoundedRectangle(cornerRadius: 5)
                             .fill(ThemeColors.shared(for: colorScheme).accent)
                             .brightness(-0.3)
                             .saturation(0.5)
                             .padding(3)
-                            .frame(width: geo.size.width * CGFloat(purgeableSize) / CGFloat(volume.totalSpace))
-                            .animation(animationEnabled && !volume.hasAnimated ? .spring(response: 0.7, dampingFraction: 0.6, blendDuration: 0) : .linear(duration: 0), value: purgeableSize)
-                            .help("Purgeable space refers to the System Data taken up by macOS. This cannot be manually freed and is automatically managed by your system.")
+                            .frame(
+                                width: geo.size.width * CGFloat(purgeableSize)
+                                    / CGFloat(volume.totalSpace)
+                            )
+                            .animation(
+                                animationEnabled && !volume.hasAnimated
+                                    ? .spring(response: 0.7, dampingFraction: 0.6, blendDuration: 0)
+                                    : .linear(duration: 0), value: purgeableSize
+                            )
+                            .help(
+                                "Purgeable space refers to the System Data taken up by macOS. This cannot be manually freed and is automatically managed by your system."
+                            )
 
                         RoundedRectangle(cornerRadius: 5)
                             .fill(ThemeColors.shared(for: colorScheme).accent)
                             .padding(3)
-                            .frame(width: geo.size.width * CGFloat(usedSize) / CGFloat(volume.totalSpace))
-                            .animation(animationEnabled && !volume.hasAnimated ? .spring(response: 0.7, dampingFraction: 0.6, blendDuration: 0) : .linear(duration: 0), value: usedSize)
-                        
+                            .frame(
+                                width: geo.size.width * CGFloat(usedSize)
+                                    / CGFloat(volume.totalSpace)
+                            )
+                            .animation(
+                                animationEnabled && !volume.hasAnimated
+                                    ? .spring(response: 0.7, dampingFraction: 0.6, blendDuration: 0)
+                                    : .linear(duration: 0), value: usedSize)
+
                         HStack(spacing: 0) {
                             Rectangle()
                                 .fill(Color.clear)
-                                .frame(width: geo.size.width * CGFloat(volume.usedSpace) / CGFloat(volume.totalSpace), height: 10)
+                                .frame(
+                                    width: geo.size.width * CGFloat(volume.usedSpace)
+                                        / CGFloat(volume.totalSpace), height: 10
+                                )
                                 .onHover { hovering in
                                     hoverUsed = hovering
                                 }
-                            
+
                             Rectangle()
                                 .fill(Color.clear)
-                                .frame(width: geo.size.width * CGFloat(volume.purgeableSpace) / CGFloat(volume.totalSpace), height: 10)
+                                .frame(
+                                    width: geo.size.width * CGFloat(volume.purgeableSpace)
+                                        / CGFloat(volume.totalSpace), height: 10
+                                )
                                 .onHover { hovering in
                                     hoverPurgeable = hovering
                                 }
-                            
+
                             Rectangle()
                                 .fill(Color.clear)
                                 .frame(height: 10)
                                 .onHover { hovering in
                                     hoverAvailable = hovering
                                 }
-                            
+
                             Spacer()
                         }
                     }
@@ -593,16 +645,16 @@ struct VolumeItemView: View {
             }
         }
     }
-    
+
     private func startVolumeAnimation() {
         purgeableSize = 0
         usedSize = 0
-        
+
         if animationEnabled {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self.purgeableSize = volume.usedSpace + volume.purgeableSpace
             }
-            
+
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.usedSize = volume.usedSpace
                 self.markVolumeAsAnimated()
@@ -613,11 +665,11 @@ struct VolumeItemView: View {
             self.markVolumeAsAnimated()
         }
     }
-    
+
     private func markVolumeAsAnimated() {
         if let index = appState.volumeInfos.firstIndex(where: { $0.id == volume.id }) {
             appState.volumeInfos[index].hasAnimated = true
         }
     }
-    
+
 }
