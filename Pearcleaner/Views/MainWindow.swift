@@ -261,17 +261,14 @@ struct MountedVolumeView: View {
     @AppStorage("settings.tutorial.dragToExpandShown") private var dragTutorialShown: Bool = true
     @State private var selectedVolumeIndex: Int = 0
 
-#if DEBUG
         // Debug sliders
-        @State private var perspectiveValue: Double = 0.7
-        @State private var rotationValue: Double = 35.0
-        @State private var spacingValue: Double = 100.0
-        @State private var scaleValue: Double = 0.95
-        @State private var minOpacity: Double = 0.5
-        @State private var opacityFade: Double = 0.5
-        @State private var debugMode: Bool = false
-    #endif
-    @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 265
+    @State private var perspectiveValue: Double = 0.7
+    @State private var rotationValue: Double = 35.0
+    @State private var spacingValue: Double = 100.0
+    @State private var scaleValue: Double = 0.95
+    @State private var minOpacity: Double = 0.5
+    @State private var opacityFade: Double = 0.5
+//    @State private var debugMode: Bool = false
 
     var body: some View {
         ZStack(alignment: .center) {
@@ -279,7 +276,6 @@ struct MountedVolumeView: View {
 
                 if greetingEnabled {
                     ProfileMenuView()
-                    Text("Sidebar Width: \(sidebarWidth)")
                 }
 
                 Spacer()
@@ -373,47 +369,45 @@ struct MountedVolumeView: View {
             }
 
             // Debug controls at bottom (only show if debug mode enabled)
-            #if DEBUG
-                if debugMode {
-                    VStack {
-                        Spacer()
-                        VStack(spacing: 10) {
-                            HStack {
-                                Text("Perspective:")
-                                Slider(value: $perspectiveValue, in: 0.0...1.0, step: 0.1)
-                                Text(String(format: "%.1f", perspectiveValue))
-                            }
-                            HStack {
-                                Text("Rotation:")
-                                Slider(value: $rotationValue, in: 0.0...45.0, step: 1.0)
-                                Text(String(format: "%.0f°", rotationValue))
-                            }
-                            HStack {
-                                Text("Spacing:")
-                                Slider(value: $spacingValue, in: 30.0...120.0, step: 5.0)
-                                Text(String(format: "%.0f", spacingValue))
-                            }
-                            HStack {
-                                Text("Scale:")
-                                Slider(value: $scaleValue, in: 0.3...1.0, step: 0.05)
-                                Text(String(format: "%.2f", scaleValue))
-                            }
-                            HStack {
-                                Text("Min Opacity:")
-                                Slider(value: $minOpacity, in: 0.1...0.9, step: 0.05)
-                                Text(String(format: "%.2f", minOpacity))
-                            }
-                            Button("Toggle Debug") {
-                                debugMode = false
-                            }
-                        }
-                        .padding()
-                        .background(ThemeColors.shared(for: colorScheme).secondaryBG)
-                        .cornerRadius(8)
-                        .frame(maxWidth: 400)
-                    }
-                }
-            #endif
+//                if debugMode {
+//                    VStack {
+//                        Spacer()
+//                        VStack(spacing: 10) {
+//                            HStack {
+//                                Text("Perspective:")
+//                                Slider(value: $perspectiveValue, in: 0.0...1.0, step: 0.1)
+//                                Text(String(format: "%.1f", perspectiveValue))
+//                            }
+//                            HStack {
+//                                Text("Rotation:")
+//                                Slider(value: $rotationValue, in: 0.0...45.0, step: 1.0)
+//                                Text(String(format: "%.0f°", rotationValue))
+//                            }
+//                            HStack {
+//                                Text("Spacing:")
+//                                Slider(value: $spacingValue, in: 30.0...120.0, step: 5.0)
+//                                Text(String(format: "%.0f", spacingValue))
+//                            }
+//                            HStack {
+//                                Text("Scale:")
+//                                Slider(value: $scaleValue, in: 0.3...1.0, step: 0.05)
+//                                Text(String(format: "%.2f", scaleValue))
+//                            }
+//                            HStack {
+//                                Text("Min Opacity:")
+//                                Slider(value: $minOpacity, in: 0.1...0.9, step: 0.05)
+//                                Text(String(format: "%.2f", minOpacity))
+//                            }
+//                            Button("Toggle Debug") {
+//                                debugMode = false
+//                            }
+//                        }
+//                        .padding()
+//                        .background(ThemeColors.shared(for: colorScheme).secondaryBG)
+//                        .cornerRadius(8)
+//                        .frame(maxWidth: 400)
+//                    }
+//                }
         }
         .padding()
         .ignoresSafeArea(edges: .top)

@@ -104,11 +104,11 @@ struct AppSearchView: View {
                 let optimalColumns = min(5, max(1, maxItemsInSection))
 
                 // Calculate ideal width for optimal columns (item width + spacing + padding)
-                let idealMaxWidth = Double(optimalColumns * 110 + (optimalColumns - 1) * 8 + 50)
+                let idealMaxWidth = Double(optimalColumns * 120 + (optimalColumns - 1) * 5 + 50)
 
                 // Extended range with dynamic max, but always allow grid mode at 316+
                 let minWidth: Double = 240
-                let maxWidth: Double = max(400, min(650, idealMaxWidth)) // Always allow at least 400px for grid mode
+                let maxWidth: Double = max(400, min(640, idealMaxWidth)) // Always allow at least 400px for grid mode
                 let newWidth = max(minWidth, min(maxWidth, newDimension))
 
                 sidebarWidth = newWidth

@@ -17059,6 +17059,7 @@
       }
     },
     "Min Opacity:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -21835,6 +21836,7 @@
       }
     },
     "Perspective:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -25992,6 +25994,7 @@
       }
     },
     "Rotation:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -26169,6 +26172,7 @@
       }
     },
     "Scale:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -28903,9 +28907,6 @@
         }
       }
     },
-    "Sidebar Width: %lf" : {
-
-    },
     "Simple app list disabled" : {
       "localizations" : {
         "de" : {
@@ -29971,6 +29972,7 @@
       }
     },
     "Spacing:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -32454,6 +32456,7 @@
       }
     },
     "Toggle Debug" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

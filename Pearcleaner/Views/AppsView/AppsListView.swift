@@ -154,7 +154,7 @@ struct GridSectionView: View {
             if showItems {
                 LazyVGrid(
                     columns: [
-                        GridItem(.adaptive(minimum: 90, maximum: 110), spacing: 5)
+                        GridItem(.adaptive(minimum: 120, maximum: 120), spacing: 5)
                     ], spacing: 5
                 ) {
                     ForEach(apps, id: \.self) { appInfo in
@@ -162,8 +162,7 @@ struct GridSectionView: View {
                             .transition(.opacity)
                     }
                 }
-                .frame(maxWidth: CGFloat(maxColumns * 110 + (maxColumns - 1) * 8 + 10))
-                .padding(.horizontal, 5)
+                .frame(maxWidth: CGFloat(maxColumns * 120 + (maxColumns - 1) * 5 + 10))
             }
         }
     }
