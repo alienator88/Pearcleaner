@@ -21,6 +21,7 @@ struct MainWindow: View {
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 265
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+    @AppStorage("settings.tutorial.switchUtilitiesShown") private var tutorialShown: Bool = true
 
     @Binding var search: String
     @State private var showSys: Bool = true
@@ -65,6 +66,7 @@ struct MainWindow: View {
                 }
 
             }
+
         }
         .background(backgroundView(color: ThemeColors.shared(for: colorScheme).primaryBG))
         .frame(minWidth: appState.currentPage == .orphans ? 700 : 900, minHeight: 600)
@@ -78,12 +80,17 @@ struct MainWindow: View {
         ) { _ in
             isFullscreen = false
         }
+
         .toolbar {
             TahoeToolbarItem(placement: .navigation, isGroup: true) {
+
+                // Page Selector
                 Menu {
                     ForEach(CurrentPage.allCases, id: \.self) { page in
                         Button {
                             selectedPage = page
+                            // Hide tutorial when user interacts with menu
+                            tutorialShown = false
                         } label: {
                             HStack {
                                 Image(systemName: page.icon)
@@ -95,7 +102,6 @@ struct MainWindow: View {
                     HStack {
                         Image(systemName: selectedPage.icon)
                     }
-                    .tint(ThemeColors.shared(for: colorScheme).accent)
                 }
                 .menuIndicator(.hidden)
                 .onChange(of: selectedPage) { page in
@@ -111,6 +117,32 @@ struct MainWindow: View {
                     }
                 }
 
+                if tutorialShown {
+                    HStack {
+                        Image(systemName: "arrowshape.left.fill")
+                        Text("Switch Utilities")
+                    }
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                    .font(.caption)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(ThemeColors.shared(for: colorScheme).secondaryBG)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .strokeBorder(
+                                        ThemeColors.shared(for: colorScheme).accent.opacity(0.5),
+                                        lineWidth: 1)
+                            )
+                    )
+                    .onTapGesture {
+                        // Hide tutorial when user interacts with label
+                        tutorialShown = false
+                    }
+                }
+
+                // Notice Icons
                 if updater.updateAvailable {
                     noticeButton(
                         image: "icloud.and.arrow.down",
@@ -226,6 +258,7 @@ struct MountedVolumeView: View {
     @ObservedObject private var themeManager = ThemeManager.shared
     @EnvironmentObject var appState: AppState
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+    @AppStorage("settings.tutorial.dragToExpandShown") private var dragTutorialShown: Bool = true
     @State private var selectedVolumeIndex: Int = 0
 
     #if DEBUG
@@ -242,26 +275,14 @@ struct MountedVolumeView: View {
     var body: some View {
         ZStack(alignment: .center) {
             VStack {
-                //                HStack {
-                //                    Spacer()
-                //
-                //                    if greetingEnabled, let username = NSFullUserName().components(separatedBy: " ").first {
-                //                        Text("Welcome, \(username)!")
-                //                            .font(.largeTitle)
-                //                            .fontWeight(.semibold)
-                //                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                //                    }
-                //                }
+
                 Spacer()
 
                 Text("Select an app from the sidebar to begin")
                     .font(.caption)
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
             }
-            .onTapGesture(count: 3) {
-                // Triple-tap to toggle debug mode
-                //                debugMode.toggle()
-            }
+
             if !appState.volumeInfos.isEmpty {
                 ZStack {
                     ForEach(Array(appState.volumeInfos.enumerated()), id: \.element.id) {
@@ -356,12 +377,47 @@ struct MountedVolumeView: View {
                     }
                 }
             #endif
+
+            // Tutorial label for drag to expand (moved to end for proper z-order)
+            if dragTutorialShown {
+                HStack {
+                    HStack {
+                        Image(systemName: "arrowshape.left.fill")
+                        Text("Drag to expand into grid mode")
+                    }
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                    .font(.caption)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(ThemeColors.shared(for: colorScheme).secondaryBG)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .strokeBorder(
+                                        ThemeColors.shared(for: colorScheme).accent.opacity(0.5),
+                                        lineWidth: 1)
+                            )
+                    )
+                    .onTapGesture {
+                        dragTutorialShown = false
+                    }
+
+                    Spacer()
+                }
+            }
         }
         .padding()
         //        .ignoresSafeArea(edges: .top)
         .onAppear {
             // Start with root volume (index 0) selected
             selectedVolumeIndex = 0
+        }
+        .onChange(of: appState.isGridMode) { isGrid in
+            // Hide tutorial when user switches to grid mode
+            if isGrid {
+                dragTutorialShown = false
+            }
         }
         .toolbarBackground(.hidden, for: .windowToolbar)
         .toolbar {
@@ -375,7 +431,6 @@ struct MountedVolumeView: View {
                         .fontWeight(.semibold)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
-
             }
         }
     }

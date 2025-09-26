@@ -41,11 +41,27 @@ struct AppSearchView: View {
                     .padding()
                     .padding(.top, 20)
 
-                AppsListView(search: $search, filteredApps: filteredApps)
-                    .padding([.bottom, .horizontal], 5)
+                AppsListView(
+                    search: $search, filteredApps: filteredApps, isGridMode: appState.isGridMode
+                )
+                .padding([.bottom, .horizontal], 5)
 
             }
         }
+        .onAppear {
+            // Initialize grid mode based on current sidebar width
+            appState.isGridMode = sidebarWidth > 350
+        }
+        .onChange(of: sidebarWidth) { newWidth in
+            // Update grid mode when sidebar width changes programmatically
+            let newGridMode = newWidth > 350
+            if newGridMode != appState.isGridMode {
+                withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
+                    appState.isGridMode = newGridMode
+                }
+            }
+        }
+
         .overlay(alignment: .trailing) {
             // Invisible resize handle on the trailing edge
             Rectangle()
@@ -63,10 +79,11 @@ struct AppSearchView: View {
                 .contextMenu {
                     Button("Reset Size") {
                         sidebarWidth = 265
+                        appState.isGridMode = false
                     }
                 }
                 .gesture(sidebarDragGesture)
-                .help("Right click to reset size")
+                .help("Drag to resize sidebar • Right click to reset size")
         }
 
     }
@@ -80,10 +97,21 @@ struct AppSearchView: View {
                 let delta = val.location.x - val.startLocation.x
                 let newDimension = dimensionStart! + Double(delta)
 
-                // Set minimum and maximum width
+                // Extended range: 240-650px (300+ triggers grid mode)
                 let minWidth: Double = 240
-                let maxWidth: Double = 300
-                sidebarWidth = max(minWidth, min(maxWidth, newDimension))
+                let maxWidth: Double = 650
+                let newWidth = max(minWidth, min(maxWidth, newDimension))
+
+                sidebarWidth = newWidth
+
+                // Toggle grid mode at 350px threshold (around 3 columns)
+                let newGridMode = newWidth > 350
+                if newGridMode != appState.isGridMode {
+                    withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
+                        appState.isGridMode = newGridMode
+                    }
+                }
+
                 NSCursor.closedHand.set()
             }
             .onEnded { val in
@@ -215,6 +243,7 @@ struct SimpleSearchStyleSidebar: TextFieldStyle {
     @AppStorage("settings.general.selectedSortAppsList") var selectedSortOption: SortOption =
         .alphabetical
     @AppStorage("settings.interface.multiSelect") private var multiSelect: Bool = false
+    @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 265
 
     func _body(configuration: TextField<Self._Label>) -> some View {
 
@@ -251,6 +280,32 @@ struct SimpleSearchStyleSidebar: TextFieldStyle {
                                 Text(option.title)
                             }
                         }
+                    }
+                }
+
+                Section(header: Text("Layout")) {
+                    Button(action: {
+                        withAnimation(.spring(duration: animationEnabled ? 0.3 : 0)) {
+                            sidebarWidth = 265
+                        }
+                    }) {
+                        HStack {
+                            Image(systemName: sidebarWidth < 350 ? "circle.inset.filled" : "circle")
+                            Text("List View")
+                        }
+
+                    }
+
+                    Button(action: {
+                        withAnimation(.spring(duration: animationEnabled ? 0.3 : 0)) {
+                            sidebarWidth = 375
+                        }
+                    }) {
+                        HStack {
+                            Image(systemName: sidebarWidth > 350 ? "circle.inset.filled" : "circle")
+                            Text("Grid View")
+                        }
+
                     }
                 }
 

@@ -5,9 +5,9 @@
 //  Created by Alin Lupascu on 11/10/23.
 //
 
+import AlinFoundation
 import Foundation
 import SwiftUI
-import AlinFoundation
 
 struct AppListItems: View {
     @EnvironmentObject var appState: AppState
@@ -23,38 +23,42 @@ struct AppListItems: View {
     let appInfo: AppInfo
     var isSelected: Bool { appState.appInfo.path == appInfo.path }
     @State private var hoveredItemPath: URL? = nil
+    @Namespace var appItemNamespace
 
     var body: some View {
 
         HStack {
 
             if multiSelect {
-                Toggle(isOn: Binding(
-                    get: { self.appState.externalPaths.contains(self.appInfo.path) },
-                    set: { isChecked in
-                        if isChecked {
-                            if !self.appState.externalPaths.contains(self.appInfo.path) {
-                                let wasEmpty = self.appState.externalPaths.isEmpty
-                                self.appState.externalPaths.append(self.appInfo.path)
+                Toggle(
+                    isOn: Binding(
+                        get: { self.appState.externalPaths.contains(self.appInfo.path) },
+                        set: { isChecked in
+                            if isChecked {
+                                if !self.appState.externalPaths.contains(self.appInfo.path) {
+                                    let wasEmpty = self.appState.externalPaths.isEmpty
+                                    self.appState.externalPaths.append(self.appInfo.path)
 
-                                if wasEmpty && appState.currentView != .files {
-                                    appState.multiMode = true
-                                    showAppInFiles(appInfo: appInfo, appState: appState, locations: locations)
+                                    if wasEmpty && appState.currentView != .files {
+                                        appState.multiMode = true
+                                        showAppInFiles(
+                                            appInfo: appInfo, appState: appState,
+                                            locations: locations)
+                                    }
+                                }
+                            } else {
+                                self.appState.externalPaths.removeAll { $0 == self.appInfo.path }
+
+                                if self.appState.externalPaths.isEmpty {
+                                    appState.multiMode = false
                                 }
                             }
-                        } else {
-                            self.appState.externalPaths.removeAll { $0 == self.appInfo.path }
-
-                            if self.appState.externalPaths.isEmpty {
-                                appState.multiMode = false
-                            }
                         }
-                    }
-                )) { EmptyView() }
-                    .toggleStyle(SimpleCheckboxToggleStyle())
-                    .padding(.leading)
+                    )
+                ) { EmptyView() }
+                .toggleStyle(SimpleCheckboxToggleStyle())
+                .padding(.leading)
             }
-
 
             Button(action: {
                 if !isSelected {
@@ -78,11 +82,9 @@ struct AppListItems: View {
                 }
 
             }) {
-                VStack() {
+                VStack {
 
                     HStack(alignment: .center) {
-
-
 
                         if let appIcon = appInfo.appIcon {
                             ZStack {
@@ -91,6 +93,8 @@ struct AppListItems: View {
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: 30)
                                     .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    .matchedGeometryEffect(
+                                        id: "icon-\(appInfo.path.path)", in: appItemNamespace)
                             }
 
                         }
@@ -118,11 +122,15 @@ struct AppListItems: View {
                                         .opacity(0.5)
                                     Text(verbatim: "•").font(.footnote).opacity(0.5)
 
-                                    Text(appInfo.bundleSize == 0 ? String(localized: "calculating") : "\(formatByte(size: appInfo.bundleSize).human)")
-                                        .font(.footnote)
-                                        .lineLimit(1)
-                                        .truncationMode(.tail)
-                                        .opacity(0.5)
+                                    Text(
+                                        appInfo.bundleSize == 0
+                                            ? String(localized: "calculating")
+                                            : "\(formatByte(size: appInfo.bundleSize).human)"
+                                    )
+                                    .font(.footnote)
+                                    .lineLimit(1)
+                                    .truncationMode(.tail)
+                                    .opacity(0.5)
                                     Spacer()
                                 }
 
@@ -134,9 +142,14 @@ struct AppListItems: View {
                         }
 
                         if minimalEnabled && !isSelected {
-                            Text(appInfo.bundleSize == 0 ? "v\(appInfo.appVersion)" : formatByte(size: appInfo.bundleSize).human)
-                                .font(.system(size: 10))
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.5))
+                            Text(
+                                appInfo.bundleSize == 0
+                                    ? "v\(appInfo.appVersion)"
+                                    : formatByte(size: appInfo.bundleSize).human
+                            )
+                            .font(.system(size: 10))
+                            .foregroundStyle(
+                                ThemeColors.shared(for: colorScheme).primaryText.opacity(0.5))
                         }
                     }
 
@@ -155,20 +168,25 @@ struct AppListItems: View {
                 }
             }
 
-            
         }
-        .background{
+        .background {
             RoundedRectangle(cornerRadius: 8)
-                .fill(isSelected && !glass ? ThemeColors.shared(for: colorScheme).secondaryBG : .clear)
+                .fill(
+                    isSelected && !glass ? ThemeColors.shared(for: colorScheme).secondaryBG : .clear
+                )
         }
-        .overlay{
-            if (isHovered || isSelected) {
+        .overlay {
+            if isHovered || isSelected {
                 HStack {
                     Spacer()
                     ZStack {
                         // Morphing shape that animates between rectangle and square
                         RoundedRectangle(cornerRadius: isSelected ? 6 : 50)
-                            .fill(isSelected ? ThemeColors.shared(for: colorScheme).accent : ThemeColors.shared(for: colorScheme).primaryText.opacity(0.5))
+                            .fill(
+                                isSelected
+                                    ? ThemeColors.shared(for: colorScheme).accent
+                                    : ThemeColors.shared(for: colorScheme).primaryText.opacity(0.5)
+                            )
                             .frame(width: isSelected ? 20 : 2, height: isSelected ? 20 : 25)
 
                         if isSelected {
@@ -178,7 +196,7 @@ struct AppListItems: View {
                                 .opacity(isSelected ? 1 : 0)
                         }
                     }
-//                    .animation(animationEnabled ? .spring(response: 0.4, dampingFraction: 0.7, blendDuration: 0) : .linear(duration: 0), value: isSelected)
+                    //                    .animation(animationEnabled ? .spring(response: 0.4, dampingFraction: 0.7, blendDuration: 0) : .linear(duration: 0), value: isSelected)
                     .padding(.trailing, 7)
                 }
                 .allowsHitTesting(false)
@@ -187,8 +205,8 @@ struct AppListItems: View {
         .onAppear {
             if appInfo.bundleSize == 0 {
                 appState.getBundleSize(for: appInfo) { size in
-//                    printOS("Getting size for: \(appInfo.appName)")
-//                    appInfo.bundleSize = size
+                    //                    printOS("Getting size for: \(appInfo.appName)")
+                    //                    appInfo.bundleSize = size
                 }
             }
         }
