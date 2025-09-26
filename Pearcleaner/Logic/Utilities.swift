@@ -10,6 +10,7 @@ import SwiftUI
 import AlinFoundation
 import AppKit
 import AudioToolbox
+import OpenDirectory
 
 func ifOSBelow(macOS major: Int, _ minor: Int = 0, _ patch: Int = 0) -> Bool {
     if !ProcessInfo.processInfo.isOperatingSystemAtLeast(
@@ -347,6 +348,51 @@ func openAppSettingsWindow(tab: CurrentTabView = .general) {
     openWindow(id: "settings")
 }
 
+// Get user profile picture
+struct UserProfile {
+    let firstName: String?
+    let image: NSImage?
+}
+
+func getUserProfile() -> UserProfile {
+    do {
+        let session = ODSession.default()
+        let node = try ODNode(session: session, type: UInt32(kODNodeTypeLocalNodes))
+        let record = try node.record(
+            withRecordType: kODRecordTypeUsers,
+            name: NSUserName(),
+            attributes: ["dsAttrTypeStandard:RealName",
+                         kODAttributeTypeJPEGPhoto]
+        )
+
+        // First name
+        var firstName: String? = nil
+        if let realName = (try? record.values(forAttribute: "dsAttrTypeStandard:RealName") as? [String])?.first {
+            firstName = realName.components(separatedBy: " ").first
+        }
+
+        // JPEG photo
+        var resizedImage: NSImage? = nil
+        if let dataList = try? record.values(forAttribute: kODAttributeTypeJPEGPhoto) as? [Data],
+           let data = dataList.first,
+           let img = NSImage(data: data) {
+            let targetSize = NSSize(width: 50, height: 50)
+            let resized = NSImage(size: targetSize)
+            resized.lockFocus()
+            img.draw(in: NSRect(origin: .zero, size: targetSize),
+                     from: NSRect(origin: .zero, size: img.size),
+                     operation: .copy,
+                     fraction: 1.0)
+            resized.unlockFocus()
+            resizedImage = resized
+        }
+
+        return UserProfile(firstName: firstName, image: resizedImage)
+    } catch {
+        printOS("Failed fetching user profile: \(error)")
+        return UserProfile(firstName: nil, image: nil)
+    }
+}
 
 // Check if file/folder name has localized variant
 func showLocalized(url: URL) -> String {

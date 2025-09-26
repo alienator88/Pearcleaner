@@ -162,6 +162,7 @@ struct FilesView: View {
                 } label: {
                     Label("Refresh", systemImage: "arrow.counterclockwise")
                 }
+
             }
 
 

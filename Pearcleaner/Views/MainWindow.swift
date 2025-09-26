@@ -145,7 +145,7 @@ struct MainWindow: View {
                 // Notice Icons
                 if updater.updateAvailable {
                     noticeButton(
-                        image: "icloud.and.arrow.down",
+                        image: "icloud.and.arrow.down.fill",
                         color: .green,
                         help: "Update Available"
                     ) {
@@ -168,7 +168,7 @@ struct MainWindow: View {
                 } else if permissionManager.results != nil, !permissionManager.allPermissionsGranted
                 {
                     noticeButton(
-                        image: "lock.slash",
+                        image: "lock.slash.fill",
                         color: .red,
                         help: "Permissions Missing"
                     ) {
@@ -261,7 +261,7 @@ struct MountedVolumeView: View {
     @AppStorage("settings.tutorial.dragToExpandShown") private var dragTutorialShown: Bool = true
     @State private var selectedVolumeIndex: Int = 0
 
-    #if DEBUG
+#if DEBUG
         // Debug sliders
         @State private var perspectiveValue: Double = 0.7
         @State private var rotationValue: Double = 35.0
@@ -275,6 +275,8 @@ struct MountedVolumeView: View {
     var body: some View {
         ZStack(alignment: .center) {
             VStack {
+
+                ProfileMenuView()
 
                 Spacer()
 
@@ -408,7 +410,7 @@ struct MountedVolumeView: View {
             }
         }
         .padding()
-        //        .ignoresSafeArea(edges: .top)
+        .ignoresSafeArea(edges: .top)
         .onAppear {
             // Start with root volume (index 0) selected
             selectedVolumeIndex = 0
@@ -419,20 +421,7 @@ struct MountedVolumeView: View {
                 dragTutorialShown = false
             }
         }
-        .toolbarBackground(.hidden, for: .windowToolbar)
-        .toolbar {
 
-            ToolbarItem { Spacer() }
-
-            if greetingEnabled, let username = NSFullUserName().components(separatedBy: " ").first {
-                TahoeToolbarItem {
-                    Text("Welcome, \(username)!")
-                        .font(.largeTitle)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                }
-            }
-        }
     }
 
     private func ejectVolume(_ volume: VolumeInfo) {
@@ -455,6 +444,56 @@ struct MountedVolumeView: View {
                     }
                 }
             }
+        }
+    }
+}
+struct ProfileMenuView: View {
+    @Environment(\.colorScheme) var colorScheme
+    @State private var showMenu = false
+    @State private var profile: UserProfile? = nil
+
+    var body: some View {
+        HStack {
+            Spacer()
+            if let name = profile?.firstName {
+                Text(name.lowercased())
+                    .font(.largeTitle)
+                    .fontWeight(.thin)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+            }
+
+            if let image = profile?.image {
+                Button {
+//                    showMenu.toggle()
+                } label: {
+                    Image(nsImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 40, height: 40)
+                        .clipShape(Circle())
+                        .overlay {
+                            Circle()
+                                .strokeBorder(
+                                    ThemeColors.shared(for: colorScheme).primaryText,
+                                    lineWidth: 1
+                                )
+                        }
+                }
+                .buttonStyle(.plain)
+//                .popover(isPresented: $showMenu, arrowEdge: .bottom) {
+//                    VStack(alignment: .leading, spacing: 12) {
+//                        Button("Profile Settings") { }
+//                        Button("Switch User") { }
+//                        Divider()
+//                        Button("Log Out", role: .destructive) { }
+//                    }
+//                    .padding()
+//                    .frame(width: 200)
+//                }
+            }
+        }
+        .onAppear {
+            profile = getUserProfile()
         }
     }
 }
