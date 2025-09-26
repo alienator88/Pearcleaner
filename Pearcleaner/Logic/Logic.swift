@@ -668,7 +668,65 @@ func removeApp(appState: AppState, withPath path: URL) {
     }
 }
 
-// --- Pearcleaner Uninstall --
+// --- Remove bundle(s) from menubar items by patching the inner binary blob only ---
+//func removeBundles(_ bundleIDs: [String]) throws {
+//    let plistPath = NSHomeDirectory() + "/Library/Group Containers/group.com.apple.controlcenter/Library/Preferences/group.com.apple.controlcenter.plist"
+//    let plistURL = URL(fileURLWithPath: plistPath)
+//
+//    // Load outer plist and inner blob
+//    let outerData = try Data(contentsOf: plistURL)
+//    var outerFormat: PropertyListSerialization.PropertyListFormat = .binary
+//    guard var outerPlist = try PropertyListSerialization.propertyList(from: outerData,
+//                                                                      options: .mutableContainersAndLeaves,
+//                                                                      format: &outerFormat) as? [String: Any],
+//          let trackedBlob = outerPlist["trackedApplications"] as? Data else {
+//        throw NSError(domain: "PlistError", code: 1,
+//                      userInfo: [NSLocalizedDescriptionKey: "Invalid plist structure"])
+//    }
+//
+//    // Decode trackedApplications
+//    var innerFormat: PropertyListSerialization.PropertyListFormat = .binary
+//    guard var innerList = try PropertyListSerialization.propertyList(from: trackedBlob,
+//                                                                     options: .mutableContainersAndLeaves,
+//                                                                     format: &innerFormat) as? [[String: Any]] else {
+//        throw NSError(domain: "PlistError", code: 2,
+//                      userInfo: [NSLocalizedDescriptionKey: "Invalid inner plist structure"])
+//    }
+//
+//    // Remove any entries with a matching bundle at any level
+//    innerList.removeAll { entry in
+//        // Top-level bundle
+//        if let bundle = (entry["bundle"] as? [String: Any])?["_0"] as? String {
+//            if bundleIDs.contains(where: { bundle.caseInsensitiveCompare($0) == .orderedSame }) {
+//                return true
+//            }
+//        }
+//        // Nested bundle under location -> menuItemLocations
+//        if let location = entry["location"] as? [String: Any],
+//           let menuItems = location["menuItemLocations"] as? [[String: Any]] {
+//            for menuItem in menuItems {
+//                if let bundle = (menuItem["bundle"] as? [String: Any])?["_0"] as? String {
+//                    if bundleIDs.contains(where: { bundle.caseInsensitiveCompare($0) == .orderedSame }) {
+//                        return true
+//                    }
+//                }
+//            }
+//        }
+//        return false
+//    }
+//
+//    // Re-encode and save
+//    let newTrackedBlob = try PropertyListSerialization.data(fromPropertyList: innerList,
+//                                                            format: .binary,
+//                                                            options: 0)
+//    outerPlist["trackedApplications"] = newTrackedBlob
+//    let newOuterData = try PropertyListSerialization.data(fromPropertyList: outerPlist,
+//                                                          format: .binary,
+//                                                          options: 0)
+//    try newOuterData.write(to: plistURL, options: .atomic)
+//}
+
+// --- Pearcleaner Uninstall ---
 func uninstallPearcleaner(appState: AppState, locations: Locations) {
 
     // Unload Sentinel Monitor if running

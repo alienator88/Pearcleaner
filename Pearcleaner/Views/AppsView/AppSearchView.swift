@@ -50,11 +50,11 @@ struct AppSearchView: View {
         }
         .onAppear {
             // Initialize grid mode based on current sidebar width
-            appState.isGridMode = sidebarWidth > 350
+            appState.isGridMode = sidebarWidth > 316
         }
         .onChange(of: sidebarWidth) { newWidth in
             // Update grid mode when sidebar width changes programmatically
-            let newGridMode = newWidth > 350
+            let newGridMode = newWidth > 316
             if newGridMode != appState.isGridMode {
                 withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
                     appState.isGridMode = newGridMode
@@ -83,7 +83,7 @@ struct AppSearchView: View {
                     }
                 }
                 .gesture(sidebarDragGesture)
-                .help("Drag to resize sidebar • Right click to reset size")
+                .help("Right click to reset size")
         }
 
     }
@@ -97,15 +97,24 @@ struct AppSearchView: View {
                 let delta = val.location.x - val.startLocation.x
                 let newDimension = dimensionStart! + Double(delta)
 
-                // Extended range: 240-650px (300+ triggers grid mode)
+                // Calculate dynamic max width based on available items
+                let filteredUserApps = filteredApps.filter { !$0.system }
+                let filteredSystemApps = filteredApps.filter { $0.system }
+                let maxItemsInSection = max(filteredUserApps.count, filteredSystemApps.count)
+                let optimalColumns = min(5, max(1, maxItemsInSection))
+
+                // Calculate ideal width for optimal columns (item width + spacing + padding)
+                let idealMaxWidth = Double(optimalColumns * 110 + (optimalColumns - 1) * 8 + 50)
+
+                // Extended range with dynamic max, but always allow grid mode at 316+
                 let minWidth: Double = 240
-                let maxWidth: Double = 650
+                let maxWidth: Double = max(400, min(650, idealMaxWidth)) // Always allow at least 400px for grid mode
                 let newWidth = max(minWidth, min(maxWidth, newDimension))
 
                 sidebarWidth = newWidth
 
-                // Toggle grid mode at 350px threshold (around 3 columns)
-                let newGridMode = newWidth > 350
+                // Toggle grid mode at 316px threshold (around 3 columns)
+                let newGridMode = newWidth > 316
                 if newGridMode != appState.isGridMode {
                     withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
                         appState.isGridMode = newGridMode
@@ -290,7 +299,7 @@ struct SimpleSearchStyleSidebar: TextFieldStyle {
                         }
                     }) {
                         HStack {
-                            Image(systemName: sidebarWidth < 350 ? "circle.inset.filled" : "circle")
+                            Image(systemName: sidebarWidth < 316 ? "circle.inset.filled" : "circle")
                             Text("List View")
                         }
 
@@ -302,7 +311,7 @@ struct SimpleSearchStyleSidebar: TextFieldStyle {
                         }
                     }) {
                         HStack {
-                            Image(systemName: sidebarWidth > 350 ? "circle.inset.filled" : "circle")
+                            Image(systemName: sidebarWidth > 316 ? "circle.inset.filled" : "circle")
                             Text("Grid View")
                         }
 

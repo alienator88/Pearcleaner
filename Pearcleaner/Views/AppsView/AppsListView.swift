@@ -23,16 +23,22 @@ struct AppsListView: View {
                     let filteredUserApps = filteredApps.filter { !$0.system }
                     let filteredSystemApps = filteredApps.filter { $0.system }
 
+                    let maxColumns = 5 // Maximum columns allowed
+                    let maxItemsInSection = max(filteredUserApps.count, filteredSystemApps.count)
+                    let optimalColumns = min(maxColumns, max(1, maxItemsInSection))
+
                     if !filteredUserApps.isEmpty {
                         GridSectionView(
                             title: String(localized: "User"), count: filteredUserApps.count,
-                            apps: filteredUserApps, search: $search)
+                            apps: filteredUserApps, search: $search,
+                            maxColumns: min(optimalColumns, filteredUserApps.count))
                     }
 
                     if !filteredSystemApps.isEmpty {
                         GridSectionView(
                             title: String(localized: "System"), count: filteredSystemApps.count,
-                            apps: filteredSystemApps, search: $search)
+                            apps: filteredSystemApps, search: $search,
+                            maxColumns: min(optimalColumns, filteredSystemApps.count))
                     }
                 }
                 .padding(.horizontal, 5)
@@ -131,6 +137,7 @@ struct GridSectionView: View {
     var count: Int
     var apps: [AppInfo]
     @Binding var search: String
+    var maxColumns: Int
     @State private var showItems: Bool = true
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
@@ -147,14 +154,15 @@ struct GridSectionView: View {
             if showItems {
                 LazyVGrid(
                     columns: [
-                        GridItem(.adaptive(minimum: 90, maximum: 110), spacing: 8)
-                    ], spacing: 8
+                        GridItem(.adaptive(minimum: 90, maximum: 110), spacing: 5)
+                    ], spacing: 5
                 ) {
                     ForEach(apps, id: \.self) { appInfo in
                         GridAppItem(search: $search, appInfo: appInfo)
                             .transition(.opacity)
                     }
                 }
+                .frame(maxWidth: CGFloat(maxColumns * 110 + (maxColumns - 1) * 8 + 10))
                 .padding(.horizontal, 5)
             }
         }

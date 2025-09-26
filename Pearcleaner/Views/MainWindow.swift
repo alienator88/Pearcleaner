@@ -271,18 +271,53 @@ struct MountedVolumeView: View {
         @State private var opacityFade: Double = 0.5
         @State private var debugMode: Bool = false
     #endif
+    @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 265
 
     var body: some View {
         ZStack(alignment: .center) {
             VStack {
 
-                ProfileMenuView()
+                if greetingEnabled {
+                    ProfileMenuView()
+                    Text("Sidebar Width: \(sidebarWidth)")
+                }
 
                 Spacer()
 
-                Text("Select an app from the sidebar to begin")
-                    .font(.caption)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                // Tutorial label for drag to expand (moved to end for proper z-order)
+                if dragTutorialShown {
+                    HStack {
+                        HStack {
+                            Image(systemName: "arrowshape.left.fill")
+                            Text("Drag to expand into grid mode")
+                        }
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                        .font(.caption)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(
+                            RoundedRectangle(cornerRadius: 6)
+                                .fill(ThemeColors.shared(for: colorScheme).secondaryBG)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 6)
+                                        .strokeBorder(
+                                            ThemeColors.shared(for: colorScheme).accent.opacity(0.5),
+                                            lineWidth: 1)
+                                )
+                        )
+                        .onTapGesture {
+                            dragTutorialShown = false
+                        }
+
+                        Spacer()
+                    }
+                } else {
+                    Text("Select an app from the sidebar to begin")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                }
+
+
             }
 
             if !appState.volumeInfos.isEmpty {
@@ -379,35 +414,6 @@ struct MountedVolumeView: View {
                     }
                 }
             #endif
-
-            // Tutorial label for drag to expand (moved to end for proper z-order)
-            if dragTutorialShown {
-                HStack {
-                    HStack {
-                        Image(systemName: "arrowshape.left.fill")
-                        Text("Drag to expand into grid mode")
-                    }
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-                    .font(.caption)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(
-                        RoundedRectangle(cornerRadius: 6)
-                            .fill(ThemeColors.shared(for: colorScheme).secondaryBG)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 6)
-                                    .strokeBorder(
-                                        ThemeColors.shared(for: colorScheme).accent.opacity(0.5),
-                                        lineWidth: 1)
-                            )
-                    )
-                    .onTapGesture {
-                        dragTutorialShown = false
-                    }
-
-                    Spacer()
-                }
-            }
         }
         .padding()
         .ignoresSafeArea(edges: .top)
@@ -480,6 +486,7 @@ struct ProfileMenuView: View {
                         }
                 }
                 .buttonStyle(.plain)
+                .allowsHitTesting(false)
 //                .popover(isPresented: $showMenu, arrowEdge: .bottom) {
 //                    VStack(alignment: .leading, spacing: 12) {
 //                        Button("Profile Settings") { }

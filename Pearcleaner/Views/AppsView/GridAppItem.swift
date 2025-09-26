@@ -104,7 +104,7 @@ struct GridAppItem: View {
                     Text(appInfo.appName)
                         .font(.system(size: 12, weight: isSelected ? .medium : .regular))
                         .lineLimit(2)
-                        .truncationMode(.tail)
+                        .truncationMode(.middle)
                         .multilineTextAlignment(.center)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
@@ -119,7 +119,7 @@ struct GridAppItem: View {
             }
             .buttonStyle(.borderless)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .contentShape(Rectangle())
+            .contentShape(RoundedRectangle(cornerRadius: 12))
             .onHover { hovering in
                 withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.20 : 0)) {
                     self.isHovered = hovering
