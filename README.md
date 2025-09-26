@@ -41,6 +41,7 @@ If you are able to contribute to translations for the app, please see this discu
 - Prune unused translation files from app bundles keeping only the preferred language set on macOS
 - Sentinel monitor helper that can be enabled to watch Trash folder for deleted apps to cleanup after the fact(Extremely small (210KB) and uses ~2mb of ram to run in the background and file watch)
 - CLI support
+- List or Grid mode app view
 - Basic Steam games support
 - Drag/drop applications support
 - Deep link support for automation, see [wiki guide](https://github.com/alienator88/Pearcleaner/wiki/Deep-Link-Guide) for instructions
@@ -53,14 +54,15 @@ If you are able to contribute to translations for the app, please see this discu
 - Optional Homebrew cleanup
 - Include extra directories to search for apps in
 - Exclude files/folders from the orphaned file search
-- Custom auto-updater that pulls latest release notes and binaries from GitHub Releases (Pearcleaner should run from `/Applications` folder to avoid permission issues)
-
+- Set file search sensitivity to find more or less files
 
 ## Screenshots
 
-<img src="https://github.com/user-attachments/assets/dc235893-9987-4981-9a3c-b021c02d9bd2" align="left" width="400" />
-<img src="https://github.com/user-attachments/assets/a76e366b-6a83-4fb5-b4be-eebeaceb9f81" align="center" width="400" />
+<img src="https://github.com/user-attachments/assets/5095d30c-3665-4b24-bf00-756baac59026" align="left" width="400" />
+<img src="https://github.com/user-attachments/assets/e9841914-613e-4206-b0bd-07963bf27507" align="center" width="400" />
 <p></p>
+<img src="https://github.com/user-attachments/assets/c35258c2-2886-412c-a4c4-3c5e343e7a2c" align="left" width="400" />
+<img src="https://github.com/user-attachments/assets/e6253ce4-b1e4-4851-a2c2-46b1f1e128cb" align="center" width="400" />
 
 
 ## Issues
