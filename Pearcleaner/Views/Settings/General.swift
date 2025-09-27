@@ -25,6 +25,7 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.spotlight") private var spotlight = false
     @AppStorage("settings.general.permanentDelete") private var permanentDelete: Bool = false
     @AppStorage("settings.general.searchSensitivity") private var sensitivityLevel: SearchSensitivityLevel = .strict
+    @AppStorage("settings.general.finderExtensionIcon", store: UserDefaults(suiteName: "group.com.alienator88.Pearcleaner")) private var finderExtensionIcon: Bool = true
 
     var body: some View {
         VStack(spacing: 20) {
@@ -251,7 +252,7 @@ struct GeneralSettingsTab: View {
                             VStack {
 
                                 HStack(spacing: 0) {
-                                    Text("Enable context menu extension for Finder")
+                                    Text("Enable Finder extension")
                                         .font(.callout)
                                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
@@ -272,15 +273,10 @@ struct GeneralSettingsTab: View {
                                     .padding(.leading, 5)
                                     Spacer()
                                 }
-
-
                             }
 
-
-
-
                             Spacer()
-
+                            
                             Toggle(isOn: $appState.finderExtensionEnabled, label: {
                             })
                             .toggleStyle(SettingsToggle())
@@ -291,13 +287,29 @@ struct GeneralSettingsTab: View {
                                     manageFinderPlugin(install: false)
                                 }
                             }
-
-
                         }
-
+                        
+                        if appState.finderExtensionEnabled {
+                            HStack(spacing: 0) {
+                                Image(systemName: "")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 15, height: 15)
+                                    .padding(.trailing)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                                Text("Enable icon for Finder extension")
+                                    .font(.callout)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                                
+                                Spacer()
+                                
+                                Toggle(isOn: $finderExtensionIcon, label: {
+                                })
+                                .toggleStyle(SettingsToggle())
+                            }
+                        }
                     }
                     .padding(5)
-
                 })
 
             // === CLI ==========================================================================================================
