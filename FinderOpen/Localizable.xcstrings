@@ -27,6 +27,12 @@
             "value" : "Pearcleanerでアンインストール"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odinstaluj za pomocą Pearcleaner"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
