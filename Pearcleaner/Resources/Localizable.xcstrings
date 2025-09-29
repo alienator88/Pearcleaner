@@ -33,6 +33,12 @@
             "value" : "（%@）"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(%@)"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -119,6 +125,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "(ビルド %@)"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(Build %@)"
           }
         },
         "pt-BR" : {
@@ -209,6 +221,12 @@
             "value" : "%lld%% の節約"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**%lld%%** oszczędności"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -292,6 +310,12 @@
           }
         },
         "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "pl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@"
@@ -385,6 +409,12 @@
             "value" : "%@（%lld）"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ (%lld)"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -471,6 +501,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@（0）"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ (0)"
           }
         },
         "pt-BR" : {
@@ -562,6 +598,12 @@
             "value" : "%@ は既に最新バージョンです"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ jest już dostępny w najnowszej wersji"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -651,6 +693,12 @@
             "value" : "%@ はアップデートを確認します"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ sprawdzi dostępność aktualizacji"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -734,6 +782,12 @@
           }
         },
         "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld / %lld"
+          }
+        },
+        "pl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld / %lld"
@@ -827,6 +881,12 @@
             "value" : "%lld 個のファイル"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld plików"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -913,6 +973,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld個の読み込みが完了しました"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld załadowanych"
           }
         },
         "pt-BR" : {
@@ -1003,6 +1069,12 @@
             "value" : "%lld が読み込まれていません"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld niezaładowanych"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1089,6 +1161,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld パッケージ%@"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld pakiet%@"
           }
         },
         "pt-BR" : {
@@ -1179,6 +1257,12 @@
             "value" : "%lld サービス%@"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld serwis%@"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1265,6 +1349,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld 個の有効な %@ が見つかりました"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld ważny %@ został znaleziony"
           }
         },
         "pt-BR" : {
@@ -1355,6 +1445,12 @@
             "value" : "・"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "•"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1441,6 +1537,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "・読み込み中..."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Ładowanie..."
           }
         },
         "pt-BR" : {
@@ -1531,6 +1633,12 @@
             "value" : "0 バイト"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0 bajtów"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1617,6 +1725,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "これまでに貢献してくれた皆さんに心から感謝します！"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**Ogromne** podziękowania dla wszystkich, którzy dotychczas wnieśli swój wkład!"
           }
         },
         "pt-BR" : {
@@ -1707,6 +1821,12 @@
             "value" : "このアプリについて"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O aplikacji"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1793,6 +1913,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@について"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O %@"
           }
         },
         "pt-BR" : {
@@ -1884,6 +2010,12 @@
             "value" : "アクセシビリティ"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dostępność"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1970,6 +2102,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "アクション"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akcje"
           }
         },
         "pt-BR" : {
@@ -2061,6 +2199,12 @@
             "value" : "ファイル/フォルダを追加"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dodaj plik/folder"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2147,6 +2291,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "クリップボードからファイル/フォルダを追加"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dodaj plik/folder ze schowka"
           }
         },
         "pt-BR" : {
@@ -2238,6 +2388,12 @@
             "value" : "孤立ファイルの検索時に無視されるファイルやフォルダを追加します。パスをクリックするとリストから削除されます。"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dodaj pliki lub foldery, które będą ignorowane podczas wyszukiwania osieroconych plików. Kliknij ścieżkę, aby usunąć ją z listy."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2327,6 +2483,12 @@
             "value" : "フォルダを追加"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dodaj folder"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2413,6 +2575,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "クリップボードからフォルダを追加"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dodaj folder ze schowka"
           }
         },
         "pt-BR" : {
@@ -2504,6 +2672,12 @@
             "value" : "すべてのチェックボックス"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wszystkie pola wyboru"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2590,6 +2764,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "BOMリストからすべての有効なパッケージファイルが削除されました。このパッケージを忘れられます。"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wszystkie ważne pliki pakietów z listy BOM zostały usunięte. Możesz zapomnieć o tym pakiecie."
           }
         },
         "pt-BR" : {
@@ -2680,6 +2860,12 @@
             "value" : "さらに: %@ でも"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Również w: %@"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2766,6 +2952,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "削除対象としてマークされたファイルを常に確認してください。まれに、アプリ名が似すぎている場合に関連のないファイルが検出されることがあります。"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zawsze potwierdzaj pliki zaznaczone do usunięcia. W rzadkich przypadkach mogą zostać znalezione niepowiązane pliki, gdy nazwy aplikacji są zbyt podobne."
           }
         },
         "pt-BR" : {
@@ -2857,6 +3049,12 @@
             "value" : "削除対象としてマークされたファイルを常に確認してください。稀に、アプリ名が似すぎる場合、関係のないファイルが見つかることがあります。\\n\\n注意: Pearcleaner はファイルを削除するために AppleScript を使用します。現在、macOS では AppleScript が指紋センサーを使用して認証することはできません。パスワード認証のみがサポートされています。"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zawsze potwierdzaj pliki zaznaczone do usunięcia. W rzadkich przypadkach mogą zostać znalezione niepowiązane pliki, gdy nazwy aplikacji są zbyt podobne.\n\nUWAGA: Pearcleaner używa AppleScript do usuwania plików. Obecnie system macOS nie pozwala AppleScript na uwierzytelnianie za pomocą czytnika linii papilarnych, obsługiwane jest tylko uwierzytelnianie hasłem."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2944,6 +3142,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "アニメーションを無効にする"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animacje wyłączone"
           }
         },
         "pt-BR" : {
@@ -3035,6 +3239,12 @@
             "value" : "アニメーションを有効にする"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animacje włączone"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3122,6 +3332,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "お知らせ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ogłoszenie"
           }
         },
         "pt-BR" : {
@@ -3213,6 +3429,12 @@
             "value" : "App Lipo"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lipo aplikacji"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3301,6 +3523,12 @@
             "value" : "アプリ名"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nazwa aplikacji"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3387,6 +3615,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "アプリのサイズ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rozmiar aplikacji"
           }
         },
         "pt-BR" : {
@@ -3478,6 +3712,12 @@
             "value" : "外観"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wygląd"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3564,6 +3804,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "アプリケーションファイルはサブディレクトリに入れ子になっています。間違ったフォルダを削除しないように、Pearcleaner はこれらをそのままにします。必要に応じて、残りのフォルダを手動で削除することができます。"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plik aplikacji jest zagnieżdżony w podfolderach. Aby zapobiec usunięciu nieprawidłowych folderów, Pearcleaner zostawi je. W razie potrzeby można ręcznie usunąć pozostałe foldery."
           }
         },
         "pt-BR" : {
@@ -3655,6 +3901,12 @@
             "value" : "アプリスクリプト"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skrypt aplikacji"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3741,6 +3993,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "アプリケーション"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplikacje"
           }
         },
         "pt-BR" : {
@@ -3831,6 +4089,12 @@
             "value" : "概算節約額"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przybliżone oszczędności"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3917,6 +4181,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "概算節約額:"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przybliżone oszczędności:"
           }
         },
         "pt-BR" : {
@@ -4007,6 +4277,12 @@
             "value" : "アプリケーション"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplikacje"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4095,6 +4371,12 @@
             "value" : "これらのファイルを削除してもよろしいですか？"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Czy na pewno chcesz usunąć te pliki?"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4181,6 +4463,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "設定 > ログイン項目 > %@.app で承認が必要です"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wymagane upoważnienie w Ustawienia systemowe > Rzeczy i rozszerzenia otwierane podczas logowania > %@.app."
           }
         },
         "pt-BR" : {
@@ -4272,6 +4560,12 @@
             "value" : "自動化"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatyzacja"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4358,6 +4652,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "利用可能:"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dostępne:"
           }
         },
         "pt-BR" : {
@@ -4448,6 +4748,12 @@
             "value" : "均衡"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zrównoważony"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4534,6 +4840,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "バランスレベルおよびSpotlightメタデータ検索を含む（ほとんどのファイル、最も精度が低い）"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zrównoważony poziom, obejmuje również wyszukiwanie metadanych Spotlight (większość plików, najmniejsza dokładność)"
           }
         },
         "pt-BR" : {
@@ -4624,6 +4936,12 @@
             "value" : "ベータ"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BETA"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4710,6 +5028,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "部品表"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lista materiałów"
           }
         },
         "pt-BR" : {
@@ -4800,6 +5124,12 @@
             "value" : "広範囲"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obszerny"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4888,6 +5218,12 @@
             "value" : "バンドルファイル..."
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pakiet plików..."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4974,6 +5310,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "バンドルシニング（lipo）は、未使用のアーキテクチャを削除することでアプリバンドル内のバイナリを変更する積極的な操作です。通常は安全ですが、一部のアプリケーションはこのプロセス後に問題が発生したり起動に失敗する可能性があります。この操作を進める前に、特に重要または頻繁に使用するアプリのバックアップを作成することを強くお勧めします。"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zmniejszanie rozmiaru pakietu (lipo) to agresywna operacja, która modyfikuje pliki binarne w pakietach aplikacji poprzez usunięcie nieużywanych architektur. Chociaż jest to ogólnie bezpieczne, niektóre aplikacje mogą mieć problemy lub nie uruchamiać się po tym procesie. Zdecydowanie zaleca się utworzenie kopii zapasowej aplikacji przed kontynuowaniem, zwłaszcza w przypadku aplikacji krytycznych lub często używanych."
           }
         },
         "pt-BR" : {
@@ -5065,6 +5407,12 @@
             "value" : "バンドルのスリム化が完了しました。バンドル内のすべてのバイナリから節約された合計スペース。"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zakończono zmniejszanie rozmiaru pakietu.\nCałkowita ilość miejsca zaoszczędzona dzięki wszystkim plikom binarnym w pakiecie."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5151,6 +5499,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "バンドル: %@"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pakiet: %@"
           }
         },
         "pt-BR" : {
@@ -5242,6 +5596,12 @@
             "value" : "計算中"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "obliczanie"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5328,6 +5688,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "計算中..."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obliczanie..."
           }
         },
         "pt-BR" : {
@@ -5419,6 +5785,12 @@
             "value" : "キャンセル"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anuluj"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5506,6 +5878,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更新を確認"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprawdź aktualizacje"
           }
         },
         "pt-BR" : {
@@ -5596,6 +5974,12 @@
             "value" : "確認中..."
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprawdzanie…"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5682,6 +6066,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "一般的なIDEの保存ファイルとキャッシュをクリーンにする"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyczyść przechowywane pliki i pamięć podręczną dla popularnych środowisk IDE"
           }
         },
         "pt-BR" : {
@@ -5773,6 +6163,12 @@
             "value" : "クリア"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyraźny"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5860,6 +6256,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "テキストをクリア"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyczyść tekst"
           }
         },
         "pt-BR" : {
@@ -5951,6 +6353,12 @@
             "value" : "アプリリストを表示"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kliknij, aby wyświetlić listę aplikacji"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6040,6 +6448,12 @@
             "value" : "ヘッダーをクリックして並べ替え順序を変更"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kliknij nagłówek, aby zmienić kolejność sortowania"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6126,6 +6540,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "クリックして閉じる"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kliknij, aby zamknąć"
           }
         },
         "pt-BR" : {
@@ -6217,6 +6637,12 @@
             "value" : "検索するにはクリック"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kliknij, aby wyszukać"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6303,6 +6729,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "閉じる"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zamknij"
           }
         },
         "pt-BR" : {
@@ -6394,6 +6826,12 @@
             "value" : "アンインストール後に閉じる"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zamknij po odinstalowaniu"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6480,6 +6918,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "カラーストリング"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ciąg kolorów"
           }
         },
         "pt-BR" : {
@@ -6571,6 +7015,12 @@
             "value" : "コマンドライン"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wiersz poleceń"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6658,6 +7108,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "完了 🚀"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ukończono 🚀"
           }
         },
         "pt-BR" : {
@@ -6749,6 +7205,12 @@
             "value" : "コンテナ"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontener"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6835,6 +7297,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "コピー"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopiuj"
           }
         },
         "pt-BR" : {
@@ -6926,6 +7394,12 @@
             "value" : "ファイルパスをコピー"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopiuj ścieżki plików"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7015,6 +7489,12 @@
             "value" : "パスをコピー"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopiuj ścieżkę"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7101,6 +7581,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "カスタム感度"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indywidualna czułość"
           }
         },
         "pt-BR" : {
@@ -7192,6 +7678,12 @@
             "value" : "毎日"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dziennie"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7278,6 +7770,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "デバッグコンソール"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konsola debugowania"
           }
         },
         "pt-BR" : {
@@ -7368,6 +7866,12 @@
             "value" : "削除"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7454,6 +7958,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "すべて削除"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń wszystko"
           }
         },
         "pt-BR" : {
@@ -7544,6 +8054,12 @@
             "value" : "すべてのコンテンツを削除"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń całą zawartość"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7630,6 +8146,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "このフォルダ内のすべてのファイルを削除"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń wszystkie pliki z tego folderu"
           }
         },
         "pt-BR" : {
@@ -7720,6 +8242,12 @@
             "value" : "すべてのフォルダを削除"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń wszystkie foldery"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7806,6 +8334,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "すべての残りのパッケージファイルを削除"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń wszystkie pozostałe pliki pakietu"
           }
         },
         "pt-BR" : {
@@ -7896,6 +8430,12 @@
             "value" : "内容を削除"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń zawartość"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7982,6 +8522,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ファイルを削除"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń plik"
           }
         },
         "pt-BR" : {
@@ -8072,6 +8618,12 @@
             "value" : "フォルダを削除"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń folder"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8158,6 +8710,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "フォルダを削除"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń folder"
           }
         },
         "pt-BR" : {
@@ -8248,6 +8806,12 @@
             "value" : "このファイルを削除"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń ten plik"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8336,6 +8900,12 @@
             "value" : "削除済み"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "USUNIĘTO"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8422,6 +8992,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "詳細"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Szczególy"
           }
         },
         "pt-BR" : {
@@ -8513,6 +9089,12 @@
             "value" : "アプリがゴミ箱に移動されたときに検出"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wykrywanie kiedy aplikacja jest w Koszu"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8599,6 +9181,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "開発者"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Developer"
           }
         },
         "pt-BR" : {
@@ -8689,6 +9277,12 @@
             "value" : "開発"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rozwój"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8777,6 +9371,12 @@
             "value" : "開発環境"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Środowiska programistyczne"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8863,6 +9463,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "無効"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyłączone"
           }
         },
         "pt-BR" : {
@@ -8954,6 +9560,12 @@
             "value" : "閉じる"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odrzuć"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9040,6 +9652,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ドラッグしてグリッドモードに拡大"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przeciągnij, aby rozwinąć do trybu siatki"
           }
         },
         "pt-BR" : {
@@ -9131,6 +9749,12 @@
             "value" : "アプリをここにドロップ"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upuść aplikację tutaj"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9218,6 +9842,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ファイルやフォルダを上にドロップするか、クリックして追加"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upuść pliki lub foldery powyżej lub kliknij, aby dodać"
           }
         },
         "pt-BR" : {
@@ -9309,6 +9939,12 @@
             "value" : "フォルダを上にドロップするか、クリックして追加"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upuść foldery powyżej lub kliknij, aby dodać"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9396,6 +10032,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ドロップターゲット"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upuść cel"
           }
         },
         "pt-BR" : {
@@ -9487,6 +10129,12 @@
             "value" : "Finder用のコンテキストメニュー拡張を有効にする"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Włącz rozszerzenie menu kontekstowego dla Finder"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9575,6 +10223,12 @@
             "value" : "有効"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Włączone"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9661,6 +10315,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "CLIを有効にすると、ターミナルからPearcleanerのアクションを実行できます。これにより、pearcleanerコマンドが/usr/local/binに追加され、PATH環境変数から直接使用できるようになります。有効にした後、以下を試してください：\n\n> pear --help"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Włączenie CLI umożliwi wykonywanie działań Pearcleaner z poziomu terminala. Spowoduje to dodanie polecenia pearcleaner do katalogu /usr/local/bin, dzięki czemu będzie ono dostępne bezpośrednio z poziomu zmiennej środowiskowej PATH. Po włączeniu spróbuj wykonać polecenie:\n\n> pear --help"
           }
         },
         "pt-BR" : {
@@ -9752,6 +10412,12 @@
             "value" : "この拡張機能を有効にすると、Finderでアプリを右クリックしてPearcleanerですぐにアンインストールできます"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Włączenie tego rozszerzenia pozwoli Ci kliknąć prawym przyciskiem myszy na aplikacje w Finderze, aby szybko je odinstalować za pomocą Pearcleaner"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9838,6 +10504,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "拡張済み"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rozszerzone"
           }
         },
         "pt-BR" : {
@@ -9928,6 +10600,12 @@
             "value" : "上記の順序でコンマで区切って、ちょうど 5 つの 16 進数カラーを入力してください"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wprowadź dokładnie 5 kolorów szesnastkowych (HEX) oddzielonych przecinkami w powyższej kolejności"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10014,6 +10692,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ここに手動コマンドを入力し、Enter キーを押して実行"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wpisz polecenie ręczne, naciśnij Enter, aby uruchomić"
           }
         },
         "pt-BR" : {
@@ -10104,6 +10788,12 @@
             "value" : "見つかったファイルに対する正確なアプリ名とバンドルIDの一致（ファイル数が少ないが、最も正確）"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dokładna nazwa aplikacji i identyfikator pakietu pasują do znalezionych plików (mniej plików, większa dokładność)"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10190,6 +10880,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "特権コマンドの例"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przykładowe polecenia uprzywilejowane"
           }
         },
         "pt-BR" : {
@@ -10281,6 +10977,12 @@
             "value" : "除外"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyklucz"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10367,6 +11069,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "選択項目を除外"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyklucz wybrane"
           }
         },
         "pt-BR" : {
@@ -10458,6 +11166,12 @@
             "value" : "孤立ファイルの検索時に無視されるファイルやフォルダを追加します。パスをクリックするとリストから削除されます。"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyklucz te pliki i foldery z wyszukiwania osieroconych plików"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10546,6 +11260,12 @@
             "value" : "除外されたアプリ"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wykluczone aplikacje"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10632,6 +11352,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "除外パス"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wykluczone scieżki"
           }
         },
         "pt-BR" : {
@@ -10723,6 +11449,12 @@
             "value" : "ファイルパスをエクスポート"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eksportuj ścieżki plików"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10809,6 +11541,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ファイルパスをエクスポート..."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eksportuj ścieżki plików..."
           }
         },
         "pt-BR" : {
@@ -10900,6 +11638,12 @@
             "value" : "リリースノートを表示できませんでした"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie udało się wyświetlić informacji o wydaniu"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10989,6 +11733,12 @@
             "value" : "ファイルサイズ表示オプション"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opcje wyświetlania rozmiaru pliku"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11075,6 +11825,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ファイルシステム"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System plików"
           }
         },
         "pt-BR" : {
@@ -11166,6 +11922,12 @@
             "value" : "Finder 拡張機能"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rozszerzenie Finder"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11253,6 +12015,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "孤立ファイルを検索中、お待ちください..."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyszukiwanie osieroconych plików, proszę czekać..."
           }
         },
         "pt-BR" : {
@@ -11344,6 +12112,12 @@
             "value" : "フォルダ"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foldery"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11431,6 +12205,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "強制更新"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wymuś odświeżenie"
           }
         },
         "pt-BR" : {
@@ -11521,6 +12301,12 @@
             "value" : "削除"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zapomnij"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11609,6 +12395,12 @@
             "value" : "%lld 個の孤立したワークスペース%@が見つかりました"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Znaleziono %lld osierocone obszary robocze%@"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11695,6 +12487,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "アプリ全体のサイズ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Całkowity rozmiar aplikacji"
           }
         },
         "pt-BR" : {
@@ -11786,6 +12584,12 @@
             "value" : "完全ディスクアクセス"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pełny dostęp do dysku"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11873,6 +12677,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "機能"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Funkcjonalność"
           }
         },
         "pt-BR" : {
@@ -11964,6 +12774,12 @@
             "value" : "アプリの詳細を収集中"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zbieranie szczegółowych informacji o aplikacji"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12051,6 +12867,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "一般"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ogólne"
           }
         },
         "pt-BR" : {
@@ -12142,6 +12964,12 @@
             "value" : "GitHubスポンサー"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sponsorzy GitHub"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12226,6 +13054,12 @@
           }
         },
         "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub: v%@"
+          }
+        },
+        "pl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "GitHub: v%@"
@@ -12319,6 +13153,12 @@
             "value" : "ガラス効果"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Efekt szkła"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12405,6 +13245,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "メインページでの挨拶が無効化されています"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyłączone powitanie na stronie głównej"
           }
         },
         "pt-BR" : {
@@ -12495,6 +13341,12 @@
             "value" : "メインページでの挨拶が有効"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Włączone powitanie na stronie głównej"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12581,6 +13433,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "グリッドビュー"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widok siatki"
           }
         },
         "pt-BR" : {
@@ -12671,6 +13529,12 @@
             "value" : "ヘルパー"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Narzędzie pomocnicze"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12757,6 +13621,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ヘルパーがインストールされていません"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Narzędzie pomocnicze nie jest zainstalowane"
           }
         },
         "pt-BR" : {
@@ -12847,6 +13717,12 @@
             "value" : "詳細を非表示"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ukryj szczególy"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12933,6 +13809,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "複数選択を非表示"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ukryj wielokrotny wybór"
           }
         },
         "pt-BR" : {
@@ -13024,6 +13906,12 @@
             "value" : "アンインストール後にHomebrewをクリーンアップ"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uruchom czyszczenie homebrew po odinstalowaniu"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13110,6 +13998,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Homebrew クリーンアップ: %@"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Czyszczenie homebrew: %@"
           }
         },
         "pt-BR" : {
@@ -13200,6 +14094,12 @@
             "value" : "ホバーで検索"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Najedź kursorem, aby wyszukać"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13283,6 +14183,12 @@
           }
         },
         "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID: %@"
+          }
+        },
+        "pl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ID: %@"
@@ -13377,6 +14283,12 @@
             "value" : "重要"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ważne"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13463,6 +14375,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "お知らせ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informacje"
           }
         },
         "pt-BR" : {
@@ -13553,6 +14471,12 @@
             "value" : "インストール日"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data instalacji"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13639,6 +14563,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "インストール場所："
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lokalizacja:"
           }
         },
         "pt-BR" : {
@@ -13729,6 +14659,12 @@
             "value" : "インストールに失敗しました: %@"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalacja nie powiodła się: %@"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13815,6 +14751,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "インストール済み:"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zainstalowano:"
           }
         },
         "pt-BR" : {
@@ -13906,6 +14848,12 @@
             "value" : "インストール済み: v%@"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zainstalowano: v%@"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13994,6 +14942,12 @@
             "value" : "インストーラー："
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalator:"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -14080,6 +15034,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "これはファイルをゴミ箱フォルダーに移動する代わりに、永久に削除します。この設定が有効になっている場合、ゴミ箱フォルダーにファイルがないため、元に戻す機能も有効ではありません。"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zamiast przenosić pliki do Kosza, spowoduje to ich trwałe usunięcie. Po włączeniu tego ustawienia funkcja Cofnij również nie będzie aktywna, ponieważ w koszu nie ma plików, które można cofnąć."
           }
         },
         "pt-BR" : {
@@ -14171,6 +15131,12 @@
             "value" : "指示"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instrukcje"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -14257,6 +15223,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "インターフェース"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Interfejs"
           }
         },
         "pt-BR" : {
@@ -14347,6 +15319,12 @@
             "value" : "無効な署名です。アプリケーションとヘルパーツールの適切な署名を確認してください。"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nieprawidłowy podpis, upewnij się, że aplikacja i narzędzie pomocnicze zostały poprawnie podpisane."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -14431,6 +15409,12 @@
           }
         },
         "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS"
+          }
+        },
+        "pl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "iOS"
@@ -14525,6 +15509,12 @@
             "value" : "iOS アプリ"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplikacja iOS"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -14612,6 +15602,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "アイテム"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "rzecz"
           }
         },
         "pt-BR" : {
@@ -14703,6 +15699,12 @@
             "value" : "アイテム"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "rzeczy"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -14789,6 +15791,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "最終使用日"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data ostatniego użycia"
           }
         },
         "pt-BR" : {
@@ -14880,6 +15888,12 @@
             "value" : "ログイン時にPearcleanerを起動"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uruchom Pearcleaner podczas logowania"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -14966,6 +15980,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Launch Services マネージャー"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zarządzanie usługami startowymi"
           }
         },
         "pt-BR" : {
@@ -15056,6 +16076,12 @@
             "value" : "レイアウト"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Układ"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -15144,6 +16170,12 @@
             "value" : "少ない"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mniej"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -15230,6 +16262,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "少ないファイル"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mniej plików"
           }
         },
         "pt-BR" : {
@@ -15327,6 +16365,12 @@
             "value" : "選択したすべてのアイテムを選択したアプリにリンクする"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Połącz wszystkie wybrane elementy z wybraną aplikacją"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -15413,6 +16457,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "選択したすべてのアイテムを選択したアプリにリンクし、孤立したスキャンから削除します。"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Połącz wszystkie wybrane elementy z wybraną aplikacją i usuń je z osieroconych skanów."
           }
         },
         "pt-BR" : {
@@ -15503,6 +16553,12 @@
             "value" : "選択したリンクをアプリに"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Połącz wybrane do aplikacji"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -15591,6 +16647,12 @@
             "value" : "リンク先"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Połącz do"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -15674,6 +16736,12 @@
           }
         },
         "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lipo"
+          }
+        },
+        "pl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lipo"
@@ -15767,6 +16835,12 @@
             "value" : "Lipoアーキテクチャ"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Architektury Lipo"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -15853,6 +16927,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "リストビュー"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widok listy"
           }
         },
         "pt-BR" : {
@@ -15943,6 +17023,12 @@
             "value" : "サービスを読み込む"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Załaduj usługę"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -16029,6 +17115,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "読み込んでいます..."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ładowanie plików…"
           }
         },
         "pt-BR" : {
@@ -16119,6 +17211,12 @@
             "value" : "起動サービスを読み込んでいます..."
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ładowanie usług startowych..."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -16207,6 +17305,12 @@
             "value" : "パッケージを読み込んでいます…"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ładowanie pakietów..."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -16293,6 +17397,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "場所："
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lokalizacja:"
           }
         },
         "pt-BR" : {
@@ -16384,6 +17494,12 @@
             "value" : "アプリケーションファイルの場所を検索します。デフォルト以外のパスをクリックして削除します。デフォルトのパスは削除できません。"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lokalizacje, w których będą wyszukiwane pliki .app. Kliknij ścieżkę inną niż domyślna, aby ją usunąć. Ścieżek domyślnych nie można usuwać."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -16471,6 +17587,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "論理サイズ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logiczne"
           }
         },
         "pt-BR" : {
@@ -16561,6 +17683,12 @@
             "value" : "ログイン項目"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rzeczy otwierane podczas logowania"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -16647,6 +17775,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "macOS はアプリケーションフォルダに本体アプリがある場合のみ拡張機能を有効にします"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System macOS włącza rozszerzenia tylko wtedy, gdy główna aplikacja znajduje się w folderze Aplikacje"
           }
         },
         "pt-BR" : {
@@ -16738,6 +17872,12 @@
             "value" : "Alin Lupascu による ❤️ 作品"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stworzone z ❤️ przez Alin Lupascu"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -16824,6 +17964,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "起動エージェント、デーモン、およびXPCサービスを管理する"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zarządzaj agentami uruchamiania, demonami i usługami XPC"
           }
         },
         "pt-BR" : {
@@ -16914,6 +18060,12 @@
             "value" : "macOSインストーラーを通じてインストールされたパッケージを管理する"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zarządzaj pakietami zainstalowanymi za pomocą instalatora macOS"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -17000,6 +18152,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "管理"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zarządzanie"
           }
         },
         "pt-BR" : {
@@ -17091,6 +18249,12 @@
             "value" : "最小不透明度:"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimalna nieprzezroczystość:"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -17180,6 +18344,12 @@
             "value" : "権限が不足しています"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brakujące uprawnienia"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -17266,6 +18436,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "修正日"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data modyfikacji"
           }
         },
         "pt-BR" : {
@@ -17357,6 +18533,12 @@
             "value" : "毎月"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miesięcznie"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -17444,6 +18626,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "もっと見る"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Więcej"
           }
         },
         "pt-BR" : {
@@ -17534,6 +18722,12 @@
             "value" : "ほとんどのファイル"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Większość plików"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -17622,6 +18816,12 @@
             "value" : "サイドバーのアプリ一覧で複数選択が無効化されています"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wybór wielu elementów wyłączony na liście aplikacji w pasku bocznym"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -17708,6 +18908,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "サイドバーのアプリリストで複数選択が有効"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wybór wielu elementów włączony na liście aplikacji w pasku bocznym"
           }
         },
         "pt-BR" : {
@@ -17799,6 +19005,12 @@
             "value" : "名前"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nazwa"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -17887,6 +19099,12 @@
             "value" : "名前: %@"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nazwa: %@"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -17973,6 +19191,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "移動先"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przejdź do"
           }
         },
         "pt-BR" : {
@@ -18064,6 +19288,12 @@
             "value" : "しない"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nigdy"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -18151,6 +19381,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "新しいお知らせ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nowe ogłoszenie"
           }
         },
         "pt-BR" : {
@@ -18242,6 +19478,12 @@
             "value" : "次のアップデートチェック：%@"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Następna aktualizacja: %@"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -18328,6 +19570,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "スリム化のためのアプリはありません"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brak aplikacji do zmniejszenia rozmiaru"
           }
         },
         "pt-BR" : {
@@ -18418,6 +19666,12 @@
             "value" : "除外されたアプリはありません"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brak wykluczonych aplikacji"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -18504,6 +19758,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "コマンドが指定されていません"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brak polecenia"
           }
         },
         "pt-BR" : {
@@ -18595,6 +19855,12 @@
             "value" : "ファイルやフォルダーが追加されていません"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie dodano żadnych plików ani folderów"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -18683,6 +19949,12 @@
             "value" : "現在のフィルターに一致する項目はありません"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Żadne rzeczy nie pasują do aktualnych filtrów"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -18769,6 +20041,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "起動サービスが見つかりません"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie znaleziono żadnych usług związanych z uruchomieniem"
           }
         },
         "pt-BR" : {
@@ -18860,6 +20138,12 @@
             "value" : "新しいお知らせはありません"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brak nowych ogłoszeń"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -18946,6 +20230,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "孤立したファイルは見つかりませんでした"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie znaleziono żadnych osieroconych plików"
           }
         },
         "pt-BR" : {
@@ -19036,6 +20326,12 @@
             "value" : "孤立したワークスペースは見つかりませんでした"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie znaleziono żadnych osieroconych obszarów roboczych"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -19124,6 +20420,12 @@
             "value" : "パッケージが見つかりませんでした"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie znaleziono żadnych pakietów"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -19210,6 +20512,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "アプリに関連付けられたパスや除外されたパスはありません"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Żadne ścieżki nie są wykluczone ani powiązane z aplikacją"
           }
         },
         "pt-BR" : {
@@ -19301,6 +20609,12 @@
             "value" : "表示するリリースはありません"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brak wersji do wyświetlenia"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -19387,6 +20701,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "バンドルの削減による節約はありません"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brak oszczędności wynikających z zmniejszenia rozmiaru pakietu"
           }
         },
         "pt-BR" : {
@@ -19478,6 +20798,12 @@
             "value" : "アップデートはありません 😌"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brak aktualizacji 😌"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -19567,6 +20893,12 @@
             "value" : "利用不可"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Niedostępne"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -19653,6 +20985,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "見つかりません"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie znaleziono"
           }
         },
         "pt-BR" : {
@@ -19744,6 +21082,12 @@
             "value" : "の"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "z"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -19833,6 +21177,12 @@
             "value" : "オーケー"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Okej"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -19919,6 +21269,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "1MB以上の節約ができるアプリのみ表示"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pokaż tylko aplikacje, które pozwalają zaoszczędzić co najmniej 1 MB"
           }
         },
         "pt-BR" : {
@@ -20010,6 +21366,12 @@
             "value" : "%@を開く"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otwórz %@"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -20096,6 +21458,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Finderで開く"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otwórz w Finder"
           }
         },
         "pt-BR" : {
@@ -20186,6 +21554,12 @@
             "value" : "操作に失敗しました: %@"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Operacja nie powiodła się: %@"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -20272,6 +21646,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "オプション"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opcje"
           }
         },
         "pt-BR" : {
@@ -20363,6 +21743,12 @@
             "value" : "孤立ファイル検索は100%正確ではありません。アンインストールされたアプリのバンドルがないため、ファイルの除外に対するチェックができません。これはファイル/フォルダーのベストガイス検索を行い、現在インストールされているアプリケーションと重複するものを除外します。削除対象としてマークされたファイルが本当にアンインストールされたアプリケーションに属していることを確認してください。"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyszukiwanie osieroconych plików nie jest w 100% dokładne, ponieważ nie ma żadnych odinstalowanych pakietów aplikacji, które można by sprawdzić pod kątem wykluczenia plików. Funkcja ta wykonuje najlepsze możliwe wyszukiwanie plików/folderów i wyklucza te, które pokrywają się z aktualnie zainstalowanymi aplikacjami. Proszę potwierdzić, że pliki oznaczone do usunięcia rzeczywiście należą do odinstalowanych aplikacji."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -20450,6 +21836,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "孤立ファイル"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pliki osierocone"
           }
         },
         "pt-BR" : {
@@ -20540,6 +21932,12 @@
             "value" : "孤立ファイル"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pliki osierocone"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -20626,6 +22024,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "パッケージマネージャー"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menedżer pakietów"
           }
         },
         "pt-BR" : {
@@ -20716,6 +22120,12 @@
             "value" : "パッケージ"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pakiety"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -20802,6 +22212,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "パス"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scieżka"
           }
         },
         "pt-BR" : {
@@ -20893,6 +22309,12 @@
             "value" : "Pearcleaner とそのすべてのファイルが完全に削除されます。よろしいですか？"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner i wszystkie jego pliki zostaną całkowicie usunięte. Czy na pewno chcesz to zrobić?"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -20979,6 +22401,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pearcleanerは次の方法で特権操作を行うことができます。\n- ヘルパーサービス 👍🏻\n- 認証サービス 👎🏻\n\nヘルパーサービス: Pearcleanerはヘルパーを有効にするためにパスワードを一度だけ入力するように求め、その後ヘルパーが「設定 > ログイン項目」で有効のままであれば、すべての後続の操作はプロンプトなしで実行されます。この認証はmacOSによってSMAppServiceを通じて管理されます。\n\n認証サービス: すべての特権操作でパスワードプロンプトをユーザーに求めるため、圧倒される可能性があります。これらの認可はPearcleanerとユーザーによって管理されます。\n\n特権操作とは: Pearcleanerがユーザーに権限のないフォルダ（例: /var）からファイルを削除する必要がある場合や特権のある場所にファイルを元に戻す場合です。"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner może wykonywać operacje uprzywilejowane w następujący sposób:\n- Usługi narzędzia pomocniczego 👍🏻\n- Usługi autoryzacyjne 👎🏻\n\nUsługi narzędzia pomocniczego: Pearcleaner poprosi Cię o podanie hasła tylko raz, aby włączyć narzędzie pomocnicze, a następnie wszystkie kolejne operacje będą wykonywane bez żadnych komunikatów, o ile usługa pomocnicza pozostanie włączona w Ustawienia systemowe > Rzeczy i rozszerzenia otwierane podczas logowania. Autoryzacja ta jest zarządzana przez system macOS za pośrednictwem SMAppService.\n\nUsługi autoryzacyjne: Pearcleaner będzie prosił użytkownika o podanie hasła przy każdej operacji wymagającej uprawnień, co może być uciążliwe. Autoryzacje te są zarządzane przez Pearcleaner i użytkownika.\n\nCzym jest operacja wymagająca uprawnień: Za każdym razem, gdy Pearcleaner musi usunąć pliki z folderu (np. /var), do którego użytkownik nie ma uprawnień, lub cofnąć/przywrócić pliki do lokalizacji wymagającej uprawnień."
           }
         },
         "pt-BR" : {
@@ -21068,6 +22496,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pearcleaner CLI サポート"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obsługa Pearcleaner CLI"
           }
         },
         "pt-BR" : {
@@ -21160,6 +22594,12 @@
             "value" : "Pearcleanerでアンインストール"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odinstaluj za pomocą Pearcleaner"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -21247,6 +22687,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pearcleanerは、スペースを節約するために%@の実行可能ファイルから%@アーキテクチャを削除します。続行しますか？"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner usunie architekturę %@ z pliku wykonywalnego %@, aby zaoszczędzić miejsce. Czy chcesz kontynuować?"
           }
         },
         "pt-BR" : {
@@ -21337,6 +22783,12 @@
             "value" : "パスワード入力なしでシームレスに特権操作を実行"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Płynne wykonywanie operacji uprzywilejowanych bez komunikatów o podanie hasła"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -21425,6 +22877,12 @@
             "value" : "ファイルを完全に削除"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trwale usuń pliki"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -21511,6 +22969,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "許可が必要です。システム設定 > ログイン項目で有効にしてください。"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wymagane uprawnienia. Włącz w Ustawieniach systemowych > Rzeczy i rozszerzenia otwierane podczas logowania."
           }
         },
         "pt-BR" : {
@@ -21602,6 +23066,12 @@
             "value" : "権限ステータス"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Status uprawnień"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -21688,6 +23158,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "権限テスト"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Testowanie uprawnień"
           }
         },
         "pt-BR" : {
@@ -21779,6 +23255,12 @@
             "value" : "権限"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uprawnienia"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -21868,6 +23350,12 @@
             "value" : "視点:"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perspektywa:"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -21951,6 +23439,12 @@
           }
         },
         "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PID: %@"
+          }
+        },
+        "pl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "PID: %@"
@@ -22045,6 +23539,12 @@
             "value" : "ポップオーバーウィンドウを最上部に固定"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przypnij wyskakujące okno na górze"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -22131,6 +23631,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ヘルパーサービスをインストールしてください"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Proszę zainstalować narzędzie pomocnicze"
           }
         },
         "pt-BR" : {
@@ -22222,6 +23728,12 @@
             "value" : "Plistファイル"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plik Plist"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -22305,6 +23817,12 @@
           }
         },
         "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plist: %@"
+          }
+        },
+        "pl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Plist: %@"
@@ -22398,6 +23916,12 @@
             "value" : "バンドル削減による潜在的な節約"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Potencjalne oszczędności wynikające z zmniejszenia rozmiaru pakietu"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -22485,6 +24009,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "翻訳を整理"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyczyść tłumaczenia"
           }
         },
         "pt-BR" : {
@@ -22575,6 +24105,12 @@
             "value" : "パージ可能なスペースとは、macOSによって占有されるシステムデータを指します。これは手動で解放することはできず、システムによって自動的に管理されます。"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przestrzeń do wyczyszczenia odnosi się do danych systemowych zajmowanych przez system macOS. Nie można jej zwolnić ręcznie i jest ona automatycznie zarządzana przez system."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -22661,6 +24197,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "削除可能:"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Możliwość czyszczenia:"
           }
         },
         "pt-BR" : {
@@ -22752,6 +24294,12 @@
             "value" : "終了"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zamknij"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -22839,6 +24387,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pearcleanerを終了"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zamknij program Pearcleaner"
           }
         },
         "pt-BR" : {
@@ -22930,6 +24484,12 @@
             "value" : "実際のサイズ"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rzeczywiste"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -23016,6 +24576,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "実際のサイズの種類は、ファイルがディスク上でどれだけの実際の割り当てスペースを使用しているかを示します。\n\n論理サイズはバイナリサイズを示します。ファイルシステムはディスク上のセクタを圧縮したり重複排除したりできるため、実際のサイズは論理サイズよりも小さい（または大きい）場合があります。\n\nFinder サイズは、Finder で右クリック > 情報を見るを選択した際に表示されるもので、論理サイズと実際のサイズの両方をまとめて示します。"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typ rzeczywistego rozmiaru pokazuje, ile miejsca na dysku zajmuje plik.\n\nTyp logiczny pokazuje rozmiar binarny. System plików może kompresować i deduplikować sektory na dysku, więc rzeczywisty rozmiar jest czasem mniejszy (lub większy) niż rozmiar logiczny.\n\nRozmiar w Finderze jest podobny do tego, który można zobaczyć po kliknięciu prawym przyciskiem myszy > Informacje o pliku w Finderze, gdzie pokazany jest zarówno rozmiar logiczny, jak i rzeczywisty."
           }
         },
         "pt-BR" : {
@@ -23107,6 +24673,12 @@
             "value" : "「実際のサイズ」タイプは、ファイルがディスク上で実際に割り当てられているスペースの量を表示します。\n\n「論理サイズ」タイプは、バイナリサイズを表示します。ファイルシステムはディスク上のセクターを圧縮し、重複を排除することができるため、実際のサイズは論理サイズより小さい（または大きい）場合があります。\n\n「Finder サイズ」は、Finder でファイルを右クリックして「情報を取得」を選択した場合と同様で、論理サイズと実際のサイズの両方を表示します。"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typ rzeczywistego rozmiaru pokazuje, ile miejsca na dysku zajmuje plik.\n\nTyp logiczny pokazuje rozmiar binarny. System plików może kompresować i deduplikować sektory na dysku, więc rzeczywisty rozmiar jest czasem mniejszy (lub większy) niż rozmiar logiczny.\n\nRozmiar w Finderze jest podobny do tego, który można zobaczyć po kliknięciu prawym przyciskiem myszy > Informacje o pliku w Finderze, gdzie pokazany jest zarówno rozmiar logiczny, jak i rzeczywisty."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -23193,6 +24765,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "領収書のパス："
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ścieżka odbioru:"
           }
         },
         "pt-BR" : {
@@ -23284,6 +24862,12 @@
             "value" : "更新"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odśwież"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -23371,6 +24955,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "アプリを更新"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odśwież aplikacje"
           }
         },
         "pt-BR" : {
@@ -23462,6 +25052,12 @@
             "value" : "アプリを更新（⌘R）"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odśwież aplikacje (⌘+R)"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -23548,6 +25144,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "リストを更新"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odśwież liste"
           }
         },
         "pt-BR" : {
@@ -23639,6 +25241,12 @@
             "value" : "アップデーターを更新"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odśwież aktualizator"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -23725,6 +25333,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "登録済みですが、システム設定 > ログイン項目で有効化が必要です。"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zarejestrowany, ale wymaga włączenia w Ustawieniach systemowych > Rzeczy i rozszerzenia otwierane podczas logowania."
           }
         },
         "pt-BR" : {
@@ -23815,6 +25429,12 @@
             "value" : "レギュラー"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regularny"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -23901,6 +25521,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "リリースノート"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informacje o wydaniu"
           }
         },
         "pt-BR" : {
@@ -23992,6 +25618,12 @@
             "value" : "リリース"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wydania"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -24079,6 +25711,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "以前のアプリケーションからの残りのファイルとフォルダー"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pliki i foldery pozostałe po poprzednich aplikacjach"
           }
         },
         "pt-BR" : {
@@ -24169,6 +25807,12 @@
             "value" : "削除"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -24255,6 +25899,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "すべて削除"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń wszystko"
           }
         },
         "pt-BR" : {
@@ -24345,6 +25995,12 @@
             "value" : "すべてのファイル/フォルダを削除"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń wszystkie pliki/foldery"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -24431,6 +26087,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "関連付けと除外を削除"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń powiązanie i wykluczenie"
           }
         },
         "pt-BR" : {
@@ -24521,6 +26183,12 @@
             "value" : "除外リストから削除"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń z listy wykluczeń"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -24607,6 +26275,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "システム記録からパッケージを削除（ファイルは削除されません）"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń pakiet z rejestrów systemu (nie usuwa plików)"
           }
         },
         "pt-BR" : {
@@ -24697,6 +26371,12 @@
             "value" : "サービス登録を削除"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń rejestrację usługi"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -24783,6 +26463,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "アプリのバイナリから未使用のアーキテクチャを削除してアプリサイズを縮小"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń nieużywane architektury z plików binarnych aplikacji, aby zmniejszyć jej rozmiar"
           }
         },
         "pt-BR" : {
@@ -24873,6 +26559,12 @@
             "value" : "lipo中に未使用の言語を削除"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń nieużywane języki podczas lipo"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -24959,6 +26651,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "削除されたプロジェクトフォルダのワークスペースストレージを削除"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń miejsce przechowywania obszarów roboczych dla usuniętych folderów projektów"
           }
         },
         "pt-BR" : {
@@ -25050,6 +26748,12 @@
             "value" : "再スキャン"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponowne skanowanie"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -25136,6 +26840,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "リセット"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zresetuj"
           }
         },
         "pt-BR" : {
@@ -25227,6 +26937,12 @@
             "value" : "すべての設定をデフォルトにリセット"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przywróć wszystkie ustawienia do wartości domyślnych"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -25314,6 +27030,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "設定をリセット"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przywróć ustawienia"
           }
         },
         "pt-BR" : {
@@ -25405,6 +27127,12 @@
             "value" : "サイズをリセット"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przywróć rozmiar"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -25492,6 +27220,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "再起動"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uruchom ponownie"
           }
         },
         "pt-BR" : {
@@ -25583,6 +27317,12 @@
             "value" : "変更を有効にするために%@を再起動してください"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uruchom ponownie %@, aby zmiany zaczęły obowiązywać"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -25671,6 +27411,12 @@
             "value" : "サービスを再起動"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uruchom ponownie serwis"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -25757,6 +27503,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "サービスを再起動"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uruchom ponownie serwis"
           }
         },
         "pt-BR" : {
@@ -25848,6 +27600,12 @@
             "value" : "逆検索が成功しました"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyszukiwanie odwrotne zakończone pomyślnie"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -25935,6 +27693,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "右クリックでサイズをリセット"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kliknij prawym przyciskiem myszy, aby przywrócić rozmiar"
           }
         },
         "pt-BR" : {
@@ -26026,6 +27790,12 @@
             "value" : "回転:"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obrót:"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -26113,6 +27883,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "保存"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zapisz"
           }
         },
         "pt-BR" : {
@@ -26204,6 +27980,12 @@
             "value" : "スケール:"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skala:"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -26290,6 +28072,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "スキャン"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skanuj"
           }
         },
         "pt-BR" : {
@@ -26380,6 +28168,12 @@
             "value" : "スキャン中…"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skanowanie..."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -26466,6 +28260,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "スクロールバーがリストに隠れる"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pasek przewijania jest ukryty na listach"
           }
         },
         "pt-BR" : {
@@ -26556,6 +28356,12 @@
             "value" : "リストでスクロールバーがOS優先に設定される"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pasek przewijania jest ustawiony zgodnie z ustawieniami systemu na listach"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -26642,6 +28448,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "検索感度"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Czułość wyszukiwania"
           }
         },
         "pt-BR" : {
@@ -26733,6 +28545,12 @@
             "value" : "これらのフォルダーでアプリを検索"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przeszukaj te foldery w poszukiwaniu aplikacji"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -26819,6 +28637,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "検索..."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyszukaj…"
           }
         },
         "pt-BR" : {
@@ -26909,6 +28733,12 @@
             "value" : "ファイルシステムを検索中"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przeszukiwanie plików systemowych"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -26995,6 +28825,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "検索中:"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyszukiwanie:"
           }
         },
         "pt-BR" : {
@@ -27085,6 +28921,12 @@
             "value" : "アプリの詳細を見る"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobacz szczegóły aplikacji"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -27171,6 +29013,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "詳細を表示"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobacz szczegóły"
           }
         },
         "pt-BR" : {
@@ -27261,6 +29109,12 @@
             "value" : "lipo の詳細を表示"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobacz szczegóły lipo"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -27347,6 +29201,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "サイドバーからアプリを選択して開始してください"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wybierz aplikację z paska bocznego, aby rozpocząć"
           }
         },
         "pt-BR" : {
@@ -27437,6 +29297,12 @@
             "value" : "キャッシュを表示する環境を選択してください"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wybierz środowisko, aby wyświetlić zapisaną pamięć podręczną"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -27523,6 +29389,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "選択された項目:"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wybrane rzeczy:"
           }
         },
         "pt-BR" : {
@@ -27614,6 +29486,12 @@
             "value" : "Sentinelモニター"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monitor Sentinel"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -27701,6 +29579,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sentinelモニターは他のファイルを見つけられませんでした"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monitor Sentinel nie znalazł żadnych innych plików do usunięcia"
           }
         },
         "pt-BR" : {
@@ -27791,6 +29675,12 @@
             "value" : "サービスが登録されていません。今すぐ登録できます。"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usługa nie została zarejestrowana. Możesz ją zarejestrować teraz."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -27877,6 +29767,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "サービスはすでに有効です"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usługa jest obecnie włączona."
           }
         },
         "pt-BR" : {
@@ -27967,6 +29863,12 @@
             "value" : "サービスはすでに登録され、有効になっています。"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usługa jest obecnie zarejestrowana i włączona."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -28053,6 +29955,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "サービスがインストールされていません"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usługa nie jest zainstalowana."
           }
         },
         "pt-BR" : {
@@ -28143,6 +30051,12 @@
             "value" : "サービスは登録されていますが、設定 > ログイン項目 > %@.app でユーザー承認が必要です"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usługa została zarejestrowana, ale wymaga zatwierdzenia przez użytkownika w sekcji Ustawienia systemowe > Rzeczy i rozszerzenia otwierane podczas logowania > %@.app."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -28229,6 +30143,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "サービス"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usługi"
           }
         },
         "pt-BR" : {
@@ -28320,6 +30240,12 @@
             "value" : "設定"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ustawienia"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -28407,6 +30333,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "アナウンスバッジを再度表示"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pokaż ponownie odznakę ogłoszeń"
           }
         },
         "pt-BR" : {
@@ -28498,6 +30430,12 @@
             "value" : "起動時にアプリリストを表示"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pokaż listę aplikacji podczas uruchamiania"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -28584,6 +30522,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ファイルの詳細を表示"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pokaż szczegóły pliku"
           }
         },
         "pt-BR" : {
@@ -28674,6 +30618,12 @@
             "value" : "Finderにファイルを表示"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pokaż plik w Finderze"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -28760,6 +30710,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "マルチセレクトを表示"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pokaż wielokrotny wybór"
           }
         },
         "pt-BR" : {
@@ -28851,6 +30807,12 @@
             "value" : "最近の3つのリリースを表示"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyświetlanie ostatnich 3 wydań"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -28937,6 +30899,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "シンプルなアプリリストが無効です"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyłączono prosta listę aplikacji"
           }
         },
         "pt-BR" : {
@@ -29027,6 +30995,12 @@
             "value" : "シンプルなアプリリストが有効になっています"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Włączono prostą listę aplikacji"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -29113,6 +31087,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Authorization サービスは Apple によってセキュリティの低い認証方法として非推奨とされているため、最終的に Pearcleaner から削除され、ヘルパーサービスが唯一の選択肢となります。できるだけ早く特権ヘルパーサービスを有効にすることをお勧めします。"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponieważ usługi autoryzacji zostały wycofane przez Apple jako mniej bezpieczna metoda uwierzytelniania, zostaną one ostatecznie usunięte z Pearcleaner, a usługa narzędzia pomocniczego będzie jedyną opcją w przyszłości. Zalecam jak najszybsze włączenie uprzywilejowanej usługi narzędzia pomocniczego."
           }
         },
         "pt-BR" : {
@@ -29204,6 +31184,12 @@
             "value" : "サイズ"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rozmiar"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -29291,6 +31277,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "アプリリストを名前またはサイズでアルファベット順に並べ替え"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sortuj listę aplikacji alfabetycznie według nazwy lub rozmiaru"
           }
         },
         "pt-BR" : {
@@ -29382,6 +31374,12 @@
             "value" : "名前で並べ替え"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posortowane według nazwy"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -29471,6 +31469,12 @@
             "value" : "サイズで並べ替え"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posortowane według rozmiaru"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -29557,6 +31561,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ソート"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sortowanie"
           }
         },
         "pt-BR" : {
@@ -29648,6 +31658,12 @@
             "value" : "並べ替えオプション"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opcje sortowania"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -29735,6 +31751,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "並べ替え：%@"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sortowanie: %@"
           }
         },
         "pt-BR" : {
@@ -29826,6 +31848,12 @@
             "value" : "スペース節約: %d%%"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zaoszczędzone miejsce: %d%%"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -29913,6 +31941,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "スペース節約: %d%%\n合計節約スペース: %@"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zaoszczędzone miejsce: %d%%\nCałkowite zaoszczędzone miejsce: %@"
           }
         },
         "pt-BR" : {
@@ -30004,6 +32038,12 @@
             "value" : "間隔:"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odstępy:"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -30091,6 +32131,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "スポンサー"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sponsor"
           }
         },
         "pt-BR" : {
@@ -30181,6 +32227,12 @@
             "value" : "スポットライトインデックス"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indeks Spotlight"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -30267,6 +32319,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "開始"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rozpocznij"
           }
         },
         "pt-BR" : {
@@ -30357,6 +32415,12 @@
             "value" : "Lipoを始める"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rozpocznij Lipo"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -30443,6 +32507,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ステータス:"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Status:"
           }
         },
         "pt-BR" : {
@@ -30533,6 +32603,12 @@
             "value" : "停止"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zatrzymaj"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -30619,6 +32695,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "厳密"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ścisły"
           }
         },
         "pt-BR" : {
@@ -30709,6 +32791,12 @@
             "value" : "厳密なレベルで、Spotlightメタデータ検索も含まれます（多少多くのファイル、依然として正確）"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ścisły poziom, obejmuje również wyszukiwanie metadanych Spotlight (nieco więcej plików, nadal dokładne)"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -30795,6 +32883,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "厳密なレベルで、部分一致も許可します（ファイルが増え、やや精度が低くなります）"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ścisły poziom, który pozwala również na dopasowania częściowe (więcej plików, nieco mniejsza dokładność)"
           }
         },
         "pt-BR" : {
@@ -30886,6 +32980,12 @@
             "value" : "バグ報告または機能リクエストを送信"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zgłoś błąd lub prośbę o dodanie funkcji"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -30973,6 +33073,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "新しい問題を送信"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zgłoś nowy problem"
           }
         },
         "pt-BR" : {
@@ -31064,6 +33170,12 @@
             "value" : "サポート"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wsparcie"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -31150,6 +33262,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ユーティリティを切り替える"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przełącz narzędzia"
           }
         },
         "pt-BR" : {
@@ -31241,6 +33359,12 @@
             "value" : "システム"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "system"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -31327,6 +33451,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "システム"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System"
           }
         },
         "pt-BR" : {
@@ -31417,6 +33547,12 @@
             "value" : "ターミナル"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminal"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -31503,6 +33639,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "検索感度レベルは、アプリに関連するファイルを見つける際のPearcleanerの厳しさや寛容さを制御します:\n\n• 厳密 – %@\n• 強化 – %@\n• バランス – %@\n• 広範 – %@\n\n高いレベルではより多くのファイルを見つけることができますが、無関係な結果が含まれる可能性があります。これらのレベルでは見つかったファイルを手動で確認することをお勧めします。"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poziom czułości wyszukiwania kontroluje, jak rygorystyczny lub łagodny jest Pearcleaner podczas wyszukiwania plików powiązanych z aplikacją:\n\n• Ścisły – %@\n• Rozszerzony – %@\n• Zrównoważony – %@\n• Obszerny – %@\n\nWyższe poziomy mogą znaleźć więcej plików, ale mogą zawierać niektóre niepowiązane wyniki. Zaleca się ręczne sprawdzanie znalezionych plików na tych poziomach."
           }
         },
         "pt-BR" : {
@@ -31594,6 +33736,12 @@
             "value" : "すべてのlipoされたアプリ間の合計スペース節約量\nサイズ前: %@\nサイズ後: %@"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Całkowite zaoszczędzone miejsce pomiędzy wszystkimi aplikacjami poddanymi lipo\nRozmiar przed: %@\nRozmiar po: %@"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -31680,6 +33828,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "テーマ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Motyw"
           }
         },
         "pt-BR" : {
@@ -31771,6 +33925,12 @@
             "value" : "テーマモード"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tryb motywu"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -31858,6 +34018,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "これにより、ファイル/フォルダーが除外リストに追加されます。除外リストは、設定 > フォルダータブから編集できます"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spowoduje to dodanie pliku/folderu do listy wykluczeń. Listę wykluczeń można edytować w zakładce Ustawienia > Foldery"
           }
         },
         "pt-BR" : {
@@ -31949,6 +34115,12 @@
             "value" : "このアプリは%@にあります"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta aplikacja znajduje się w %@"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -32036,6 +34208,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "これはウェブアプリです"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To jest aplikacja internetowa"
           }
         },
         "pt-BR" : {
@@ -32127,6 +34305,12 @@
             "value" : "これはラップされたiOSアプリです"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jest to aplikacja w formie iOS"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -32213,6 +34397,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "これにより、選択した項目は今後のスキャンから除外されます。除外リストは、設定 > フォルダー タブまたはこのビューのサイドバーから編集できます。"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spowoduje to wykluczenie wybranych elementów z przyszłych skanowań. Listę wykluczeń można edytować w zakładce Ustawienia > Foldery lub na pasku bocznym w tym widoku."
           }
         },
         "pt-BR" : {
@@ -32310,6 +34500,12 @@
             "value" : "選択した項目を今後のスキャンから除外します。除外リストは設定 > フォルダタブから編集できます。"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spowoduje to wykluczenie wybranych elementów z przyszłych skanowań. Listę wykluczeń można edytować w zakładce Ustawienia > Foldery."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -32397,6 +34593,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "これにより、未使用の言語翻訳ファイルがすべて削除されます"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spowoduje to usunięcie wszystkich nieużywanych plików tłumaczeń językowych"
           }
         },
         "pt-BR" : {
@@ -32488,6 +34690,12 @@
             "value" : "デバッグの切り替え"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przełącz tryb debugowania"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -32575,6 +34783,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ツール"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Narzędzia"
           }
         },
         "pt-BR" : {
@@ -32665,6 +34879,12 @@
             "value" : "合計節約量:"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Łącznie zaoszczędzono:"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -32751,6 +34971,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "合計サイズ："
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Całkowity rozmiar:"
           }
         },
         "pt-BR" : {
@@ -32841,6 +35067,12 @@
             "value" : "移行アニメーションが無効化されました"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyłączone animacje przejścia "
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -32929,6 +35161,12 @@
             "value" : "遷移アニメーションが有効"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Włączone animacje przejścia "
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -33015,6 +35253,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "翻訳"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tłumaczenie"
           }
         },
         "pt-BR" : {
@@ -33106,6 +35350,12 @@
             "value" : "透明素材"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przezroczysty materiał"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -33192,6 +35442,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "透過サイドバー"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przezroczysty panel boczny"
           }
         },
         "pt-BR" : {
@@ -33282,6 +35538,12 @@
             "value" : "検索条件やフィルターを調整してみてください"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spróbuj dostosować swoje wyszukiwanie lub filtry"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -33370,6 +35632,12 @@
             "value" : "除外するキーワードを入力し、Enter ↵ キーを押して保存"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wpisz słowo kluczowe, które chcesz wykluczyć, a następnie naciśnij Enter ↵, aby zapisać"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -33456,6 +35724,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "検索するには入力"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wpisz, aby wyszukać"
           }
         },
         "pt-BR" : {
@@ -33547,6 +35821,12 @@
             "value" : "削除を元に戻す"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cofnij usunięcie"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -33634,6 +35914,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "アンインストール"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odinstaluj"
           }
         },
         "pt-BR" : {
@@ -33725,6 +36011,12 @@
             "value" : "アンインストール確認アラート"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Komunikat potwierdzający odinstalowanie"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -33812,6 +36104,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pearcleanerをアンインストール"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odinstaluj Pearcleaner"
           }
         },
         "pt-BR" : {
@@ -33902,6 +36200,12 @@
             "value" : "ユニバーサル"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "uniwersalny"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -33988,6 +36292,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "不明なサービスステータス（%lld）"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nieznany stan usługi (%lld)."
           }
         },
         "pt-BR" : {
@@ -34078,6 +36388,12 @@
             "value" : "ファイルのリンクを解除"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odłącz plik"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -34164,6 +36480,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "サービスをアンロード"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zatrzymaj usługę"
           }
         },
         "pt-BR" : {
@@ -34254,6 +36576,12 @@
             "value" : "サービスの登録解除"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyrejestruj usługę"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -34340,6 +36668,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更新"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualizacja"
           }
         },
         "pt-BR" : {
@@ -34431,6 +36765,12 @@
             "value" : "更新が可能です"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dostępna aktualizacja"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -34518,6 +36858,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更新が可能です 🥳"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dostępna aktualizacja 🥳"
           }
         },
         "pt-BR" : {
@@ -34609,6 +36955,12 @@
             "value" : "更新完了"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualizacja zakończona"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -34695,6 +37047,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更新頻度"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Częstotliwość aktualizacji"
           }
         },
         "pt-BR" : {
@@ -34786,6 +37144,12 @@
             "value" : "更新中"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualizacja w toku"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -34872,6 +37236,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更新日 %@"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zaktualizowano %@"
           }
         },
         "pt-BR" : {
@@ -34963,6 +37333,12 @@
             "value" : "アップデーターの頻度が「なし」に設定されています"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Częstotliwość aktualizacji jest ustawiona na Nigdy"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -35050,6 +37426,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更新が無効になっています"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualizacje wyłączone"
           }
         },
         "pt-BR" : {
@@ -35140,6 +37522,12 @@
             "value" : "ユーザー"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Użytkownik"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -35226,6 +37614,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ユーザーが許可を拒否しました。システム設定 > ログイン項目で有効にしてください"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Użytkownik odmówił zgody. Włącz w Ustawieniach systemowych > Rzeczy i rozszerzenia otwierane podczas logowania."
           }
         },
         "pt-BR" : {
@@ -35316,6 +37710,12 @@
             "value" : "バージョン %@"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wersja %@"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -35402,6 +37802,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "バージョン: %@"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wersja %@"
           }
         },
         "pt-BR" : {
@@ -35492,6 +37898,12 @@
             "value" : "表示"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyświetl"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -35578,6 +37990,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "デバッグウィンドウを表示"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyświetl okno debugowania"
           }
         },
         "pt-BR" : {
@@ -35669,6 +38087,12 @@
             "value" : "Finder で表示"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyświetl w Finderze"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -35756,6 +38180,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "課題を表示"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyświetl problemy"
           }
         },
         "pt-BR" : {
@@ -35847,6 +38277,12 @@
             "value" : "プロジェクトの貢献者を表示"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyświetl osoby zaangażowane w projekt"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -35934,6 +38370,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "リリースを表示"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyświetl wydania"
           }
         },
         "pt-BR" : {
@@ -36025,6 +38467,12 @@
             "value" : "リポジトリを表示"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyświetl repozytorium "
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -36114,6 +38562,12 @@
             "value" : "警告"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ostrzeżenie"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -36200,6 +38654,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "警告！"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ostrzeżenie!"
           }
         },
         "pt-BR" : {
@@ -36291,6 +38751,12 @@
             "value" : "警告!"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ostrzeżenie2"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -36378,6 +38844,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ウェブ"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sieć"
           }
         },
         "pt-BR" : {
@@ -36469,6 +38941,12 @@
             "value" : "ウェブアプリ"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplikacja internetowa"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -36556,6 +39034,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "毎週"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tygodniowo"
           }
         },
         "pt-BR" : {
@@ -36647,6 +39131,12 @@
             "value" : "アプリケーションがゴミ箱に移動されると、Pearcleanerが起動し、関連するファイルとフォルダーを検索して削除します。"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gdy aplikacje zostaną przeniesione do Kosza, Pearcleaner uruchomi się i wyszuka powiązane pliki i foldery do usunięcia."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -36736,6 +39226,12 @@
             "value" : "ゴミ箱ボタンを使用してファイルを削除する場合、アラートを表示してからアクションを実行することで、誤った削除を防ぐことができます。"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podczas usuwania plików za pomocą przycisku Kosz można zapobiec przypadkowemu usunięciu, wyświetlając ostrzeżenie przed wykonaniem tej czynności."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -36822,6 +39318,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Homebrew クリーンアップが有効になっている場合、Pearcleaner は削除しようとしているアプリが Homebrew を通してインストールされたかどうかを確認し、内蔵ターミナルを起動して brew uninstall およびクリーンアップコマンドを実行し、Homebrew にアプリが削除されたことを通知します。これにより、Homebrew のリストが正しく同期され、キャッシュが削除されます。\n注意：CMD+Z でファイル削除を元に戻した場合、ファイルは復元されますが、Homebrew はそれを認識しません。Homebrew のリストを再同期するには、以下のコマンドを実行する必要があります：\n\nbrew install アプリ名 --force」"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gdy włączona jest funkcja czyszczenia Homebrew, Pearcleaner sprawdzi, czy usuwana aplikacja została zainstalowana za pomocą Homebrew, i uruchomi wbudowany terminal, aby wykonać polecenie brew uninstall i cleanup, informujące Homebrew o usunięciu aplikacji. W ten sposób lista Homebrew zostanie poprawnie zsynchronizowana, a pamięć podręczna zostanie usunięta.\n\nUWAGA: Jeśli cofniesz usunięcie plików za pomocą CMD+Z, pliki zostaną przywrócone, ale Homebrew nie będzie o tym wiedzieć. Aby ponownie zsynchronizować listę Homebrew, musisz uruchomić:\n\n> brew install NAZWA-APLIKACJI --force"
           }
         },
         "pt-BR" : {
@@ -36913,6 +39415,12 @@
             "value" : "Homebrewのクリーンアップが有効になっている場合、Pearcleanerはアプリを削除する際にHomebrewを介してインストールされたかどうかを確認し、Terminal.appを起動してbrew uninstallとクリーンアップコマンドを実行して、Homebrewにアプリが削除されたことを通知します。この方法でHomebrewのリストが正しく同期され、キャッシュが削除されます。システムフォルダーに配置されたサービスやファイルを削除するには、一部のアプリにsudo権限が必要なため、Terminal.appが必要です。他のターミナルアプリはAppleScriptや'do script'コマンドをサポートしていないため、デフォルトのmacOS Terminalアプリを使用することにしました。\n\n注意: CMD+Zでファイル削除を元に戻すと、ファイルは元に戻りますが、Homebrewはそれを認識しません。Homebrewのリストを再度同期させるには、次のコマンドを実行する必要があります:\n\n> brew install APPNAME --force"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gdy włączona jest funkcja czyszczenia Homebrew, Pearcleaner sprawdzi, czy usuwana aplikacja została zainstalowana za pomocą Homebrew, i uruchomi aplikację Terminal.app, aby wykonać polecenie brew uninstall i cleanup, informujące Homebrew o usunięciu aplikacji. W ten sposób lista Homebrew zostanie poprawnie zsynchronizowana, a pamięć podręczna zostanie usunięta. Aplikacja Terminal.app jest wymagana, ponieważ niektóre aplikacje potrzebują uprawnień sudo do usuwania usług i plików umieszczonych w folderach systemowych. Ponieważ inne aplikacje terminalowe nie obsługują AppleScript i/lub polecenia ‘do script’, zdecydowałem się użyć do tego domyślnej aplikacji Terminal w systemie macOS.\n\nUWAGA: Jeśli cofniesz usunięcie plików za pomocą CMD+Z, pliki zostaną przywrócone, ale Homebrew nie będzie o tym wiedzieć. Aby ponownie zsynchronizować listę Homebrew, należy uruchomić:\n\n> brew install NAZWA-APLIKACJI --force"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -37002,6 +39510,12 @@
             "value" : "このモードが有効になっている場合、アプリを削除するために「アンインストール」ボタンをクリックすると、Pearcleanerも直後に閉じられます。\\nこれは、Sentinel Trash Monitor、Finder拡張機能、またはディープリンクなどの外部手段でPearcleanerが開かれた場合にのみ影響します。\\nこれにより、アプリを素早くアンインストールするためにアプリを1回だけ使用できます。Pearcleanerが通常の方法で開かれた場合、この設定は無視され、通常どおり機能します。"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gdy ten tryb jest włączony, kliknięcie przycisku Odinstaluj w celu usunięcia aplikacji spowoduje również zamknięcie programu Pearcleaner zaraz po wykonaniu tej czynności.\nMa to wpływ tylko na program Pearcleaner, gdy jest on otwierany za pomocą zewnętrznych metod, takich jak Sentinel Trash Monitor, rozszerzenie Finder lub Deep Link.\nUmożliwia to jednorazowe użycie aplikacji w celu szybkiej dezinstalacji. Gdy program Pearcleaner jest otwierany w normalny sposób, to ustawienie jest ignorowane i działa jak zwykle."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -37088,6 +39602,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ワークスペースストレージクリーナー"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Narzędzie do czyszczenia pamięci roboczej"
           }
         },
         "pt-BR" : {
