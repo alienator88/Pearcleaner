@@ -276,6 +276,7 @@ struct MountedVolumeView: View {
 
                 if greetingEnabled {
                     ProfileMenuView()
+
                 }
 
                 Spacer()

@@ -91,7 +91,11 @@ func getSortedApps(paths: [String]) -> [AppInfo] {
     }
 
     // Collect system applications
-    paths.forEach { collectAppPaths(at: $0) }
+    paths.forEach { path in
+        if fileManager.fileExists(atPath: path) {
+            collectAppPaths(at: path)
+        }
+    }
 
     // Convert collected paths to string format for metadata query
     let combinedPaths = apps.map { $0.path }

@@ -13,13 +13,14 @@ class Locations: ObservableObject {
         let name: String
         var paths: [String]
     }
-    
+
     let cacheDir: String
     let tempDir: String
-    
+
     var apps: Category
     var reverse: Category
-    
+    var plugins: Category
+
     init() {
         let (cacheDir, tempDir) = darwinCT()
         self.cacheDir = cacheDir
@@ -119,9 +120,66 @@ class Locations: ObservableObject {
             "/Library/LaunchAgents",
             "/Library/LaunchDaemons",
             "/Library/PrivilegedHelperTools",
-//            "/private/var/db/receipts",
-//            cacheDir,
-//            tempDir // Stop listing these files as there's a ton of them and they get cleaned up by the OS anyways
+        ])
+
+        self.plugins = Category(name: "Plugins", paths: [
+            // Audio (.component, .vst, .vst3, .auplugin files)
+            "\(home)/Library/Audio/Plug-Ins/Components",
+            "\(home)/Library/Audio/Plug-Ins/HAL",
+            "\(home)/Library/Audio/Plug-Ins/MAS",
+            "\(home)/Library/Audio/Plug-Ins/VST",
+            "\(home)/Library/Audio/Plug-Ins/VST3",
+            "/Library/Audio/Plug-Ins/VST",
+            "/Library/Audio/Plug-Ins/VST3",
+            "/Library/Audio/Plug-Ins/Components (Audio Units)",
+            "/Library/Application Support/Avid/Audio/Plug-Ins (Avid AAX)",
+
+            // Preference Panes (.prefPane files)
+            "/Library/PreferencePanes",
+            "\(home)/Library/PreferencePanes",
+
+            // Quicklook (.qlgenerator files)
+            "/Library/QuickLook/",
+            "\(home)/Library/QuickLook/",
+
+            // Screensaver (.saver files)
+            "/Library/Screen Savers/",
+            "\(home)/Library/Screen Savers/",
+
+            // Internet (.plugin files)
+            "/Library/Internet Plug-Ins/",
+            "\(home)/Library/Internet Plug-Ins/",
+
+            // Core Image (.plugin files)
+            "/Library/CoreImage/",
+            "\(home)/Library/CoreImage/",
+
+            // Color Pickers (.colorPicker files)
+            "/Library/ColorPickers/",
+            "\(home)/Library/ColorPickers/",
+
+            // Fonts (.ttf, .otf, .dfont, .ttc files)
+            "\(home)/Library/Fonts/",
+
+            // Dictionary (.dictionary files)
+            "/Library/Dictionaries/",
+            "\(home)/Library/Dictionaries/",
+
+            // Automator Actions (.action files)
+            "/Library/Automator/",
+            "\(home)/Library/Automator/",
+
+            // Safari Extensions (.safariextz, .appex)
+            "/Library/Safari/Extensions/",
+            "\(home)/Library/Safari/Extensions/",
+
+            // iMovie and Final Cut Pro Plugins
+            "\(home)/Movies/Motion Templates/",
+            "/Library/Application Support/Final Cut Pro System Support/Plug-ins/"
+
+
+
+
         ])
     }
 }

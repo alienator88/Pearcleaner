@@ -21,6 +21,12 @@
             "value" : "Désinstaller avec Pearcleaner"
           }
         },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hapus Instalasi Pearlcleaner"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
