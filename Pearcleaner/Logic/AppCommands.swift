@@ -107,19 +107,19 @@ struct AppCommands: Commands {
 
                 Button
                 {
-                    appState.currentPage = .orphans
+                    appState.currentPage = .development
 
                 } label: {
-                    Text("Orphaned Files")
+                    Text("Development")
                 }
                 .keyboardShortcut("2", modifiers: .command)
 
                 Button
                 {
-                    appState.currentPage = .development
+                    appState.currentPage = .fileSearch
 
                 } label: {
-                    Text("Development")
+                    Text("File Search")
                 }
                 .keyboardShortcut("3", modifiers: .command)
 
@@ -134,21 +134,39 @@ struct AppCommands: Commands {
 
                 Button
                 {
-                    appState.currentPage = .launchItems
+                    appState.currentPage = .orphans
 
                 } label: {
-                    Text("Services")
+                    Text("Orphaned Files")
                 }
                 .keyboardShortcut("5", modifiers: .command)
 
                 Button
                 {
-                    appState.currentPage = .package
+                    appState.currentPage = .packages
 
                 } label: {
                     Text("Packages")
                 }
                 .keyboardShortcut("6", modifiers: .command)
+
+                Button
+                {
+                    appState.currentPage = .plugins
+
+                } label: {
+                    Text("Plugins")
+                }
+                .keyboardShortcut("7", modifiers: .command)
+
+                Button
+                {
+                    appState.currentPage = .services
+
+                } label: {
+                    Text("Services")
+                }
+                .keyboardShortcut("8", modifiers: .command)
 
             } label: {
                 Label("Navigate To", systemImage: "location.north.fill")

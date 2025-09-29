@@ -506,12 +506,13 @@ enum Arch {
 
 enum CurrentPage: Int, CaseIterable, Identifiable {
     case applications
-    case orphans
     case development
+    case fileSearch
     case lipo
-    case launchItems
-    case package
+    case orphans
+    case packages
     case plugins
+    case services
 
     var id: Int { rawValue }
 
@@ -519,18 +520,20 @@ enum CurrentPage: Int, CaseIterable, Identifiable {
         switch self {
         case .applications:
             return (String(localized: "Apps"), "macwindow")
-        case .orphans:
-            return (String(localized: "Orphans"), "doc.text.magnifyingglass")
         case .development:
             return (String(localized: "Developer"), "hammer.circle")
+        case .fileSearch:
+            return (String(localized: "File Search"), "magnifyingglass")
         case .lipo:
             return (String(localized: "Lipo"), "scissors")
-        case .launchItems:
-            return (String(localized: "Services"), "gearshape.2")
-        case .package:
+        case .orphans:
+            return (String(localized: "Orphans"), "doc.text.magnifyingglass")
+        case .packages:
             return (String(localized: "Packages"), "shippingbox")
         case .plugins:
             return (String(localized: "Plugins"), "puzzlepiece")
+        case .services:
+            return (String(localized: "Services"), "gearshape.2")
         }
     }
 

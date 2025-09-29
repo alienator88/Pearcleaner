@@ -57,14 +57,17 @@ struct MainWindow: View {
                     case .lipo:
                         LipoView()
 
-                    case .launchItems:
+                    case .services:
                         DaemonView()
 
-                    case .package:
+                    case .packages:
                         PackageView()
 
                     case .plugins:
                         PluginsView()
+
+                    case .fileSearch:
+                        FileSearchView()
                     }
                 }
 

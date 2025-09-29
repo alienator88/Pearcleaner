@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "" : {
+
+    },
     "(%@)" : {
       "localizations" : {
         "de" : {
@@ -192,6 +195,9 @@
         }
       }
     },
+    "(same unit)" : {
+
+    },
     "**%lld%%** savings" : {
       "localizations" : {
         "de" : {
@@ -285,6 +291,9 @@
           }
         }
       }
+    },
+    "/" : {
+
     },
     "%@" : {
       "localizations" : {
@@ -1268,6 +1277,16 @@
         }
       }
     },
+    "%lld result%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld result%2$@"
+          }
+        }
+      }
+    },
     "%lld service%@" : {
       "localizations" : {
         "de" : {
@@ -1550,6 +1569,9 @@
         }
       }
     },
+    "• %@" : {
+
+    },
     "• Loading..." : {
       "localizations" : {
         "de" : {
@@ -1648,6 +1670,9 @@
 
     },
     "• Scanning..." : {
+
+    },
+    "• Searching..." : {
 
     },
     "0 bytes" : {
@@ -2215,6 +2240,18 @@
         }
       }
     },
+    "Add" : {
+
+    },
+    "Add Comment Filter" : {
+
+    },
+    "Add Date Filter" : {
+
+    },
+    "Add Extension Filter" : {
+
+    },
     "Add file/folder" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2499,6 +2536,12 @@
         }
       }
     },
+    "Add Filter" : {
+
+    },
+    "Add filters and click Play to find files" : {
+
+    },
     "Add folder" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2687,6 +2730,15 @@
           }
         }
       }
+    },
+    "Add Name Filter" : {
+
+    },
+    "Add Size Filter" : {
+
+    },
+    "Add Tags Filter" : {
+
     },
     "All checkboxes" : {
       "extractionState" : "manual",
@@ -5235,6 +5287,12 @@
         }
       }
     },
+    "Bulk Delete" : {
+
+    },
+    "Bulk Open" : {
+
+    },
     "Bundle Files..." : {
       "localizations" : {
         "de" : {
@@ -5899,6 +5957,9 @@
         }
       }
     },
+    "Case sensitive" : {
+
+    },
     "Category: %@" : {
 
     },
@@ -6090,6 +6151,9 @@
           }
         }
       }
+    },
+    "Choose Folder..." : {
+
     },
     "Clean stored files and cache for common IDEs" : {
       "localizations" : {
@@ -7132,6 +7196,9 @@
         }
       }
     },
+    "Comment" : {
+
+    },
     "Completed 🚀" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7794,6 +7861,9 @@
           }
         }
       }
+    },
+    "Date" : {
+
     },
     "Debug Console" : {
       "localizations" : {
@@ -10546,6 +10616,9 @@
         }
       }
     },
+    "End Date" : {
+
+    },
     "Enhanced" : {
       "localizations" : {
         "de" : {
@@ -11209,6 +11282,9 @@
         }
       }
     },
+    "Exclude system folders" : {
+
+    },
     "Exclude these files and folders from orphaned file search" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -11681,6 +11757,12 @@
         }
       }
     },
+    "Extension" : {
+
+    },
+    "Extensions (comma-separated, e.g., jpg,png,pdf)" : {
+
+    },
     "Failed to display release notes" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -11775,6 +11857,9 @@
           }
         }
       }
+    },
+    "File Search" : {
+
     },
     "File size display options" : {
       "extractionState" : "manual",
@@ -11964,6 +12049,12 @@
           }
         }
       }
+    },
+    "Filter" : {
+
+    },
+    "Filter Type" : {
+
     },
     "Finder Extension" : {
       "extractionState" : "manual",
@@ -12911,6 +13002,9 @@
           }
         }
       }
+    },
+    "GB" : {
+
     },
     "General" : {
       "extractionState" : "manual",
@@ -14421,6 +14515,12 @@
         }
       }
     },
+    "Include hidden files" : {
+
+    },
+    "Include subfolders" : {
+
+    },
     "Info" : {
 
     },
@@ -15839,6 +15939,12 @@
           }
         }
       }
+    },
+    "KB" : {
+
+    },
+    "Kind" : {
+
     },
     "Last Used Date" : {
       "localizations" : {
@@ -18301,6 +18407,12 @@
         }
       }
     },
+    "Max Value" : {
+
+    },
+    "MB" : {
+
+    },
     "Missing Permissions" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -18395,6 +18507,9 @@
           }
         }
       }
+    },
+    "Modified" : {
+
     },
     "Modified Date" : {
       "localizations" : {
@@ -20664,6 +20779,9 @@
         }
       }
     },
+    "No results" : {
+
+    },
     "No savings available from bundle thinning" : {
       "localizations" : {
         "de" : {
@@ -21325,6 +21443,9 @@
           }
         }
       }
+    },
+    "Open" : {
+
     },
     "Open %@" : {
       "extractionState" : "manual",
@@ -24358,6 +24479,9 @@
         }
       }
     },
+    "Ready to search" : {
+
+    },
     "Real" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -26622,6 +26746,9 @@
         }
       }
     },
+    "Rename" : {
+
+    },
     "Rescan" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -28134,6 +28261,12 @@
           }
         }
       }
+    },
+    "Search" : {
+
+    },
+    "Search for files and folders with advanced filters" : {
+
     },
     "Search Sensitivity" : {
       "localizations" : {
@@ -33147,6 +33280,15 @@
         }
       }
     },
+    "Tag name" : {
+
+    },
+    "Tag names (comma-separated)" : {
+
+    },
+    "Tags" : {
+
+    },
     "Terminal" : {
       "localizations" : {
         "de" : {
@@ -35043,6 +35185,9 @@
         }
       }
     },
+    "Try adjusting your filters" : {
+
+    },
     "Try adjusting your search or filters" : {
       "localizations" : {
         "de" : {
@@ -35136,6 +35281,9 @@
           }
         }
       }
+    },
+    "Type" : {
+
     },
     "Type a keyword to exclude, Enter ↵ to save" : {
       "localizations" : {
@@ -35704,6 +35852,9 @@
           }
         }
       }
+    },
+    "Unit" : {
+
     },
     "universal" : {
       "localizations" : {
@@ -37214,6 +37365,9 @@
           }
         }
       }
+    },
+    "Value" : {
+
     },
     "Version %@" : {
       "localizations" : {

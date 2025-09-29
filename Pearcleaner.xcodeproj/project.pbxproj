@@ -41,6 +41,9 @@
 		C7A6C8E72E3D5F610072858F /* LeftNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A6C8E62E3D5F5C0072858F /* LeftNavigation.swift */; };
 		C7A6DBF12C9DD27200CFA042 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7A6DBF02C9DD27200CFA042 /* Assets.xcassets */; };
 		C7BB99292E8AF1CB007BBB81 /* PluginsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BB99282E8AF1CB007BBB81 /* PluginsView.swift */; };
+		C7BB992C2E8B2254007BBB81 /* FileSearchLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BB992A2E8B2254007BBB81 /* FileSearchLogic.swift */; };
+		C7BB992D2E8B2254007BBB81 /* FileSearchModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BB992B2E8B2254007BBB81 /* FileSearchModels.swift */; };
+		C7BB992F2E8B225F007BBB81 /* FileSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BB992E2E8B225F007BBB81 /* FileSearchView.swift */; };
 		C7BE91A82C9E37AB009FA129 /* FinderOpen.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C78121632BC892A000BE06BD /* FinderOpen.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C7C90DD32DA81C5D0056769A /* Lipo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C90DD22DA81C590056769A /* Lipo.swift */; };
 		C7D31D512AFF00F300C7ED9E /* Locations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D502AFF00F300C7ED9E /* Locations.swift */; };
@@ -160,6 +163,9 @@
 		C7A6DBF02C9DD27200CFA042 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C7B3AB072D83900B00D829C5 /* com.alienator88.PearcleanerSentinel.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = com.alienator88.PearcleanerSentinel.plist; sourceTree = "<group>"; };
 		C7BB99282E8AF1CB007BBB81 /* PluginsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginsView.swift; sourceTree = "<group>"; };
+		C7BB992A2E8B2254007BBB81 /* FileSearchLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSearchLogic.swift; sourceTree = "<group>"; };
+		C7BB992B2E8B2254007BBB81 /* FileSearchModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSearchModels.swift; sourceTree = "<group>"; };
+		C7BB992E2E8B225F007BBB81 /* FileSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSearchView.swift; sourceTree = "<group>"; };
 		C7C90DD22DA81C590056769A /* Lipo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lipo.swift; sourceTree = "<group>"; };
 		C7D31D502AFF00F300C7ED9E /* Locations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locations.swift; sourceTree = "<group>"; };
 		C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfoFetch.swift; sourceTree = "<group>"; };
@@ -253,6 +259,8 @@
 				C72FDCB82D6D088A00DE7D56 /* UndoManager.swift */,
 				C7A2A4D52DDB957D006E05E4 /* CLI.swift */,
 				C77B90192AF1938F009CC655 /* Logic.swift */,
+				C7BB992A2E8B2254007BBB81 /* FileSearchLogic.swift */,
+				C7BB992B2E8B2254007BBB81 /* FileSearchModels.swift */,
 				C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */,
 				C78D7B202D556F16003DD49F /* AppPathsFetch.swift */,
 				C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */,
@@ -345,6 +353,7 @@
 				C72D03B22E4D3FB900ADC1B4 /* MainWindow.swift */,
 				C7A269282D5D139200FA96EC /* TerminalView.swift */,
 				C74422402E4936700002D277 /* DaemonView.swift */,
+				C7BB992E2E8B225F007BBB81 /* FileSearchView.swift */,
 				C770D7DA2CE7C9A100B3492A /* DevelopmentView.swift */,
 				C7BB99282E8AF1CB007BBB81 /* PluginsView.swift */,
 				C74422422E494D7E0002D277 /* PackageView.swift */,
@@ -590,6 +599,9 @@
 				C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */,
 				C73545EB2D8496E000A3DC0C /* HelperToolManager.swift in Sources */,
 				C72FDCB92D6D089100DE7D56 /* UndoManager.swift in Sources */,
+				C7BB992F2E8B225F007BBB81 /* FileSearchView.swift in Sources */,
+				C7BB992C2E8B2254007BBB81 /* FileSearchLogic.swift in Sources */,
+				C7BB992D2E8B2254007BBB81 /* FileSearchModels.swift in Sources */,
 				C77B90042AF18E2E009CC655 /* PearcleanerApp.swift in Sources */,
 				C7A269292D5D139600FA96EC /* TerminalView.swift in Sources */,
 				C77B90182AF19382009CC655 /* AppCommands.swift in Sources */,
