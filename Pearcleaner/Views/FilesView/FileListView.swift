@@ -21,8 +21,6 @@ struct FileListView: View {
     @State private var searchText: String = ""
     @State private var selectedFileItemsLocal: Set<URL> = []
     @State private var memoizedFiles: [URL] = []
-    @State private var lastRefreshDate: Date?
-    @State private var isRefreshing: Bool = false
     let locations: Locations
     let windowController: WindowManager
     let handleUninstallAction: () -> Void
@@ -90,19 +88,7 @@ struct FileListView: View {
                             .font(.caption)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
-                        if isRefreshing {
-                            Text("• Refreshing...")
-                                .font(.caption)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        }
-
                         Spacer()
-
-                        if let lastRefresh = lastRefreshDate {
-                            Text("Updated \(formatRelativeTime(lastRefresh))")
-                                .font(.caption)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        }
                     }
                     .padding(.vertical)
 
@@ -125,13 +111,10 @@ struct FileListView: View {
                             }
                         }
                         .onAppear {
-                            if lastRefreshDate == nil {
-                                lastRefreshDate = Date()
-                            }
                             updateSortedFiles()
                             updateMemoizedFiles()
                         }
-                        .onChange(of: sortedFiles) { newVal in
+                        .onChange(of: sortedFiles) { _ in
                             updateMemoizedFiles()
                         }
                     }

@@ -20,20 +20,111 @@ class ReversePathsSearcher {
     private var fileIcon: [URL: NSImage?] = [:]
     private let dispatchGroup = DispatchGroup()
     private let sortedApps: [AppInfo]
+    private let streamingMode: Bool
+    private var shouldStop = false
 
-    init(appState: AppState? = nil, locations: Locations, fsm: FolderSettingsManager, sortedApps: [AppInfo]) {
+    init(appState: AppState? = nil, locations: Locations, fsm: FolderSettingsManager, sortedApps: [AppInfo], streamingMode: Bool = true) {
         self.appState = appState
         self.locations = locations
         self.fsm = fsm
         self.sortedApps = sortedApps
+        self.streamingMode = streamingMode
+    }
+
+    func stop() {
+        shouldStop = true
     }
 
     func reversePathsSearch(completion: @escaping () -> Void = {}) {
         Task(priority: .high) {
-            self.processLocations()
-            self.calculateFileDetails()
-            self.updateAppState()
+            if streamingMode {
+                await self.processLocationsStreaming()
+            } else {
+                self.processLocations()
+                self.calculateFileDetails()
+                self.updateAppState()
+            }
             completion()
+        }
+    }
+
+    private func processLocationsStreaming() async {
+        var batch: [(url: URL, size: (real: Int64, logical: Int64), icon: NSImage?)] = []
+        let batchSize = 10
+
+        for location in locations.reverse.paths where fileManager.fileExists(atPath: location) {
+            if shouldStop {
+                break
+            }
+            await processLocationStreaming(location, batch: &batch, batchSize: batchSize)
+        }
+
+        // Flush any remaining items
+        if !batch.isEmpty {
+            await flushBatch(&batch)
+        }
+
+        // Mark scanning as complete
+        await MainActor.run {
+            self.appState?.showProgress = false
+        }
+    }
+
+    private func processLocationStreaming(_ location: String, batch: inout [(url: URL, size: (real: Int64, logical: Int64), icon: NSImage?)], batchSize: Int) async {
+        do {
+            let contents = try fileManager.contentsOfDirectory(atPath: location)
+            for itemName in contents {
+                if shouldStop {
+                    return
+                }
+                let itemURL = URL(fileURLWithPath: location).appendingPathComponent(itemName)
+                await processItemStreaming(itemName, itemURL: itemURL, batch: &batch, batchSize: batchSize)
+            }
+        } catch {
+            printOS("Error processing location: \(location), error: \(error)")
+        }
+    }
+
+    private func processItemStreaming(_ itemName: String, itemURL: URL, batch: inout [(url: URL, size: (real: Int64, logical: Int64), icon: NSImage?)], batchSize: Int) async {
+        let itemPath = itemURL.path.pearFormat()
+        let exclusionList = fsm.fileFolderPathsZ.map { $0.pearFormat() }
+
+        if exclusionList.contains(itemPath) || itemPath.contains("dsstore") || itemPath.contains("daemonnameoridentifierhere") || exclusionList.first(where: { itemPath.contains($0) }) != nil {
+            return
+        }
+        guard !isUUIDFormatted(itemName.pearFormat()),
+              !skipReverse.contains(where: { itemName.pearFormat().contains($0) }),
+              isSupportedFileType(at: itemURL.path),
+              !isRelatedToInstalledApp(itemURL: itemURL),
+        !isExcludedByConditions(itemPath: itemPath) else {
+            return
+        }
+
+        // Calculate file details immediately
+        let size = totalSizeOnDisk(for: itemURL)
+        let icon = getIconForFileOrFolderNS(atPath: itemURL)
+
+        // Add to batch
+        batch.append((url: itemURL, size: size, icon: icon))
+
+        // Flush batch when it reaches the batch size
+        if batch.count >= batchSize {
+            await flushBatch(&batch)
+        }
+    }
+
+    private func flushBatch(_ batch: inout [(url: URL, size: (real: Int64, logical: Int64), icon: NSImage?)]) async {
+        let batchCopy = batch
+        batch.removeAll()
+
+        await MainActor.run {
+            var updatedZombieFile = self.appState?.zombieFile ?? ZombieFile.empty
+            for item in batchCopy {
+                updatedZombieFile.fileSize[item.url] = item.size.real
+                updatedZombieFile.fileSizeLogical[item.url] = item.size.logical
+                updatedZombieFile.fileIcon[item.url] = item.icon
+            }
+            self.appState?.zombieFile = updatedZombieFile
         }
     }
 

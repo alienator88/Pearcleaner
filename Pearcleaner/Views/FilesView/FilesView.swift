@@ -31,8 +31,6 @@ struct FilesView: View {
     @Binding var search: String
     @State private var sortedFiles: [URL] = []
     @State private var infoSidebar: Bool = false
-    @State private var lastRefreshDate: Date?
-    @State private var isRefreshing: Bool = false
 
     var body: some View {
 
@@ -151,7 +149,6 @@ struct FilesView: View {
                 .labelStyle(.titleAndIcon)
 
                 Button {
-                    isRefreshing = true
                     let currentAppInfo = appState.appInfo
                     updateOnMain {
                         appState.selectedItems = []
@@ -161,12 +158,9 @@ struct FilesView: View {
                             appInfo: currentAppInfo, appState: appState,
                             locations: locations)
                     }
-                    lastRefreshDate = Date()
-                    isRefreshing = false
                 } label: {
                     Label("Refresh", systemImage: "arrow.counterclockwise")
                 }
-                .disabled(isRefreshing)
 
                 Button {
                     infoSidebar.toggle()

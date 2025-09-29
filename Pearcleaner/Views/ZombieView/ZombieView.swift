@@ -37,31 +37,12 @@ struct ZombieView: View {
     @State private var infoSidebar: Bool = false
     @State private var lastRefreshDate: Date?
     @State private var isRefreshing: Bool = false
+    @State private var currentSearcher: ReversePathsSearcher?
 
     var body: some View {
 
         VStack(alignment: .center) {
-            if appState.showProgress {
-                VStack {
-                    Group {
-                        Spacer()
-
-                        HStack(spacing: 10) {
-                            Text("Searching the file system").font(.title3)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.5))
-                            ProgressView().controlSize(.small)
-                        }
-
-                        Spacer()
-                    }
-                    .transition(.opacity)
-
-                }
-                .padding(50)
-                .transition(.opacity)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else {
-                ZStack {
+            ZStack {
                     VStack(spacing: 0) {
 
                         // Search bar
@@ -92,29 +73,30 @@ struct ZombieView: View {
                         .controlGroup(Capsule(style: .continuous), level: .primary)
                         .padding(.top, 5)
 
-                        if !memoizedFiles.isEmpty {
-                            // Stats header
-                            HStack {
-                                Text("\(memoizedFiles.count) file\(memoizedFiles.count == 1 ? "" : "s")")
+                        // Stats header
+                        HStack {
+                            Text("\(memoizedFiles.count) file\(memoizedFiles.count == 1 ? "" : "s")")
+                                .font(.caption)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                            if appState.showProgress {
+                                Text("• Scanning...")
                                     .font(.caption)
                                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-
-                                if isRefreshing {
-                                    Text("• Refreshing...")
-                                        .font(.caption)
-                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                                }
-
-                                Spacer()
-
-                                if let lastRefresh = lastRefreshDate {
-                                    Text("Updated \(formatRelativeTime(lastRefresh))")
-                                        .font(.caption)
-                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                                }
+                                ProgressView().controlSize(.mini)
                             }
-                            .padding(.vertical)
 
+                            Spacer()
+
+                            if let lastRefresh = lastRefreshDate {
+                                Text("Updated \(formatRelativeTime(lastRefresh))")
+                                    .font(.caption)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            }
+                        }
+                        .padding(.vertical)
+
+                        if !memoizedFiles.isEmpty {
                             ScrollView() {
                                 LazyVStack(spacing: 8) {
                                     ForEach(memoizedFiles, id: \.self) { file in
@@ -126,7 +108,7 @@ struct ZombieView: View {
                                 }
                             }
                             .scrollIndicators(scrollIndicators ? .automatic : .never)
-                        } else {
+                        } else if !appState.showProgress {
                             VStack {
                                 Spacer()
                                 Text("No orphaned files found")
@@ -235,19 +217,19 @@ struct ZombieView: View {
                         memoizedFiles: $memoizedFiles,
                         onRestoreFile: restoreFileToZombieList
                     )
+            }
+            .animation(animationEnabled ? .spring(response: 0.35, dampingFraction: 0.8) : .none, value: infoSidebar)
+            .transition(.opacity)
+            .onAppear {
+                if lastRefreshDate == nil {
+                    lastRefreshDate = Date()
                 }
-                .animation(animationEnabled ? .spring(response: 0.35, dampingFraction: 0.8) : .none, value: infoSidebar)
-                .transition(.opacity)
-                .onAppear {
-                    if lastRefreshDate == nil {
-                        lastRefreshDate = Date()
-                    }
-                    // Only update memoized files if we have data (scan has been completed)
-                    if !appState.zombieFile.fileSize.isEmpty {
-                        updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSort: selectedSort, force: true)
-                    }
-                }
-                .sheet(isPresented: $showAlert, content: {
+            }
+            .onChange(of: appState.zombieFile.fileSize) { _ in
+                // Update memoized files whenever new files are added
+                updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSort: selectedSort, force: true)
+            }
+            .sheet(isPresented: $showAlert, content: {
                     VStack(spacing: 10) {
                         Text("Important")
                             .font(.headline)
@@ -269,9 +251,6 @@ struct ZombieView: View {
                     .frame(width: 400, height: 250)
                     .background(GlassEffect(material: .hudWindow, blendingMode: .behindWindow))
                 })
-
-            }
-
         }
         .onAppear {
             if !warning {
@@ -309,19 +288,19 @@ struct ZombieView: View {
                 }
                 .labelStyle(.titleAndIcon)
 
-                Button {
-                    isRefreshing = true
-                    updateOnMain {
-                        appState.zombieFile = .empty
-                        appState.showProgress.toggle()
-                        reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, fsm: fsm)
-                        lastRefreshDate = Date()
-                        isRefreshing = false
+                if appState.showProgress {
+                    Button {
+                        stopSearch()
+                    } label: {
+                        Label("Stop", systemImage: "stop.circle")
                     }
-                } label: {
-                    Label("Refresh", systemImage: "arrow.counterclockwise")
+                } else {
+                    Button {
+                        startSearch()
+                    } label: {
+                        Label("Refresh", systemImage: "arrow.counterclockwise")
+                    }
                 }
-                .disabled(isRefreshing)
 
                 Button {
                     infoSidebar.toggle()
@@ -336,12 +315,34 @@ struct ZombieView: View {
 
     }
 
-    private func startFileScan() {
+    private func startSearch() {
         updateOnMain {
             appState.zombieFile = .empty
             appState.showProgress = true
-            reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, fsm: fsm)
+            selectedZombieItemsLocal.removeAll()
+
+            let searcher = ReversePathsSearcher(appState: appState, locations: locations, fsm: fsm, sortedApps: appState.sortedApps, streamingMode: true)
+            currentSearcher = searcher
+
+            searcher.reversePathsSearch {
+                updateOnMain {
+                    self.lastRefreshDate = Date()
+                    self.currentSearcher = nil
+                }
+            }
         }
+    }
+
+    private func stopSearch() {
+        currentSearcher?.stop()
+        updateOnMain {
+            appState.showProgress = false
+            currentSearcher = nil
+        }
+    }
+
+    private func startFileScan() {
+        startSearch()
     }
 
     private func handleUninstallAction() {

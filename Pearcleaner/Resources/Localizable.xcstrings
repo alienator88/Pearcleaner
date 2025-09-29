@@ -1647,6 +1647,9 @@
     "• Refreshing..." : {
 
     },
+    "• Scanning..." : {
+
+    },
     "0 bytes" : {
       "localizations" : {
         "de" : {
@@ -28416,6 +28419,7 @@
       }
     },
     "Searching the file system" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
