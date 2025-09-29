@@ -21,7 +21,7 @@ class FileManagerUndo {
     // NSUndoManager instance to handle undo/redo actions
     let undoManager = UndoManager()
 
-    func deleteFiles(at urls: [URL], isCLI: Bool = false) -> Bool {
+    func deleteFiles(at urls: [URL], isCLI: Bool = false, bundleName: String? = nil) -> Bool {
         let trashPath = (NSHomeDirectory() as NSString).appendingPathComponent(".Trash")
         let dispatchSemaphore = DispatchSemaphore(value: 0)  // Semaphore to make it synchronous
         var finalStatus = false  // Store the final success/failure status
@@ -35,8 +35,22 @@ class FileManagerUndo {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd_HH-mm-ss"
         let timestamp = dateFormatter.string(from: Date())
-        let appName = AppState.shared.appInfo.appName.isEmpty ? "UnknownApp" : AppState.shared.appInfo.appName
-        let bundleFolderName = "\(appName)_\(timestamp)"
+
+        let folderName: String
+        if let customBundleName = bundleName {
+            folderName = customBundleName
+        } else if !AppState.shared.appInfo.appName.isEmpty {
+            folderName = AppState.shared.appInfo.appName
+        } else {
+            // Fallback for plugins: use the first file's name or "Mixed Files"
+            if let firstFile = urls.first {
+                folderName = firstFile.deletingPathExtension().lastPathComponent
+            } else {
+                folderName = "Mixed Files"
+            }
+        }
+
+        let bundleFolderName = "\(folderName)_\(timestamp)"
         let bundleFolderPath = (trashPath as NSString).appendingPathComponent(bundleFolderName)
         let bundleFolderURL = URL(fileURLWithPath: bundleFolderPath)
 

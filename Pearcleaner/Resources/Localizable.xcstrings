@@ -95,6 +95,9 @@
         }
       }
     },
+    "(%lld)" : {
+
+    },
     "(Build %@)" : {
       "localizations" : {
         "de" : {
@@ -1221,6 +1224,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld 個套件%@"
+          }
+        }
+      }
+    },
+    "%lld plugin%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld plugin%2$@"
           }
         }
       }
@@ -5280,6 +5293,9 @@
         }
       }
     },
+    "Bundle ID:" : {
+
+    },
     "Bundle thinning (lipo) is an aggressive operation that modifies the binaries within app bundles by removing unused architectures. While generally safe, some applications may experience issues or fail to launch after this process. It is strongly recommended to create a backup of your applications before proceeding, especially for critical or frequently used apps." : {
       "localizations" : {
         "de" : {
@@ -5846,6 +5862,9 @@
           }
         }
       }
+    },
+    "Category: %@" : {
+
     },
     "Check for Updates" : {
       "extractionState" : "manual",
@@ -7928,6 +7947,9 @@
         }
       }
     },
+    "Delete %lld Selected" : {
+
+    },
     "Delete All" : {
       "localizations" : {
         "de" : {
@@ -8680,6 +8702,9 @@
         }
       }
     },
+    "Delete plugin" : {
+
+    },
     "Delete the folder" : {
       "localizations" : {
         "de" : {
@@ -8961,6 +8986,9 @@
           }
         }
       }
+    },
+    "Deselect All" : {
+
     },
     "Details" : {
       "localizations" : {
@@ -17367,6 +17395,9 @@
         }
       }
     },
+    "Loading plugins..." : {
+
+    },
     "Location:" : {
       "localizations" : {
         "de" : {
@@ -18121,6 +18152,9 @@
           }
         }
       }
+    },
+    "Manage third-party plugins and extensions" : {
+
     },
     "Management" : {
       "localizations" : {
@@ -20481,6 +20515,9 @@
         }
       }
     },
+    "No plugins found" : {
+
+    },
     "No releases to display" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -22181,6 +22218,9 @@
         }
       }
     },
+    "Path: %@" : {
+
+    },
     "Pearcleaner and all of its files will be cleanly removed, are you sure?" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -23693,6 +23733,12 @@
           }
         }
       }
+    },
+    "Plugin Manager" : {
+
+    },
+    "Plugins" : {
+
     },
     "Potential savings from bundle thinning" : {
       "localizations" : {
@@ -28791,6 +28837,9 @@
         }
       }
     },
+    "Select All" : {
+
+    },
     "Select an app from the sidebar to begin" : {
       "localizations" : {
         "de" : {
@@ -30300,6 +30349,9 @@
         }
       }
     },
+    "Show in Finder" : {
+
+    },
     "Show multi-select" : {
       "localizations" : {
         "de" : {
@@ -30865,6 +30917,9 @@
           }
         }
       }
+    },
+    "Size: %@" : {
+
     },
     "Sort app list alphabetically by name or by size" : {
       "extractionState" : "manual",

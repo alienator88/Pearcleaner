@@ -511,6 +511,7 @@ enum CurrentPage: Int, CaseIterable, Identifiable {
     case lipo
     case launchItems
     case package
+    case plugins
 
     var id: Int { rawValue }
 
@@ -528,6 +529,8 @@ enum CurrentPage: Int, CaseIterable, Identifiable {
             return (String(localized: "Services"), "gearshape.2")
         case .package:
             return (String(localized: "Packages"), "shippingbox")
+        case .plugins:
+            return (String(localized: "Plugins"), "puzzlepiece")
         }
     }
 

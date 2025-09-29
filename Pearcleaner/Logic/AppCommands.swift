@@ -71,9 +71,14 @@ struct AppCommands: Commands {
                 if appState.currentView != .zombie {
                     let result = undoTrash()
                     if result {
-                        reloadAppsList(appState: appState, fsm: fsm, delay: 1)
-                        if appState.currentView == .files {
-                            showAppInFiles(appInfo: appState.appInfo, appState: appState, locations: locations)
+                        if appState.currentPage == .plugins {
+                            // For plugins view, post notification to refresh
+                            NotificationCenter.default.post(name: NSNotification.Name("PluginsViewShouldRefresh"), object: nil)
+                        } else {
+                            reloadAppsList(appState: appState, fsm: fsm, delay: 1)
+                            if appState.currentView == .files {
+                                showAppInFiles(appInfo: appState.appInfo, appState: appState, locations: locations)
+                            }
                         }
                     }
                 }

@@ -14,12 +14,17 @@ class Locations: ObservableObject {
         var paths: [String]
     }
 
+    struct PluginCategory {
+        let name: String
+        var subcategories: [String: [String]]
+    }
+
     let cacheDir: String
     let tempDir: String
 
     var apps: Category
     var reverse: Category
-    var plugins: Category
+    var plugins: PluginCategory
 
     init() {
         let (cacheDir, tempDir) = darwinCT()
@@ -122,64 +127,122 @@ class Locations: ObservableObject {
             "/Library/PrivilegedHelperTools",
         ])
 
-        self.plugins = Category(name: "Plugins", paths: [
-            // Audio (.component, .vst, .vst3, .auplugin files)
-            "\(home)/Library/Audio/Plug-Ins/Components",
-            "\(home)/Library/Audio/Plug-Ins/HAL",
-            "\(home)/Library/Audio/Plug-Ins/MAS",
-            "\(home)/Library/Audio/Plug-Ins/VST",
-            "\(home)/Library/Audio/Plug-Ins/VST3",
-            "/Library/Audio/Plug-Ins/VST",
-            "/Library/Audio/Plug-Ins/VST3",
-            "/Library/Audio/Plug-Ins/Components (Audio Units)",
-            "/Library/Application Support/Avid/Audio/Plug-Ins (Avid AAX)",
+        self.plugins = PluginCategory(name: "Plugins", subcategories: [
+            "Audio": [
+                // Audio Components, VST, AU, etc.
+                "\(home)/Library/Audio/Plug-Ins/Components",
+                "\(home)/Library/Audio/Plug-Ins/HAL",
+                "\(home)/Library/Audio/Plug-Ins/MAS",
+                "\(home)/Library/Audio/Plug-Ins/VST",
+                "\(home)/Library/Audio/Plug-Ins/VST3",
+                "\(home)/Library/Audio/Plug-Ins/CLAP",
+                "/Library/Audio/Plug-Ins/HAL",
+                "/Library/Audio/Plug-Ins/VST",
+                "/Library/Audio/Plug-Ins/VST3",
+                "/Library/Audio/Plug-Ins/CLAP",
+                "/Library/Audio/Plug-Ins/Components",
+                "/Library/Application Support/Avid/Audio/Plug-Ins"
+            ],
 
-            // Preference Panes (.prefPane files)
-            "/Library/PreferencePanes",
-            "\(home)/Library/PreferencePanes",
+            "PreferencePanes": [
+                // System Preference Panes (.prefPane)
+                "/Library/PreferencePanes",
+                "\(home)/Library/PreferencePanes"
+            ],
 
-            // Quicklook (.qlgenerator files)
-            "/Library/QuickLook/",
-            "\(home)/Library/QuickLook/",
+            "QuickLook": [
+                // QuickLook Generators (.qlgenerator)
+                "/Library/QuickLook",
+                "\(home)/Library/QuickLook"
+            ],
 
-            // Screensaver (.saver files)
-            "/Library/Screen Savers/",
-            "\(home)/Library/Screen Savers/",
+            "Screen Savers": [
+                // Screen Savers (.saver)
+                "/Library/Screen Savers",
+                "\(home)/Library/Screen Savers"
+            ],
 
-            // Internet (.plugin files)
-            "/Library/Internet Plug-Ins/",
-            "\(home)/Library/Internet Plug-Ins/",
+            "Internet Plug-Ins": [
+                // Browser plugins (.plugin, .webplugin)
+                "/Library/Internet Plug-Ins",
+                "\(home)/Library/Internet Plug-Ins"
+            ],
 
-            // Core Image (.plugin files)
-            "/Library/CoreImage/",
-            "\(home)/Library/CoreImage/",
+            "Core Image": [
+                // Core Image filters (.plugin)
+                "/Library/CoreImage",
+                "\(home)/Library/CoreImage"
+            ],
 
-            // Color Pickers (.colorPicker files)
-            "/Library/ColorPickers/",
-            "\(home)/Library/ColorPickers/",
+            "ColorPickers": [
+                // Color Picker plugins (.colorPicker)
+                "/Library/ColorPickers",
+                "\(home)/Library/ColorPickers"
+            ],
 
-            // Fonts (.ttf, .otf, .dfont, .ttc files)
-            "\(home)/Library/Fonts/",
+            "Fonts": [
+                // Font files (.ttf, .otf, .dfont, .ttc)
+                "\(home)/Library/Fonts",
+            ],
 
-            // Dictionary (.dictionary files)
-            "/Library/Dictionaries/",
-            "\(home)/Library/Dictionaries/",
+            "Dictionaries": [
+                // Dictionary files (.dictionary)
+                "/Library/Dictionaries",
+                "\(home)/Library/Dictionaries"
+            ],
 
-            // Automator Actions (.action files)
-            "/Library/Automator/",
-            "\(home)/Library/Automator/",
+            "Automator": [
+                // Automator Actions (.action, .workflow)
+                "/Library/Automator",
+                "\(home)/Library/Automator"
+            ],
 
-            // Safari Extensions (.safariextz, .appex)
-            "/Library/Safari/Extensions/",
-            "\(home)/Library/Safari/Extensions/",
+            "Safari Extensions": [
+                // Safari Extensions (.safariextz, .appex)
+                "/Library/Safari/Extensions",
+                "\(home)/Library/Safari/Extensions"
+            ],
 
-            // iMovie and Final Cut Pro Plugins
-            "\(home)/Movies/Motion Templates/",
-            "/Library/Application Support/Final Cut Pro System Support/Plug-ins/"
+            "Motion Templates": [
+                // Final Cut Pro and Motion templates
+                "\(home)/Movies/Motion Templates",
+                "/Library/Application Support/Final Cut Pro System Support/Plug-ins"
+            ],
 
+            "Spotlight": [
+                // Spotlight importers (.mdimporter)
+                "/Library/Spotlight",
+                "\(home)/Library/Spotlight"
+            ],
 
+            "Services": [
+                // System Services (.service)
+                "/Library/Services",
+                "\(home)/Library/Services"
+            ],
 
+            "Address Book": [
+                // Address Book plugins
+                "\(home)/Library/Address Book Plug-Ins"
+            ],
 
+            "Contextual Menu": [
+                // Context menu plugins
+                "/Library/Contextual Menu Items",
+                "\(home)/Library/Contextual Menu Items"
+            ],
+
+            "Input Methods": [
+                // Input method editors
+                "/Library/Input Methods",
+                "\(home)/Library/Input Methods"
+            ],
+
+            "Widgets": [
+                // Dashboard and notification widgets (.wdgt, .appex)
+                "/Library/Widgets",
+                "\(home)/Library/Widgets"
+            ]
         ])
     }
 }

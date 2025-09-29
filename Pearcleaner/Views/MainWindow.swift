@@ -62,6 +62,9 @@ struct MainWindow: View {
 
                     case .package:
                         PackageView()
+
+                    case .plugins:
+                        PluginsView()
                     }
                 }
 
