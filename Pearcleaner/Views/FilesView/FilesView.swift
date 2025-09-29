@@ -475,7 +475,7 @@ struct FileDetailsItem: View {
             sizeType == "Real"
             ? formatByte(size: realSize).human : formatByte(size: logicalSize).human
 
-        HStack(alignment: .center, spacing: 20) {
+        HStack(alignment: .center, spacing: 15) {
             Button(action: {
                 if !self.path.path.contains(".Trash") {
                     isSelected.toggle()
@@ -563,12 +563,11 @@ struct FileDetailsItem: View {
 
             Spacer()
 
-            //            let displaySize = sizeType == "Real" ? formatByte(size: size!).human :
-            //            formatByte(size: sizeL!).human
             Text(verbatim: "\(displaySize)")
                 .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
         }
+        .padding(.vertical, 8)
         .contextMenu {
             if path.pathExtension == "app" {
                 Button("Open \(path.deletingPathExtension().lastPathComponent)") {

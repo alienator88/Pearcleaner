@@ -108,14 +108,20 @@ struct FileListView: View {
 
                     // File list
                     ScrollView {
-                        LazyVStack(spacing: 14) {
+                        LazyVStack(spacing: 0) {
                             ForEach(Array(filteredFiles.enumerated()), id: \.element) {
                                 index, path in
-                                FileDetailsItem(
-                                    path: path,
-                                    removeAssociation: removeSingleZombieAssociation,
-                                    isSelected: binding(for: path)
-                                )
+                                VStack(spacing: 0) {
+                                    FileDetailsItem(
+                                        path: path,
+                                        removeAssociation: removeSingleZombieAssociation,
+                                        isSelected: binding(for: path)
+                                    )
+
+                                    if index < filteredFiles.count - 1 {
+                                        Divider()
+                                    }
+                                }
                             }
                         }
                         .onAppear {

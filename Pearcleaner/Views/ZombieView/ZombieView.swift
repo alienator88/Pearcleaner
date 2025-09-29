@@ -116,13 +116,10 @@ struct ZombieView: View {
                             .padding(.vertical)
 
                             ScrollView() {
-                                LazyVStack {
+                                LazyVStack(spacing: 8) {
                                     ForEach(memoizedFiles, id: \.self) { file in
                                         if let fileSize = appState.zombieFile.fileSize[file], let fileSizeL = appState.zombieFile.fileSizeLogical[file], let fileIcon = appState.zombieFile.fileIcon[file], let iconImage = fileIcon.map(Image.init(nsImage:)) {
-                                            VStack {
-                                                ZombieFileDetailsItem(size: fileSize, sizeL: fileSizeL, icon: iconImage, path: file, memoizedFiles: $memoizedFiles, isSelected: self.binding(for: file))
-                                                    .padding(.vertical, 5)
-                                            }
+                                            ZombieFileDetailsItem(size: fileSize, sizeL: fileSizeL, icon: iconImage, path: file, memoizedFiles: $memoizedFiles, isSelected: self.binding(for: file))
                                         }
                                     }
 
@@ -612,7 +609,7 @@ struct ZombieFileDetailsItem: View {
 
     var body: some View {
 
-        HStack(alignment: .center, spacing: 20) {
+        HStack(alignment: .center, spacing: 15) {
             Button(action: { isSelected.toggle() }) {
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                     .foregroundStyle(isSelected ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
@@ -679,6 +676,10 @@ struct ZombieFileDetailsItem: View {
                 .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
         }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background(ThemeColors.shared(for: colorScheme).secondaryBG)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
         .contextMenu {
             if path.pathExtension == "app" {
                 Button("Open \(path.deletingPathExtension().lastPathComponent)") {
