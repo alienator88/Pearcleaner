@@ -206,7 +206,8 @@ struct PluginsView: View {
 
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding([.horizontal, .bottom], 20)
+        .padding(.horizontal, 20)
+        .padding(.bottom, !selectedPlugins.isEmpty ? 10 : 20)
         .onAppear {
             loadCollapsedCategories()
 
@@ -260,7 +261,7 @@ struct PluginsView: View {
 
                     Spacer()
                 }
-                .padding()
+                .padding([.horizontal, .bottom])
             }
         }
         .toolbarBackground(.hidden, for: .windowToolbar)
@@ -493,13 +494,6 @@ struct PluginsView: View {
                 }
             }
         }
-    }
-
-
-    private func formatRelativeTime(_ date: Date) -> String {
-        let formatter = RelativeDateTimeFormatter()
-        formatter.unitsStyle = .abbreviated
-        return formatter.localizedString(for: date, relativeTo: Date())
     }
 
     private func toggleCategoryCollapse(for category: String) {

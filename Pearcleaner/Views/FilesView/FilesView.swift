@@ -31,6 +31,8 @@ struct FilesView: View {
     @Binding var search: String
     @State private var sortedFiles: [URL] = []
     @State private var infoSidebar: Bool = false
+    @State private var lastRefreshDate: Date?
+    @State private var isRefreshing: Bool = false
 
     var body: some View {
 
@@ -133,7 +135,7 @@ struct FilesView: View {
 
             ToolbarItem { Spacer() }
 
-            ToolbarItemGroup {
+            TahoeToolbarItem(isGroup: true) {
                 Menu {
                     ForEach(SortOptionList.allCases, id: \.self) { sortOption in
                         Button {
@@ -149,20 +151,29 @@ struct FilesView: View {
                 .labelStyle(.titleAndIcon)
 
                 Button {
+                    isRefreshing = true
+                    let currentAppInfo = appState.appInfo
                     updateOnMain {
-                        appState.appInfo = .empty
                         appState.selectedItems = []
-                        appState.currentView = .empty
                     }
                     withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                         showAppInFiles(
-                            appInfo: AppState.shared.appInfo, appState: appState,
+                            appInfo: currentAppInfo, appState: appState,
                             locations: locations)
                     }
+                    lastRefreshDate = Date()
+                    isRefreshing = false
                 } label: {
                     Label("Refresh", systemImage: "arrow.counterclockwise")
                 }
+                .disabled(isRefreshing)
 
+                Button {
+                    infoSidebar.toggle()
+                } label: {
+                    Label("Info", systemImage: "sidebar.trailing")
+                }
+                .help("See app details")
             }
 
 
@@ -465,9 +476,17 @@ struct FileDetailsItem: View {
             ? formatByte(size: realSize).human : formatByte(size: logicalSize).human
 
         HStack(alignment: .center, spacing: 20) {
-            Toggle(isOn: $isSelected) { EmptyView() }
-                .toggleStyle(SimpleCheckboxToggleStyle())
-                .disabled(self.path.path.contains(".Trash"))
+            Button(action: {
+                if !self.path.path.contains(".Trash") {
+                    isSelected.toggle()
+                }
+            }) {
+                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                    .foregroundStyle(isSelected ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
+                    .font(.title3)
+            }
+            .buttonStyle(.plain)
+            .disabled(self.path.path.contains(".Trash"))
 
             if let appIcon = iconImage {
                 appIcon

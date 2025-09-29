@@ -39,6 +39,7 @@ struct LipoSidebarView: View {
                 .padding()
                 .frame(width: 280)
                 .ifGlassSidebar()
+                .padding([.trailing, .bottom], 20)
             }
             .background(.black.opacity(0.00000000001))
             .transition(.move(edge: .trailing))

@@ -486,12 +486,6 @@ struct DaemonView: View {
             return "global"
         }
     }
-    
-    private func formatRelativeTime(_ date: Date) -> String {
-        let formatter = RelativeDateTimeFormatter()
-        formatter.unitsStyle = .abbreviated
-        return formatter.localizedString(for: date, relativeTo: Date())
-    }
 
     private func addMissingRuntimeServices(runtimeStatus: [String: (pid: String?, status: String, isLoaded: Bool)], existingItems: [LaunchItem]) -> [LaunchItem] {
         var items: [LaunchItem] = []

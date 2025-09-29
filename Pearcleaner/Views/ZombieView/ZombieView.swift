@@ -35,6 +35,8 @@ struct ZombieView: View {
     @State private var totalRealSizeUninstallBtn: String = ""
     @State private var totalLogicalSizeUninstallBtn: String = ""
     @State private var infoSidebar: Bool = false
+    @State private var lastRefreshDate: Date?
+    @State private var isRefreshing: Bool = false
 
     var body: some View {
 
@@ -62,45 +64,57 @@ struct ZombieView: View {
                 ZStack {
                     VStack(spacing: 0) {
 
-                        // Item selection and search toolbar
-                        HStack(spacing: 0) {
-                            Toggle(isOn: selectAllBinding) { EmptyView() }
-                                .toggleStyle(SimpleCheckboxToggleStyle())
-                                .help("All checkboxes")
-                                .padding(.trailing)
+                        // Search bar
+                        HStack {
+                            Image(systemName: "magnifyingglass")
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
-                            // Search bar
-                            HStack {
-                                Image(systemName: "magnifyingglass")
-                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-
-                                TextField("Search...", text: $searchZ)
-                                    .onChange(of: searchZ) { newValue in
-                                        updateMemoizedFiles(for: newValue, sizeType: sizeType, selectedSort: selectedSort)
-                                    }
-                                    .textFieldStyle(.plain)
-                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-
-                                if !searchZ.isEmpty {
-                                    Button {
-                                        searchZ = ""
-                                    } label: {
-                                        Image(systemName: "xmark.circle.fill")
-                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                                    }
-                                    .buttonStyle(.plain)
+                            TextField("Search...", text: $searchZ)
+                                .onChange(of: searchZ) { newValue in
+                                    updateMemoizedFiles(for: newValue, sizeType: sizeType, selectedSort: selectedSort)
                                 }
-                            }
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 8)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-                            .controlGroup(Capsule(style: .continuous), level: .primary)
-                        }
-                        .padding(.vertical)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                                .textFieldStyle(.plain)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
+                            if !searchZ.isEmpty {
+                                Button {
+                                    searchZ = ""
+                                } label: {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                        .controlGroup(Capsule(style: .continuous), level: .primary)
+                        .padding(.top, 5)
 
                         if !memoizedFiles.isEmpty {
+                            // Stats header
+                            HStack {
+                                Text("\(memoizedFiles.count) file\(memoizedFiles.count == 1 ? "" : "s")")
+                                    .font(.caption)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                                if isRefreshing {
+                                    Text("• Refreshing...")
+                                        .font(.caption)
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                }
+
+                                Spacer()
+
+                                if let lastRefresh = lastRefreshDate {
+                                    Text("Updated \(formatRelativeTime(lastRefresh))")
+                                        .font(.caption)
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                }
+                            }
+                            .padding(.vertical)
+
                             ScrollView() {
                                 LazyVStack {
                                     ForEach(memoizedFiles, id: \.self) { file in
@@ -116,54 +130,104 @@ struct ZombieView: View {
                             }
                             .scrollIndicators(scrollIndicators ? .automatic : .never)
                         } else {
-                            Spacer()
-                            Text("No orphaned files found")
+                            VStack {
+                                Spacer()
+                                Text("No orphaned files found")
+                                    .font(.title2)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                Spacer()
+                            }
+                            .frame(maxWidth: .infinity)
                         }
 
-
-                        Spacer()
-
-                        HStack() {
-
-                            Text(verbatim: "\(selectedZombieItemsLocal.count) / \(searchZ.isEmpty ? appState.zombieFile.fileSize.count : memoizedFiles.count)")
-                                .font(.footnote)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                                .frame(minWidth: 80, alignment: .leading)
-
-                            Spacer()
-
-                            if appState.trashError {
-                                InfoButton(text: "A trash error has occurred, please open the debug window(⌘+D) to see what went wrong or try again", color: .orange, label: "View Error", warning: true, extraView: {
-                                    Button("View Debug Window") {
-                                        windowController.open(with: ConsoleView(), width: 600, height: 400)
-                                    }
-                                })
-                                .onDisappear {
-                                    appState.trashError = false
+                        if appState.trashError {
+                            InfoButton(text: "A trash error has occurred, please open the debug window(⌘+D) to see what went wrong or try again", color: .orange, label: "View Error", warning: true, extraView: {
+                                Button("View Debug Window") {
+                                    windowController.open(with: ConsoleView(), width: 600, height: 400)
                                 }
+                            })
+                            .onDisappear {
+                                appState.trashError = false
                             }
-
-                            bottomBar
-
-                            Spacer()
-
-                            Button {
-                                infoSidebar.toggle()
-                            } label: {
-                                Image(systemName: "sidebar.trailing")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 18, height: 18)
-                            }
-                            .buttonStyle(.borderless)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                            .transition(.move(edge: .trailing))
-                            .help("See details")
-
+                            .padding(.bottom)
                         }
-                        .padding(.top)
                     }
                     .opacity(infoSidebar ? 0.5 : 1)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, !selectedZombieItemsLocal.isEmpty ? 10 : 20)
+                    .safeAreaInset(edge: .bottom) {
+                        if !selectedZombieItemsLocal.isEmpty {
+                            HStack {
+                                Spacer()
+
+                                HStack(spacing: 10) {
+                                    Button(selectedZombieItemsLocal.count == memoizedFiles.count ? "Deselect All" : "Select All") {
+                                        if selectedZombieItemsLocal.count == memoizedFiles.count {
+                                            selectedZombieItemsLocal.removeAll()
+                                        } else {
+                                            selectedZombieItemsLocal = Set(memoizedFiles)
+                                        }
+                                        updateTotalSizes()
+                                    }
+                                    .buttonStyle(ControlGroupButtonStyle(
+                                        foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                                        shape: Capsule(style: .continuous),
+                                        level: .primary,
+                                        skipControlGroup: true
+                                    ))
+
+                                    Divider().frame(height: 10)
+
+                                    Menu {
+                                        Button("Exclude \(selectedZombieItemsLocal.count) Selected") {
+                                            excludeAllSelectedItems()
+                                        }
+                                        .help("This will exclude selected items from future scans. Exclusion list can be edited from Settings > Folders tab or the sidebar in this view.")
+
+                                        Menu("Link Selected to App") {
+                                            ForEach(appState.sortedApps, id: \.id) { app in
+                                                Button(app.appName) {
+                                                    linkSelectedItemsToApp(app.path)
+                                                }
+                                            }
+                                        }
+                                        .help("Link all selected items to the chosen app and remove from orphan scans.")
+                                    } label: {
+                                        Text("Actions")
+                                    }
+                                    .buttonStyle(ControlGroupButtonStyle(
+                                        foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                                        shape: Capsule(style: .continuous),
+                                        level: .primary,
+                                        skipControlGroup: true
+                                    ))
+
+                                    Divider().frame(height: 10)
+
+                                    Button {
+                                        handleUninstallAction()
+                                    } label: {
+                                        Label {
+                                            Text("Delete \(selectedZombieItemsLocal.count) Selected")
+                                        } icon: {
+                                            Image(systemName: "trash")
+                                        }
+                                    }
+                                    .buttonStyle(ControlGroupButtonStyle(
+                                        foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                                        shape: Capsule(style: .continuous),
+                                        level: .primary,
+                                        skipControlGroup: true
+                                    ))
+                                }
+                                .controlGroup(Capsule(style: .continuous), level: .primary)
+
+                                Spacer()
+                            }
+                            .padding([.horizontal, .bottom])
+                        }
+                    }
 
                     ZombieSidebarView(
                         infoSidebar: $infoSidebar,
@@ -177,8 +241,10 @@ struct ZombieView: View {
                 }
                 .animation(animationEnabled ? .spring(response: 0.35, dampingFraction: 0.8) : .none, value: infoSidebar)
                 .transition(.opacity)
-                .padding([.horizontal, .bottom], 20)
                 .onAppear {
+                    if lastRefreshDate == nil {
+                        lastRefreshDate = Date()
+                    }
                     // Only update memoized files if we have data (scan has been completed)
                     if !appState.zombieFile.fileSize.isEmpty {
                         updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSort: selectedSort, force: true)
@@ -247,14 +313,25 @@ struct ZombieView: View {
                 .labelStyle(.titleAndIcon)
 
                 Button {
+                    isRefreshing = true
                     updateOnMain {
                         appState.zombieFile = .empty
                         appState.showProgress.toggle()
                         reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, fsm: fsm)
+                        lastRefreshDate = Date()
+                        isRefreshing = false
                     }
                 } label: {
                     Label("Refresh", systemImage: "arrow.counterclockwise")
                 }
+                .disabled(isRefreshing)
+
+                Button {
+                    infoSidebar.toggle()
+                } label: {
+                    Label("Info", systemImage: "sidebar.trailing")
+                }
+                .help("See details")
             }
 
 
@@ -268,76 +345,6 @@ struct ZombieView: View {
             appState.showProgress = true
             reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, fsm: fsm)
         }
-    }
-
-    @ViewBuilder
-    private var bottomBar: some View {
-            HStack(spacing: 10) {
-                Menu {
-                    Button("Exclude Selected") {
-                        excludeAllSelectedItems()
-                    }
-                    .disabled(selectedZombieItemsLocal.isEmpty)
-                    .help("This will exclude selected items from future scans. Exclusion list can be edited from Settings > Folders tab or the sidebar in this view.")
-
-                    Menu("Link Selected to App") {
-                        ForEach(appState.sortedApps, id: \.id) { app in
-                            Button(app.appName) {
-                                linkSelectedItemsToApp(app.path)
-                            }
-                        }
-                    }
-                    .disabled(selectedZombieItemsLocal.isEmpty)
-                    .help("Link all selected items to the chosen app and remove from orphan scans.")
-                } label: {
-                    Text("Actions")
-                }
-                .disabled(selectedZombieItemsLocal.isEmpty)
-                .buttonStyle(ControlGroupButtonStyle(
-                    foregroundColor: ThemeColors.shared(for: colorScheme).accent,
-                    shape: Capsule(style: .continuous),
-                    level: .primary,
-                    skipControlGroup: true,
-                    disabled: selectedZombieItemsLocal.isEmpty
-                ))
-
-                Divider().frame(height: 10)
-
-//                Button("Rescan") {
-//                    updateOnMain {
-//                        appState.zombieFile = .empty
-//                        appState.showProgress.toggle()
-//                        reversePreloader(allApps: appState.sortedApps, appState: appState, locations: locations, fsm: fsm)
-//                    }
-//                }
-//                .buttonStyle(ControlGroupButtonStyle(
-//                    foregroundColor: ThemeColors.shared(for: colorScheme).accent,
-//                    shape: Capsule(style: .continuous),
-//                    level: .primary,
-//                    skipControlGroup: true
-//                ))
-//
-//                Divider().frame(height: 10)
-
-                Button {
-                    handleUninstallAction()
-                } label: {
-                    Label {
-                        Text(verbatim: "\(sizeType == "Logical" ? totalLogicalSizeUninstallBtn : totalRealSizeUninstallBtn)")
-                    } icon: {
-                        Image(systemName: "trash")
-                    }
-                }
-                .disabled(selectedZombieItemsLocal.isEmpty)
-                .buttonStyle(ControlGroupButtonStyle(
-                    foregroundColor: ThemeColors.shared(for: colorScheme).accent,
-                    shape: Capsule(style: .continuous),
-                    level: .primary,
-                    skipControlGroup: true,
-                    disabled: selectedZombieItemsLocal.isEmpty
-                ))
-            }
-            .controlGroup(Capsule(style: .continuous), level: .primary)
     }
 
     private func handleUninstallAction() {
@@ -606,8 +613,12 @@ struct ZombieFileDetailsItem: View {
     var body: some View {
 
         HStack(alignment: .center, spacing: 20) {
-            Toggle(isOn: $isSelected) { EmptyView() }
-            .toggleStyle(SimpleCheckboxToggleStyle())
+            Button(action: { isSelected.toggle() }) {
+                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                    .foregroundStyle(isSelected ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
+                    .font(.title3)
+            }
+            .buttonStyle(.plain)
 
             if let appIcon = icon {
                 appIcon

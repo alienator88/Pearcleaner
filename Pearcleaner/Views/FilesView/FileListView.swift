@@ -21,6 +21,8 @@ struct FileListView: View {
     @State private var searchText: String = ""
     @State private var selectedFileItemsLocal: Set<URL> = []
     @State private var memoizedFiles: [URL] = []
+    @State private var lastRefreshDate: Date?
+    @State private var isRefreshing: Bool = false
     let locations: Locations
     let windowController: WindowManager
     let handleUninstallAction: () -> Void
@@ -46,168 +48,157 @@ struct FileListView: View {
     var body: some View {
         VStack(spacing: 0) {
             if appState.appInfo.fileSize.keys.count == 0 {
-                Text("Sentinel Monitor found no other files to remove")
-                    .font(.title3)
-                    .opacity(0.5)
+                VStack {
+                    Spacer()
+                    Text("Sentinel Monitor found no other files to remove")
+                        .font(.title2)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    Spacer()
+                }
+                .frame(maxWidth: .infinity)
             } else {
                 VStack(alignment: .leading, spacing: 0) {
 
-                    VStack(spacing: 0) {
-                        // Select all checkbox row
-                        HStack {
-                            Toggle(
-                                isOn: Binding(
-                                    get: {
-                                        if searchText.isEmpty {
-                                            return selectedFileItemsLocal.count
-                                                == appState.appInfo.fileSize.count
-                                        } else {
-                                            let currentlyVisibleFiles = Set(filteredFiles)
-                                            let selectedVisibleFiles =
-                                                selectedFileItemsLocal.intersection(
-                                                    currentlyVisibleFiles)
-                                            return !currentlyVisibleFiles.isEmpty
-                                                && selectedVisibleFiles.count
-                                                    == currentlyVisibleFiles.count
-                                        }
-                                    },
-                                    set: { newValue in
-                                        updateOnMain {
-                                            if newValue {
-                                                selectedFileItemsLocal = Set(filteredFiles)
-                                            } else {
-                                                let filesToDeselect = Set(filteredFiles)
-                                                selectedFileItemsLocal.subtract(filesToDeselect)
-                                            }
-                                            // Sync with appState
-                                            appState.selectedItems = selectedFileItemsLocal
-                                        }
-                                    }
-                                )
-                            ) { EmptyView() }
-                            .toggleStyle(SimpleCheckboxToggleStyle())
-                            .help("All checkboxes")
-                            .padding([.bottom, .trailing])
+                    // Search bar
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
-                            //                            Spacer()
-                            // Search bar
-                            HStack {
-                                Image(systemName: "magnifyingglass")
-                                    .foregroundStyle(
-                                        ThemeColors.shared(for: colorScheme).secondaryText)
+                        TextField("Search...", text: $searchText)
+                            .textFieldStyle(.plain)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
-                                TextField("Search...", text: $searchText)
-                                    .textFieldStyle(.plain)
-                                    .foregroundStyle(
-                                        ThemeColors.shared(for: colorScheme).primaryText)
-
-                                if !searchText.isEmpty {
-                                    Button {
-                                        searchText = ""
-                                    } label: {
-                                        Image(systemName: "xmark.circle.fill")
-                                            .foregroundStyle(
-                                                ThemeColors.shared(for: colorScheme).secondaryText)
-                                    }
-                                    .buttonStyle(.plain)
-                                }
+                        if !searchText.isEmpty {
+                            Button {
+                                searchText = ""
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                             }
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 8)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-                            .controlGroup(Capsule(style: .continuous), level: .primary)
-                            .padding(.bottom)
+                            .buttonStyle(.plain)
                         }
-
-                        // File list
-                        ScrollView {
-                            LazyVStack(spacing: 14) {
-                                ForEach(Array(filteredFiles.enumerated()), id: \.element) {
-                                    index, path in
-                                    FileDetailsItem(
-                                        path: path,
-                                        removeAssociation: removeSingleZombieAssociation,
-                                        isSelected: binding(for: path)
-                                    )
-                                }
-                            }
-                            .onAppear {
-                                updateSortedFiles()
-                                updateMemoizedFiles()
-                            }
-                            .onChange(of: sortedFiles) { newVal in
-                                updateMemoizedFiles()
-                            }
-                        }
-                        .scrollIndicators(scrollIndicators ? .automatic : .never)
-                        .padding(.bottom)
                     }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                    .controlGroup(Capsule(style: .continuous), level: .primary)
+                    .padding(.top, 5)
 
-                    // Bottom toolbar
-                    HStack(spacing: 10) {
-                        Text(
-                            "\(selectedFileItemsLocal.intersection(Set(filteredFiles)).count) / \(filteredFiles.count)"
-                        )
-                        .font(.footnote)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        .frame(minWidth: 80, alignment: .leading)
+                    // Stats header
+                    HStack {
+                        Text("\(filteredFiles.count) file\(filteredFiles.count == 1 ? "" : "s")")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                        if isRefreshing {
+                            Text("• Refreshing...")
+                                .font(.caption)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        }
 
                         Spacer()
 
-                        if appState.trashError {
-                            InfoButton(
-                                text:
-                                    "A trash error has occurred, please open the debug window(⌘+D) to see what went wrong or try again",
-                                color: .orange, label: "View Error", warning: true,
-                                extraView: {
-                                    Button("View Debug Window") {
-                                        windowController.open(
-                                            with: ConsoleView(), width: 600, height: 400)
-                                    }
-                                }
-                            )
-                            .onDisappear {
-                                appState.trashError = false
-                            }
+                        if let lastRefresh = lastRefreshDate {
+                            Text("Updated \(formatRelativeTime(lastRefresh))")
+                                .font(.caption)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                         }
+                    }
+                    .padding(.vertical)
 
-                        Button {
-                            handleUninstallAction()
-                        } label: {
-                            Label {
-                                Text(
-                                    verbatim:
-                                        "\(sizeType == "Logical" ? totalSelectedSize.logical : totalSelectedSize.real)"
+                    // File list
+                    ScrollView {
+                        LazyVStack(spacing: 14) {
+                            ForEach(Array(filteredFiles.enumerated()), id: \.element) {
+                                index, path in
+                                FileDetailsItem(
+                                    path: path,
+                                    removeAssociation: removeSingleZombieAssociation,
+                                    isSelected: binding(for: path)
                                 )
-                            } icon: {
-                                Image(systemName: "trash")
                             }
                         }
-                        .buttonStyle(
-                            ControlGroupButtonStyle(
-                                foregroundColor: ThemeColors.shared(for: colorScheme).accent,
-                                shape: Capsule(style: .continuous),
-                                level: .primary,
-                                disabled: appState.selectedItems.isEmpty
-                            ))
-
-                        Spacer()
-
-                        Button {
-                            infoSidebar.toggle()
-                        } label: {
-                            Image(systemName: "sidebar.trailing")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 18, height: 18)
+                        .onAppear {
+                            if lastRefreshDate == nil {
+                                lastRefreshDate = Date()
+                            }
+                            updateSortedFiles()
+                            updateMemoizedFiles()
                         }
-                        .buttonStyle(.borderless)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        .transition(.move(edge: .trailing))
-                        .help("See app details")
+                        .onChange(of: sortedFiles) { newVal in
+                            updateMemoizedFiles()
+                        }
+                    }
+                    .scrollIndicators(scrollIndicators ? .automatic : .never)
+
+                    if appState.trashError {
+                        InfoButton(
+                            text:
+                                "A trash error has occurred, please open the debug window(⌘+D) to see what went wrong or try again",
+                            color: .orange, label: "View Error", warning: true,
+                            extraView: {
+                                Button("View Debug Window") {
+                                    windowController.open(
+                                        with: ConsoleView(), width: 600, height: 400)
+                                }
+                            }
+                        )
+                        .onDisappear {
+                            appState.trashError = false
+                        }
+                        .padding(.bottom)
                     }
                 }
                 .opacity(infoSidebar ? 0.5 : 1)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding(.horizontal, 20)
+                .padding(.bottom, !selectedFileItemsLocal.isEmpty ? 10 : 20)
+                .safeAreaInset(edge: .bottom) {
+                    if !selectedFileItemsLocal.isEmpty {
+                        HStack {
+                            Spacer()
+
+                            HStack(spacing: 10) {
+                                Button(selectedFileItemsLocal.count == filteredFiles.count ? "Deselect All" : "Select All") {
+                                    if selectedFileItemsLocal.count == filteredFiles.count {
+                                        selectedFileItemsLocal.removeAll()
+                                    } else {
+                                        selectedFileItemsLocal = Set(filteredFiles)
+                                    }
+                                    appState.selectedItems = selectedFileItemsLocal
+                                }
+                                .buttonStyle(ControlGroupButtonStyle(
+                                    foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                                    shape: Capsule(style: .continuous),
+                                    level: .primary,
+                                    skipControlGroup: true
+                                ))
+
+                                Divider().frame(height: 10)
+
+                                Button {
+                                    handleUninstallAction()
+                                } label: {
+                                    Label {
+                                        Text("Delete \(selectedFileItemsLocal.count) Selected")
+                                    } icon: {
+                                        Image(systemName: "trash")
+                                    }
+                                }
+                                .buttonStyle(ControlGroupButtonStyle(
+                                    foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                                    shape: Capsule(style: .continuous),
+                                    level: .primary,
+                                    skipControlGroup: true
+                                ))
+                            }
+                            .controlGroup(Capsule(style: .continuous), level: .primary)
+
+                            Spacer()
+                        }
+                        .padding([.horizontal, .bottom])
+                    }
+                }
             }
 
             if !appState.externalPaths.isEmpty {
@@ -238,8 +229,6 @@ struct FileListView: View {
                 .padding(.top)
             }
         }
-        .frame(maxWidth: .infinity)
-        .padding([.horizontal, .bottom], 20)
 
     }
 

@@ -17,7 +17,12 @@ struct EnvironmentCleanerView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.colorScheme) var colorScheme
     @State private var paths: [PathEnv] = []
+    @State private var selectedPaths: Set<String> = []
+    @State private var searchText: String = ""
+    @State private var lastRefreshDate: Date?
+    @State private var isLoading: Bool = false
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
     // Store all paths, including "All" and each environment
     private var allPaths: [PathEnv] {
@@ -27,8 +32,16 @@ struct EnvironmentCleanerView: View {
     }
 
     private func refreshPaths() {
+        isLoading = true
+
+        Task {
+            await refreshPathsAsync()
+        }
+    }
+
+    private func refreshPathsAsync() async {
         let fileManager = FileManager.default
-        paths = allPaths.map { env in
+        let refreshedPaths = allPaths.map { env in
             let validPaths = env.paths.filter {
                 let expanded = NSString(string: $0).expandingTildeInPath
                 var isDir: ObjCBool = false
@@ -46,20 +59,103 @@ struct EnvironmentCleanerView: View {
             return PathEnv(name: env.name, paths: validPaths)
         }
 
-        // Update selected environment to its refreshed version
-        if let selected = appState.selectedEnvironment {
-            if let updated = paths.first(where: { $0.name == selected.name }) {
-                appState.selectedEnvironment = updated
-            } else {
-                appState.selectedEnvironment = nil
+        await MainActor.run {
+            self.paths = refreshedPaths
+            self.lastRefreshDate = Date()
+            self.isLoading = false
+
+            // Update selected environment to its refreshed version
+            if let selected = appState.selectedEnvironment {
+                if let updated = paths.first(where: { $0.name == selected.name }) {
+                    appState.selectedEnvironment = updated
+                } else {
+                    appState.selectedEnvironment = nil
+                }
             }
+
+            // Clear selection when refreshing paths
+            selectedPaths.removeAll()
         }
     }
 
+    // Computed property for filtered paths
+    private var filteredPaths: [PathEnv] {
+        guard let selectedEnvironment = appState.selectedEnvironment else { return [] }
+
+        if searchText.isEmpty {
+            return [selectedEnvironment]
+        }
+
+        let filteredEnvironment = PathEnv(
+            name: selectedEnvironment.name,
+            paths: selectedEnvironment.paths.filter { path in
+                path.localizedCaseInsensitiveContains(searchText)
+            }
+        )
+
+        return [filteredEnvironment]
+    }
+
+    // Total count of paths for stats
+    private var totalPathsCount: Int {
+        if let selectedEnvironment = appState.selectedEnvironment {
+            return selectedEnvironment.paths.count
+        }
+        return 0
+    }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .leading, spacing: 0) {
+
+            // Search bar
+            HStack {
+                Image(systemName: "magnifyingglass")
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                TextField("Search...", text: $searchText)
+                    .textFieldStyle(.plain)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                if !searchText.isEmpty {
+                    Button {
+                        searchText = ""
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+            .controlGroup(Capsule(style: .continuous), level: .primary)
+            .padding(.top, 5)
 
             if let selectedEnvironment = appState.selectedEnvironment {
+
+                // Stats header
+                HStack {
+                    let filteredCount = filteredPaths.first?.paths.count ?? 0
+                    Text("\(filteredCount) path\(filteredCount == 1 ? "" : "s")")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                    if isLoading {
+                        Text("• Loading...")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+
+                    Spacer()
+
+                    if let lastRefresh = lastRefreshDate {
+                        Text("Updated \(formatRelativeTime(lastRefresh))")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                }
+                .padding(.vertical)
 
                 // Add workspace storage cleaner for VS Code and Cursor
                 if selectedEnvironment.name == "VS Code" || selectedEnvironment.name == "Cursor" {
@@ -70,12 +166,45 @@ struct EnvironmentCleanerView: View {
 
                 ScrollView {
                     LazyVStack(spacing: 10) {
-                        ForEach(selectedEnvironment.paths, id: \.self) { path in
-                            PathRowView(path: path) {
-                                refreshPaths()
-                                if let env = appState.selectedEnvironment,
-                                   paths.first(where: { $0.name == env.name })?.paths.isEmpty ?? true {
-                                    appState.selectedEnvironment = nil
+                        if selectedEnvironment.name == "All" {
+                            // Show categorized view for "All" environment
+                            ForEach(paths.filter { !$0.paths.isEmpty && $0.name != "All" }, id: \.name) { environment in
+                                let environmentPaths = environment.paths.filter { path in
+                                    searchText.isEmpty || path.localizedCaseInsensitiveContains(searchText)
+                                }
+
+                                if !environmentPaths.isEmpty {
+                                    EnvironmentCategorySection(
+                                        environment: PathEnv(name: environment.name, paths: environmentPaths),
+                                        selectedPaths: $selectedPaths,
+                                        onRefresh: refreshPaths
+                                    )
+                                }
+                            }
+                        } else {
+                            // Show regular path list for specific environments
+                            if let filteredEnvironment = filteredPaths.first {
+                                ForEach(filteredEnvironment.paths, id: \.self) { path in
+                                    PathRowView(
+                                        path: path,
+                                        isSelected: Binding(
+                                            get: { selectedPaths.contains(path) },
+                                            set: { isSelected in
+                                                if isSelected {
+                                                    selectedPaths.insert(path)
+                                                } else {
+                                                    selectedPaths.remove(path)
+                                                }
+                                            }
+                                        )
+                                    ) {
+                                        refreshPaths()
+                                        selectedPaths.remove(path)
+                                        if let env = appState.selectedEnvironment,
+                                           paths.first(where: { $0.name == env.name })?.paths.isEmpty ?? true {
+                                            appState.selectedEnvironment = nil
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -94,82 +223,100 @@ struct EnvironmentCleanerView: View {
 
             }
 
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.horizontal, 20)
+        .padding(.bottom, !selectedPaths.isEmpty ? 10 : 20)
+        .safeAreaInset(edge: .bottom) {
+            if !selectedPaths.isEmpty {
+                // Show selection toolbar only when items are selected
+                if let selectedEnvironment = appState.selectedEnvironment, !selectedEnvironment.paths.isEmpty {
+                    HStack {
+                        Spacer()
 
-            // Add bulk delete buttons if selectedEnvironment and has valid paths
-            if let selectedEnvironment = appState.selectedEnvironment, !selectedEnvironment.paths.isEmpty {
+                        HStack(spacing: 10) {
+                            let availablePaths = selectedEnvironment.name == "All" ?
+                                paths.filter { !$0.paths.isEmpty && $0.name != "All" }.flatMap { env in
+                                    env.paths.filter { path in
+                                        searchText.isEmpty || path.localizedCaseInsensitiveContains(searchText)
+                                    }
+                                } :
+                                (filteredPaths.first?.paths ?? [])
 
-                HStack {
-                    Spacer()
-                    HStack(spacing: 10) {
-
-//                        Button {
-//                            refreshPaths()
-//                        } label: {
-//                            Label("Refresh", systemImage: "arrow.clockwise")
-//                        }
-//                        .help("Refresh")
-//
-//                        Divider().frame(height: 10)
-
-                        Button {
-                            showCustomAlert(title: "Warning", message: "This will delete all the selected folders. Are you sure?", style: .warning, onOk:  {
-                                for path in selectedEnvironment.paths {
-                                    let expanded = NSString(string: path).expandingTildeInPath
-                                    let _ = try? FileManager.default.removeItem(atPath: expanded)
+                            Button(selectedPaths.count == availablePaths.count ? "Deselect All" : "Select All") {
+                                if selectedPaths.count == availablePaths.count {
+                                    selectedPaths.removeAll()
+                                } else {
+                                    selectedPaths = Set(availablePaths)
                                 }
-                                refreshPaths()
-                                if let env = appState.selectedEnvironment,
-                                   paths.first(where: { $0.name == env.name })?.paths.isEmpty ?? true {
-                                    appState.selectedEnvironment = nil
-                                }
-                            })
+                            }
+                            .buttonStyle(ControlGroupButtonStyle(
+                                foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                                shape: Capsule(style: .continuous),
+                                level: .primary,
+                                skipControlGroup: true
+                            ))
 
-                        } label: {
-                            Label("Delete All Folders", systemImage: "folder")
-                        }
+                            Divider().frame(height: 10)
 
-                        Divider().frame(height: 10)
+                            Button("Delete \(selectedPaths.count) Selected Folders") {
+                                showCustomAlert(title: "Warning", message: "This will delete \(selectedPaths.count) selected folders. Are you sure?", style: .warning, onOk: {
+                                    for path in selectedPaths {
+                                        let expanded = NSString(string: path).expandingTildeInPath
+                                        let _ = try? FileManager.default.removeItem(atPath: expanded)
+                                    }
+                                    selectedPaths.removeAll()
+                                    refreshPaths()
+                                    if let env = appState.selectedEnvironment,
+                                       paths.first(where: { $0.name == env.name })?.paths.isEmpty ?? true {
+                                        appState.selectedEnvironment = nil
+                                    }
+                                })
+                            }
+                            .buttonStyle(ControlGroupButtonStyle(
+                                foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                                shape: Capsule(style: .continuous),
+                                level: .primary,
+                                skipControlGroup: true
+                            ))
 
-                        Button {
-                            showCustomAlert(title: "Warning", message: "This will delete all the contents of the selected folders. Are you sure?", style: .warning, onOk: {
-                                for path in selectedEnvironment.paths {
-                                    let expanded = NSString(string: path).expandingTildeInPath
-                                    let fm = FileManager.default
-                                    if let contents = try? fm.contentsOfDirectory(atPath: expanded) {
-                                        for item in contents {
-                                            let itemPath = (expanded as NSString).appendingPathComponent(item)
-                                            let _ = try? fm.removeItem(atPath: itemPath)
+                            Divider().frame(height: 10)
+
+                            Button("Delete \(selectedPaths.count) Selected Contents") {
+                                showCustomAlert(title: "Warning", message: "This will delete the contents of \(selectedPaths.count) selected folders. Are you sure?", style: .warning, onOk: {
+                                    for path in selectedPaths {
+                                        let expanded = NSString(string: path).expandingTildeInPath
+                                        let fm = FileManager.default
+                                        if let contents = try? fm.contentsOfDirectory(atPath: expanded) {
+                                            for item in contents {
+                                                let itemPath = (expanded as NSString).appendingPathComponent(item)
+                                                let _ = try? fm.removeItem(atPath: itemPath)
+                                            }
                                         }
                                     }
-                                }
-                                refreshPaths()
-                                if let env = appState.selectedEnvironment,
-                                   paths.first(where: { $0.name == env.name })?.paths.isEmpty ?? true {
-                                    appState.selectedEnvironment = nil
-                                }
-                            })
-                        } label: {
-                            Label("Delete All Contents", systemImage: "shippingbox")
+                                    selectedPaths.removeAll()
+                                    refreshPaths()
+                                    if let env = appState.selectedEnvironment,
+                                       paths.first(where: { $0.name == env.name })?.paths.isEmpty ?? true {
+                                        appState.selectedEnvironment = nil
+                                    }
+                                })
+                            }
+                            .buttonStyle(ControlGroupButtonStyle(
+                                foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                                shape: Capsule(style: .continuous),
+                                level: .primary,
+                                skipControlGroup: true
+                            ))
                         }
+                        .controlGroup(Capsule(style: .continuous), level: .primary)
 
+                        Spacer()
                     }
-                    .controlSize(.small)
-                    .buttonStyle(.plain)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-                    .padding(.vertical, 8)
-                    .padding(.horizontal, 14)
-                    .controlGroup(Capsule(style: .continuous), level: .primary)
-
-                    Spacer()
+                    .padding([.horizontal, .bottom])
                 }
-
-            } else {
-                Spacer()
             }
-
         }
-        .frame(maxWidth: .infinity)
-        .padding(20)
         .onAppear {
             refreshPaths()
         }
@@ -195,6 +342,7 @@ struct EnvironmentCleanerView: View {
                             } else {
                                 Button("\(environment.name) (\(environment.paths.count))") {
                                     appState.selectedEnvironment = environment
+                                    selectedPaths.removeAll()
                                 }
                             }
                         }
@@ -214,9 +362,77 @@ struct EnvironmentCleanerView: View {
     }
 }
 
+// MARK: - Environment Category Section
+
+struct EnvironmentCategorySection: View {
+    let environment: PathEnv
+    @Binding var selectedPaths: Set<String>
+    let onRefresh: () -> Void
+    @Environment(\.colorScheme) var colorScheme
+    @State private var isCollapsed: Bool = false
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            // Category header
+            Button(action: {
+                withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
+                    isCollapsed.toggle()
+                }
+            }) {
+                HStack {
+                    Image(systemName: isCollapsed ? "chevron.right" : "chevron.down")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        .frame(width: 10)
+
+                    Text(environment.name)
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                    Text("(\(environment.paths.count))")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                    Spacer()
+                }
+                .padding(.horizontal)
+                .padding(.vertical, 4)
+            }
+            .buttonStyle(.plain)
+            .contentShape(Rectangle())
+
+            // Path rows
+            if !isCollapsed {
+                ForEach(environment.paths, id: \.self) { path in
+                    PathRowView(
+                        path: path,
+                        isSelected: Binding(
+                            get: { selectedPaths.contains(path) },
+                            set: { isSelected in
+                                if isSelected {
+                                    selectedPaths.insert(path)
+                                } else {
+                                    selectedPaths.remove(path)
+                                }
+                            }
+                        )
+                    ) {
+                        onRefresh()
+                        selectedPaths.remove(path)
+                    }
+                }
+                .transition(.opacity.combined(with: .slide))
+            }
+        }
+    }
+}
+
 struct PathRowView: View {
     @Environment(\.colorScheme) var colorScheme
     let path: String
+    @Binding var isSelected: Bool
     let onDelete: () -> Void
     @State private var exists: Bool = false
     @State private var isEmpty: Bool = false
@@ -232,6 +448,14 @@ struct PathRowView: View {
                 ForEach(matchingPaths, id: \.self) { matchedPath in
                     VStack(alignment: .leading, spacing: 10) {
                         HStack {
+
+                            // Selection checkbox
+                            Button(action: { isSelected.toggle() }) {
+                                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                                    .foregroundStyle(isSelected ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
+                                    .font(.title3)
+                            }
+                            .buttonStyle(.plain)
 
                             Button {
                                 openInFinder(matchedPath)
@@ -250,30 +474,26 @@ struct PathRowView: View {
                             Text(formatByte(size: size).human)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
-                            HStack {
-                                Button {
+                            HStack(spacing: 10) {
+                                Button("Delete Folder") {
                                     deleteFolder(matchedPath)
-                                } label: {
-                                    Label("Delete Folder", systemImage: "folder")
                                 }
+                                .buttonStyle(.borderless)
+                                .controlSize(.mini)
+                                .foregroundStyle(.red)
                                 .help("Delete the folder")
 
                                 Divider().frame(height: 10)
 
-                                Button {
+                                Button("Delete Contents") {
                                     deleteFolderContents(matchedPath)
-                                } label: {
-                                    Label("Delete Contents", systemImage: "shippingbox")
                                 }
+                                .buttonStyle(.borderless)
+                                .controlSize(.mini)
+                                .foregroundStyle(.red)
                                 .disabled(isEmpty)
                                 .help("Delete all files within this folder")
                             }
-                            .controlSize(.small)
-                            .buttonStyle(.plain)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-                            .padding(.vertical, 8)
-                            .padding(.horizontal, 14)
-                            .controlGroup(Capsule(style: .continuous), level: .primary)
 
                         }
                         .onAppear {

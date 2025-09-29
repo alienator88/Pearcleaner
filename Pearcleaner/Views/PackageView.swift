@@ -646,12 +646,6 @@ struct PackageView: View {
         }
         return nil
     }
-    
-    private func formatRelativeTime(_ date: Date) -> String {
-        let formatter = RelativeDateTimeFormatter()
-        formatter.unitsStyle = .abbreviated
-        return formatter.localizedString(for: date, relativeTo: Date())
-    }
 
 }
 

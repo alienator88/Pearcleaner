@@ -11,7 +11,6 @@ import SwiftUI
 struct LipoView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.colorScheme) var colorScheme
-    @State private var selectAll: Bool = false
     @State private var selectedApps: Set<String> = []
     @State private var isProcessing: Bool = false
     @State private var savingsAllApps: UInt64 = 0
@@ -21,6 +20,8 @@ struct LipoView: View {
     @State private var infoSidebar: Bool = false
     @State private var selectedSort: LipoSortOption = .name
     @State private var searchText: String = ""
+    @State private var lastRefreshDate: Date?
+    @State private var isRefreshing: Bool = false
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.lipo.pruneTranslations") private var prune = false
     @AppStorage("settings.lipo.filterMinSavings") private var filterMinSavings = false
@@ -140,6 +141,31 @@ struct LipoView: View {
                 VStack(alignment: .leading, spacing: 0) {
 
                     // Add this section back - the main app list content
+                    // Search bar
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                        TextField("Search...", text: $searchText)
+                            .textFieldStyle(.plain)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                        if !searchText.isEmpty {
+                            Button {
+                                searchText = ""
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                    .controlGroup(Capsule(style: .continuous), level: .primary)
+                    .padding(.top, 5)
+
                     if universalApps.isEmpty {
                         VStack {
                             Spacer()
@@ -148,52 +174,32 @@ struct LipoView: View {
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                             Spacer()
                         }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .frame(maxWidth: .infinity)
                     } else {
-                        HStack(spacing: 16) {
-                            Toggle(isOn: $selectAll) {}
-                                .toggleStyle(SimpleCheckboxToggleStyle())
-                                .padding(.vertical)
-                                .onChange(of: selectAll) { newValue in
-                                    if newValue {
-                                        selectedApps = Set(universalApps.map { $0.path.path })
-                                    } else {
-                                        selectedApps.removeAll()
-                                    }
-                                }
 
-                            // Search bar
-                            HStack {
-                                Image(systemName: "magnifyingglass")
-                                    .foregroundStyle(
-                                        ThemeColors.shared(for: colorScheme).secondaryText)
+                        // Stats header
+                        HStack {
+                            Text("\(universalApps.count) app\(universalApps.count == 1 ? "" : "s")")
+                                .font(.caption)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
-                                TextField("Search...", text: $searchText)
-                                    .textFieldStyle(.plain)
-                                    .foregroundStyle(
-                                        ThemeColors.shared(for: colorScheme).primaryText)
-
-                                if !searchText.isEmpty {
-                                    Button {
-                                        searchText = ""
-                                    } label: {
-                                        Image(systemName: "xmark.circle.fill")
-                                            .foregroundStyle(
-                                                ThemeColors.shared(for: colorScheme).secondaryText)
-                                    }
-                                    .buttonStyle(.plain)
-                                }
+                            if isRefreshing {
+                                Text("• Refreshing...")
+                                    .font(.caption)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                             }
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 8)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-                            .controlGroup(Capsule(style: .continuous), level: .primary)
 
+                            Spacer()
+
+                            if let lastRefresh = lastRefreshDate {
+                                Text("Updated \(formatRelativeTime(lastRefresh))")
+                                    .font(.caption)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            }
 
                             LipoLegend()
-//                                .padding(.vertical)
-
                         }
+                        .padding(.vertical)
 
                         ScrollView {
                             VStack(spacing: 10) {
@@ -209,38 +215,50 @@ struct LipoView: View {
                             }
                         }
                         .scrollIndicators(scrollIndicators ? .automatic : .never)
-                        .padding(.bottom)
                     }
-
-                    HStack(spacing: 10) {
-                        // Left side - Total savings with fixed width
-                        Text("\(selectedApps.count) / \(universalApps.count)")
-                            .font(.footnote)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                            .frame(minWidth: 80, alignment: .leading)
-
+                }
+            }
+            .opacity(infoSidebar ? 0.5 : 1)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(.horizontal, 20)
+            .padding(.bottom, !selectedApps.isEmpty ? 10 : 20)
+            .safeAreaInset(edge: .bottom) {
+                if !selectedApps.isEmpty {
+                    HStack {
                         Spacer()
 
-                        // Center - Exclude and Start Lipo buttons
-                        HStack(spacing: 8) {
+                        HStack(spacing: 10) {
+                            Button(selectedApps.count == universalApps.count ? "Deselect All" : "Select All") {
+                                if selectedApps.count == universalApps.count {
+                                    selectedApps.removeAll()
+                                } else {
+                                    selectedApps = Set(universalApps.map { $0.path.path })
+                                }
+                            }
+                            .buttonStyle(ControlGroupButtonStyle(
+                                foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                                shape: Capsule(style: .continuous),
+                                level: .primary,
+                                skipControlGroup: true
+                            ))
+
+                            Divider().frame(height: 10)
+
                             Button {
                                 excludeSelectedApps()
                             } label: {
                                 Label {
-                                    Text("Exclude")
+                                    Text("Exclude \(selectedApps.count) Selected")
                                 } icon: {
                                     Image(systemName: "minus.circle")
                                 }
-                                .frame(minWidth: 80)
                             }
-                            .disabled(selectedApps.isEmpty)
-                            .buttonStyle(
-                                ControlGroupButtonStyle(
-                                    foregroundColor: ThemeColors.shared(for: colorScheme).accent,
-                                    shape: Capsule(style: .continuous),
-                                    skipControlGroup: true,
-                                    disabled: selectedApps.isEmpty
-                                ))
+                            .buttonStyle(ControlGroupButtonStyle(
+                                foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                                shape: Capsule(style: .continuous),
+                                level: .primary,
+                                skipControlGroup: true
+                            ))
 
                             Divider().frame(height: 10)
 
@@ -253,42 +271,25 @@ struct LipoView: View {
                                     } icon: {
                                         Image(systemName: "scissors")
                                     }
-                                    .frame(minWidth: 100)
                                 } else {
                                     ProgressView()
                                         .controlSize(.mini)
-                                        .frame(minWidth: 100)
                                 }
                             }
-                            .disabled(selectedApps.isEmpty)
-                            .buttonStyle(
-                                ControlGroupButtonStyle(
-                                    foregroundColor: ThemeColors.shared(for: colorScheme).accent,
-                                    shape: Capsule(style: .continuous),
-                                    skipControlGroup: true,
-                                    disabled: selectedApps.isEmpty
-                                ))
+                            .buttonStyle(ControlGroupButtonStyle(
+                                foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                                shape: Capsule(style: .continuous),
+                                level: .primary,
+                                skipControlGroup: true
+                            ))
                         }
                         .controlGroup(Capsule(style: .continuous), level: .primary)
 
                         Spacer()
-
-                        Button {
-                            infoSidebar.toggle()
-                        } label: {
-                            Image(systemName: "sidebar.trailing")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 18, height: 18)
-                        }
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        .buttonStyle(.borderless)
-                        .transition(.move(edge: .trailing))
-                        .help("See lipo details")
                     }
+                    .padding([.horizontal, .bottom])
                 }
             }
-            .opacity(infoSidebar ? 0.5 : 1)
 
             // Add the sidebar view
             LipoSidebarView(
@@ -300,11 +301,12 @@ struct LipoView: View {
             animationEnabled ? .spring(response: 0.35, dampingFraction: 0.8) : .none,
             value: infoSidebar
         )
-        .frame(maxWidth: .infinity)
-        .padding([.horizontal, .bottom], 20)
         .onAppear {
             if !warning {
                 showAlert = true
+            }
+            if lastRefreshDate == nil {
+                lastRefreshDate = Date()
             }
             // Sizes will be calculated per-app on-demand
         }
@@ -355,7 +357,7 @@ struct LipoView: View {
 
             ToolbarItem { Spacer() }
 
-            ToolbarItem {
+            TahoeToolbarItem(isGroup: true) {
                 Menu {
                     ForEach(LipoSortOption.allCases, id: \.self) { sortOption in
                         Button {
@@ -368,8 +370,43 @@ struct LipoView: View {
                     Label(selectedSort.rawValue, systemImage: selectedSort.systemImage)
                 }
                 .labelStyle(.titleAndIcon)
+
+                Button {
+                    refreshList()
+                } label: {
+                    Label("Refresh", systemImage: "arrow.counterclockwise")
+                }
+                .disabled(isRefreshing)
+
+                Button {
+                    infoSidebar.toggle()
+                } label: {
+                    Label("Info", systemImage: "sidebar.trailing")
+                }
+                .help("See lipo details")
             }
 
+        }
+    }
+
+    private func refreshList() {
+        isRefreshing = true
+
+        Task {
+            // Clear the cached sizes to force recalculation
+            await MainActor.run {
+                sliceSizesByPath.removeAll()
+                savingsAllApps = 0
+                bundleAllApps = 0
+            }
+
+            // Wait a bit for the UI to update
+            try? await Task.sleep(nanoseconds: 500_000_000)
+
+            await MainActor.run {
+                lastRefreshDate = Date()
+                isRefreshing = false
+            }
         }
     }
 
@@ -439,7 +476,6 @@ struct LipoView: View {
 
         // Clear selections since these apps were processed
         selectedApps.removeAll()
-        selectAll = false
 
         // Recalculate savings for each processed app in the background
         Task {
@@ -518,21 +554,18 @@ struct LipoAppRowView: View {
     }
 
     private var appToggle: some View {
-        Toggle(
-            isOn: Binding(
-                get: { selectedApps.contains(app.path.path) },
-                set: { isSelected in
-                    if isSelected {
-                        selectedApps.insert(app.path.path)
-                    } else {
-                        selectedApps.remove(app.path.path)
-                    }
-                }
-            )
-        ) {
-            EmptyView()
+        Button(action: {
+            if selectedApps.contains(app.path.path) {
+                selectedApps.remove(app.path.path)
+            } else {
+                selectedApps.insert(app.path.path)
+            }
+        }) {
+            Image(systemName: selectedApps.contains(app.path.path) ? "checkmark.circle.fill" : "circle")
+                .foregroundStyle(selectedApps.contains(app.path.path) ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
+                .font(.title3)
         }
-        .toggleStyle(SimpleCheckboxToggleStyle())
+        .buttonStyle(.plain)
     }
 
     private var appContentView: some View {

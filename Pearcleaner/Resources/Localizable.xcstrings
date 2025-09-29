@@ -852,6 +852,26 @@
         }
       }
     },
+    "%lld app%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld app%2$@"
+          }
+        }
+      }
+    },
+    "%lld file%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld file%2$@"
+          }
+        }
+      }
+    },
     "%lld files" : {
       "localizations" : {
         "de" : {
@@ -1224,6 +1244,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld 個套件%@"
+          }
+        }
+      }
+    },
+    "%lld path%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld path%2$@"
           }
         }
       }
@@ -1613,6 +1643,9 @@
           }
         }
       }
+    },
+    "• Refreshing..." : {
+
     },
     "0 bytes" : {
       "localizations" : {
@@ -7950,6 +7983,12 @@
     "Delete %lld Selected" : {
 
     },
+    "Delete %lld Selected Contents" : {
+
+    },
+    "Delete %lld Selected Folders" : {
+
+    },
     "Delete All" : {
       "localizations" : {
         "de" : {
@@ -8045,6 +8084,7 @@
       }
     },
     "Delete All Contents" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -8233,6 +8273,7 @@
       }
     },
     "Delete All Folders" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -11067,7 +11108,11 @@
         }
       }
     },
+    "Exclude %lld Selected" : {
+
+    },
     "Exclude Selected" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -14372,6 +14417,9 @@
           }
         }
       }
+    },
+    "Info" : {
+
     },
     "Information" : {
       "localizations" : {
