@@ -38,6 +38,8 @@ If you are able to contribute to translations for the app, please see this discu
 - App Lipo to strip unneeded architectures from universal apps. No dependency on the lipo tool so no need to install xcode or command line tools
 - Launch Agent/Daemon management view
 - PKG Installer management view
+- Plugins management view
+- Search for files view
 - Prune unused translation files from app bundles keeping only the preferred language set on macOS
 - Sentinel monitor helper that can be enabled to watch Trash folder for deleted apps to cleanup after the fact(Extremely small (210KB) and uses ~2mb of ram to run in the background and file watch)
 - CLI support
