@@ -74,6 +74,9 @@ struct AppCommands: Commands {
                         if appState.currentPage == .plugins {
                             // For plugins view, post notification to refresh
                             NotificationCenter.default.post(name: NSNotification.Name("PluginsViewShouldRefresh"), object: nil)
+                        } else if appState.currentPage == .fileSearch {
+                            // For file search view, post notification to refresh
+                            NotificationCenter.default.post(name: NSNotification.Name("FileSearchViewShouldRefresh"), object: nil)
                         } else {
                             reloadAppsList(appState: appState, fsm: fsm, delay: 1)
                             if appState.currentView == .files {

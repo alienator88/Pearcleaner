@@ -181,6 +181,7 @@ struct LipoView: View {
                         HStack {
                             Text("\(universalApps.count) app\(universalApps.count == 1 ? "" : "s")")
                                 .font(.caption)
+                                .monospacedDigit()
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
                             if isRefreshing {
@@ -192,9 +193,12 @@ struct LipoView: View {
                             Spacer()
 
                             if let lastRefresh = lastRefreshDate {
-                                Text("Updated \(formatRelativeTime(lastRefresh))")
-                                    .font(.caption)
-                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                TimelineView(.periodic(from: lastRefresh, by: 1.0)) { _ in
+                                    Text("Updated \(formatRelativeTime(lastRefresh))")
+                                        .font(.caption)
+                                        .monospacedDigit()
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                }
                             }
 
                             LipoLegend()

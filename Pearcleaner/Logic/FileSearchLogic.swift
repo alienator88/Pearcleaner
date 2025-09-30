@@ -173,13 +173,8 @@ class FileSearchEngine {
             return
         }
 
-        // Stream results as we enumerate
-        // Note: FileManager's enumerator is thread-safe for iteration, Swift 6 warning can be safely ignored
-        for case let fileURL as URL in enumerator {
-            if shouldStop {
-                break
-            }
-
+        // Drive the enumerator manually to avoid Sequence.makeIterator in async context (Swift 6)
+        while !shouldStop, let fileURL = enumerator.nextObject() as? URL {
             // Skip system folders if enabled
             if excludeSystemFolders && shouldExcludeSystemPath(fileURL.path) {
                 continue

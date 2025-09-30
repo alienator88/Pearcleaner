@@ -21,6 +21,7 @@ struct FileListView: View {
     @State private var searchText: String = ""
     @State private var selectedFileItemsLocal: Set<URL> = []
     @State private var memoizedFiles: [URL] = []
+    @State private var lastRefreshDate: Date?
     let locations: Locations
     let windowController: WindowManager
     let handleUninstallAction: () -> Void
@@ -89,6 +90,15 @@ struct FileListView: View {
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
                         Spacer()
+
+                        if let lastRefresh = lastRefreshDate {
+                            TimelineView(.periodic(from: lastRefresh, by: 1.0)) { _ in
+                                Text("Updated \(formatRelativeTime(lastRefresh))")
+                                    .font(.caption)
+                                    .monospacedDigit()
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            }
+                        }
                     }
                     .padding(.vertical)
 
@@ -119,6 +129,17 @@ struct FileListView: View {
                         }
                     }
                     .scrollIndicators(scrollIndicators ? .automatic : .never)
+                    .onAppear {
+                        if lastRefreshDate == nil {
+                            lastRefreshDate = Date()
+                        }
+                    }
+                    .onChange(of: appState.showProgress) { isShowing in
+                        // When scan completes (showProgress becomes false), update refresh date
+                        if !isShowing && appState.appInfo.fileSize.keys.count > 0 {
+                            lastRefreshDate = Date()
+                        }
+                    }
 
                     if appState.trashError {
                         InfoButton(

@@ -213,8 +213,9 @@ struct DaemonView: View {
                 HStack {
                     Text("\(filteredItems.count) service\(filteredItems.count == 1 ? "" : "s")")
                         .font(.caption)
+                        .monospacedDigit()
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    
+
                     if selectedFilter == .all && !launchItems.isEmpty {
                         let loadedCount = filteredItems.filter { isItemLoaded($0) }.count
                         let unloadedCount = filteredItems.count - loadedCount
@@ -224,6 +225,7 @@ struct DaemonView: View {
 
                         Text("\(loadedCount) loaded")
                             .font(.caption)
+                            .monospacedDigit()
                             .foregroundStyle(.blue)
 
                         Text("•")
@@ -231,15 +233,19 @@ struct DaemonView: View {
 
                         Text("\(unloadedCount) not loaded")
                             .font(.caption)
+                            .monospacedDigit()
                             .foregroundStyle(.orange)
                     }
 
                     Spacer()
-                    
+
                     if let lastRefresh = lastRefreshDate {
-                        Text("Updated \(formatRelativeTime(lastRefresh))")
-                            .font(.caption)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        TimelineView(.periodic(from: lastRefresh, by: 1.0)) { _ in
+                            Text("Updated \(formatRelativeTime(lastRefresh))")
+                                .font(.caption)
+                                .monospacedDigit()
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        }
                     }
                 }
                 .padding(.vertical)

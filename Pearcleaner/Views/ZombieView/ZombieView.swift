@@ -77,6 +77,7 @@ struct ZombieView: View {
                         HStack {
                             Text("\(memoizedFiles.count) file\(memoizedFiles.count == 1 ? "" : "s")")
                                 .font(.caption)
+                                .monospacedDigit()
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
                             if appState.showProgress {
@@ -89,14 +90,29 @@ struct ZombieView: View {
                             Spacer()
 
                             if let lastRefresh = lastRefreshDate {
-                                Text("Updated \(formatRelativeTime(lastRefresh))")
-                                    .font(.caption)
-                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                TimelineView(.periodic(from: lastRefresh, by: 1.0)) { _ in
+                                    Text("Updated \(formatRelativeTime(lastRefresh))")
+                                        .font(.caption)
+                                        .monospacedDigit()
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                }
                             }
                         }
                         .padding(.vertical)
 
-                        if !memoizedFiles.isEmpty {
+                        if memoizedFiles.isEmpty && !appState.showProgress {
+                            VStack {
+                                Spacer()
+                                Text("No orphaned files found")
+                                    .font(.title2)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                Text("Sentinel Monitor found no orphaned files")
+                                    .font(.callout)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                Spacer()
+                            }
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        } else {
                             ScrollView() {
                                 LazyVStack(spacing: 8) {
                                     ForEach(memoizedFiles, id: \.self) { file in
@@ -108,15 +124,6 @@ struct ZombieView: View {
                                 }
                             }
                             .scrollIndicators(scrollIndicators ? .automatic : .never)
-                        } else if !appState.showProgress {
-                            VStack {
-                                Spacer()
-                                Text("No orphaned files found")
-                                    .font(.title2)
-                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                                Spacer()
-                            }
-                            .frame(maxWidth: .infinity)
                         }
 
                         if appState.trashError {

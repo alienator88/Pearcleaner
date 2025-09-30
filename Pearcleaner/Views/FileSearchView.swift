@@ -14,6 +14,7 @@ struct FileSearchView: View {
     @State private var results: [FileSearchResult] = []
     @State private var selectedResults: Set<FileSearchResult.ID> = []
     @State private var selectedVolume: String = "/"
+    @State private var selectedVolumeName: String = "Startup Disk"
     @State private var activeFilters: [FilterType] = []
     @State private var isSearching: Bool = false
     @State private var includeSubfolders: Bool = true
@@ -38,6 +39,7 @@ struct FileSearchView: View {
     @State private var filterText: String = ""
     @State private var editingItemId: UUID?
     @State private var editingText: String = ""
+    @State private var deletedItemsCache: [FileSearchResult] = []
     @FocusState private var isEditingFocused: Bool
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
@@ -64,8 +66,9 @@ struct FileSearchView: View {
                 HStack {
                     // Volume selector
                     Menu {
-                        Button("/") {
+                        Button("Startup Disk") {
                             selectedVolume = "/"
+                            selectedVolumeName = "Startup Disk"
                         }
 
                         if !appState.volumeInfos.isEmpty {
@@ -73,6 +76,7 @@ struct FileSearchView: View {
                             ForEach(appState.volumeInfos) { volume in
                                 Button(volume.name) {
                                     selectedVolume = volume.path
+                                    selectedVolumeName = volume.name
                                 }
                             }
                         }
@@ -87,12 +91,13 @@ struct FileSearchView: View {
                             panel.prompt = "Choose"
                             if panel.runModal() == .OK, let url = panel.url {
                                 selectedVolume = url.path
+                                selectedVolumeName = url.lastPathComponent
                             }
                         }
                     } label: {
                         HStack {
                             Image(systemName: "externaldrive")
-                            Text(getVolumeDisplayName())
+                            Text(selectedVolumeName)
                             Image(systemName: "chevron.down")
                                 .font(.caption)
                         }
@@ -173,66 +178,74 @@ struct FileSearchView: View {
 
             // Stats header
             if hasSearched || isSearching {
-                HStack {
+                HStack(spacing: 12) {
+                    // Results count - leading aligned, 200 width
                     Text("\(results.count) result\(results.count == 1 ? "" : "s")")
                         .font(.caption)
+                        .monospacedDigit()
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-
-                    if isSearching {
-                        Text("• Searching...")
-                            .font(.caption)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        ProgressView().controlSize(.mini)
-                    }
+                        .frame(width: 200, alignment: .leading)
 
                     Spacer()
 
-                    // Action buttons when items are selected
-                    if !selectedResults.isEmpty {
-                        Button(action: {
-                            if selectedResults.count == 1,
-                               let selectedId = selectedResults.first,
-                               let result = results.first(where: { $0.id == selectedId }) {
-                                NSWorkspace.shared.open(result.url)
-                            }
-                        }) {
-                            Label("Open", systemImage: "arrow.up.forward.app")
-                                .font(.caption)
+                    // Action buttons - centered
+                    Button(action: {
+                        if selectedResults.count == 1,
+                           let selectedId = selectedResults.first,
+                           let result = results.first(where: { $0.id == selectedId }) {
+                            NSWorkspace.shared.open(result.url)
                         }
-                        .buttonStyle(.plain)
-                        .disabled(selectedResults.count != 1)
+                    }) {
+                        Label("Open", systemImage: "arrow.up.forward.app")
+                            .font(.caption)
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(selectedResults.count != 1)
 
-                        Button(action: {
-                            if selectedResults.count == 1,
-                               let selectedId = selectedResults.first,
-                               let result = results.first(where: { $0.id == selectedId }) {
+                    Button(action: {
+                        if selectedResults.count == 1,
+                           let selectedId = selectedResults.first,
+                           let result = results.first(where: { $0.id == selectedId }) {
+                            // Temporarily deselect to force re-render, then reselect
+                            selectedResults.removeAll()
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                                 editingItemId = selectedId
                                 editingText = result.name
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                selectedResults.insert(selectedId)
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                                     isEditingFocused = true
                                 }
                             }
-                        }) {
-                            Label("Rename", systemImage: "pencil")
-                                .font(.caption)
                         }
-                        .buttonStyle(.plain)
-                        .disabled(selectedResults.count != 1)
-
-                        Button(action: {
-                            deleteSelectedItems()
-                        }) {
-                            Label(selectedResults.count > 1 ? "Bulk Delete" : "Delete", systemImage: "trash")
-                                .font(.caption)
-                                .foregroundStyle(.red)
-                        }
-                        .buttonStyle(.plain)
-                    }
-
-                    if searchStartTime != nil {
-                        Text("• \(formatElapsedTime(searchElapsedTime))")
+                    }) {
+                        Label("Rename", systemImage: "pencil")
                             .font(.caption)
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(selectedResults.count != 1)
+
+                    Button(action: {
+                        deleteSelectedItems()
+                    }) {
+                        Label(selectedResults.count > 1 ? "Bulk Delete" : "Delete", systemImage: "trash")
+                            .font(.caption)
+                            .foregroundStyle(.red)
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(selectedResults.isEmpty)
+
+                    Spacer()
+
+                    // Elapsed time - trailing aligned, 200 width
+                    if searchStartTime != nil {
+                        Text("Elapsed Time: \(formatElapsedTime(searchElapsedTime))")
+                            .font(.caption)
+                            .monospacedDigit()
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            .frame(width: 200, alignment: .trailing)
+                    } else {
+                        EmptyView()
+                            .frame(width: 200, alignment: .trailing)
                     }
                 }
                 .padding(.horizontal, 20)
@@ -263,7 +276,7 @@ struct FileSearchView: View {
                 .frame(maxWidth: .infinity)
             } else {
                 Table(sortedResults, selection: $selectedResults, sortOrder: $sortOrder) {
-                        TableColumn("") { result in
+                        TableColumn("Select") { result in
                             Button(action: {
                                 toggleSelection(for: result)
                             }) {
@@ -272,9 +285,9 @@ struct FileSearchView: View {
                             }
                             .buttonStyle(.plain)
                         }
-                        .width(30)
+                        .width(35)
 
-                    TableColumn("") { result in
+                    TableColumn("Icon") { result in
                         if let icon = result.icon {
                             Image(nsImage: icon)
                                 .resizable()
@@ -284,7 +297,7 @@ struct FileSearchView: View {
                     }
                     .width(40)
 
-                    TableColumn("Name", value: \.name) { result in
+                    TableColumn("Name") { result in
                         if editingItemId == result.id {
                             TextField("", text: $editingText, onCommit: {
                                 if !editingText.isEmpty && editingText != result.name {
@@ -296,9 +309,7 @@ struct FileSearchView: View {
                             .textFieldStyle(.plain)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                             .focused($isEditingFocused)
-                            .onAppear {
-                                isEditingFocused = true
-                            }
+                            .id(result.id)
                         } else {
                             Text(result.name)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
@@ -323,9 +334,25 @@ struct FileSearchView: View {
                     }
                     .width(150)
                 }
+                .onDeleteCommand {
+                    if !selectedResults.isEmpty {
+                        deleteSelectedItems()
+                    }
+                }
                 .contextMenu(forSelectionType: FileSearchResult.ID.self) { items in
                     if let firstId = items.first,
                        let result = results.first(where: { $0.id == firstId }) {
+                        Button("Rename") {
+                            selectedResults.removeAll()
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                                editingItemId = firstId
+                                editingText = result.name
+                                selectedResults.insert(firstId)
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                                    isEditingFocused = true
+                                }
+                            }
+                        }
                         Button("View in Finder") {
                             NSWorkspace.shared.activateFileViewerSelecting([result.url])
                         }
@@ -370,32 +397,49 @@ struct FileSearchView: View {
                         Spacer()
                     }
 
-                    // Filter field on the right
-                    HStack(spacing: 6) {
-                        Image(systemName: "magnifyingglass")
-                            .font(.caption)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        TextField("Filter", text: $filterText)
-                            .textFieldStyle(.plain)
-                            .font(.caption)
-                            .frame(width: 150)
-                        if !filterText.isEmpty {
-                            Button(action: { filterText = "" }) {
-                                Image(systemName: "xmark.circle.fill")
-                                    .font(.caption)
-                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                            }
-                            .buttonStyle(.plain)
+                    // Filter field and searching indicator on the right
+                    HStack(spacing: 8) {
+
+                        if isSearching {
+                            ProgressView()
+                                .controlSize(.small)
                         }
+                        
+                        HStack(spacing: 6) {
+                            Image(systemName: "magnifyingglass")
+                                .font(.caption)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            TextField("Filter", text: $filterText)
+                                .textFieldStyle(.plain)
+                                .font(.caption)
+                                .frame(width: 150)
+                            if !filterText.isEmpty {
+                                Button(action: { filterText = "" }) {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .font(.caption)
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(ThemeColors.shared(for: colorScheme).secondaryBG)
+                        .cornerRadius(6)
+
+
                     }
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(ThemeColors.shared(for: colorScheme).secondaryBG)
-                    .cornerRadius(6)
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
                 .background(ThemeColors.shared(for: colorScheme).primaryBG)
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("FileSearchViewShouldRefresh"))) { _ in
+            // Restore deleted items from cache after undo
+            if !deletedItemsCache.isEmpty {
+                results.append(contentsOf: deletedItemsCache)
+                deletedItemsCache.removeAll()
             }
         }
         .toolbarBackground(.hidden, for: .windowToolbar)
@@ -445,6 +489,18 @@ struct FileSearchView: View {
                     Label("Add Filter", systemImage: "line.3.horizontal.decrease.circle")
                 }
                 .labelStyle(.titleAndIcon)
+
+                Button {
+                    results.removeAll()
+                    selectedResults.removeAll()
+                    hasSearched = false
+                    searchStartTime = nil
+                    searchElapsedTime = 0
+                    deletedItemsCache.removeAll()
+                } label: {
+                    Label("Clear", systemImage: "trash")
+                }
+                .disabled(results.isEmpty)
 
                 if isSearching {
                     Button {
@@ -512,17 +568,6 @@ struct FileSearchView: View {
     }
 
     // MARK: - Helper Functions
-
-    private func getVolumeDisplayName() -> String {
-        if selectedVolume == "/" {
-            return "Startup Disk"
-        } else if selectedVolume.hasPrefix("/Volumes/") {
-            return selectedVolume.replacingOccurrences(of: "/Volumes/", with: "")
-        } else {
-            // Custom folder selected
-            return (selectedVolume as NSString).lastPathComponent
-        }
-    }
 
     private func toggleSelection(for result: FileSearchResult) {
         if selectedResults.contains(result.id) {
@@ -637,6 +682,8 @@ struct FileSearchView: View {
 
             await MainActor.run {
                 if success {
+                    // Cache the deleted item before removing
+                    deletedItemsCache.append(result)
                     results.removeAll { $0.id == result.id }
                     selectedResults.remove(result.id)
                 } else {
@@ -665,6 +712,8 @@ struct FileSearchView: View {
 
             await MainActor.run {
                 if success {
+                    // Cache the deleted items before removing
+                    deletedItemsCache.append(contentsOf: itemsToDelete)
                     let deletedIds = Set(itemsToDelete.map { $0.id })
                     results.removeAll { deletedIds.contains($0.id) }
                     selectedResults.removeAll()
