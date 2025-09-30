@@ -143,7 +143,7 @@ struct EnvironmentCleanerView: View {
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
                     if isLoading {
-                        Text("• Loading...")
+                        Text("Loading...")
                             .font(.caption)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }

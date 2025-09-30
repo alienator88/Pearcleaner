@@ -25,6 +25,7 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.spotlight") private var spotlight = false
     @AppStorage("settings.general.permanentDelete") private var permanentDelete: Bool = false
     @AppStorage("settings.general.searchSensitivity") private var sensitivityLevel: SearchSensitivityLevel = .strict
+    @State private var showAppIconInMenu = UserDefaults.showAppIconInMenu
 
     var body: some View {
         VStack(spacing: 20) {
@@ -293,6 +294,29 @@ struct GeneralSettingsTab: View {
                             }
 
 
+                        }
+
+                        if appState.finderExtensionEnabled {
+                            HStack(spacing: 0) {
+                                Image(systemName: "")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 15, height: 15)
+                                    .padding(.trailing)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                                Text("Enable icon for Finder extension")
+                                    .font(.callout)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                                Spacer()
+
+                                Toggle(isOn: $showAppIconInMenu, label: {
+                                })
+                                .toggleStyle(SettingsToggle())
+                                .onChange(of: showAppIconInMenu) { newValue in
+                                    UserDefaults.showAppIconInMenu = newValue
+                                }
+                            }
                         }
 
                     }

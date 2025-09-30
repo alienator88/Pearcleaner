@@ -81,7 +81,7 @@ struct ZombieView: View {
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
                             if appState.showProgress {
-                                Text("• Scanning...")
+                                Text("Scanning...")
                                     .font(.caption)
                                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                                 ProgressView().controlSize(.mini)

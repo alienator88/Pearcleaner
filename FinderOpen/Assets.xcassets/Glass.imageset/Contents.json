@@ -1,11 +1,11 @@
 {
   "images" : [
     {
+      "filename" : "Glass.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "icon_32x32.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

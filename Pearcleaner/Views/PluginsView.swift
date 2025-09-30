@@ -163,7 +163,7 @@ struct PluginsView: View {
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
                     if isLoading {
-                        Text("• Loading...")
+                        Text("Loading...")
                             .font(.caption)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }
@@ -271,15 +271,19 @@ struct PluginsView: View {
         .toolbarBackground(.hidden, for: .windowToolbar)
         .toolbar {
             TahoeToolbarItem(placement: .navigation) {
-                VStack(alignment: .leading) {
-                    Text("Plugin Manager")
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                        .font(.title2)
-                        .fontWeight(.bold)
-                    Text("Manage third-party plugins and extensions")
-                        .font(.callout)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("Plugin Manager")
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            .font(.title2)
+                            .fontWeight(.bold)
+                        Text("Manage third-party plugins and extensions")
+                            .font(.callout)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                    BetaBadge()
                 }
+
             }
 
             ToolbarItem { Spacer() }
@@ -381,7 +385,14 @@ struct PluginsView: View {
                         )
 
                         let isDirectory = resourceValues.isDirectory ?? false
-                        let size = resourceValues.fileSize.map { Int64($0) } ?? 0
+                        let size: Int64
+                        if isDirectory {
+                            // Use totalSizeOnDisk for directories/bundles
+                            size = totalSizeOnDisk(for: itemURL).real
+                        } else {
+                            // Use regular fileSize for individual files
+                            size = resourceValues.fileSize.map { Int64($0) } ?? 0
+                        }
                         let dateModified = resourceValues.contentModificationDate ?? Date()
                         let name = itemURL.lastPathComponent
 

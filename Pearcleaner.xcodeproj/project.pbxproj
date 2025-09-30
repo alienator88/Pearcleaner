@@ -186,6 +186,27 @@
 			);
 			target = C77B8FFF2AF18E2E009CC655 /* Pearcleaner */;
 		};
+		C75E82E12E8C585D0090C3B1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				AppGroupDefaults.swift,
+			);
+			target = C73545EF2D849A1B00A3DC0C /* PearcleanerHelper */;
+		};
+		C75E82E42E8C58620090C3B1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				AppGroupDefaults.swift,
+			);
+			target = C77B8FFF2AF18E2E009CC655 /* Pearcleaner */;
+		};
+		C75E82E52E8C58620090C3B1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				AppGroupDefaults.swift,
+			);
+			target = C78121622BC892A000BE06BD /* FinderOpen */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
@@ -210,6 +231,7 @@
 		C74649EE2E4800BB002D1C63 /* AppsView */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = AppsView; sourceTree = "<group>"; };
 		C74649EF2E480111002D1C63 /* Style */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (C74649F02E480128002D1C63 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Style; sourceTree = "<group>"; };
 		C74649FA2E48076B002D1C63 /* Settings */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Settings; sourceTree = "<group>"; };
+		C75E82DD2E8C58380090C3B1 /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (C75E82E42E8C58620090C3B1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, C75E82E52E8C58620090C3B1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, C75E82E12E8C585D0090C3B1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Shared; sourceTree = "<group>"; };
 		C76073F32E3C1C2C003957A7 /* FilesView */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = FilesView; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -306,6 +328,7 @@
 		C77B8FF72AF18E2E009CC655 = {
 			isa = PBXGroup;
 			children = (
+				C75E82DD2E8C58380090C3B1 /* Shared */,
 				C77B90022AF18E2E009CC655 /* Pearcleaner */,
 				C72893102AFD51EA00C8C1CD /* PearcleanerSentinel */,
 				C78121642BC892A000BE06BD /* FinderOpen */,
@@ -409,6 +432,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				C73545F12D849A1B00A3DC0C /* PearcleanerHelper */,
+				C75E82DD2E8C58380090C3B1 /* Shared */,
 			);
 			name = PearcleanerHelper;
 			packageProductDependencies = (
@@ -728,8 +752,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 97;
-				APP_VERSION = 5.1.0;
+				APP_BUILD = 98;
+				APP_VERSION = 5.1.1;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -801,8 +825,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 97;
-				APP_VERSION = 5.1.0;
+				APP_BUILD = 98;
+				APP_VERSION = 5.1.1;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -898,7 +922,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = "$(APP_VERSION)";
+				MARKETING_VERSION = 5.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.Pearcleaner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -944,7 +968,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = "$(APP_VERSION)";
+				MARKETING_VERSION = 5.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.Pearcleaner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

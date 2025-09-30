@@ -169,6 +169,12 @@ var conditions: [Condition] = [
         exclude: [],
         includeForce: nil
     ),
+    Condition(
+        bundle_id: "com.native-instruments.nativeaccess",
+        include: ["comnative", "nativeinstruments"],
+        exclude: [],
+        includeForce: nil
+    ),
 ]
 
 

@@ -49,7 +49,7 @@ struct FileListView: View {
             if appState.appInfo.fileSize.keys.count == 0 {
                 VStack {
                     Spacer()
-                    Text("Sentinel Monitor found no other files to remove")
+                    Text(appState.externalMode ? "Sentinel Monitor found no other files to remove" : "There are no files to remove")
                         .font(.title2)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     Spacer()
@@ -236,7 +236,7 @@ struct FileListView: View {
                         }
                     }
                 }
-                .padding(.top)
+                .padding()
             }
         }
 

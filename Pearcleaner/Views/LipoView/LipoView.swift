@@ -185,7 +185,7 @@ struct LipoView: View {
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
                             if isRefreshing {
-                                Text("• Refreshing...")
+                                Text("Refreshing...")
                                     .font(.caption)
                                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                             }

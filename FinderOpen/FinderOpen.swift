@@ -27,6 +27,16 @@ class FinderOpen: FIFinderSync {
                selectedItemURLs.count == 1, selectedItemURLs.first?.pathExtension == "app" {
                 // Add menu item if the selected item is a .app file
                 let menuItem = NSMenuItem(title: String(localized: "Pearcleaner Uninstall"), action: #selector(openInMyApp), keyEquivalent: "")
+                // Add icon if enabled in main app
+                if UserDefaults.showAppIconInMenu {
+                    if let appIcon = NSApp.applicationIconImage {
+                        appIcon.size = NSSize(width: 16, height: 16)
+                        menuItem.image = appIcon
+                    } else if let fallbackIcon = NSImage(named: "Glass") {
+                        fallbackIcon.size = NSSize(width: 16, height: 16)
+                        menuItem.image = fallbackIcon
+                    }
+                }
                 menu.addItem(menuItem)
 
             }

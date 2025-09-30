@@ -92,7 +92,7 @@ enum FilterType: Identifiable, Hashable {
     private func formatBytes(_ bytes: Int64) -> String {
         let formatter = ByteCountFormatter()
         formatter.allowsNonnumericFormatting = false
-        formatter.countStyle = .file
+        formatter.countStyle = .binary
         return formatter.string(fromByteCount: bytes)
     }
 }
@@ -137,10 +137,10 @@ enum SizeFilterType: String, CaseIterable {
 
     var displayName: String {
         switch self {
-        case .greaterThan: return "Size >"
-        case .lessThan: return "Size <"
+        case .greaterThan: return "Size greater than"
+        case .lessThan: return "Size less than"
         case .between: return "Size between"
-        case .equals: return "Size ="
+        case .equals: return "Size equals"
         }
     }
 }

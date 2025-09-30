@@ -276,30 +276,38 @@ struct FileSearchView: View {
                 .frame(maxWidth: .infinity)
             } else {
                 Table(sortedResults, selection: $selectedResults, sortOrder: $sortOrder) {
-                        TableColumn("Select") { result in
-                            Button(action: {
-                                toggleSelection(for: result)
-                            }) {
-                                Image(systemName: selectedResults.contains(result.id) ? "checkmark.square.fill" : "square")
-                                    .foregroundStyle(selectedResults.contains(result.id) ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
+                        TableColumn("") { result in
+                            HStack {
+                                Spacer()
+                                Button(action: {
+                                    toggleSelection(for: result)
+                                }) {
+                                    Image(systemName: selectedResults.contains(result.id) ? "checkmark.square.fill" : "square")
+                                        .foregroundStyle(selectedResults.contains(result.id) ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
+                                }
+                                .buttonStyle(.plain)
+                                Spacer()
                             }
-                            .buttonStyle(.plain)
                         }
-                        .width(35)
+                        .width(40)
 
-                    TableColumn("Icon") { result in
-                        if let icon = result.icon {
-                            Image(nsImage: icon)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 24, height: 24)
+                    TableColumn("") { result in
+                        HStack {
+                            Spacer()
+                            if let icon = result.icon {
+                                Image(nsImage: icon)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 24, height: 24)
+                            }
+                            Spacer()
                         }
                     }
                     .width(40)
 
-                    TableColumn("Name") { result in
+                    TableColumn("Name", value: \.name) { result in
                         if editingItemId == result.id {
-                            TextField("", text: $editingText, onCommit: {
+                            TextField(LocalizedStringKey(""), text: $editingText, onCommit: {
                                 if !editingText.isEmpty && editingText != result.name {
                                     performRename(result: result, newName: editingText)
                                 }
@@ -374,7 +382,7 @@ struct FileSearchView: View {
             // Bottom status bar - always visible when there are results
             if !results.isEmpty || isSearching {
                 HStack(spacing: 12) {
-                    // Select-all checkbox on far left
+                    // Select-all text button on far left
                     Button(action: {
                         if selectedResults.count == results.count {
                             selectedResults.removeAll()
@@ -382,8 +390,9 @@ struct FileSearchView: View {
                             selectedResults = Set(results.map { $0.id })
                         }
                     }) {
-                        Image(systemName: selectedResults.count == results.count && !results.isEmpty ? "checkmark.square.fill" : "square")
-                            .foregroundStyle(selectedResults.count == results.count && !results.isEmpty ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
+                        Text(selectedResults.count == results.count && !results.isEmpty ? "Deselect All" : "Select All")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }
                     .buttonStyle(.plain)
                     .padding(.leading, 4)
@@ -392,6 +401,8 @@ struct FileSearchView: View {
                     if selectedResults.count == 1,
                        let selectedId = selectedResults.first,
                        let selectedResult = results.first(where: { $0.id == selectedId }) {
+                        Divider()
+                            .frame(height: 12)
                         PathStatusBar(url: selectedResult.url)
                     } else {
                         Spacer()
@@ -445,15 +456,19 @@ struct FileSearchView: View {
         .toolbarBackground(.hidden, for: .windowToolbar)
         .toolbar {
             TahoeToolbarItem(placement: .navigation) {
-                VStack(alignment: .leading) {
-                    Text("File Search")
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                        .font(.title2)
-                        .fontWeight(.bold)
-                    Text("Search for files and folders with advanced filters")
-                        .font(.callout)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("File Search")
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            .font(.title2)
+                            .fontWeight(.bold)
+                        Text("Search for files and folders with advanced filters")
+                            .font(.callout)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                    BetaBadge()
                 }
+
             }
 
             ToolbarItem { Spacer() }
@@ -497,6 +512,7 @@ struct FileSearchView: View {
                     searchStartTime = nil
                     searchElapsedTime = 0
                     deletedItemsCache.removeAll()
+                    activeFilters.removeAll()
                 } label: {
                     Label("Clear", systemImage: "trash")
                 }
@@ -768,7 +784,7 @@ struct FilterChip: View {
             // For name filters, make them editable
             if case .name(let type, let value) = filter {
                 if isEditing {
-                    TextField("", text: $editingText, onCommit: {
+                    TextField(LocalizedStringKey(""), text: $editingText, onCommit: {
                         onUpdate(.name(type, editingText))
                         isEditing = false
                     })

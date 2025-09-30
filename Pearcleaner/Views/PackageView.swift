@@ -134,7 +134,7 @@ struct PackageView: View {
                     Spacer()
                 }
                 .frame(maxWidth: .infinity)
-            } else if packageIds.isEmpty && !isLoading {
+            } else if packages.isEmpty && !isLoading {
                 VStack(alignment: .center) {
                     Spacer()
                     Text("No packages found")
@@ -153,7 +153,7 @@ struct PackageView: View {
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
                     if isLoading {
-                        Text("• Loading...")
+                        Text("Loading...")
                             .font(.caption)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }

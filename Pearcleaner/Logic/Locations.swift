@@ -36,6 +36,7 @@ class Locations: ObservableObject {
             "\(home)/.config",
             "\(home)/Documents",
             "\(home)/Desktop", // for steam game shortcuts
+            "\(home)/Applications",
             "\(home)/Library",
             "\(home)/Library/Application Scripts",
             "\(home)/Library/Application Support",
@@ -66,6 +67,7 @@ class Locations: ObservableObject {
             "\(home)/Library/Saved Application State",
             "\(home)/Library/Services",
             "\(home)/Library/WebKit",
+            "/Applications",
             "/Users/Shared",
             "/Users/Library",
             "/Users/Shared/Library/Application Support",
@@ -141,7 +143,8 @@ class Locations: ObservableObject {
                 "/Library/Audio/Plug-Ins/VST3",
                 "/Library/Audio/Plug-Ins/CLAP",
                 "/Library/Audio/Plug-Ins/Components",
-                "/Library/Application Support/Avid/Audio/Plug-Ins"
+                "/Library/Application Support/Avid/Audio/Plug-Ins",
+                "/Library/Application Support/Digidesign/Plug-Ins"
             ],
 
             "PreferencePanes": [

@@ -431,10 +431,22 @@ func pruneLanguages(in appBundlePath: String) throws {
     guard fileManager.fileExists(atPath: contentsPath) else { return }
 
     let items = try fileManager.contentsOfDirectory(atPath: contentsPath)
+    let lprojItems = items.filter { $0.hasSuffix(".lproj") }
 
-    for item in items where item.hasSuffix(".lproj") {
+    // Check if the app actually has the preferred language
+    let hasPreferredLang = lprojItems.contains { item in
         let langCode = item.replacingOccurrences(of: ".lproj", with: "")
-        if langCode != "Base" && (langCode != preferredLang && !langCode.hasPrefix("\(preferredLang)-")) {
+        return langCode == preferredLang || langCode.hasPrefix("\(preferredLang)-")
+    }
+
+    // If app doesn't have preferred language, fall back to English
+    let languageToKeep = hasPreferredLang ? String(preferredLang) : "en"
+
+    for item in lprojItems {
+        let langCode = item.replacingOccurrences(of: ".lproj", with: "")
+        let willKeep = langCode == "Base" || langCode == languageToKeep || langCode.hasPrefix("\(languageToKeep)-")
+
+        if !willKeep {
             let pathToDelete = (contentsPath as NSString).appendingPathComponent(item)
             let command = ["rm", "-rf", "\"\(pathToDelete)\""]
 
