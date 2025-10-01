@@ -860,6 +860,19 @@
         }
       }
     },
+    "%@/Library/Taps/%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@/Library/Taps/%2$@"
+          }
+        }
+      }
+    },
+    "%lld" : {
+
+    },
     "%lld / %lld" : {
       "localizations" : {
         "de" : {
@@ -1425,6 +1438,9 @@
         }
       }
     },
+    "%lld outdated" : {
+
+    },
     "%lld package%@" : {
       "localizations" : {
         "de" : {
@@ -1895,6 +1911,16 @@
         }
       }
     },
+    "%lld tap%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld tap%2$@"
+          }
+        }
+      }
+    },
     "%lld valid %@ found" : {
       "localizations" : {
         "de" : {
@@ -2083,6 +2109,15 @@
         }
       },
       "shouldTranslate" : false
+    },
+    "• homebrew/cask-versions" : {
+
+    },
+    "• organization/repository" : {
+
+    },
+    "• user/tap" : {
+
     },
     "0 bytes" : {
       "localizations" : {
@@ -2742,6 +2777,9 @@
           }
         }
       }
+    },
+    "Add a tap to get started" : {
+
     },
     "Add Comment Filter" : {
       "localizations" : {
@@ -3968,6 +4006,12 @@
         }
       }
     },
+    "Add Tap" : {
+
+    },
+    "Adding..." : {
+
+    },
     "All checkboxes" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4439,6 +4483,15 @@
           }
         }
       }
+    },
+    "Analytics" : {
+
+    },
+    "Analytics are disabled" : {
+
+    },
+    "Analytics are enabled" : {
+
     },
     "Animations disabled" : {
       "extractionState" : "manual",
@@ -5762,6 +5815,12 @@
         }
       }
     },
+    "Are you sure you want to remove this tap?" : {
+
+    },
+    "Are you sure you want to uninstall %@?" : {
+
+    },
     "Authorization required in Settings > Login Items > %@.app." : {
       "localizations" : {
         "de" : {
@@ -7080,6 +7139,9 @@
         }
       }
     },
+    "Cache Size:" : {
+
+    },
     "calculating" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7458,6 +7520,12 @@
         }
       }
     },
+    "Cask" : {
+
+    },
+    "Casks" : {
+
+    },
     "Category: %@" : {
       "localizations" : {
         "de" : {
@@ -7551,6 +7619,9 @@
           }
         }
       }
+    },
+    "Check for potential issues" : {
+
     },
     "Check for Updates" : {
       "extractionState" : "manual",
@@ -7928,6 +7999,12 @@
           }
         }
       }
+    },
+    "Cleaning..." : {
+
+    },
+    "Cleanup" : {
+
     },
     "Clear" : {
       "extractionState" : "manual",
@@ -8497,6 +8574,9 @@
           }
         }
       }
+    },
+    "Click to view issues" : {
+
     },
     "Close" : {
       "localizations" : {
@@ -11137,6 +11217,9 @@
         }
       }
     },
+    "Dependencies" : {
+
+    },
     "Deselect All" : {
       "localizations" : {
         "de" : {
@@ -13216,6 +13299,9 @@
         }
       }
     },
+    "Enter the tap name to add" : {
+
+    },
     "Exact app name and bundle ID matches against found files (Less files, most accurate)" : {
       "localizations" : {
         "de" : {
@@ -13403,6 +13489,9 @@
           }
         }
       }
+    },
+    "Examples:" : {
+
     },
     "Exclude" : {
       "extractionState" : "manual",
@@ -15387,6 +15476,12 @@
         }
       }
     },
+    "Formula" : {
+
+    },
+    "Formulae" : {
+
+    },
     "Found %lld orphaned workspace%@" : {
       "localizations" : {
         "de" : {
@@ -16991,6 +17086,9 @@
         }
       }
     },
+    "Homebrew" : {
+
+    },
     "Homebrew cleanup after uninstall" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -17179,6 +17277,27 @@
           }
         }
       }
+    },
+    "Homebrew collects anonymous analytics to help improve the project" : {
+
+    },
+    "Homebrew Doctor" : {
+
+    },
+    "Homebrew is up to date" : {
+
+    },
+    "Homebrew Manager" : {
+
+    },
+    "Homebrew update available" : {
+
+    },
+    "Homebrew Version" : {
+
+    },
+    "Homepage" : {
+
     },
     "Hover to search" : {
       "localizations" : {
@@ -17839,6 +17958,12 @@
         }
       }
     },
+    "Install" : {
+
+    },
+    "Install %@?" : {
+
+    },
     "Install Date" : {
       "localizations" : {
         "de" : {
@@ -18120,6 +18245,9 @@
           }
         }
       }
+    },
+    "Installed" : {
+
     },
     "Installed:" : {
       "localizations" : {
@@ -18403,6 +18531,9 @@
           }
         }
       }
+    },
+    "Installing..." : {
+
     },
     "Instead of moving files to Trash folder, this will permanently remove them. With this setting enabled, the Undo function is also not active as there's no files in Trash folder to undo." : {
       "localizations" : {
@@ -18970,6 +19101,9 @@
           }
         }
       }
+    },
+    "Issues detected:" : {
+
     },
     "item" : {
       "extractionState" : "manual",
@@ -21050,6 +21184,9 @@
         }
       }
     },
+    "Loading taps..." : {
+
+    },
     "Loading..." : {
       "localizations" : {
         "de" : {
@@ -21710,6 +21847,9 @@
           }
         }
       }
+    },
+    "Manage Homebrew packages, taps, and maintenance" : {
+
     },
     "Manage launch agents, daemons, and XPC services" : {
       "localizations" : {
@@ -23975,6 +24115,9 @@
         }
       }
     },
+    "No issues detected" : {
+
+    },
     "No items match the current filters" : {
       "localizations" : {
         "de" : {
@@ -24917,6 +25060,9 @@
         }
       }
     },
+    "No results found" : {
+
+    },
     "No savings available from bundle thinning" : {
       "localizations" : {
         "de" : {
@@ -25010,6 +25156,9 @@
           }
         }
       }
+    },
+    "No taps found" : {
+
     },
     "No Update 😌" : {
       "extractionState" : "manual",
@@ -25295,6 +25444,9 @@
         }
       }
     },
+    "Notes" : {
+
+    },
     "of" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -25389,6 +25541,9 @@
           }
         }
       }
+    },
+    "Official" : {
+
     },
     "Okay" : {
       "extractionState" : "manual",
@@ -25767,6 +25922,9 @@
           }
         }
       }
+    },
+    "Open homepage" : {
+
     },
     "Open in Finder" : {
       "localizations" : {
@@ -26333,6 +26491,12 @@
           }
         }
       }
+    },
+    "Outdated" : {
+
+    },
+    "OUTDATED" : {
+
     },
     "Package Manager" : {
       "localizations" : {
@@ -27940,6 +28104,9 @@
         }
       }
     },
+    "Pin version" : {
+
+    },
     "Please install the helper service" : {
       "localizations" : {
         "de" : {
@@ -29545,6 +29712,9 @@
         }
       }
     },
+    "Refresh all data" : {
+
+    },
     "Refresh Apps" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -30584,6 +30754,9 @@
         }
       }
     },
+    "Remove %@?" : {
+
+    },
     "Remove All" : {
       "localizations" : {
         "de" : {
@@ -31054,6 +31227,9 @@
         }
       }
     },
+    "Remove tap" : {
+
+    },
     "Remove the service registration" : {
       "localizations" : {
         "de" : {
@@ -31429,6 +31605,12 @@
           }
         }
       }
+    },
+    "Removes old versions, orphaned dependencies, and all cache files including latest versions (autoremove + cleanup --scrub --prune=all)" : {
+
+    },
+    "Removing..." : {
+
     },
     "Rename" : {
       "localizations" : {
@@ -32565,6 +32747,15 @@
           }
         }
       }
+    },
+    "Run Cleanup" : {
+
+    },
+    "Run Doctor" : {
+
+    },
+    "Running..." : {
+
     },
     "Save" : {
       "extractionState" : "manual",
@@ -37565,6 +37756,9 @@
         }
       }
     },
+    "Statistics" : {
+
+    },
     "Status:" : {
       "localizations" : {
         "de" : {
@@ -38885,6 +39079,9 @@
         }
       }
     },
+    "Taps" : {
+
+    },
     "Terminal" : {
       "localizations" : {
         "de" : {
@@ -39450,6 +39647,9 @@
           }
         }
       }
+    },
+    "Third-party" : {
+
     },
     "This adds the file/folder to the Exclusions list. Edit the exclusions list from Settings > Folders tab" : {
       "extractionState" : "manual",
@@ -40026,6 +40226,9 @@
         }
       }
     },
+    "This will install %@ using Homebrew. This may take several minutes." : {
+
+    },
     "This will remove all unused language translation files" : {
       "comment" : "Prune alert message",
       "localizations" : {
@@ -40120,6 +40323,9 @@
           }
         }
       }
+    },
+    "This will upgrade all %lld outdated packages. This may take several minutes." : {
+
     },
     "Tools" : {
       "extractionState" : "manual",
@@ -40875,6 +41081,9 @@
         }
       }
     },
+    "Try a different search term" : {
+
+    },
     "Try adjusting your filters" : {
       "localizations" : {
         "de" : {
@@ -41535,6 +41744,9 @@
         }
       }
     },
+    "Uninstall %@?" : {
+
+    },
     "Uninstall confirmation alerts" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -41629,6 +41841,9 @@
           }
         }
       }
+    },
+    "Uninstall package" : {
+
     },
     "Uninstall Pearcleaner" : {
       "extractionState" : "manual",
@@ -41913,6 +42128,9 @@
         }
       }
     },
+    "Unknown" : {
+
+    },
     "Unknown service status (%lld)." : {
       "localizations" : {
         "de" : {
@@ -42194,6 +42412,9 @@
           }
         }
       }
+    },
+    "Unpin version" : {
+
     },
     "Unregister Service" : {
       "localizations" : {
@@ -42762,6 +42983,12 @@
         }
       }
     },
+    "Update Homebrew" : {
+
+    },
+    "Update Homebrew to the latest version using brew update" : {
+
+    },
     "Update in progress" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -43141,6 +43368,21 @@
         }
       }
     },
+    "Updating..." : {
+
+    },
+    "Upgrade" : {
+
+    },
+    "Upgrade All Outdated" : {
+
+    },
+    "Upgrade All Packages" : {
+
+    },
+    "Upgrade package" : {
+
+    },
     "User" : {
       "localizations" : {
         "de" : {
@@ -43329,6 +43571,9 @@
         }
       }
     },
+    "user/tap" : {
+
+    },
     "Value" : {
       "localizations" : {
         "de" : {
@@ -43516,6 +43761,9 @@
           }
         }
       }
+    },
+    "Version pinned" : {
+
     },
     "Version: %@" : {
       "localizations" : {
@@ -45410,6 +45658,12 @@
           }
         }
       }
+    },
+    "Your Homebrew installation is healthy" : {
+
+    },
+    "Your Homebrew installation is healthy!" : {
+
     }
   },
   "version" : "1.1"

@@ -24,6 +24,7 @@ struct MainWindow: View {
     @AppStorage("settings.tutorial.switchUtilitiesShown") private var tutorialShown: Bool = true
 
     @Binding var search: String
+    @Binding var isDraggingOver: Bool
     @State private var showSys: Bool = true
     @State private var showUsr: Bool = true
     @State private var showMenu = false
@@ -67,9 +68,31 @@ struct MainWindow: View {
 
                     case .fileSearch:
                         FileSearchView()
+
+                    case .homebrew:
+                        HomebrewView()
                     }
                 }
 
+            }
+
+            // Drop overlay
+            if isDraggingOver {
+                ZStack {
+                    ThemeColors.shared(for: colorScheme).primaryBG
+                        .ignoresSafeArea()
+
+                    Image(systemName: "arrow.down")
+                        .font(.system(size: 100))
+                        .foregroundColor(ThemeColors.shared(for: colorScheme).primaryText)
+                        .padding(40)
+                        .background(
+                            RoundedRectangle(cornerRadius: 20)
+                                .strokeBorder(style: StrokeStyle(lineWidth: 5, dash: [10, 5]))
+                                .foregroundColor(ThemeColors.shared(for: colorScheme).primaryText)
+                        )
+                }
+                .transition(.opacity)
             }
 
         }

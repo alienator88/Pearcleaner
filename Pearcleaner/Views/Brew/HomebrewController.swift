@@ -1,0 +1,651 @@
+//
+//  HomebrewController.swift
+//  Pearcleaner
+//
+//  Created by Alin Lupascu on 10/01/25.
+//
+
+import Foundation
+import SwiftyJSON
+import AlinFoundation
+
+enum HomebrewError: Error {
+    case brewNotFound
+    case commandFailed(String)
+    case jsonParseError
+    case packageNotFound
+}
+
+class HomebrewController {
+    static let shared = HomebrewController()
+    private let brewPath: String
+    private let brewPrefix: String
+
+    // Preloaded cache
+    private var cachedFormulaeData: JSON?
+    private var cachedCasksData: JSON?
+
+    private init() {
+        // Determine paths based on architecture
+        if isOSArm() {
+            self.brewPath = "/opt/homebrew/bin/brew"
+            self.brewPrefix = "/opt/homebrew"
+        } else {
+            self.brewPath = "/usr/local/bin/brew"
+            self.brewPrefix = "/usr/local"
+        }
+    }
+
+    // MARK: - Cache Preloading
+
+    func preloadCache() async {
+        let cacheDir = FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent("Library/Caches/Homebrew/api")
+
+        // Preload formulae
+        let formulaeFile = cacheDir.appendingPathComponent("formula.jws.json")
+        if FileManager.default.fileExists(atPath: formulaeFile.path), cachedFormulaeData == nil {
+            do {
+                let jwsData = try Data(contentsOf: formulaeFile)
+                let jwsJson = try JSON(data: jwsData)
+                if let payloadString = jwsJson["payload"].string,
+                   let payloadData = payloadString.data(using: .utf8) {
+                    cachedFormulaeData = try JSON(data: payloadData)
+                }
+            } catch {
+                print("Failed to preload formulae cache: \(error)")
+            }
+        }
+
+        // Preload casks
+        let casksFile = cacheDir.appendingPathComponent("cask.jws.json")
+        if FileManager.default.fileExists(atPath: casksFile.path), cachedCasksData == nil {
+            do {
+                let jwsData = try Data(contentsOf: casksFile)
+                let jwsJson = try JSON(data: jwsData)
+                if let payloadString = jwsJson["payload"].string,
+                   let payloadData = payloadString.data(using: .utf8) {
+                    cachedCasksData = try JSON(data: payloadData)
+                }
+            } catch {
+                print("Failed to preload casks cache: \(error)")
+            }
+        }
+    }
+
+    // MARK: - Helper Methods
+
+    func getBrewPrefix() -> String {
+        return brewPrefix
+    }
+
+    // MARK: - Shell Command Execution
+
+    private func runBrewCommand(_ arguments: [String]) async throws -> (output: String, error: String) {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: brewPath)
+        process.arguments = arguments
+
+        let outputPipe = Pipe()
+        let errorPipe = Pipe()
+        process.standardOutput = outputPipe
+        process.standardError = errorPipe
+
+        try process.run()
+
+        // Read pipes on background thread to avoid deadlock with large output
+        let (outputData, errorData) = await withCheckedContinuation { continuation in
+            DispatchQueue.global(qos: .userInitiated).async {
+                let outData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+                let errData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+                continuation.resume(returning: (outData, errData))
+            }
+        }
+
+        process.waitUntilExit()
+
+        let output = String(data: outputData, encoding: .utf8) ?? ""
+        let error = String(data: errorData, encoding: .utf8) ?? ""
+
+        return (output, error)
+    }
+
+    // MARK: - Package Loading
+
+    func loadInstalledPackages() async throws -> (formulae: [HomebrewPackageInfo], casks: [HomebrewPackageInfo]) {
+        // Run a single command to get both formulae and casks
+        let arguments = ["info", "--json=v2", "--installed"]
+        let result = try await runBrewCommand(arguments)
+
+        guard let jsonData = result.output.data(using: .utf8) else {
+            throw HomebrewError.jsonParseError
+        }
+
+        let json = try JSON(data: jsonData)
+        var formulae: [HomebrewPackageInfo] = []
+        var casks: [HomebrewPackageInfo] = []
+
+        // Parse formulae
+        for packageJson in json["formulae"].arrayValue {
+            let name = packageJson["name"].stringValue
+
+            // Skip if no installed versions
+            guard !packageJson["installed"].arrayValue.isEmpty else {
+                continue
+            }
+
+            let versions = packageJson["installed"].arrayValue.map { $0["version"].stringValue }
+
+            // Get installation date from unix timestamp
+            var installedOn: Date? = nil
+            if let timeInterval = packageJson["installed"].arrayValue.first?["time"].double {
+                installedOn = Date(timeIntervalSince1970: timeInterval)
+            }
+
+            let sizeInBytes: Int64? = nil
+            let isPinned = packageJson["pinned"].boolValue
+            let isOutdated = packageJson["outdated"].boolValue
+            let description = packageJson["desc"].string
+            let homepage = packageJson["homepage"].string
+            let tap = packageJson["tap"].string
+
+            let package = HomebrewPackageInfo(
+                name: name,
+                isCask: false,
+                installedOn: installedOn,
+                versions: versions,
+                sizeInBytes: sizeInBytes,
+                isPinned: isPinned,
+                isOutdated: isOutdated,
+                description: description,
+                homepage: homepage,
+                tap: tap
+            )
+            formulae.append(package)
+        }
+
+        // Parse casks
+        for packageJson in json["casks"].arrayValue {
+            let name = packageJson["token"].stringValue
+
+            // Check if installed (string field for casks)
+            guard !packageJson["installed"].stringValue.isEmpty else {
+                continue
+            }
+
+            let version = packageJson["installed"].stringValue
+            let versions = [version]
+
+            // Get installation date from unix timestamp
+            var installedOn: Date? = nil
+            if let timeInterval = packageJson["installed_time"].double {
+                installedOn = Date(timeIntervalSince1970: timeInterval)
+            }
+
+            let sizeInBytes: Int64? = nil
+            let isPinned = false  // Casks don't support pinning
+            let isOutdated = packageJson["outdated"].boolValue
+            let description = packageJson["desc"].string
+            let homepage = packageJson["homepage"].string
+            let tap = packageJson["tap"].string
+
+            let package = HomebrewPackageInfo(
+                name: name,
+                isCask: true,
+                installedOn: installedOn,
+                versions: versions,
+                sizeInBytes: sizeInBytes,
+                isPinned: isPinned,
+                isOutdated: isOutdated,
+                description: description,
+                homepage: homepage,
+                tap: tap
+            )
+            casks.append(package)
+        }
+
+        return (formulae: formulae, casks: casks)
+    }
+
+    // MARK: - Search
+
+    func searchPackages(query: String, cask: Bool) async throws -> [HomebrewSearchResult] {
+        // Try to use preloaded cache first
+        let payload: JSON?
+
+        if cask {
+            payload = cachedCasksData
+        } else {
+            payload = cachedFormulaeData
+        }
+
+        if let payload = payload {
+            // Use preloaded cache - instant search!
+            var results: [HomebrewSearchResult] = []
+            for item in payload.arrayValue {
+                let name = cask ? item["token"].stringValue : item["name"].stringValue
+
+                // If query is empty, return all; otherwise filter
+                if query.isEmpty || name.localizedCaseInsensitiveContains(query) {
+                    let license = item["license"].string
+                    let version = cask ? item["version"].string : item["versions"]["stable"].string
+                    let dependencies = cask ? item["depends_on"]["formula"].arrayValue.map { $0.stringValue } : item["dependencies"].arrayValue.map { $0.stringValue }
+                    let caveats = item["caveats"].string
+
+                    results.append(HomebrewSearchResult(
+                        name: name,
+                        description: item["desc"].string,
+                        homepage: item["homepage"].string,
+                        license: license,
+                        version: version,
+                        dependencies: dependencies.isEmpty ? nil : dependencies,
+                        caveats: caveats
+                    ))
+                }
+            }
+
+            return results
+        }
+
+        // If not preloaded, try to read from disk
+        let cacheDir = FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent("Library/Caches/Homebrew/api")
+
+        let jwsFile = cask ?
+            cacheDir.appendingPathComponent("cask.jws.json") :
+            cacheDir.appendingPathComponent("formula.jws.json")
+
+        if FileManager.default.fileExists(atPath: jwsFile.path) {
+            do {
+                // Read and parse the JWS file
+                let jwsData = try Data(contentsOf: jwsFile)
+                let jwsJson = try JSON(data: jwsData)
+
+                // Extract and parse the payload (it's a JSON string inside the JSON)
+                guard let payloadString = jwsJson["payload"].string,
+                      let payloadData = payloadString.data(using: .utf8) else {
+                    throw HomebrewError.jsonParseError
+                }
+
+                let diskPayload = try JSON(data: payloadData)
+
+                // Filter packages by search query and extract details
+                var results: [HomebrewSearchResult] = []
+                for item in diskPayload.arrayValue {
+                    let name = cask ? item["token"].stringValue : item["name"].stringValue
+
+                    // If query is empty, return all; otherwise filter
+                    if query.isEmpty || name.localizedCaseInsensitiveContains(query) {
+                        let license = item["license"].string
+                        let version = cask ? item["version"].string : item["versions"]["stable"].string
+                        let dependencies = cask ? item["depends_on"]["formula"].arrayValue.map { $0.stringValue } : item["dependencies"].arrayValue.map { $0.stringValue }
+                        let caveats = item["caveats"].string
+
+                        results.append(HomebrewSearchResult(
+                            name: name,
+                            description: item["desc"].string,
+                            homepage: item["homepage"].string,
+                            license: license,
+                            version: version,
+                            dependencies: dependencies.isEmpty ? nil : dependencies,
+                            caveats: caveats
+                        ))
+                    }
+                }
+
+                return results
+            } catch {
+                // If reading from cache fails, fall through to API call
+                print("Failed to read from cache, falling back to API: \(error)")
+            }
+        }
+
+        // Fallback to API if cache doesn't exist or reading failed
+        return try await searchPackagesFromAPI(query: query, cask: cask)
+    }
+
+    private func searchPackagesFromAPI(query: String, cask: Bool) async throws -> [HomebrewSearchResult] {
+        let url = cask ?
+            URL(string: "https://formulae.brew.sh/api/cask.json")! :
+            URL(string: "https://formulae.brew.sh/api/formula.json")!
+
+        let (data, _) = try await URLSession.shared.data(from: url)
+        let json = try JSON(data: data)
+
+        var results: [HomebrewSearchResult] = []
+        for item in json.arrayValue {
+            let name = cask ? item["token"].stringValue : item["name"].stringValue
+
+            // If query is empty, return all; otherwise filter
+            if query.isEmpty || name.localizedCaseInsensitiveContains(query) {
+                let license = item["license"].string
+                let version = cask ? item["version"].string : item["versions"]["stable"].string
+                let dependencies = cask ? item["depends_on"]["formula"].arrayValue.map { $0.stringValue } : item["dependencies"].arrayValue.map { $0.stringValue }
+                let caveats = item["caveats"].string
+
+                results.append(HomebrewSearchResult(
+                    name: name,
+                    description: item["desc"].string,
+                    homepage: item["homepage"].string,
+                    license: license,
+                    version: version,
+                    dependencies: dependencies.isEmpty ? nil : dependencies,
+                    caveats: caveats
+                ))
+            }
+        }
+
+        return results
+    }
+
+    func getPackageDetails(name: String, cask: Bool) async throws -> (description: String?, homepage: String?) {
+        // Try to read from Homebrew's cached .jws.json files first
+        let cacheDir = FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent("Library/Caches/Homebrew/api")
+
+        let jwsFile = cask ?
+            cacheDir.appendingPathComponent("cask.jws.json") :
+            cacheDir.appendingPathComponent("formula.jws.json")
+
+        if FileManager.default.fileExists(atPath: jwsFile.path) {
+            do {
+                let jwsData = try Data(contentsOf: jwsFile)
+                let jwsJson = try JSON(data: jwsData)
+
+                guard let payloadString = jwsJson["payload"].string,
+                      let payloadData = payloadString.data(using: .utf8) else {
+                    throw HomebrewError.jsonParseError
+                }
+
+                let payload = try JSON(data: payloadData)
+
+                // Find the package in the payload
+                for item in payload.arrayValue {
+                    let itemName = cask ? item["token"].stringValue : item["name"].stringValue
+                    if itemName == name {
+                        return (description: item["desc"].string, homepage: item["homepage"].string)
+                    }
+                }
+            } catch {
+                // If reading from cache fails, fall through to API call
+                print("Failed to read from cache, falling back to API: \(error)")
+            }
+        }
+
+        // Fallback to API if cache doesn't exist or package not found
+        let url = cask ?
+            URL(string: "https://formulae.brew.sh/api/cask/\(name).json")! :
+            URL(string: "https://formulae.brew.sh/api/formula/\(name).json")!
+
+        let (data, _) = try await URLSession.shared.data(from: url)
+        let json = try JSON(data: data)
+
+        let description = json["desc"].string
+        let homepage = json["homepage"].string
+
+        return (description: description, homepage: homepage)
+    }
+
+    // MARK: - Package Management
+
+    func installPackage(name: String, cask: Bool) async throws {
+        var arguments = ["install"]
+        if cask {
+            arguments.append("--cask")
+        }
+        arguments.append(name)
+
+        let result = try await runBrewCommand(arguments)
+        if result.error.contains("Error") {
+            throw HomebrewError.commandFailed(result.error)
+        }
+    }
+
+    func uninstallPackage(name: String) async throws {
+        let arguments = ["uninstall", name]
+        let result = try await runBrewCommand(arguments)
+
+        if result.error.contains("Error") || result.error.contains("because it is required by") {
+            throw HomebrewError.commandFailed(result.error)
+        }
+    }
+
+    func pinPackage(name: String) async throws {
+        let arguments = ["pin", name]
+        let result = try await runBrewCommand(arguments)
+
+        if !result.error.isEmpty && result.error.contains("Error") {
+            throw HomebrewError.commandFailed(result.error)
+        }
+    }
+
+    func unpinPackage(name: String) async throws {
+        let arguments = ["unpin", name]
+        let result = try await runBrewCommand(arguments)
+
+        if !result.error.isEmpty && result.error.contains("Error") {
+            throw HomebrewError.commandFailed(result.error)
+        }
+    }
+
+    func upgradePackage(name: String) async throws {
+        let arguments = ["upgrade", name]
+        let result = try await runBrewCommand(arguments)
+
+        if result.error.contains("Error") {
+            throw HomebrewError.commandFailed(result.error)
+        }
+    }
+
+    func upgradeAllPackages() async throws {
+        let arguments = ["upgrade"]
+        let result = try await runBrewCommand(arguments)
+
+        if result.error.contains("Error") {
+            throw HomebrewError.commandFailed(result.error)
+        }
+    }
+
+    // MARK: - Tap Management
+
+    func loadTaps() async throws -> [HomebrewTapInfo] {
+        let arguments = ["tap"]
+        let result = try await runBrewCommand(arguments)
+
+        let tapNames = result.output.components(separatedBy: "\n").filter { !$0.isEmpty }
+        return tapNames.map { name in
+            let isOfficial = name.starts(with: "homebrew/")
+            return HomebrewTapInfo(name: name, isOfficial: isOfficial)
+        }
+    }
+
+    func addTap(name: String) async throws {
+        let arguments = ["tap", name]
+        let result = try await runBrewCommand(arguments)
+
+        if result.error.contains("Error") {
+            throw HomebrewError.commandFailed(result.error)
+        }
+    }
+
+    func removeTap(name: String) async throws {
+        let arguments = ["untap", name]
+        let result = try await runBrewCommand(arguments)
+
+        if !result.error.contains("Untapped") && result.error.contains("Error") {
+            throw HomebrewError.commandFailed(result.error)
+        }
+    }
+
+    // MARK: - Maintenance
+
+    func getBrewVersion() async throws -> String {
+        let arguments = ["-v"]
+        let result = try await runBrewCommand(arguments)
+
+        // Extract version number from output like "Homebrew 4.0.15"
+        let components = result.output.components(separatedBy: " ")
+        if components.count >= 2 {
+            return components[1].trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        return result.output.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    func getSemanticBrewVersion() async throws -> String {
+        let fullVersion = try await getBrewVersion()
+        // Extract just the semantic version (e.g., "4.6.15" from "4.6.15-34-g01d792b")
+        if let match = fullVersion.range(of: #"^\d+\.\d+\.\d+"#, options: .regularExpression) {
+            return String(fullVersion[match])
+        }
+        return fullVersion
+    }
+
+    func getLatestBrewVersionFromGitHub() async throws -> String {
+        let url = URL(string: "https://api.github.com/repos/Homebrew/brew/releases/latest")!
+        let (data, _) = try await URLSession.shared.data(from: url)
+        let json = try JSON(data: data)
+        return json["tag_name"].stringValue
+    }
+
+    func checkForBrewUpdate() async throws -> (current: String, latest: String, updateAvailable: Bool) {
+        let currentVersion = try await getBrewVersion()
+
+        // Check if local Homebrew git repository is behind remote
+        let updateAvailable = try await isBrewBehindRemote()
+
+        return (current: currentVersion, latest: "", updateAvailable: updateAvailable)
+    }
+
+    private func isBrewBehindRemote() async throws -> Bool {
+        // Find the Homebrew git repository path
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: brewPath)
+        process.arguments = ["--repository"]
+
+        let outputPipe = Pipe()
+        process.standardOutput = outputPipe
+
+        try process.run()
+        process.waitUntilExit()
+
+        let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+        let repoPath = String(data: outputData, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+
+        guard !repoPath.isEmpty else {
+            return false
+        }
+
+        // Fetch latest from remote (doesn't update local files, just refs)
+        let fetchProcess = Process()
+        fetchProcess.executableURL = URL(fileURLWithPath: "/usr/bin/git")
+        fetchProcess.arguments = ["-C", repoPath, "fetch", "--quiet", "origin"]
+        fetchProcess.standardOutput = Pipe()
+        fetchProcess.standardError = Pipe()
+
+        try? fetchProcess.run()
+        fetchProcess.waitUntilExit()
+
+        // Compare local HEAD with remote origin/master (or origin/HEAD)
+        let compareProcess = Process()
+        compareProcess.executableURL = URL(fileURLWithPath: "/usr/bin/git")
+        compareProcess.arguments = ["-C", repoPath, "rev-list", "--count", "HEAD..origin/master"]
+
+        let comparePipe = Pipe()
+        compareProcess.standardOutput = comparePipe
+        compareProcess.standardError = Pipe()
+
+        try compareProcess.run()
+        compareProcess.waitUntilExit()
+
+        let compareData = comparePipe.fileHandleForReading.readDataToEndOfFile()
+        let commitsBehind = String(data: compareData, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "0"
+
+        return Int(commitsBehind) ?? 0 > 0
+    }
+
+    func updateBrew() async throws {
+        let arguments = ["update"]
+        let result = try await runBrewCommand(arguments)
+
+        if result.error.contains("Error") {
+            throw HomebrewError.commandFailed(result.error)
+        }
+    }
+
+    func runDoctor() async throws -> String {
+        let arguments = ["doctor"]
+        let result = try await runBrewCommand(arguments)
+        return result.output + result.error
+    }
+
+    func getDownloadsCacheSize() async throws -> Int64 {
+        // Run cleanup in dry-run mode to see what would be freed
+        let arguments = ["cleanup", "--dry-run", "--scrub", "--prune=all"]
+        let result = try await runBrewCommand(arguments)
+
+        let output = result.output + result.error
+
+        // Parse the output for "This operation would free approximately X"
+        // Example: "This operation would free approximately 5.1MB of disk space."
+        if let match = output.range(of: #"would free approximately ([0-9.]+)(MB|GB|KB)"#, options: .regularExpression) {
+            let matchString = String(output[match])
+
+            // Extract number and unit
+            let pattern = #"([0-9.]+)(MB|GB|KB)"#
+            if let valueMatch = matchString.range(of: pattern, options: .regularExpression) {
+                let valueString = String(matchString[valueMatch])
+                let components = valueString.components(separatedBy: CharacterSet.letters)
+
+                if let sizeValue = Double(components[0]) {
+                    let unit = valueString.replacingOccurrences(of: String(sizeValue), with: "")
+
+                    // Convert to bytes
+                    switch unit {
+                    case "KB":
+                        return Int64(sizeValue * 1024)
+                    case "MB":
+                        return Int64(sizeValue * 1024 * 1024)
+                    case "GB":
+                        return Int64(sizeValue * 1024 * 1024 * 1024)
+                    default:
+                        return 0
+                    }
+                }
+            }
+        }
+
+        return 0
+    }
+
+    func performFullCleanup() async throws {
+        // Run autoremove first to remove orphaned dependencies
+        let autoremoveArgs = ["autoremove"]
+        _ = try await runBrewCommand(autoremoveArgs)
+
+        // Then run cleanup with scrub to remove old versions and all cache files (including latest versions)
+        let cleanupArgs = ["cleanup", "--scrub", "--prune=all"]
+        let result = try await runBrewCommand(cleanupArgs)
+
+        if result.error.contains("Error") && !result.error.contains("Warning") {
+            throw HomebrewError.commandFailed(result.error)
+        }
+    }
+
+    func getAnalyticsStatus() async throws -> Bool {
+        let arguments = ["analytics"]
+        let result = try await runBrewCommand(arguments)
+
+        // Check for both possible messages
+        return result.output.contains("analytics are enabled") ||
+               result.output.contains("Analytics are enabled")
+    }
+
+    func setAnalyticsStatus(enabled: Bool) async throws {
+        let arguments = ["analytics", enabled ? "on" : "off"]
+        let result = try await runBrewCommand(arguments)
+
+        if result.error.contains("Error") {
+            throw HomebrewError.commandFailed(result.error)
+        }
+    }
+}

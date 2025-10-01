@@ -128,12 +128,21 @@ struct AppCommands: Commands {
 
                 Button
                 {
+                    appState.currentPage = .homebrew
+
+                } label: {
+                    Text("Homebrew")
+                }
+                .keyboardShortcut("4", modifiers: .command)
+
+                Button
+                {
                     appState.currentPage = .lipo
 
                 } label: {
                     Text("App Lipo")
                 }
-                .keyboardShortcut("4", modifiers: .command)
+                .keyboardShortcut("5", modifiers: .command)
 
                 Button
                 {
@@ -142,7 +151,7 @@ struct AppCommands: Commands {
                 } label: {
                     Text("Orphaned Files")
                 }
-                .keyboardShortcut("5", modifiers: .command)
+                .keyboardShortcut("6", modifiers: .command)
 
                 Button
                 {
@@ -151,7 +160,7 @@ struct AppCommands: Commands {
                 } label: {
                     Text("Packages")
                 }
-                .keyboardShortcut("6", modifiers: .command)
+                .keyboardShortcut("7", modifiers: .command)
 
                 Button
                 {
@@ -160,7 +169,7 @@ struct AppCommands: Commands {
                 } label: {
                     Text("Plugins")
                 }
-                .keyboardShortcut("7", modifiers: .command)
+                .keyboardShortcut("8", modifiers: .command)
 
                 Button
                 {
@@ -169,7 +178,7 @@ struct AppCommands: Commands {
                 } label: {
                     Text("Services")
                 }
-                .keyboardShortcut("8", modifiers: .command)
+                .keyboardShortcut("9", modifiers: .command)
 
             } label: {
                 Label("Navigate To", systemImage: "location.north.fill")

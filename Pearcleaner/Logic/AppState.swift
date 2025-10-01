@@ -508,6 +508,7 @@ enum CurrentPage: Int, CaseIterable, Identifiable {
     case applications
     case development
     case fileSearch
+    case homebrew
     case lipo
     case orphans
     case packages
@@ -524,6 +525,8 @@ enum CurrentPage: Int, CaseIterable, Identifiable {
             return (String(localized: "Developer"), "hammer.circle")
         case .fileSearch:
             return (String(localized: "File Search"), "magnifyingglass")
+        case .homebrew:
+            return (String(localized: "Homebrew"), "mug")
         case .lipo:
             return (String(localized: "Lipo"), "scissors")
         case .orphans:

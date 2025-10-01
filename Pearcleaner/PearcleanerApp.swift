@@ -24,6 +24,7 @@ struct PearcleanerApp: App {
     @AppStorage("settings.general.brew") private var brew: Bool = false
     //MARK: States
     @State private var search = ""
+    @State private var isDraggingOver = false
 
     init() {
         //MARK: GUI or CLI launch mode.
@@ -54,14 +55,14 @@ struct PearcleanerApp: App {
     var body: some Scene {
 
         WindowGroup {
-            MainWindow(search: $search)
+            MainWindow(search: $search, isDraggingOver: $isDraggingOver)
                 .environmentObject(appState)
                 .environmentObject(locations)
                 .environmentObject(fsm)
                 .environmentObject(updater)
                 .environmentObject(permissionManager)
                 .handlesExternalEvents(preferring: Set(arrayLiteral: "pear"), allowing: Set(arrayLiteral: "*"))
-                .onDrop(of: ["public.file-url"], isTargeted: nil) { providers, _ in
+                .onDrop(of: ["public.file-url"], isTargeted: $isDraggingOver) { providers, _ in
                     var droppedURLs: [URL] = []
                     let dispatchGroup = DispatchGroup()
 
