@@ -231,6 +231,7 @@
 		C75E82DD2E8C58380090C3B1 /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (C75E82E42E8C58620090C3B1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, C75E82E52E8C58620090C3B1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, C75E82E12E8C585D0090C3B1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Shared; sourceTree = "<group>"; };
 		C76073F32E3C1C2C003957A7 /* FilesView */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = FilesView; sourceTree = "<group>"; };
 		C7C05FD72E8DA12C006D0476 /* Brew */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Brew; sourceTree = "<group>"; };
+		C7C05FF12E8DEE85006D0476 /* Data */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Data; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -275,6 +276,7 @@
 		C72893072AFD442600C8C1CD /* Logic */ = {
 			isa = PBXGroup;
 			children = (
+				C7C05FF12E8DEE85006D0476 /* Data */,
 				C7C90DD22DA81C590056769A /* Lipo.swift */,
 				C73545EA2D8496DA00A3DC0C /* HelperToolManager.swift */,
 				C72FDCB82D6D088A00DE7D56 /* UndoManager.swift */,
@@ -464,6 +466,7 @@
 				C74649FA2E48076B002D1C63 /* Settings */,
 				C76073F32E3C1C2C003957A7 /* FilesView */,
 				C7C05FD72E8DA12C006D0476 /* Brew */,
+				C7C05FF12E8DEE85006D0476 /* Data */,
 			);
 			name = Pearcleaner;
 			packageProductDependencies = (
