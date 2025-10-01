@@ -246,10 +246,12 @@ struct ExtraOptions: View {
                     let title = NSLocalizedString("Prune Translations", comment: "Prune alert title")
                     let message = String(format: NSLocalizedString("This will remove all unused language translation files", comment: "Prune alert message"))
                     showCustomAlert(title: title, message: message, style: .warning, onOk: {
-                        do {
-                            try pruneLanguages(in: appState.appInfo.path.path)
-                        } catch {
-                            printOS("Translation prune error: \(error)")
+                        Task {
+                            do {
+                                try await pruneLanguages(in: appState.appInfo.path.path)
+                            } catch {
+                                printOS("Translation prune error: \(error)")
+                            }
                         }
                     })
                 }

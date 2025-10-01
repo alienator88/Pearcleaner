@@ -422,7 +422,7 @@ struct LipoView: View {
 
     private func startLipo() {
         isProcessing = true
-        DispatchQueue.global(qos: .userInitiated).async {
+        Task {
             var totalPreSize: UInt64 = 0
             var totalPostSize: UInt64 = 0
 
@@ -438,7 +438,7 @@ struct LipoView: View {
                 // Prune languages if enabled
                 if prune {
                     do {
-                        try pruneLanguages(in: app.path.path)
+                        try await pruneLanguages(in: app.path.path)
                     } catch {
                         printOS("Translation prune error: \(error)")
                     }
@@ -463,7 +463,7 @@ struct LipoView: View {
                 format: messageFormat, formatByte(size: Int64(totalPreSize)).human,
                 formatByte(size: Int64(totalPostSize)).human)
 
-            DispatchQueue.main.async {
+            await MainActor.run {
                 self.totalSpaceSaved += actualSpaceSaved
                 showCustomAlert(title: title, message: message, style: .informational)
                 self.isProcessing = false

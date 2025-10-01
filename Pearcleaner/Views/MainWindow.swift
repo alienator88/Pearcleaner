@@ -28,7 +28,6 @@ struct MainWindow: View {
     @State private var showUsr: Bool = true
     @State private var showMenu = false
     @State private var isFullscreen = false
-    @State private var selectedPage: CurrentPage = .applications
 
     // Badges
     @State private var showUpdateView = false
@@ -94,7 +93,20 @@ struct MainWindow: View {
                 Menu {
                     ForEach(CurrentPage.allCases, id: \.self) { page in
                         Button {
-                            selectedPage = page
+
+
+                            // Animate only the page content transition
+                            withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
+                                // Reset appInfo when changing pages
+                                if page == .applications {
+                                    appState.appInfo = .empty
+                                    appState.currentView = .empty
+                                }
+                            }
+
+                            // Change page immediately (no animation on toolbar icon)
+                            appState.currentPage = page
+
                             // Hide tutorial when user interacts with menu
                             tutorialShown = false
                         } label: {
@@ -106,22 +118,10 @@ struct MainWindow: View {
                     }
                 } label: {
                     HStack {
-                        Image(systemName: selectedPage.icon)
+                        Image(systemName: appState.currentPage.icon)
                     }
                 }
                 .menuIndicator(.hidden)
-                .onChange(of: selectedPage) { page in
-                    withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
-                        // Reset appInfo when changing pages
-                        if page == .applications {
-                            appState.appInfo = .empty
-                            appState.currentView = .empty
-                        }
-                        // Change page
-                        appState.currentPage = page
-
-                    }
-                }
 
                 if tutorialShown {
                     HStack {
