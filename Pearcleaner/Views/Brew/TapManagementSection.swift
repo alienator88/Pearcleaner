@@ -20,7 +20,7 @@ struct TapManagementSection: View {
         VStack(alignment: .leading, spacing: 0) {
             // Header with add button
             HStack {
-                Text("\(brewManager.availableTaps.count) tap\(brewManager.availableTaps.count == 1 ? "" : "s")")
+                Text(verbatim: "\(brewManager.availableTaps.count) tap\(brewManager.availableTaps.count == 1 ? "" : "s")")
                     .font(.caption)
                     .monospacedDigit()
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
@@ -133,11 +133,11 @@ struct TapRowView: View {
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }
 
-                    Text("•")
+                    Text(verbatim: "•")
                         .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
-                    Text("\(HomebrewController.shared.getBrewPrefix())/Library/Taps/\(tap.name.replacingOccurrences(of: "/", with: "/homebrew-"))")
+                    Text(verbatim: "\(HomebrewController.shared.getBrewPrefix())/Library/Taps/\(tap.name.replacingOccurrences(of: "/", with: "/homebrew-"))")
                         .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                         .lineLimit(1)
@@ -241,17 +241,17 @@ struct AddTapSheet: View {
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("• homebrew/cask-versions")
+                    Text(verbatim: "• homebrew/cask-versions")
                         .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                         .monospaced()
 
-                    Text("• user/tap")
+                    Text(verbatim: "• user/tap")
                         .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                         .monospaced()
 
-                    Text("• organization/repository")
+                    Text(verbatim: "• organization/repository")
                         .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                         .monospaced()

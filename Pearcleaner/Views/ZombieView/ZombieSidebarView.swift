@@ -66,7 +66,7 @@ struct ZombieSizeInfoSection: View {
             HStack(spacing: 0) {
                 Text("Selected Items:")
                 Spacer()
-                Text("\(selectedCount) / \(totalCount)")
+                Text(verbatim: "\(selectedCount) / \(totalCount)")
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
             }
         }
@@ -150,7 +150,7 @@ struct ZombieExcludedPathRow: View {
 
                         // Show associated app name in parentheses
                         if let appName = associationInfo.appName {
-                            Text("(\(appName))")
+                            Text(verbatim: "(\(appName))")
                                 .font(.caption2)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                                 .lineLimit(1)

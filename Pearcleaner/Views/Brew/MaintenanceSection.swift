@@ -254,7 +254,7 @@ struct MaintenanceSection: View {
                             .opacity((isPurgingCache || brewManager.downloadsCacheSize == 0) ? 0.5 : 1.0)
                         }
 
-                        Text("Removes old versions, orphaned dependencies, and all cache files including latest versions (autoremove + cleanup --scrub --prune=all)")
+                        Text("Removes old versions, orphaned dependencies, and all cache files including latest versions")
                             .font(.caption)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }
@@ -319,7 +319,7 @@ struct MaintenanceSection: View {
                         HStack(spacing: 0) {
                             // Formulae
                             VStack(spacing: 4) {
-                                Text("\(brewManager.installedFormulae.count)")
+                                Text(verbatim: "\(brewManager.installedFormulae.count)")
                                     .font(.title2)
                                     .fontWeight(.bold)
                                     .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
@@ -334,7 +334,7 @@ struct MaintenanceSection: View {
 
                             // Casks
                             VStack(spacing: 4) {
-                                Text("\(brewManager.installedCasks.count)")
+                                Text(verbatim: "\(brewManager.installedCasks.count)")
                                     .font(.title2)
                                     .fontWeight(.bold)
                                     .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
@@ -349,7 +349,7 @@ struct MaintenanceSection: View {
 
                             // Taps
                             VStack(spacing: 4) {
-                                Text("\(brewManager.availableTaps.count)")
+                                Text(verbatim: "\(brewManager.availableTaps.count)")
                                     .font(.title2)
                                     .fontWeight(.bold)
                                     .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
@@ -364,7 +364,7 @@ struct MaintenanceSection: View {
 
                             // Outdated
                             VStack(spacing: 4) {
-                                Text("\(brewManager.outdatedPackages.count)")
+                                Text(verbatim: "\(brewManager.outdatedPackages.count)")
                                     .font(.title2)
                                     .fontWeight(.bold)
                                     .foregroundStyle(brewManager.outdatedPackages.isEmpty ? ThemeColors.shared(for: colorScheme).primaryText : .orange)

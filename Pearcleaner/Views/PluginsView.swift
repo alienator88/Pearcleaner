@@ -672,7 +672,7 @@ struct PluginCategorySection: View {
                         .fontWeight(.semibold)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
-                    Text("(\(plugins.count))")
+                    Text(verbatim: "(\(plugins.count))")
                         .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
@@ -781,7 +781,7 @@ struct PluginRowView: View {
                         .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
-                    Text("•")
+                    Text(verbatim: "•")
                         .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 

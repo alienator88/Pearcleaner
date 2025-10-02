@@ -599,7 +599,7 @@ struct VolumeItemView: View {
                         Text("Location:")
                             .font(.caption)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        Text("\(volume.path)")
+                        Text(verbatim: "\(volume.path)")
                             .font(.subheadline)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                     }

@@ -179,7 +179,7 @@ struct GeneralSettingsTab: View {
                     Higher levels may find more files but may include some unrelated results. It is recommended to check found files manually at these levels.
                     """))
                         Spacer()
-                        Text("\(sensitivityLevel.title)")
+                        Text(verbatim: "\(sensitivityLevel.title)")
                             .font(.title3)
                             .fontWeight(.semibold)
                             .foregroundStyle(sensitivityLevel.color)

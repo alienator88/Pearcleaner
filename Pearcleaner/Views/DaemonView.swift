@@ -220,7 +220,7 @@ struct DaemonView: View {
                         let loadedCount = filteredItems.filter { isItemLoaded($0) }.count
                         let unloadedCount = filteredItems.count - loadedCount
 
-                        Text("•")
+                        Text(verbatim: "•")
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
                         Text("\(loadedCount) loaded")
@@ -228,7 +228,7 @@ struct DaemonView: View {
                             .monospacedDigit()
                             .foregroundStyle(.blue)
 
-                        Text("•")
+                        Text(verbatim: "•")
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
                         Text("\(unloadedCount) not loaded")
@@ -739,7 +739,7 @@ struct LaunchItemRowView: View {
                         }
                         
                         if let pid = item.pid {
-                            Text("•")
+                            Text(verbatim: "•")
                                 .font(.caption)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                             

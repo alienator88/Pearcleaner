@@ -729,7 +729,7 @@ struct PackageRowView: View {
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                             
                             if !package.bomFiles.isEmpty {
-                                Text("•")
+                                Text(verbatim: "•")
                                     .font(.caption)
                                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 

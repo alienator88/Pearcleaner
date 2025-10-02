@@ -341,12 +341,14 @@ struct EnvironmentCleanerView: View {
                     ForEach(paths, id: \.self) { environment in
                         Group {
                             if environment.paths.isEmpty {
-                                Text("\(environment.name) (0)")
+                                Text(verbatim: "\(environment.name) (0)")
                                     .foregroundStyle(.gray)
                             } else {
-                                Button("\(environment.name) (\(environment.paths.count))") {
+                                Button {
                                     appState.selectedEnvironment = environment
                                     selectedPaths.removeAll()
+                                } label: {
+                                    Text(verbatim: "\(environment.name) (\(environment.paths.count))")
                                 }
                             }
                         }
@@ -395,7 +397,7 @@ struct EnvironmentCategorySection: View {
                         .fontWeight(.semibold)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
-                    Text("(\(environment.paths.count))")
+                    Text(verbatim: "(\(environment.paths.count))")
                         .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
@@ -728,7 +730,7 @@ struct WorkspaceStorageCleanerView: View {
                                         .lineLimit(1)
                                         .truncationMode(.middle)
 
-                                    Text("\(workspace.folderPath)")
+                                    Text(verbatim: "\(workspace.folderPath)")
                                         .font(.caption)
                                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                                         .lineLimit(1)
