@@ -25,6 +25,64 @@ class AppCacheManager {
         self.modelContext = ModelContext(container)
     }
 
+    /// Creates and returns a ModelContainer for app caching
+    /// - Returns: ModelContainer instance or nil if creation fails or macOS < 14
+    static func createModelContainer() -> Any? {
+        if #available(macOS 14.0, *) {
+            do {
+                let appSupportURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+                    .appendingPathComponent("Pearcleaner")
+                let storeURL = appSupportURL.appendingPathComponent("AppCache.sqlite")
+
+                let config = ModelConfiguration(url: storeURL)
+                let container = try ModelContainer(for: CachedAppInfo.self, configurations: config)
+                print("✅ SwiftData container initialized at: \(storeURL.path)")
+                return container
+            } catch {
+                print("❌ Failed to create ModelContainer: \(error)")
+                return nil
+            }
+        } else {
+            print("ℹ️ SwiftData caching not available on macOS 13, using direct scan")
+            return nil
+        }
+    }
+
+    // MARK: - Reusable App Loading Function
+
+    /// Loads and updates apps using cache (macOS 14+) or fallback scan (macOS 13)
+    /// - Parameters:
+    ///   - modelContainer: The SwiftData ModelContainer (Any? type for compatibility)
+    ///   - folderPaths: Array of folder paths to scan for apps
+    ///   - completion: Optional completion handler called after loading
+    static func loadAndUpdateApps(modelContainer: Any?, folderPaths: [String], completion: @escaping () -> Void = {}) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            let sortedApps: Task<[AppInfo], Never>
+
+            // Use caching on macOS 14+, fallback to direct scan on macOS 13
+            if #available(macOS 14.0, *), let modelContainer = modelContainer as? ModelContainer {
+                Task { @MainActor in
+                    AppCacheManager.shared.setContainer(modelContainer)
+                }
+                sortedApps = Task { @MainActor in
+                    AppCacheManager.shared.loadAppsWithCache(folderPaths: folderPaths)
+                }
+            } else {
+                sortedApps = Task {
+                    getSortedApps(paths: folderPaths)
+                }
+            }
+
+            Task { @MainActor in
+                AppState.shared.sortedApps = await sortedApps.value
+                // Restore zombie file associations after apps are loaded
+                AppState.shared.restoreZombieAssociations()
+                // Call completion handler
+                completion()
+            }
+        }
+    }
+
     // MARK: - Main Orchestration Function
 
     /// Loads apps using cache for fast startup. Only processes new/changed apps.

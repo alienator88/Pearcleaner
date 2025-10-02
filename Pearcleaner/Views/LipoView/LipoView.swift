@@ -206,7 +206,7 @@ struct LipoView: View {
                         .padding(.vertical)
 
                         ScrollView {
-                            VStack(spacing: 10) {
+                            LazyVStack(spacing: 10) {
                                 ForEach(universalApps, id: \.path) { app in
                                     LipoAppRowView(
                                         app: app,

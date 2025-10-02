@@ -27,56 +27,34 @@ struct PearcleanerApp: App {
     @State private var search = ""
     @State private var isDraggingOver = false
 
-    // SwiftData model container (macOS 14+ only)
-    let modelContainer: Any?
-
     init() {
         //MARK: Setup SwiftData container (macOS 14+ only)
         if #available(macOS 14.0, *) {
-            do {
-                let appSupportURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-                    .appendingPathComponent("Pearcleaner")
-                let storeURL = appSupportURL.appendingPathComponent("AppCache.sqlite")
-
-                let config = ModelConfiguration(url: storeURL)
-                modelContainer = try ModelContainer(for: CachedAppInfo.self, configurations: config)
-                print("✅ SwiftData container initialized at: \(storeURL.path)")
-            } catch {
-                print("❌ Failed to create ModelContainer: \(error)")
-                modelContainer = nil
-            }
+            appState.modelContainer = AppCacheManager.createModelContainer()
         } else {
-            modelContainer = nil
-            print("ℹ️ SwiftData caching not available on macOS 13, using direct scan")
+            appState.modelContainer = nil
         }
 
         //MARK: GUI or CLI launch mode.
         handleLaunchMode()
 
         //MARK: Pre-load apps data during app initialization
-        let fsm = FolderSettingsManager.shared
-        let container = self.modelContainer
-        DispatchQueue.global(qos: .userInitiated).async {
-            let sortedApps: Task<[AppInfo], Never>
-
-            // Use caching on macOS 14+, fallback to direct scan on macOS 13
-            if #available(macOS 14.0, *), let modelContainer = container as? ModelContainer {
-                Task { @MainActor in
-                    AppCacheManager.shared.setContainer(modelContainer)
-                }
-                sortedApps = Task { @MainActor in
-                    AppCacheManager.shared.loadAppsWithCache(folderPaths: fsm.folderPaths)
-                }
-            } else {
-                sortedApps = Task {
-                    getSortedApps(paths: fsm.folderPaths)
-                }
-            }
-
+        let modelContainer = appState.modelContainer
+        let folderPaths = fsm.folderPaths
+        if #available(macOS 14.0, *) {
             Task { @MainActor in
-                AppState.shared.sortedApps = await sortedApps.value
-                // Restore zombie file associations after apps are loaded
-                AppState.shared.restoreZombieAssociations()
+                AppCacheManager.loadAndUpdateApps(
+                    modelContainer: modelContainer,
+                    folderPaths: folderPaths
+                )
+            }
+        } else {
+            DispatchQueue.global(qos: .userInitiated).async {
+                let sortedApps = getSortedApps(paths: folderPaths)
+                Task { @MainActor in
+                    AppState.shared.sortedApps = sortedApps
+                    AppState.shared.restoreZombieAssociations()
+                }
             }
         }
 
@@ -101,7 +79,7 @@ struct PearcleanerApp: App {
                 .environmentObject(updater)
                 .environmentObject(permissionManager)
                 .apply { view in
-                    if #available(macOS 14.0, *), let container = modelContainer as? ModelContainer {
+                    if #available(macOS 14.0, *), let container = appState.modelContainer as? ModelContainer {
                         view.modelContainer(container)
                     } else {
                         view
