@@ -8,6 +8,7 @@
 import Foundation
 import SwiftyJSON
 import AlinFoundation
+import SwiftData
 
 enum HomebrewError: Error {
     case brewNotFound
@@ -25,6 +26,9 @@ class HomebrewController {
     private var cachedFormulaeData: JSON?
     private var cachedCasksData: JSON?
 
+    // SwiftData context for package caching (macOS 14+)
+    private var modelContext: Any?
+
     private init() {
         // Determine paths based on architecture
         if isOSArm() {
@@ -40,6 +44,101 @@ class HomebrewController {
 
     var isInstalled: Bool {
         return FileManager.default.fileExists(atPath: brewPath)
+    }
+
+    // MARK: - SwiftData Setup
+
+    @available(macOS 14.0, *)
+    @MainActor
+    func setModelContext(container: Any) {
+        guard let modelContainer = container as? ModelContainer else { return }
+        self.modelContext = ModelContext(modelContainer)
+    }
+
+    // MARK: - Package Cache (SwiftData)
+
+    @available(macOS 14.0, *)
+    @MainActor
+    func savePackagesToCache(formulae: [HomebrewSearchResult], casks: [HomebrewSearchResult]) async {
+        guard let context = modelContext as? ModelContext else { return }
+
+        do {
+            // Clear existing cache
+            try context.delete(model: CachedHomebrewPackage.self)
+
+            // Save formulae
+            for formula in formulae {
+                let cached = CachedHomebrewPackage.from(formula, isCask: false)
+                context.insert(cached)
+            }
+
+            // Save casks
+            for cask in casks {
+                let cached = CachedHomebrewPackage.from(cask, isCask: true)
+                context.insert(cached)
+            }
+
+            try context.save()
+
+            print("✅ Saved \(formulae.count) formulae and \(casks.count) casks to cache")
+        } catch {
+            printOS("Error saving packages to cache: \(error)")
+        }
+    }
+
+    @available(macOS 14.0, *)
+    @MainActor
+    func loadPackagesFromCache() async -> (formulae: [HomebrewSearchResult], casks: [HomebrewSearchResult], cacheDate: Date?) {
+        guard let context = modelContext as? ModelContext else {
+            return ([], [], nil)
+        }
+
+        do {
+            let descriptor = FetchDescriptor<CachedHomebrewPackage>()
+            let cachedPackages = try context.fetch(descriptor)
+
+            guard !cachedPackages.isEmpty else {
+                return ([], [], nil)
+            }
+
+            let formulae = cachedPackages.filter { !$0.isCask }.map { $0.toSearchResult() }
+            let casks = cachedPackages.filter { $0.isCask }.map { $0.toSearchResult() }
+
+            // Get the most recent cache date
+            let cacheDate = cachedPackages.map { $0.cachedAt }.max()
+
+            return (formulae, casks, cacheDate)
+        } catch {
+            printOS("Error loading packages from cache: \(error)")
+            return ([], [], nil)
+        }
+    }
+
+    @available(macOS 14.0, *)
+    @MainActor
+    func getCacheAge() async -> TimeInterval? {
+        guard let context = modelContext as? ModelContext else { return nil }
+
+        let descriptor = FetchDescriptor<CachedHomebrewPackage>()
+        guard let cachedPackages = try? context.fetch(descriptor),
+              let mostRecent = cachedPackages.map({ $0.cachedAt }).max() else {
+            return nil
+        }
+
+        return Date().timeIntervalSince(mostRecent)
+    }
+
+    @available(macOS 14.0, *)
+    @MainActor
+    func clearPackageCache() async {
+        guard let context = modelContext as? ModelContext else { return }
+
+        do {
+            try context.delete(model: CachedHomebrewPackage.self)
+            try context.save()
+        } catch {
+            printOS("Error clearing package cache: \(error)")
+        }
     }
 
     // MARK: - Cache Preloading
@@ -59,7 +158,7 @@ class HomebrewController {
                     cachedFormulaeData = try JSON(data: payloadData)
                 }
             } catch {
-                print("Failed to preload formulae cache: \(error)")
+                printOS("Failed to preload formulae cache: \(error)")
             }
         }
 
@@ -74,7 +173,7 @@ class HomebrewController {
                     cachedCasksData = try JSON(data: payloadData)
                 }
             } catch {
-                print("Failed to preload casks cache: \(error)")
+                printOS("Failed to preload casks cache: \(error)")
             }
         }
     }
@@ -302,7 +401,7 @@ class HomebrewController {
                 return results
             } catch {
                 // If reading from cache fails, fall through to API call
-                print("Failed to read from cache, falling back to API: \(error)")
+                printOS("Failed to read from cache, falling back to API: \(error)")
             }
         }
 
@@ -374,7 +473,7 @@ class HomebrewController {
                 }
             } catch {
                 // If reading from cache fails, fall through to API call
-                print("Failed to read from cache, falling back to API: \(error)")
+                printOS("Failed to read from cache, falling back to API: \(error)")
             }
         }
 

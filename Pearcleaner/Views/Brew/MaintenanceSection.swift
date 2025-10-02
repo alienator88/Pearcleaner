@@ -20,6 +20,7 @@ struct MaintenanceSection: View {
     @State private var isCheckingHealthOnAppear: Bool = false
     @State private var isCheckingVersionOnAppear: Bool = false
     @State private var isCheckingCacheSizeOnAppear: Bool = false
+    @State private var refreshID = UUID()
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
 
     var body: some View {
@@ -75,7 +76,7 @@ struct MaintenanceSection: View {
                                         try await HomebrewController.shared.updateBrew()
                                         await brewManager.checkForUpdate()
                                     } catch {
-                                        print("Error updating Homebrew: \(error)")
+                                        printOS("Error updating Homebrew: \(error)")
                                     }
                                     isUpdatingBrew = false
                                 }
@@ -155,7 +156,7 @@ struct MaintenanceSection: View {
                                             showDoctorSheet = true
                                         }
                                     } catch {
-                                        print("Error running doctor: \(error)")
+                                        printOS("Error running doctor: \(error)")
                                     }
                                     isRunningDoctor = false
                                 }
@@ -228,7 +229,7 @@ struct MaintenanceSection: View {
                                         try await HomebrewController.shared.performFullCleanup()
                                         await brewManager.loadDownloadsCacheSize()
                                     } catch {
-                                        print("Error performing cleanup: \(error)")
+                                        printOS("Error performing cleanup: \(error)")
                                     }
                                     isPurgingCache = false
                                 }
@@ -288,7 +289,7 @@ struct MaintenanceSection: View {
                                         do {
                                             try await HomebrewController.shared.setAnalyticsStatus(enabled: newValue)
                                         } catch {
-                                            print("Error toggling analytics: \(error)")
+                                            printOS("Error toggling analytics: \(error)")
                                             // Revert on error
                                             await MainActor.run {
                                                 brewManager.analyticsEnabled = !newValue
@@ -386,33 +387,40 @@ struct MaintenanceSection: View {
             DoctorOutputSheet(output: doctorOutput, isPresented: $showDoctorSheet)
         }
         .onAppear {
-            // Run health check, version check, and cache size check on appear in parallel
-            if !isCheckingHealthOnAppear && !isCheckingVersionOnAppear && !isCheckingCacheSizeOnAppear {
-                // Check cache size
-                Task {
-                    isCheckingCacheSizeOnAppear = true
-                    await brewManager.loadDownloadsCacheSize()
-                    isCheckingCacheSizeOnAppear = false
-                }
-                // Run both checks in parallel
-                Task {
-                    isCheckingVersionOnAppear = true
-                    await brewManager.checkForUpdate()
-                    isCheckingVersionOnAppear = false
-                }
+            runAllChecks()
+        }
+        .onChange(of: brewManager.maintenanceRefreshTrigger) { _ in
+            runAllChecks()
+        }
+    }
 
-                Task {
-                    isCheckingHealthOnAppear = true
-                    do {
-                        doctorOutput = try await HomebrewController.shared.runDoctor()
-                        // Empty output means healthy, non-empty means issues found
-                        doctorHealthy = doctorOutput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-                    } catch {
-                        print("Error running health check on appear: \(error)")
-                        doctorHealthy = false
-                    }
-                    isCheckingHealthOnAppear = false
+    private func runAllChecks() {
+        // Run health check, version check, and cache size check in parallel
+        if !isCheckingHealthOnAppear && !isCheckingVersionOnAppear && !isCheckingCacheSizeOnAppear {
+            // Check cache size
+            Task {
+                isCheckingCacheSizeOnAppear = true
+                await brewManager.loadDownloadsCacheSize()
+                isCheckingCacheSizeOnAppear = false
+            }
+            // Run both checks in parallel
+            Task {
+                isCheckingVersionOnAppear = true
+                await brewManager.checkForUpdate()
+                isCheckingVersionOnAppear = false
+            }
+
+            Task {
+                isCheckingHealthOnAppear = true
+                do {
+                    doctorOutput = try await HomebrewController.shared.runDoctor()
+                    // Empty output means healthy, non-empty means issues found
+                    doctorHealthy = doctorOutput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                } catch {
+                    printOS("Error running health check on appear: \(error)")
+                    doctorHealthy = false
                 }
+                isCheckingHealthOnAppear = false
             }
         }
     }

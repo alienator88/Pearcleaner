@@ -470,7 +470,7 @@ struct GeneralSettingsTab: View {
                 alert.addButton(withTitle: "OK")
                 alert.runModal()
             } catch {
-                print("❌ Failed to clear cache: \(error)")
+                printOS("❌ Failed to clear cache: \(error)")
 
                 // Show error alert
                 let alert = NSAlert()

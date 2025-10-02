@@ -459,7 +459,7 @@ struct MountedVolumeView: View {
         let success = workspace.unmountAndEjectDevice(atPath: volume.path)
 
         if !success {
-            print("Failed to eject volume: \(volume.name)")
+            printOS("Failed to eject volume: \(volume.name)")
         } else {
             // Find the current volume's index before ejection
             if let currentIndex = appState.volumeInfos.firstIndex(where: { $0.id == volume.id }) {

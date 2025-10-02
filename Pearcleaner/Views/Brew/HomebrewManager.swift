@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AlinFoundation
 
 @MainActor
 class HomebrewManager: ObservableObject {
@@ -25,6 +26,10 @@ class HomebrewManager: ObservableObject {
     @Published var allAvailableFormulae: [HomebrewSearchResult] = []
     @Published var allAvailableCasks: [HomebrewSearchResult] = []
     @Published var isLoadingAvailablePackages: Bool = false
+    @Published var lastCacheRefresh: Date?  // For Browse tab timestamp display
+
+    // Maintenance tab refresh trigger
+    @Published var maintenanceRefreshTrigger: Bool = false
 
     var allPackages: [HomebrewPackageInfo] {
         return installedFormulae + installedCasks
@@ -44,6 +49,18 @@ class HomebrewManager: ObservableObject {
         _ = await (packages, taps, version, cache, analytics)
     }
 
+    func refreshMaintenance() async {
+        // Toggle trigger immediately to notify MaintenanceSection to re-run checks
+        maintenanceRefreshTrigger.toggle()
+
+        async let version: Void = loadBrewVersion()
+        async let cache: Void = loadDownloadsCacheSize()
+        async let analytics: Void = checkAnalyticsStatus()
+        async let update: Void = checkForUpdate()
+
+        _ = await (version, cache, analytics, update)
+    }
+
     func loadInstalledPackages() async {
         isLoadingPackages = true
         defer { isLoadingPackages = false }
@@ -53,7 +70,7 @@ class HomebrewManager: ObservableObject {
             installedFormulae = formulae
             installedCasks = casks
         } catch {
-            print("Error loading packages: \(error)")
+            printOS("Error loading packages: \(error)")
         }
     }
 
@@ -64,7 +81,7 @@ class HomebrewManager: ObservableObject {
         do {
             availableTaps = try await HomebrewController.shared.loadTaps()
         } catch {
-            print("Error loading taps: \(error)")
+            printOS("Error loading taps: \(error)")
         }
     }
 
@@ -72,7 +89,7 @@ class HomebrewManager: ObservableObject {
         do {
             brewVersion = try await HomebrewController.shared.getBrewVersion()
         } catch {
-            print("Error loading brew version: \(error)")
+            printOS("Error loading brew version: \(error)")
         }
     }
 
@@ -83,7 +100,7 @@ class HomebrewManager: ObservableObject {
             latestBrewVersion = result.latest
             updateAvailable = result.updateAvailable
         } catch {
-            print("Error checking for brew update: \(error)")
+            printOS("Error checking for brew update: \(error)")
         }
     }
 
@@ -91,7 +108,7 @@ class HomebrewManager: ObservableObject {
         do {
             downloadsCacheSize = try await HomebrewController.shared.getDownloadsCacheSize()
         } catch {
-            print("Error loading downloads cache size: \(error)")
+            printOS("Error loading downloads cache size: \(error)")
         }
     }
 
@@ -102,17 +119,44 @@ class HomebrewManager: ObservableObject {
         do {
             analyticsEnabled = try await HomebrewController.shared.getAnalyticsStatus()
         } catch {
-            print("Error checking analytics status: \(error)")
+            printOS("Error checking analytics status: \(error)")
         }
     }
 
-    func loadAvailablePackages() async {
-        guard allAvailableFormulae.isEmpty && allAvailableCasks.isEmpty else { return }
+    func loadAvailablePackages(appState: AppState, forceRefresh: Bool = false) async {
+        guard forceRefresh || (allAvailableFormulae.isEmpty && allAvailableCasks.isEmpty) else { return }
 
         isLoadingAvailablePackages = true
         defer { isLoadingAvailablePackages = false }
 
-        // Preload cache first
+        // Set up SwiftData context for caching
+        if #available(macOS 14.0, *), let container = appState.modelContainer {
+            HomebrewController.shared.setModelContext(container: container)
+        }
+
+        // If force refresh, skip cache and reload from JSON
+        if forceRefresh {
+            await reloadFromJSON()
+            return
+        }
+
+        // Try loading from cache first
+        if #available(macOS 14.0, *) {
+            let (cachedFormulae, cachedCasks, cacheDate) = await HomebrewController.shared.loadPackagesFromCache()
+
+            if !cachedFormulae.isEmpty || !cachedCasks.isEmpty {
+                allAvailableFormulae = cachedFormulae
+                allAvailableCasks = cachedCasks
+                lastCacheRefresh = cacheDate
+                return
+            }
+        }
+
+        // Cache miss - load from JSON files
+        await reloadFromJSON()
+    }
+
+    private func reloadFromJSON() async {
         await HomebrewController.shared.preloadCache()
 
         do {
@@ -120,8 +164,17 @@ class HomebrewManager: ObservableObject {
             allAvailableFormulae = try await HomebrewController.shared.searchPackages(query: "", cask: false)
             // Load all casks
             allAvailableCasks = try await HomebrewController.shared.searchPackages(query: "", cask: true)
+
+            // Save to cache
+            if #available(macOS 14.0, *) {
+                await HomebrewController.shared.savePackagesToCache(
+                    formulae: allAvailableFormulae,
+                    casks: allAvailableCasks
+                )
+                lastCacheRefresh = Date()
+            }
         } catch {
-            print("Error loading available packages: \(error)")
+            printOS("Error loading available packages: \(error)")
         }
     }
 }

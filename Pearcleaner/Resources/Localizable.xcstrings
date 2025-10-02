@@ -7145,6 +7145,9 @@
     "Cache Size:" : {
 
     },
+    "Cached: %@" : {
+
+    },
     "calculating" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -29733,7 +29736,7 @@
         }
       }
     },
-    "Refresh all data" : {
+    "Refresh %@ data" : {
 
     },
     "Refresh Apps" : {

@@ -895,7 +895,7 @@ struct WorkspaceStorageCleanerView: View {
             try FileManager.default.removeItem(atPath: workspace.path)
             orphanedWorkspaces.removeAll { $0.id == workspace.id }
         } catch {
-            print("Error removing workspace \(workspace.name): \(error)")
+            printOS("Error removing workspace \(workspace.name): \(error)")
         }
     }
     

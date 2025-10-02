@@ -180,7 +180,7 @@ struct InstalledPackagesSection: View {
                         try await HomebrewController.shared.upgradeAllPackages()
                         await brewManager.refreshAll()
                     } catch {
-                        print("Error upgrading all packages: \(error)")
+                        printOS("Error upgrading all packages: \(error)")
                     }
                     isUpgradingAll = false
                 }
@@ -300,7 +300,7 @@ struct HomebrewPackageRow: View {
                                     }
                                     await brewManager.loadInstalledPackages()
                                 } catch {
-                                    print("Error toggling pin: \(error)")
+                                    printOS("Error toggling pin: \(error)")
                                 }
                                 isPerformingAction = false
                             }
@@ -326,7 +326,7 @@ struct HomebrewPackageRow: View {
                                         await brewManager.loadInstalledPackages()
                                     }
                                 } catch {
-                                    print("Error upgrading package: \(error)")
+                                    printOS("Error upgrading package: \(error)")
                                 }
                                 isPerformingAction = false
                             }
@@ -379,7 +379,7 @@ struct HomebrewPackageRow: View {
                             brewManager.installedFormulae.removeAll { $0.id == package.id }
                         }
                     } catch {
-                        print("Error uninstalling package: \(error)")
+                        printOS("Error uninstalling package: \(error)")
                     }
                     isPerformingAction = false
                 }

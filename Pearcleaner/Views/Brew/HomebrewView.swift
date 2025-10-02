@@ -30,6 +30,7 @@ enum HomebrewViewSection: String, CaseIterable {
 
 struct HomebrewView: View {
     @StateObject private var brewManager = HomebrewManager()
+    @EnvironmentObject var appState: AppState
     @Environment(\.colorScheme) var colorScheme
     @State private var selectedSection: HomebrewViewSection = .installed
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
@@ -126,12 +127,21 @@ struct HomebrewView: View {
             TahoeToolbarItem(isGroup: true) {
                 Button {
                     Task {
-                        await brewManager.refreshAll()
+                        switch selectedSection {
+                        case .installed:
+                            await brewManager.loadInstalledPackages()
+                        case .search:
+                            await brewManager.loadAvailablePackages(appState: appState, forceRefresh: true)
+                        case .taps:
+                            await brewManager.loadTaps()
+                        case .maintenance:
+                            await brewManager.refreshMaintenance()
+                        }
                     }
                 } label: {
                     Label("Refresh", systemImage: "arrow.counterclockwise")
                 }
-                .help("Refresh all data")
+                .help("Refresh \(selectedSection.rawValue.lowercased()) data")
             }
         }
     }

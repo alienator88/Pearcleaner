@@ -35,7 +35,10 @@ class AppCacheManager {
             let storeURL = appSupportURL.appendingPathComponent("AppCache.sqlite")
 
             let config = ModelConfiguration(url: storeURL)
-            let container = try ModelContainer(for: CachedAppInfo.self, configurations: config)
+            let container = try ModelContainer(
+                for: CachedAppInfo.self, CachedHomebrewPackage.self,
+                configurations: config
+            )
             return container
         } catch {
             printOS("❌ Failed to create ModelContainer: \(error)")

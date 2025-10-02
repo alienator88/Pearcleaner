@@ -16,6 +16,7 @@ enum HomebrewSearchType: String, CaseIterable {
 
 struct SearchInstallSection: View {
     @EnvironmentObject var brewManager: HomebrewManager
+    @EnvironmentObject var appState: AppState
     @Environment(\.colorScheme) var colorScheme
     @State private var searchQuery: String = ""
     @State private var searchType: HomebrewSearchType = .all
@@ -79,7 +80,7 @@ struct SearchInstallSection: View {
             .padding(.horizontal, 20)
             .padding(.top, 10)
 
-            // Results count
+            // Results count and cache timestamp
             if !displayedResults.isEmpty {
                 HStack {
                     Text("\(displayedResults.count) result\(displayedResults.count == 1 ? "" : "s")")
@@ -88,6 +89,12 @@ struct SearchInstallSection: View {
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
                     Spacer()
+
+                    if let lastRefresh = brewManager.lastCacheRefresh {
+                        Text("Cached: \(lastRefresh.formatted(date: .abbreviated, time: .shortened))")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
                 }
                 .padding(.horizontal, 20)
                 .padding(.vertical, 10)
@@ -138,7 +145,14 @@ struct SearchInstallSection: View {
         }
         .onAppear {
             Task {
-                await brewManager.loadAvailablePackages()
+                // Check if cache is older than 5 days
+                var needsRefresh = false
+                if let lastRefresh = brewManager.lastCacheRefresh {
+                    let fiveDaysAgo = Date().addingTimeInterval(-5 * 24 * 60 * 60)
+                    needsRefresh = lastRefresh < fiveDaysAgo
+                }
+
+                await brewManager.loadAvailablePackages(appState: appState, forceRefresh: needsRefresh)
             }
         }
     }
@@ -327,7 +341,7 @@ struct SearchResultRowView: View {
                         try await HomebrewController.shared.installPackage(name: result.name, cask: isCask)
                         await brewManager.loadInstalledPackages()
                     } catch {
-                        print("Error installing package: \(error)")
+                        printOS("Error installing package: \(error)")
                     }
                     isInstalling = false
                 }

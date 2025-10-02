@@ -188,7 +188,7 @@ struct TapRowView: View {
                         try await HomebrewController.shared.removeTap(name: tap.name)
                         await brewManager.loadTaps()
                     } catch {
-                        print("Error removing tap: \(error)")
+                        printOS("Error removing tap: \(error)")
                     }
                     isRemoving = false
                 }
