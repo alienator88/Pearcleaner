@@ -687,17 +687,32 @@ struct PluginCategorySection: View {
             // Plugin rows
             if !isCollapsed {
                 ForEach(plugins, id: \.id) { plugin in
-                    PluginRowView(
-                        plugin: plugin,
-                        isSelected: selectedPlugins.contains(plugin.id),
-                        permanentDelete: permanentDelete,
-                        sortOption: sortOption
-                    ) {
-                        onRemove(plugin)
-                    } onRefresh: {
-                        onRefresh()
-                    } onToggleSelection: {
-                        toggleSelection(for: plugin)
+                    if category == "Audio" {
+                        AudioPluginRowView(
+                            plugin: plugin,
+                            isSelected: selectedPlugins.contains(plugin.id),
+                            permanentDelete: permanentDelete,
+                            sortOption: sortOption
+                        ) {
+                            onRemove(plugin)
+                        } onRefresh: {
+                            onRefresh()
+                        } onToggleSelection: {
+                            toggleSelection(for: plugin)
+                        }
+                    } else {
+                        PluginRowView(
+                            plugin: plugin,
+                            isSelected: selectedPlugins.contains(plugin.id),
+                            permanentDelete: permanentDelete,
+                            sortOption: sortOption
+                        ) {
+                            onRemove(plugin)
+                        } onRefresh: {
+                            onRefresh()
+                        } onToggleSelection: {
+                            toggleSelection(for: plugin)
+                        }
                     }
                 }
                 .transition(.opacity.combined(with: .slide))
@@ -925,4 +940,311 @@ struct PluginRowView: View {
         NSWorkspace.shared.activateFileViewerSelecting([url])
     }
 
+}
+
+// MARK: - Audio Plugin Row View (with Related Files Search)
+
+struct AudioPluginRowView: View {
+    let plugin: PluginInfo
+    let isSelected: Bool
+    let permanentDelete: Bool
+    let sortOption: PluginSortOption
+    let onRemove: () -> Void
+    let onRefresh: () -> Void
+    let onToggleSelection: () -> Void
+    @EnvironmentObject var locations: Locations
+    @Environment(\.colorScheme) var colorScheme
+    @State private var isPerformingAction = false
+    @State private var isHovered = false
+    @State private var isExpanded = false
+    @State private var relatedFiles: [FileSearchResult] = []
+    @State private var isSearching = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            // Main plugin row
+            HStack(alignment: .center, spacing: 12) {
+
+                // Selection checkbox
+                Button(action: onToggleSelection) {
+                    Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                        .foregroundStyle(isSelected ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
+                        .font(.title3)
+                }
+                .buttonStyle(.plain)
+
+                // Plugin icon and type indicator
+                VStack(spacing: 4) {
+                    ZStack {
+                        if plugin.customIcon == nil {
+                            Circle()
+                                .fill(pluginColor.opacity(0.2))
+                                .frame(width: 32, height: 32)
+                        }
+
+                        if let customIcon = plugin.customIcon {
+                            Image(nsImage: customIcon)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 32, height: 32)
+                        } else {
+                            Image(systemName: pluginIcon)
+                                .font(.system(size: 14, weight: .medium))
+                                .foregroundStyle(pluginColor)
+                        }
+                    }
+                }
+
+                // Plugin details
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(spacing: 8) {
+                        // Chevron disclosure button
+                        Button(action: {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                isExpanded.toggle()
+                            }
+                        }) {
+                            Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        }
+                        .buttonStyle(.plain)
+
+                        Text(plugin.name)
+                            .font(.headline)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            .lineLimit(1)
+                    }
+
+                    Text("Path: \(plugin.path)")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+
+                    HStack {
+                        Text("Category: \(plugin.category)")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                        Text(verbatim: "•")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                        Text("Size: \(formatFileSize(plugin.size))")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                        Spacer()
+                    }
+
+                    // Bundle ID for .driver bundles
+                    if let bundleId = plugin.bundleId, !bundleId.isEmpty {
+                        HStack {
+                            Text("Bundle ID:")
+                                .font(.caption)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                            Text(bundleId)
+                                .font(.caption)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                                .textSelection(.enabled)
+
+                            Spacer()
+                        }
+                    }
+                }
+
+                Spacer()
+
+                // Action buttons
+                VStack(spacing: 6) {
+                    HStack(spacing: 10) {
+                        Button("View") {
+                            openInFinder(plugin.path)
+                        }
+                        .buttonStyle(.borderless)
+                        .controlSize(.mini)
+                        .foregroundStyle(.blue)
+                        .disabled(isPerformingAction)
+                        .help("Show in Finder")
+
+                        Divider().frame(height: 10)
+
+                        Button("Delete") {
+                            onRemove()
+                        }
+                        .buttonStyle(.borderless)
+                        .controlSize(.mini)
+                        .foregroundStyle(.red)
+                        .disabled(isPerformingAction)
+                        .help("Delete plugin")
+                    }
+
+                    if isPerformingAction {
+                        ProgressView()
+                            .scaleEffect(0.7)
+                    }
+                }
+            }
+            .padding()
+
+            // Expandable related files section
+            if isExpanded {
+                VStack(alignment: .leading, spacing: 8) {
+                    Divider()
+                        .padding(.horizontal)
+
+                    if isSearching {
+                        HStack(spacing: 8) {
+                            ProgressView()
+                                .scaleEffect(0.8)
+                            Text("Searching for related files...")
+                                .font(.caption)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        }
+                        .padding(.horizontal)
+                        .padding(.vertical, 8)
+                    } else if relatedFiles.isEmpty {
+                        Text("No related files found")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            .padding(.horizontal)
+                            .padding(.vertical, 8)
+                    } else {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("\(relatedFiles.count) related file\(relatedFiles.count == 1 ? "" : "s") found")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                                .padding(.horizontal)
+
+                            ForEach(relatedFiles, id: \.id) { result in
+                                HStack(spacing: 8) {
+                                    Image(systemName: result.isDirectory ? "folder.fill" : "doc.fill")
+                                        .font(.caption)
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                        .frame(width: 12)
+
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(result.name)
+                                            .font(.caption)
+                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                                            .lineLimit(1)
+
+                                        Text(result.url.path)
+                                            .font(.system(size: 10))
+                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                            .lineLimit(1)
+                                            .truncationMode(.middle)
+                                    }
+
+                                    Spacer()
+
+                                    Text(formatFileSize(result.size))
+                                        .font(.system(size: 10))
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                                    Button("View") {
+                                        NSWorkspace.shared.activateFileViewerSelecting([result.url])
+                                    }
+                                    .buttonStyle(.borderless)
+                                    .controlSize(.mini)
+                                    .foregroundStyle(.blue)
+                                }
+                                .padding(.horizontal)
+                                .padding(.vertical, 4)
+                            }
+                        }
+                        .padding(.vertical, 4)
+                    }
+                }
+                .transition(.opacity.combined(with: .slide))
+            }
+        }
+        .background(
+            RoundedRectangle(cornerRadius: 8)
+                .fill(isHovered ?
+                    ThemeColors.shared(for: colorScheme).secondaryBG.opacity(0.8) :
+                    ThemeColors.shared(for: colorScheme).secondaryBG
+                )
+        )
+        .onHover { hovering in
+            withAnimation(.easeInOut(duration: 0.2)) {
+                isHovered = hovering
+            }
+        }
+        .onChange(of: isExpanded) { expanded in
+            if expanded && relatedFiles.isEmpty && !isSearching {
+                searchForRelatedFiles()
+            }
+        }
+    }
+
+    private func searchForRelatedFiles() {
+        // Extract plugin name without extension
+        let pluginName = (plugin.name as NSString).deletingPathExtension
+
+        print("🔍 Starting search for: '\(pluginName)'")
+
+        isSearching = true
+        relatedFiles = []
+
+        let paths = locations.apps.paths
+        var searchedCount = 0
+        let totalPaths = paths.count
+
+        print("🔍 Searching in \(totalPaths) paths")
+
+        // Search across all app-related directories
+        for path in paths {
+            let engine = FileSearchEngine()
+
+            engine.search(
+                rootPath: path,
+                filters: [.name(.contains, pluginName)],
+                includeSubfolders: false,
+                includeHiddenFiles: false,
+                caseSensitive: false,
+                searchType: .filesAndFolders,
+                excludeSystemFolders: true,
+                onBatchFound: { results in
+                    print("🔍 Found \(results.count) results in \(path)")
+                    DispatchQueue.main.async {
+                        self.relatedFiles.append(contentsOf: results)
+                    }
+                },
+                completion: {
+                    DispatchQueue.main.async {
+                        searchedCount += 1
+                        print("🔍 Completed search in path \(searchedCount)/\(totalPaths)")
+                        if searchedCount == totalPaths {
+                            print("🔍 Search complete. Total results: \(self.relatedFiles.count)")
+                            self.isSearching = false
+                        }
+                    }
+                }
+            )
+        }
+    }
+
+    private var pluginColor: Color {
+        return .purple
+    }
+
+    private var pluginIcon: String {
+        return "waveform"
+    }
+
+    private func formatFileSize(_ size: Int64) -> String {
+        let formatter = ByteCountFormatter()
+        formatter.allowsNonnumericFormatting = false
+        formatter.countStyle = .file
+        return formatter.string(fromByteCount: size)
+    }
+
+    private func openInFinder(_ path: String) {
+        let url = URL(fileURLWithPath: path)
+        NSWorkspace.shared.activateFileViewerSelecting([url])
+    }
 }

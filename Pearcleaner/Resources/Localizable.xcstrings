@@ -1323,6 +1323,16 @@
         }
       }
     },
+    "%lld related file%@ found" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld related file%2$@ found"
+          }
+        }
+      }
+    },
     "%lld result%@" : {
       "localizations" : {
         "de" : {
@@ -28382,6 +28392,9 @@
         }
       }
     },
+    "No related files found" : {
+
+    },
     "No releases to display" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -38759,6 +38772,9 @@
           }
         }
       }
+    },
+    "Searching for related files..." : {
+
     },
     "Searching:" : {
       "localizations" : {
