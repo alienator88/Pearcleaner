@@ -336,6 +336,7 @@ struct AppInfo: Identifiable, Equatable, Hashable {
     let cask: String?
     let steam: Bool  // New property to mark Steam games
     var bundleSize: Int64  // Only used in the app list view
+    var lipoSavings: Int64?  // Cached lipo savings (nil=not calculated, 0=no savings, >0=savings available)
     var fileSize: [URL: Int64]
     var fileSizeLogical: [URL: Int64]
     var fileIcon: [URL: NSImage?]
@@ -373,7 +374,7 @@ struct AppInfo: Identifiable, Equatable, Hashable {
     static let empty = AppInfo(
         id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "",
         appVersion: "", appIcon: nil, webApp: false, wrapped: false, system: false, arch: .empty,
-        cask: nil, steam: false, bundleSize: 0, fileSize: [:], fileSizeLogical: [:], fileIcon: [:],
+        cask: nil, steam: false, bundleSize: 0, lipoSavings: 0, fileSize: [:], fileSizeLogical: [:], fileIcon: [:],
         creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, entitlements: nil)
 
 }

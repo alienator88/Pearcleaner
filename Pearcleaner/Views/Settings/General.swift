@@ -26,6 +26,7 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.permanentDelete") private var permanentDelete: Bool = false
     @AppStorage("settings.general.searchSensitivity") private var sensitivityLevel: SearchSensitivityLevel = .strict
     @State private var showAppIconInMenu = UserDefaults.showAppIconInMenu
+    @State private var cacheSize: String = "Calculating..."
 
     var body: some View {
         VStack(spacing: 20) {
@@ -204,6 +205,44 @@ struct GeneralSettingsTab: View {
 
                 })
 
+            // === Cache ==========================================================================================================
+            if #available(macOS 14.0, *) {
+                PearGroupBox(
+                    header: { Text("Cache").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2) },
+                    content: {
+                        HStack(spacing: 0) {
+                            Image(systemName: "tray.full")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 15, height: 15)
+                                .padding(.trailing)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            VStack(alignment: .leading, spacing: 2) {
+                                HStack(spacing: 0) {
+                                    Text("Clear app data cache")
+                                        .font(.callout)
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                                    InfoButton(text: String(localized: "Pearcleaner caches app metadata to improve loading times. Clearing the cache will force a fresh scan of all apps on the next launch. This is useful if app information seems outdated or incorrect."))
+                                }
+                                Text(cacheSize)
+                                    .font(.caption)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            }
+                            Spacer()
+
+                            Button {
+                                clearAppCache()
+                            } label: {
+                                Text("Clear Cache")
+                                    .font(.callout)
+                                    .foregroundStyle(.red)
+                            }
+                            .buttonStyle(.borderless)
+                        }
+                        .padding(5)
+                    })
+            }
+
             // === Sentinel =====================================================================================================
             PearGroupBox(
                 header: { Text("Sentinel Monitor").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2) },
@@ -362,10 +401,86 @@ struct GeneralSettingsTab: View {
                 appState.updateExtensionStatus()
                 fixLegacySymlink()
                 isCLISymlinked = checkCLISymlink()
+
+                // Calculate cache size if on macOS 14+
+                if #available(macOS 14.0, *) {
+                    await calculateCacheSize()
+                }
             }
 
         }
 
+    }
+
+    // MARK: - Cache Management
+
+    @available(macOS 14.0, *)
+    private func calculateCacheSize() async {
+        let appSupportURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+            .appendingPathComponent("Pearcleaner")
+        let storeURL = appSupportURL.appendingPathComponent("AppCache.sqlite")
+
+        // Calculate size of all cache files (sqlite, sqlite-shm, sqlite-wal)
+        let fileManager = FileManager.default
+        var totalSize: Int64 = 0
+
+        // Check main database file
+        if let attrs = try? fileManager.attributesOfItem(atPath: storeURL.path),
+           let fileSize = attrs[.size] as? Int64 {
+            totalSize += fileSize
+        }
+
+        // Check WAL file
+        let walURL = storeURL.deletingPathExtension().appendingPathExtension("sqlite-wal")
+        if let attrs = try? fileManager.attributesOfItem(atPath: walURL.path),
+           let fileSize = attrs[.size] as? Int64 {
+            totalSize += fileSize
+        }
+
+        // Check SHM file
+        let shmURL = storeURL.deletingPathExtension().appendingPathExtension("sqlite-shm")
+        if let attrs = try? fileManager.attributesOfItem(atPath: shmURL.path),
+           let fileSize = attrs[.size] as? Int64 {
+            totalSize += fileSize
+        }
+
+        await MainActor.run {
+            if totalSize > 0 {
+                cacheSize = "Cache size: \(formatByte(size: totalSize).human)"
+            } else {
+                cacheSize = "No cached data"
+            }
+        }
+    }
+
+    @available(macOS 14.0, *)
+    private func clearAppCache() {
+        Task { @MainActor in
+            do {
+                try await AppCacheManager.shared.clearCache()
+
+                // Recalculate cache size
+                await calculateCacheSize()
+
+                // Show confirmation alert
+                let alert = NSAlert()
+                alert.messageText = "Cache Cleared"
+                alert.informativeText = "The app data cache has been cleared successfully. The cache will be rebuilt on the next app launch."
+                alert.alertStyle = .informational
+                alert.addButton(withTitle: "OK")
+                alert.runModal()
+            } catch {
+                print("❌ Failed to clear cache: \(error)")
+
+                // Show error alert
+                let alert = NSAlert()
+                alert.messageText = "Cache Clear Failed"
+                alert.informativeText = "Failed to clear the cache: \(error.localizedDescription)"
+                alert.alertStyle = .warning
+                alert.addButton(withTitle: "OK")
+                alert.runModal()
+            }
+        }
     }
 
 }

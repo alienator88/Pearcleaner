@@ -36,6 +36,12 @@ class HomebrewController {
         }
     }
 
+    // MARK: - Installation Check
+
+    var isInstalled: Bool {
+        return FileManager.default.fileExists(atPath: brewPath)
+    }
+
     // MARK: - Cache Preloading
 
     func preloadCache() async {

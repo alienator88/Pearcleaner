@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftData
+import AlinFoundation
 
 @available(macOS 14.0, *)
 @MainActor
@@ -28,22 +29,16 @@ class AppCacheManager {
     /// Creates and returns a ModelContainer for app caching
     /// - Returns: ModelContainer instance or nil if creation fails or macOS < 14
     static func createModelContainer() -> Any? {
-        if #available(macOS 14.0, *) {
-            do {
-                let appSupportURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-                    .appendingPathComponent("Pearcleaner")
-                let storeURL = appSupportURL.appendingPathComponent("AppCache.sqlite")
+        do {
+            let appSupportURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+                .appendingPathComponent("Pearcleaner")
+            let storeURL = appSupportURL.appendingPathComponent("AppCache.sqlite")
 
-                let config = ModelConfiguration(url: storeURL)
-                let container = try ModelContainer(for: CachedAppInfo.self, configurations: config)
-                print("✅ SwiftData container initialized at: \(storeURL.path)")
-                return container
-            } catch {
-                print("❌ Failed to create ModelContainer: \(error)")
-                return nil
-            }
-        } else {
-            print("ℹ️ SwiftData caching not available on macOS 13, using direct scan")
+            let config = ModelConfiguration(url: storeURL)
+            let container = try ModelContainer(for: CachedAppInfo.self, configurations: config)
+            return container
+        } catch {
+            printOS("❌ Failed to create ModelContainer: \(error)")
             return nil
         }
     }
@@ -59,8 +54,8 @@ class AppCacheManager {
         DispatchQueue.global(qos: .userInitiated).async {
             let sortedApps: Task<[AppInfo], Never>
 
-            // Use caching on macOS 14+, fallback to direct scan on macOS 13
-            if #available(macOS 14.0, *), let modelContainer = modelContainer as? ModelContainer {
+            // Use caching if model container provided, otherwise fall back to direct scan
+            if let modelContainer = modelContainer as? ModelContainer {
                 Task { @MainActor in
                     AppCacheManager.shared.setContainer(modelContainer)
                 }
@@ -68,6 +63,7 @@ class AppCacheManager {
                     AppCacheManager.shared.loadAppsWithCache(folderPaths: folderPaths)
                 }
             } else {
+                // No model container - fall back to direct scan
                 sortedApps = Task {
                     getSortedApps(paths: folderPaths)
                 }
@@ -77,9 +73,100 @@ class AppCacheManager {
                 AppState.shared.sortedApps = await sortedApps.value
                 // Restore zombie file associations after apps are loaded
                 AppState.shared.restoreZombieAssociations()
+
+                // Disabled: Background lipo pre-calculation causes 1GB+ memory spikes
+                // Lipo savings are calculated on-demand when user opens LipoView instead
+                // The LazyVStack ensures only visible apps are calculated, preventing memory issues
+                // AppCacheManager.precalculateLipoSavings()
+
                 // Call completion handler
                 completion()
             }
+        }
+    }
+
+    // MARK: - Lipo Savings Pre-calculation
+
+    /// Pre-calculates lipo savings for universal apps in background (low priority)
+    static func precalculateLipoSavings() {
+        Task.detached(priority: .utility) {
+            // Get universal apps that need calculation
+            let appsToCalculate = await MainActor.run {
+                AppState.shared.sortedApps.filter {
+                    $0.arch == .universal && $0.lipoSavings == nil
+                }
+            }
+
+            guard !appsToCalculate.isEmpty else {
+                return
+            }
+
+            for app in appsToCalculate {
+                // Calculate savings using dry-run
+                let savings = await calculateLipoSavings(at: app.path, arch: app.arch)
+
+                // Update AppState
+                await MainActor.run {
+                    if let index = AppState.shared.sortedApps.firstIndex(where: { $0.path == app.path }) {
+                        AppState.shared.sortedApps[index].lipoSavings = savings
+                    }
+                }
+
+                // Update SwiftData cache if available (macOS 14+)
+                await updateLipoSavingsInCache(appPath: app.path.path, savings: savings)
+
+                // Force memory pressure relief to reclaim memory
+                malloc_zone_pressure_relief(nil, 0)
+
+                // Throttle: Longer delay to allow memory to be fully reclaimed
+                try? await Task.sleep(nanoseconds: 1_000_000_000) // 1 second delay
+            }
+
+        }
+    }
+
+    /// Calculate lipo savings for a single app using dry-run
+    /// Uses serial queue to prevent memory spikes from concurrent calculations
+    private static func calculateLipoSavings(at bundlePath: URL, arch: Arch) async -> Int64 {
+        return await withCheckedContinuation { continuation in
+            // Use .userInitiated instead of .utility for more controlled execution
+            // Serial execution is enforced by the await in the for loop
+            DispatchQueue.global(qos: .utility).async {
+                autoreleasepool {
+                    let (success, sizes) = thinAppBundleArchitecture(
+                        at: bundlePath, of: arch, multi: true, dryRun: true
+                    )
+
+                    if success, let sizes = sizes {
+                        let preSize = sizes["pre"] ?? 0
+                        let postSize = sizes["post"] ?? 0
+                        let savings = preSize > postSize ? Int64(preSize - postSize) : 0
+                        continuation.resume(returning: savings)
+                    } else {
+                        continuation.resume(returning: 0)
+                    }
+                }
+            }
+        }
+    }
+
+    /// Update lipo savings in SwiftData cache
+    @MainActor
+    static func updateLipoSavingsInCache(appPath: String, savings: Int64) async {
+        guard let context = shared.modelContext else { return }
+
+        do {
+            let predicate = #Predicate<CachedAppInfo> { app in
+                app.path == appPath
+            }
+            let descriptor = FetchDescriptor<CachedAppInfo>(predicate: predicate)
+
+            if let cachedApps = try? context.fetch(descriptor), let cachedApp = cachedApps.first {
+                cachedApp.lipoSavings = savings
+                try context.save()
+            }
+        } catch {
+            printOS("⚠️ Failed to update lipo savings in cache for \(appPath): \(error)")
         }
     }
 
@@ -91,7 +178,7 @@ class AppCacheManager {
     func loadAppsWithCache(folderPaths: [String]) -> [AppInfo] {
         // Fallback if SwiftData not available
         guard modelContext != nil else {
-            print("⚠️ SwiftData not available, falling back to full scan")
+            printOS("⚠️ SwiftData not available, falling back to full scan")
             return getSortedApps(paths: folderPaths)
         }
 
@@ -122,7 +209,7 @@ class AppCacheManager {
             return allApps
 
         } catch {
-            print("❌ Cache error: \(error). Falling back to full scan")
+            printOS("❌ Cache error: \(error). Falling back to full scan")
             // On any error, fallback to full scan and attempt to rebuild cache
             let apps = getSortedApps(paths: folderPaths)
             try? saveToCache(apps)
@@ -167,7 +254,7 @@ class AppCacheManager {
         return appInfos
     }
 
-    /// Enrich AppInfo with missing bundleSize (if it's 0)
+    /// Enrich AppInfo with missing bundleSize (if it's 0) and initialize lipoSavings
     /// Uses the same logic as AppListItems onAppear
     private func enrichAppInfo(_ appInfo: AppInfo) -> AppInfo {
         var enriched = appInfo
@@ -178,7 +265,12 @@ class AppCacheManager {
             let calculatedSize = totalSizeOnDisk(for: appInfo.path).logical
             enriched.bundleSize = calculatedSize
         }
-        
+
+        // Initialize lipoSavings based on architecture
+        // Universal apps: nil (to be calculated in background)
+        // Non-universal apps: 0 (no savings possible)
+        enriched.lipoSavings = (enriched.arch == .universal) ? nil : 0
+
         return enriched
     }
 
@@ -247,14 +339,38 @@ class AppCacheManager {
         return Set(cachedApps.map { $0.path })
     }
 
-    /// Clear entire cache
-    func clearCache() throws {
-        guard let context = modelContext else {
-            throw CacheError.noContext
+    /// Clear entire cache by deleting all database files
+    @MainActor
+    func clearCache() async throws {
+        // Release the model context to close database connections
+        self.modelContext = nil
+        self.modelContainer = nil
+
+        // Delete all AppCache* files (sqlite, sqlite-wal, sqlite-shm)
+        let appSupportURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+            .appendingPathComponent("Pearcleaner")
+
+        let deleteCommand = "rm -f '\(appSupportURL.path)'/AppCache.sqlite*"
+
+        var success = false
+        var output = ""
+
+        if HelperToolManager.shared.isHelperToolInstalled {
+            let result = await HelperToolManager.shared.runCommand(deleteCommand)
+            success = result.0
+            output = result.1
+        } else {
+            let result = await Task.detached {
+                return performPrivilegedCommands(commands: deleteCommand)
+            }.value
+            success = result.0
+            output = result.1
         }
 
-        try context.delete(model: CachedAppInfo.self)
-        try context.save()
+        if !success {
+            printOS("⚠️ Cache file deletion failed: \(output)")
+            throw CacheError.deletionFailed
+        }
     }
 
     // MARK: - Error Types
@@ -262,5 +378,6 @@ class AppCacheManager {
     enum CacheError: Error {
         case noContext
         case serializationFailed
+        case deletionFailed
     }
 }

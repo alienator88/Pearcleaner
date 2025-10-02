@@ -24,6 +24,7 @@ final class CachedAppInfo {
     var cask: String?
     var steam: Bool
     var bundleSize: Int64
+    var lipoSavings: Int64?
     var creationDate: Date?
     var contentChangeDate: Date?
     var lastUsedDate: Date?
@@ -49,6 +50,7 @@ final class CachedAppInfo {
         cask: String?,
         steam: Bool,
         bundleSize: Int64,
+        lipoSavings: Int64?,
         fileSizeJSON: String,
         fileSizeLogicalJSON: String,
         creationDate: Date?,
@@ -69,6 +71,7 @@ final class CachedAppInfo {
         self.cask = cask
         self.steam = steam
         self.bundleSize = bundleSize
+        self.lipoSavings = lipoSavings
         self.fileSizeJSON = fileSizeJSON
         self.fileSizeLogicalJSON = fileSizeLogicalJSON
         self.creationDate = creationDate
@@ -116,6 +119,7 @@ final class CachedAppInfo {
             cask: cask,
             steam: steam,
             bundleSize: bundleSize,
+            lipoSavings: lipoSavings,
             fileSize: fileSize,
             fileSizeLogical: fileSizeLogical,
             fileIcon: [:],  // Icons not cached
@@ -149,6 +153,7 @@ final class CachedAppInfo {
             cask: appInfo.cask,
             steam: appInfo.steam,
             bundleSize: appInfo.bundleSize,
+            lipoSavings: appInfo.lipoSavings,
             fileSizeJSON: fileSizeJSON,
             fileSizeLogicalJSON: fileSizeLogicalJSON,
             creationDate: appInfo.creationDate,

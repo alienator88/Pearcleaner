@@ -7139,6 +7139,9 @@
         }
       }
     },
+    "Cache" : {
+
+    },
     "Cache Size:" : {
 
     },
@@ -8100,6 +8103,12 @@
           }
         }
       }
+    },
+    "Clear app data cache" : {
+
+    },
+    "Clear Cache" : {
+
     },
     "Clear text" : {
       "extractionState" : "manual",
@@ -17284,10 +17293,16 @@
     "Homebrew Doctor" : {
 
     },
+    "Homebrew is not installed on your system. This feature requires Homebrew to manage packages." : {
+
+    },
     "Homebrew is up to date" : {
 
     },
     "Homebrew Manager" : {
+
+    },
+    "Homebrew Not Installed" : {
 
     },
     "Homebrew update available" : {
@@ -18057,6 +18072,9 @@
           }
         }
       }
+    },
+    "Install Homebrew" : {
+
     },
     "Install Location:" : {
       "localizations" : {
@@ -26968,6 +26986,9 @@
           }
         }
       }
+    },
+    "Pearcleaner caches app metadata to improve loading times. Clearing the cache will force a fresh scan of all apps on the next launch. This is useful if app information seems outdated or incorrect." : {
+
     },
     "Pearcleaner can perform privileged operations in the following ways:\n- Helper service 👍🏻\n- Authorization services 👎🏻\n\nHelper service: Pearcleaner will only ask you to enter your password once to enable the helper, then all subsequent operations will run without any prompts as long as the helper stays enabled in Settings > Login Items. This authorization is all managed by macOS via SMAppService.\n\nAuthorization services: Pearcleaner will ask the user for a password prompt on every single privileged operation, which can get overwhelming. These authorizations are managed by Pearcleaner and the user.\n\nWhat is a privileged operation: Whenever Pearcleaner needs to delete files from a folder (Ex. /var) the user doesn't have privileges to or undoing/restoring files back to a privileged location." : {
       "localizations" : {

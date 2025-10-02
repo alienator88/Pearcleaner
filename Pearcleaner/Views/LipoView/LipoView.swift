@@ -547,11 +547,17 @@ struct LipoAppRowView: View {
             appContentView
         }
         .onAppear {
-            // Check if we already have savings calculated
-            if let existingSizes = sliceSizesByPath[app.path.path] {
+            // Priority 1: Check AppInfo cache (from SwiftData background pre-calculation)
+            if let cachedSavings = app.lipoSavings {
+                calculatedSavings = UInt64(cachedSavings)
+                sliceSizesByPath[app.path.path] = (bundle: UInt64(app.bundleSize), savings: UInt64(cachedSavings))
+            }
+            // Priority 2: Check local session cache
+            else if let existingSizes = sliceSizesByPath[app.path.path] {
                 calculatedSavings = existingSizes.savings
-            } else if !isCalculating {
-                // Automatically calculate when row appears in view
+            }
+            // Priority 3: Calculate on-demand (fallback for apps not yet pre-calculated)
+            else if !isCalculating {
                 calculateBundleSavings()
             }
         }
@@ -659,6 +665,18 @@ struct LipoAppRowView: View {
                 if !wasAlreadyCalculated {
                     savingsAllApps += savings
                     bundleAllApps += UInt64(app.bundleSize)
+                }
+
+                // Persist to AppState.sortedApps and cache
+                if let index = AppState.shared.sortedApps.firstIndex(where: { $0.path == app.path }) {
+                    AppState.shared.sortedApps[index].lipoSavings = Int64(savings)
+                }
+
+                // Update SwiftData cache (macOS 14+)
+                if #available(macOS 14.0, *) {
+                    Task {
+                        await AppCacheManager.updateLipoSavingsInCache(appPath: app.path.path, savings: Int64(savings))
+                    }
                 }
 
                 isCalculating = false
