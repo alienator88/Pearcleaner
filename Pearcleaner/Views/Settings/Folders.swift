@@ -21,6 +21,7 @@ struct FolderSettingsTab: View {
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
+    @AppStorage("settings.folders.defaultPathsLocked") private var defaultPathsLocked: Bool = true
 
     var body: some View {
         VStack(spacing: 20) {
@@ -46,23 +47,23 @@ struct FolderSettingsTab: View {
                                         .font(.callout)
                                         .lineLimit(1)
                                         .truncationMode(.tail)
-                                        .opacity(fsm.defaultPaths.contains(fsm.folderPaths[index]) ? 0.5 : 1)
+                                        .opacity(defaultPathsLocked && fsm.defaultPaths.contains(fsm.folderPaths[index]) ? 0.5 : 1)
                                         .padding(5)
                                     Spacer()
                                 }
-                                .disabled(fsm.defaultPaths.contains(fsm.folderPaths[index]))
+                                .disabled(defaultPathsLocked && fsm.defaultPaths.contains(fsm.folderPaths[index]))
                                 .onHover { hovering in
                                     withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                                         isHovered = hovering
                                     }
-                                    if isHovered && !fsm.defaultPaths.contains(fsm.folderPaths[index]) {
+                                    if isHovered && !(defaultPathsLocked && fsm.defaultPaths.contains(fsm.folderPaths[index])) {
                                         NSCursor.disappearingItem.push()
                                     } else {
                                         NSCursor.pop()
                                     }
                                 }
                                 .onTapGesture {
-                                    if !fsm.defaultPaths.contains(fsm.folderPaths[index]) {
+                                    if !(defaultPathsLocked && fsm.defaultPaths.contains(fsm.folderPaths[index])) {
                                         fsm.removePath(at: index)
                                     }
                                 }
@@ -114,6 +115,11 @@ struct FolderSettingsTab: View {
                             clipboardAdd()
                         } label: { EmptyView() }
                             .buttonStyle(SimpleButtonStyle(icon: "doc.on.clipboard", help: String(localized: "Add folder from clipboard"), color: ThemeColors.shared(for: colorScheme).secondaryText, size: 16, rotate: false))
+
+                        Button {
+                            toggleDefaultPathsLock()
+                        } label: { EmptyView() }
+                            .buttonStyle(SimpleButtonStyle(icon: defaultPathsLocked ? "lock.fill" : "lock.open.fill", help: defaultPathsLocked ? "Unlock to remove default paths" : "Lock to restore default paths", color: ThemeColors.shared(for: colorScheme).secondaryText, size: 16, rotate: false))
 
                         Spacer()
                     }
@@ -297,10 +303,30 @@ struct FolderSettingsTab: View {
             if zombie || isDir.boolValue {
                 zombie ? fsm.addPathZ(path) : fsm.addPath(path)
             } else {
-                printOS("FSM: Clipboard content is not a directory and zombie mode is disabled")
+                printOS("FSM: Clipboard content is not a directory and orphans mode is disabled")
             }
         } else {
             printOS("FSM: Clipboard content is not a valid path")
+        }
+    }
+
+    private func toggleDefaultPathsLock() {
+        defaultPathsLocked.toggle()
+
+        if defaultPathsLocked {
+            // Re-locking: add back missing default paths
+            for defaultPath in fsm.defaultPaths {
+                if !fsm.folderPaths.contains(defaultPath) {
+                    fsm.addPath(defaultPath)
+                }
+            }
+        } else {
+            // Unlocking: show warning
+            showCustomAlert(
+                title: "Default Paths Unlocked",
+                message: "You can now remove the default application paths.\n\nWarning: If all paths are removed, no applications will be found during scans.",
+                style: .warning
+            )
         }
     }
 

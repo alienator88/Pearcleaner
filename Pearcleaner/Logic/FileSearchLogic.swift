@@ -67,6 +67,37 @@ class FileSearchEngine {
         }
     }
 
+    // Overloaded version that accepts multiple root paths
+    func search(
+        rootPaths: [String],
+        filters: [FilterType],
+        includeSubfolders: Bool,
+        includeHiddenFiles: Bool,
+        caseSensitive: Bool,
+        searchType: SearchType,
+        excludeSystemFolders: Bool,
+        onBatchFound: @escaping ([FileSearchResult]) -> Void,
+        completion: @escaping () -> Void
+    ) {
+        self.caseSensitive = caseSensitive
+        self.searchType = searchType
+        self.excludeSystemFolders = excludeSystemFolders
+        Task(priority: .high) {
+            for rootPath in rootPaths {
+                if shouldStop { break }
+                self.searchRootPath = rootPath
+                await performSearch(
+                    rootPath: rootPath,
+                    filters: filters,
+                    includeSubfolders: includeSubfolders,
+                    includeHiddenFiles: includeHiddenFiles,
+                    onBatchFound: onBatchFound
+                )
+            }
+            completion()
+        }
+    }
+
     private func performSearch(
         rootPath: String,
         filters: [FilterType],
@@ -112,7 +143,7 @@ class FileSearchEngine {
                         await searchFolder(topLevelURL.path, resourceKeys: resourceKeys, includeHiddenFiles: includeHiddenFiles, filters: filters, batch: &batch, batchSize: batchSize, onBatchFound: onBatchFound)
                     }
                 } catch {
-                    printOS("Error reading root directory: \(error)")
+                    // Silently skip directories that don't exist or can't be read
                 }
             } else {
                 // For non-macOS-root paths, use standard enumerator
@@ -146,7 +177,7 @@ class FileSearchEngine {
                     }
                 }
             } catch {
-                printOS("Error reading directory: \(rootPath), error: \(error)")
+                // Silently skip directories that don't exist or can't be read
             }
         }
 

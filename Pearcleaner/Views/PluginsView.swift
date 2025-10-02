@@ -959,6 +959,8 @@ struct AudioPluginRowView: View {
     @State private var isExpanded = false
     @State private var relatedFiles: [FileSearchResult] = []
     @State private var isSearching = false
+    @State private var searchEngine: FileSearchEngine?
+    @State private var selectedRelatedFiles: Set<UUID> = []
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -966,7 +968,17 @@ struct AudioPluginRowView: View {
             HStack(alignment: .center, spacing: 12) {
 
                 // Selection checkbox
-                Button(action: onToggleSelection) {
+                Button(action: {
+                    // When selecting/deselecting plugin, also select/deselect all related files
+                    if !isSelected {
+                        // Plugin is about to be selected, select all related files
+                        selectedRelatedFiles = Set(relatedFiles.map { $0.id })
+                    } else {
+                        // Plugin is about to be deselected, deselect all related files
+                        selectedRelatedFiles.removeAll()
+                    }
+                    onToggleSelection()
+                }) {
                     Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                         .foregroundStyle(isSelected ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
                         .font(.title3)
@@ -997,24 +1009,10 @@ struct AudioPluginRowView: View {
 
                 // Plugin details
                 VStack(alignment: .leading, spacing: 4) {
-                    HStack(spacing: 8) {
-                        // Chevron disclosure button
-                        Button(action: {
-                            withAnimation(.easeInOut(duration: 0.2)) {
-                                isExpanded.toggle()
-                            }
-                        }) {
-                            Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        }
-                        .buttonStyle(.plain)
-
-                        Text(plugin.name)
-                            .font(.headline)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                            .lineLimit(1)
-                    }
+                    Text(plugin.name)
+                        .font(.headline)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                        .lineLimit(1)
 
                     Text("Path: \(plugin.path)")
                         .font(.caption)
@@ -1060,6 +1058,19 @@ struct AudioPluginRowView: View {
                 // Action buttons
                 VStack(spacing: 6) {
                     HStack(spacing: 10) {
+                        Button(isExpanded ? "Close" : "Search") {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                isExpanded.toggle()
+                            }
+                        }
+                        .buttonStyle(.borderless)
+                        .controlSize(.mini)
+                        .foregroundStyle(.blue)
+                        .disabled(isPerformingAction)
+                        .help(isExpanded ? "Close related files search" : "Search for related files")
+
+                        Divider().frame(height: 10)
+
                         Button("View") {
                             openInFinder(plugin.path)
                         }
@@ -1072,13 +1083,13 @@ struct AudioPluginRowView: View {
                         Divider().frame(height: 10)
 
                         Button("Delete") {
-                            onRemove()
+                            deletePluginAndRelatedFiles()
                         }
                         .buttonStyle(.borderless)
                         .controlSize(.mini)
                         .foregroundStyle(.red)
                         .disabled(isPerformingAction)
-                        .help("Delete plugin")
+                        .help("Delete plugin and selected related files")
                     }
 
                     if isPerformingAction {
@@ -1121,6 +1132,16 @@ struct AudioPluginRowView: View {
 
                             ForEach(relatedFiles, id: \.id) { result in
                                 HStack(spacing: 8) {
+                                    // Checkbox for related file
+                                    Button(action: {
+                                        toggleRelatedFileSelection(result)
+                                    }) {
+                                        Image(systemName: selectedRelatedFiles.contains(result.id) ? "checkmark.circle.fill" : "circle")
+                                            .foregroundStyle(selectedRelatedFiles.contains(result.id) ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
+                                            .font(.caption)
+                                    }
+                                    .buttonStyle(.plain)
+
                                     Image(systemName: result.isDirectory ? "folder.fill" : "doc.fill")
                                         .font(.caption)
                                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
@@ -1151,6 +1172,14 @@ struct AudioPluginRowView: View {
                                     .buttonStyle(.borderless)
                                     .controlSize(.mini)
                                     .foregroundStyle(.blue)
+
+                                    Button("Delete") {
+                                        deleteRelatedFile(result)
+                                    }
+                                    .buttonStyle(.borderless)
+                                    .controlSize(.mini)
+                                    .foregroundStyle(.red)
+                                    .help("Delete this file")
                                 }
                                 .padding(.horizontal)
                                 .padding(.vertical, 4)
@@ -1175,8 +1204,12 @@ struct AudioPluginRowView: View {
             }
         }
         .onChange(of: isExpanded) { expanded in
-            if expanded && relatedFiles.isEmpty && !isSearching {
+            if expanded {
+                // Always search when expanding, clear previous results
                 searchForRelatedFiles()
+            } else {
+                // Stop search if user collapses while searching
+                searchEngine?.stop()
             }
         }
     }
@@ -1185,46 +1218,142 @@ struct AudioPluginRowView: View {
         // Extract plugin name without extension
         let pluginName = (plugin.name as NSString).deletingPathExtension
 
-        print("🔍 Starting search for: '\(pluginName)'")
-
+        searchEngine = FileSearchEngine()
         isSearching = true
         relatedFiles = []
+        selectedRelatedFiles.removeAll()
 
-        let paths = locations.apps.paths
-        var searchedCount = 0
-        let totalPaths = paths.count
+        // Build search filters - search for plugin name
+        let filters: [FilterType] = [.name(.contains, pluginName)]
 
-        print("🔍 Searching in \(totalPaths) paths")
+        // If bundle ID exists, also search for that
+        if let bundleId = plugin.bundleId, !bundleId.isEmpty {
+            // Don't add bundle ID as a filter since we can only search for name
+            // Instead, we'll do two searches - one for plugin name, one for bundle ID
+            let bundleIdEngine = FileSearchEngine()
 
-        // Search across all app-related directories
-        for path in paths {
-            let engine = FileSearchEngine()
-
-            engine.search(
-                rootPath: path,
-                filters: [.name(.contains, pluginName)],
+            // Search for bundle ID
+            bundleIdEngine.search(
+                rootPaths: locations.apps.paths,
+                filters: [.name(.contains, bundleId)],
                 includeSubfolders: false,
                 includeHiddenFiles: false,
                 caseSensitive: false,
                 searchType: .filesAndFolders,
                 excludeSystemFolders: true,
                 onBatchFound: { results in
-                    print("🔍 Found \(results.count) results in \(path)")
                     DispatchQueue.main.async {
-                        self.relatedFiles.append(contentsOf: results)
+                        // Add bundle ID results, avoiding duplicates
+                        let existingPaths = Set(self.relatedFiles.map { $0.url.path })
+                        let newResults = results.filter { !existingPaths.contains($0.url.path) }
+                        self.relatedFiles.append(contentsOf: newResults)
                     }
                 },
-                completion: {
-                    DispatchQueue.main.async {
-                        searchedCount += 1
-                        print("🔍 Completed search in path \(searchedCount)/\(totalPaths)")
-                        if searchedCount == totalPaths {
-                            print("🔍 Search complete. Total results: \(self.relatedFiles.count)")
-                            self.isSearching = false
-                        }
+                completion: { }
+            )
+        }
+
+        // Search for plugin name across all app-related directories
+        searchEngine?.search(
+            rootPaths: locations.apps.paths,
+            filters: filters,
+            includeSubfolders: false,
+            includeHiddenFiles: false,
+            caseSensitive: false,
+            searchType: .filesAndFolders,
+            excludeSystemFolders: true,
+            onBatchFound: { results in
+                DispatchQueue.main.async {
+                    self.relatedFiles.append(contentsOf: results)
+                }
+            },
+            completion: {
+                DispatchQueue.main.async {
+                    self.isSearching = false
+                }
+            }
+        )
+    }
+
+    private func toggleRelatedFileSelection(_ file: FileSearchResult) {
+        if selectedRelatedFiles.contains(file.id) {
+            selectedRelatedFiles.remove(file.id)
+        } else {
+            selectedRelatedFiles.insert(file.id)
+        }
+    }
+
+    private func deletePluginAndRelatedFiles() {
+        isPerformingAction = true
+
+        Task {
+            // Get selected related files
+            let selectedFiles = relatedFiles.filter { selectedRelatedFiles.contains($0.id) }
+            let relatedURLs = selectedFiles.map { $0.url }
+
+            // If there are selected related files, delete them along with the plugin
+            if !relatedURLs.isEmpty {
+                let pluginURL = URL(fileURLWithPath: plugin.path)
+                let allURLs = [pluginURL] + relatedURLs
+                let bundleName = "\(plugin.category) Plugin - \(plugin.name) + \(relatedURLs.count) related file\(relatedURLs.count == 1 ? "" : "s")"
+
+                let success = await withCheckedContinuation { continuation in
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        let success = FileManagerUndo.shared.deleteFiles(at: allURLs, bundleName: bundleName)
+                        continuation.resume(returning: success)
                     }
                 }
-            )
+
+                await MainActor.run {
+                    isPerformingAction = false
+                    if success {
+                        // Clear related files and selections
+                        relatedFiles.removeAll()
+                        selectedRelatedFiles.removeAll()
+                        onRefresh()
+                    } else {
+                        showCustomAlert(
+                            title: "Deletion Failed",
+                            message: "Failed to delete plugin and related files. They may require additional permissions or may not exist.",
+                            style: .critical
+                        )
+                    }
+                }
+            } else {
+                // No related files selected, just delete the plugin
+                await MainActor.run {
+                    isPerformingAction = false
+                    onRemove()
+                }
+            }
+        }
+    }
+
+    private func deleteRelatedFile(_ file: FileSearchResult) {
+        Task {
+            let success = await withCheckedContinuation { continuation in
+                DispatchQueue.global(qos: .userInitiated).async {
+                    let success = FileManagerUndo.shared.deleteFiles(
+                        at: [file.url],
+                        bundleName: "Related File - \(file.name)"
+                    )
+                    continuation.resume(returning: success)
+                }
+            }
+
+            await MainActor.run {
+                if success {
+                    // Remove from arrays
+                    relatedFiles.removeAll { $0.id == file.id }
+                    selectedRelatedFiles.remove(file.id)
+                } else {
+                    showCustomAlert(
+                        title: "Deletion Failed",
+                        message: "Failed to delete '\(file.name)'. It may require additional permissions or may not exist.",
+                        style: .critical
+                    )
+                }
+            }
         }
     }
 

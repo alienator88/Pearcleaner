@@ -111,15 +111,19 @@ struct HomebrewView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .toolbar {
             TahoeToolbarItem(placement: .navigation) {
-                VStack(alignment: .leading) {
-                    Text("Homebrew Manager")
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                        .font(.title2)
-                        .fontWeight(.bold)
-                    Text("Manage Homebrew packages, taps, and maintenance")
-                        .font(.callout)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("Homebrew Manager")
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            .font(.title2)
+                            .fontWeight(.bold)
+                        Text("Manage Homebrew packages, taps, and maintenance")
+                            .font(.callout)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                    BetaBadge()
                 }
+
             }
 
             ToolbarItem { Spacer() }
