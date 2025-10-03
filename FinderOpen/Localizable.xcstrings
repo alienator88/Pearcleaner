@@ -57,6 +57,12 @@
             "value" : "Odinštalovať Pearcleanerom"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odstrani Pearcleaner"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
