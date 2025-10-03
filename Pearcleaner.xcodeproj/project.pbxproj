@@ -230,6 +230,7 @@
 		C76073F32E3C1C2C003957A7 /* FilesView */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = FilesView; sourceTree = "<group>"; };
 		C783F8FD2E903707003450E7 /* FileSearch */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = FileSearch; sourceTree = "<group>"; };
 		C783F9492E903B53003450E7 /* PKG */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = PKG; sourceTree = "<group>"; };
+		C7923DCC2E90807F005C5632 /* Brew */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Brew; sourceTree = "<group>"; };
 		C7C05FD72E8DA12C006D0476 /* Brew */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Brew; sourceTree = "<group>"; };
 		C7C05FF12E8DEE85006D0476 /* Data */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Data; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -280,6 +281,7 @@
 				C783F8FD2E903707003450E7 /* FileSearch */,
 				C7C05FF12E8DEE85006D0476 /* Data */,
 				C783F9492E903B53003450E7 /* PKG */,
+				C7923DCC2E90807F005C5632 /* Brew */,
 				C7C90DD22DA81C590056769A /* Lipo.swift */,
 				C73545EA2D8496DA00A3DC0C /* HelperToolManager.swift */,
 				C72FDCB82D6D088A00DE7D56 /* UndoManager.swift */,
@@ -469,6 +471,7 @@
 				C76073F32E3C1C2C003957A7 /* FilesView */,
 				C783F8FD2E903707003450E7 /* FileSearch */,
 				C783F9492E903B53003450E7 /* PKG */,
+				C7923DCC2E90807F005C5632 /* Brew */,
 				C7C05FD72E8DA12C006D0476 /* Brew */,
 				C7C05FF12E8DEE85006D0476 /* Data */,
 			);

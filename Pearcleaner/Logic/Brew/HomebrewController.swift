@@ -188,7 +188,7 @@ class HomebrewController {
 
     // MARK: - Shell Command Execution
 
-    private func runBrewCommand(_ arguments: [String]) async throws -> (output: String, error: String) {
+    func runBrewCommand(_ arguments: [String]) async throws -> (output: String, error: String) {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: brewPath)
         process.arguments = arguments
@@ -499,6 +499,7 @@ class HomebrewController {
         var arguments = ["install"]
         if cask {
             arguments.append("--cask")
+            arguments.append("--no-quarantine")
         }
         arguments.append(name)
 

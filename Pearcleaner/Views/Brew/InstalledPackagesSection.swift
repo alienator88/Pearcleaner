@@ -371,7 +371,7 @@ struct HomebrewPackageRow: View {
                 Task {
                     isPerformingAction = true
                     do {
-                        try await HomebrewController.shared.uninstallPackage(name: package.name)
+                        try await HomebrewUninstaller.shared.uninstallPackage(name: package.name, cask: package.isCask)
                         // Remove from array instead of full reload
                         if package.isCask {
                             brewManager.installedCasks.removeAll { $0.id == package.id }
