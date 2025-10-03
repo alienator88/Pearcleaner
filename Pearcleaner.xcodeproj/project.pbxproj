@@ -31,6 +31,7 @@
 		C77B90182AF19382009CC655 /* AppCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90172AF19382009CC655 /* AppCommands.swift */; };
 		C77B901A2AF1938F009CC655 /* Logic.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90192AF1938F009CC655 /* Logic.swift */; };
 		C78121662BC892A000BE06BD /* FinderOpen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78121652BC892A000BE06BD /* FinderOpen.swift */; };
+		C783F93A2E9039EB003450E7 /* PackageKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C783F9392E9039EB003450E7 /* PackageKit.framework */; };
 		C78733BF2E674510008615F2 /* FileWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78733BC2E674496008615F2 /* FileWatcher.swift */; };
 		C78D7B212D556F1A003DD49F /* AppPathsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78D7B202D556F16003DD49F /* AppPathsFetch.swift */; };
 		C7A269272D5D138500FA96EC /* SwiftTerm in Frameworks */ = {isa = PBXBuildFile; productRef = C7A269262D5D138500FA96EC /* SwiftTerm */; };
@@ -39,8 +40,6 @@
 		C7A2A4D92DDB95C4006E05E4 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = C7A2A4D82DDB95C4006E05E4 /* ArgumentParser */; };
 		C7A6DBF12C9DD27200CFA042 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7A6DBF02C9DD27200CFA042 /* Assets.xcassets */; };
 		C7BB99292E8AF1CB007BBB81 /* PluginsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BB99282E8AF1CB007BBB81 /* PluginsView.swift */; };
-		C7BB992C2E8B2254007BBB81 /* FileSearchLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BB992A2E8B2254007BBB81 /* FileSearchLogic.swift */; };
-		C7BB992D2E8B2254007BBB81 /* FileSearchModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BB992B2E8B2254007BBB81 /* FileSearchModels.swift */; };
 		C7BB992F2E8B225F007BBB81 /* FileSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BB992E2E8B225F007BBB81 /* FileSearchView.swift */; };
 		C7BE91A82C9E37AB009FA129 /* FinderOpen.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C78121632BC892A000BE06BD /* FinderOpen.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C7C05FED2E8DA27F006D0476 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = C7C05FEC2E8DA27F006D0476 /* SwiftyJSON */; };
@@ -152,6 +151,7 @@
 		C78121652BC892A000BE06BD /* FinderOpen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinderOpen.swift; sourceTree = "<group>"; };
 		C78121672BC892A000BE06BD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C78121682BC892A000BE06BD /* FinderOpen.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FinderOpen.entitlements; sourceTree = "<group>"; };
+		C783F9392E9039EB003450E7 /* PackageKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PackageKit.framework; path = ../../../../System/Library/PrivateFrameworks/PackageKit.framework; sourceTree = "<group>"; };
 		C786F1A72C29E599001B3800 /* Builds */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Builds; sourceTree = SOURCE_ROOT; };
 		C78733BC2E674496008615F2 /* FileWatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileWatcher.swift; sourceTree = "<group>"; };
 		C78D7B202D556F16003DD49F /* AppPathsFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPathsFetch.swift; sourceTree = "<group>"; };
@@ -160,8 +160,6 @@
 		C7A6DBF02C9DD27200CFA042 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C7B3AB072D83900B00D829C5 /* com.alienator88.PearcleanerSentinel.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = com.alienator88.PearcleanerSentinel.plist; sourceTree = "<group>"; };
 		C7BB99282E8AF1CB007BBB81 /* PluginsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginsView.swift; sourceTree = "<group>"; };
-		C7BB992A2E8B2254007BBB81 /* FileSearchLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSearchLogic.swift; sourceTree = "<group>"; };
-		C7BB992B2E8B2254007BBB81 /* FileSearchModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSearchModels.swift; sourceTree = "<group>"; };
 		C7BB992E2E8B225F007BBB81 /* FileSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSearchView.swift; sourceTree = "<group>"; };
 		C7C90DD22DA81C590056769A /* Lipo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lipo.swift; sourceTree = "<group>"; };
 		C7D31D502AFF00F300C7ED9E /* Locations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locations.swift; sourceTree = "<group>"; };
@@ -230,6 +228,8 @@
 		C74649FA2E48076B002D1C63 /* Settings */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Settings; sourceTree = "<group>"; };
 		C75E82DD2E8C58380090C3B1 /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (C75E82E42E8C58620090C3B1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, C75E82E52E8C58620090C3B1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, C75E82E12E8C585D0090C3B1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Shared; sourceTree = "<group>"; };
 		C76073F32E3C1C2C003957A7 /* FilesView */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = FilesView; sourceTree = "<group>"; };
+		C783F8FD2E903707003450E7 /* FileSearch */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = FileSearch; sourceTree = "<group>"; };
+		C783F9492E903B53003450E7 /* PKG */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = PKG; sourceTree = "<group>"; };
 		C7C05FD72E8DA12C006D0476 /* Brew */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Brew; sourceTree = "<group>"; };
 		C7C05FF12E8DEE85006D0476 /* Data */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Data; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -259,6 +259,7 @@
 				C76EDCD62C45DC82000CF29D /* AlinFoundation in Frameworks */,
 				C7A269272D5D138500FA96EC /* SwiftTerm in Frameworks */,
 				C7A2A4D92DDB95C4006E05E4 /* ArgumentParser in Frameworks */,
+				C783F93A2E9039EB003450E7 /* PackageKit.framework in Frameworks */,
 				C7736E4F2C49A44200917293 /* AlinFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -276,14 +277,14 @@
 		C72893072AFD442600C8C1CD /* Logic */ = {
 			isa = PBXGroup;
 			children = (
+				C783F8FD2E903707003450E7 /* FileSearch */,
 				C7C05FF12E8DEE85006D0476 /* Data */,
+				C783F9492E903B53003450E7 /* PKG */,
 				C7C90DD22DA81C590056769A /* Lipo.swift */,
 				C73545EA2D8496DA00A3DC0C /* HelperToolManager.swift */,
 				C72FDCB82D6D088A00DE7D56 /* UndoManager.swift */,
 				C7A2A4D52DDB957D006E05E4 /* CLI.swift */,
 				C77B90192AF1938F009CC655 /* Logic.swift */,
-				C7BB992A2E8B2254007BBB81 /* FileSearchLogic.swift */,
-				C7BB992B2E8B2254007BBB81 /* FileSearchModels.swift */,
 				C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */,
 				C78D7B202D556F16003DD49F /* AppPathsFetch.swift */,
 				C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */,
@@ -310,6 +311,7 @@
 		C72893162AFD531500C8C1CD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C783F9392E9039EB003450E7 /* PackageKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -465,6 +467,8 @@
 				C74649EE2E4800BB002D1C63 /* AppsView */,
 				C74649FA2E48076B002D1C63 /* Settings */,
 				C76073F32E3C1C2C003957A7 /* FilesView */,
+				C783F8FD2E903707003450E7 /* FileSearch */,
+				C783F9492E903B53003450E7 /* PKG */,
 				C7C05FD72E8DA12C006D0476 /* Brew */,
 				C7C05FF12E8DEE85006D0476 /* Data */,
 			);
@@ -627,8 +631,6 @@
 				C73545EB2D8496E000A3DC0C /* HelperToolManager.swift in Sources */,
 				C72FDCB92D6D089100DE7D56 /* UndoManager.swift in Sources */,
 				C7BB992F2E8B225F007BBB81 /* FileSearchView.swift in Sources */,
-				C7BB992C2E8B2254007BBB81 /* FileSearchLogic.swift in Sources */,
-				C7BB992D2E8B2254007BBB81 /* FileSearchModels.swift in Sources */,
 				C77B90042AF18E2E009CC655 /* PearcleanerApp.swift in Sources */,
 				C7A269292D5D139600FA96EC /* TerminalView.swift in Sources */,
 				C77B90182AF19382009CC655 /* AppCommands.swift in Sources */,
@@ -754,8 +756,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 98;
-				APP_VERSION = 5.1.1;
+				APP_BUILD = 99;
+				APP_VERSION = 5.2.0;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -827,8 +829,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 98;
-				APP_VERSION = 5.1.1;
+				APP_BUILD = 99;
+				APP_VERSION = 5.2.0;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -931,7 +933,12 @@
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "M1 Pro Signed - Pearcleaner";
 				REGISTER_APP_GROUPS = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Pearcleaner/Logic/PKG/Pearcleaner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
+				SYSTEM_FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
+				);
 			};
 			name = Debug;
 		};
@@ -977,8 +984,13 @@
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "M1 Pro Signed - Pearcleaner";
 				REGISTER_APP_GROUPS = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Pearcleaner/Logic/PKG/Pearcleaner-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Osize";
 				SWIFT_VERSION = 5.0;
+				SYSTEM_FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
+				);
 			};
 			name = Release;
 		};

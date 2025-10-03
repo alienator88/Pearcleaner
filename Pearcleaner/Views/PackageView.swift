@@ -31,6 +31,14 @@ struct PackageInfo: Identifiable, Hashable, Equatable {
     let installLocation: String
     var bomFilesLoaded: Bool = false
 
+    // NEW: Additional metadata from private PKG APIs
+    let packageGroups: [String]           // Groups this package belongs to
+    let additionalInfo: String            // Extra package information
+    let isSecure: Bool                    // Whether package is signed/secure
+    let receiptStoragePaths: [String]     // All receipt file paths
+    let totalSizeFromBOM: Int64           // Total installed size from BOM
+    let totalFilesInBOM: Int              // Total file count from BOM
+
     var displayName: String {
         if !packageFileName.isEmpty {
             // Remove .pkg extension for cleaner display
@@ -53,7 +61,7 @@ struct PackageView: View {
     @State private var lastRefreshDate: Date?
     @State private var searchText: String = ""
     @State private var expandedPackages: Set<String> = []
-    @State private var sortOption: PackageSortOption = .packageId
+    @State private var sortOption: PackageSortOption = .packageName
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.general.permanentDelete") private var permanentDelete: Bool = false
 
@@ -277,110 +285,29 @@ struct PackageView: View {
     private func loadBOMFiles(for packageId: String) async -> [String] {
         return await withCheckedContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
-                // Use pkgutil --files to get just the file paths
-                // Try normal shell command first, fallback to fast method if it times out
-                var filesResult = runDirectShellCommandWithTimeout(command: "pkgutil --files \"\(packageId)\"", timeout: 2.0)
-                
-                if !filesResult.0 && filesResult.1.contains("timed out") {
-                    // Command timed out, use fast shell command as fallback
-                    filesResult = runFastShellCommand(command: "pkgutil --files \"\(packageId)\"")
-                }
-                
-                if filesResult.0 {
-                    let allFiles = filesResult.1.components(separatedBy: .newlines).filter { !$0.isEmpty }
-                    
-                    var installLocation = "/"
-                    
-                    // First try to get from receipt plist
-                    let receiptPath = "/var/db/receipts/\(packageId).plist"
-                    
-                    var defaultsResult = runDirectShellCommandWithTimeout(command: "defaults read \"\(receiptPath)\"", timeout: 3.0)
-                    if !defaultsResult.0 && defaultsResult.1.contains("timed out") {
-                        defaultsResult = runFastShellCommand(command: "defaults read \"\(receiptPath)\"")
-                    }
-                    
-                    if defaultsResult.0 {
-                        let lines = defaultsResult.1.components(separatedBy: .newlines)
-                        for line in lines {
-                            let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
-                            if trimmedLine.contains("InstallPrefixPath = ") {
-                                if let startQuote = trimmedLine.firstIndex(of: "\""),
-                                   let endQuote = trimmedLine.lastIndex(of: "\""),
-                                   startQuote != endQuote {
-                                    let location = String(trimmedLine[trimmedLine.index(after: startQuote)..<endQuote])
-                                    installLocation = location.isEmpty ? "/" : location
-                                    break
-                                }
-                            }
-                        }
-                    }
-                    
-                    // Fallback to pkgutil --pkg-info if needed
-                    if installLocation == "/" {
-                        var infoResult = runDirectShellCommandWithTimeout(command: "pkgutil --pkg-info \"\(packageId)\"", timeout: 3.0)
-                        if !infoResult.0 && infoResult.1.contains("timed out") {
-                            infoResult = runFastShellCommand(command: "pkgutil --pkg-info \"\(packageId)\"")
-                        }
-                        
-                        if infoResult.0 {
-                            let lines = infoResult.1.components(separatedBy: .newlines)
-                            for line in lines {
-                                if line.hasPrefix("location: ") {
-                                    let location = String(line.dropFirst("location: ".count))
-                                    installLocation = location.isEmpty ? "/" : location
-                                    break
-                                }
-                            }
-                        }
-                    }
-                    
-                    // Special handling for apps that should go in /Applications
-                    // If we find .app files and install location is "/", try /Applications
-                    let hasAppFiles = allFiles.contains { $0.hasSuffix(".app") }
-                    if hasAppFiles && installLocation == "/" {
-                        for file in allFiles {
-                            if file.hasSuffix(".app") {
-                                let appPath = "/Applications/\(file)"
-                                if FileManager.default.fileExists(atPath: appPath) {
-                                    installLocation = "/Applications"
-                                    break
-                                }
-                            }
-                        }
+                if #available(macOS 10.5, *) {
+                    // Find the package by ID
+                    guard let package = self.packages.first(where: { $0.packageId == packageId }) else {
+                        continuation.resume(returning: [])
+                        return
                     }
 
-                    // Ensure install location is absolute
-                    if !installLocation.hasPrefix("/") {
-                        installLocation = "/" + installLocation
+                    // Get all receipts to find the one matching this package ID
+                    let receipts = PKGManager.getAllPackages(volume: "/")
+                    guard let receipt = receipts.first(where: { ($0.packageIdentifier() as? String) == packageId }) else {
+                        continuation.resume(returning: [])
+                        return
                     }
-                    
-                    // Remove Apple resource fork files
-                    let filteredFiles = allFiles.compactMap { file -> String? in
-                        let trimmedFile = file.trimmingCharacters(in: .whitespacesAndNewlines)
-                        
-                        if trimmedFile.contains("._") {
-                            return nil
-                        }
-                        
-                        var absolutePath: String
-                        if trimmedFile.hasPrefix("/") {
-                            absolutePath = trimmedFile
-                        } else {
-                            if installLocation == "/" {
-                                absolutePath = "/" + trimmedFile
-                            } else {
-                                absolutePath = installLocation + "/" + trimmedFile
-                            }
-                        }
-                        
-                        return absolutePath
-                    }
-                    
-                    // Second pass: Filter out app bundle internals, keep only top-level .app paths
-                    let finalFilteredFiles = filterAppBundleInternals(filteredFiles)
-                    
-                    continuation.resume(returning: finalFilteredFiles)
+
+                    // Use PKG API to get files from BOM
+                    let files = PKGManager.getPackageFiles(receipt: receipt, installLocation: package.installLocation)
+
+                    // Filter out app bundle internals, keep only top-level .app paths
+                    let filteredFiles = filterAppBundleInternals(files)
+
+                    continuation.resume(returning: filteredFiles)
                 } else {
+                    // Fallback for older macOS
                     continuation.resume(returning: [])
                 }
             }
@@ -391,169 +318,40 @@ struct PackageView: View {
         isLoading = true
         packages = []
         packageIds = []
-        
+
         Task {
-            let ids = await loadPackageIds()
-            
+            let loadedPackages = await loadPackagesFromPKGAPI()
+
             await MainActor.run {
-                self.packageIds = ids
+                self.packages = loadedPackages
+                self.packageIds = loadedPackages.map { $0.packageId }
                 self.lastRefreshDate = Date()
-            }
-            
-            await loadPackageDetailsProgressively(for: ids)
-            
-            await MainActor.run {
                 self.isLoading = false
             }
         }
     }
-    
-    private func loadPackageIds() async -> [String] {
+
+    private func loadPackagesFromPKGAPI() async -> [PackageInfo] {
         return await withCheckedContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
-                let receiptsResult = runDirectShellCommand(command: "pkgutil --pkgs")
-                if receiptsResult.0 {
-                    let packageIds = receiptsResult.1.components(separatedBy: .newlines).filter { !$0.isEmpty }
-                    continuation.resume(returning: packageIds)
+                if #available(macOS 10.5, *) {
+                    // Use private PKG API to get all receipts
+                    let receipts = PKGManager.getAllPackages(volume: "/")
+
+                    // Convert receipts to PackageInfo objects
+                    let packages = receipts.compactMap { receipt in
+                        PKGManager.getPackageInfo(from: receipt)
+                    }
+
+                    continuation.resume(returning: packages)
                 } else {
+                    // Fallback for older macOS (shouldn't happen)
                     continuation.resume(returning: [])
                 }
             }
         }
     }
     
-    private func loadPackageDetailsProgressively(for packageIds: [String]) async {
-        // Load packages in batches to avoid overwhelming the UI
-        let batchSize = 3
-        
-        for i in stride(from: 0, to: packageIds.count, by: batchSize) {
-            let endIndex = min(i + batchSize, packageIds.count)
-            let batch = Array(packageIds[i..<endIndex])
-            
-            await withTaskGroup(of: PackageInfo?.self) { group in
-                for packageId in batch {
-                    group.addTask {
-                        return await self.loadPackageInfo(for: packageId)
-                    }
-                }
-                
-                var batchPackages: [PackageInfo] = []
-                for await packageInfo in group {
-                    if let packageInfo = packageInfo {
-                        batchPackages.append(packageInfo)
-                    }
-                }
-                
-                await MainActor.run {
-                    self.packages.append(contentsOf: batchPackages)
-                }
-            }
-            
-            try? await Task.sleep(nanoseconds: 50_000_000) // 50ms
-        }
-    }
-    
-    private func loadPackageInfo(for packageId: String) async -> PackageInfo? {
-        return await withCheckedContinuation { continuation in
-            DispatchQueue.global(qos: .userInitiated).async {
-                let packageInfo = self.getPackageInfo(for: packageId)
-                continuation.resume(returning: packageInfo)
-            }
-        }
-    }
-    
-    private func getPackageInfo(for packageId: String) -> PackageInfo? {
-        // First try to get rich info from receipt plist using defaults read
-        let receiptPath = "/var/db/receipts/\(packageId).plist"
-        let defaultsResult = runDirectShellCommand(command: "defaults read \"\(receiptPath)\"")
-        
-        let packageName = ""
-        var packageFileName = ""
-        var version = ""
-        var installDate = ""
-        var installLocation = ""
-        var installProcessName = ""
-        
-        if defaultsResult.0 {
-            let lines = defaultsResult.1.components(separatedBy: .newlines)
-            
-            for line in lines {
-                let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
-                
-                if trimmedLine.contains("InstallDate = ") {
-                    if let startQuote = trimmedLine.firstIndex(of: "\""),
-                       let endQuote = trimmedLine.lastIndex(of: "\""),
-                       startQuote != endQuote {
-                        installDate = String(trimmedLine[trimmedLine.index(after: startQuote)..<endQuote])
-                    }
-                } else if trimmedLine.contains("PackageFileName = ") {
-                    if let startQuote = trimmedLine.firstIndex(of: "\""),
-                       let endQuote = trimmedLine.lastIndex(of: "\""),
-                       startQuote != endQuote {
-                        packageFileName = String(trimmedLine[trimmedLine.index(after: startQuote)..<endQuote])
-                    }
-                } else if trimmedLine.contains("PackageVersion = ") {
-                    if let startQuote = trimmedLine.firstIndex(of: "\""),
-                       let endQuote = trimmedLine.lastIndex(of: "\""),
-                       startQuote != endQuote {
-                        version = String(trimmedLine[trimmedLine.index(after: startQuote)..<endQuote])
-                    }
-                } else if trimmedLine.contains("InstallPrefixPath = ") {
-                    if let startQuote = trimmedLine.firstIndex(of: "\""),
-                       let endQuote = trimmedLine.lastIndex(of: "\""),
-                       startQuote != endQuote {
-                        installLocation = String(trimmedLine[trimmedLine.index(after: startQuote)..<endQuote])
-                    }
-                } else if trimmedLine.contains("InstallProcessName = ") {
-                    if trimmedLine.contains("\"") {
-                        if let startQuote = trimmedLine.firstIndex(of: "\""),
-                           let endQuote = trimmedLine.lastIndex(of: "\""),
-                           startQuote != endQuote {
-                            installProcessName = String(trimmedLine[trimmedLine.index(after: startQuote)..<endQuote])
-                        }
-                    } else {
-                        let parts = trimmedLine.components(separatedBy: " = ")
-                        if parts.count > 1 {
-                            let value = parts[1].trimmingCharacters(in: CharacterSet(charactersIn: "; "))
-                            installProcessName = value
-                        }
-                    }
-                }
-            }
-        }
-        
-        // If defaults read failed or didn't give us enough info, fall back to pkgutil
-        if version.isEmpty || installDate.isEmpty {
-            let infoResult = runDirectShellCommand(command: "pkgutil --pkg-info \"\(packageId)\"")
-            if infoResult.0 {
-                let lines = infoResult.1.components(separatedBy: .newlines)
-                for line in lines {
-                    if version.isEmpty && line.hasPrefix("version: ") {
-                        version = String(line.dropFirst("version: ".count))
-                    } else if installDate.isEmpty && line.hasPrefix("install-time: ") {
-                        installDate = String(line.dropFirst("install-time: ".count))
-                    } else if installLocation.isEmpty && line.hasPrefix("location: ") {
-                        installLocation = String(line.dropFirst("location: ".count))
-                    }
-                }
-            }
-        }
-        
-        let bomFiles: [String] = []
-        
-        return PackageInfo(
-            packageId: packageId,
-            packageName: packageName,
-            packageFileName: packageFileName,
-            version: version,
-            installDate: installDate,
-            installProcessName: installProcessName,
-            bomFiles: bomFiles,
-            receiptPath: receiptPath,
-            installLocation: installLocation.isEmpty ? "/" : installLocation,
-            bomFilesLoaded: false
-        )
-    }
     
     private func removePackage(_ package: PackageInfo) {
         Task {
@@ -564,7 +362,7 @@ struct PackageView: View {
     private func performPackageRemoval(_ package: PackageInfo) async {
         let success = await withCheckedContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
-                
+
                 // Check if app bundle still exists in common locations
                 let appBundleName = self.extractAppBundleName(from: package.bomFiles)
                 if let bundleName = appBundleName {
@@ -573,7 +371,7 @@ struct PackageView: View {
                         "/System/Applications/\(bundleName)",
                         "~/Applications/\(bundleName)".expandingTildeInPath
                     ]
-                    
+
                     for appPath in commonAppPaths {
                         if FileManager.default.fileExists(atPath: appPath) {
                             DispatchQueue.main.async {
@@ -588,17 +386,27 @@ struct PackageView: View {
                         }
                     }
                 }
-                
-                // Use pkgutil --forget to remove the package from the system
-                let forgetCommand = "pkgutil --forget \"\(package.packageId)\""
-                
+
+                // Get receipt file paths to delete directly (no shell command needed)
+                let receiptPaths = package.receiptStoragePaths
+
+                if receiptPaths.isEmpty {
+                    printOS("⚠️ No receipt paths found for package \(package.packageId)")
+                    continuation.resume(returning: false)
+                    return
+                }
+
+                // Build rm command to delete all receipt files
+                let quotedPaths = receiptPaths.map { "\"\($0)\"" }.joined(separator: " ")
+                let deleteCommand = "rm -f \(quotedPaths)"
+
                 var success = false
-                
+
                 // Use privileged command execution since receipts are in protected locations
                 if HelperToolManager.shared.isHelperToolInstalled {
                     let semaphore = DispatchSemaphore(value: 0)
                     Task {
-                        let result = await HelperToolManager.shared.runCommand(forgetCommand)
+                        let result = await HelperToolManager.shared.runCommand(deleteCommand)
                         success = result.0
                         if !success {
                             printOS("Package forget failed: \(result.1)")
@@ -607,23 +415,23 @@ struct PackageView: View {
                     }
                     semaphore.wait()
                 } else {
-                    let result = performPrivilegedCommands(commands: forgetCommand)
+                    let result = performPrivilegedCommands(commands: deleteCommand)
                     success = result.0
                     if !success {
                         printOS("Package forget failed: \(result.1)")
                     }
                 }
-                
+
                 continuation.resume(returning: success)
             }
         }
-        
+
         await MainActor.run {
             if success {
                 // Remove the package from the local array
                 packages.removeAll { $0.packageId == package.packageId }
                 packageIds.removeAll { $0 == package.packageId }
-                
+
                 // Also remove from expanded packages if it was expanded
                 expandedPackages.remove(package.packageId)
             } else {
@@ -722,23 +530,74 @@ struct PackageRowView: View {
                                 .truncationMode(.middle)
                         }
 
-                        // Version
+                        // Version, file count, size
                         HStack {
                             Text("Version: \(package.version)")
                                 .font(.caption)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                            
-                            if !package.bomFiles.isEmpty {
+
+                            if package.totalFilesInBOM > 0 {
                                 Text(verbatim: "•")
                                     .font(.caption)
                                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
-                                Text("\(package.bomFiles.count) files")
+                                Text("\(package.totalFilesInBOM) files")
                                     .font(.caption)
                                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                             }
 
-                            
+                            if package.totalSizeFromBOM > 0 {
+                                Text(verbatim: "•")
+                                    .font(.caption)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                                Text(formatBytes(package.totalSizeFromBOM))
+                                    .font(.caption)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            }
+
+                            Spacer()
+                        }
+
+                        // Security status and package groups
+                        HStack(spacing: 6) {
+                            if package.isSecure {
+                                HStack(spacing: 2) {
+                                    Image(systemName: "lock.fill")
+                                        .font(.caption2)
+                                    Text("Secure")
+                                }
+                                .font(.caption)
+                                .foregroundStyle(.green)
+                            } else {
+                                HStack(spacing: 2) {
+                                    Image(systemName: "exclamationmark.triangle")
+                                        .font(.caption2)
+                                    Text("Unsigned")
+                                }
+                                .font(.caption)
+                                .foregroundStyle(.orange)
+                            }
+
+                            // Package groups as badges
+                            if !package.packageGroups.isEmpty {
+                                ForEach(package.packageGroups.prefix(3), id: \.self) { group in
+                                    Text(formatGroupName(group))
+                                        .font(.caption2)
+                                        .padding(.horizontal, 6)
+                                        .padding(.vertical, 2)
+                                        .background(Color.blue.opacity(0.2))
+                                        .foregroundStyle(Color.blue)
+                                        .cornerRadius(4)
+                                }
+
+                                if package.packageGroups.count > 3 {
+                                    Text(verbatim: "+\(package.packageGroups.count - 3)")
+                                        .font(.caption2)
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                }
+                            }
+
                             Spacer()
                         }
                         
@@ -866,40 +725,77 @@ struct PackageRowView: View {
 
                     }
                     
+                    // Additional info (if available)
+                    if !package.additionalInfo.isEmpty {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Additional Info:")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            Text(package.additionalInfo)
+                                .font(.caption)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        }
+                        .padding(8)
+                        .background(ThemeColors.shared(for: colorScheme).secondaryBG.opacity(0.3))
+                        .cornerRadius(6)
+                    }
+
                     // Receipt information
                     VStack(alignment: .leading, spacing: 4) {
                         HStack {
                             Text("Receipt Path:")
                                 .font(.caption)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                            
+
                             Text(package.receiptPath)
                                 .font(.caption)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                                 .lineLimit(1)
                                 .truncationMode(.middle)
-                            
+
                             Spacer()
                         }
-                        
+
                         if !package.installLocation.isEmpty {
                             HStack {
                                 Text("Install Location:")
                                     .font(.caption)
                                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                                
+
                                 Text(package.installLocation.hasPrefix("/") ? package.installLocation : "/" + package.installLocation)
                                     .font(.caption)
                                     .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                                     .lineLimit(1)
                                     .truncationMode(.middle)
-                                
+
                                 Spacer()
                             }
                         }
                     }
-                    .padding(.bottom, 8)
-                    
+
+                    // Receipt storage paths (collapsible)
+                    if package.receiptStoragePaths.count > 1 {
+                        DisclosureGroup {
+                            VStack(alignment: .leading, spacing: 2) {
+                                ForEach(package.receiptStoragePaths, id: \.self) { path in
+                                    Text(path)
+                                        .font(.caption2)
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                }
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.leading, 8)
+                            .padding(.top, 4)
+                        } label: {
+                            Text("Receipt Storage Paths (\(package.receiptStoragePaths.count))")
+                                .font(.caption)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        }
+                        .padding(.bottom, 8)
+                    }
+
                     if !package.bomFilesLoaded {
                         HStack {
                             ProgressView()
@@ -978,6 +874,22 @@ struct PackageRowView: View {
         } else {
             return dateString
         }
+    }
+
+    private func formatBytes(_ bytes: Int64) -> String {
+        let formatter = ByteCountFormatter()
+        formatter.allowedUnits = [.useAll]
+        formatter.countStyle = .file
+        return formatter.string(fromByteCount: bytes)
+    }
+
+    private func formatGroupName(_ group: String) -> String {
+        // Remove common prefixes to make badges more readable
+        let cleanedGroup = group
+            .replacingOccurrences(of: "com.apple.group.", with: "")
+            .replacingOccurrences(of: "com.apple.", with: "")
+
+        return cleanedGroup
     }
     
     private func openFileInFinder(_ filePath: String) {
