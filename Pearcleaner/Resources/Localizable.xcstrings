@@ -39512,6 +39512,12 @@
             "value" : "Hľadať..."
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Išči…"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
