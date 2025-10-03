@@ -6,7 +6,9 @@
 //
 
 import Foundation
+#if canImport(SwiftData)
 import SwiftData
+#endif
 import AlinFoundation
 
 @available(macOS 14.0, *)

@@ -8,7 +8,9 @@
 import Foundation
 import SwiftyJSON
 import AlinFoundation
+#if canImport(SwiftData)
 import SwiftData
+#endif
 
 enum HomebrewError: Error {
     case brewNotFound

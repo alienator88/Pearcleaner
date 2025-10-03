@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftData
 
 struct Condition: Codable {
     var bundle_id: String

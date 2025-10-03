@@ -347,9 +347,7 @@ struct SearchResultRowView: View {
                     defer { isInstalling = false }
 
                     do {
-                        printOS("Installing \(result.name) (cask: \(isCask))")
                         try await HomebrewController.shared.installPackage(name: result.name, cask: isCask)
-                        printOS("Successfully installed \(result.name)")
                         await brewManager.loadInstalledPackages()
                     } catch {
                         printOS("Error installing package \(result.name): \(error)")

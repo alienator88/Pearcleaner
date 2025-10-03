@@ -6,7 +6,9 @@
 //
 
 import Foundation
+#if canImport(SwiftData)
 import SwiftData
+#endif
 
 @available(macOS 14.0, *)
 @Model

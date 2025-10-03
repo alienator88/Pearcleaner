@@ -6,7 +6,9 @@
 //
 
 import SwiftUI
+#if canImport(SwiftData)
 import SwiftData
+#endif
 import AppKit
 import AlinFoundation
 

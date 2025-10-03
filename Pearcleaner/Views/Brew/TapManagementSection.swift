@@ -568,9 +568,7 @@ struct TapPackageRowView: View {
                     defer { isInstalling = false }
 
                     do {
-                        printOS("Installing \(package.name) (cask: \(isCask))")
                         try await HomebrewController.shared.installPackage(name: package.name, cask: isCask)
-                        printOS("Successfully installed \(package.name)")
                         await brewManager.loadInstalledPackages()
                     } catch {
                         printOS("Error installing package \(package.name): \(error)")
@@ -590,9 +588,7 @@ struct TapPackageRowView: View {
                     do {
                         // Extract short name for uninstall command
                         let shortName = package.name.components(separatedBy: "/").last ?? package.name
-                        printOS("Uninstalling \(shortName)")
                         try await HomebrewController.shared.uninstallPackage(name: shortName)
-                        printOS("Successfully uninstalled \(shortName)")
                         await brewManager.loadInstalledPackages()
                     } catch {
                         printOS("Error uninstalling package \(package.name): \(error)")
