@@ -119,18 +119,22 @@ func getSortedApps(paths: [String]) -> [AppInfo] {
         for chunk in chunks {
             group.enter()
             queue.async {
-                let chunkAppInfos: [AppInfo] = chunk.compactMap { appURL in
-                    let appPath = appURL.path
+                autoreleasepool {
+                    let chunkAppInfos: [AppInfo] = chunk.compactMap { appURL in
+                        autoreleasepool {
+                            let appPath = appURL.path
 
-                    if let appMetadata = metadataDictionary[appPath] {
-                        return MetadataAppInfoFetcher.getAppInfo(fromMetadata: appMetadata, atPath: appURL)
-                    } else {
-                        return AppInfoFetcher.getAppInfo(atPath: appURL)
+                            if let appMetadata = metadataDictionary[appPath] {
+                                return MetadataAppInfoFetcher.getAppInfo(fromMetadata: appMetadata, atPath: appURL)
+                            } else {
+                                return AppInfoFetcher.getAppInfo(atPath: appURL)
+                            }
+                        }
                     }
-                }
 
-                resultsQueue.sync {
-                    allAppInfos.append(contentsOf: chunkAppInfos)
+                    resultsQueue.sync {
+                        allAppInfos.append(contentsOf: chunkAppInfos)
+                    }
                 }
                 group.leave()
             }

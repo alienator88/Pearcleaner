@@ -125,26 +125,30 @@ func getMDLSMetadata(for paths: [String]) -> [String: [String: Any]]? {
     for chunk in chunks {
         group.enter()
         queue.async {
-            var chunkResults: [String: [String: Any]] = [:]
+            autoreleasepool {
+                var chunkResults: [String: [String: Any]] = [:]
 
-            // Process each path in this chunk
-            for path in chunk {
-                guard let mdItem = MDItemCreate(nil, path as CFString) else {
-                    continue
-                }
+                // Process each path in this chunk
+                for path in chunk {
+                    autoreleasepool {
+                        guard let mdItem = MDItemCreate(nil, path as CFString) else {
+                            return
+                        }
 
-                var itemMetadata = [String: Any]()
-                for attribute in attributes {
-                    if let value = MDItemCopyAttribute(mdItem, attribute) {
-                        itemMetadata[attribute as String] = value
+                        var itemMetadata = [String: Any]()
+                        for attribute in attributes {
+                            if let value = MDItemCopyAttribute(mdItem, attribute) {
+                                itemMetadata[attribute as String] = value
+                            }
+                        }
+                        chunkResults[path] = itemMetadata
                     }
                 }
-                chunkResults[path] = itemMetadata
-            }
 
-            // Safely merge results
-            resultsQueue.sync {
-                allResults.merge(chunkResults) { _, new in new }
+                // Safely merge results
+                resultsQueue.sync {
+                    allResults.merge(chunkResults) { _, new in new }
+                }
             }
             group.leave()
         }
@@ -322,52 +326,54 @@ class SteamAppInfoFetcher {
 
 
 private func getEntitlements(for appPath: String) -> [String]? {
-    let appURL = URL(fileURLWithPath: appPath) as CFURL
-    var staticCode: SecStaticCode?
+    return autoreleasepool {
+        let appURL = URL(fileURLWithPath: appPath) as CFURL
+        var staticCode: SecStaticCode?
 
-    // Create a static code object for the app
-    guard SecStaticCodeCreateWithPath(appURL, [], &staticCode) == errSecSuccess,
-          let code = staticCode else {
+        // Create a static code object for the app
+        guard SecStaticCodeCreateWithPath(appURL, [], &staticCode) == errSecSuccess,
+              let code = staticCode else {
+            return nil
+        }
+
+        // 1 << 2 is the bitmask for entitlements (kSecCSEntitlements)
+        var info: CFDictionary?
+        if SecCodeCopySigningInformation(code,
+                                         SecCSFlags(rawValue: 1 << 2),
+                                         &info) == errSecSuccess,
+           let dict = info as? [String: Any],
+           let entitlements = dict[kSecCodeInfoEntitlementsDict as String] as? [String: Any] {
+
+            var results: [String] = []
+
+            // com.apple.developer.team-identifier
+            if let teamIdentifier = entitlements["com.apple.developer.team-identifier"] as? String {
+                results.append(teamIdentifier)
+            }
+
+            // com.apple.security.temporary-exception.files.home-relative-path.read-write
+            if let tempExceptionPaths = entitlements["com.apple.security.temporary-exception.files.home-relative-path.read-write"] as? [String] {
+                for path in tempExceptionPaths {
+                    let lastComponent = URL(fileURLWithPath: path).lastPathComponent
+                    results.append(lastComponent)
+                }
+            }
+
+            // com.apple.security.application-groups
+            if let appGroups = entitlements["com.apple.security.application-groups"] as? [String] {
+                results.append(contentsOf: appGroups)
+            }
+
+            // com.apple.developer.icloud-container-identifiers
+            if let icloudContainers = entitlements["com.apple.developer.icloud-container-identifiers"] as? [String] {
+                results.append(contentsOf: icloudContainers)
+            }
+
+            return results.isEmpty ? nil : results
+        }
+
         return nil
     }
-
-    // 1 << 2 is the bitmask for entitlements (kSecCSEntitlements)
-    var info: CFDictionary?
-    if SecCodeCopySigningInformation(code,
-                                     SecCSFlags(rawValue: 1 << 2),
-                                     &info) == errSecSuccess,
-       let dict = info as? [String: Any],
-       let entitlements = dict[kSecCodeInfoEntitlementsDict as String] as? [String: Any] {
-
-        var results: [String] = []
-
-        // com.apple.developer.team-identifier
-        if let teamIdentifier = entitlements["com.apple.developer.team-identifier"] as? String {
-            results.append(teamIdentifier)
-        }
-
-        // com.apple.security.temporary-exception.files.home-relative-path.read-write
-        if let tempExceptionPaths = entitlements["com.apple.security.temporary-exception.files.home-relative-path.read-write"] as? [String] {
-            for path in tempExceptionPaths {
-                let lastComponent = URL(fileURLWithPath: path).lastPathComponent
-                results.append(lastComponent)
-            }
-        }
-
-        // com.apple.security.application-groups
-        if let appGroups = entitlements["com.apple.security.application-groups"] as? [String] {
-            results.append(contentsOf: appGroups)
-        }
-
-        // com.apple.developer.icloud-container-identifiers
-        if let icloudContainers = entitlements["com.apple.developer.icloud-container-identifiers"] as? [String] {
-            results.append(contentsOf: icloudContainers)
-        }
-
-        return results.isEmpty ? nil : results
-    }
-
-    return nil
 }
 
 

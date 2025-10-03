@@ -148,74 +148,106 @@ func isRestricted(atPath path: URL) -> Bool {
 
 // Check app bundle architecture
 func checkAppBundleArchitecture(at appBundlePath: String) -> Arch {
-    let bundleURL = URL(fileURLWithPath: appBundlePath)
-    let infoPlistURL = bundleURL.appendingPathComponent("Contents/Info.plist")
-    guard let infoDict = NSDictionary(contentsOf: infoPlistURL) as? [String: Any],
-          let executableName = infoDict["CFBundleExecutable"] as? String else {
-        return .empty
-    }
-    let executableURL = bundleURL.appendingPathComponent("Contents/MacOS").appendingPathComponent(executableName)
-    guard let fileData = try? Data(contentsOf: executableURL) else {
-        return .empty
-    }
+    return autoreleasepool {
+        let bundleURL = URL(fileURLWithPath: appBundlePath)
+        let infoPlistURL = bundleURL.appendingPathComponent("Contents/Info.plist")
 
-    // Check for fat (universal) binary
-    let magic = fileData.prefix(4).withUnsafeBytes { $0.load(as: UInt32.self).bigEndian }
-    let FAT_MAGIC: UInt32 = 0xcafebabe
-    if magic == FAT_MAGIC {
-        let numArchs = fileData.subdata(in: 4..<8).withUnsafeBytes { $0.load(as: UInt32.self).bigEndian }
-        var offset = 8
-        var archs: [Arch] = []
-        for _ in 0..<numArchs {
-            let archData = fileData.subdata(in: offset..<(offset + 20)).withUnsafeBytes { ptr in
-                FatArch(
-                    cpuType: ptr.load(fromByteOffset: 0, as: UInt32.self).bigEndian,
-                    cpuSubtype: ptr.load(fromByteOffset: 4, as: UInt32.self).bigEndian,
-                    offset: ptr.load(fromByteOffset: 8, as: UInt32.self).bigEndian,
-                    size: ptr.load(fromByteOffset: 12, as: UInt32.self).bigEndian,
-                    align: ptr.load(fromByteOffset: 16, as: UInt32.self).bigEndian
-                )
+        // Read Info.plist in autoreleasepool to release immediately
+        let executableName: String? = autoreleasepool {
+            guard let infoDict = NSDictionary(contentsOf: infoPlistURL) as? [String: Any] else {
+                return nil
             }
-            if archData.cpuType == 0x0100000c { archs.append(.arm) }
-            else if archData.cpuType == 0x01000007 { archs.append(.intel) }
-            offset += 20
-        }
-        return archs.count == 1 ? archs.first! : .universal
-    } else {
-        // Single architecture Mach-O binary: read cpu type from header
-        guard fileData.count >= 8 else { return .empty }
-
-        // Check magic number for 64-bit Mach-O
-        let magic = fileData.prefix(4).withUnsafeBytes { $0.load(as: UInt32.self) }
-
-        if magic == 0xfeedfacf || magic == 0xcffaedfe {
-            // 64-bit Mach-O - read CPU type
-            let cputypeLittle = fileData.subdata(in: 4..<8).withUnsafeBytes { $0.load(as: UInt32.self) }
-            let cputypeBig = fileData.subdata(in: 4..<8).withUnsafeBytes { $0.load(as: UInt32.self).bigEndian }
-
-            // ARM64 detection
-            if cputypeLittle == 0x0100000c || cputypeBig == 0x0c000001 {
-                return .arm
-            }
-            // x86_64 detection
-            else if cputypeLittle == 0x01000007 || cputypeBig == 0x07000001 {
-                return .intel
-            }
-        } else if magic == 0xfeedface || magic == 0xcefaedfe {
-            // 32-bit Mach-O (less common)
-            let cputypeLittle = fileData.subdata(in: 4..<8).withUnsafeBytes { $0.load(as: UInt32.self) }
-            let cputypeBig = fileData.subdata(in: 4..<8).withUnsafeBytes { $0.load(as: UInt32.self).bigEndian }
-
-            // ARM64 and x86_64 with 32-bit magic (edge case)
-            if cputypeLittle == 0x0100000c || cputypeBig == 0x0c000001 {
-                return .arm
-            }
-            else if cputypeLittle == 0x01000007 || cputypeBig == 0x07000001 {
-                return .intel
-            }
+            return infoDict["CFBundleExecutable"] as? String
         }
 
-        return .empty
+        guard let execName = executableName else {
+            return .empty
+        }
+
+        let executableURL = bundleURL.appendingPathComponent("Contents/MacOS").appendingPathComponent(execName)
+
+        // Use FileHandle to read only the header bytes needed for architecture detection
+        guard let fileHandle = try? FileHandle(forReadingFrom: executableURL) else {
+            return .empty
+        }
+        defer {
+            try? fileHandle.close()
+        }
+
+        // Read first 8 bytes for magic and initial header
+        guard let headerData = try? fileHandle.read(upToCount: 8), headerData.count >= 4 else {
+            return .empty
+        }
+
+        // Check for fat (universal) binary
+        let magic = headerData.prefix(4).withUnsafeBytes { $0.load(as: UInt32.self).bigEndian }
+        let FAT_MAGIC: UInt32 = 0xcafebabe
+
+        if magic == FAT_MAGIC {
+            // Fat binary - read architecture count
+            guard headerData.count >= 8 else { return .empty }
+            let numArchs = headerData.subdata(in: 4..<8).withUnsafeBytes { $0.load(as: UInt32.self).bigEndian }
+
+            // Read all architecture headers at once (20 bytes each)
+            let archHeadersSize = Int(numArchs) * 20
+            guard let archHeadersData = try? fileHandle.read(upToCount: archHeadersSize),
+                  archHeadersData.count == archHeadersSize else {
+                return .empty
+            }
+
+            var archs: [Arch] = []
+            var offset = 0
+            for _ in 0..<numArchs {
+                let archData = archHeadersData[offset..<(offset + 20)].withUnsafeBytes { ptr in
+                    FatArch(
+                        cpuType: ptr.load(fromByteOffset: 0, as: UInt32.self).bigEndian,
+                        cpuSubtype: ptr.load(fromByteOffset: 4, as: UInt32.self).bigEndian,
+                        offset: ptr.load(fromByteOffset: 8, as: UInt32.self).bigEndian,
+                        size: ptr.load(fromByteOffset: 12, as: UInt32.self).bigEndian,
+                        align: ptr.load(fromByteOffset: 16, as: UInt32.self).bigEndian
+                    )
+                }
+                if archData.cpuType == 0x0100000c { archs.append(.arm) }
+                else if archData.cpuType == 0x01000007 { archs.append(.intel) }
+                offset += 20
+            }
+            return archs.count == 1 ? archs.first! : .universal
+        } else {
+            // Single architecture Mach-O binary: read cpu type from header
+            guard headerData.count >= 8 else { return .empty }
+
+            // Check magic number for 64-bit Mach-O
+            let magic = headerData.prefix(4).withUnsafeBytes { $0.load(as: UInt32.self) }
+
+            if magic == 0xfeedfacf || magic == 0xcffaedfe {
+                // 64-bit Mach-O - read CPU type
+                let cputypeLittle = headerData.subdata(in: 4..<8).withUnsafeBytes { $0.load(as: UInt32.self) }
+                let cputypeBig = headerData.subdata(in: 4..<8).withUnsafeBytes { $0.load(as: UInt32.self).bigEndian }
+
+                // ARM64 detection
+                if cputypeLittle == 0x0100000c || cputypeBig == 0x0c000001 {
+                    return .arm
+                }
+                // x86_64 detection
+                else if cputypeLittle == 0x01000007 || cputypeBig == 0x07000001 {
+                    return .intel
+                }
+            } else if magic == 0xfeedface || magic == 0xcefaedfe {
+                // 32-bit Mach-O (less common)
+                let cputypeLittle = headerData.subdata(in: 4..<8).withUnsafeBytes { $0.load(as: UInt32.self) }
+                let cputypeBig = headerData.subdata(in: 4..<8).withUnsafeBytes { $0.load(as: UInt32.self).bigEndian }
+
+                // ARM64 and x86_64 with 32-bit magic (edge case)
+                if cputypeLittle == 0x0100000c || cputypeBig == 0x0c000001 {
+                    return .arm
+                }
+                else if cputypeLittle == 0x01000007 || cputypeBig == 0x07000001 {
+                    return .intel
+                }
+            }
+
+            return .empty
+        }
     }
 }
 
