@@ -39606,6 +39606,12 @@
             "value" : "Hľadanie súvisiacich súborov..."
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iskanje sorodnih datotek ..."
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -39698,6 +39704,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hľadá sa:"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iskanje:"
           }
         },
         "tr" : {
@@ -39794,6 +39806,12 @@
             "value" : "Bezpečný"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varno"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -39886,6 +39904,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zobraziť podrobnosti aplikácie"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oglejte si podrobnosti aplikacije"
           }
         },
         "tr" : {
@@ -39982,6 +40006,12 @@
             "value" : "Zobraziť podrobnosti"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ogled podrobnosti"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -40074,6 +40104,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zobraziť podrobnosti lipo balíka"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oglejte si lipo podrobnosti"
           }
         },
         "tr" : {
@@ -40170,6 +40206,12 @@
             "value" : "Vybrať všetko"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Izberi vse"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -40262,6 +40304,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vyberte aplikáciu z bočného panela na začiatok"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Za začetek izberite aplikacijo v stranski vrstici"
           }
         },
         "tr" : {
@@ -40358,6 +40406,12 @@
             "value" : "Vyberte prostredie na zobrazenie uloženého vyrovnávacej pamäte"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Izberite okolje za ogled shranjenega predpomnilnika"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -40452,6 +40506,12 @@
             "value" : "Vybrané položky:"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Izbrani elementi:"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -40542,6 +40602,12 @@
           }
         },
         "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sentinel Monitor"
+          }
+        },
+        "sl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sentinel Monitor"
@@ -40641,6 +40707,12 @@
             "value" : "Monitor Sentinel nenašiel žiadne osirelé súbory"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sentinel Monitor ni našel osirotelih datotek"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -40734,6 +40806,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sentinel Monitor nenašiel žiadne ďalšie súbory na odstránenie"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sentinel Monitor ni našel drugih datotek za odstranitev"
           }
         },
         "tr" : {
@@ -40830,6 +40908,12 @@
             "value" : "Služba nebola zaregistrovaná. Teraz ju môžete zaregistrovať."
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Storitev še ni registrirana. Lahko jo registrirate zdaj."
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -40922,6 +41006,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Služba je už povolená"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Storitev je že omogočena."
           }
         },
         "tr" : {
@@ -41018,6 +41108,12 @@
             "value" : "Služba je už zaregistrovaná a povolená."
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Storitev je že registrirana in omogočena."
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -41110,6 +41206,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Služba nie je nainštalovaná."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Storitev ni nameščena."
           }
         },
         "tr" : {
@@ -41206,6 +41308,12 @@
             "value" : "Služba je zaregistrovaná, ale vyžaduje si schválenie používateľom v časti Nastavenia > Položky prihlásenia > %@.app."
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Storitev je registrirana, vendar zahteva odobritev uporabnika v Nastavitve > Prijavni elementi > %@.app."
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -41298,6 +41406,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Služby"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Storitve"
           }
         },
         "tr" : {
@@ -41395,6 +41509,12 @@
             "value" : "Nastavenia"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nastavitve"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -41488,6 +41608,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Znova zobraziť odznak oznámení"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponovno prikaži značko za obvestila"
           }
         },
         "tr" : {
@@ -41585,6 +41711,12 @@
             "value" : "Zobraziť zoznam aplikácií pri spustení"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prikaži seznam aplikacij ob zagonu"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -41677,6 +41809,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zobraziť podrobnosti o súbore"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prikaži podrobnosti datoteke"
           }
         },
         "tr" : {
@@ -41773,6 +41911,12 @@
             "value" : "Zobraziť súbor vo Finderi"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prikaži datoteko v Iskalniku"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -41867,6 +42011,12 @@
             "value" : "Zobraziť vo Finderi"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prikaži v iskalniku"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -41959,6 +42109,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zobraziť viacnásobný výber"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prikaži več izbir"
           }
         },
         "tr" : {
@@ -42056,6 +42212,12 @@
             "value" : "Zobrazujú sa posledné 3 verzie"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prikaz zadnjih 3 izdaj"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -42148,6 +42310,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zoznam aplikácií je vypnutý"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preprost seznam aplikacij onemogočen"
           }
         },
         "tr" : {
@@ -42244,6 +42412,12 @@
             "value" : "Jednoduchý zoznam aplikácií zapnutý"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preprost seznam aplikacij omogočen"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -42336,6 +42510,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Keďže služby autorizácie boli spoločnosťou Apple zrušené ako menej bezpečná metóda autentifikácie, nakoniec budú odstránené z Pearcleaner a pomocná služba bude jedinou možnosťou do budúcnosti. Odporúčam čo najskôr povoliť privilegovanú pomocnú službu."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ker je Apple storitve avtorizacije opustil kot manj varno metodo preverjanja pristnosti, jih bo sčasoma odstranil iz Pearcleanerja in pomožna storitev bo v prihodnje edina možnost. Priporočam, da čim prej omogočite privilegirano pomožno storitev."
           }
         },
         "tr" : {
@@ -42433,6 +42613,12 @@
             "value" : "Veľkosť"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velikost"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -42527,6 +42713,12 @@
             "value" : "Veľkosť: %@"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velikost: %@"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -42616,6 +42808,12 @@
           }
         },
         "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slim Pearcleaner"
+          }
+        },
+        "sl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Slim Pearcleaner"
@@ -42716,6 +42914,12 @@
             "value" : "Zoradiť zoznam aplikácií abecedne podľa názvu alebo veľkosti"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Razvrsti seznam aplikacij po abecedi po imenu ali velikosti"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -42809,6 +43013,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zoradené podľa názvu"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Razvrščeno po imenu"
           }
         },
         "tr" : {
@@ -42906,6 +43116,12 @@
             "value" : "Zoradené podľa veľkosti"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Razvrščeno po velikosti"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -42998,6 +43214,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Triedenie"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Razvrščanje"
           }
         },
         "tr" : {
@@ -43095,6 +43317,12 @@
             "value" : "Možnosti zoradenia"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Možnosti razvrščanja"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -43188,6 +43416,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zoradenie: %@"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Razvrščanje: %@"
           }
         },
         "tr" : {
@@ -43285,6 +43519,12 @@
             "value" : "Úspora miesta: %d%%"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prihranek prostora: %d%%"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -43378,6 +43618,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Úspora miesta: %d%%\nCelková ušetrená kapacita: %@"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prihranek prostora: %d%%\nSkupni prihranjeni prostor: %@"
           }
         },
         "tr" : {
@@ -43475,6 +43721,12 @@
             "value" : "Podporovateľ"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sponzor"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -43567,6 +43819,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Index vyhľadávania Spotlight"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotlight kazalo"
           }
         },
         "tr" : {
@@ -43663,6 +43921,12 @@
             "value" : "Štart"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Začni"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -43755,6 +44019,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Spustiť Lipo"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Začni Lipo"
           }
         },
         "tr" : {
@@ -43851,6 +44121,12 @@
             "value" : "Štartovací disk"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zagonski disk"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -43943,6 +44219,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Štatistiky"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Statistika"
           }
         },
         "tr" : {
@@ -44039,6 +44321,12 @@
             "value" : "Stav:"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Status:"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -44131,6 +44419,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zastaviť"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ustavi"
           }
         },
         "tr" : {
@@ -44227,6 +44521,12 @@
             "value" : "Prísne"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Strogo"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -44321,6 +44621,12 @@
             "value" : "Prísna úroveň a tiež zahŕňa vyhľadávanie metadát Spotlight (O niečo viac súborov, stále presné) "
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stroga raven in vključuje tudi iskanje metapodatkov Spotlight (nekoliko več datotek, še vedno natančno)"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -44413,6 +44719,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prísna úroveň, ktorá tiež umožňuje čiastočné zhody (Viac súborov, mierne menej presné)"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stroga raven in omogoča tudi delna ujemanja (več datotek, nekoliko manj natančno)"
           }
         },
         "tr" : {
@@ -44510,6 +44822,12 @@
             "value" : "Nahlásiť chybu alebo požiadavku na funkciu"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pošljite zahtevo za napako ali funkcijo"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -44605,6 +44923,12 @@
             "value" : "Nahlásiť nový problém"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prijavi novo težavo"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -44695,6 +45019,12 @@
           }
         },
         "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podpora"
+          }
+        },
+        "sl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Podpora"
@@ -44794,6 +45124,12 @@
             "value" : "Prepínať nástroje"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pripomočki za stikala"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -44887,6 +45223,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "systém"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sistem"
           }
         },
         "tr" : {
@@ -44983,6 +45325,12 @@
             "value" : "Systém"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sistem"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -45075,6 +45423,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Názov značky"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ime oznake"
           }
         },
         "tr" : {
@@ -45171,6 +45525,12 @@
             "value" : "Názvy značiek (oddelené čiarkou)"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imena oznak (ločena z vejicami)"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -45263,6 +45623,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Značky"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oznake"
           }
         },
         "tr" : {
@@ -45359,6 +45725,12 @@
             "value" : "Kohútiky"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pipe"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -45453,6 +45825,12 @@
             "value" : "Terminál"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminal"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -45545,6 +45923,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Úroveň citlivosti vyhľadávania určuje, ako prísny alebo zhovievavý je Pearcleaner pri hľadaní súvisiacich súborov pre aplikáciu:\n\n• Prísne – %@\n• Vylepšené – %@\n• Vyvážené – %@\n• Široké – %@\n\nVyššie úrovne môžu nájsť viac súborov, ale môžu zahŕňať aj niektoré nesúvisiace výsledky. Na týchto úrovniach sa odporúča skontrolovať nájdené súbory manuálne."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raven občutljivosti iskanja določa, kako strog ali popustljiv je Pearcleaner pri iskanju sorodnih datotek za aplikacijo:\n\n• Strogo – %@\n• Izboljšano – %@\n• Uravnoteženo – %@\n• Široko – %@\n\nVišje ravni lahko najdejo več datotek, vendar lahko vključujejo tudi nekatere nepovezane rezultate. Pri teh ravneh je priporočljivo, da najdene datoteke preverite ročno."
           }
         },
         "tr" : {
@@ -45642,6 +46026,12 @@
             "value" : "Celková úspora miesta medzi všetkými lipo aplikáciami\nVeľkosť pred: %@\nVeľkosť po: %@"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skupni prihranek prostora med vsemi aplikacijami z lipo\nVelikost prej: %@\nVelikost po: %@"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -45734,6 +46124,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Motív"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tema"
           }
         },
         "tr" : {
@@ -45831,6 +46227,12 @@
             "value" : "Téma vzhľadu"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tematski način"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -45925,6 +46327,12 @@
             "value" : "Nie sú žiadne súbory na odstránenie"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ni datotek za odstranitev"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -46017,6 +46425,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tretia strana"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tretja oseba"
           }
         },
         "tr" : {
@@ -46114,6 +46528,12 @@
             "value" : "Toto pridá súbor/priečinok do zoznamu výnimiek. Zoznam výnimiek môžeš upraviť v Nastaveniach > PriečinkyToto pridá súbor/priečinok do zoznamu výnimiek. Zoznam výnimiek môžeš upraviť v Nastaveniach > Priečinky"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "S tem se datoteka/mapa doda na seznam izključitev. Seznam izključitev uredite v meniju Nastavitve > zavihek Mape."
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -46207,6 +46627,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Táto aplikácia sa nachádza v %@"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta aplikacija se nahaja v %@"
           }
         },
         "tr" : {
@@ -46304,6 +46730,12 @@
             "value" : "Toto je webová aplikácia"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To je spletna aplikacija"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -46399,6 +46831,12 @@
             "value" : "Toto je zabalená iOS aplikácia"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To je zavita aplikacija za iOS"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -46491,6 +46929,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Týmto sa vylúčia vybrané položky z budúcich skenov. Zoznam vylúčení je možné upraviť v Nastaveniach > karta Zložky alebo v bočnom paneli v tomto zobrazení."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "S tem boste iz prihodnjih pregledov izključili izbrane elemente. Seznam izključitev lahko uredite v Nastavitve > zavihek Mape ali v stranski vrstici v tem pogledu."
           }
         },
         "tr" : {
@@ -46594,6 +47038,12 @@
             "value" : "Týmto sa vylúčia vybrané položky z budúcich skenovaní. Zoznam vylúčení možno upraviť v Nastavenia > Karta Priečinky."
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "S tem boste iz prihodnjih pregledov izključili izbrane elemente. Seznam izključitev lahko uredite v zavihku Nastavitve > Mape."
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -46686,6 +47136,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Toto nainštaluje %@ pomocou Homebrew. Môže to trvať niekoľko minút."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To bo namestilo %@ z uporabo programa Homebrew. To lahko traja nekaj minut."
           }
         },
         "tr" : {
@@ -46783,6 +47239,12 @@
             "value" : "Odstráni všetky nepoužívané jazykové prekladové súbory"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "S tem boste odstranili vse neuporabljene datoteke za jezikovne prevode."
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -46875,6 +47337,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Toto aktualizuje všetky %lld zastarané balíky. Môže to trvať niekoľko minút."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "S tem boste nadgradili vseh %lld zastarelih paketov. To lahko traja nekaj minut."
           }
         },
         "tr" : {
@@ -46972,6 +47440,12 @@
             "value" : "Nástroje"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orodja"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -47064,6 +47538,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ušetrené celkom:"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skupni prihranek:"
           }
         },
         "tr" : {
@@ -47160,6 +47640,12 @@
             "value" : "Celková veľkosť:"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skupna velikost:"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -47252,6 +47738,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Animácie prechodov vypnuté"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animacije prehodov so onemogočene"
           }
         },
         "tr" : {
@@ -47348,6 +47840,12 @@
             "value" : "Povolené prechodové animácie"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omogočene so animacije prehodov"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -47440,6 +47938,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Preklad"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prevod"
           }
         },
         "tr" : {
@@ -47537,6 +48041,12 @@
             "value" : "Priehľadnosť"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prozoren material"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -47629,6 +48139,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Priehľadný bočný panel"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prozorna stranska vrstica"
           }
         },
         "tr" : {
@@ -47725,6 +48241,12 @@
             "value" : "Skúste iný vyhľadávací výraz"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poskusite z drugim iskalnim izrazom"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -47817,6 +48339,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Skúste upraviť svoje filtre"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poskusite prilagoditi filtre"
           }
         },
         "tr" : {
@@ -47913,6 +48441,12 @@
             "value" : "Skúste upraviť vyhľadávanie alebo filtre"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poskusite prilagoditi iskanje ali filtre"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -48005,6 +48539,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Typ"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tip"
           }
         },
         "tr" : {
@@ -48101,6 +48641,12 @@
             "value" : "Zadajte kľúčové slovo na vylúčenie, Enter ↵ pre uloženie"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vnesite ključno besedo, ki jo želite izključiti, in pritisnite tipko ↵ ​​za shranjevanje."
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -48193,6 +48739,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Napíš pre vyhľadávanie"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vpišite za iskanje"
           }
         },
         "tr" : {
@@ -48290,6 +48842,12 @@
             "value" : "Zrušiť odstránenie"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Razveljavi odstranitev"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -48385,6 +48943,12 @@
             "value" : "Odinštalovať"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odstrani"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -48477,6 +49041,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Odinštalovať %@?"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odstraniti %@?"
           }
         },
         "tr" : {
@@ -48574,6 +49144,12 @@
             "value" : "Potvrdzovacie hlásenia pri odinštalácii"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opozorila o potrditvi odstranitve"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -48666,6 +49242,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Odinštalovať balík"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odstrani paket"
           }
         },
         "tr" : {
@@ -48763,6 +49345,12 @@
             "value" : "Odinštalovať Pearcleaner"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odstrani Pearcleaner"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -48855,6 +49443,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Jednotka"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Merska enota"
           }
         },
         "tr" : {
@@ -48951,6 +49545,12 @@
             "value" : "univerzálny"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "univerzalno"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -49043,6 +49643,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Neznáme"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neznano"
           }
         },
         "tr" : {
@@ -49139,6 +49745,12 @@
             "value" : "Neznámy stav služby (%lld)."
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neznano stanje storitve (%lld)."
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -49231,6 +49843,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Odpojiť súbor"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prekini povezavo datoteke"
           }
         },
         "tr" : {
@@ -49327,6 +49945,12 @@
             "value" : "Ukončiť službu"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Razbremeni storitev"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -49419,6 +50043,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Odopnúť verziu"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odpni različico"
           }
         },
         "tr" : {
@@ -49515,6 +50145,12 @@
             "value" : "Zrušiť registráciu služby"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odjava storitve"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -49609,6 +50245,12 @@
             "value" : "Nepodpísaný"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepodpisano"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -49701,6 +50343,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aktualizovať"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posodobi"
           }
         },
         "tr" : {
@@ -49798,6 +50446,12 @@
             "value" : "Aktualizácia Dostupná"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posodobitev je na voljo"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -49891,6 +50545,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aktualizácia Dostupná 🥳"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posodobitev je na voljo 🥳"
           }
         },
         "tr" : {
@@ -49988,6 +50648,12 @@
             "value" : "Aktualizácia dokončená"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posodobitev končana"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -50080,6 +50746,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Frekvencia aktualizácií"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pogostost posodabljanja"
           }
         },
         "tr" : {
@@ -50176,6 +50848,12 @@
             "value" : "Aktualizovať Homebrew"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posodobi homebrew"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -50268,6 +50946,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aktualizujte Homebrew na najnovšiu verziu pomocou brew update"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posodobite Homebrew na najnovejšo različico z uporabo programa brew update"
           }
         },
         "tr" : {
@@ -50365,6 +51049,12 @@
             "value" : "Prebieha aktualizácia"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posodobitev v teku"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -50457,6 +51147,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aktualizované %@"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posodobljeno %@"
           }
         },
         "tr" : {
@@ -50554,6 +51250,12 @@
             "value" : "Frekvencia aktualizácií je nastavená na Nikdy"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pogostost posodabljanja je nastavljena na Nikoli"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -50647,6 +51349,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aktualizácie vypnuté"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posodobitve onemogočene"
           }
         },
         "tr" : {
@@ -50743,6 +51451,12 @@
             "value" : "Aktualizácia..."
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posodabljanje…"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -50835,6 +51549,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Inovovať"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nadgradi"
           }
         },
         "tr" : {
@@ -50931,6 +51651,12 @@
             "value" : "Aktualizovať všetky zastarané"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nadgradi vse zastarele"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -51023,6 +51749,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aktualizovať všetky balíky"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nadgradi vse pakete"
           }
         },
         "tr" : {
@@ -51119,6 +51851,12 @@
             "value" : "Aktualizovať balík"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nadgradni paket"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -51211,6 +51949,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Používateľ"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uporabnik"
           }
         },
         "tr" : {
@@ -51307,6 +52051,12 @@
             "value" : "Používateľ odmietol povolenie. Umožnite v Systémových nastaveniach > Položky pri prihlásení."
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uporabniku je zavrnjeno dovoljenje. Omogočite v Sistemskih nastavitvah > Elementi za prijavo."
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -51401,6 +52151,12 @@
             "value" : "user/tap"
           }
         },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "uporabnik/tap"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -51493,6 +52249,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hodnota"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vrednost"
           }
         },
         "tr" : {
