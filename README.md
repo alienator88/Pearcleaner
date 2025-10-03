@@ -21,42 +21,31 @@ This project was born out of wanting to learn more on how macOS deals with app i
 
 
 ### Table of Contents:
-[Translations](#translations) | [License](#license) | [Features](#features) | [Screenshots](#screenshots) | [Issues](#issues) | [Requirements](#requirements) | [Download](#getting-pearcleaner) | [Thanks](#thanks) | [Other Apps](#other-apps)
+[Features](#features) | [Screenshots](#screenshots) | [Issues](#issues) | [Requirements](#requirements) | [Download](#getting-pearcleaner) | [Translations](#translations) | [License](#license) | [Thanks](#thanks) | [Other Apps](#other-apps)
 
 <br>
 
-## Translations
-If you are able to contribute to translations for the app, please see this discussion: https://github.com/alienator88/Pearcleaner/discussions/137
 
-## License
-> [!IMPORTANT]
-> Pearcleaner is licensed under Apache 2.0 with [Commons Clause](https://commonsclause.com/). This means that you can do anything you'd like with the source, modify it, contribute to it, etc., but the license explicitly prohibits any form of monetization for Pearcleaner or any modified versions of it. See full license [HERE](https://github.com/alienator88/Pearcleaner/blob/main/LICENSE.md)
 
 ## Features
-- Orphaned file search for finding remaining files from previously uninstalled applications
-- Development environments file/cache cleaning
-- App Lipo to strip unneeded architectures from universal apps. No dependency on the lipo tool so no need to install xcode or command line tools
-- Launch Agent/Daemon management view
-- PKG Installer management view
-- Plugins management view
-- Search for files view
-- Prune unused translation files from app bundles keeping only the preferred language set on macOS
-- Sentinel monitor helper that can be enabled to watch Trash folder for deleted apps to cleanup after the fact(Extremely small (210KB) and uses ~2mb of ram to run in the background and file watch)
-- CLI support
-- List or Grid mode app view
+### Core
+- **App Uninstall • Orphaned File Search • Development Environment Manager • File Search • Homebrew Manager • App Lipo • PKG Manager • Plugin Manager • Services Manager**
+- Drag/drop apps, CLI support, and deep link automation [view](https://github.com/alienator88/Pearcleaner/wiki/Deep-Link-Guide)
+- List or Grid view with badges for web/iOS apps
+- Finder Extension for right-click uninstall
+- Pearcleaner self-uninstall and slimming options
+
+### Utilities
+- Prune unused app translations, keeping only preferred languages
+- Strip unneeded architectures from universal apps without requirement of lipo binary from xcode tools
+- **Sentinel Monitor**: Automatic cleanup when apps hit Trash (~2MB RAM)
+- Export app bundles and file lists
 - Basic Steam games support
-- Drag/drop applications support
-- Deep link support for automation, see [wiki guide](https://github.com/alienator88/Pearcleaner/wiki/Deep-Link-Guide) for instructions
-- Optional Finder Extension which allows you to uninstall an app directly from Finder by `right click > Pearcleaner Uninstall`
-- Theme System available with custom colors selector
-- Differentiate between regular, Safari web-apps and mobile apps with badges like **web** and **iOS**
-- Has clean uninstall menu option for the Pearcleaner app itself if you want to stop using it and get rid of all files and launch items
-- Export app bundles for migrating apps and their cache to a new system
-- Export app file list search results
-- Optional Homebrew cleanup
-- Include extra directories to search for apps in
-- Exclude files/folders from the orphaned file search
-- Set file search sensitivity to find more or less files
+
+### Customization
+- Theme system with custom colors
+- Include/exclude directories for searching
+- Adjustable search sensitivity
 
 ## Screenshots
 
@@ -103,6 +92,13 @@ You can add the app via Homebrew:
 brew install pearcleaner
 ```
 </details>
+
+## Translations
+If you are able to contribute to translations for the app, please see this discussion: https://github.com/alienator88/Pearcleaner/discussions/137
+
+## License
+> [!IMPORTANT]
+> Pearcleaner is licensed under Apache 2.0 with [Commons Clause](https://commonsclause.com/). This means that you can do anything you'd like with the source, modify it, contribute to it, etc., but the license explicitly prohibits any form of monetization for Pearcleaner or any modified versions of it. See full license [HERE](https://github.com/alienator88/Pearcleaner/blob/main/LICENSE.md)
 
 ## Thanks
 
