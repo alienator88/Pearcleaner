@@ -133,7 +133,7 @@ struct SearchInstallSection: View {
                         ForEach(displayedResults) { result in
                             SearchResultRowView(
                                 result: result,
-                                isCask: result.name.contains("/") ? false : (searchType == .casks || brewManager.allAvailableCasks.contains(where: { $0.name == result.name }))
+                                isCask: searchType == .casks || brewManager.allAvailableCasks.contains(where: { $0.name == result.name })
                             )
                         }
                     }
@@ -171,10 +171,17 @@ struct SearchResultRowView: View {
     @State private var isExpanded: Bool = false
 
     private var isAlreadyInstalled: Bool {
+        // Extract short name from full name (e.g., "mhaeuser/mhaeuser/battery-toolkit" -> "battery-toolkit")
+        let shortName = result.name.components(separatedBy: "/").last ?? result.name
+
         if isCask {
-            return brewManager.installedCasks.contains { $0.name == result.name }
+            return brewManager.installedCasks.contains { installedPackage in
+                installedPackage.name == result.name || installedPackage.name == shortName
+            }
         } else {
-            return brewManager.installedFormulae.contains { $0.name == result.name }
+            return brewManager.installedFormulae.contains { installedPackage in
+                installedPackage.name == result.name || installedPackage.name == shortName
+            }
         }
     }
 
@@ -335,15 +342,18 @@ struct SearchResultRowView: View {
         .alert("Install \(result.name)?", isPresented: $showInstallAlert) {
             Button("Cancel", role: .cancel) { }
             Button("Install") {
-                Task {
+                Task { @MainActor in
                     isInstalling = true
+                    defer { isInstalling = false }
+
                     do {
+                        printOS("Installing \(result.name) (cask: \(isCask))")
                         try await HomebrewController.shared.installPackage(name: result.name, cask: isCask)
+                        printOS("Successfully installed \(result.name)")
                         await brewManager.loadInstalledPackages()
                     } catch {
-                        printOS("Error installing package: \(error)")
+                        printOS("Error installing package \(result.name): \(error)")
                     }
-                    isInstalling = false
                 }
             }
         } message: {

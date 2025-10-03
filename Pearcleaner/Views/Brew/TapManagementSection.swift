@@ -102,8 +102,13 @@ struct TapRowView: View {
     @State private var isHovered: Bool = false
     @State private var isRemoving: Bool = false
     @State private var showRemoveAlert: Bool = false
+    @State private var isExpanded: Bool = false
+    @State private var isLoadingPackages: Bool = false
+    @State private var tapFormulae: [HomebrewSearchResult] = []
+    @State private var tapCasks: [HomebrewSearchResult] = []
 
     var body: some View {
+        VStack(spacing: 0) {
         HStack(alignment: .center, spacing: 12) {
             // Tap icon
             ZStack {
@@ -146,6 +151,25 @@ struct TapRowView: View {
 
             Spacer()
 
+            // See Packages button
+            Button {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    isExpanded.toggle()
+                }
+
+                if isExpanded {
+                    // Load packages after expanding
+                    Task {
+                        await loadTapPackages()
+                    }
+                }
+            } label: {
+                Label(isExpanded ? "Hide Packages" : "See Packages",
+                      systemImage: isExpanded ? "chevron.up" : "chevron.down")
+            }
+            .buttonStyle(.borderless)
+            .help("View packages in this tap")
+
             // Remove button
             if isRemoving {
                 HStack(spacing: 8) {
@@ -167,6 +191,68 @@ struct TapRowView: View {
             }
         }
         .padding()
+
+            // Expanded packages section
+            if isExpanded {
+                VStack(alignment: .leading, spacing: 12) {
+                    Divider()
+                        .padding(.horizontal)
+
+                    if isLoadingPackages {
+                        HStack {
+                            Spacer()
+                            ProgressView()
+                                .scaleEffect(0.8)
+                            Text("Loading packages...")
+                                .font(.caption)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            Spacer()
+                        }
+                        .padding(.vertical, 8)
+                    } else if tapFormulae.isEmpty && tapCasks.isEmpty {
+                        HStack {
+                            Spacer()
+                            Text("No packages found in this tap")
+                                .font(.caption)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            Spacer()
+                        }
+                        .padding(.vertical, 8)
+                    } else {
+                        VStack(alignment: .leading, spacing: 8) {
+                            // Show formulae
+                            if !tapFormulae.isEmpty {
+                                Text("Formulae (\(tapFormulae.count))")
+                                    .font(.caption)
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                    .padding(.horizontal)
+
+                                ForEach(tapFormulae) { formula in
+                                    TapPackageRowView(package: formula, isCask: false)
+                                }
+                            }
+
+                            // Show casks
+                            if !tapCasks.isEmpty {
+                                Text("Casks (\(tapCasks.count))")
+                                    .font(.caption)
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                    .padding(.horizontal)
+                                    .padding(.top, tapFormulae.isEmpty ? 0 : 8)
+
+                                ForEach(tapCasks) { cask in
+                                    TapPackageRowView(package: cask, isCask: true)
+                                }
+                            }
+                        }
+                        .padding(.bottom, 8)
+                    }
+                }
+                .padding(.horizontal)
+            }
+        }
         .background(
             RoundedRectangle(cornerRadius: 8)
                 .fill(isHovered ?
@@ -187,6 +273,9 @@ struct TapRowView: View {
                     do {
                         try await HomebrewController.shared.removeTap(name: tap.name)
                         await brewManager.loadTaps()
+
+                        // Remove tap's packages from Browse cache
+                        await brewManager.removeTapPackagesFromCache(tapName: tap.name)
                     } catch {
                         printOS("Error removing tap: \(error)")
                     }
@@ -195,6 +284,21 @@ struct TapRowView: View {
             }
         } message: {
             Text("Are you sure you want to remove this tap?")
+        }
+    }
+
+    private func loadTapPackages() async {
+        isLoadingPackages = true
+        defer { isLoadingPackages = false }
+
+        do {
+            let result = try await HomebrewController.shared.getPackagesFromTap(tap.name)
+            tapFormulae = result.formulae
+            tapCasks = result.casks
+        } catch {
+            printOS("Error loading packages from tap: \(error)")
+            tapFormulae = []
+            tapCasks = []
         }
     }
 }
@@ -319,11 +423,184 @@ struct AddTapSheet: View {
             do {
                 try await HomebrewController.shared.addTap(name: tapName)
                 await brewManager.loadTaps()
+
+                // Inject new tap's packages into Browse cache
+                await brewManager.addTapPackagesToCache(tapName: tapName)
+
                 isPresented = false
             } catch {
                 errorMessage = "Failed to add tap: \(error.localizedDescription)"
             }
             isAdding = false
+        }
+    }
+}
+
+// MARK: - Tap Package Row View
+
+struct TapPackageRowView: View {
+    let package: HomebrewSearchResult
+    let isCask: Bool
+    @EnvironmentObject var brewManager: HomebrewManager
+    @Environment(\.colorScheme) var colorScheme
+    @State private var isInstalling: Bool = false
+    @State private var isUninstalling: Bool = false
+    @State private var showInstallAlert: Bool = false
+    @State private var showUninstallAlert: Bool = false
+    @State private var isHovered: Bool = false
+
+    private var isAlreadyInstalled: Bool {
+        // Extract short name from full name (e.g., "mhaeuser/mhaeuser/battery-toolkit" -> "battery-toolkit")
+        let shortName = package.name.components(separatedBy: "/").last ?? package.name
+
+        if isCask {
+            return brewManager.installedCasks.contains { installedPackage in
+                installedPackage.name == package.name || installedPackage.name == shortName
+            }
+        } else {
+            return brewManager.installedFormulae.contains { installedPackage in
+                installedPackage.name == package.name || installedPackage.name == shortName
+            }
+        }
+    }
+
+    var body: some View {
+        HStack(alignment: .center, spacing: 8) {
+            // Package icon (smaller)
+            ZStack {
+                Circle()
+                    .fill((isCask ? Color.purple : Color.green).opacity(0.15))
+                    .frame(width: 28, height: 28)
+
+                Image(systemName: isCask ? "shippingbox.fill" : "cube.fill")
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(isCask ? .purple : .green)
+            }
+
+            // Package info
+            VStack(alignment: .leading, spacing: 2) {
+                Text(package.name.components(separatedBy: "/").last ?? package.name)
+                    .font(.caption)
+                    .fontWeight(.medium)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                if let description = package.description {
+                    Text(description)
+                        .font(.caption2)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        .lineLimit(1)
+                }
+            }
+
+            Spacer()
+
+            // Install status/button
+            if isInstalling {
+                HStack(spacing: 4) {
+                    ProgressView()
+                        .scaleEffect(0.6)
+                    Text("Installing...")
+                        .font(.caption2)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                }
+            } else if isUninstalling {
+                HStack(spacing: 4) {
+                    ProgressView()
+                        .scaleEffect(0.6)
+                    Text("Uninstalling...")
+                        .font(.caption2)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                }
+            } else if isAlreadyInstalled {
+                HStack(spacing: 8) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.caption2)
+                            .foregroundStyle(.green)
+                        Text("Installed")
+                            .font(.caption2)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+
+                    // Uninstall button
+                    Button {
+                        showUninstallAlert = true
+                    } label: {
+                        Image(systemName: "trash")
+                            .font(.caption2)
+                            .foregroundStyle(.red)
+                    }
+                    .buttonStyle(.borderless)
+                    .help("Uninstall package")
+                }
+            } else {
+                Button("Install") {
+                    showInstallAlert = true
+                }
+                .font(.caption2)
+                .buttonStyle(ControlGroupButtonStyle(
+                    foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                    shape: Capsule(style: .continuous),
+                    level: .primary,
+                    skipControlGroup: true
+                ))
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
+        .background(
+            RoundedRectangle(cornerRadius: 6)
+                .fill(isHovered ?
+                    ThemeColors.shared(for: colorScheme).secondaryBG.opacity(0.5) :
+                    Color.clear
+                )
+        )
+        .onHover { hovering in
+            withAnimation(.easeInOut(duration: 0.15)) {
+                isHovered = hovering
+            }
+        }
+        .alert("Install \(package.name)?", isPresented: $showInstallAlert) {
+            Button("Cancel", role: .cancel) { }
+            Button("Install") {
+                Task { @MainActor in
+                    isInstalling = true
+                    defer { isInstalling = false }
+
+                    do {
+                        printOS("Installing \(package.name) (cask: \(isCask))")
+                        try await HomebrewController.shared.installPackage(name: package.name, cask: isCask)
+                        printOS("Successfully installed \(package.name)")
+                        await brewManager.loadInstalledPackages()
+                    } catch {
+                        printOS("Error installing package \(package.name): \(error)")
+                    }
+                }
+            }
+        } message: {
+            Text("This will install \(package.name) from the tapped repository.")
+        }
+        .alert("Uninstall \(package.name)?", isPresented: $showUninstallAlert) {
+            Button("Cancel", role: .cancel) { }
+            Button("Uninstall", role: .destructive) {
+                Task { @MainActor in
+                    isUninstalling = true
+                    defer { isUninstalling = false }
+
+                    do {
+                        // Extract short name for uninstall command
+                        let shortName = package.name.components(separatedBy: "/").last ?? package.name
+                        printOS("Uninstalling \(shortName)")
+                        try await HomebrewController.shared.uninstallPackage(name: shortName)
+                        printOS("Successfully uninstalled \(shortName)")
+                        await brewManager.loadInstalledPackages()
+                    } catch {
+                        printOS("Error uninstalling package \(package.name): \(error)")
+                    }
+                }
+            }
+        } message: {
+            Text("This will remove \(package.name) from your system.")
         }
     }
 }

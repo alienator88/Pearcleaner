@@ -501,7 +501,10 @@ class HomebrewController {
         arguments.append(name)
 
         let result = try await runBrewCommand(arguments)
-        if result.error.contains("Error") {
+
+        // Check for actual errors (not warnings)
+        let combinedOutput = result.output + result.error
+        if result.error.contains("Error:") && !combinedOutput.contains("was successfully installed") {
             throw HomebrewError.commandFailed(result.error)
         }
     }
@@ -752,5 +755,105 @@ class HomebrewController {
         if result.error.contains("Error") {
             throw HomebrewError.commandFailed(result.error)
         }
+    }
+
+    // MARK: - Tap Package Loading
+
+    func getPackagesFromTap(_ tapName: String) async throws -> (formulae: [HomebrewSearchResult], casks: [HomebrewSearchResult]) {
+        let tapPath = "\(brewPrefix)/Library/Taps/\(tapName.replacingOccurrences(of: "/", with: "/homebrew-"))"
+
+        var formulae: [HomebrewSearchResult] = []
+        var casks: [HomebrewSearchResult] = []
+
+        // Load formulae
+        let formulaPath = "\(tapPath)/Formula"
+        if FileManager.default.fileExists(atPath: formulaPath) {
+            if let files = try? FileManager.default.contentsOfDirectory(atPath: formulaPath) {
+                for file in files where file.hasSuffix(".rb") {
+                    let name = file.replacingOccurrences(of: ".rb", with: "")
+                    let fullName = "\(tapName)/\(name)"
+
+                    // Get details from brew info
+                    if let details = try? await getPackageDetailsFromBrew(fullName: fullName, cask: false) {
+                        formulae.append(details)
+                    }
+                }
+            }
+        }
+
+        // Load casks (recursively, since they're nested in letter directories)
+        let caskPath = "\(tapPath)/Casks"
+        if FileManager.default.fileExists(atPath: caskPath) {
+            let caskFiles = try recursivelyFindCasks(in: caskPath)
+            for file in caskFiles {
+                let name = file.replacingOccurrences(of: ".rb", with: "")
+                let fullName = "\(tapName)/\(name)"
+
+                // Get details from brew info
+                if let details = try? await getPackageDetailsFromBrew(fullName: fullName, cask: true) {
+                    casks.append(details)
+                }
+            }
+        }
+
+        return (formulae, casks)
+    }
+
+    // Helper to recursively find cask files
+    private func recursivelyFindCasks(in directory: String) throws -> [String] {
+        var caskNames: [String] = []
+
+        guard let enumerator = FileManager.default.enumerator(atPath: directory) else {
+            return []
+        }
+
+        for case let file as String in enumerator {
+            if file.hasSuffix(".rb") {
+                // Remove .rb extension and any parent directories (like "b/")
+                let name = file.replacingOccurrences(of: ".rb", with: "")
+                               .components(separatedBy: "/")
+                               .last ?? file.replacingOccurrences(of: ".rb", with: "")
+                caskNames.append(name)
+            }
+        }
+
+        return caskNames
+    }
+
+    // Get full package info from brew info
+    private func getPackageDetailsFromBrew(fullName: String, cask: Bool) async throws -> HomebrewSearchResult? {
+        let arguments = ["info", "--json=v2", fullName]
+        let result = try await runBrewCommand(arguments)
+
+        guard let jsonData = result.output.data(using: .utf8) else {
+            return nil
+        }
+
+        let json = try JSON(data: jsonData)
+        let array = cask ? json["casks"].arrayValue : json["formulae"].arrayValue
+
+        guard let item = array.first else {
+            return nil
+        }
+
+        let name = cask ? item["full_token"].stringValue : item["full_name"].stringValue
+        let desc = item["desc"].string
+        let homepage = item["homepage"].string
+        let license = item["license"].string
+        let version = cask ? item["version"].string : item["versions"]["stable"].string
+        let dependencies = cask ?
+            item["depends_on"]["formula"].arrayValue.map { $0.stringValue } :
+            item["dependencies"].arrayValue.map { $0.stringValue }
+        let caveats = item["caveats"].string
+
+        return HomebrewSearchResult(
+            name: name,
+            description: desc,
+            homepage: homepage,
+            license: license,
+            version: version,
+            dependencies: dependencies.isEmpty ? nil : dependencies,
+            caveats: caveats
+        )
     }
 }

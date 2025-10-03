@@ -374,6 +374,7 @@
 				C74649EA2E48008A002D1C63 /* ZombieView */,
 				C74649E62E48000C002D1C63 /* LipoView */,
 				C76073F32E3C1C2C003957A7 /* FilesView */,
+				C7C05FD72E8DA12C006D0476 /* Brew */,
 				C72D03B22E4D3FB900ADC1B4 /* MainWindow.swift */,
 				C7A269282D5D139200FA96EC /* TerminalView.swift */,
 				C74422402E4936700002D277 /* DaemonView.swift */,
@@ -381,7 +382,6 @@
 				C770D7DA2CE7C9A100B3492A /* DevelopmentView.swift */,
 				C7BB99282E8AF1CB007BBB81 /* PluginsView.swift */,
 				C74422422E494D7E0002D277 /* PackageView.swift */,
-				C7C05FD72E8DA12C006D0476 /* Brew */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -548,6 +548,7 @@
 				"pt-BR",
 				id,
 				pl,
+				sl,
 			);
 			mainGroup = C77B8FF72AF18E2E009CC655;
 			packageReferences = (
