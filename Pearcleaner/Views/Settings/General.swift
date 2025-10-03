@@ -25,6 +25,7 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.spotlight") private var spotlight = false
     @AppStorage("settings.general.permanentDelete") private var permanentDelete: Bool = false
     @AppStorage("settings.general.searchSensitivity") private var sensitivityLevel: SearchSensitivityLevel = .strict
+    @AppStorage("settings.cache.enabled") private var cacheEnabled: Bool = true
     @State private var showAppIconInMenu = UserDefaults.showAppIconInMenu
     @State private var cacheSize: String = "Calculating..."
 
@@ -210,36 +211,64 @@ struct GeneralSettingsTab: View {
                 PearGroupBox(
                     header: { Text("Cache").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2) },
                     content: {
-                        HStack(spacing: 0) {
-                            Image(systemName: "tray.full")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 15, height: 15)
-                                .padding(.trailing)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                            VStack(alignment: .leading, spacing: 2) {
-                                HStack(spacing: 0) {
-                                    Text("Clear app data cache")
-                                        .font(.callout)
-                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                                    InfoButton(text: String(localized: "Pearcleaner caches app metadata to improve loading times. Clearing the cache will force a fresh scan of all apps on the next launch. This is useful if app information seems outdated or incorrect."))
+                        VStack(spacing: 5) {
+                            // Main toggle row
+                            HStack(spacing: 0) {
+                                Image(systemName: cacheEnabled ? "tray.full.fill" : "tray")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 15, height: 15)
+                                    .padding(.trailing)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                                VStack(alignment: .leading, spacing: 0) {
+                                    HStack(spacing: 0) {
+                                        Text("Enable app data caching")
+                                            .font(.callout)
+                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                                        InfoButton(text: String(localized: "Pearcleaner caches app metadata to improve loading times. When disabled, apps will be scanned fresh each time. Disabling this will clear existing cached data."))
+                                    }
                                 }
-                                Text(cacheSize)
-                                    .font(.caption)
-                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                Spacer()
+                                Toggle(isOn: $cacheEnabled, label: {
+                                })
+                                .toggleStyle(SettingsToggle())
+                                .onChange(of: cacheEnabled) { newValue in
+                                    if !newValue {
+                                        // Wipe cache when disabled
+                                        clearAppCache(showAlert: false)
+                                    }
+                                }
                             }
-                            Spacer()
+                            .padding(5)
 
-                            Button {
-                                clearAppCache()
-                            } label: {
-                                Text("Clear Cache")
-                                    .font(.callout)
-                                    .foregroundStyle(.red)
+                            // Secondary row (cache info and clear button) - only shown when enabled
+                            if cacheEnabled {
+                                HStack(spacing: 0) {
+                                    Image(systemName: "")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 15, height: 15)
+                                        .padding(.trailing)
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(cacheSize)
+                                            .font(.caption)
+                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                    }
+                                    Spacer()
+
+                                    Button {
+                                        clearAppCache(showAlert: true)
+                                    } label: {
+                                        Text("Clear Cache")
+                                            .font(.callout)
+                                            .foregroundStyle(.red)
+                                    }
+                                    .buttonStyle(.borderless)
+                                }
+                                .padding([.horizontal, .bottom], 5)
                             }
-                            .buttonStyle(.borderless)
                         }
-                        .padding(5)
                     })
             }
 
@@ -454,7 +483,7 @@ struct GeneralSettingsTab: View {
     }
 
     @available(macOS 14.0, *)
-    private func clearAppCache() {
+    private func clearAppCache(showAlert: Bool = true) {
         Task { @MainActor in
             do {
                 try await AppCacheManager.shared.clearCache()
@@ -462,23 +491,27 @@ struct GeneralSettingsTab: View {
                 // Recalculate cache size
                 await calculateCacheSize()
 
-                // Show confirmation alert
-                let alert = NSAlert()
-                alert.messageText = "Cache Cleared"
-                alert.informativeText = "The app data cache has been cleared successfully. The cache will be rebuilt on the next app launch."
-                alert.alertStyle = .informational
-                alert.addButton(withTitle: "OK")
-                alert.runModal()
+                // Show confirmation alert only if requested
+                if showAlert {
+                    let alert = NSAlert()
+                    alert.messageText = "Cache Cleared"
+                    alert.informativeText = "The app data cache has been cleared successfully. The cache will be rebuilt on the next app launch."
+                    alert.alertStyle = .informational
+                    alert.addButton(withTitle: "OK")
+                    alert.runModal()
+                }
             } catch {
                 printOS("❌ Failed to clear cache: \(error)")
 
-                // Show error alert
-                let alert = NSAlert()
-                alert.messageText = "Cache Clear Failed"
-                alert.informativeText = "Failed to clear the cache: \(error.localizedDescription)"
-                alert.alertStyle = .warning
-                alert.addButton(withTitle: "OK")
-                alert.runModal()
+                // Show error alert only if requested
+                if showAlert {
+                    let alert = NSAlert()
+                    alert.messageText = "Cache Clear Failed"
+                    alert.informativeText = "Failed to clear the cache: \(error.localizedDescription)"
+                    alert.alertStyle = .warning
+                    alert.addButton(withTitle: "OK")
+                    alert.runModal()
+                }
             }
         }
     }

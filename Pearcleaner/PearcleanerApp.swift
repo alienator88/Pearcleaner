@@ -28,8 +28,9 @@ struct PearcleanerApp: App {
     @State private var isDraggingOver = false
 
     init() {
-        //MARK: Setup SwiftData container (macOS 14+ only)
-        if #available(macOS 14.0, *) {
+        //MARK: Setup SwiftData container (macOS 14+ only, if caching enabled)
+        let cacheEnabled = UserDefaults.standard.bool(forKey: "settings.cache.enabled")
+        if #available(macOS 14.0, *), cacheEnabled {
             appState.modelContainer = AppCacheManager.createModelContainer()
         } else {
             appState.modelContainer = nil

@@ -57,8 +57,11 @@ class AppCacheManager {
         DispatchQueue.global(qos: .userInitiated).async {
             let sortedApps: Task<[AppInfo], Never>
 
-            // Use caching if model container provided, otherwise fall back to direct scan
-            if let modelContainer = modelContainer as? ModelContainer {
+            // Check if caching is enabled
+            let cacheEnabled = UserDefaults.standard.bool(forKey: "settings.cache.enabled")
+
+            // Use caching if enabled AND model container provided, otherwise fall back to direct scan
+            if cacheEnabled, let modelContainer = modelContainer as? ModelContainer {
                 Task { @MainActor in
                     AppCacheManager.shared.setContainer(modelContainer)
                 }
@@ -66,7 +69,7 @@ class AppCacheManager {
                     AppCacheManager.shared.loadAppsWithCache(folderPaths: folderPaths)
                 }
             } else {
-                // No model container - fall back to direct scan
+                // No model container OR caching disabled - fall back to direct scan
                 sortedApps = Task {
                     getSortedApps(paths: folderPaths)
                 }

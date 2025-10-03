@@ -205,7 +205,10 @@ struct AppCommands: Commands {
         CommandMenu(Text("Tools", comment: "Tools Menu")) {
 
             Button {
-                if #available(macOS 14.0, *) {
+                // Check if caching is enabled
+                let cacheEnabled = UserDefaults.standard.bool(forKey: "settings.cache.enabled")
+
+                if #available(macOS 14.0, *), cacheEnabled {
                     Task { @MainActor in
                         withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                             AppCacheManager.loadAndUpdateApps(
