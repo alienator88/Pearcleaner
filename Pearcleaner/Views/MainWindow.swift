@@ -267,9 +267,6 @@ struct MainWindow: View {
                     case .zombie:
                         ZombieView(search: $search)
                             .id(appState.appInfo.id)
-                    case .terminal:
-                        TerminalSheetView(homebrew: true, caskName: appState.appInfo.cask)
-                            .id(appState.appInfo.id)
                     }
                 }
                 .transition(.opacity)

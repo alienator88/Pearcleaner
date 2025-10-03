@@ -34,8 +34,6 @@
 		C783F93A2E9039EB003450E7 /* PackageKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C783F9392E9039EB003450E7 /* PackageKit.framework */; };
 		C78733BF2E674510008615F2 /* FileWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78733BC2E674496008615F2 /* FileWatcher.swift */; };
 		C78D7B212D556F1A003DD49F /* AppPathsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78D7B202D556F16003DD49F /* AppPathsFetch.swift */; };
-		C7A269272D5D138500FA96EC /* SwiftTerm in Frameworks */ = {isa = PBXBuildFile; productRef = C7A269262D5D138500FA96EC /* SwiftTerm */; };
-		C7A269292D5D139600FA96EC /* TerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A269282D5D139200FA96EC /* TerminalView.swift */; };
 		C7A2A4D62DDB957D006E05E4 /* CLI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A2A4D52DDB957D006E05E4 /* CLI.swift */; };
 		C7A2A4D92DDB95C4006E05E4 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = C7A2A4D82DDB95C4006E05E4 /* ArgumentParser */; };
 		C7A6DBF12C9DD27200CFA042 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7A6DBF02C9DD27200CFA042 /* Assets.xcassets */; };
@@ -155,7 +153,6 @@
 		C786F1A72C29E599001B3800 /* Builds */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Builds; sourceTree = SOURCE_ROOT; };
 		C78733BC2E674496008615F2 /* FileWatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileWatcher.swift; sourceTree = "<group>"; };
 		C78D7B202D556F16003DD49F /* AppPathsFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPathsFetch.swift; sourceTree = "<group>"; };
-		C7A269282D5D139200FA96EC /* TerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalView.swift; sourceTree = "<group>"; };
 		C7A2A4D52DDB957D006E05E4 /* CLI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLI.swift; sourceTree = "<group>"; };
 		C7A6DBF02C9DD27200CFA042 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C7B3AB072D83900B00D829C5 /* com.alienator88.PearcleanerSentinel.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = com.alienator88.PearcleanerSentinel.plist; sourceTree = "<group>"; };
@@ -258,7 +255,6 @@
 				C7C05FED2E8DA27F006D0476 /* SwiftyJSON in Frameworks */,
 				C74E55512D0773190007EC2C /* IfritStatic in Frameworks */,
 				C76EDCD62C45DC82000CF29D /* AlinFoundation in Frameworks */,
-				C7A269272D5D138500FA96EC /* SwiftTerm in Frameworks */,
 				C7A2A4D92DDB95C4006E05E4 /* ArgumentParser in Frameworks */,
 				C783F93A2E9039EB003450E7 /* PackageKit.framework in Frameworks */,
 				C7736E4F2C49A44200917293 /* AlinFoundation in Frameworks */,
@@ -378,7 +374,6 @@
 				C76073F32E3C1C2C003957A7 /* FilesView */,
 				C7C05FD72E8DA12C006D0476 /* Brew */,
 				C72D03B22E4D3FB900ADC1B4 /* MainWindow.swift */,
-				C7A269282D5D139200FA96EC /* TerminalView.swift */,
 				C74422402E4936700002D277 /* DaemonView.swift */,
 				C7BB992E2E8B225F007BBB81 /* FileSearchView.swift */,
 				C770D7DA2CE7C9A100B3492A /* DevelopmentView.swift */,
@@ -480,7 +475,6 @@
 				C76EDCD52C45DC82000CF29D /* AlinFoundation */,
 				C7736E4E2C49A44200917293 /* AlinFoundation */,
 				C74E55502D0773190007EC2C /* IfritStatic */,
-				C7A269262D5D138500FA96EC /* SwiftTerm */,
 				C7A2A4D82DDB95C4006E05E4 /* ArgumentParser */,
 				C7C05FEC2E8DA27F006D0476 /* SwiftyJSON */,
 			);
@@ -557,7 +551,6 @@
 			packageReferences = (
 				C7736E4D2C49A44200917293 /* XCRemoteSwiftPackageReference "AlinFoundation" */,
 				C74E554D2D0773190007EC2C /* XCRemoteSwiftPackageReference "Ifrit" */,
-				C7A269252D5D138500FA96EC /* XCRemoteSwiftPackageReference "SwiftTerm" */,
 				C7A2A4D72DDB95C4006E05E4 /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
 				C7C05FEB2E8DA27F006D0476 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
 			);
@@ -636,7 +629,6 @@
 				C72FDCB92D6D089100DE7D56 /* UndoManager.swift in Sources */,
 				C7BB992F2E8B225F007BBB81 /* FileSearchView.swift in Sources */,
 				C77B90042AF18E2E009CC655 /* PearcleanerApp.swift in Sources */,
-				C7A269292D5D139600FA96EC /* TerminalView.swift in Sources */,
 				C77B90182AF19382009CC655 /* AppCommands.swift in Sources */,
 				C74FDC632BCD833D00B8960F /* Conditions.swift in Sources */,
 				C7F539382AF60865007DF1B2 /* Utilities.swift in Sources */,
@@ -760,8 +752,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 99;
-				APP_VERSION = 5.2.0;
+				APP_BUILD = 100;
+				APP_VERSION = 5.2.1;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -833,8 +825,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 99;
-				APP_VERSION = 5.2.0;
+				APP_BUILD = 100;
+				APP_VERSION = 5.2.1;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1148,14 +1140,6 @@
 				kind = branch;
 			};
 		};
-		C7A269252D5D138500FA96EC /* XCRemoteSwiftPackageReference "SwiftTerm" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/migueldeicaza/SwiftTerm";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.2.5;
-			};
-		};
 		C7A2A4D72DDB95C4006E05E4 /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-argument-parser.git";
@@ -1188,11 +1172,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C7736E4D2C49A44200917293 /* XCRemoteSwiftPackageReference "AlinFoundation" */;
 			productName = AlinFoundation;
-		};
-		C7A269262D5D138500FA96EC /* SwiftTerm */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C7A269252D5D138500FA96EC /* XCRemoteSwiftPackageReference "SwiftTerm" */;
-			productName = SwiftTerm;
 		};
 		C7A2A4D82DDB95C4006E05E4 /* ArgumentParser */ = {
 			isa = XCSwiftPackageProductDependency;

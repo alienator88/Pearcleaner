@@ -728,6 +728,15 @@ class HomebrewController {
         return 0
     }
 
+    func runCleanup() async throws {
+        let arguments = ["cleanup"]
+        let result = try await runBrewCommand(arguments)
+
+        if result.error.contains("Error") {
+            throw HomebrewError.commandFailed(result.error)
+        }
+    }
+
     func performFullCleanup() async throws {
         // Run autoremove first to remove orphaned dependencies
         let autoremoveArgs = ["autoremove"]

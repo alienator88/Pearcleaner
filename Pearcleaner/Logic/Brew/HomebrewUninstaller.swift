@@ -42,6 +42,9 @@ class HomebrewUninstaller {
             }
             try await uninstallFormula(name: name, info: formulaInfo)
         }
+
+        // Run standard brew cleanup after successful uninstall
+        try await HomebrewController.shared.runCleanup()
     }
 
     // MARK: - Cask Uninstall

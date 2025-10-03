@@ -617,7 +617,6 @@ enum CurrentDetailsView: Int {
     case empty
     case files
     case zombie
-    case terminal
 }
 
 extension AppState {

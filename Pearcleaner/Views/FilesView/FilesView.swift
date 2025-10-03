@@ -260,52 +260,99 @@ struct FilesView: View {
         }
 
         // Check if the current app requires brew cleanup (Is brew cleanup enabled, was main app bundle removed or was main bundle in Trash)
-        if brew && (appWasRemoved || isInTrash) && appState.appInfo.cask != nil {
-            // Set terminal view for the current app
-            updateOnMain {
-                appState.currentView = .terminal
-            }
+        if brew && (appWasRemoved || isInTrash), let caskName = appState.appInfo.cask {
+            // Immediately transition UI before starting background cleanup
+            transitionUIForNextApp(appWasRemoved: appWasRemoved)
 
-            // Exit early to wait for the user to close the terminal
+            // Run Homebrew cleanup in background
+            Task {
+                do {
+                    try await HomebrewUninstaller.shared.uninstallPackage(
+                        name: caskName,
+                        cask: true,
+                        zap: true
+                    )
+                } catch {
+                    printOS("Homebrew cleanup failed for \(caskName): \(error.localizedDescription)")
+                }
+            }
             return
         }
 
-        // Check if there are more paths in externalPaths
-        if appState.externalPaths.isEmpty {
-            // No more paths; now update the UI if the app was removed
+        // Continue processing remaining apps
+        Task {
+            await processRemainingApps(appWasRemoved: appWasRemoved)
+        }
+    }
+
+    // Helper function to immediately transition UI to next app or empty state
+    private func transitionUIForNextApp(appWasRemoved: Bool) {
+        // Check if there are more paths to process
+        if !appState.externalPaths.isEmpty {
+            // Get the next path
+            if let nextPath = appState.externalPaths.first {
+                // Load the next app's info
+                if let nextApp = AppInfoFetcher.getAppInfo(atPath: nextPath) {
+                    updateOnMain {
+                        appState.appInfo = nextApp
+                    }
+                    showAppInFiles(appInfo: nextApp, appState: appState, locations: locations)
+                }
+            }
+        } else {
+            // All external apps processed
             if appWasRemoved {
                 updateOnMain {
+                    appState.appInfo = .empty
                     search = ""
                     withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                         appState.currentView = .empty
-                        appState.currentPage = .applications
-                        appState.appInfo = AppInfo.empty
                     }
                 }
             }
 
-            // Terminate if oneShotMode is enabled
-            if oneShotMode && !appState.multiMode && appState.externalMode {
+            // Handle oneshot mode termination
+            if oneShotMode && !appState.multiMode {
                 updateOnMain {
                     NSApp.terminate(nil)
                 }
-            } else {
-                // Reset external/multi mode
-                appState.externalMode = false
-                appState.multiMode = false
-            }
-        } else if let nextPath = appState.externalPaths.first {
-            // More paths exist; continue processing
-            if let nextApp = AppInfoFetcher.getAppInfo(atPath: nextPath) {
-                updateOnMain {
-                    appState.appInfo = nextApp
-                }
-                showAppInFiles(appInfo: nextApp, appState: appState, locations: locations)
             }
         }
+    }
 
-        // Update the files list
-        updateSortedFiles()
+    // Helper function to process remaining apps after current app is done
+    private func processRemainingApps(appWasRemoved: Bool) async {
+        // Check if there are more paths to process
+        if !appState.externalPaths.isEmpty {
+            // Get the next path
+            if let nextPath = appState.externalPaths.first {
+                // Load the next app's info
+                if let nextApp = AppInfoFetcher.getAppInfo(atPath: nextPath) {
+                    updateOnMain {
+                        appState.appInfo = nextApp
+                    }
+                    showAppInFiles(appInfo: nextApp, appState: appState, locations: locations)
+                }
+            }
+        } else {
+            // All external apps processed
+            if appWasRemoved {
+                updateOnMain {
+                    appState.appInfo = .empty
+                    search = ""
+                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                        appState.currentView = .empty
+                    }
+                }
+            }
+
+            // Handle oneshot mode termination
+            if oneShotMode && !appState.multiMode {
+                updateOnMain {
+                    NSApp.terminate(nil)
+                }
+            }
+        }
     }
 
     // Function to remove a path from externalPaths and update appInfo if necessary

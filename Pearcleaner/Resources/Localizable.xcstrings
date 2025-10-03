@@ -1331,12 +1331,6 @@
             "value" : "%1$lld zugehörige Datei%2$@ gefunden"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$lld related file%2$@ found"
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8396,7 +8390,98 @@
       }
     },
     "Casks (%lld)" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fässer (%lld)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Barriles (%lld)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fûts (%lld)"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tong (%lld)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "樽 (%lld)"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beczki (%lld)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Barricas (%lld)"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бочки (%lld)"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sud (%lld)"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fıçı (%lld)"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бочки (%lld)"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thùng (%lld)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "桶 (%lld)"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "桶 (%lld)"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "桶 (%lld)"
+          }
+        }
+      }
     },
     "Category: %@" : {
       "localizations" : {
@@ -17641,7 +17726,98 @@
       }
     },
     "Formulae (%lld)" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formeln (%lld)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fórmulas (%lld)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formules (%lld)"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formulae (%lld)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "数式 (%lld)"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formuły (%lld)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fórmulas (%lld)"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Формулы (%lld)"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vzorce (%lld)"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formüller (%lld)"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Формули (%lld)"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Công thức (%lld)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "公式 (%lld)"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "公式 (%lld)"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "公式 (%lld)"
+          }
+        }
+      }
     },
     "Found %lld orphaned workspace%@" : {
       "localizations" : {
@@ -19248,7 +19424,98 @@
       }
     },
     "Hide Packages" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pakete ausblenden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar paquetes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquer les paquets"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sembunyikan Paket"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パッケージを隠す"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ukryj pakiety"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar Pacotes"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скрыть пакеты"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skryť balíky"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paketleri Gizle"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приховати пакунки"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ẩn gói"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐藏包"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隱藏套件"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隱藏套件"
+          }
+        }
+      }
     },
     "Homebrew" : {
       "localizations" : {
@@ -19435,100 +19702,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "解除安裝後執行 Homebrew 清理"
-          }
-        }
-      }
-    },
-    "Homebrew Cleanup: %@" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Homebrew-Bereinigung: %@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Limpieza de Homebrew: %@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nettoyage Homebrew : %@"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pembersihan Homebrew: %@"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Homebrew クリーンアップ: %@"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Czyszczenie homebrew: %@"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Limpeza do Homebrew: %@"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Очистка Homebrew: %@"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Údržba Homebrew: %@"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Homebrew Temizliği: %@"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Очистка Homebrew: %@"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dọn dẹp Homebrew: %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Homebrew清理: %@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Homebrew 清理：%@"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Homebrew 清理：%@"
           }
         }
       }
@@ -23686,12 +23859,6 @@
             "value" : "Verknüpfen Sie alle ausgewählten Elemente mit der gewählten App"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Link all selected items to the chosen app"
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -27737,100 +27904,6 @@
         }
       }
     },
-    "No command provided" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kein Befehl angegeben"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No se proporcionó comando"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucune commande fournie"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak ada perintah yang diberikan"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "コマンドが指定されていません"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Brak polecenia"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nenhum comando fornecido"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Команда не указана"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Neboli poskytnuté žiadne príkazy"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hiçbir komut sağlanmadı"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Команда не надана"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chưa có lệnh nào được cung cấp"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未提供命令"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未提供命令"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未提供命令"
-          }
-        }
-      }
-    },
     "No files or folders added" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -28586,7 +28659,98 @@
       }
     },
     "No packages found in this tap" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Pakete in diesem Tap gefunden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encontraron paquetes en este grifo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun paquet trouvé dans ce robinet"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak ada paket yang ditemukan di tap ini"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このタップにはパッケージが見つかりません"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie znaleziono pakietów w tym kranie"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum pacote encontrado nesta torneira"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В этом кране пакетов не найдено"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "V tomto kohútiku sa nenašli žiadne balíky"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu muslukta paket bulunamadı"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "У цьому крані пакунків не знайдено"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Không tìm thấy gói nào trong vòi này"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 tap 中未找到包"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 tap 中未找到套件"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 tap 中未找到套件"
+          }
+        }
+      }
     },
     "No paths excluded or linked to an app" : {
       "localizations" : {
@@ -40001,7 +40165,98 @@
       }
     },
     "See Packages" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pakete ansehen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver paquetes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voir les forfaits"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lihat Paket"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パッケージを見る"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobacz pakiety"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver pacotes"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Посмотреть пакеты"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobraziť balíky"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paketleri Gör"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переглянути пакети"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xem các gói"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看套餐"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看套餐"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看套餐"
+          }
+        }
+      }
     },
     "Select All" : {
       "localizations" : {
@@ -45286,100 +45541,6 @@
         }
       }
     },
-    "Terminal" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Terminal"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Terminal"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Terminal"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Terminal"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ターミナル"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Terminal"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Terminal"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Терминал"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Terminál"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Terminal"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Термінал"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Terminal"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "终端"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "終端機"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "終端機"
-          }
-        }
-      }
-    },
     "The search sensitivity level controls how strict or lenient Pearcleaner is when finding related files for an app:\n\n• Strict – %@\n• Enhanced – %@\n• Balanced – %@\n• Broad – %@\n\nHigher levels may find more files but may include some unrelated results. It is recommended to check found files manually at these levels." : {
       "localizations" : {
         "de" : {
@@ -46429,12 +46590,6 @@
             "value" : "Dadurch werden ausgewählte Elemente von zukünftigen Scans ausgeschlossen. Die Ausschlussliste kann unter „Einstellungen“ > „Ordner“ bearbeitet werden."
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "This will exclude selected items from future scans. Exclusion list can be edited from Settings > Folders tab."
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -46522,7 +46677,98 @@
       }
     },
     "This will install %@ from the tapped repository." : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dies wird %@ aus dem ausgewählten Repository installieren."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esto instalará %@ desde el repositorio seleccionado."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cela installera %@ depuis le dépôt sélectionné."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ini akan menginstal %@ dari repositori yang diketuk."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これはタップされたリポジトリから%@をインストールします。"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To zainstaluje %@ z wybranego repozytorium."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Isso instalará %@ do repositório selecionado."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это установит %@ из выбранного репозитория."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toto nainštaluje %@ z vybraného úložiska."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu, dokunulan depodan %@ yükleyecek."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Це встановить %@ з вибраного репозиторію."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Điều này sẽ cài đặt %@ từ kho đã chọn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这将从选定的存储库安装%@。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這將從點選的存儲庫安裝%@。"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這將從點選的存儲庫安裝%@。"
+          }
+        }
+      }
     },
     "This will install %@ using Homebrew. This may take several minutes." : {
       "localizations" : {
@@ -46619,7 +46865,98 @@
       }
     },
     "This will remove %@ from your system." : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dies wird %@ von Ihrem System entfernen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esto eliminará %@ de su sistema."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cela supprimera %@ de votre système."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ini akan menghapus %@ dari sistem Anda."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これにより、%@ がシステムから削除されます。"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To usunie %@ z twojego systemu."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Isso removerá %@ do seu sistema."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это удалит %@ из вашей системы."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toto odstráni %@ z vášho systému."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu, %@'yi sisteminizden kaldıracaktır."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Це видалить %@ з вашої системи."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Điều này sẽ xóa %@ khỏi hệ thống của bạn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这将从您的系统中移除 %@。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這將從您的系統中移除 %@。"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這將從您的系統中移除 %@。"
+          }
+        }
+      }
     },
     "This will remove all unused language translation files" : {
       "comment" : "Prune alert message",
@@ -48697,7 +49034,98 @@
       }
     },
     "Uninstalling..." : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deinstallation..."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desinstalando..."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désinstallation..."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menghapus instalan..."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アンインストール中..."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odinstalowywanie..."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desinstalando..."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удаление..."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odinštalovávanie..."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaldırılıyor..."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видалення..."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đang gỡ cài đặt..."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在卸载..."
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在卸載..."
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在卸載..."
+          }
+        }
+      }
     },
     "Unit" : {
       "localizations" : {
@@ -52092,7 +52520,98 @@
       }
     },
     "View packages in this tap" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pakete in diesem Tab anzeigen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver paquetes en esta pestaña"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voir les paquets dans cet onglet"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lihat paket di ketukan ini"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このタップでパッケージを表示"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobacz pakiety w tej zakładce"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver pacotes nesta aba"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Просмотр пакетов в этой вкладке"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobraziť balíky v tejto karte"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu sekmede paketleri görüntüle"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переглянути пакунки в цій вкладці"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xem các gói trong tab này"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在此标签中查看包"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在此標籤中查看包"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在此標籤中查看包"
+          }
+        }
+      }
     },
     "View project contributors" : {
       "extractionState" : "manual",
@@ -53138,100 +53657,6 @@
         }
       }
     },
-    "When Homebrew cleanup is enabled, Pearcleaner will check if the app you are removing was installed via Homebrew and launch a built-in Terminal to execute a brew uninstall and cleanup command to let Homebrew know that the app is removed. This way your Homebrew list will be synced up correctly and caching will be removed.\n\nNOTE: If you undo the file delete with CMD+Z, the files will be put back but Homebrew will not be aware of it. To get the Homebrew list back in sync you'd need to run:\n\n> brew install APPNAME --force" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wenn die Homebrew-Bereinigung aktiviert ist, überprüft Pearcleaner, ob die zu entfernende Programme über Homebrew installiert wurde, und startet ein integriertes Terminal, um einen Befehl zum Deinstallieren und Bereinigen von Homebrew auszuführen, damit Homebrew weiß, dass die App entfernt wurde. Auf diese Weise wird Ihre Homebrew-Liste korrekt synchronisiert und der Cache wird entfernt.\n\nHINWEIS: Wenn Sie das Löschen der Datei mit CMD+Z rückgängig machen, werden die Dateien wiederhergestellt, aber Homebrew wird davon nicht informiert. Um die Homebrew-Liste wieder zu synchronisieren, müssen Sie folgenden Befehl ausführen:\n\n> brew install APPNAME --force"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cuando la limpieza de Homebrew está habilitada, Pearcleaner verificará si la aplicación que estás eliminando fue instalada a través de Homebrew y lanzará una Terminal incorporada para ejecutar un comando de desinstalación y limpieza de brew para informar a Homebrew que la aplicación ha sido eliminada. De esta manera, tu lista de Homebrew se sincronizará correctamente y se eliminará el almacenamiento en caché.\n\nNOTA: Si deshaces la eliminación del archivo con CMD+Z, los archivos se restaurarán pero Homebrew no se dará cuenta. Para volver a sincronizar la lista de Homebrew, deberías ejecutar:\n\n> brew install APPNAME --force"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lorsque le nettoyage Homebrew est activé, Pearcleaner vérifie si l'application que vous supprimez a été installée via Homebrew et lance un terminal intégré pour exécuter une commande brew uninstall and cleanup afin d'informer Homebrew de la suppression. Ainsi, votre liste Homebrew sera correctement synchronisée et le cache supprimé.\n\nREMARQUE : Si vous annulez la suppression du fichier avec CMD+Z, les fichiers seront réinstallés, mais Homebrew n'en sera pas informé. Pour resynchroniser la liste Homebrew, exécutez :\n\n> brew install APPNAME --force"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ketika pembersihan Homebrew diaktifkan, Pearcleaner akan memeriksa apakah aplikasi yang Anda hapus diinstal melalui Homebrew dan meluncurkan Terminal bawaan untuk menjalankan perintah brew uninstall dan cleanup agar Homebrew mengetahui bahwa aplikasi tersebut telah dihapus. Dengan cara ini, daftar Homebrew Anda akan disinkronkan dengan benar dan cache akan dihapus.\n\nCATATAN: Jika Anda membatalkan penghapusan file dengan CMD+Z, file akan dikembalikan tetapi Homebrew tidak akan menyadarinya. Untuk menyinkronkan kembali daftar Homebrew, Anda perlu menjalankan:\n\n> brew install APPNAME --force"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Homebrew クリーンアップが有効になっている場合、Pearcleaner は削除しようとしているアプリが Homebrew を通してインストールされたかどうかを確認し、内蔵ターミナルを起動して brew uninstall およびクリーンアップコマンドを実行し、Homebrew にアプリが削除されたことを通知します。これにより、Homebrew のリストが正しく同期され、キャッシュが削除されます。\n注意：CMD+Z でファイル削除を元に戻した場合、ファイルは復元されますが、Homebrew はそれを認識しません。Homebrew のリストを再同期するには、以下のコマンドを実行する必要があります：\n\nbrew install アプリ名 --force」"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gdy włączona jest funkcja czyszczenia Homebrew, Pearcleaner sprawdzi, czy usuwana aplikacja została zainstalowana za pomocą Homebrew, i uruchomi wbudowany terminal, aby wykonać polecenie brew uninstall i cleanup, informujące Homebrew o usunięciu aplikacji. W ten sposób lista Homebrew zostanie poprawnie zsynchronizowana, a pamięć podręczna zostanie usunięta.\n\nUWAGA: Jeśli cofniesz usunięcie plików za pomocą CMD+Z, pliki zostaną przywrócone, ale Homebrew nie będzie o tym wiedzieć. Aby ponownie zsynchronizować listę Homebrew, musisz uruchomić:\n\n> brew install NAZWA-APLIKACJI --force"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quando a limpeza do Homebrew está ativada, o Pearcleaner verificará se o app que você está removendo foi instalado via Homebrew e abrirá um Terminal embutido para executar um comando brew uninstall e cleanup, informando ao Homebrew que o app foi removido. Assim, sua lista do Homebrew será sincronizada corretamente e o cache será removido.\n\nNOTA: Se você desfizer a exclusão do arquivo com CMD+Z, os arquivos serão restaurados, mas o Homebrew não ficará ciente disso. Para sincronizar novamente a lista do Homebrew, você precisará executar:\n\n> brew install APPNAME --force"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Когда включена очистка Homebrew, Pearcleaner проверит, была ли удалена вами программа установлена через Homebrew, и запустит встроенный Терминал для выполнения команды brew uninstall и очистки, чтобы Homebrew знал, что программа удалена. Таким образом, ваш список Homebrew будет корректно синхронизирован, и кэш будет удален.\n\nПРИМЕЧАНИЕ: Если вы отмените удаление файла с помощью CMD+Z, файлы будут возвращены, но Homebrew об этом не узнает. Чтобы вернуть список Homebrew в синхронность, вам нужно будет выполнить команду:\n\n> brew install APPNAME --force"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Keď je povolené čistenie Homebrew, Pearcleaner skontroluje, či bola aplikácia, ktorú odstraňujete, nainštalovaná cez Homebrew, a spustí vstavaný Terminál, aby vykonal príkaz na odinštalovanie a vyčistenie pomocou Homebrew, aby vedel, že aplikácia bola odstránená. Týmto spôsobom bude váš zoznam Homebrew správne synchronizovaný a cache sa odstráni.\n\nPOZNÁMKA: Ak vrátite späť odstránenie súboru pomocou CMD+Z, súbory sa vrátia, ale Homebrew o tom nebude vedieť. Aby ste zosynchronizovali zoznam Homebrew, musíte spustiť:\n\n> brew install APPNAME --force"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Homebrew temizliği etkinleştirildiğinde, Pearcleaner kaldırdığınız uygulamanın Homebrew aracılığıyla yüklenip yüklenmediğini kontrol edecek ve Homebrew'e uygulamanın kaldırıldığını bildirmek için bir brew uninstall and cleanup komutunu yürütmek üzere yerleşik bir Terminal başlatacaktır. Bu şekilde Homebrew listeniz doğru bir şekilde senkronize edilecek ve önbellekleme kaldırılacaktır.\n\nNOT: Dosya silme işlemini CMD+Z ile geri alırsanız dosyalar geri konur ancak Homebrew bundan haberdar olmaz. Homebrew listesini tekrar senkronize etmek için şunu çalıştırmanız gerekir:\n\n> brew install UYGULAMAADI --force"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Якщо очищення Homebrew увімкнено, Pearcleaner перевірить, чи програма, яку ви видаляєте, була встановлена через Homebrew, і запустить вбудований термінал для виконання команди видалення і очищення, щоб повідомити Homebrew про те, що програму видалено. Таким чином ваш список Homebrew буде правильно синхронізовано, а кешування буде видалено.\n\nПРИМІТКА: Якщо ви скасуєте видалення файлів за допомогою CMD+Z, файли буде відновлено, але Homebrew не знатиме про це. Щоб відновити синхронізацію списку Homebrew, вам потрібно виконати\n\n> brew install APPNAME --force"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Khi bật tính năng \"Homebrew cleanup\", Pearcleaner sẽ kiểm tra xem ứng dụng đang gỡ cài đặt có được cài thông qua Homebrew hay không, và sẽ tự động mở một Terminal tích hợp để chạy lệnh brew uninstall và cleanup, giúp Homebrew biết rằng ứng dụng đã bị gỡ.\nCách này giúp danh sách ứng dụng trong Homebrew được đồng bộ chính xác và xóa các tệp bộ nhớ đệm liên quan.\n\nLưu ý: Nếu bạn hoàn tác việc xóa tệp bằng phím tắt CMD+Z, các tệp sẽ được khôi phục, nhưng Homebrew sẽ không biết điều đó.\nĐể đồng bộ lại danh sách Homebrew, bạn cần chạy lệnh:\n\n> brew install APPNAME --force"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "当启用 Homebrew 清理时，Pearcleaner 将检查您要删除的应用程序是否通过 Homebrew 安装，并启动内置的终端来执行brew uninstall和cleanup命令，以便让Homebrew知道该应用已被删除。这样，您的Homebrew列表将正确同步，缓存将被移除。\n\n注意：如果您使用CMD+Z撤销文件删除，文件将被恢复，但Homebrew将不会意识到这一点。要使Homebrew列表重新同步，您需要运行：\n\n> brew install APPNAME --force"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "啟用「Homebrew 清理」時，Pearcleaner 會檢查你要移除的應用程式是否透過 Homebrew 安裝，並啟動內置終端機以執行 brew 解除安裝和清理命令，讓 Homebrew 知道此應用程式已移除。這樣你的 Homebrew 列表會正確同步，快取檔案亦會被移除。\n\n注意：如你使用 ⌘Z 還原刪除檔案，檔案將會放回，但 Homebrew 並不會注意到這一點。如要重新同步 Homebrew 列表，你需要執行：\n\n> brew install APPNAME --force"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "啟用「Homebrew 清理」時，Pearcleaner 會檢查你要移除的應用程式是否透過 Homebrew 安裝，並啟動內置終端機以執行 brew 解除安裝和清理命令，讓 Homebrew 知道此應用程式已移除。這樣你的 Homebrew 列表會正確同步，快取檔案亦會被移除。\n\n注意：如你使用 ⌘Z 還原刪除檔案，檔案將會放回，但 Homebrew 並不會注意到這一點。如要重新同步 Homebrew 列表，你需要執行：\n\n> brew install APPNAME --force"
-          }
-        }
-      }
-    },
     "When Homebrew cleanup is enabled, Pearcleaner will check if the app you are removing was installed via Homebrew and launch Terminal.app to execute a brew uninstall and cleanup command to let Homebrew know that the app is removed. This way your Homebrew list will be synced up correctly and caching will be removed. Terminal.app is required since some apps need sudo permissions to remove services and files placed in system folders. Since other terminal apps don't support AppleScript and/or the 'do script' command, I opted to use the default macOS Terminal app for this.\n\nNOTE: If you undo the file delete with CMD+Z, the files will be put back but Homebrew will not be aware of it. To get the Homebrew list back in sync you'd need to run:\n\n> brew install APPNAME --force" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -53323,6 +53748,100 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "啟用「Homebrew 清理」時，Pearcleaner 會檢查你要移除的應用程式是否透過 Homebrew 安裝，並啟動「終端機.app」以執行 brew 解除安裝和清理命令，讓 Homebrew 知道此應用程式已移除。這樣你的 Homebrew 列表會正確同步，快取檔案亦會被移除。這需要「終端機.app」，因為一些應用程式需要 sudo 權限才能移除系統資料夾中的服務和檔案。由於其他終端機應用程式不支援 AppleScript 和/或「do script」命令，因此這裡使用預設的 macOS 終端機應用程式。\n\n注意：如你使用 ⌘Z 還原刪除檔案，檔案將會放回，但 Homebrew 並不會注意到這一點。如要重新同步 Homebrew 列表，你需要執行：\n\n> brew install APPNAME --force"
+          }
+        }
+      }
+    },
+    "When Homebrew cleanup is enabled, Pearcleaner will check if the app you are removing was installed via Homebrew and remove the cache to keep everything synced up." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn die Homebrew-Bereinigung aktiviert ist, überprüft Pearcleaner, ob die App, die Sie entfernen, über Homebrew installiert wurde, und entfernt den Cache, um alles synchron zu halten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando la limpieza de Homebrew está habilitada, Pearcleaner verificará si la aplicación que está eliminando fue instalada a través de Homebrew y eliminará el caché para mantener todo sincronizado."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lorsque le nettoyage Homebrew est activé, Pearcleaner vérifiera si l'application que vous supprimez a été installée via Homebrew et supprimera le cache pour tout synchroniser."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ketika pembersihan Homebrew diaktifkan, Pearcleaner akan memeriksa apakah aplikasi yang Anda hapus diinstal melalui Homebrew dan menghapus cache untuk menjaga semuanya tetap sinkron."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Homebrew のクリーンアップが有効になっている場合、Pearcleaner は削除しているアプリが Homebrew 経由でインストールされたかどうかを確認し、すべてを同期させるためにキャッシュを削除します。"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gdy czyszczenie Homebrew jest włączone, Pearcleaner sprawdzi, czy aplikacja, którą usuwasz, została zainstalowana za pomocą Homebrew i usunie pamięć podręczną, aby wszystko było zsynchronizowane."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando a limpeza do Homebrew está ativada, o Pearcleaner verificará se o aplicativo que você está removendo foi instalado via Homebrew e removerá o cache para manter tudo sincronizado."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Когда очистка Homebrew включена, Pearcleaner проверит, была ли удаляемая вами программа установлена через Homebrew, и удалит кэш, чтобы все оставалось синхронизированным."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keď je povolené čistenie Homebrew, Pearcleaner skontroluje, či aplikácia, ktorú odstraňujete, bola nainštalovaná cez Homebrew, a odstráni vyrovnávaciu pamäť, aby všetko zostalo synchronizované."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Homebrew temizliği etkinleştirildiğinde, Pearcleaner kaldırmakta olduğunuz uygulamanın Homebrew üzerinden yüklenip yüklenmediğini kontrol edecek ve her şeyin senkronize kalması için önbelleği kaldıracaktır."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Коли увімкнено очищення Homebrew, Pearcleaner перевірить, чи була програма, яку ви видаляєте, встановлена через Homebrew, і видалить кеш, щоб усе залишалося синхронізованим."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Khi dọn dẹp Homebrew được bật, Pearcleaner sẽ kiểm tra xem ứng dụng bạn đang gỡ bỏ có được cài đặt qua Homebrew hay không và xóa bộ nhớ đệm để giữ mọi thứ đồng bộ."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当启用 Homebrew 清理时，Pearcleaner 会检查您正在移除的应用程序是否通过 Homebrew 安装，并移除缓存以保持所有内容同步。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當啟用 Homebrew 清理時，Pearcleaner 會檢查您正在移除的應用程式是否通過 Homebrew 安裝，並移除緩存以保持所有內容同步。"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當啟用 Homebrew 清理時，Pearcleaner 會檢查您正在移除的應用程式是否通過 Homebrew 安裝，並移除緩存以保持所有內容同步。"
           }
         }
       }

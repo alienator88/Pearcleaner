@@ -6,11 +6,11 @@
 //
 
 import SwiftUI
+import AppKit
+import AlinFoundation
 #if canImport(SwiftData)
 import SwiftData
 #endif
-import AppKit
-import AlinFoundation
 
 @main
 struct PearcleanerApp: App {

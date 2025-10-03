@@ -49,7 +49,7 @@ struct GeneralSettingsTab: View {
                                     Text("Homebrew cleanup after uninstall")
                                         .font(.callout)
                                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText.opacity(1))
-                                    InfoButton(text: String(localized: "When Homebrew cleanup is enabled, Pearcleaner will check if the app you are removing was installed via Homebrew and launch a built-in Terminal to execute a brew uninstall and cleanup command to let Homebrew know that the app is removed. This way your Homebrew list will be synced up correctly and caching will be removed.\n\nNOTE: If you undo the file delete with CMD+Z, the files will be put back but Homebrew will not be aware of it. To get the Homebrew list back in sync you'd need to run:\n\n> brew install APPNAME --force"))
+                                    InfoButton(text: String(localized: "When Homebrew cleanup is enabled, Pearcleaner will check if the app you are removing was installed via Homebrew and remove the cache to keep everything synced up."))
                                 }
 
                             }
