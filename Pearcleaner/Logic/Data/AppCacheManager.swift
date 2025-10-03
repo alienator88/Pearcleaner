@@ -80,7 +80,9 @@ class AppCacheManager {
                 // Disabled: Background lipo pre-calculation causes 1GB+ memory spikes
                 // Lipo savings are calculated on-demand when user opens LipoView instead
                 // The LazyVStack ensures only visible apps are calculated, preventing memory issues
-                // AppCacheManager.precalculateLipoSavings()
+
+                //MARK: Enable here if needed in the future
+                 AppCacheManager.precalculateLipoSavings()
 
                 // Call completion handler
                 completion()
