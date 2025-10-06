@@ -189,8 +189,10 @@ struct PackageView: View {
                                 sortOption: sortOption
                             ) {
                                 toggleExpansion(for: package.packageId)
-                            } onRemove: {
-                                removePackage(package)
+                            } onForget: {
+                                forgetPackage(package)
+                            } onUninstall: {
+                                uninstallPackage(package)
                             } onRefresh: {
                                 refreshPackages()
                             } onUpdateBomFiles: { updatedBomFiles in
@@ -198,6 +200,9 @@ struct PackageView: View {
                                 if let packageIndex = packages.firstIndex(where: { $0.packageId == package.packageId }) {
                                     packages[packageIndex].bomFiles = updatedBomFiles
                                 }
+                            }
+                            .onAppear {
+                                loadBOMFilesIfNeeded(for: package.packageId)
                             }
                         }
                     }
@@ -259,7 +264,6 @@ struct PackageView: View {
             expandedPackages.remove(packageId)
         } else {
             expandedPackages.insert(packageId)
-            loadBOMFilesIfNeeded(for: packageId)
         }
     }
     
@@ -353,13 +357,19 @@ struct PackageView: View {
     }
     
     
-    private func removePackage(_ package: PackageInfo) {
+    private func forgetPackage(_ package: PackageInfo) {
         Task {
-            await performPackageRemoval(package)
+            await performPackageForget(package)
         }
     }
 
-    private func performPackageRemoval(_ package: PackageInfo) async {
+    private func uninstallPackage(_ package: PackageInfo) {
+        Task {
+            await performFullUninstall(package)
+        }
+    }
+
+    private func performPackageForget(_ package: PackageInfo) async {
         let success = await withCheckedContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
 
@@ -443,7 +453,83 @@ struct PackageView: View {
             }
         }
     }
-    
+
+    private func performFullUninstall(_ package: PackageInfo) async {
+        let success = await withCheckedContinuation { continuation in
+            DispatchQueue.global(qos: .userInitiated).async {
+                // Step 1: Get all BOM files (should already be loaded from onAppear)
+                let (existingFiles, _) = getBomFilesByExistence(for: package)
+
+                // Step 2: Get receipt paths
+                let receiptPaths = package.receiptStoragePaths
+
+                var commands: [String] = []
+
+                // Step 3: Build command to delete all BOM files
+                if !existingFiles.isEmpty {
+                    let quotedBomPaths = existingFiles.map { "\"\($0)\"" }.joined(separator: " ")
+                    commands.append("rm -rf \(quotedBomPaths)")
+                }
+
+                // Step 4: Build command to delete all receipt files
+                if !receiptPaths.isEmpty {
+                    let quotedReceiptPaths = receiptPaths.map { "\"\($0)\"" }.joined(separator: " ")
+                    commands.append("rm -f \(quotedReceiptPaths)")
+                }
+
+                guard !commands.isEmpty else {
+                    printOS("⚠️ No files to remove for package \(package.packageId)")
+                    continuation.resume(returning: false)
+                    return
+                }
+
+                // Combine all commands
+                let fullCommand = commands.joined(separator: " && ")
+
+                var success = false
+
+                // Use privileged command execution
+                if HelperToolManager.shared.isHelperToolInstalled {
+                    let semaphore = DispatchSemaphore(value: 0)
+                    Task {
+                        let result = await HelperToolManager.shared.runCommand(fullCommand)
+                        success = result.0
+                        if !success {
+                            printOS("Package uninstall failed: \(result.1)")
+                        }
+                        semaphore.signal()
+                    }
+                    semaphore.wait()
+                } else {
+                    let result = performPrivilegedCommands(commands: fullCommand)
+                    success = result.0
+                    if !success {
+                        printOS("Package uninstall failed: \(result.1)")
+                    }
+                }
+
+                continuation.resume(returning: success)
+            }
+        }
+
+        await MainActor.run {
+            if success {
+                // Remove the package from the local array
+                packages.removeAll { $0.packageId == package.packageId }
+                packageIds.removeAll { $0 == package.packageId }
+
+                // Also remove from expanded packages if it was expanded
+                expandedPackages.remove(package.packageId)
+            } else {
+                showCustomAlert(
+                    title: "Uninstall Failed",
+                    message: "Failed to fully uninstall package '\(package.displayName)'. Some files may require additional permissions or may not exist.",
+                    style: .critical
+                )
+            }
+        }
+    }
+
     private func extractAppBundleName(from bomFiles: [String]) -> String? {
         // Look for .app bundle in the BOM files
         for file in bomFiles {
@@ -469,7 +555,8 @@ struct PackageRowView: View {
     let permanentDelete: Bool
     let sortOption: PackageSortOption
     let onToggleExpansion: () -> Void
-    let onRemove: () -> Void
+    let onForget: () -> Void
+    let onUninstall: () -> Void
     let onRefresh: () -> Void
     let onUpdateBomFiles: ([String]) -> Void
     @State private var isPerformingAction = false
@@ -498,7 +585,7 @@ struct PackageRowView: View {
                 // Package details
                 VStack(alignment: .leading, spacing: 6) {
                     
-                    HStack(alignment: .center) {
+                    HStack(alignment: .center, spacing: 8) {
                         if sortOption == .packageId {
                             Text(package.packageId)
                                 .font(.headline)
@@ -510,7 +597,28 @@ struct PackageRowView: View {
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                                 .lineLimit(1)
                         }
-                        
+
+                        // Security badge
+                        if package.isSecure {
+                            HStack(spacing: 2) {
+                                Image(systemName: "lock.fill")
+                                    .font(.caption2)
+                                Text("Secure")
+                                    .font(.caption2)
+                            }
+                            .foregroundStyle(.green)
+                            .help("This package is signed and verified. The package was cryptographically signed by the developer and its integrity has been verified.")
+                        } else {
+                            HStack(spacing: 2) {
+                                Image(systemName: "exclamationmark.triangle")
+                                    .font(.caption2)
+                                Text("Unsigned")
+                                    .font(.caption2)
+                            }
+                            .foregroundStyle(.orange)
+                            .help("This package is unsigned or unverified. The package was not cryptographically signed, or its signature could not be verified.")
+                        }
+
                         Spacer()
                     }
                     
@@ -559,27 +667,8 @@ struct PackageRowView: View {
                             Spacer()
                         }
 
-                        // Security status and package groups
+                        // Package groups
                         HStack(spacing: 6) {
-                            if package.isSecure {
-                                HStack(spacing: 2) {
-                                    Image(systemName: "lock.fill")
-                                        .font(.caption2)
-                                    Text("Secure")
-                                }
-                                .font(.caption)
-                                .foregroundStyle(.green)
-                            } else {
-                                HStack(spacing: 2) {
-                                    Image(systemName: "exclamationmark.triangle")
-                                        .font(.caption2)
-                                    Text("Unsigned")
-                                }
-                                .font(.caption)
-                                .foregroundStyle(.orange)
-                            }
-
-                            // Package groups as badges
                             if !package.packageGroups.isEmpty {
                                 ForEach(package.packageGroups.prefix(3), id: \.self) { group in
                                     Text(formatGroupName(group))
@@ -665,19 +754,30 @@ struct PackageRowView: View {
                         .foregroundStyle(.blue)
                         .disabled(isPerformingAction)
                         .help(isExpanded ? "Hide details" : "Show file details")
-                        
+
                         Divider().frame(height: 10)
 
                         Button("Forget") {
-                            onRemove()
+                            onForget()
                         }
                         .buttonStyle(.borderless)
                         .controlSize(.mini)
                         .foregroundStyle(.orange)
                         .disabled(isPerformingAction)
                         .help("Remove package from system records (does not delete files)")
+
+                        Divider().frame(height: 10)
+
+                        Button("Uninstall") {
+                            onUninstall()
+                        }
+                        .buttonStyle(.borderless)
+                        .controlSize(.mini)
+                        .foregroundStyle(.red)
+                        .disabled(isPerformingAction)
+                        .help("Completely remove package: delete all files, receipts, and forget package")
                     }
-                    
+
                     if isPerformingAction {
                         ProgressView()
                             .scaleEffect(0.7)

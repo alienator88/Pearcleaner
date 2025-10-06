@@ -42,6 +42,7 @@
 		C7BE91A82C9E37AB009FA129 /* FinderOpen.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C78121632BC892A000BE06BD /* FinderOpen.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C7C05FED2E8DA27F006D0476 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = C7C05FEC2E8DA27F006D0476 /* SwiftyJSON */; };
 		C7C90DD32DA81C5D0056769A /* Lipo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C90DD22DA81C590056769A /* Lipo.swift */; };
+		C7CC10E42E94734E0057B7E2 /* ProcessEnv.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7CC10E32E9473480057B7E2 /* ProcessEnv.swift */; };
 		C7D31D512AFF00F300C7ED9E /* Locations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D502AFF00F300C7ED9E /* Locations.swift */; };
 		C7DD49EA2BAB4D8100CCBA16 /* AppInfoFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */; };
 		C7DD49EE2BAB7F6000CCBA16 /* ReversePathsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */; };
@@ -159,6 +160,7 @@
 		C7BB99282E8AF1CB007BBB81 /* PluginsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginsView.swift; sourceTree = "<group>"; };
 		C7BB992E2E8B225F007BBB81 /* FileSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSearchView.swift; sourceTree = "<group>"; };
 		C7C90DD22DA81C590056769A /* Lipo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lipo.swift; sourceTree = "<group>"; };
+		C7CC10E32E9473480057B7E2 /* ProcessEnv.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessEnv.swift; sourceTree = "<group>"; };
 		C7D31D502AFF00F300C7ED9E /* Locations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locations.swift; sourceTree = "<group>"; };
 		C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfoFetch.swift; sourceTree = "<group>"; };
 		C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReversePathsFetch.swift; sourceTree = "<group>"; };
@@ -274,6 +276,7 @@
 		C72893072AFD442600C8C1CD /* Logic */ = {
 			isa = PBXGroup;
 			children = (
+				C7CC10E32E9473480057B7E2 /* ProcessEnv.swift */,
 				C783F8FD2E903707003450E7 /* FileSearch */,
 				C7C05FF12E8DEE85006D0476 /* Data */,
 				C783F9492E903B53003450E7 /* PKG */,
@@ -612,6 +615,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C7DD49EA2BAB4D8100CCBA16 /* AppInfoFetch.swift in Sources */,
+				C7CC10E42E94734E0057B7E2 /* ProcessEnv.swift in Sources */,
 				C74422432E494D830002D277 /* PackageView.swift in Sources */,
 				C77B90162AF19377009CC655 /* AppState.swift in Sources */,
 				C7DD49EE2BAB7F6000CCBA16 /* ReversePathsFetch.swift in Sources */,

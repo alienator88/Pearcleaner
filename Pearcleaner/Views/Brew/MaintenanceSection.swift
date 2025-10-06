@@ -150,8 +150,7 @@ struct MaintenanceSection: View {
                                     isRunningDoctor = true
                                     do {
                                         doctorOutput = try await HomebrewController.shared.runDoctor()
-                                        // Empty output means healthy, non-empty means issues found
-                                        doctorHealthy = doctorOutput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                                        doctorHealthy = doctorOutput.contains("Your system is ready to brew")
                                         if !doctorHealthy! {
                                             showDoctorSheet = true
                                         }
@@ -414,8 +413,7 @@ struct MaintenanceSection: View {
                 isCheckingHealthOnAppear = true
                 do {
                     doctorOutput = try await HomebrewController.shared.runDoctor()
-                    // Empty output means healthy, non-empty means issues found
-                    doctorHealthy = doctorOutput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                    doctorHealthy = doctorOutput.contains("Your system is ready to brew")
                 } catch {
                     printOS("Error running health check on appear: \(error)")
                     doctorHealthy = false
@@ -434,7 +432,7 @@ struct DoctorOutputSheet: View {
     @Environment(\.colorScheme) var colorScheme
 
     var isHealthy: Bool {
-        output.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        return output.contains("Your system is ready to brew")
     }
 
     var body: some View {

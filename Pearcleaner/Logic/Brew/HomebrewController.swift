@@ -192,6 +192,7 @@ class HomebrewController {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: brewPath)
         process.arguments = arguments
+        process.environment = ProcessInfo.processInfo.userEnvironment
 
         let outputPipe = Pipe()
         let errorPipe = Pipe()
@@ -621,10 +622,30 @@ class HomebrewController {
     func checkForBrewUpdate() async throws -> (current: String, latest: String, updateAvailable: Bool) {
         let currentVersion = try await getBrewVersion()
 
-        // Check if local Homebrew git repository is behind remote
-        let updateAvailable = try await isBrewBehindRemote()
+        // Check if version has commit hash suffix (e.g., "4.6.16-29-g20fa199")
+        // If not, skip git check even if git repo exists (portable installation)
+        let hasCommitSuffix = currentVersion.range(of: #"-\d+-g[a-f0-9]+"#, options: .regularExpression) != nil
 
-        return (current: currentVersion, latest: "", updateAvailable: updateAvailable)
+        if hasCommitSuffix {
+            // Try git-based check for git installations with commit suffixes
+            do {
+                let updateAvailable = try await isBrewBehindRemote()
+                return (current: currentVersion, latest: "", updateAvailable: updateAvailable)
+            } catch {
+                printOS("Brew version check - Git-based check failed: \(error.localizedDescription). Falling back to semantic version comparison.")
+            }
+        }
+
+        // Fallback: semantic version comparison (for portable installations)
+        do {
+            let latestVersion = try await getLatestBrewVersionFromGitHub()
+            let currentSemantic = try await getSemanticBrewVersion()
+            let updateAvailable = compareSemanticVersions(current: currentSemantic, latest: latestVersion)
+            return (current: currentVersion, latest: latestVersion, updateAvailable: updateAvailable)
+        } catch {
+            printOS("Brew version check - Semantic version comparison failed: \(error.localizedDescription)")
+            throw error
+        }
     }
 
     private func isBrewBehindRemote() async throws -> Bool {
@@ -643,7 +664,26 @@ class HomebrewController {
         let repoPath = String(data: outputData, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
 
         guard !repoPath.isEmpty else {
-            return false
+            printOS("Brew version check - Git check failed: brew --repository returned empty path")
+            throw HomebrewError.commandFailed("Not a git repository")
+        }
+
+        // Verify it's actually a git repo
+        let checkGitProcess = Process()
+        checkGitProcess.executableURL = URL(fileURLWithPath: "/usr/bin/git")
+        checkGitProcess.arguments = ["-C", repoPath, "rev-parse", "--git-dir"]
+        checkGitProcess.standardOutput = Pipe()
+        let checkGitErrorPipe = Pipe()
+        checkGitProcess.standardError = checkGitErrorPipe
+
+        try checkGitProcess.run()
+        checkGitProcess.waitUntilExit()
+
+        guard checkGitProcess.terminationStatus == 0 else {
+            let errorData = checkGitErrorPipe.fileHandleForReading.readDataToEndOfFile()
+            let errorOutput = String(data: errorData, encoding: .utf8) ?? "Unknown error"
+            printOS("Brew version check - Git check failed: git rev-parse failed with status \(checkGitProcess.terminationStatus), error: \(errorOutput)")
+            throw HomebrewError.commandFailed("Not a git repository")
         }
 
         // Fetch latest from remote (doesn't update local files, just refs)
@@ -651,10 +691,17 @@ class HomebrewController {
         fetchProcess.executableURL = URL(fileURLWithPath: "/usr/bin/git")
         fetchProcess.arguments = ["-C", repoPath, "fetch", "--quiet", "origin"]
         fetchProcess.standardOutput = Pipe()
-        fetchProcess.standardError = Pipe()
+        let fetchErrorPipe = Pipe()
+        fetchProcess.standardError = fetchErrorPipe
 
         try? fetchProcess.run()
         fetchProcess.waitUntilExit()
+
+        if fetchProcess.terminationStatus != 0 {
+            let errorData = fetchErrorPipe.fileHandleForReading.readDataToEndOfFile()
+            let errorOutput = String(data: errorData, encoding: .utf8) ?? "Unknown error"
+            printOS("Brew version check - Git fetch warning: failed with status \(fetchProcess.terminationStatus), error: \(errorOutput)")
+        }
 
         // Compare local HEAD with remote origin/master (or origin/HEAD)
         let compareProcess = Process()
@@ -663,15 +710,42 @@ class HomebrewController {
 
         let comparePipe = Pipe()
         compareProcess.standardOutput = comparePipe
-        compareProcess.standardError = Pipe()
+        let compareErrorPipe = Pipe()
+        compareProcess.standardError = compareErrorPipe
 
         try compareProcess.run()
         compareProcess.waitUntilExit()
+
+        if compareProcess.terminationStatus != 0 {
+            let errorData = compareErrorPipe.fileHandleForReading.readDataToEndOfFile()
+            let errorOutput = String(data: errorData, encoding: .utf8) ?? "Unknown error"
+            printOS("Brew version check - Git compare failed: rev-list failed with status \(compareProcess.terminationStatus), error: \(errorOutput)")
+        }
 
         let compareData = comparePipe.fileHandleForReading.readDataToEndOfFile()
         let commitsBehind = String(data: compareData, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "0"
 
         return Int(commitsBehind) ?? 0 > 0
+    }
+
+    private func compareSemanticVersions(current: String, latest: String) -> Bool {
+        let currentComponents = current.split(separator: ".").compactMap { Int($0) }
+        let latestComponents = latest.split(separator: ".").compactMap { Int($0) }
+
+        guard currentComponents.count >= 3, latestComponents.count >= 3 else {
+            printOS("Brew version check - Semantic comparison failed: invalid version format. Current components: \(currentComponents.count), Latest components: \(latestComponents.count)")
+            return false
+        }
+
+        for i in 0..<min(currentComponents.count, latestComponents.count) {
+            if latestComponents[i] > currentComponents[i] {
+                return true
+            } else if latestComponents[i] < currentComponents[i] {
+                return false
+            }
+        }
+
+        return false
     }
 
     func updateBrew() async throws {
