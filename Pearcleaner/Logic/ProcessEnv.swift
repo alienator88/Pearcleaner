@@ -8,24 +8,14 @@
 import Foundation
 
 public extension Process {
-    static func execute(_ parameters: Process.ExecutionParameters) throws -> Data? {
-        let task = Process(parameters: parameters)
-
-        return try? task.runAndReadStdout()
-    }
-
     static func executeAsUser(_ parameters: Process.ExecutionParameters) throws -> Data? {
         let userParams = parameters.userShellInvocation()
-
-        let task = Process(parameters: userParams)
-
+        let task = Process()
+        task.executableURL = URL(fileURLWithPath: userParams.path)
+        task.arguments = userParams.arguments
+        task.environment = userParams.environment
+        task.currentDirectoryURL = userParams.currentDirectoryURL
         return try? task.runAndReadStdout()
-    }
-
-    static func readOutput(from launchPath: String, arguments: [String] = [], environment: [String : String] = [:]) -> Data? {
-        let params = Process.ExecutionParameters(path: launchPath, arguments: arguments, environment: environment)
-
-        return try? execute(params)
     }
 
     func runAndReadStdout() throws -> Data? {
@@ -39,13 +29,9 @@ public extension Process {
 
         return try pipe.fileHandleForReading.readToEnd()
     }
-}
 
+    // MARK: - Execution Parameters
 
-
-
-
-public extension Process {
     /// Wraps up all of the parameters needed for starting a Process into one single type.
     struct ExecutionParameters: Codable, Hashable, Sendable {
         public var path: String
@@ -97,43 +83,9 @@ public extension Process {
                                        currentDirectoryURL: cwdURL)
         }
     }
-
-    var parameters: ExecutionParameters {
-        get {
-            return ExecutionParameters(path: self.executableURL?.path ?? "",
-                                       arguments: arguments ?? [],
-                                       environment: self.environment,
-                                       currentDirectoryURL: self.currentDirectoryURL)
-        }
-        set {
-            self.executableURL = URL(fileURLWithPath: newValue.path)
-            self.arguments = newValue.arguments
-            self.environment = newValue.environment
-            self.currentDirectoryURL = newValue.currentDirectoryURL
-        }
-    }
-
-    convenience init(parameters: ExecutionParameters) {
-        self.init()
-
-        self.parameters = parameters
-    }
-}
-
-
-
-
-
-public extension Process {
-    typealias Environment = [String : String]
 }
 
 extension ProcessInfo {
-    /// Cached password database entry to avoid multiple syscalls
-    private var passwd: UnsafeMutablePointer<passwd>? {
-        return getpwuid(getuid())
-    }
-
     /// The path to the current user's shell executable
     ///
     /// This attempts to query the `SHELL` environment variable, the
@@ -144,36 +96,16 @@ extension ProcessInfo {
             return value
         }
 
-        if let value = pwShell, !value.isEmpty {
-            return value
+        if let passwd = getpwuid(getuid()),
+           let cString = passwd.pointee.pw_shell {
+            let shellPath = String(cString: cString)
+            if !shellPath.isEmpty {
+                return shellPath
+            }
         }
 
         // this is a terrible fallback, but we need something
         return "/bin/bash"
-    }
-
-    public var pwShell: String? {
-        guard let cString = passwd?.pointee.pw_shell else {
-            return nil
-        }
-
-        return String(cString: cString)
-    }
-
-    public var pwUserName: String? {
-        guard let cString = passwd?.pointee.pw_name else {
-            return nil
-        }
-
-        return String(cString: cString)
-    }
-
-    public var pwDir: String? {
-        guard let cString = passwd?.pointee.pw_dir else {
-            return nil
-        }
-
-        return String(cString: cString)
     }
     /// Returns the value of PATH
     ///
@@ -189,8 +121,9 @@ extension ProcessInfo {
             return path
         }
 
-        if let path = pwDir {
-            return path
+        if let passwd = getpwuid(getuid()),
+           let cString = passwd.pointee.pw_dir {
+            return String(cString: cString)
         }
 
         return "/Users/\(userName)"
@@ -199,7 +132,7 @@ extension ProcessInfo {
     /// Capture the interactive-login shell environment
     ///
     /// This method attempts to reconstruct the user
-    /// envrionment that would be set up when logging into
+    /// environment that would be set up when logging into
     /// a terminal session.
     public var userEnvironment: [String : String] {
         guard let data = try? Process.executeAsUser(.init(path: "/usr/bin/env", environment: environment)) else {
@@ -215,16 +148,14 @@ extension ProcessInfo {
         }
 
         var env: [String: String] = [:]
-        let charSet = CharacterSet.whitespaces
 
         string.enumerateLines { (line, _) in
-            let components = line.split(separator: "=")
-
-            guard let key = components.first?.trimmingCharacters(in: charSet) else {
+            guard let separatorIndex = line.firstIndex(of: "=") else {
                 return
             }
 
-            let value = components.dropFirst().joined(separator: "=").trimmingCharacters(in: charSet)
+            let key = line[..<separatorIndex].trimmingCharacters(in: .whitespaces)
+            let value = line[line.index(after: separatorIndex)...].trimmingCharacters(in: .whitespaces)
 
             env[key] = value
         }

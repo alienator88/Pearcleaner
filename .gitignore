@@ -89,5 +89,5 @@ fastlane/test_output
 
 iOSInjectionProject/
 .DS_Store
-Builds/
+Builds/Export
 .claude
