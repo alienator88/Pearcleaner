@@ -217,91 +217,88 @@ struct SearchInstallSection: View {
         }
     }
 
-    var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            // Search bar with picker - FULL WIDTH, NOT AFFECTED BY DRAWER
-            HStack(spacing: 12) {
-                // Search field
-                HStack {
-                    Image(systemName: "magnifyingglass")
+    @ViewBuilder
+    private var searchBar: some View {
+        HStack(spacing: 12) {
+            // Search field
+            HStack {
+                Image(systemName: "magnifyingglass")
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                TextField("Search...", text: $searchQuery)
+                    .textFieldStyle(.plain)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                if !searchQuery.isEmpty {
+                    Button {
+                        searchQuery = ""
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .controlGroup(Capsule(style: .continuous), level: .primary)
+
+            // Search type picker
+            Picker("", selection: $searchType) {
+                ForEach(HomebrewSearchType.allCases, id: \.self) { type in
+                    Text(type.rawValue).tag(type)
+                }
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+            .frame(width: 240)
+            .onChange(of: searchType) { _ in
+                // Clear search when switching tabs
+                searchQuery = ""
+            }
+        }
+        .padding(.horizontal, 20)
+        .padding(.top, 10)
+    }
+
+    @ViewBuilder
+    private var resultsCountBar: some View {
+        if (searchType == .installed && !cachedCategories.isEmpty) || (!displayedResults.isEmpty) {
+            HStack {
+                if searchType == .installed {
+                    // Count unique packages (exclude Outdated category since it's duplicates)
+                    let totalCount = cachedCategories
+                        .filter { $0.title != "Outdated" }
+                        .reduce(0) { $0 + $1.packages.count }
+                    Text("\(totalCount) package\(totalCount == 1 ? "" : "s")")
+                        .font(.caption)
+                        .monospacedDigit()
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
-                    TextField("Search...", text: $searchQuery)
-                        .textFieldStyle(.plain)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-
-                    if !searchQuery.isEmpty {
-                        Button {
-                            searchQuery = ""
-                        } label: {
-                            Image(systemName: "xmark.circle.fill")
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        }
-                        .buttonStyle(.plain)
+                    if brewManager.isLoadingPackages {
+                        Text("Loading...")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }
-                }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .controlGroup(Capsule(style: .continuous), level: .primary)
 
-                // Search type picker
-                Picker("", selection: $searchType) {
-                    ForEach(HomebrewSearchType.allCases, id: \.self) { type in
-                        Text(type.rawValue).tag(type)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .labelsHidden()
-                .frame(width: 240)
-                .onChange(of: searchType) { _ in
-                    // Clear search when switching tabs
-                    searchQuery = ""
+                    Spacer()
+                } else {
+                    Text("\(displayedResults.count) result\(displayedResults.count == 1 ? "" : "s")")
+                        .font(.caption)
+                        .monospacedDigit()
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                    Spacer()
                 }
             }
             .padding(.horizontal, 20)
-            .padding(.top, 10)
+            .padding(.vertical, 10)
+        }
+    }
 
-            // Results count and cache timestamp
-            if (searchType == .installed && !cachedCategories.isEmpty) || (!displayedResults.isEmpty) {
-                HStack {
-                    if searchType == .installed {
-                        // Count unique packages (exclude Outdated category since it's duplicates)
-                        let totalCount = cachedCategories
-                            .filter { $0.title != "Outdated" }
-                            .reduce(0) { $0 + $1.packages.count }
-                        Text("\(totalCount) package\(totalCount == 1 ? "" : "s")")
-                            .font(.caption)
-                            .monospacedDigit()
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-
-                        if brewManager.isLoadingPackages {
-                            Text("Loading...")
-                                .font(.caption)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        }
-
-                        Spacer()
-                    } else {
-                        Text("\(displayedResults.count) result\(displayedResults.count == 1 ? "" : "s")")
-                            .font(.caption)
-                            .monospacedDigit()
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-
-                        Spacer()
-
-                        if let lastRefresh = brewManager.lastCacheRefresh {
-                            Text("Cached: \(lastRefresh.formatted(date: .abbreviated, time: .shortened))")
-                                .font(.caption)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        }
-                    }
-                }
-                .padding(.horizontal, 20)
-                .padding(.vertical, 10)
-            }
-
-            // LIST AREA
-            GeometryReader { geometry in
+    @ViewBuilder
+    private var listContent: some View {
+        GeometryReader { geometry in
                     // Results List (full width)
                     VStack(alignment: .leading, spacing: 0) {
                         // Results or loading state
@@ -322,9 +319,6 @@ struct SearchInstallSection: View {
                                 } else {
                                     Text("Loading available packages...")
                                         .font(.title2)
-                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                                    Text("This may take a moment on first launch")
-                                        .font(.caption)
                                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                                 }
 
@@ -433,8 +427,7 @@ struct SearchInstallSection: View {
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-        }
-        .onAppear {
+            .onAppear {
             Task {
                 // 1. Load installed packages only if not already loaded for this session
                 if !brewManager.hasLoadedInstalledPackages {
@@ -445,16 +438,10 @@ struct SearchInstallSection: View {
                 }
             }
 
-            // 2. Load JWS data in separate background task (doesn't block UI)
+            // 2. Load package names in separate background task (doesn't block UI)
             Task {
                 if !brewManager.hasLoadedAvailablePackages {
-                    var needsRefresh = false
-                    if let lastRefresh = brewManager.lastCacheRefresh {
-                        let oneDayAgo = Date().addingTimeInterval(-24 * 60 * 60)
-                        needsRefresh = lastRefresh < oneDayAgo
-                    }
-
-                    await brewManager.loadAvailablePackages(appState: appState, forceRefresh: needsRefresh)
+                    await brewManager.loadAvailablePackages(appState: appState, forceRefresh: false)
                 }
             }
         }
@@ -479,6 +466,14 @@ struct SearchInstallSection: View {
             if newType == .installed {
                 updateCategorizedPackages()
             }
+        }
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            searchBar
+            resultsCountBar
+            listContent
         }
     }
 }
@@ -570,10 +565,6 @@ struct SearchResultRowView: View {
                         .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                         .lineLimit(2)
-                } else {
-                    Text(isCask ? "Cask" : "Formula")
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
             }
 
@@ -846,25 +837,25 @@ struct PackageDetailsDrawer: View {
     }
 
     private func loadFullPackageInfoIfNeeded() {
-        // If package data is incomplete (from installed package), fetch full info from cached data
+        // If package data is incomplete, fetch full info from API
         guard needsFullData else { return }
 
         Task {
             isLoadingFullPackageInfo = true
 
-            // Search in already-loaded cached packages (instant lookup)
-            let availablePackages = isCask ? brewManager.allAvailableCasks : brewManager.allAvailableFormulae
+            do {
+                // Extract short name for matching (e.g., "homebrew/core/node" -> "node")
+                let shortName = package.name.components(separatedBy: "/").last ?? package.name
 
-            // Extract short name for matching (e.g., "homebrew/core/node" -> "node")
-            let shortName = package.name.components(separatedBy: "/").last ?? package.name
-
-            // Find exact match by name or short name
-            if let match = availablePackages.first(where: {
-                $0.name == package.name || $0.name == shortName
-            }) {
-                fullPackageInfo = match
+                // Fetch complete package info from Homebrew API
+                fullPackageInfo = try await HomebrewController.shared.getPackageInfo(
+                    name: shortName,
+                    cask: isCask
+                )
+            } catch {
+                printOS("Failed to fetch package info for \(package.name): \(error)")
+                // Keep using partial info from installed package
             }
-            // For tap packages, we already have description from installed package - no need to fetch more
 
             isLoadingFullPackageInfo = false
         }

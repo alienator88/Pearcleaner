@@ -274,8 +274,7 @@ struct TapRowView: View {
                         try await HomebrewController.shared.removeTap(name: tap.name)
                         await brewManager.loadTaps()
 
-                        // Remove tap's packages from Browse cache
-                        await brewManager.removeTapPackagesFromCache(tapName: tap.name)
+                        // Note: No need to update Browse cache - we load names dynamically now
                     } catch {
                         printOS("Error removing tap: \(error)")
                     }
@@ -424,8 +423,7 @@ struct AddTapSheet: View {
                 try await HomebrewController.shared.addTap(name: tapName)
                 await brewManager.loadTaps()
 
-                // Inject new tap's packages into Browse cache
-                await brewManager.addTapPackagesToCache(tapName: tapName)
+                // Note: No need to update Browse cache - we load names dynamically now
 
                 isPresented = false
             } catch {

@@ -33,7 +33,6 @@ class HomebrewManager: ObservableObject {
     var hasLoadedInstalledPackages: Bool = false
     var hasLoadedAvailablePackages: Bool = false
     @Published var isLoadingAvailablePackages: Bool = false
-    @Published var lastCacheRefresh: Date?  // For Browse tab timestamp display
 
     // Maintenance tab refresh trigger
     @Published var maintenanceRefreshTrigger: Bool = false
@@ -188,136 +187,80 @@ class HomebrewManager: ObservableObject {
         isLoadingAvailablePackages = true
         defer { isLoadingAvailablePackages = false }
 
-        // Set up SwiftData context for caching
-        if #available(macOS 14.0, *), let container = appState.modelContainer {
-            HomebrewController.shared.setModelContext(container: container)
-        }
-
-        // If force refresh, skip cache and reload from JSON
-        if forceRefresh {
-            await reloadFromJSON()
-            hasLoadedAvailablePackages = true
-            return
-        }
-
-        // Try loading from cache first
-        if #available(macOS 14.0, *) {
-            let (cachedFormulae, cachedCasks, cacheDate) = await HomebrewController.shared.loadPackagesFromCache()
-
-            if !cachedFormulae.isEmpty || !cachedCasks.isEmpty {
-                // Sort cached results
-                allAvailableFormulae = cachedFormulae.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
-                allAvailableCasks = cachedCasks.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
-                lastCacheRefresh = cacheDate
-                hasLoadedAvailablePackages = true
-                return
-            }
-        }
-
-        // Cache miss - load from JSON files
-        await reloadFromJSON()
-        hasLoadedAvailablePackages = true
-    }
-
-    private func reloadFromJSON() async {
-        // Update Homebrew first to get latest JWS files from API
         do {
-            try await HomebrewController.shared.updateBrew()
-            printOS("Successfully updated Homebrew before cache refresh")
-        } catch {
-            printOS("Failed to update Homebrew before cache refresh: \(error)")
-            // Continue anyway - use existing JWS files
-        }
-
-        await HomebrewController.shared.preloadCache()
-
-        do {
-            // Load core packages from .jws.json files
-            var formulae = try await HomebrewController.shared.searchPackages(query: "", cask: false)
-            var casks = try await HomebrewController.shared.searchPackages(query: "", cask: true)
-
-            // Append packages from tapped repositories
-            let taps = try await HomebrewController.shared.loadTaps()
-            for tap in taps where !tap.isOfficial {
-                let (tapFormulae, tapCasks) = try await HomebrewController.shared.getPackagesFromTap(tap.name)
-                formulae.append(contentsOf: tapFormulae)
-                casks.append(contentsOf: tapCasks)
+            // Update Homebrew first to ensure name files are up to date
+            if forceRefresh {
+                try await HomebrewController.shared.updateBrew()
+                printOS("Successfully updated Homebrew before loading package names")
             }
 
+            // Load package names from tiny text files (172KB total vs 44MB JWS)
+            let formulaeNames = try await HomebrewController.shared.loadPackageNames(cask: false)
+            let caskNames = try await HomebrewController.shared.loadPackageNames(cask: true)
+
+            // Convert names to minimal SearchResult objects (name only, no description)
             // Sort once here to avoid sorting on every search keystroke
-            allAvailableFormulae = formulae.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
-            allAvailableCasks = casks.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
-
-            // Save to cache (includes tap packages)
-            if #available(macOS 14.0, *) {
-                await HomebrewController.shared.savePackagesToCache(
-                    formulae: allAvailableFormulae,
-                    casks: allAvailableCasks
+            allAvailableFormulae = formulaeNames.map { name in
+                HomebrewSearchResult(
+                    name: name,
+                    description: nil,  // No description - will fetch on demand when Info clicked
+                    homepage: nil,
+                    license: nil,
+                    version: nil,
+                    dependencies: nil,
+                    caveats: nil,
+                    tap: nil,
+                    fullName: nil,
+                    isDeprecated: false,
+                    deprecationReason: nil,
+                    isDisabled: false,
+                    disableDate: nil,
+                    conflictsWith: nil,
+                    isBottled: nil,
+                    isKegOnly: nil,
+                    kegOnlyReason: nil,
+                    buildDependencies: nil,
+                    aliases: nil,
+                    versionedFormulae: nil,
+                    requirements: nil,
+                    caskName: nil,
+                    autoUpdates: nil,
+                    artifacts: nil
                 )
-                lastCacheRefresh = Date()
-            }
-        } catch {
-            printOS("Error loading available packages: \(error)")
-        }
-    }
+            }.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
 
-    // Add packages from a newly tapped repository to the Browse cache
-    func addTapPackagesToCache(tapName: String) async {
-        // Only add if Browse cache is already loaded
-        guard !allAvailableFormulae.isEmpty || !allAvailableCasks.isEmpty else {
-            return
-        }
-
-        do {
-            // Load packages from the new tap
-            let (tapFormulae, tapCasks) = try await HomebrewController.shared.getPackagesFromTap(tapName)
-
-            // Append to existing lists
-            allAvailableFormulae.append(contentsOf: tapFormulae)
-            allAvailableCasks.append(contentsOf: tapCasks)
-
-            // Update cache
-            if #available(macOS 14.0, *) {
-                await HomebrewController.shared.savePackagesToCache(
-                    formulae: allAvailableFormulae,
-                    casks: allAvailableCasks
+            allAvailableCasks = caskNames.map { name in
+                HomebrewSearchResult(
+                    name: name,
+                    description: nil,  // No description - will fetch on demand when Info clicked
+                    homepage: nil,
+                    license: nil,
+                    version: nil,
+                    dependencies: nil,
+                    caveats: nil,
+                    tap: nil,
+                    fullName: nil,
+                    isDeprecated: false,
+                    deprecationReason: nil,
+                    isDisabled: false,
+                    disableDate: nil,
+                    conflictsWith: nil,
+                    isBottled: nil,
+                    isKegOnly: nil,
+                    kegOnlyReason: nil,
+                    buildDependencies: nil,
+                    aliases: nil,
+                    versionedFormulae: nil,
+                    requirements: nil,
+                    caskName: nil,
+                    autoUpdates: nil,
+                    artifacts: nil
                 )
-                lastCacheRefresh = Date()
-            }
+            }.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
 
-            printOS("Added \(tapFormulae.count) formulae and \(tapCasks.count) casks from \(tapName) to Browse cache")
+            hasLoadedAvailablePackages = true
         } catch {
-            printOS("Error adding tap packages to cache: \(error)")
+            printOS("Error loading package names: \(error)")
         }
-    }
-
-    // Remove packages from a removed tap from the Browse cache
-    func removeTapPackagesFromCache(tapName: String) async {
-        // Only remove if Browse cache is already loaded
-        guard !allAvailableFormulae.isEmpty || !allAvailableCasks.isEmpty else {
-            return
-        }
-
-        // Remove packages that start with the tap name
-        let tapPrefix = "\(tapName)/"
-        let beforeFormulaeCount = allAvailableFormulae.count
-        let beforeCasksCount = allAvailableCasks.count
-
-        allAvailableFormulae.removeAll { $0.name.hasPrefix(tapPrefix) }
-        allAvailableCasks.removeAll { $0.name.hasPrefix(tapPrefix) }
-
-        let removedFormulae = beforeFormulaeCount - allAvailableFormulae.count
-        let removedCasks = beforeCasksCount - allAvailableCasks.count
-
-        // Update cache
-        if #available(macOS 14.0, *) {
-            await HomebrewController.shared.savePackagesToCache(
-                formulae: allAvailableFormulae,
-                casks: allAvailableCasks
-            )
-            lastCacheRefresh = Date()
-        }
-
-        printOS("Removed \(removedFormulae) formulae and \(removedCasks) casks from \(tapName) from Browse cache")
     }
 }

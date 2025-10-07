@@ -8,9 +8,6 @@
 import Foundation
 import SwiftyJSON
 import AlinFoundation
-#if canImport(SwiftData)
-import SwiftData
-#endif
 
 enum HomebrewError: Error {
     case brewNotFound
@@ -23,13 +20,6 @@ class HomebrewController {
     static let shared = HomebrewController()
     private let brewPath: String
     private let brewPrefix: String
-
-    // Preloaded cache
-    private var cachedFormulaeData: JSON?
-    private var cachedCasksData: JSON?
-
-    // SwiftData context for package caching (macOS 14+)
-    private var modelContext: Any?
 
     private init() {
         // Determine paths based on architecture
@@ -46,138 +36,6 @@ class HomebrewController {
 
     var isInstalled: Bool {
         return FileManager.default.fileExists(atPath: brewPath)
-    }
-
-    // MARK: - SwiftData Setup
-
-    @available(macOS 14.0, *)
-    @MainActor
-    func setModelContext(container: Any) {
-        guard let modelContainer = container as? ModelContainer else { return }
-        self.modelContext = ModelContext(modelContainer)
-    }
-
-    // MARK: - Package Cache (SwiftData)
-
-    @available(macOS 14.0, *)
-    @MainActor
-    func savePackagesToCache(formulae: [HomebrewSearchResult], casks: [HomebrewSearchResult]) async {
-        guard let context = modelContext as? ModelContext else { return }
-
-        do {
-            // Clear existing cache
-            try context.delete(model: CachedHomebrewPackage.self)
-
-            // Save formulae
-            for formula in formulae {
-                let cached = CachedHomebrewPackage.from(formula, isCask: false)
-                context.insert(cached)
-            }
-
-            // Save casks
-            for cask in casks {
-                let cached = CachedHomebrewPackage.from(cask, isCask: true)
-                context.insert(cached)
-            }
-
-            try context.save()
-
-            print("✅ Saved \(formulae.count) formulae and \(casks.count) casks to cache")
-        } catch {
-            printOS("Error saving packages to cache: \(error)")
-        }
-    }
-
-    @available(macOS 14.0, *)
-    @MainActor
-    func loadPackagesFromCache() async -> (formulae: [HomebrewSearchResult], casks: [HomebrewSearchResult], cacheDate: Date?) {
-        guard let context = modelContext as? ModelContext else {
-            return ([], [], nil)
-        }
-
-        do {
-            let descriptor = FetchDescriptor<CachedHomebrewPackage>()
-            let cachedPackages = try context.fetch(descriptor)
-
-            guard !cachedPackages.isEmpty else {
-                return ([], [], nil)
-            }
-
-            let formulae = cachedPackages.filter { !$0.isCask }.map { $0.toSearchResult() }
-            let casks = cachedPackages.filter { $0.isCask }.map { $0.toSearchResult() }
-
-            // Get the most recent cache date
-            let cacheDate = cachedPackages.map { $0.cachedAt }.max()
-
-            return (formulae, casks, cacheDate)
-        } catch {
-            printOS("Error loading packages from cache: \(error)")
-            return ([], [], nil)
-        }
-    }
-
-    @available(macOS 14.0, *)
-    @MainActor
-    func getCacheAge() async -> TimeInterval? {
-        guard let context = modelContext as? ModelContext else { return nil }
-
-        let descriptor = FetchDescriptor<CachedHomebrewPackage>()
-        guard let cachedPackages = try? context.fetch(descriptor),
-              let mostRecent = cachedPackages.map({ $0.cachedAt }).max() else {
-            return nil
-        }
-
-        return Date().timeIntervalSince(mostRecent)
-    }
-
-    @available(macOS 14.0, *)
-    @MainActor
-    func clearPackageCache() async {
-        guard let context = modelContext as? ModelContext else { return }
-
-        do {
-            try context.delete(model: CachedHomebrewPackage.self)
-            try context.save()
-        } catch {
-            printOS("Error clearing package cache: \(error)")
-        }
-    }
-
-    // MARK: - Cache Preloading
-
-    func preloadCache() async {
-        let cacheDir = FileManager.default.homeDirectoryForCurrentUser
-            .appendingPathComponent("Library/Caches/Homebrew/api")
-
-        // Preload formulae
-        let formulaeFile = cacheDir.appendingPathComponent("formula.jws.json")
-        if FileManager.default.fileExists(atPath: formulaeFile.path), cachedFormulaeData == nil {
-            do {
-                let jwsData = try Data(contentsOf: formulaeFile)
-                let jwsJson = try JSON(data: jwsData)
-                if let payloadString = jwsJson["payload"].string,
-                   let payloadData = payloadString.data(using: .utf8) {
-                    cachedFormulaeData = try JSON(data: payloadData)
-                }
-            } catch {
-                printOS("Failed to preload formulae cache: \(error)")
-            }
-        }
-
-        // Preload casks
-        let casksFile = cacheDir.appendingPathComponent("cask.jws.json")
-        if FileManager.default.fileExists(atPath: casksFile.path), cachedCasksData == nil {
-            do {
-                let jwsData = try Data(contentsOf: casksFile)
-                let jwsJson = try JSON(data: jwsData)
-                if let payloadString = jwsJson["payload"].string,
-                   let payloadData = payloadString.data(using: .utf8) {
-                    cachedCasksData = try JSON(data: payloadData)
-                }
-            } catch {
-                printOS("Failed to preload casks cache: \(error)")
-            }
-        }
     }
 
     // MARK: - Helper Methods
@@ -252,6 +110,31 @@ class HomebrewController {
                 }
             }
         }
+    }
+
+    /// Load package names from text files (formula_names.txt or cask_names.txt)
+    /// Returns array of package names only - no descriptions or other metadata
+    func loadPackageNames(cask: Bool) async throws -> [String] {
+        let fileName = cask ? "cask_names.txt" : "formula_names.txt"
+        let apiCachePath = FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent("Library/Caches/Homebrew/api")
+        let filePath = apiCachePath.appendingPathComponent(fileName).path
+
+        // Check if file exists
+        guard FileManager.default.fileExists(atPath: filePath) else {
+            printOS("Package names file not found: \(filePath)")
+            throw HomebrewError.commandFailed("Names file not found")
+        }
+
+        // Read file content
+        let content = try String(contentsOfFile: filePath, encoding: .utf8)
+
+        // Split by newlines and filter empty lines
+        let names = content.components(separatedBy: .newlines)
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+
+        return names
     }
 
     /// Extract name, description, version, and pin status from formula .rb file
@@ -483,364 +366,116 @@ class HomebrewController {
 
     // MARK: - Search
 
-    func searchPackages(query: String, cask: Bool) async throws -> [HomebrewSearchResult] {
-        // Try to use preloaded cache first
-        let payload: JSON?
-
-        if cask {
-            payload = cachedCasksData
-        } else {
-            payload = cachedFormulaeData
-        }
-
-        if let payload = payload {
-            // Use preloaded cache - instant search!
-            var results: [HomebrewSearchResult] = []
-            for item in payload.arrayValue {
-                let name = cask ? item["token"].stringValue : item["name"].stringValue
-
-                // If query is empty, return all; otherwise filter
-                if query.isEmpty || name.localizedCaseInsensitiveContains(query) {
-                    let license = item["license"].string
-                    let version = cask ? item["version"].string : item["versions"]["stable"].string
-                    let dependencies = cask ? item["depends_on"]["formula"].arrayValue.map { $0.stringValue } : item["dependencies"].arrayValue.map { $0.stringValue }
-                    let caveats = item["caveats"].string
-
-                    // Common fields
-                    let tap = item["tap"].string
-                    let fullName = item["full_name"].string
-                    let isDeprecated = item["deprecated"].bool ?? false
-                    let deprecationReason = item["deprecation_reason"].string
-                    let isDisabled = item["disabled"].bool ?? false
-                    let disableDate = item["disable_date"].string
-                    let conflictsWith = item["conflicts_with"].arrayValue.map { $0.stringValue }
-
-                    // Formula-specific fields
-                    let isBottled = cask ? nil : (item["versions"]["bottle"].bool ?? false)
-                    let isKegOnly = cask ? nil : (item["keg_only"].bool ?? false)
-                    let kegOnlyReason: String?
-                    if !cask {
-                        if let explanation = item["keg_only_reason"]["explanation"].string, !explanation.isEmpty {
-                            kegOnlyReason = explanation
-                        } else if let reason = item["keg_only_reason"]["reason"].string {
-                            switch reason {
-                            case ":provided_by_macos":
-                                kegOnlyReason = "macOS already provides this software"
-                            case ":versioned_formula":
-                                kegOnlyReason = "This is a versioned formula"
-                            case ":shadowed_by_macos":
-                                kegOnlyReason = "Shadowed by macOS"
-                            default:
-                                kegOnlyReason = "Not symlinked to Homebrew prefix"
-                            }
-                        } else {
-                            kegOnlyReason = nil
-                        }
-                    } else {
-                        kegOnlyReason = nil
-                    }
-                    let buildDependencies = cask ? nil : item["build_dependencies"].arrayValue.map { $0.stringValue }
-                    let aliases = cask ? nil : item["aliases"].arrayValue.map { $0.stringValue }
-                    let versionedFormulae = cask ? nil : item["versioned_formulae"].arrayValue.map { $0.stringValue }
-                    let requirements: String?
-                    if !cask {
-                        requirements = item["requirements"].arrayValue.compactMap { req in
-                            if req["name"].string == "macos", let version = req["version"].string {
-                                return "macOS >= \(version)"
-                            }
-                            return nil
-                        }.first
-                    } else {
-                        requirements = nil
-                    }
-
-                    // Cask-specific fields
-                    let caskName = cask ? item["name"].arrayValue.map { $0.stringValue } : nil
-                    let autoUpdates = cask ? item["auto_updates"].bool : nil
-                    let artifacts = cask ? item["artifacts"].arrayValue.compactMap { artifact -> String? in
-                        if let app = artifact["app"].array?.first?.string {
-                            return "\(app) (App)"
-                        } else if let pkg = artifact["pkg"].array?.first?.string {
-                            return "\(pkg) (Pkg)"
-                        }
-                        return nil
-                    } : nil
-
-                    results.append(HomebrewSearchResult(
-                        name: name,
-                        description: item["desc"].string,
-                        homepage: item["homepage"].string,
-                        license: license,
-                        version: version,
-                        dependencies: dependencies.isEmpty ? nil : dependencies,
-                        caveats: caveats,
-                        tap: tap,
-                        fullName: fullName,
-                        isDeprecated: isDeprecated,
-                        deprecationReason: deprecationReason,
-                        isDisabled: isDisabled,
-                        disableDate: disableDate,
-                        conflictsWith: conflictsWith.isEmpty ? nil : conflictsWith,
-                        isBottled: isBottled,
-                        isKegOnly: isKegOnly,
-                        kegOnlyReason: kegOnlyReason,
-                        buildDependencies: buildDependencies,
-                        aliases: aliases,
-                        versionedFormulae: versionedFormulae,
-                        requirements: requirements,
-                        caskName: caskName,
-                        autoUpdates: autoUpdates,
-                        artifacts: artifacts
-                    ))
-                }
-            }
-
-            return results
-        }
-
-        // If not preloaded, try to read from disk
+    /// Fetch complete package info from Homebrew API
+    /// Used when user clicks Info button on a name-only package
+    func getPackageInfo(name: String, cask: Bool) async throws -> HomebrewSearchResult {
+        // First check Homebrew's local cache
         let cacheDir = FileManager.default.homeDirectoryForCurrentUser
             .appendingPathComponent("Library/Caches/Homebrew/api")
 
-        let jwsFile = cask ?
-            cacheDir.appendingPathComponent("cask.jws.json") :
-            cacheDir.appendingPathComponent("formula.jws.json")
+        let cacheFile = cask ?
+            cacheDir.appendingPathComponent("cask/\(name).json") :
+            cacheDir.appendingPathComponent("formula/\(name).json")
 
-        if FileManager.default.fileExists(atPath: jwsFile.path) {
-            do {
-                // Read and parse the JWS file
-                let jwsData = try Data(contentsOf: jwsFile)
-                let jwsJson = try JSON(data: jwsData)
+        let data: Data
 
-                // Extract and parse the payload (it's a JSON string inside the JSON)
-                guard let payloadString = jwsJson["payload"].string,
-                      let payloadData = payloadString.data(using: .utf8) else {
-                    throw HomebrewError.jsonParseError
-                }
+        // Check local cache first (faster)
+        if FileManager.default.fileExists(atPath: cacheFile.path) {
+            data = try Data(contentsOf: cacheFile)
+        } else {
+            // Fetch from API
+            let url = cask ?
+                URL(string: "https://formulae.brew.sh/api/cask/\(name).json")! :
+                URL(string: "https://formulae.brew.sh/api/formula/\(name).json")!
 
-                let diskPayload = try JSON(data: payloadData)
-
-                // Filter packages by search query and extract details
-                var results: [HomebrewSearchResult] = []
-                for item in diskPayload.arrayValue {
-                    let name = cask ? item["token"].stringValue : item["name"].stringValue
-
-                    // If query is empty, return all; otherwise filter
-                    if query.isEmpty || name.localizedCaseInsensitiveContains(query) {
-                        let license = item["license"].string
-                        let version = cask ? item["version"].string : item["versions"]["stable"].string
-                        let dependencies = cask ? item["depends_on"]["formula"].arrayValue.map { $0.stringValue } : item["dependencies"].arrayValue.map { $0.stringValue }
-                        let caveats = item["caveats"].string
-
-                        // Common fields
-                        let tap = item["tap"].string
-                        let fullName = item["full_name"].string
-                        let isDeprecated = item["deprecated"].bool ?? false
-                        let deprecationReason = item["deprecation_reason"].string
-                        let isDisabled = item["disabled"].bool ?? false
-                        let disableDate = item["disable_date"].string
-                        let conflictsWith = item["conflicts_with"].arrayValue.map { $0.stringValue }
-
-                        // Formula-specific fields
-                        let isBottled = cask ? nil : (item["versions"]["bottle"].bool ?? false)
-                        let isKegOnly = cask ? nil : (item["keg_only"].bool ?? false)
-                        let kegOnlyReason: String?
-                        if !cask {
-                            if let explanation = item["keg_only_reason"]["explanation"].string, !explanation.isEmpty {
-                                kegOnlyReason = explanation
-                            } else if let reason = item["keg_only_reason"]["reason"].string {
-                                switch reason {
-                                case ":provided_by_macos":
-                                    kegOnlyReason = "macOS already provides this software"
-                                case ":versioned_formula":
-                                    kegOnlyReason = "This is a versioned formula"
-                                case ":shadowed_by_macos":
-                                    kegOnlyReason = "Shadowed by macOS"
-                                default:
-                                    kegOnlyReason = "Not symlinked to Homebrew prefix"
-                                }
-                            } else {
-                                kegOnlyReason = nil
-                            }
-                        } else {
-                            kegOnlyReason = nil
-                        }
-                        let buildDependencies = cask ? nil : item["build_dependencies"].arrayValue.map { $0.stringValue }
-                        let aliases = cask ? nil : item["aliases"].arrayValue.map { $0.stringValue }
-                        let versionedFormulae = cask ? nil : item["versioned_formulae"].arrayValue.map { $0.stringValue }
-                        let requirements: String?
-                        if !cask {
-                            requirements = item["requirements"].arrayValue.compactMap { req in
-                                if req["name"].string == "macos", let version = req["version"].string {
-                                    return "macOS >= \(version)"
-                                }
-                                return nil
-                            }.first
-                        } else {
-                            requirements = nil
-                        }
-
-                        // Cask-specific fields
-                        let caskName = cask ? item["name"].arrayValue.map { $0.stringValue } : nil
-                        let autoUpdates = cask ? item["auto_updates"].bool : nil
-                        let artifacts = cask ? item["artifacts"].arrayValue.compactMap { artifact -> String? in
-                            if let app = artifact["app"].array?.first?.string {
-                                return "\(app) (App)"
-                            } else if let pkg = artifact["pkg"].array?.first?.string {
-                                return "\(pkg) (Pkg)"
-                            }
-                            return nil
-                        } : nil
-
-                        results.append(HomebrewSearchResult(
-                            name: name,
-                            description: item["desc"].string,
-                            homepage: item["homepage"].string,
-                            license: license,
-                            version: version,
-                            dependencies: dependencies.isEmpty ? nil : dependencies,
-                            caveats: caveats,
-                            tap: tap,
-                            fullName: fullName,
-                            isDeprecated: isDeprecated,
-                            deprecationReason: deprecationReason,
-                            isDisabled: isDisabled,
-                            disableDate: disableDate,
-                            conflictsWith: conflictsWith.isEmpty ? nil : conflictsWith,
-                            isBottled: isBottled,
-                            isKegOnly: isKegOnly,
-                            kegOnlyReason: kegOnlyReason,
-                            buildDependencies: buildDependencies,
-                            aliases: aliases,
-                            versionedFormulae: versionedFormulae,
-                            requirements: requirements,
-                            caskName: caskName,
-                            autoUpdates: autoUpdates,
-                            artifacts: artifacts
-                        ))
-                    }
-                }
-
-                return results
-            } catch {
-                // If reading from cache fails, fall through to API call
-                printOS("Failed to read from cache, falling back to API: \(error)")
-            }
+            (data, _) = try await URLSession.shared.data(from: url)
         }
 
-        // Fallback to API if cache doesn't exist or reading failed
-        return try await searchPackagesFromAPI(query: query, cask: cask)
-    }
-
-    private func searchPackagesFromAPI(query: String, cask: Bool) async throws -> [HomebrewSearchResult] {
-        let url = cask ?
-            URL(string: "https://formulae.brew.sh/api/cask.json")! :
-            URL(string: "https://formulae.brew.sh/api/formula.json")!
-
-        let (data, _) = try await URLSession.shared.data(from: url)
         let json = try JSON(data: data)
 
-        var results: [HomebrewSearchResult] = []
-        for item in json.arrayValue {
-            let name = cask ? item["token"].stringValue : item["name"].stringValue
+        // Parse common fields
+        let description = json["desc"].string
+        let homepage = json["homepage"].string
+        let license = json["license"].string
+        let version = cask ? json["version"].string : json["versions"]["stable"].string
+        let caveats = json["caveats"].string
+        let dependencies = cask ? json["depends_on"]["formula"].arrayValue.map { $0.stringValue } : json["dependencies"].arrayValue.map { $0.stringValue }
+        let conflicts = json["conflicts_with"].arrayValue.map { $0.stringValue }
 
-            // If query is empty, return all; otherwise filter
-            if query.isEmpty || name.localizedCaseInsensitiveContains(query) {
-                let license = item["license"].string
-                let version = cask ? item["version"].string : item["versions"]["stable"].string
-                let dependencies = cask ? item["depends_on"]["formula"].arrayValue.map { $0.stringValue } : item["dependencies"].arrayValue.map { $0.stringValue }
-                let caveats = item["caveats"].string
+        // Parse extended fields
+        let tap = json["tap"].string
+        let fullName = json["full_name"].string
+        let deprecated = json["deprecated"].bool
+        let deprecationDate = json["deprecation_date"].string
+        let deprecationReason = json["deprecation_reason"].string
+        let disabled = json["disabled"].bool
+        let disableDate = json["disable_date"].string
+        let disableReason = json["disable_reason"].string
 
-                // Common fields
-                let tap = item["tap"].string
-                let fullName = item["full_name"].string
-                let isDeprecated = item["deprecated"].bool ?? false
-                let deprecationReason = item["deprecation_reason"].string
-                let isDisabled = item["disabled"].bool ?? false
-                let disableDate = item["disable_date"].string
-                let conflictsWith = item["conflicts_with"].arrayValue.map { $0.stringValue }
-
-                // Formula-specific fields
-                let isBottled = cask ? nil : (item["versions"]["bottle"].bool ?? false)
-                let isKegOnly = cask ? nil : (item["keg_only"].bool ?? false)
-                let kegOnlyReason: String?
-                if !cask {
-                    if let explanation = item["keg_only_reason"]["explanation"].string, !explanation.isEmpty {
-                        kegOnlyReason = explanation
-                    } else if let reason = item["keg_only_reason"]["reason"].string {
-                        switch reason {
-                        case ":provided_by_macos":
-                            kegOnlyReason = "macOS already provides this software"
-                        case ":versioned_formula":
-                            kegOnlyReason = "This is a versioned formula"
-                        case ":shadowed_by_macos":
-                            kegOnlyReason = "Shadowed by macOS"
-                        default:
-                            kegOnlyReason = "Not symlinked to Homebrew prefix"
-                        }
-                    } else {
-                        kegOnlyReason = nil
-                    }
-                } else {
-                    kegOnlyReason = nil
+        // Formula-specific fields
+        let kegOnly = cask ? nil : json["keg_only"].bool
+        let kegOnlyReason: String?
+        if !cask {
+            if let explanation = json["keg_only_reason"]["explanation"].string, !explanation.isEmpty {
+                kegOnlyReason = explanation
+            } else if let reason = json["keg_only_reason"]["reason"].string {
+                switch reason {
+                case ":provided_by_macos":
+                    kegOnlyReason = "macOS already provides this software"
+                case ":versioned_formula":
+                    kegOnlyReason = "This is a versioned formula"
+                case ":shadowed_by_macos":
+                    kegOnlyReason = "Shadowed by macOS"
+                default:
+                    kegOnlyReason = "Not symlinked to Homebrew prefix"
                 }
-                let buildDependencies = cask ? nil : item["build_dependencies"].arrayValue.map { $0.stringValue }
-                let aliases = cask ? nil : item["aliases"].arrayValue.map { $0.stringValue }
-                let versionedFormulae = cask ? nil : item["versioned_formulae"].arrayValue.map { $0.stringValue }
-                let requirements: String?
-                if !cask {
-                    requirements = item["requirements"].arrayValue.compactMap { req in
-                        if req["name"].string == "macos", let version = req["version"].string {
-                            return "macOS >= \(version)"
-                        }
-                        return nil
-                    }.first
-                } else {
-                    requirements = nil
-                }
-
-                // Cask-specific fields
-                let caskName = cask ? item["name"].arrayValue.map { $0.stringValue } : nil
-                let autoUpdates = cask ? item["auto_updates"].bool : nil
-                let artifacts = cask ? item["artifacts"].arrayValue.compactMap { artifact -> String? in
-                    if let app = artifact["app"].array?.first?.string {
-                        return "\(app) (App)"
-                    } else if let pkg = artifact["pkg"].array?.first?.string {
-                        return "\(pkg) (Pkg)"
-                    }
-                    return nil
-                } : nil
-
-                results.append(HomebrewSearchResult(
-                    name: name,
-                    description: item["desc"].string,
-                    homepage: item["homepage"].string,
-                    license: license,
-                    version: version,
-                    dependencies: dependencies.isEmpty ? nil : dependencies,
-                    caveats: caveats,
-                    tap: tap,
-                    fullName: fullName,
-                    isDeprecated: isDeprecated,
-                    deprecationReason: deprecationReason,
-                    isDisabled: isDisabled,
-                    disableDate: disableDate,
-                    conflictsWith: conflictsWith.isEmpty ? nil : conflictsWith,
-                    isBottled: isBottled,
-                    isKegOnly: isKegOnly,
-                    kegOnlyReason: kegOnlyReason,
-                    buildDependencies: buildDependencies,
-                    aliases: aliases,
-                    versionedFormulae: versionedFormulae,
-                    requirements: requirements,
-                    caskName: caskName,
-                    autoUpdates: autoUpdates,
-                    artifacts: artifacts
-                ))
+            } else {
+                kegOnlyReason = nil
             }
+        } else {
+            kegOnlyReason = nil
         }
 
-        return results
+        let requirements = cask ? nil : json["requirements"].arrayValue.map { $0.stringValue }
+        let buildDependencies = cask ? nil : json["build_dependencies"].arrayValue.map { $0.stringValue }
+        let optionalDependencies = cask ? nil : json["optional_dependencies"].arrayValue.map { $0.stringValue }
+        let recommendedDependencies = cask ? nil : json["recommended_dependencies"].arrayValue.map { $0.stringValue }
+        let usesFromMacos = cask ? nil : json["uses_from_macos"].arrayValue.map { $0.stringValue }
+        let versionedFormulae = cask ? nil : json["versioned_formulae"].arrayValue.map { $0.stringValue }
+        let aliases = cask ? nil : json["aliases"].arrayValue.map { $0.stringValue }
+
+        // Cask-specific fields
+        let autoUpdates = cask ? json["auto_updates"].bool : nil
+        let artifacts = cask ? json["artifacts"].arrayValue.compactMap { $0.dictionaryObject?.keys.first } : nil
+        let url = cask ? json["url"].string : nil
+        let appcast = cask ? json["appcast"].string : nil
+
+        return HomebrewSearchResult(
+            name: name,
+            description: description,
+            homepage: homepage,
+            license: license,
+            version: version,
+            dependencies: dependencies,
+            caveats: caveats,
+            tap: tap,
+            fullName: fullName,
+            isDeprecated: deprecated ?? false,
+            deprecationReason: deprecationReason,
+            isDisabled: disabled ?? false,
+            disableDate: disableDate,
+            conflictsWith: conflicts,
+            isBottled: cask ? nil : (version != nil),
+            isKegOnly: kegOnly,
+            kegOnlyReason: kegOnlyReason,
+            buildDependencies: buildDependencies,
+            aliases: aliases,
+            versionedFormulae: versionedFormulae,
+            requirements: nil,  // Will be parsed later if needed
+            caskName: nil,  // Not needed for single package fetch
+            autoUpdates: autoUpdates,
+            artifacts: artifacts
+        )
     }
 
     func getPackageDetails(name: String, cask: Bool) async throws -> (description: String?, homepage: String?) {

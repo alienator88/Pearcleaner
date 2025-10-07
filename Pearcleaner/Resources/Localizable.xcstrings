@@ -7787,6 +7787,7 @@
       }
     },
     "Cached: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -8259,6 +8260,7 @@
       }
     },
     "Cask" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -17604,6 +17606,7 @@
       }
     },
     "Formula" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -46581,9 +46584,6 @@
           }
         }
       }
-    },
-    "This may take a moment on first launch" : {
-
     },
     "This package is signed and verified. The package was cryptographically signed by the developer and its integrity has been verified." : {
 
