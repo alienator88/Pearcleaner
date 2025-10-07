@@ -811,24 +811,25 @@ struct PackageDetailsDrawer: View {
                         if let caveats = displayedPackage.caveats {
                             CaveatsSection(caveats: caveats, colorScheme: colorScheme)
                         }
-
-                        // Install button at bottom
-                        Spacer()
-                        InstallButtonSection(
-                            package: displayedPackage,
-                            isCask: isCask,
-                            isInstalling: $isInstalling,
-                            isAlreadyInstalled: isAlreadyInstalled,
-                            showInstallAlert: $showInstallAlert,
-                            brewManager: brewManager,
-                            colorScheme: colorScheme
-                        )
                     }
                     .padding()
                 }
                 .scrollIndicators(.visible)
+
+                // Install button pinned to bottom (outside ScrollView)
+                InstallButtonSection(
+                    package: displayedPackage,
+                    isCask: isCask,
+                    isInstalling: $isInstalling,
+                    isAlreadyInstalled: isAlreadyInstalled,
+                    showInstallAlert: $showInstallAlert,
+                    brewManager: brewManager,
+                    colorScheme: colorScheme
+                )
+                .padding()
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
             loadFullPackageInfoIfNeeded()
             loadAnalytics()
