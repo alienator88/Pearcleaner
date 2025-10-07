@@ -15,13 +15,13 @@ enum HomebrewSearchType: String, CaseIterable {
 }
 
 struct SearchInstallSection: View {
+    let onPackageSelected: (HomebrewSearchResult, Bool) -> Void
+
     @EnvironmentObject var brewManager: HomebrewManager
     @EnvironmentObject var appState: AppState
     @Environment(\.colorScheme) var colorScheme
     @State private var searchQuery: String = ""
     @State private var searchType: HomebrewSearchType = .installed
-    @State private var selectedPackage: HomebrewSearchResult?
-    @State private var drawerOpen: Bool = false
     @State private var collapsedCategories: Set<String> = []
     @State private var cachedCategories: [(title: String, packages: [HomebrewSearchResult])] = []
     @State private var updatingPackages: Set<String> = []
@@ -107,7 +107,28 @@ struct SearchInstallSection: View {
     }
 
     private func convertToSearchResult(_ package: InstalledPackage) -> HomebrewSearchResult {
-        // Basic conversion - full data will be fetched on demand when Info is clicked
+        // Look up tap info from available packages
+        let availablePackages = package.isCask ? brewManager.allAvailableCasks : brewManager.allAvailableFormulae
+        let shortName = package.name.components(separatedBy: "/").last ?? package.name
+
+        // Try multiple matching strategies:
+        // 1. Exact match on full name
+        // 2. Match on short name
+        // 3. Match where available package's short name equals installed short name
+        let matchingPackage = availablePackages.first(where: {
+            if $0.name == package.name {
+                return true
+            }
+            if $0.name == shortName {
+                return true
+            }
+            let availableShortName = $0.name.components(separatedBy: "/").last ?? $0.name
+            return availableShortName == shortName
+        })
+
+        // Extract tap - pass through directly from available packages
+        let tap = matchingPackage?.tap
+
         return HomebrewSearchResult(
             name: package.name,
             description: package.description,
@@ -116,7 +137,7 @@ struct SearchInstallSection: View {
             version: package.version,
             dependencies: nil,
             caveats: nil,
-            tap: nil,
+            tap: tap,
             fullName: nil,
             isDeprecated: false,
             deprecationReason: nil,
@@ -233,14 +254,8 @@ struct SearchInstallSection: View {
                 .labelsHidden()
                 .frame(width: 240)
                 .onChange(of: searchType) { _ in
-                    // Clear search and close drawer when switching tabs
+                    // Clear search when switching tabs
                     searchQuery = ""
-                    if drawerOpen {
-                        withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-                            drawerOpen = false
-                            selectedPackage = nil
-                        }
-                    }
                 }
             }
             .padding(.horizontal, 20)
@@ -285,15 +300,14 @@ struct SearchInstallSection: View {
                 .padding(.vertical, 10)
             }
 
-            // LIST + DRAWER AREA (GeometryReader for drawer layout)
+            // LIST AREA
             GeometryReader { geometry in
-                HStack(spacing: 0) {
-                    // Left: Results List
+                    // Results List (full width)
                     VStack(alignment: .leading, spacing: 0) {
                         // Results or loading state
-                        // Only show progress view for JWS data (available packages), not for installed packages
-                        let isLoading = (searchType == .installed && brewManager.isLoadingPackages) ||
-                                       (searchType != .installed && brewManager.isLoadingAvailablePackages)
+                        // Show loading if actively loading OR if data hasn't been loaded yet
+                        let isLoading = (searchType == .installed && (brewManager.isLoadingPackages || !brewManager.hasLoadedInstalledPackages)) ||
+                                       (searchType != .installed && (brewManager.isLoadingAvailablePackages || !brewManager.hasLoadedAvailablePackages))
 
                         if isLoading {
                             VStack(alignment: .center, spacing: 10) {
@@ -386,13 +400,9 @@ struct SearchInstallSection: View {
                                                         SearchResultRowView(
                                                             result: result,
                                                             isCask: brewManager.installedCasks.contains(where: { $0.name == result.name }),
-                                                            isSelected: selectedPackage?.name == result.name && drawerOpen,
-                                                            isDimmed: drawerOpen && selectedPackage?.name != result.name,
                                                             onInfoTapped: {
-                                                                selectedPackage = result
-                                                                withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-                                                                    drawerOpen = true
-                                                                }
+                                                                let isCask = brewManager.installedCasks.contains(where: { $0.name == result.name })
+                                                                onPackageSelected(result, isCask)
                                                             },
                                                             updatingPackages: updatingPackages
                                                         )
@@ -406,13 +416,9 @@ struct SearchInstallSection: View {
                                             SearchResultRowView(
                                                 result: result,
                                                 isCask: searchType == .casks || brewManager.allAvailableCasks.contains(where: { $0.name == result.name }),
-                                                isSelected: selectedPackage?.name == result.name && drawerOpen,
-                                                isDimmed: drawerOpen && selectedPackage?.name != result.name,
                                                 onInfoTapped: {
-                                                    selectedPackage = result
-                                                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-                                                        drawerOpen = true
-                                                    }
+                                                    let isCask = searchType == .casks || brewManager.allAvailableCasks.contains(where: { $0.name == result.name })
+                                                    onPackageSelected(result, isCask)
                                                 },
                                                 updatingPackages: updatingPackages
                                             )
@@ -425,37 +431,7 @@ struct SearchInstallSection: View {
                             .scrollIndicators(scrollIndicators ? .automatic : .never)
                         }
                     }
-                    .frame(width: drawerOpen ? geometry.size.width * (2.0/3.0) : geometry.size.width)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        if drawerOpen {
-                            withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-                                drawerOpen = false
-                            }
-                        }
-                    }
-
-                    // Right: Details Drawer
-                    if drawerOpen, let package = selectedPackage {
-                        PackageDetailsDrawer(
-                            package: package,
-                            isCask: {
-                                if searchType == .installed {
-                                    return brewManager.installedCasks.contains(where: { $0.name == package.name })
-                                } else {
-                                    return brewManager.allAvailableCasks.contains(where: { $0.name == package.name })
-                                }
-                            }(),
-                            onClose: {
-                                withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-                                    drawerOpen = false
-                                }
-                            }
-                        )
-                        .frame(width: geometry.size.width * (1.0/3.0))
-                        .transition(.move(edge: .trailing))
-                    }
-                }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
         .onAppear {
@@ -467,8 +443,10 @@ struct SearchInstallSection: View {
                     // Data already loaded, just update categories for the view
                     updateCategorizedPackages()
                 }
+            }
 
-                // 2. Load JWS data only if not already loaded for this session
+            // 2. Load JWS data in separate background task (doesn't block UI)
+            Task {
                 if !brewManager.hasLoadedAvailablePackages {
                     var needsRefresh = false
                     if let lastRefresh = brewManager.lastCacheRefresh {
@@ -510,8 +488,6 @@ struct SearchInstallSection: View {
 struct SearchResultRowView: View {
     let result: HomebrewSearchResult
     let isCask: Bool
-    let isSelected: Bool
-    let isDimmed: Bool
     let onInfoTapped: () -> Void
     let updatingPackages: Set<String>
     @EnvironmentObject var brewManager: HomebrewManager
@@ -520,6 +496,7 @@ struct SearchResultRowView: View {
     @State private var isInstalling: Bool = false
     @State private var showInstallAlert: Bool = false
     @State private var showUpdateAlert: Bool = false
+    @State private var localPinState: Bool?  // Local state for immediate UI update
 
     private var isAlreadyInstalled: Bool {
         // Extract short name from full name (e.g., "mhaeuser/mhaeuser/battery-toolkit" -> "battery-toolkit")
@@ -546,6 +523,20 @@ struct SearchResultRowView: View {
                brewManager.outdatedPackageNames.contains(shortName)
     }
 
+    private var isPinned: Bool {
+        guard !isCask && isAlreadyInstalled else { return false }
+
+        // Use local state if available (for immediate UI update)
+        if let localState = localPinState {
+            return localState
+        }
+
+        let shortName = result.name.components(separatedBy: "/").last ?? result.name
+
+        // Check if package is pinned in installed formulae
+        return brewManager.installedFormulae.first(where: { $0.name == result.name || $0.name == shortName })?.isPinned ?? false
+    }
+
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
             // Package icon
@@ -561,9 +552,18 @@ struct SearchResultRowView: View {
 
             // Package name and description
             VStack(alignment: .leading, spacing: 4) {
-                Text(result.name)
-                    .font(.headline)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                HStack(spacing: 4) {
+                    Text(result.name)
+                        .font(.headline)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                    // Show version for installed packages
+                    if isAlreadyInstalled, let version = result.version {
+                        Text("(\(version))")
+                            .font(.footnote)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                }
 
                 if let description = result.description {
                     Text(description)
@@ -578,6 +578,46 @@ struct SearchResultRowView: View {
             }
 
             Spacer()
+
+            // Tap indicator (if from third-party tap)
+            if let tap = result.tap, tap != "homebrew/core" && tap != "homebrew/cask" {
+                Image(systemName: "spigot")
+                    .font(.system(size: 14))
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    .help("Installed from tap: \(tap)")
+            }
+
+            // Pin button (formulae only, and only if installed)
+            if !isCask && isAlreadyInstalled {
+                Button {
+                    // Capture current state before toggling
+                    let currentlyPinned = isPinned
+
+                    // Toggle local state immediately for instant UI feedback
+                    localPinState = !currentlyPinned
+
+                    // Perform actual pin/unpin in background
+                    Task {
+                        do {
+                            if currentlyPinned {
+                                try await HomebrewController.shared.unpinPackage(name: result.name)
+                            } else {
+                                try await HomebrewController.shared.pinPackage(name: result.name)
+                            }
+                        } catch {
+                            printOS("Failed to toggle pin: \(error)")
+                            // Revert local state on error
+                            localPinState = currentlyPinned
+                        }
+                    }
+                } label: {
+                    Image(systemName: isPinned ? "pin.fill" : "pin")
+                        .font(.system(size: 14))
+                        .foregroundStyle(isPinned ? .orange : ThemeColors.shared(for: colorScheme).secondaryText)
+                }
+                .buttonStyle(.plain)
+                .help(isPinned ? "Unpin version" : "Pin version")
+            }
 
             // Info button
             Button {
@@ -638,13 +678,7 @@ struct SearchResultRowView: View {
                     ThemeColors.shared(for: colorScheme).secondaryBG.opacity(0.8) :
                     ThemeColors.shared(for: colorScheme).secondaryBG
                 )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(isSelected ? ThemeColors.shared(for: colorScheme).accent : Color.clear, lineWidth: 2)
-                )
         )
-        .opacity(isDimmed ? 0.5 : 1.0)
-        .animation(.easeInOut(duration: 0.2), value: isDimmed)
         .onHover { hovering in
             withAnimation(.easeInOut(duration: 0.2)) {
                 isHovered = hovering
@@ -741,8 +775,8 @@ struct PackageDetailsDrawer: View {
                 // Scrollable details
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
-                        // Package header with close button
-                        PackageHeaderSection(package: displayedPackage, isCask: isCask, colorScheme: colorScheme, onClose: onClose)
+                        // Package header
+                        PackageHeaderSection(package: displayedPackage, isCask: isCask, colorScheme: colorScheme)
 
                         // Installed info (if package is installed)
                         // Note: InstalledPackage model is now minimal (name+desc only)
@@ -801,9 +835,9 @@ struct PackageDetailsDrawer: View {
                     }
                     .padding()
                 }
+                .scrollIndicators(.visible)
             }
         }
-        .background(ThemeColors.shared(for: colorScheme).primaryBG)
         .onAppear {
             loadFullPackageInfoIfNeeded()
             loadAnalytics()
@@ -829,16 +863,19 @@ struct PackageDetailsDrawer: View {
                 $0.name == package.name || $0.name == shortName
             }) {
                 fullPackageInfo = match
-            } else {
-                printOS("Package not found in cached data: \(package.name)")
-                // Keep using the limited package data
             }
+            // For tap packages, we already have description from installed package - no need to fetch more
 
             isLoadingFullPackageInfo = false
         }
     }
 
     private func loadAnalytics() {
+        // Skip analytics for tap packages (only available for homebrew/core and homebrew/cask)
+        guard let tap = package.tap, tap == "homebrew/core" || tap == "homebrew/cask" else {
+            return
+        }
+
         Task {
             isLoadingAnalytics = true
             do {
@@ -869,39 +906,24 @@ struct PackageHeaderSection: View {
     let package: HomebrewSearchResult
     let isCask: Bool
     let colorScheme: ColorScheme
-    let onClose: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            // Package name with close button
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    // Cask name (if available and different from token)
-                    if let caskNames = package.caskName, !caskNames.isEmpty {
-                        Text(caskNames.joined(separator: ", "))
-                            .font(.title2)
-                            .fontWeight(.bold)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                    }
-
-                    // Package token/name
-                    Text(package.name)
-                        .font(package.caskName != nil ? .callout : .title2)
-                        .fontWeight(package.caskName != nil ? .medium : .bold)
+            // Package name
+            VStack(alignment: .leading, spacing: 4) {
+                // Cask name (if available and different from token)
+                if let caskNames = package.caskName, !caskNames.isEmpty {
+                    Text(caskNames.joined(separator: ", "))
+                        .font(.title2)
+                        .fontWeight(.bold)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                 }
 
-                Spacer()
-
-                // Close button
-                Button {
-                    onClose()
-                } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.title3)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                }
-                .buttonStyle(.plain)
+                // Package token/name
+                Text(package.name)
+                    .font(package.caskName != nil ? .callout : .title2)
+                    .fontWeight(package.caskName != nil ? .medium : .bold)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
             }
 
             // Version with auto-updates badge
@@ -915,12 +937,6 @@ struct PackageHeaderSection: View {
                         Text("(auto_updates)")
                             .font(.caption2)
                             .foregroundStyle(.green)
-                    }
-
-                    if let isBottled = package.isBottled, isBottled {
-                        Text("(bottled)")
-                            .font(.caption2)
-                            .foregroundStyle(.blue)
                     }
                 }
             }
@@ -1135,16 +1151,6 @@ struct DetailsSectionView: View {
                 } else {
                     DetailRow(label: "Artifacts", value: "N/A", colorScheme: colorScheme, isNA: true)
                 }
-            }
-
-            // Auto-updates (casks only)
-            if isCask {
-                DetailRow(
-                    label: "Auto-updates",
-                    value: package.autoUpdates == true ? "Yes" : (package.autoUpdates == false ? "No" : "N/A"),
-                    colorScheme: colorScheme,
-                    isNA: package.autoUpdates == nil
-                )
             }
 
             // Aliases (formulae only)

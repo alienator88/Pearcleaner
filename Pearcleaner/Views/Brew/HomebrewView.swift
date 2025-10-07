@@ -31,6 +31,9 @@ struct HomebrewView: View {
     @Environment(\.colorScheme) var colorScheme
     @State private var selectedSection: HomebrewViewSection = .browse
     @State private var isLoadingInitialData: Bool = false
+    @State private var drawerOpen: Bool = false
+    @State private var selectedPackage: HomebrewSearchResult?
+    @State private var selectedPackageIsCask: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
     var body: some View {
@@ -90,7 +93,15 @@ struct HomebrewView: View {
                         Group {
                             switch selectedSection {
                             case .browse:
-                                SearchInstallSection()
+                                SearchInstallSection(
+                                    onPackageSelected: { package, isCask in
+                                        selectedPackage = package
+                                        selectedPackageIsCask = isCask
+                                        withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                                            drawerOpen = true
+                                        }
+                                    }
+                                )
                             case .taps:
                                 TapManagementSection()
                             case .maintenance:
@@ -101,7 +112,23 @@ struct HomebrewView: View {
                         .animation(animationEnabled ? .easeInOut(duration: 0.2) : .none, value: selectedSection)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+                    // Package Details Sidebar (overlays entire view)
+                    PackageDetailsSidebar(
+                        drawerOpen: $drawerOpen,
+                        package: selectedPackage,
+                        isCask: selectedPackageIsCask,
+                        onClose: {
+                            withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                                drawerOpen = false
+                            }
+                        }
+                    )
+                    .padding([.trailing, .bottom], 20)
                 }
+                .animation(
+                    animationEnabled ? .spring(response: 0.35, dampingFraction: 0.8) : .none,
+                    value: drawerOpen)
                 .environmentObject(brewManager)
                 .task {
                     // Load other data in parallel (installed packages loaded in SearchInstallSection)

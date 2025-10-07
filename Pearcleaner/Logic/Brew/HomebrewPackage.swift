@@ -58,6 +58,7 @@ struct InstalledPackage: Identifiable, Equatable, Hashable {
     let description: String?
     let version: String?
     let isCask: Bool
+    let isPinned: Bool
 
     static func == (lhs: InstalledPackage, rhs: InstalledPackage) -> Bool {
         return lhs.name == rhs.name && lhs.isCask == rhs.isCask

@@ -5,10 +5,10 @@
       "comment" : "Do not translate",
       "shouldTranslate" : false
     },
-    "(auto_updates)" : {
+    "(%@)" : {
 
     },
-    "(bottled)" : {
+    "(auto_updates)" : {
 
     },
     "(Build %@)" : {
@@ -21938,6 +21938,9 @@
         }
       }
     },
+    "Installed from tap: %@" : {
+
+    },
     "Installed:" : {
       "localizations" : {
         "de" : {
@@ -33085,7 +33088,6 @@
       }
     },
     "Pin version" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -49798,7 +49800,6 @@
       }
     },
     "Unpin version" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

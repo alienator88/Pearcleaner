@@ -87,23 +87,25 @@ class HomebrewManager: ObservableObject {
         do {
             // Fast scanner - reads local files directly (~70ms total)
             // Collect formulae
-            try await HomebrewController.shared.streamInstalledPackages(cask: false) { name, desc, version in
+            try await HomebrewController.shared.streamInstalledPackages(cask: false) { name, desc, version, isPinned in
                 let package = InstalledPackage(
                     name: name,
                     description: desc,
                     version: version,
-                    isCask: false
+                    isCask: false,
+                    isPinned: isPinned
                 )
                 tempFormulae.append(package)
             }
 
             // Collect casks
-            try await HomebrewController.shared.streamInstalledPackages(cask: true) { name, desc, version in
+            try await HomebrewController.shared.streamInstalledPackages(cask: true) { name, desc, version, isPinned in
                 let package = InstalledPackage(
                     name: name,
                     description: desc,
                     version: version,
-                    isCask: true
+                    isCask: true,
+                    isPinned: isPinned
                 )
                 tempCasks.append(package)
             }
@@ -112,13 +114,17 @@ class HomebrewManager: ObservableObject {
             installedFormulae = tempFormulae
             installedCasks = tempCasks
 
-            // Load outdated packages from brew outdated
-            if let outdated = try? await HomebrewController.shared.getOutdatedPackages() {
-                outdatedPackageNames = outdated
-            }
-
             // Mark as loaded for this session
             hasLoadedInstalledPackages = true
+
+            // Load outdated packages from brew outdated in background (don't block UI)
+            Task {
+                if let outdated = try? await HomebrewController.shared.getOutdatedPackages() {
+                    await MainActor.run {
+                        outdatedPackageNames = outdated
+                    }
+                }
+            }
         } catch {
             printOS("Error loading packages: \(error)")
         }

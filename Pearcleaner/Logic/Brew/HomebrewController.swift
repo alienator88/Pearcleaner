@@ -221,10 +221,10 @@ class HomebrewController {
     // MARK: - Package Loading
 
     /// Stream installed packages by scanning Cellar/Caskroom directories
-    /// Returns minimal info: name + description + version
+    /// Returns minimal info: name + description + version + isPinned
     func streamInstalledPackages(
         cask: Bool,
-        onPackageFound: @escaping (String, String, String) -> Void  // (name, description, version)
+        onPackageFound: @escaping (String, String, String, Bool) -> Void  // (name, description, version, isPinned)
     ) async throws {
         let baseDir = cask ? "\(brewPrefix)/Caskroom" : "\(brewPrefix)/Cellar"
 
@@ -233,29 +233,29 @@ class HomebrewController {
         }
 
         // Process concurrently, stream results as they complete
-        await withTaskGroup(of: (String, String, String)?.self) { group in
+        await withTaskGroup(of: (String, String, String, Bool)?.self) { group in
             // Add all tasks
             for packageName in packageDirs where !packageName.hasPrefix(".") {
                 group.addTask {
                     if cask {
-                        return await self.getCaskNameDescVersion(name: packageName)
+                        return await self.getCaskNameDescVersionPin(name: packageName)
                     } else {
-                        return await self.getFormulaNameDescVersion(name: packageName)
+                        return await self.getFormulaNameDescVersionPin(name: packageName)
                     }
                 }
             }
 
             // Collect results as they complete
             for await result in group {
-                if let (name, desc, version) = result {
-                    onPackageFound(name, desc, version)
+                if let (name, desc, version, isPinned) = result {
+                    onPackageFound(name, desc, version, isPinned)
                 }
             }
         }
     }
 
-    /// Extract name, description, and version from formula .rb file
-    private func getFormulaNameDescVersion(name: String) async -> (String, String, String)? {
+    /// Extract name, description, version, and pin status from formula .rb file
+    private func getFormulaNameDescVersionPin(name: String) async -> (String, String, String, Bool)? {
         let cellarPath = "\(brewPrefix)/Cellar/\(name)"
 
         // Find latest version directory
@@ -265,23 +265,27 @@ class HomebrewController {
             return nil
         }
 
+        // Check if pinned (pin file exists)
+        let pinPath = "\(brewPrefix)/var/homebrew/pinned/\(name)"
+        let isPinned = FileManager.default.fileExists(atPath: pinPath)
+
         // Read .rb file
         let rbPath = "\(cellarPath)/\(latestVersion)/.brew/\(name).rb"
         guard let rbContent = try? String(contentsOfFile: rbPath) else {
-            return (name, "No description available", latestVersion)
+            return (name, "No description available", latestVersion, isPinned)
         }
 
         // Parse desc with regex: desc "..."
         let descRegex = /desc "([^"]+)"/
         if let match = rbContent.firstMatch(of: descRegex) {
-            return (name, String(match.1), latestVersion)
+            return (name, String(match.1), latestVersion, isPinned)
         }
 
-        return (name, "No description available", latestVersion)
+        return (name, "No description available", latestVersion, isPinned)
     }
 
-    /// Extract name, description, and version from cask metadata file (.json or .rb)
-    private func getCaskNameDescVersion(name: String) async -> (String, String, String)? {
+    /// Extract name, description, version, and pin status from cask metadata file (.json or .rb)
+    private func getCaskNameDescVersionPin(name: String) async -> (String, String, String, Bool)? {
         let caskroomPath = "\(brewPrefix)/Caskroom/\(name)"
 
         // Skip symlinks (like xcodes -> xcodes-app)
@@ -313,31 +317,34 @@ class HomebrewController {
         }
         let version = pathComponents[metadataIndex + 1]
 
+        // Casks don't support pinning
+        let isPinned = false
+
         // Check file extension to determine how to parse
         if caskFilePath.hasSuffix(".json") {
             // Parse JSON file (regular cask)
             guard let jsonData = try? Data(contentsOf: URL(fileURLWithPath: caskFilePath)),
                   let json = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any] else {
-                return (name, "No description available", version)
+                return (name, "No description available", version, isPinned)
             }
 
             let desc = json["desc"] as? String ?? "No description available"
-            return (name, desc, version)
+            return (name, desc, version, isPinned)
 
         } else if caskFilePath.hasSuffix(".rb") {
             // Parse Ruby file (tap cask)
             guard let rbContent = try? String(contentsOfFile: caskFilePath) else {
-                return (name, "No description available", version)
+                return (name, "No description available", version, isPinned)
             }
 
             // Parse desc with regex: desc "..."
             let descRegex = /desc "([^"]+)"/
             let desc = rbContent.firstMatch(of: descRegex).map { String($0.1) } ?? "No description available"
 
-            return (name, desc, version)
+            return (name, desc, version, isPinned)
 
         } else {
-            return (name, "No description available", version)
+            return (name, "No description available", version, isPinned)
         }
     }
 
