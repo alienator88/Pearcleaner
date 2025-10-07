@@ -44,9 +44,6 @@ class AppState: ObservableObject {
     // Per-app sensitivity level storage
     @Published var perAppSensitivity: [String: SearchSensitivityLevel] = [:]
 
-    // SwiftData model container (macOS 14+ only)
-    @Published var modelContainer: Any?
-
     func getBundleSize(for appInfo: AppInfo, updateState: @escaping (Int64) -> Void) {
         DispatchQueue.global(qos: .userInitiated).async {
             // Step 1: Check if the size is available and not 0 in the sortedApps cache

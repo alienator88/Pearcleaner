@@ -672,11 +672,9 @@ struct LipoAppRowView: View {
                     AppState.shared.sortedApps[index].lipoSavings = Int64(savings)
                 }
 
-                // Update SwiftData cache (macOS 14+)
-                if #available(macOS 14.0, *) {
-                    Task {
-                        await AppCacheManager.updateLipoSavingsInCache(appPath: app.path.path, savings: Int64(savings))
-                    }
+                // Update plist cache
+                Task {
+                    await AppCachePlist.updateLipoSavingsInCache(appPath: app.path.path, savings: Int64(savings))
                 }
 
                 isCalculating = false

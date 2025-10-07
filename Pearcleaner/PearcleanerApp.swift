@@ -8,9 +8,6 @@
 import SwiftUI
 import AppKit
 import AlinFoundation
-#if canImport(SwiftData)
-import SwiftData
-#endif
 
 @main
 struct PearcleanerApp: App {
@@ -30,35 +27,13 @@ struct PearcleanerApp: App {
     @State private var isDraggingOver = false
 
     init() {
-        //MARK: Setup SwiftData container (macOS 14+ only, if caching enabled)
-        let cacheEnabled = UserDefaults.standard.bool(forKey: "settings.cache.enabled")
-        if #available(macOS 14.0, *), cacheEnabled {
-            appState.modelContainer = AppCacheManager.createModelContainer()
-        } else {
-            appState.modelContainer = nil
-        }
-
         //MARK: GUI or CLI launch mode.
         handleLaunchMode()
 
         //MARK: Pre-load apps data during app initialization
-        let modelContainer = appState.modelContainer
         let folderPaths = fsm.folderPaths
-        if #available(macOS 14.0, *) {
-            Task { @MainActor in
-                AppCacheManager.loadAndUpdateApps(
-                    modelContainer: modelContainer,
-                    folderPaths: folderPaths
-                )
-            }
-        } else {
-            DispatchQueue.global(qos: .userInitiated).async {
-                let sortedApps = getSortedApps(paths: folderPaths)
-                Task { @MainActor in
-                    AppState.shared.sortedApps = sortedApps
-                    AppState.shared.restoreZombieAssociations()
-                }
-            }
+        Task { @MainActor in
+            AppCachePlist.loadAndUpdateApps(folderPaths: folderPaths)
         }
 
         //MARK: Check permissions
@@ -81,13 +56,6 @@ struct PearcleanerApp: App {
                 .environmentObject(fsm)
                 .environmentObject(updater)
                 .environmentObject(permissionManager)
-                .apply { view in
-                    if #available(macOS 14.0, *), let container = appState.modelContainer as? ModelContainer {
-                        view.modelContainer(container)
-                    } else {
-                        view
-                    }
-                }
                 .handlesExternalEvents(preferring: Set(arrayLiteral: "pear"), allowing: Set(arrayLiteral: "*"))
                 .onDrop(of: ["public.file-url"], isTargeted: $isDraggingOver) { providers, _ in
                     var droppedURLs: [URL] = []

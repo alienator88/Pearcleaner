@@ -754,11 +754,9 @@ func removeApp(appState: AppState, withPath path: URL) {
             appState.sortedApps.remove(at: index)
         }
 
-        // Remove from SwiftData cache if on macOS 14+
-        if #available(macOS 14.0, *) {
-            Task { @MainActor in
-                try? AppCacheManager.shared.removeFromCache(paths: [path.path])
-            }
+        // Remove from plist cache
+        Task { @MainActor in
+            try? AppCachePlist.shared.removeFromCache(paths: [path.path])
         }
 
         if HelperToolManager.shared.isHelperToolInstalled {

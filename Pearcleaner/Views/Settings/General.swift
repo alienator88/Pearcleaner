@@ -207,70 +207,68 @@ struct GeneralSettingsTab: View {
                 })
 
             // === Cache ==========================================================================================================
-            if #available(macOS 14.0, *) {
-                PearGroupBox(
-                    header: { Text("Cache").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2) },
-                    content: {
-                        VStack(spacing: 5) {
-                            // Main toggle row
+            PearGroupBox(
+                header: { Text("Cache").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2) },
+                content: {
+                    VStack(spacing: 5) {
+                        // Main toggle row
+                        HStack(spacing: 0) {
+                            Image(systemName: cacheEnabled ? "tray.full.fill" : "tray")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 15, height: 15)
+                                .padding(.trailing)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            VStack(alignment: .leading, spacing: 0) {
+                                HStack(spacing: 0) {
+                                    Text("Enable app data caching")
+                                        .font(.callout)
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                                    InfoButton(text: String(localized: "Pearcleaner caches app metadata to improve loading times. When disabled, apps will be scanned fresh each time. Disabling this will clear existing cached data."))
+                                }
+                            }
+                            Spacer()
+                            Toggle(isOn: $cacheEnabled, label: {
+                            })
+                            .toggleStyle(SettingsToggle())
+                            .onChange(of: cacheEnabled) { newValue in
+                                if !newValue {
+                                    // Wipe cache when disabled
+                                    clearAppCache(showAlert: false)
+                                }
+                            }
+                        }
+                        .padding(5)
+
+                        // Secondary row (cache info and clear button) - only shown when enabled
+                        if cacheEnabled {
                             HStack(spacing: 0) {
-                                Image(systemName: cacheEnabled ? "tray.full.fill" : "tray")
+                                Image(systemName: "")
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 15, height: 15)
                                     .padding(.trailing)
                                     .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                                VStack(alignment: .leading, spacing: 0) {
-                                    HStack(spacing: 0) {
-                                        Text("Enable app data caching")
-                                            .font(.callout)
-                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                                        InfoButton(text: String(localized: "Pearcleaner caches app metadata to improve loading times. When disabled, apps will be scanned fresh each time. Disabling this will clear existing cached data."))
-                                    }
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(cacheSize)
+                                        .font(.caption)
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                                 }
                                 Spacer()
-                                Toggle(isOn: $cacheEnabled, label: {
-                                })
-                                .toggleStyle(SettingsToggle())
-                                .onChange(of: cacheEnabled) { newValue in
-                                    if !newValue {
-                                        // Wipe cache when disabled
-                                        clearAppCache(showAlert: false)
-                                    }
-                                }
-                            }
-                            .padding(5)
 
-                            // Secondary row (cache info and clear button) - only shown when enabled
-                            if cacheEnabled {
-                                HStack(spacing: 0) {
-                                    Image(systemName: "")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 15, height: 15)
-                                        .padding(.trailing)
-                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text(cacheSize)
-                                            .font(.caption)
-                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                                    }
-                                    Spacer()
-
-                                    Button {
-                                        clearAppCache(showAlert: true)
-                                    } label: {
-                                        Text("Clear Cache")
-                                            .font(.callout)
-                                            .foregroundStyle(.red)
-                                    }
-                                    .buttonStyle(.borderless)
+                                Button {
+                                    clearAppCache(showAlert: true)
+                                } label: {
+                                    Text("Clear Cache")
+                                        .font(.callout)
+                                        .foregroundStyle(.red)
                                 }
-                                .padding([.horizontal, .bottom], 5)
+                                .buttonStyle(.borderless)
                             }
+                            .padding([.horizontal, .bottom], 5)
                         }
-                    })
-            }
+                    }
+                })
 
             // === Sentinel =====================================================================================================
             PearGroupBox(
@@ -443,32 +441,17 @@ struct GeneralSettingsTab: View {
 
     // MARK: - Cache Management
 
-    @available(macOS 14.0, *)
     private func calculateCacheSize() async {
         let appSupportURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
             .appendingPathComponent("Pearcleaner")
-        let storeURL = appSupportURL.appendingPathComponent("AppCache.sqlite")
+        let plistURL = appSupportURL.appendingPathComponent("AppCache.plist")
 
-        // Calculate size of all cache files (sqlite, sqlite-shm, sqlite-wal)
+        // Calculate size of plist cache file
         let fileManager = FileManager.default
         var totalSize: Int64 = 0
 
-        // Check main database file
-        if let attrs = try? fileManager.attributesOfItem(atPath: storeURL.path),
-           let fileSize = attrs[.size] as? Int64 {
-            totalSize += fileSize
-        }
-
-        // Check WAL file
-        let walURL = storeURL.deletingPathExtension().appendingPathExtension("sqlite-wal")
-        if let attrs = try? fileManager.attributesOfItem(atPath: walURL.path),
-           let fileSize = attrs[.size] as? Int64 {
-            totalSize += fileSize
-        }
-
-        // Check SHM file
-        let shmURL = storeURL.deletingPathExtension().appendingPathExtension("sqlite-shm")
-        if let attrs = try? fileManager.attributesOfItem(atPath: shmURL.path),
+        // Check plist file
+        if let attrs = try? fileManager.attributesOfItem(atPath: plistURL.path),
            let fileSize = attrs[.size] as? Int64 {
             totalSize += fileSize
         }
@@ -482,11 +465,10 @@ struct GeneralSettingsTab: View {
         }
     }
 
-    @available(macOS 14.0, *)
     private func clearAppCache(showAlert: Bool = true) {
         Task { @MainActor in
             do {
-                try await AppCacheManager.shared.clearCache()
+                try await AppCachePlist.shared.clearCache()
 
                 // Recalculate cache size
                 await calculateCacheSize()

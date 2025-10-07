@@ -78,22 +78,12 @@ struct AppCommands: Commands {
                             // For file search view, post notification to refresh
                             NotificationCenter.default.post(name: NSNotification.Name("FileSearchViewShouldRefresh"), object: nil)
                         } else {
-                            if #available(macOS 14.0, *) {
-                                Task { @MainActor in
-                                    AppCacheManager.loadAndUpdateApps(
-                                        modelContainer: appState.modelContainer,
-                                        folderPaths: fsm.folderPaths
-                                    ) {
-                                        // After reload completes, if we're viewing files, refresh the file view
-                                        if appState.currentView == .files {
-                                            showAppInFiles(appInfo: appState.appInfo, appState: appState, locations: locations)
-                                        }
+                            Task { @MainActor in
+                                AppCachePlist.loadAndUpdateApps(folderPaths: fsm.folderPaths) {
+                                    // After reload completes, if we're viewing files, refresh the file view
+                                    if appState.currentView == .files {
+                                        showAppInFiles(appInfo: appState.appInfo, appState: appState, locations: locations)
                                     }
-                                }
-                            } else {
-                                reloadAppsList(appState: appState, fsm: fsm, delay: 1)
-                                if appState.currentView == .files {
-                                    showAppInFiles(appInfo: appState.appInfo, appState: appState, locations: locations)
                                 }
                             }
                         }
@@ -205,21 +195,9 @@ struct AppCommands: Commands {
         CommandMenu(Text("Tools", comment: "Tools Menu")) {
 
             Button {
-                // Check if caching is enabled
-                let cacheEnabled = UserDefaults.standard.bool(forKey: "settings.cache.enabled")
-
-                if #available(macOS 14.0, *), cacheEnabled {
-                    Task { @MainActor in
-                        withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                            AppCacheManager.loadAndUpdateApps(
-                                modelContainer: appState.modelContainer,
-                                folderPaths: fsm.folderPaths
-                            )
-                        }
-                    }
-                } else {
+                Task { @MainActor in
                     withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                        reloadAppsList(appState: appState, fsm: fsm)
+                        AppCachePlist.loadAndUpdateApps(folderPaths: fsm.folderPaths)
                     }
                 }
             } label: {
