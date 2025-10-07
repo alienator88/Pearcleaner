@@ -51,6 +51,24 @@ struct HomebrewAnalytics {
     let buildError30d: Int?
 }
 
+// Lightweight model for installed packages list (only name + description + version displayed)
+struct InstalledPackage: Identifiable, Equatable, Hashable {
+    let id = UUID()
+    let name: String
+    let description: String?
+    let version: String?
+    let isCask: Bool
+
+    static func == (lhs: InstalledPackage, rhs: InstalledPackage) -> Bool {
+        return lhs.name == rhs.name && lhs.isCask == rhs.isCask
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
+        hasher.combine(isCask)
+    }
+}
+
 struct HomebrewPackageInfo: Identifiable, Equatable, Hashable {
     let id = UUID()
     let name: String
@@ -91,4 +109,34 @@ struct HomebrewPackageInfo: Identifiable, Equatable, Hashable {
         hasher.combine(name)
         hasher.combine(isCask)
     }
+
+    // Full initializer (for backward compatibility with old loadInstalledPackages)
+    init(
+        name: String,
+        isCask: Bool,
+        installedOn: Date?,
+        versions: [String],
+        sizeInBytes: Int64?,
+        isPinned: Bool,
+        isOutdated: Bool,
+        description: String?,
+        homepage: String?,
+        tap: String?,
+        installedPath: String?,
+        fileCount: Int?
+    ) {
+        self.name = name
+        self.isCask = isCask
+        self.installedOn = installedOn
+        self.versions = versions
+        self.sizeInBytes = sizeInBytes
+        self.isPinned = isPinned
+        self.isOutdated = isOutdated
+        self.description = description
+        self.homepage = homepage
+        self.tap = tap
+        self.installedPath = installedPath
+        self.fileCount = fileCount
+    }
+
 }

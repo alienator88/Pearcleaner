@@ -220,6 +220,127 @@ class HomebrewController {
 
     // MARK: - Package Loading
 
+    /// Stream installed packages by scanning Cellar/Caskroom directories
+    /// Returns minimal info: name + description + version
+    func streamInstalledPackages(
+        cask: Bool,
+        onPackageFound: @escaping (String, String, String) -> Void  // (name, description, version)
+    ) async throws {
+        let baseDir = cask ? "\(brewPrefix)/Caskroom" : "\(brewPrefix)/Cellar"
+
+        guard let packageDirs = try? FileManager.default.contentsOfDirectory(atPath: baseDir) else {
+            return
+        }
+
+        // Process concurrently, stream results as they complete
+        await withTaskGroup(of: (String, String, String)?.self) { group in
+            // Add all tasks
+            for packageName in packageDirs where !packageName.hasPrefix(".") {
+                group.addTask {
+                    if cask {
+                        return await self.getCaskNameDescVersion(name: packageName)
+                    } else {
+                        return await self.getFormulaNameDescVersion(name: packageName)
+                    }
+                }
+            }
+
+            // Collect results as they complete
+            for await result in group {
+                if let (name, desc, version) = result {
+                    onPackageFound(name, desc, version)
+                }
+            }
+        }
+    }
+
+    /// Extract name, description, and version from formula .rb file
+    private func getFormulaNameDescVersion(name: String) async -> (String, String, String)? {
+        let cellarPath = "\(brewPrefix)/Cellar/\(name)"
+
+        // Find latest version directory
+        guard let versions = try? FileManager.default.contentsOfDirectory(atPath: cellarPath)
+                .filter({ !$0.hasPrefix(".") }),
+              let latestVersion = versions.sorted().last else {
+            return nil
+        }
+
+        // Read .rb file
+        let rbPath = "\(cellarPath)/\(latestVersion)/.brew/\(name).rb"
+        guard let rbContent = try? String(contentsOfFile: rbPath) else {
+            return (name, "No description available", latestVersion)
+        }
+
+        // Parse desc with regex: desc "..."
+        let descRegex = /desc "([^"]+)"/
+        if let match = rbContent.firstMatch(of: descRegex) {
+            return (name, String(match.1), latestVersion)
+        }
+
+        return (name, "No description available", latestVersion)
+    }
+
+    /// Extract name, description, and version from cask metadata file (.json or .rb)
+    private func getCaskNameDescVersion(name: String) async -> (String, String, String)? {
+        let caskroomPath = "\(brewPrefix)/Caskroom/\(name)"
+
+        // Skip symlinks (like xcodes -> xcodes-app)
+        if let attrs = try? FileManager.default.attributesOfItem(atPath: caskroomPath),
+           let fileType = attrs[.type] as? FileAttributeType,
+           fileType == .typeSymbolicLink {
+            return nil
+        }
+
+        // Use glob pattern to find the cask file: .metadata/*/*/Casks/<name>.*
+        let metadataPath = "\(caskroomPath)/.metadata"
+        let globPattern = "\(metadataPath)/*/*/Casks/\(name).*"
+
+        var globResult = glob_t()
+        defer { globfree(&globResult) }
+
+        guard glob(globPattern, 0, nil, &globResult) == 0,
+              globResult.gl_pathc > 0,
+              let firstPath = globResult.gl_pathv[0],
+              let caskFilePath = String(validatingUTF8: firstPath) else {
+            return nil
+        }
+
+        // Extract version from path: .metadata/<version>/<timestamp>/Casks/...
+        let pathComponents = caskFilePath.components(separatedBy: "/")
+        guard let metadataIndex = pathComponents.lastIndex(of: ".metadata"),
+              metadataIndex + 1 < pathComponents.count else {
+            return nil
+        }
+        let version = pathComponents[metadataIndex + 1]
+
+        // Check file extension to determine how to parse
+        if caskFilePath.hasSuffix(".json") {
+            // Parse JSON file (regular cask)
+            guard let jsonData = try? Data(contentsOf: URL(fileURLWithPath: caskFilePath)),
+                  let json = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any] else {
+                return (name, "No description available", version)
+            }
+
+            let desc = json["desc"] as? String ?? "No description available"
+            return (name, desc, version)
+
+        } else if caskFilePath.hasSuffix(".rb") {
+            // Parse Ruby file (tap cask)
+            guard let rbContent = try? String(contentsOfFile: caskFilePath) else {
+                return (name, "No description available", version)
+            }
+
+            // Parse desc with regex: desc "..."
+            let descRegex = /desc "([^"]+)"/
+            let desc = rbContent.firstMatch(of: descRegex).map { String($0.1) } ?? "No description available"
+
+            return (name, desc, version)
+
+        } else {
+            return (name, "No description available", version)
+        }
+    }
+
     func loadInstalledPackages() async throws -> (formulae: [HomebrewPackageInfo], casks: [HomebrewPackageInfo]) {
         // Run a single command to get both formulae and casks
         let arguments = ["info", "--json=v2", "--installed"]

@@ -303,16 +303,6 @@
         }
       }
     },
-    "%@ (%lld file%@)" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ (%2$lld file%3$@)"
-          }
-        }
-      }
-    },
     "%@ is already on the latest release available" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -974,6 +964,7 @@
       }
     },
     "%lld outdated" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -6186,6 +6177,7 @@
       }
     },
     "Are you sure you want to uninstall %@?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -30543,6 +30535,7 @@
       }
     },
     "Open homepage" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -31297,6 +31290,7 @@
       }
     },
     "OUTDATED" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -33091,6 +33085,7 @@
       }
     },
     "Pin version" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -42241,9 +42236,6 @@
         }
       }
     },
-    "Show package details" : {
-
-    },
     "Showing last 3 releases" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -47164,6 +47156,7 @@
       }
     },
     "This will upgrade all %lld outdated packages. This may take several minutes." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -49802,6 +49795,7 @@
       }
     },
     "Unpin version" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -51218,6 +51212,7 @@
       }
     },
     "Upgrade" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -51312,6 +51307,7 @@
       }
     },
     "Upgrade All Outdated" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -51406,6 +51402,7 @@
       }
     },
     "Upgrade All Packages" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -51500,6 +51497,7 @@
       }
     },
     "Upgrade package" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -52067,6 +52065,7 @@
       }
     },
     "Version pinned" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

@@ -49,17 +49,17 @@ struct SearchInstallSection: View {
         }
     }
 
-    private func convertToSearchResult(_ package: HomebrewPackageInfo) -> HomebrewSearchResult {
+    private func convertToSearchResult(_ package: InstalledPackage) -> HomebrewSearchResult {
         // Basic conversion - full data will be fetched on demand when Info is clicked
         return HomebrewSearchResult(
             name: package.name,
             description: package.description,
-            homepage: package.homepage,
+            homepage: nil,
             license: nil,
-            version: package.versions.first,
+            version: package.version,
             dependencies: nil,
             caveats: nil,
-            tap: package.tap,
+            tap: nil,
             fullName: nil,
             isDeprecated: false,
             deprecationReason: nil,
@@ -145,12 +145,6 @@ struct SearchInstallSection: View {
                         }
 
                         Spacer()
-
-                        if !brewManager.outdatedPackages.isEmpty {
-                            Text("\(brewManager.outdatedPackages.count) outdated")
-                                .font(.caption)
-                                .foregroundStyle(.orange)
-                        }
                     } else {
                         Text("\(displayedResults.count) result\(displayedResults.count == 1 ? "" : "s")")
                             .font(.caption)
@@ -333,6 +327,38 @@ struct SearchResultRowView: View {
         }
     }
 
+    private var isOutdated: Bool {
+        guard isAlreadyInstalled else { return false }
+
+        // Only compute if JWS data is loaded (to avoid blocking streaming)
+        let availablePackages = isCask ? brewManager.allAvailableCasks : brewManager.allAvailableFormulae
+        guard !availablePackages.isEmpty else { return false }
+
+        let shortName = result.name.components(separatedBy: "/").last ?? result.name
+
+        // Find the installed package
+        let installedPackage: InstalledPackage?
+        if isCask {
+            installedPackage = brewManager.installedCasks.first { $0.name == result.name || $0.name == shortName }
+        } else {
+            installedPackage = brewManager.installedFormulae.first { $0.name == result.name || $0.name == shortName }
+        }
+
+        guard let installed = installedPackage,
+              let installedVersion = installed.version else {
+            return false
+        }
+
+        // Find the package in JWS data to get latest version
+        guard let jws = availablePackages.first(where: { $0.name == result.name || $0.name == shortName }),
+              let latestVersion = jws.version else {
+            return false
+        }
+
+        // Compare versions - simple string comparison
+        return installedVersion != latestVersion
+    }
+
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
             // Package icon
@@ -376,12 +402,20 @@ struct SearchResultRowView: View {
             }
             .buttonStyle(.plain)
 
-            // Install/Installed status
+            // Install/Installed/Update status
             if isInstalling {
                 HStack(spacing: 8) {
                     ProgressView()
                         .scaleEffect(0.8)
                     Text("Installing...")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                }
+            } else if isOutdated {
+                HStack(spacing: 6) {
+                    Image(systemName: "arrow.up.circle.fill")
+                        .foregroundStyle(.orange)
+                    Text("Update")
                         .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
@@ -470,14 +504,6 @@ struct PackageDetailsDrawer: View {
         }
     }
 
-    private var installedPackageInfo: HomebrewPackageInfo? {
-        let shortName = package.name.components(separatedBy: "/").last ?? package.name
-        if isCask {
-            return brewManager.installedCasks.first { $0.name == package.name || $0.name == shortName }
-        } else {
-            return brewManager.installedFormulae.first { $0.name == package.name || $0.name == shortName }
-        }
-    }
 
     // Use full package info if available, otherwise use the passed-in package
     private var displayedPackage: HomebrewSearchResult {
@@ -509,9 +535,11 @@ struct PackageDetailsDrawer: View {
                         PackageHeaderSection(package: displayedPackage, isCask: isCask, colorScheme: colorScheme, onClose: onClose)
 
                         // Installed info (if package is installed)
-                        if let installedInfo = installedPackageInfo {
-                            InstalledInfoSection(packageInfo: installedInfo, colorScheme: colorScheme)
-                        }
+                        // Note: InstalledPackage model is now minimal (name+desc only)
+                        // No path/size info available in list view
+                        // if let installedInfo = installedPackageInfo {
+                        //     InstalledInfoSection(packageInfo: installedInfo, colorScheme: colorScheme)
+                        // }
 
                         // Deprecation warning
                         if displayedPackage.isDeprecated || displayedPackage.isDisabled {
@@ -1020,12 +1048,43 @@ struct InstallButtonSection: View {
     let brewManager: HomebrewManager
     let colorScheme: ColorScheme
 
+    private var isOutdated: Bool {
+        guard isAlreadyInstalled else { return false }
+        let shortName = package.name.components(separatedBy: "/").last ?? package.name
+
+        // Find the installed package
+        let installedPackage: InstalledPackage?
+        if isCask {
+            installedPackage = brewManager.installedCasks.first { $0.name == package.name || $0.name == shortName }
+        } else {
+            installedPackage = brewManager.installedFormulae.first { $0.name == package.name || $0.name == shortName }
+        }
+
+        guard let installed = installedPackage,
+              let installedVersion = installed.version,
+              let latestVersion = package.version else {
+            return false
+        }
+
+        // Compare versions - simple string comparison
+        return installedVersion != latestVersion
+    }
+
     var body: some View {
         if isInstalling {
             HStack(spacing: 8) {
                 ProgressView()
                     .scaleEffect(0.8)
                 Text("Installing...")
+                    .font(.caption)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+            }
+            .frame(maxWidth: .infinity)
+        } else if isOutdated {
+            HStack(spacing: 6) {
+                Image(systemName: "arrow.up.circle.fill")
+                    .foregroundStyle(.orange)
+                Text("Update")
                     .font(.caption)
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
             }

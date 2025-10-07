@@ -10,8 +10,10 @@ import AlinFoundation
 
 @MainActor
 class HomebrewManager: ObservableObject {
-    @Published var installedFormulae: [HomebrewPackageInfo] = []
-    @Published var installedCasks: [HomebrewPackageInfo] = []
+    // Lightweight models for Browse tab Installed section (fast streaming)
+    @Published var installedFormulae: [InstalledPackage] = []
+    @Published var installedCasks: [InstalledPackage] = []
+
     @Published var availableTaps: [HomebrewTapInfo] = []
     @Published var isLoadingPackages: Bool = false
     @Published var isLoadingTaps: Bool = false
@@ -31,12 +33,25 @@ class HomebrewManager: ObservableObject {
     // Maintenance tab refresh trigger
     @Published var maintenanceRefreshTrigger: Bool = false
 
-    var allPackages: [HomebrewPackageInfo] {
+    var allPackages: [InstalledPackage] {
         return installedFormulae + installedCasks
     }
 
-    var outdatedPackages: [HomebrewPackageInfo] {
-        return allPackages.filter { $0.isOutdated }
+    // Calculate outdated packages by comparing installed version with JWS version
+    var outdatedPackages: [InstalledPackage] {
+        return allPackages.filter { package in
+            guard let installedVersion = package.version else { return false }
+
+            // Find the package in JWS data
+            let availablePackages = package.isCask ? allAvailableCasks : allAvailableFormulae
+            guard let jws = availablePackages.first(where: { $0.name == package.name }),
+                  let latestVersion = jws.version else {
+                return false
+            }
+
+            // Compare versions - simple string comparison for now
+            return installedVersion != latestVersion
+        }
     }
 
     func refreshAll() async {
@@ -62,16 +77,47 @@ class HomebrewManager: ObservableObject {
     }
 
     func loadInstalledPackages() async {
+        // Clear existing arrays
+        installedFormulae.removeAll()
+        installedCasks.removeAll()
+
+        // Set loading flag only until first package arrives
         isLoadingPackages = true
-        defer { isLoadingPackages = false }
 
         do {
-            let (formulae, casks) = try await HomebrewController.shared.loadInstalledPackages()
-            installedFormulae = formulae
-            installedCasks = casks
+            // Fast streaming scanner - reads local files directly
+            // Stream formulae
+            try await HomebrewController.shared.streamInstalledPackages(cask: false) { name, desc, version in
+                let package = InstalledPackage(
+                    name: name,
+                    description: desc,
+                    version: version,
+                    isCask: false
+                )
+                self.installedFormulae.append(package)
+
+                // Hide loading indicator once first package arrives
+                if self.isLoadingPackages {
+                    self.isLoadingPackages = false
+                }
+            }
+
+            // Stream casks
+            try await HomebrewController.shared.streamInstalledPackages(cask: true) { name, desc, version in
+                let package = InstalledPackage(
+                    name: name,
+                    description: desc,
+                    version: version,
+                    isCask: true
+                )
+                self.installedCasks.append(package)
+            }
         } catch {
             printOS("Error loading packages: \(error)")
         }
+
+        // Ensure flag is cleared even if no packages found
+        isLoadingPackages = false
     }
 
     func loadTaps() async {
