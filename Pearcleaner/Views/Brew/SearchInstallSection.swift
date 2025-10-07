@@ -812,25 +812,28 @@ struct PackageDetailsDrawer: View {
     }
 
     private func loadFullPackageInfoIfNeeded() {
-        // If package data is incomplete (from installed package), fetch full info from API
+        // If package data is incomplete (from installed package), fetch full info from cached data
         guard needsFullData else { return }
 
         Task {
             isLoadingFullPackageInfo = true
-            do {
-                // Search for the package in the JWS files/API
-                let results = try await HomebrewController.shared.searchPackages(
-                    query: package.name,
-                    cask: isCask
-                )
-                // Find exact match
-                if let match = results.first(where: { $0.name == package.name }) {
-                    fullPackageInfo = match
-                }
-            } catch {
-                printOS("Failed to load full package info: \(error.localizedDescription)")
+
+            // Search in already-loaded cached packages (instant lookup)
+            let availablePackages = isCask ? brewManager.allAvailableCasks : brewManager.allAvailableFormulae
+
+            // Extract short name for matching (e.g., "homebrew/core/node" -> "node")
+            let shortName = package.name.components(separatedBy: "/").last ?? package.name
+
+            // Find exact match by name or short name
+            if let match = availablePackages.first(where: {
+                $0.name == package.name || $0.name == shortName
+            }) {
+                fullPackageInfo = match
+            } else {
+                printOS("Package not found in cached data: \(package.name)")
                 // Keep using the limited package data
             }
+
             isLoadingFullPackageInfo = false
         }
     }
