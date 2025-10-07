@@ -34,7 +34,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "(Membangun %@)"
+            "value" : "(Pembuatan %@)"
           }
         },
         "ja" : {
@@ -337,7 +337,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ sudah pada rilis terbaru yang tersedia"
+            "value" : "%@ sudah menggunakan rilis terbaru yang tersedia"
           }
         },
         "ja" : {
@@ -2908,7 +2908,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tambahkan file/folder dari clipboard"
+            "value" : "Tambahkan file/folder dari papan klip"
           }
         },
         "ja" : {
@@ -3003,7 +3003,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tambahkan file atau folder yang akan diabaikan saat mencari file yatim. Klik jalur untuk menghapusnya dari daftar."
+            "value" : "Tambahkan file atau folder yang akan diabaikan saat mencari berkas yatim/berkas tanpa induk/berkas terlantar. Klik jalur untuk menghapusnya dari daftar."
           }
         },
         "ja" : {
@@ -3191,7 +3191,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tambahkan filter dan klik Putar untuk menemukan file"
+            "value" : "Tambahkan filter dan klik Mulai untuk menemukan file"
           }
         },
         "ja" : {
@@ -3380,7 +3380,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tambahkan folder dari clipboard"
+            "value" : "Tambahkan folder dari papan klip"
           }
         },
         "ja" : {
@@ -4133,7 +4133,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Semua file paket valid dari daftar BOM telah dihapus. Anda dapat Melupakan paket ini."
+            "value" : "Semua file paket yang valid dari daftar BOM telah dihapus. Anda dapat Lupakan paket ini."
           }
         },
         "ja" : {
@@ -4416,7 +4416,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Selalu konfirmasi file yang ditandai untuk dihapus. Dalam kasus yang jarang, file yang tidak terkait mungkin ditemukan ketika nama aplikasi terlalu mirip.\n\nCATATAN: Pearcleaner menggunakan AppleScript untuk menghapus file. Saat ini macOS tidak mengizinkan AppleScript untuk mengautentikasi menggunakan sensor sidik jari, hanya autentikasi kata sandi yang didukung."
+            "value" : "Selalu konfirmasi file yang ditandai untuk dihapus. Dalam kasus yang jarang, file yang tidak terkait mungkin ditemukan ketika nama aplikasi terlalu mirip.\n\nCATATAN: Pearcleaner menggunakan AppleScript untuk menghapus file. Saat ini macOS tidak mengizinkan AppleScript untuk mengautentikasi menggunakan sensor sidik jari, hanya mendukung autentikasi melalui kata sandi."
           }
         },
         "ja" : {
@@ -5455,7 +5455,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "File aplikasi berada dalam subdirektori. Untuk mencegah penghapusan folder yang salah, Pearcleaner akan membiarkannya. Anda dapat menghapus folder yang tersisa secara manual jika diperlukan."
+            "value" : "File aplikasi berada dalam subdirektori. Untuk mencegah kesalahan penghapusan folder, Pearcleaner akan mengabaikannya. Anda dapat menghapus folder yang tersisa secara mandiri jika diperlukan."
           }
         },
         "ja" : {
@@ -6114,7 +6114,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apakah Anda yakin ingin menghapus tab ini?"
+            "value" : "Apakah Anda yakin ingin menghapus keran ini?"
           }
         },
         "ja" : {
@@ -6208,7 +6208,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apakah Anda yakin ingin menghapus %@?"
+            "value" : "Apakah Anda yakin ingin mencopot %@?"
           }
         },
         "ja" : {
@@ -6682,7 +6682,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tingkat seimbang dan juga termasuk pencarian metadata Spotlight (Sebagian besar file, paling tidak akurat)"
+            "value" : "Tingkat yang seimbang dan juga termasuk pencarian metadata Spotlight (Sebagian besar file, kurang akurat)"
           }
         },
         "ja" : {
@@ -7158,7 +7158,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Berkas Bundle..."
+            "value" : "Bundel Berkas…"
           }
         },
         "ja" : {
@@ -7441,7 +7441,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Penipisan bundel selesai Total ruang yang disimpan dari semua biner dalam bundel"
+            "value" : "Penipisan bundel selesai. Total ruang yang dihemat dari semua biner dalam bundel."
           }
         },
         "ja" : {
@@ -7629,7 +7629,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cache"
+            "value" : "Tembolok"
           }
         },
         "ja" : {
@@ -7723,7 +7723,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ukuran Cache:"
+            "value" : "Ukuran Tembolok:"
           }
         },
         "ja" : {
@@ -7817,7 +7817,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tersimpan dalam cache: %@"
+            "value" : "Tersimpan dalam Tembolok: %@"
           }
         },
         "ja" : {
@@ -8665,7 +8665,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Periksa masalah potensial"
+            "value" : "Periksa potensi masalah"
           }
         },
         "ja" : {
@@ -9042,7 +9042,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bersihkan file yang disimpan dan cache untuk IDE umum"
+            "value" : "Bersihkan file yang disimpan dan tembolok untuk IDE umum"
           }
         },
         "ja" : {
@@ -9419,7 +9419,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bersihkan Cache"
+            "value" : "Bersihkan Tembolok"
           }
         },
         "ja" : {
@@ -9609,7 +9609,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klik untuk daftar aplikasi"
+            "value" : "Klik untuk melihat daftar aplikasi"
           }
         },
         "ja" : {
@@ -14333,7 +14333,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aktifkan cache data aplikasi"
+            "value" : "Aktifkan tembolok data aplikasi"
           }
         },
         "ja" : {
@@ -14710,7 +14710,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mengaktifkan CLI akan memungkinkan Anda menjalankan tindakan Pearcleaner dari Terminal. Ini akan menambahkan perintah pearcleaner ke dalam /usr/local/bin sehingga tersedia langsung dari variabel lingkungan PATH Anda. Cobalah setelah mengaktifkan:\n\n> pear --help"
+            "value" : "Mengaktifkan CLI/Baris Perintah akan memungkinkan Anda menjalankan tindakan Pearcleaner dari Terminal. Ini akan menambahkan perintah pearcleaner ke dalam /usr/local/bin sehingga tersedia langsung dari variabel lingkungan PATH Anda. Coba perintah di bawah ini setelah mengaktifkan:\n\n> pear --help"
           }
         },
         "ja" : {
@@ -28773,7 +28773,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tidak ada paket yang ditemukan di tap ini"
+            "value" : "Tidak ada paket yang ditemukan di keran ini"
           }
         },
         "ja" : {
@@ -30942,7 +30942,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pencarian file yatim tidak 100% akurat karena tidak memiliki bundel aplikasi yang dihapus untuk diperiksa dalam pengecualian file. Ini melakukan pencarian perkiraan terbaik untuk file/folder dan mengecualikan yang memiliki tumpang tindih dengan aplikasi yang saat ini terpasang. Harap konfirmasi bahwa file yang ditandai untuk dihapus benar-benar milik aplikasi yang dihapus."
+            "value" : "Pencarian file yatim tidak 100% akurat karena tidak memiliki bundel aplikasi yang dihapus untuk diperiksa dalam pengecualian file. Hal ini akan melakukan pencarian dengan perkiraan terbaik untuk file/folder dan mengecualikan file/folder yang tumpang tindih dengan aplikasi yang saat ini terpasang. Harap konfirmasi bahwa file yang ditandai untuk dihapus benar-benar milik aplikasi yang dihapus."
           }
         },
         "ja" : {
@@ -31131,7 +31131,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anak yatim"
+            "value" : "Yatim"
           }
         },
         "ja" : {
@@ -31319,7 +31319,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "KADALUARSA"
+            "value" : "KADALUWARSA"
           }
         },
         "ja" : {
@@ -31884,7 +31884,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pearcleaner menyimpan metadata aplikasi dalam cache untuk meningkatkan waktu pemuatan. Ketika dinonaktifkan, aplikasi akan dipindai ulang setiap kali. Menonaktifkan ini akan menghapus data cache yang ada."
+            "value" : "Pearcleaner menyimpan metadata aplikasi dalam tembolok untuk meningkatkan waktu pemuatan. Ketika dinonaktifkan, aplikasi akan dipindai ulang setiap kali. Menonaktifkan ini akan menghapus data tembolok yang ada."
           }
         },
         "ja" : {
@@ -31978,7 +31978,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pearcleaner dapat melakukan operasi istimewa dengan cara berikut: - Layanan pembantu 👍🏻 - Layanan otorisasi 👎🏻\n\nLayanan pembantu: Pearcleaner hanya akan meminta Anda memasukkan kata sandi sekali untuk mengaktifkan pembantu, kemudian semua operasi berikutnya akan berjalan tanpa permintaan selama pembantu tetap diaktifkan di Pengaturan > Item Masuk. Otorisasi ini semua dikelola oleh macOS melalui SMAppService.\n\nLayanan otorisasi: Pearcleaner akan meminta pengguna untuk memasukkan kata sandi pada setiap operasi istimewa, yang dapat menjadi berlebihan. Otorisasi ini dikelola oleh Pearcleaner dan pengguna.\n\nApa itu operasi istimewa: Setiap kali Pearcleaner perlu menghapus file dari folder (Contoh: /var) yang pengguna tidak memiliki hak istimewa untuk atau membatalkan/memulihkan file kembali ke lokasi istimewa."
+            "value" : "Pearcleaner dapat melakukan operasi istimewa dengan cara berikut: - Layanan pembantu 👍🏻 - Layanan otorisasi 👎🏻\n\nLayanan pembantu: Pearcleaner hanya akan meminta Anda memasukkan kata sandi sekali untuk mengaktifkan pembantu, kemudian semua operasi berikutnya akan berjalan tanpa permintaan otorisasi selama pembantu diaktifkan di Pengaturan > Item Masuk. Semua otorisasi ini dikelola oleh macOS melalui SMAppService.\n\nLayanan otorisasi: Pearcleaner akan meminta pengguna untuk memasukkan kata sandi pada setiap operasi istimewa, yang dapat meminta otorisasi berulang yang mungkin terasa berlebihan. Otorisasi ini dikelola oleh Pearcleaner dan pengguna.\n\nApa itu operasi istimewa: Setiap kali Pearcleaner perlu menghapus file dari folder (Contoh: /var) yang pengguna tidak memiliki hak istimewa untuk atau membatalkan/memulihkan file kembali ke lokasi istimewa."
           }
         },
         "ja" : {
@@ -32073,7 +32073,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dukungan CLI Pearcleaner"
+            "value" : "Dukungan CLI/Baris Perintah Pearcleaner"
           }
         },
         "ja" : {
@@ -34434,7 +34434,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jenis ukuran sebenarnya akan menunjukkan berapa banyak ruang yang sebenarnya dialokasikan file di disk.\n\nJenis logis menunjukkan ukuran biner. Sistem file dapat mengompres dan menduplikasi sektor di disk, sehingga ukuran sebenarnya kadang-kadang lebih kecil (atau lebih besar) dari ukuran logis.\n\nUkuran Finder mirip dengan jika Anda klik kanan > Dapatkan Info pada file di Finder, yang akan menunjukkan ukuran logis dan ukuran sebenarnya bersama-sama."
+            "value" : "Jenis ukuran sebenarnya akan menunjukkan berapa banyak ruang yang sebenarnya dialokasikan file di penyimpanan.\n\nJenis logis menunjukkan ukuran biner. Sistem file dapat mengompres dan menduplikasi sektor di penyimpanan, sehingga ukuran sebenarnya kadang-kadang lebih kecil (atau lebih besar) dari ukuran logis.\n\nUkuran Finder mirip dengan jika Anda klik kanan > Dapatkan Info pada file di Finder, yang akan menunjukkan ukuran logis dan ukuran sebenarnya bersama-sama."
           }
         },
         "ja" : {
@@ -38968,7 +38968,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scrollbar disembunyikan dalam daftar"
+            "value" : "Bilah gulir disembunyikan dalam daftar"
           }
         },
         "ja" : {
@@ -39062,7 +39062,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scrollbar diatur sesuai preferensi OS dalam daftar"
+            "value" : "Bilah gulir diatur sesuai preferensi OS dalam daftar"
           }
         },
         "ja" : {
@@ -40567,7 +40567,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pilih lingkungan untuk melihat cache yang disimpan"
+            "value" : "Pilih lingkungan untuk melihat tembolok yang disimpan"
           }
         },
         "ja" : {
@@ -42550,7 +42550,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Karena layanan Otorisasi telah dihentikan oleh Apple sebagai metode autentikasi yang kurang aman, layanan ini pada akhirnya akan dihapus dari Pearcleaner dan layanan pembantu akan menjadi satu-satunya opsi ke depan. Saya merekomendasikan untuk mengaktifkan layanan pembantu yang memiliki hak istimewa sesegera mungkin."
+            "value" : "Karena layanan Otorisasi telah dihentikan oleh Apple karena dianggap metode autentikasi yang kurang aman, layanan ini pada akhirnya akan dihapus dari Pearcleaner dan layanan pembantu akan menjadi satu-satunya opsi ke depan. Saya merekomendasikan untuk mengaktifkan layanan pembantu yang memiliki hak istimewa sesegera mungkin."
           }
         },
         "ja" : {
@@ -44533,7 +44533,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tingkat ketat dan juga termasuk pencarian metadata Spotlight (Sedikit lebih banyak file, tetap akurat)"
+            "value" : "Tingkat keketatan dan juga termasuk pencarian metadata Spotlight (Sedikit lebih banyak file, tetap akurat)"
           }
         },
         "ja" : {
@@ -44627,7 +44627,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tingkat ketat dan juga memungkinkan pencocokan parsial (Lebih banyak file, sedikit kurang akurat)"
+            "value" : "Tingkat keketatan dan juga memungkinkan pencocokan parsial (Lebih banyak file, sedikit kurang akurat)"
           }
         },
         "ja" : {
@@ -44817,7 +44817,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kirim Masalah Baru"
+            "value" : "Kirim Laporan Masalah Baru"
           }
         },
         "ja" : {
@@ -49166,7 +49166,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Menghapus instalan..."
+            "value" : "Mencopot…"
           }
         },
         "ja" : {
@@ -53794,7 +53794,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Saat Homebrew cleanup diaktifkan, Pearcleaner akan memeriksa apakah aplikasi yang Anda hapus diinstal melalui Homebrew dan meluncurkan Terminal.app untuk menjalankan perintah brew uninstall dan cleanup agar Homebrew tahu bahwa aplikasi tersebut telah dihapus. Dengan cara ini, daftar Homebrew Anda akan disinkronkan dengan benar dan caching akan dihapus. Terminal.app diperlukan karena beberapa aplikasi memerlukan izin sudo untuk menghapus layanan dan file yang ditempatkan di folder sistem. Karena aplikasi terminal lain tidak mendukung AppleScript dan/atau perintah 'do script', saya memilih untuk menggunakan aplikasi Terminal macOS default untuk ini.\n\nCATATAN: Jika Anda membatalkan penghapusan file dengan CMD+Z, file akan dikembalikan tetapi Homebrew tidak akan menyadarinya. Untuk menyinkronkan kembali daftar Homebrew, Anda perlu menjalankan:\n\n> brew install APPNAME --force"
+            "value" : "Saat Homebrew cleanup diaktifkan, Pearcleaner akan memeriksa apakah aplikasi yang Anda hapus diinstal melalui Homebrew dan meluncurkan Terminal.app untuk menjalankan perintah brew uninstall dan cleanup agar Homebrew tahu bahwa aplikasi tersebut telah dihapus. Dengan cara ini, daftar Homebrew Anda akan disinkronkan dengan benar dan caching akan dihapus. Terminal.app diperlukan karena beberapa aplikasi memerlukan izin sudo untuk menghapus layanan dan file yang ditempatkan di folder sistem. Karena aplikasi terminal lain tidak mendukung AppleScript dan/atau perintah 'do script', saya memilih untuk menggunakan aplikasi Terminal bawaan macOS untuk ini.\n\nCATATAN: Jika Anda membatalkan penghapusan file dengan CMD+Z, file akan dikembalikan tetapi Homebrew tidak akan menyadarinya. Untuk menyinkronkan kembali daftar Homebrew, Anda perlu menjalankan:\n\n> brew install APPNAME --force"
           }
         },
         "ja" : {
@@ -53983,7 +53983,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ketika mode ini diaktifkan, mengklik tombol Uninstall untuk menghapus aplikasi juga akan menutup Pearcleaner segera setelahnya. Ini hanya memengaruhi Pearcleaner ketika dibuka melalui cara eksternal, seperti Sentinel Trash Monitor, ekstensi Finder, atau Deep Link. Ini memungkinkan penggunaan tunggal aplikasi untuk uninstall cepat. Ketika Pearcleaner dibuka secara normal, pengaturan ini diabaikan dan akan berfungsi seperti biasa."
+            "value" : "Ketika mode ini diaktifkan, mengklik tombol Uninstall untuk menghapus aplikasi juga akan menutup Pearcleaner segera setelahnya. Ini hanya memengaruhi Pearcleaner ketika dibuka melalui cara eksternal, seperti Sentinel Trash Monitor, ekstensi Finder, atau Deep Link. Ini memungkinkan penggunaan tunggal aplikasi untuk mencopot secara cepat. Ketika Pearcleaner dibuka secara normal, pengaturan ini diabaikan dan akan berfungsi seperti biasa."
           }
         },
         "ja" : {
