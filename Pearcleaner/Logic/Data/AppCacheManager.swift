@@ -220,6 +220,18 @@ class AppCacheManager {
     /// - Parameter folderPaths: Array of folder paths to scan for apps
     /// - Returns: Array of AppInfo sorted by name
     func loadAppsWithCache(folderPaths: [String]) -> [AppInfo] {
+        // Check if database files actually exist
+        let appSupportURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+            .appendingPathComponent("Pearcleaner")
+        let dbPath = appSupportURL.appendingPathComponent("AppCache.sqlite").path
+
+        if !FileManager.default.fileExists(atPath: dbPath) {
+            printOS("⚠️ Database files missing, falling back to full scan")
+            let apps = getSortedApps(paths: folderPaths)
+            try? saveToCache(apps)
+            return apps
+        }
+
         // Fallback if SwiftData not available
         guard modelContext != nil else {
             printOS("⚠️ SwiftData not available, falling back to full scan")
@@ -253,7 +265,18 @@ class AppCacheManager {
             return allApps
 
         } catch {
-            printOS("❌ Cache error: \(error). Falling back to full scan")
+            // Check if it's a database I/O error (6922) or corruption
+            let errorDescription = error.localizedDescription
+            if errorDescription.contains("I/O error") || errorDescription.contains("6922") || errorDescription.contains("corrupt") {
+                printOS("❌ Database corruption detected: \(error). Reinitializing...")
+                // Reinitialize the container to fix the issue
+                Task { @MainActor in
+                    await reinitializeContainer()
+                }
+            } else {
+                printOS("❌ Cache error: \(error). Falling back to full scan")
+            }
+
             // On any error, fallback to full scan and attempt to rebuild cache
             let apps = getSortedApps(paths: folderPaths)
             try? saveToCache(apps)
@@ -390,6 +413,9 @@ class AppCacheManager {
         self.modelContext = nil
         self.modelContainer = nil
 
+        // Give time for SwiftData to release file handles
+        try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+
         // Delete all AppCache* files (sqlite, sqlite-wal, sqlite-shm)
         let appSupportURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
             .appendingPathComponent("Pearcleaner")
@@ -415,6 +441,28 @@ class AppCacheManager {
             printOS("⚠️ Cache file deletion failed: \(output)")
             throw CacheError.deletionFailed
         }
+
+        // Give additional time for file system to sync
+        try await Task.sleep(nanoseconds: 200_000_000) // 0.2 seconds
+
+        // Recreate the model container with fresh database
+        await reinitializeContainer()
+    }
+
+    /// Reinitialize the ModelContainer after cache deletion or corruption
+    @MainActor
+    func reinitializeContainer() async {
+        guard let containerAny = AppCacheManager.createModelContainer(),
+              let newContainer = containerAny as? ModelContainer else {
+            printOS("⚠️ Failed to reinitialize model container after cache clear")
+            return
+        }
+
+        self.modelContainer = newContainer
+        self.modelContext = ModelContext(newContainer)
+
+        // Update AppState's container so future refreshes use the new one
+        AppState.shared.modelContainer = containerAny
     }
 
     // MARK: - Error Types
