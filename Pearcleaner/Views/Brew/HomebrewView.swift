@@ -9,16 +9,13 @@ import SwiftUI
 import AlinFoundation
 
 enum HomebrewViewSection: String, CaseIterable {
-    case installed = "Installed"
-    case search = "Browse"
+    case browse = "Browse"
     case taps = "Taps"
     case maintenance = "Maintenance"
 
     var icon: String {
         switch self {
-        case .installed:
-            return "shippingbox.fill"
-        case .search:
+        case .browse:
             return "magnifyingglass"
         case .taps:
             return "point.3.filled.connected.trianglepath.dotted"
@@ -32,7 +29,8 @@ struct HomebrewView: View {
     @StateObject private var brewManager = HomebrewManager()
     @EnvironmentObject var appState: AppState
     @Environment(\.colorScheme) var colorScheme
-    @State private var selectedSection: HomebrewViewSection = .installed
+    @State private var selectedSection: HomebrewViewSection = .browse
+    @State private var isLoadingInitialData: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
     var body: some View {
@@ -71,40 +69,47 @@ struct HomebrewView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 // Normal Homebrew view content
-                VStack(spacing: 0) {
-                    // Section Picker
-                    Picker("", selection: $selectedSection) {
-                        ForEach(HomebrewViewSection.allCases, id: \.self) { section in
-                            Label(section.rawValue, systemImage: section.icon)
-                                .tag(section)
+                ZStack {
+                    VStack(spacing: 0) {
+                        // Section Picker
+                        Picker("", selection: $selectedSection) {
+                            ForEach(HomebrewViewSection.allCases, id: \.self) { section in
+                                Label(section.rawValue, systemImage: section.icon)
+                                    .tag(section)
+                            }
                         }
-                    }
-                    .labelsHidden()
-                    .pickerStyle(.segmented)
-                    .padding(.horizontal, 20)
-                    .padding(.top, 10)
-                    .padding(.bottom, 5)
+                        .labelsHidden()
+                        .pickerStyle(.segmented)
+                        .padding(.horizontal, 20)
+                        .padding(.top, 10)
+                        .padding(.bottom, 5)
+                        .disabled(isLoadingInitialData)
+                        .opacity(isLoadingInitialData ? 0.5 : 1.0)
 
-                    // Section Content
-                    Group {
-                        switch selectedSection {
-                        case .installed:
-                            InstalledPackagesSection()
-                        case .search:
-                            SearchInstallSection()
-                        case .taps:
-                            TapManagementSection()
-                        case .maintenance:
-                            MaintenanceSection()
+                        // Section Content
+                        Group {
+                            switch selectedSection {
+                            case .browse:
+                                SearchInstallSection()
+                            case .taps:
+                                TapManagementSection()
+                            case .maintenance:
+                                MaintenanceSection()
+                            }
                         }
+                        .transition(.opacity)
+                        .animation(animationEnabled ? .easeInOut(duration: 0.2) : .none, value: selectedSection)
                     }
-                    .transition(.opacity)
-                    .animation(animationEnabled ? .easeInOut(duration: 0.2) : .none, value: selectedSection)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .environmentObject(brewManager)
                 .task {
-                    await brewManager.refreshAll()
+                    // Load other data in parallel (installed packages loaded in SearchInstallSection)
+                    async let taps: Void = brewManager.loadTaps()
+                    async let version: Void = brewManager.loadBrewVersion()
+                    async let cache: Void = brewManager.loadDownloadsCacheSize()
+                    async let analytics: Void = brewManager.checkAnalyticsStatus()
+                    _ = await (taps, version, cache, analytics)
                 }
             }
         }
@@ -132,9 +137,8 @@ struct HomebrewView: View {
                 Button {
                     Task {
                         switch selectedSection {
-                        case .installed:
+                        case .browse:
                             await brewManager.loadInstalledPackages()
-                        case .search:
                             await brewManager.loadAvailablePackages(appState: appState, forceRefresh: true)
                         case .taps:
                             await brewManager.loadTaps()

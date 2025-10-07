@@ -9,7 +9,6 @@ import SwiftUI
 import AlinFoundation
 
 enum HomebrewPackageFilter: String, CaseIterable {
-    case all = "All"
     case formulae = "Formulae"
     case casks = "Casks"
     case outdated = "Outdated"
@@ -19,17 +18,17 @@ struct InstalledPackagesSection: View {
     @EnvironmentObject var brewManager: HomebrewManager
     @Environment(\.colorScheme) var colorScheme
     @State private var searchText: String = ""
-    @State private var filter: HomebrewPackageFilter = .all
+    @State private var filter: HomebrewPackageFilter = .formulae
     @State private var showUpgradeAllAlert: Bool = false
     @State private var isUpgradingAll: Bool = false
+    @State private var selectedPackage: HomebrewPackageInfo?
+    @State private var drawerOpen: Bool = false
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
 
     private var filteredPackages: [HomebrewPackageInfo] {
         var packages: [HomebrewPackageInfo] = []
 
         switch filter {
-        case .all:
-            packages = brewManager.allPackages
         case .formulae:
             packages = brewManager.installedFormulae
         case .casks:
@@ -49,126 +48,174 @@ struct InstalledPackagesSection: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            // Search and filter bar
-            HStack(spacing: 12) {
-                // Search field
-                HStack {
-                    Image(systemName: "magnifyingglass")
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-
-                    TextField("Search...", text: $searchText)
-                        .textFieldStyle(.plain)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-
-                    if !searchText.isEmpty {
-                        Button {
-                            searchText = ""
-                        } label: {
-                            Image(systemName: "xmark.circle.fill")
+        GeometryReader { geometry in
+            HStack(spacing: 0) {
+                // Left: List View
+                VStack(alignment: .leading, spacing: 0) {
+                    // Search and filter bar
+                    HStack(spacing: 12) {
+                        // Search field
+                        HStack {
+                            Image(systemName: "magnifyingglass")
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                            TextField("Search...", text: $searchText)
+                                .textFieldStyle(.plain)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                            if !searchText.isEmpty {
+                                Button {
+                                    searchText = ""
+                                } label: {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                }
+                                .buttonStyle(.plain)
+                            }
                         }
-                        .buttonStyle(.plain)
-                    }
-                }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .controlGroup(Capsule(style: .continuous), level: .primary)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .controlGroup(Capsule(style: .continuous), level: .primary)
 
-                // Filter picker
-                Picker("", selection: $filter) {
-                    ForEach(HomebrewPackageFilter.allCases, id: \.self) { filter in
-                        Text(filter.rawValue).tag(filter)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .labelsHidden()
-                .frame(width: 300)
-            }
-            .padding(.horizontal, 20)
-            .padding(.top, 10)
-
-            // Stats header
-            HStack {
-                Text("\(filteredPackages.count) package\(filteredPackages.count == 1 ? "" : "s")")
-                    .font(.caption)
-                    .monospacedDigit()
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-
-                if brewManager.isLoadingPackages {
-                    Text("Loading...")
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                }
-
-                Spacer()
-
-                if !brewManager.outdatedPackages.isEmpty {
-                    Text("\(brewManager.outdatedPackages.count) outdated")
-                        .font(.caption)
-                        .foregroundStyle(.orange)
-                }
-            }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 10)
-
-            if brewManager.isLoadingPackages {
-                VStack(alignment: .center, spacing: 10) {
-                    Spacer()
-                    ProgressView()
-                        .scaleEffect(1.5)
-                    Text("Loading packages...")
-                        .font(.title2)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    Spacer()
-                }
-                .frame(maxWidth: .infinity)
-            } else if filteredPackages.isEmpty {
-                VStack(alignment: .center) {
-                    Spacer()
-                    Text("No packages found")
-                        .font(.title2)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    Spacer()
-                }
-                .frame(maxWidth: .infinity)
-            } else {
-                ScrollView {
-                    LazyVStack(spacing: 8) {
-                        ForEach(filteredPackages) { package in
-                            HomebrewPackageRow(package: package)
+                        // Filter picker
+                        Picker("", selection: $filter) {
+                            ForEach(HomebrewPackageFilter.allCases, id: \.self) { filter in
+                                Text(filter.rawValue).tag(filter)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .labelsHidden()
+                        .frame(width: 300)
+                        .onChange(of: filter) { _ in
+                            // Clear search and close drawer when switching tabs
+                            searchText = ""
+                            if drawerOpen {
+                                withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                                    drawerOpen = false
+                                    selectedPackage = nil
+                                }
+                            }
                         }
                     }
                     .padding(.horizontal, 20)
-                    .padding(.bottom, 20)
-                }
-                .scrollIndicators(scrollIndicators ? .automatic : .never)
-            }
-        }
-        .safeAreaInset(edge: .bottom) {
-            if !brewManager.outdatedPackages.isEmpty {
-                HStack {
-                    Spacer()
+                    .padding(.top, 10)
 
-                    Button("Upgrade All Outdated") {
-                        showUpgradeAllAlert = true
+                    // Stats header
+                    HStack {
+                        Text("\(filteredPackages.count) package\(filteredPackages.count == 1 ? "" : "s")")
+                            .font(.caption)
+                            .monospacedDigit()
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                        if brewManager.isLoadingPackages {
+                            Text("Loading...")
+                                .font(.caption)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        }
+
+                        Spacer()
+
+                        if !brewManager.outdatedPackages.isEmpty {
+                            Text("\(brewManager.outdatedPackages.count) outdated")
+                                .font(.caption)
+                                .foregroundStyle(.orange)
+                        }
                     }
-                    .buttonStyle(ControlGroupButtonStyle(
-                        foregroundColor: ThemeColors.shared(for: colorScheme).accent,
-                        shape: Capsule(style: .continuous),
-                        level: .primary,
-                        skipControlGroup: true
-                    ))
-                    .disabled(isUpgradingAll)
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 10)
 
-                    if isUpgradingAll {
-                        ProgressView()
-                            .scaleEffect(0.8)
+                    if brewManager.isLoadingPackages {
+                        VStack(alignment: .center, spacing: 10) {
+                            Spacer()
+                            ProgressView()
+                                .scaleEffect(1.5)
+                            Text("Loading packages...")
+                                .font(.title2)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            Spacer()
+                        }
+                        .frame(maxWidth: .infinity)
+                    } else if filteredPackages.isEmpty {
+                        VStack(alignment: .center) {
+                            Spacer()
+                            Text("No packages found")
+                                .font(.title2)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            Spacer()
+                        }
+                        .frame(maxWidth: .infinity)
+                    } else {
+                        ScrollView {
+                            LazyVStack(spacing: 8) {
+                                ForEach(filteredPackages) { package in
+                                    HomebrewPackageRow(
+                                        package: package,
+                                        isSelected: selectedPackage?.id == package.id && drawerOpen,
+                                        isDimmed: drawerOpen && selectedPackage?.id != package.id,
+                                        onInfoTapped: {
+                                            selectedPackage = package
+                                            withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                                                drawerOpen = true
+                                            }
+                                        }
+                                    )
+                                }
+                            }
+                            .padding(.horizontal, 20)
+                            .padding(.bottom, 20)
+                        }
+                        .scrollIndicators(scrollIndicators ? .automatic : .never)
                     }
-
-                    Spacer()
                 }
-                .padding([.horizontal, .bottom])
+                .frame(width: drawerOpen ? geometry.size.width * (2.0/3.0) : geometry.size.width)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    if drawerOpen {
+                        withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                            drawerOpen = false
+                        }
+                    }
+                }
+                .safeAreaInset(edge: .bottom) {
+                    if !brewManager.outdatedPackages.isEmpty {
+                        HStack {
+                            Spacer()
+
+                            Button("Upgrade All Outdated") {
+                                showUpgradeAllAlert = true
+                            }
+                            .buttonStyle(ControlGroupButtonStyle(
+                                foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                                shape: Capsule(style: .continuous),
+                                level: .primary,
+                                skipControlGroup: true
+                            ))
+                            .disabled(isUpgradingAll)
+
+                            if isUpgradingAll {
+                                ProgressView()
+                                    .scaleEffect(0.8)
+                            }
+
+                            Spacer()
+                        }
+                        .padding([.horizontal, .bottom])
+                    }
+                }
+
+                // Right: Details Drawer
+                if drawerOpen, let package = selectedPackage {
+                    InstalledPackageDetailsDrawer(
+                        package: package,
+                        onClose: {
+                            withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                                drawerOpen = false
+                            }
+                        }
+                    )
+                    .frame(width: geometry.size.width * (1.0/3.0))
+                    .transition(.move(edge: .trailing))
+                }
             }
         }
         .alert("Upgrade All Packages", isPresented: $showUpgradeAllAlert) {
@@ -195,6 +242,9 @@ struct InstalledPackagesSection: View {
 
 struct HomebrewPackageRow: View {
     let package: HomebrewPackageInfo
+    var isSelected: Bool = false
+    var isDimmed: Bool = false
+    var onInfoTapped: (() -> Void)? = nil
     @EnvironmentObject var brewManager: HomebrewManager
     @Environment(\.colorScheme) var colorScheme
     @State private var isHovered: Bool = false
@@ -264,6 +314,14 @@ struct HomebrewPackageRow: View {
                         .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
+
+                // Installed path and file count (formulae only for now)
+                if !package.isCask, let path = package.installedPath, let count = package.fileCount {
+                    Text("\(path) (\(count) file\(count == 1 ? "" : "s"))")
+                        .font(.caption2)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText.opacity(0.7))
+                        .lineLimit(1)
+                }
             }
 
             Spacer()
@@ -274,6 +332,19 @@ struct HomebrewPackageRow: View {
                     .scaleEffect(0.8)
             } else {
                 HStack(spacing: 10) {
+                    // Info button
+                    if let onInfoTapped = onInfoTapped {
+                        Button {
+                            onInfoTapped()
+                        } label: {
+                            Image(systemName: "info.circle")
+                        }
+                        .buttonStyle(.borderless)
+                        .help("Show package details")
+
+                        Divider().frame(height: 15)
+                    }
+
                     // Homepage button
                     if let homepage = package.homepage, let url = URL(string: homepage) {
                         Button {
@@ -360,6 +431,7 @@ struct HomebrewPackageRow: View {
                     ThemeColors.shared(for: colorScheme).secondaryBG
                 )
         )
+        .opacity(isDimmed ? 0.5 : 1.0)
         .onHover { hovering in
             withAnimation(.easeInOut(duration: 0.2)) {
                 isHovered = hovering
@@ -399,5 +471,50 @@ struct HomebrewPackageRow: View {
         } else {
             return .green
         }
+    }
+}
+
+// MARK: - Installed Package Details Drawer
+
+struct InstalledPackageDetailsDrawer: View {
+    let package: HomebrewPackageInfo
+    let onClose: () -> Void
+    @EnvironmentObject var brewManager: HomebrewManager
+
+    var body: some View {
+        // Convert HomebrewPackageInfo to HomebrewSearchResult to reuse existing drawer
+        let searchResult = HomebrewSearchResult(
+            name: package.name,
+            description: package.description,
+            homepage: package.homepage,
+            license: nil,
+            version: package.versions.first,
+            dependencies: nil,
+            caveats: nil,
+            tap: package.tap,
+            fullName: nil,
+            isDeprecated: false,
+            deprecationReason: nil,
+            isDisabled: false,
+            disableDate: nil,
+            conflictsWith: nil,
+            isBottled: nil,
+            isKegOnly: nil,
+            kegOnlyReason: nil,
+            buildDependencies: nil,
+            aliases: nil,
+            versionedFormulae: nil,
+            requirements: nil,
+            caskName: nil,
+            autoUpdates: nil,
+            artifacts: nil
+        )
+
+        PackageDetailsDrawer(
+            package: searchResult,
+            isCask: package.isCask,
+            onClose: onClose
+        )
+        .environmentObject(brewManager)
     }
 }

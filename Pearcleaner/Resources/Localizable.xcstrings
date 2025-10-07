@@ -5,6 +5,12 @@
       "comment" : "Do not translate",
       "shouldTranslate" : false
     },
+    "(auto_updates)" : {
+
+    },
+    "(bottled)" : {
+
+    },
     "(Build %@)" : {
       "localizations" : {
         "de" : {
@@ -283,6 +289,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已節省 **%lld%%**"
+          }
+        }
+      }
+    },
+    "%@ (%lld file%@, %@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ (%2$lld file%3$@, %4$@)"
+          }
+        }
+      }
+    },
+    "%@ (%lld file%@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ (%2$lld file%3$@)"
           }
         }
       }
@@ -1699,6 +1725,27 @@
         }
       }
     },
+    "•" : {
+
+    },
+    "• %@" : {
+
+    },
+    "⚠️ Conflicts With" : {
+
+    },
+    "✅ Installed" : {
+
+    },
+    "✓" : {
+
+    },
+    "📊 Popularity" : {
+
+    },
+    "🔒 Keg-Only" : {
+
+    },
     "0 bytes" : {
       "localizations" : {
         "de" : {
@@ -1792,6 +1839,15 @@
           }
         }
       }
+    },
+    "30d: %@" : {
+
+    },
+    "90d: %@" : {
+
+    },
+    "365d: %@" : {
+
     },
     "A **huge** thank you to everyone who has contributed so far!" : {
       "localizations" : {
@@ -6223,6 +6279,9 @@
         }
       }
     },
+    "Artifacts" : {
+
+    },
     "Authorization required in Settings > Login Items > %@.app." : {
       "localizations" : {
         "de" : {
@@ -6975,6 +7034,12 @@
           }
         }
       }
+    },
+    "Build only:" : {
+
+    },
+    "build-error: %lld (30d)" : {
+
     },
     "Bulk Delete" : {
       "localizations" : {
@@ -12916,6 +12981,12 @@
           }
         }
       }
+    },
+    "DEPRECATED" : {
+
+    },
+    "Description" : {
+
     },
     "Deselect All" : {
       "localizations" : {
@@ -21684,6 +21755,9 @@
         }
       }
     },
+    "install-on-request: %@ (365d)" : {
+
+    },
     "Installation failed: %@" : {
       "localizations" : {
         "de" : {
@@ -24607,6 +24681,9 @@
         }
       }
     },
+    "Loading available packages..." : {
+
+    },
     "Loading files..." : {
       "localizations" : {
         "de" : {
@@ -24701,6 +24778,9 @@
         }
       }
     },
+    "Loading installed packages..." : {
+
+    },
     "Loading launch services..." : {
       "localizations" : {
         "de" : {
@@ -24794,6 +24874,12 @@
           }
         }
       }
+    },
+    "Loading package details..." : {
+
+    },
+    "Loading package information..." : {
+
     },
     "Loading packages..." : {
       "localizations" : {
@@ -27150,6 +27236,9 @@
           }
         }
       }
+    },
+    "N/A" : {
+
     },
     "Name" : {
       "extractionState" : "manual",
@@ -34511,6 +34600,9 @@
         }
       }
     },
+    "Reason: %@" : {
+
+    },
     "Receipt Path:" : {
       "localizations" : {
         "de" : {
@@ -38567,6 +38659,9 @@
         }
       }
     },
+    "Runtime:" : {
+
+    },
     "Save" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -42145,6 +42240,9 @@
           }
         }
       }
+    },
+    "Show package details" : {
+
     },
     "Showing last 3 releases" : {
       "extractionState" : "manual",
@@ -46489,6 +46587,9 @@
           }
         }
       }
+    },
+    "This may take a moment on first launch" : {
+
     },
     "This package is signed and verified. The package was cryptographically signed by the developer and its integrity has been verified." : {
 
@@ -51774,6 +51875,9 @@
         }
       }
     },
+    "v%@" : {
+
+    },
     "Value" : {
       "localizations" : {
         "de" : {
@@ -53949,6 +54053,9 @@
           }
         }
       }
+    },
+    "Will be disabled on %@" : {
+
     },
     "Workspace Storage Cleaner" : {
       "localizations" : {

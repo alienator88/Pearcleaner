@@ -145,8 +145,9 @@ class HomebrewManager: ObservableObject {
             let (cachedFormulae, cachedCasks, cacheDate) = await HomebrewController.shared.loadPackagesFromCache()
 
             if !cachedFormulae.isEmpty || !cachedCasks.isEmpty {
-                allAvailableFormulae = cachedFormulae
-                allAvailableCasks = cachedCasks
+                // Sort cached results
+                allAvailableFormulae = cachedFormulae.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+                allAvailableCasks = cachedCasks.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
                 lastCacheRefresh = cacheDate
                 return
             }
@@ -172,8 +173,9 @@ class HomebrewManager: ObservableObject {
                 casks.append(contentsOf: tapCasks)
             }
 
-            allAvailableFormulae = formulae
-            allAvailableCasks = casks
+            // Sort once here to avoid sorting on every search keystroke
+            allAvailableFormulae = formulae.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+            allAvailableCasks = casks.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
 
             // Save to cache (includes tap packages)
             if #available(macOS 14.0, *) {

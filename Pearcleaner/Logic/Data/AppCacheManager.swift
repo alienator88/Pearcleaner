@@ -44,6 +44,40 @@ class AppCacheManager {
             return container
         } catch {
             printOS("❌ Failed to create ModelContainer: \(error)")
+
+            // Check if this is a migration error
+            if error.localizedDescription.contains("migration") || error.localizedDescription.contains("Validation error") {
+                printOS("🔄 Migration error detected. Clearing cache and retrying...")
+
+                // Delete cache files using existing clearCache logic
+                let appSupportURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+                    .appendingPathComponent("Pearcleaner")
+
+                let deleteCommand = "rm -f '\(appSupportURL.path)'/AppCache.sqlite*"
+                let result = performPrivilegedCommands(commands: deleteCommand)
+
+                if !result.0 {
+                    printOS("⚠️ Cache deletion failed: \(result.1)")
+                    return nil
+                }
+
+                printOS("🗑️ Successfully cleared old cache files")
+
+                // Retry creating container with clean slate
+                do {
+                    let config = ModelConfiguration(url: appSupportURL.appendingPathComponent("AppCache.sqlite"))
+                    let container = try ModelContainer(
+                        for: CachedAppInfo.self, CachedHomebrewPackage.self,
+                        configurations: config
+                    )
+                    printOS("✅ Successfully created ModelContainer after cache clear")
+                    return container
+                } catch {
+                    printOS("❌ Failed to retry after cache clear: \(error)")
+                    return nil
+                }
+            }
+
             return nil
         }
     }

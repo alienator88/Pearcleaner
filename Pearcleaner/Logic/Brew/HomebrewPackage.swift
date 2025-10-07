@@ -16,6 +16,39 @@ struct HomebrewSearchResult: Identifiable, Hashable {
     let version: String?
     let dependencies: [String]?
     let caveats: String?
+
+    // Common fields (from JWS)
+    let tap: String?
+    let fullName: String?
+    let isDeprecated: Bool
+    let deprecationReason: String?
+    let isDisabled: Bool
+    let disableDate: String?
+    let conflictsWith: [String]?
+
+    // Formula-specific fields (from JWS)
+    let isBottled: Bool?
+    let isKegOnly: Bool?
+    let kegOnlyReason: String?
+    let buildDependencies: [String]?
+    let aliases: [String]?
+    let versionedFormulae: [String]?
+    let requirements: String?
+
+    // Cask-specific fields (from JWS)
+    let caskName: [String]?
+    let autoUpdates: Bool?
+    let artifacts: [String]?
+}
+
+struct HomebrewAnalytics {
+    let install30d: Int?
+    let install90d: Int?
+    let install365d: Int?
+    let installOnRequest30d: Int?
+    let installOnRequest90d: Int?
+    let installOnRequest365d: Int?
+    let buildError30d: Int?
 }
 
 struct HomebrewPackageInfo: Identifiable, Equatable, Hashable {
@@ -30,6 +63,8 @@ struct HomebrewPackageInfo: Identifiable, Equatable, Hashable {
     let description: String?
     let homepage: String?
     let tap: String?
+    let installedPath: String?  // Cellar path for formulae, Caskroom path for casks
+    let fileCount: Int?  // Number of files in installation
 
     var displayVersion: String {
         return versions.joined(separator: ", ")
