@@ -47155,6 +47155,9 @@
         }
       }
     },
+    "This will upgrade %@ to the latest version using Homebrew. This may take several minutes." : {
+
+    },
     "This will upgrade all %lld outdated packages. This may take several minutes." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -50170,6 +50173,12 @@
           }
         }
       }
+    },
+    "Update %@?" : {
+
+    },
+    "Update All" : {
+
     },
     "Update Available" : {
       "extractionState" : "manual",

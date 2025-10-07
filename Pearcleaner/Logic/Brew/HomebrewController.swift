@@ -1010,6 +1010,24 @@ class HomebrewController {
         }
     }
 
+    /// Get list of outdated package names from brew outdated
+    func getOutdatedPackages() async throws -> Set<String> {
+        let arguments = ["outdated", "--quiet"]
+        let result = try await runBrewCommand(arguments)
+
+        if result.error.contains("Error") {
+            throw HomebrewError.commandFailed(result.error)
+        }
+
+        // Parse package names from output (one per line)
+        let packageNames = result.output
+            .components(separatedBy: "\n")
+            .filter { !$0.isEmpty }
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+
+        return Set(packageNames)
+    }
+
     // MARK: - Tap Management
 
     func loadTaps() async throws -> [HomebrewTapInfo] {

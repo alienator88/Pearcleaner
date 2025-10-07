@@ -22,8 +22,12 @@ struct SearchInstallSection: View {
     @State private var searchType: HomebrewSearchType = .installed
     @State private var selectedPackage: HomebrewSearchResult?
     @State private var drawerOpen: Bool = false
-    @State private var hasLoadedInitialData: Bool = false
+    @State private var collapsedCategories: Set<String> = []
+    @State private var cachedCategories: [(title: String, packages: [HomebrewSearchResult])] = []
+    @State private var updatingPackages: Set<String> = []
+    @State private var isUpdatingAll: Bool = false
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
     private var displayedResults: [HomebrewSearchResult] {
         let source: [HomebrewSearchResult]
@@ -33,12 +37,8 @@ struct SearchInstallSection: View {
         case .casks:
             source = brewManager.allAvailableCasks
         case .installed:
-            // Convert installed packages to search results for display
-            let installedFormulae = brewManager.installedFormulae.map { convertToSearchResult($0) }
-            let installedCasks = brewManager.installedCasks.map { convertToSearchResult($0) }
-            source = (installedFormulae + installedCasks).sorted {
-                $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
-            }
+            // For installed, we'll handle categorization in categorizedInstalledPackages
+            return []
         }
 
         // Source is already sorted, just filter if needed
@@ -47,6 +47,63 @@ struct SearchInstallSection: View {
         } else {
             return source.filter { $0.name.localizedCaseInsensitiveContains(searchQuery) }
         }
+    }
+
+    // Update cached categories when data changes
+    private func updateCategorizedPackages() {
+        let allConverted = (brewManager.installedFormulae + brewManager.installedCasks).map { convertToSearchResult($0) }
+
+        // Filter by search query if needed
+        let filtered = searchQuery.isEmpty ? allConverted : allConverted.filter { $0.name.localizedCaseInsensitiveContains(searchQuery) }
+
+        // Separate into categories
+        var outdated: [HomebrewSearchResult] = []
+        var formulae: [HomebrewSearchResult] = []
+        var casks: [HomebrewSearchResult] = []
+
+        for result in filtered {
+            let isCask = brewManager.installedCasks.contains(where: { $0.name == result.name })
+
+            // Add to type-based category (Formulae or Casks)
+            if isCask {
+                casks.append(result)
+            } else {
+                formulae.append(result)
+            }
+
+            // Also add to Outdated category if outdated
+            if isPackageOutdated(result, isCask: isCask) {
+                outdated.append(result)
+            }
+        }
+
+        // Sort each category alphabetically
+        outdated.sort { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+        formulae.sort { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+        casks.sort { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+
+        // Build categories in order: Formulae, Casks, Outdated
+        var categories: [(title: String, packages: [HomebrewSearchResult])] = []
+        if !formulae.isEmpty {
+            categories.append((title: "Formulae", packages: formulae))
+        }
+        if !casks.isEmpty {
+            categories.append((title: "Casks", packages: casks))
+        }
+        if !outdated.isEmpty {
+            categories.append((title: "Outdated", packages: outdated))
+        }
+
+        cachedCategories = categories
+    }
+
+    // Helper to check if a package is outdated (using brew outdated as source of truth)
+    private func isPackageOutdated(_ result: HomebrewSearchResult, isCask: Bool) -> Bool {
+        let shortName = result.name.components(separatedBy: "/").last ?? result.name
+
+        // Check if package is in the outdated set from brew outdated
+        return brewManager.outdatedPackageNames.contains(result.name) ||
+               brewManager.outdatedPackageNames.contains(shortName)
     }
 
     private func convertToSearchResult(_ package: InstalledPackage) -> HomebrewSearchResult {
@@ -77,6 +134,66 @@ struct SearchInstallSection: View {
             autoUpdates: nil,
             artifacts: nil
         )
+    }
+
+    private func updateAllOutdated(packages: [HomebrewSearchResult]) {
+        Task { @MainActor in
+            isUpdatingAll = true
+            defer { isUpdatingAll = false }
+
+            for package in packages {
+                printOS("Starting update for: \(package.name)")
+                updatingPackages.insert(package.name)
+
+                do {
+                    try await HomebrewController.shared.upgradePackage(name: package.name)
+                    printOS("Successfully updated: \(package.name)")
+
+                    // Remove from outdated category immediately after successful update
+                    removePackageFromOutdated(packageName: package.name)
+                } catch {
+                    printOS("Error updating package \(package.name): \(error)")
+                }
+
+                updatingPackages.remove(package.name)
+                printOS("Finished update for: \(package.name)")
+            }
+
+            printOS("All updates complete. Reloading installed packages...")
+            // Reload installed packages after all updates complete to refresh everything
+            await brewManager.loadInstalledPackages()
+        }
+    }
+
+    private func removePackageFromOutdated(packageName: String) {
+        // Find and update the cached categories to remove this package from Outdated
+        var updatedCategories = cachedCategories
+
+        for (index, category) in updatedCategories.enumerated() {
+            if category.title == "Outdated" {
+                // Remove the package from this category
+                let filteredPackages = category.packages.filter { $0.name != packageName }
+
+                if filteredPackages.isEmpty {
+                    // Remove the entire category if empty
+                    updatedCategories.remove(at: index)
+                } else {
+                    // Update with filtered packages
+                    updatedCategories[index] = (title: "Outdated", packages: filteredPackages)
+                }
+                break
+            }
+        }
+
+        cachedCategories = updatedCategories
+    }
+
+    private func toggleCategoryCollapse(for category: String) {
+        if collapsedCategories.contains(category) {
+            collapsedCategories.remove(category)
+        } else {
+            collapsedCategories.insert(category)
+        }
     }
 
     var body: some View {
@@ -130,10 +247,14 @@ struct SearchInstallSection: View {
             .padding(.top, 10)
 
             // Results count and cache timestamp
-            if !displayedResults.isEmpty || searchType == .installed {
+            if (searchType == .installed && !cachedCategories.isEmpty) || (!displayedResults.isEmpty) {
                 HStack {
                     if searchType == .installed {
-                        Text("\(displayedResults.count) package\(displayedResults.count == 1 ? "" : "s")")
+                        // Count unique packages (exclude Outdated category since it's duplicates)
+                        let totalCount = cachedCategories
+                            .filter { $0.title != "Outdated" }
+                            .reduce(0) { $0 + $1.packages.count }
+                        Text("\(totalCount) package\(totalCount == 1 ? "" : "s")")
                             .font(.caption)
                             .monospacedDigit()
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
@@ -196,7 +317,8 @@ struct SearchInstallSection: View {
                                 Spacer()
                             }
                             .frame(maxWidth: .infinity)
-                        } else if displayedResults.isEmpty && !searchQuery.isEmpty {
+                        } else if (searchType == .installed && cachedCategories.isEmpty && !searchQuery.isEmpty) ||
+                                  (searchType != .installed && displayedResults.isEmpty && !searchQuery.isEmpty) {
                             VStack(alignment: .center) {
                                 Spacer()
                                 Image(systemName: "exclamationmark.magnifyingglass")
@@ -214,25 +336,87 @@ struct SearchInstallSection: View {
                         } else {
                             ScrollView {
                                 LazyVStack(spacing: 8) {
-                                    ForEach(displayedResults) { result in
-                                        SearchResultRowView(
-                                            result: result,
-                                            isCask: {
-                                                if searchType == .installed {
-                                                    return brewManager.installedCasks.contains(where: { $0.name == result.name })
-                                                } else {
-                                                    return searchType == .casks || brewManager.allAvailableCasks.contains(where: { $0.name == result.name })
+                                    if searchType == .installed {
+                                        // Show categorized view for installed packages
+                                        ForEach(cachedCategories, id: \.title) { category in
+                                            VStack(alignment: .leading, spacing: 8) {
+                                                // Category header (collapsible)
+                                                Button(action: {
+                                                    withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
+                                                        toggleCategoryCollapse(for: category.title)
+                                                    }
+                                                }) {
+                                                    HStack {
+                                                        Image(systemName: collapsedCategories.contains(category.title) ? "chevron.right" : "chevron.down")
+                                                            .font(.caption)
+                                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                                            .frame(width: 10)
+
+                                                        Text(category.title)
+                                                            .font(.headline)
+                                                            .fontWeight(.semibold)
+                                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                                                        Text(verbatim: "(\(category.packages.count))")
+                                                            .font(.caption)
+                                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                                                        Spacer()
+
+                                                        // Show "Update All" button for Outdated category if more than 1 package
+                                                        if category.title == "Outdated" && category.packages.count > 1 {
+                                                            Button {
+                                                                updateAllOutdated(packages: category.packages)
+                                                            } label: {
+                                                                Text("Update All")
+                                                                    .font(.caption)
+                                                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                                                            }
+                                                            .buttonStyle(.plain)
+                                                        }
+                                                    }
                                                 }
-                                            }(),
-                                            isSelected: selectedPackage?.name == result.name && drawerOpen,
-                                            isDimmed: drawerOpen && selectedPackage?.name != result.name,
-                                            onInfoTapped: {
-                                                selectedPackage = result
-                                                withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-                                                    drawerOpen = true
+                                                .buttonStyle(.plain)
+                                                .contentShape(Rectangle())
+                                                .padding(.top, category.title == cachedCategories.first?.title ? 0 : 12)
+
+                                                // Packages in category (only if not collapsed)
+                                                if !collapsedCategories.contains(category.title) {
+                                                    ForEach(category.packages) { result in
+                                                        SearchResultRowView(
+                                                            result: result,
+                                                            isCask: brewManager.installedCasks.contains(where: { $0.name == result.name }),
+                                                            isSelected: selectedPackage?.name == result.name && drawerOpen,
+                                                            isDimmed: drawerOpen && selectedPackage?.name != result.name,
+                                                            onInfoTapped: {
+                                                                selectedPackage = result
+                                                                withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                                                                    drawerOpen = true
+                                                                }
+                                                            },
+                                                            updatingPackages: updatingPackages
+                                                        )
+                                                    }
                                                 }
                                             }
-                                        )
+                                        }
+                                    } else {
+                                        // Show flat list for Browse/Formulae/Casks
+                                        ForEach(displayedResults) { result in
+                                            SearchResultRowView(
+                                                result: result,
+                                                isCask: searchType == .casks || brewManager.allAvailableCasks.contains(where: { $0.name == result.name }),
+                                                isSelected: selectedPackage?.name == result.name && drawerOpen,
+                                                isDimmed: drawerOpen && selectedPackage?.name != result.name,
+                                                onInfoTapped: {
+                                                    selectedPackage = result
+                                                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                                                        drawerOpen = true
+                                                    }
+                                                },
+                                                updatingPackages: updatingPackages
+                                            )
+                                        }
                                     }
                                 }
                                 .padding(.horizontal, 20)
@@ -275,24 +459,47 @@ struct SearchInstallSection: View {
             }
         }
         .onAppear {
-            // Only load data once, not every time the tab is switched
-            guard !hasLoadedInitialData else { return }
-            hasLoadedInitialData = true
-
             Task {
-                // 1. Load installed packages FIRST (blocks UI with progress view)
-                await brewManager.loadInstalledPackages()
+                // 1. Load installed packages only if not already loaded for this session
+                if !brewManager.hasLoadedInstalledPackages {
+                    await brewManager.loadInstalledPackages()
+                } else if searchType == .installed {
+                    // Data already loaded, just update categories for the view
+                    updateCategorizedPackages()
+                }
 
-                // 2. After installed packages finish, load JWS data in background (doesn't block UI)
-                Task {
+                // 2. Load JWS data only if not already loaded for this session
+                if !brewManager.hasLoadedAvailablePackages {
                     var needsRefresh = false
                     if let lastRefresh = brewManager.lastCacheRefresh {
-                        let fiveDaysAgo = Date().addingTimeInterval(-5 * 24 * 60 * 60)
-                        needsRefresh = lastRefresh < fiveDaysAgo
+                        let oneDayAgo = Date().addingTimeInterval(-24 * 60 * 60)
+                        needsRefresh = lastRefresh < oneDayAgo
                     }
 
                     await brewManager.loadAvailablePackages(appState: appState, forceRefresh: needsRefresh)
                 }
+            }
+        }
+        .onChange(of: brewManager.isLoadingPackages) { isLoading in
+            // Update categories when loading completes
+            if !isLoading && searchType == .installed {
+                updateCategorizedPackages()
+            }
+        }
+        .onChange(of: brewManager.outdatedPackageNames) { _ in
+            // Update categories when outdated packages change
+            if searchType == .installed {
+                updateCategorizedPackages()
+            }
+        }
+        .onChange(of: searchQuery) { _ in
+            if searchType == .installed {
+                updateCategorizedPackages()
+            }
+        }
+        .onChange(of: searchType) { newType in
+            if newType == .installed {
+                updateCategorizedPackages()
             }
         }
     }
@@ -306,11 +513,13 @@ struct SearchResultRowView: View {
     let isSelected: Bool
     let isDimmed: Bool
     let onInfoTapped: () -> Void
+    let updatingPackages: Set<String>
     @EnvironmentObject var brewManager: HomebrewManager
     @Environment(\.colorScheme) var colorScheme
     @State private var isHovered: Bool = false
     @State private var isInstalling: Bool = false
     @State private var showInstallAlert: Bool = false
+    @State private var showUpdateAlert: Bool = false
 
     private var isAlreadyInstalled: Bool {
         // Extract short name from full name (e.g., "mhaeuser/mhaeuser/battery-toolkit" -> "battery-toolkit")
@@ -330,33 +539,11 @@ struct SearchResultRowView: View {
     private var isOutdated: Bool {
         guard isAlreadyInstalled else { return false }
 
-        // Only compute if JWS data is loaded (to avoid blocking streaming)
-        let availablePackages = isCask ? brewManager.allAvailableCasks : brewManager.allAvailableFormulae
-        guard !availablePackages.isEmpty else { return false }
-
         let shortName = result.name.components(separatedBy: "/").last ?? result.name
 
-        // Find the installed package
-        let installedPackage: InstalledPackage?
-        if isCask {
-            installedPackage = brewManager.installedCasks.first { $0.name == result.name || $0.name == shortName }
-        } else {
-            installedPackage = brewManager.installedFormulae.first { $0.name == result.name || $0.name == shortName }
-        }
-
-        guard let installed = installedPackage,
-              let installedVersion = installed.version else {
-            return false
-        }
-
-        // Find the package in JWS data to get latest version
-        guard let jws = availablePackages.first(where: { $0.name == result.name || $0.name == shortName }),
-              let latestVersion = jws.version else {
-            return false
-        }
-
-        // Compare versions - simple string comparison
-        return installedVersion != latestVersion
+        // Check if package is in the outdated set from brew outdated
+        return brewManager.outdatedPackageNames.contains(result.name) ||
+               brewManager.outdatedPackageNames.contains(shortName)
     }
 
     var body: some View {
@@ -367,7 +554,7 @@ struct SearchResultRowView: View {
                     .fill((isCask ? Color.purple : Color.green).opacity(0.2))
                     .frame(width: 40, height: 40)
 
-                Image(systemName: isCask ? "shippingbox.fill" : "cube.fill")
+                Image(systemName: isCask ? "macwindow" : "terminal")
                     .font(.system(size: 18, weight: .medium))
                     .foregroundStyle(isCask ? .purple : .green)
             }
@@ -403,8 +590,8 @@ struct SearchResultRowView: View {
             .buttonStyle(.plain)
 
             // Install/Installed/Update status
-            if isInstalling {
-                HStack(spacing: 8) {
+            if isInstalling || updatingPackages.contains(result.name) {
+                HStack(spacing: 6) {
                     ProgressView()
                         .scaleEffect(0.8)
                     Text("Installing...")
@@ -412,13 +599,20 @@ struct SearchResultRowView: View {
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
             } else if isOutdated {
-                HStack(spacing: 6) {
-                    Image(systemName: "arrow.up.circle.fill")
-                        .foregroundStyle(.orange)
-                    Text("Update")
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                Button {
+                    showUpdateAlert = true
+                } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: "arrow.up.circle.fill")
+                            .foregroundStyle(.orange)
+                        Text("Update")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                    .frame(width: 65, alignment: .trailing)
                 }
+                .buttonStyle(.plain)
+
             } else if isAlreadyInstalled {
                 HStack(spacing: 6) {
                     Image(systemName: "checkmark.circle.fill")
@@ -427,16 +621,14 @@ struct SearchResultRowView: View {
                         .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
+                .frame(width: 65, alignment: .trailing)
             } else {
                 Button("Install") {
                     showInstallAlert = true
                 }
-                .buttonStyle(ControlGroupButtonStyle(
-                    foregroundColor: ThemeColors.shared(for: colorScheme).accent,
-                    shape: Capsule(style: .continuous),
-                    level: .primary,
-                    skipControlGroup: true
-                ))
+                .buttonStyle(.plain)
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+
             }
         }
         .padding()
@@ -475,6 +667,24 @@ struct SearchResultRowView: View {
             }
         } message: {
             Text("This will install \(result.name) using Homebrew. This may take several minutes.")
+        }
+        .alert("Update \(result.name)?", isPresented: $showUpdateAlert) {
+            Button("Cancel", role: .cancel) { }
+            Button("Update") {
+                Task { @MainActor in
+                    isInstalling = true
+                    defer { isInstalling = false }
+
+                    do {
+                        try await HomebrewController.shared.upgradePackage(name: result.name)
+                        await brewManager.loadInstalledPackages()
+                    } catch {
+                        printOS("Error updating package \(result.name): \(error)")
+                    }
+                }
+            }
+        } message: {
+            Text("This will upgrade \(result.name) to the latest version using Homebrew. This may take several minutes.")
         }
     }
 }

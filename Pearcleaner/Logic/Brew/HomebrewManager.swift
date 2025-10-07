@@ -13,6 +13,7 @@ class HomebrewManager: ObservableObject {
     // Lightweight models for Browse tab Installed section (fast streaming)
     @Published var installedFormulae: [InstalledPackage] = []
     @Published var installedCasks: [InstalledPackage] = []
+    @Published var outdatedPackageNames: Set<String> = []
 
     @Published var availableTaps: [HomebrewTapInfo] = []
     @Published var isLoadingPackages: Bool = false
@@ -27,6 +28,10 @@ class HomebrewManager: ObservableObject {
     // Browse tab cached packages
     @Published var allAvailableFormulae: [HomebrewSearchResult] = []
     @Published var allAvailableCasks: [HomebrewSearchResult] = []
+
+    // Track if initial data has been loaded for session
+    var hasLoadedInstalledPackages: Bool = false
+    var hasLoadedAvailablePackages: Bool = false
     @Published var isLoadingAvailablePackages: Bool = false
     @Published var lastCacheRefresh: Date?  // For Browse tab timestamp display
 
@@ -40,17 +45,8 @@ class HomebrewManager: ObservableObject {
     // Calculate outdated packages by comparing installed version with JWS version
     var outdatedPackages: [InstalledPackage] {
         return allPackages.filter { package in
-            guard let installedVersion = package.version else { return false }
-
-            // Find the package in JWS data
-            let availablePackages = package.isCask ? allAvailableCasks : allAvailableFormulae
-            guard let jws = availablePackages.first(where: { $0.name == package.name }),
-                  let latestVersion = jws.version else {
-                return false
-            }
-
-            // Compare versions - simple string comparison for now
-            return installedVersion != latestVersion
+            // Use brew outdated as source of truth
+            return outdatedPackageNames.contains(package.name)
         }
     }
 
@@ -77,16 +73,20 @@ class HomebrewManager: ObservableObject {
     }
 
     func loadInstalledPackages() async {
+        isLoadingPackages = true
+        defer { isLoadingPackages = false }
+
         // Clear existing arrays
         installedFormulae.removeAll()
         installedCasks.removeAll()
 
-        // Set loading flag only until first package arrives
-        isLoadingPackages = true
+        // Temporary arrays to collect all packages before updating @Published properties
+        var tempFormulae: [InstalledPackage] = []
+        var tempCasks: [InstalledPackage] = []
 
         do {
-            // Fast streaming scanner - reads local files directly
-            // Stream formulae
+            // Fast scanner - reads local files directly (~70ms total)
+            // Collect formulae
             try await HomebrewController.shared.streamInstalledPackages(cask: false) { name, desc, version in
                 let package = InstalledPackage(
                     name: name,
@@ -94,15 +94,10 @@ class HomebrewManager: ObservableObject {
                     version: version,
                     isCask: false
                 )
-                self.installedFormulae.append(package)
-
-                // Hide loading indicator once first package arrives
-                if self.isLoadingPackages {
-                    self.isLoadingPackages = false
-                }
+                tempFormulae.append(package)
             }
 
-            // Stream casks
+            // Collect casks
             try await HomebrewController.shared.streamInstalledPackages(cask: true) { name, desc, version in
                 let package = InstalledPackage(
                     name: name,
@@ -110,14 +105,23 @@ class HomebrewManager: ObservableObject {
                     version: version,
                     isCask: true
                 )
-                self.installedCasks.append(package)
+                tempCasks.append(package)
             }
+
+            // Update @Published properties once with all packages
+            installedFormulae = tempFormulae
+            installedCasks = tempCasks
+
+            // Load outdated packages from brew outdated
+            if let outdated = try? await HomebrewController.shared.getOutdatedPackages() {
+                outdatedPackageNames = outdated
+            }
+
+            // Mark as loaded for this session
+            hasLoadedInstalledPackages = true
         } catch {
             printOS("Error loading packages: \(error)")
         }
-
-        // Ensure flag is cleared even if no packages found
-        isLoadingPackages = false
     }
 
     func loadTaps() async {
@@ -170,7 +174,10 @@ class HomebrewManager: ObservableObject {
     }
 
     func loadAvailablePackages(appState: AppState, forceRefresh: Bool = false) async {
-        guard forceRefresh || (allAvailableFormulae.isEmpty && allAvailableCasks.isEmpty) else { return }
+        guard forceRefresh || (allAvailableFormulae.isEmpty && allAvailableCasks.isEmpty) else {
+            hasLoadedAvailablePackages = true
+            return
+        }
 
         isLoadingAvailablePackages = true
         defer { isLoadingAvailablePackages = false }
@@ -183,6 +190,7 @@ class HomebrewManager: ObservableObject {
         // If force refresh, skip cache and reload from JSON
         if forceRefresh {
             await reloadFromJSON()
+            hasLoadedAvailablePackages = true
             return
         }
 
@@ -195,15 +203,26 @@ class HomebrewManager: ObservableObject {
                 allAvailableFormulae = cachedFormulae.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
                 allAvailableCasks = cachedCasks.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
                 lastCacheRefresh = cacheDate
+                hasLoadedAvailablePackages = true
                 return
             }
         }
 
         // Cache miss - load from JSON files
         await reloadFromJSON()
+        hasLoadedAvailablePackages = true
     }
 
     private func reloadFromJSON() async {
+        // Update Homebrew first to get latest JWS files from API
+        do {
+            try await HomebrewController.shared.updateBrew()
+            printOS("Successfully updated Homebrew before cache refresh")
+        } catch {
+            printOS("Failed to update Homebrew before cache refresh: \(error)")
+            // Continue anyway - use existing JWS files
+        }
+
         await HomebrewController.shared.preloadCache()
 
         do {
