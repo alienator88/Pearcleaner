@@ -575,7 +575,7 @@ struct SearchResultRowView: View {
 
                     // Show version for installed packages
                     if isAlreadyInstalled, let version = result.version {
-                        Text("(\(version))")
+                        Text(verbatim: "(\(version))")
                             .font(.footnote)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }
@@ -812,7 +812,7 @@ struct PackageDetailsDrawer: View {
                 VStack(spacing: 12) {
                     ProgressView()
                         .scaleEffect(1.2)
-                    Text(isLoadingFullPackageInfo ? "Loading package details..." : "Loading package information...")
+                    Text("Loading package details...")
                         .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
@@ -926,7 +926,7 @@ struct FormulaDetailsView: View {
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
                         if let version = formula.version {
-                            Text("v\(version)")
+                            Text(verbatim: "v\(version)")
                                 .font(.caption)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                         }
@@ -1039,12 +1039,12 @@ struct CaskDetailsView: View {
                     // Version with auto-updates badge
                     if let version = cask.version {
                         HStack(spacing: 4) {
-                            Text("v\(version)")
+                            Text(verbatim: "v\(version)")
                                 .font(.caption)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
                             if let autoUpdates = cask.autoUpdates, autoUpdates {
-                                Text("(auto_updates)")
+                                Text(verbatim: "(auto_updates)")
                                     .font(.caption2)
                                     .foregroundStyle(.green)
                             }
@@ -1154,12 +1154,12 @@ struct PackageHeaderSection: View {
             // Version with auto-updates badge
             if let version = package.version {
                 HStack(spacing: 4) {
-                    Text("v\(version)")
+                    Text(verbatim: "v\(version)")
                         .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
                     if let autoUpdates = package.autoUpdates, autoUpdates {
-                        Text("(auto_updates)")
+                        Text(verbatim: "(auto_updates)")
                             .font(.caption2)
                             .foregroundStyle(.green)
                     }
@@ -1230,13 +1230,13 @@ struct AnalyticsSection: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 if let installs365d = analytics.install365d {
-                    Text("365d: \(installs365d.formatted())")
+                    Text(verbatim: "365d: \(installs365d.formatted())")
                 }
                 if let installs90d = analytics.install90d {
-                    Text("90d: \(installs90d.formatted())")
+                    Text(verbatim: "90d: \(installs90d.formatted())")
                 }
                 if let installs30d = analytics.install30d {
-                    Text("30d: \(installs30d.formatted())")
+                    Text(verbatim: "30d: \(installs30d.formatted())")
                 }
             }
             .font(.caption2)
@@ -1246,7 +1246,7 @@ struct AnalyticsSection: View {
             // Formula-specific: install-on-request
             if !isCask {
                 if let installOnRequest365d = analytics.installOnRequest365d {
-                    Text("install-on-request: \(installOnRequest365d.formatted()) (365d)")
+                    Text(verbatim: "install-on-request: \(installOnRequest365d.formatted()) (365d)")
                         .font(.caption2)
                         .monospacedDigit()
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
@@ -1254,7 +1254,7 @@ struct AnalyticsSection: View {
                 }
 
                 if let buildError30d = analytics.buildError30d, buildError30d > 0 {
-                    Text("build-error: \(buildError30d) (30d)")
+                    Text(verbatim: "build-error: \(buildError30d) (30d)")
                         .font(.caption2)
                         .monospacedDigit()
                         .foregroundStyle(.red)
@@ -1413,7 +1413,7 @@ struct DetailsSectionView: View {
                         .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     ForEach(artifacts, id: \.self) { artifact in
-                        Text("• \(artifact)")
+                        Text(verbatim: "• \(artifact)")
                             .font(.caption)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                     }
@@ -1547,13 +1547,13 @@ struct DependenciesSection: View {
 
                 ForEach(runtimeDeps, id: \.self) { dep in
                     HStack(spacing: 4) {
-                        Text("•")
+                        Text(verbatim: "•")
                         Text(dep)
                         if installedFormulae.contains(dep) {
-                            Text("✓")
+                            Text(verbatim: "✓")
                                 .foregroundStyle(.green)
                         } else {
-                            Text("✗")
+                            Text(verbatim: "✗")
                                 .foregroundStyle(.red)
                         }
                     }
@@ -1572,13 +1572,13 @@ struct DependenciesSection: View {
 
                 ForEach(buildDeps, id: \.self) { dep in
                     HStack(spacing: 4) {
-                        Text("•")
+                        Text(verbatim: "•")
                         Text(dep)
                         if installedFormulae.contains(dep) {
-                            Text("✓")
+                            Text(verbatim: "✓")
                                 .foregroundStyle(.green)
                         } else {
-                            Text("✗")
+                            Text(verbatim: "✗")
                                 .foregroundStyle(.red)
                         }
                     }
@@ -1829,7 +1829,7 @@ struct ReplacementButton: View {
                     Image(systemName: "arrow.down.circle.fill")
                 }
                 Text("Install \(name)")
-                Text("(\(isCask ? "cask" : "formula"))")
+                Text(verbatim: "(\(isCask ? "cask" : "formula"))")
                     .font(.caption2)
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
             }
@@ -1862,8 +1862,8 @@ struct SystemRequirementsSection: View {
                 VStack(alignment: .leading, spacing: 4) {
                     if let macOSVersion = minimumMacOSVersion {
                         HStack(spacing: 4) {
-                            Text("•")
-                            Text("macOS: \(macOSVersion)")
+                            Text(verbatim: "•")
+                            Text(verbatim: "macOS: \(macOSVersion)")
                         }
                         .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
@@ -1871,7 +1871,7 @@ struct SystemRequirementsSection: View {
 
                     if let arch = architectureRequirement {
                         HStack(spacing: 4) {
-                            Text("•")
+                            Text(verbatim: "•")
                             Text("Architecture: \(arch.displayName)")
                         }
                         .font(.caption)
@@ -1913,7 +1913,7 @@ struct ServiceInfoSection: View {
 
                 if let runType = service.runType {
                     HStack(spacing: 4) {
-                        Text("•")
+                        Text(verbatim: "•")
                         Text("Run Type: \(runType)")
                     }
                     .font(.caption)
@@ -1922,7 +1922,7 @@ struct ServiceInfoSection: View {
 
                 if let workingDir = service.workingDir {
                     HStack(spacing: 4) {
-                        Text("•")
+                        Text(verbatim: "•")
                         Text("Working Directory: \(workingDir)")
                     }
                     .font(.caption)
@@ -1931,7 +1931,7 @@ struct ServiceInfoSection: View {
 
                 if let keepAlive = service.keepAlive, keepAlive {
                     HStack(spacing: 4) {
-                        Text("•")
+                        Text(verbatim: "•")
                         Text("Keep Alive: Always")
                     }
                     .font(.caption)
@@ -2156,7 +2156,7 @@ struct CaskDetailsSectionView: View {
                         .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     ForEach(artifacts, id: \.self) { artifact in
-                        Text("• \(artifact)")
+                        Text(verbatim: "• \(artifact)")
                             .font(.caption)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                     }
