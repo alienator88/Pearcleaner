@@ -1725,6 +1725,9 @@
     "⚠️ Conflicts With" : {
 
     },
+    "⚠️ Deprecated" : {
+
+    },
     "✅ Installed" : {
 
     },
@@ -1735,6 +1738,9 @@
 
     },
     "🔒 Keg-Only" : {
+
+    },
+    "🚫 Disabled" : {
 
     },
     "0 bytes" : {
@@ -5327,6 +5333,9 @@
           }
         }
       }
+    },
+    "Appcast URL" : {
+
     },
     "Appearance" : {
       "extractionState" : "manual",
@@ -13735,6 +13744,9 @@
           }
         }
       }
+    },
+    "Download URL" : {
+
     },
     "Drag to expand into grid mode" : {
       "localizations" : {
@@ -27235,9 +27247,6 @@
         }
       }
     },
-    "N/A" : {
-
-    },
     "Name" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -30822,6 +30831,9 @@
           }
         }
       }
+    },
+    "Optional Dependencies" : {
+
     },
     "Options" : {
       "localizations" : {
@@ -34791,6 +34803,9 @@
         }
       }
     },
+    "Recommended Dependencies" : {
+
+    },
     "Refresh" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -38564,6 +38579,9 @@
           }
         }
       }
+    },
+    "Running homebrew cleanup" : {
+
     },
     "Running..." : {
       "localizations" : {
@@ -42617,6 +42635,9 @@
           }
         }
       }
+    },
+    "Since: %@" : {
+
     },
     "Size" : {
       "extractionState" : "manual",
@@ -51885,6 +51906,9 @@
           }
         }
       }
+    },
+    "Uses from macOS" : {
+
     },
     "v%@" : {
 

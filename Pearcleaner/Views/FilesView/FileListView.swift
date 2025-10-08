@@ -46,12 +46,24 @@ struct FileListView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if appState.appInfo.fileSize.keys.count == 0 {
+            if appState.appInfo.fileSize.keys.count == 0 && !appState.isBrewCleanupInProgress {
                 VStack {
                     Spacer()
                     Text(appState.externalMode ? "Sentinel Monitor found no other files to remove" : "There are no files to remove")
                         .font(.title2)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    Spacer()
+                }
+                .frame(maxWidth: .infinity)
+            } else if appState.isBrewCleanupInProgress && appState.appInfo.fileSize.keys.count == 0 {
+                VStack {
+                    Spacer()
+                    HStack(spacing: 12) {
+                        ProgressView()
+                        Text("Running homebrew cleanup")
+                            .font(.title2)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
                     Spacer()
                 }
                 .frame(maxWidth: .infinity)

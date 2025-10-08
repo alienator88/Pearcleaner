@@ -213,19 +213,26 @@ class HomebrewManager: ObservableObject {
                     fullName: nil,
                     isDeprecated: false,
                     deprecationReason: nil,
+                    deprecationDate: nil,
                     isDisabled: false,
                     disableDate: nil,
+                    disableReason: nil,
                     conflictsWith: nil,
                     isBottled: nil,
                     isKegOnly: nil,
                     kegOnlyReason: nil,
                     buildDependencies: nil,
+                    optionalDependencies: nil,
+                    recommendedDependencies: nil,
+                    usesFromMacos: nil,
                     aliases: nil,
                     versionedFormulae: nil,
                     requirements: nil,
                     caskName: nil,
                     autoUpdates: nil,
-                    artifacts: nil
+                    artifacts: nil,
+                    url: nil,
+                    appcast: nil
                 )
             }.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
 
@@ -242,19 +249,26 @@ class HomebrewManager: ObservableObject {
                     fullName: nil,
                     isDeprecated: false,
                     deprecationReason: nil,
+                    deprecationDate: nil,
                     isDisabled: false,
                     disableDate: nil,
+                    disableReason: nil,
                     conflictsWith: nil,
                     isBottled: nil,
                     isKegOnly: nil,
                     kegOnlyReason: nil,
                     buildDependencies: nil,
+                    optionalDependencies: nil,
+                    recommendedDependencies: nil,
+                    usesFromMacos: nil,
                     aliases: nil,
                     versionedFormulae: nil,
                     requirements: nil,
                     caskName: nil,
                     autoUpdates: nil,
-                    artifacts: nil
+                    artifacts: nil,
+                    url: nil,
+                    appcast: nil
                 )
             }.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
 

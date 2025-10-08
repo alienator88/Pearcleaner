@@ -253,18 +253,17 @@ struct FilesView: View {
 
     // Helper function to process the next external app
     private func processNextExternalApp(appWasRemoved: Bool, isInTrash: Bool) {
-
-        // Remove the processed path to avoid re-processing it
-        if !appState.externalPaths.isEmpty {
-            appState.externalPaths.removeFirst()
-        }
+        // Store the current app path before any removal
+        let currentAppPath = appState.appInfo.path
 
         // Check if the current app requires brew cleanup (Is brew cleanup enabled, was main app bundle removed or was main bundle in Trash)
         if brew && (appWasRemoved || isInTrash), let caskName = appState.appInfo.cask {
-            // Immediately transition UI before starting background cleanup
-            transitionUIForNextApp(appWasRemoved: appWasRemoved)
+            // Set flag to show progress indicator
+            updateOnMain {
+                appState.isBrewCleanupInProgress = true
+            }
 
-            // Run Homebrew cleanup in background
+            // Run Homebrew cleanup and WAIT for it to complete
             Task {
                 do {
                     try await HomebrewUninstaller.shared.uninstallPackage(
@@ -275,48 +274,33 @@ struct FilesView: View {
                 } catch {
                     printOS("Homebrew cleanup failed for \(caskName): \(error.localizedDescription)")
                 }
+
+                // Clear progress flag
+                await MainActor.run {
+                    appState.isBrewCleanupInProgress = false
+                }
+
+                // Remove the CURRENT app from the queue (not necessarily the first)
+                await MainActor.run {
+                    if let index = appState.externalPaths.firstIndex(of: currentAppPath) {
+                        appState.externalPaths.remove(at: index)
+                    }
+                }
+
+                // Now process remaining apps
+                await processRemainingApps(appWasRemoved: appWasRemoved)
             }
             return
+        }
+
+        // Remove the CURRENT app from the queue (not necessarily the first)
+        if let index = appState.externalPaths.firstIndex(of: currentAppPath) {
+            appState.externalPaths.remove(at: index)
         }
 
         // Continue processing remaining apps
         Task {
             await processRemainingApps(appWasRemoved: appWasRemoved)
-        }
-    }
-
-    // Helper function to immediately transition UI to next app or empty state
-    private func transitionUIForNextApp(appWasRemoved: Bool) {
-        // Check if there are more paths to process
-        if !appState.externalPaths.isEmpty {
-            // Get the next path
-            if let nextPath = appState.externalPaths.first {
-                // Load the next app's info
-                if let nextApp = AppInfoFetcher.getAppInfo(atPath: nextPath) {
-                    updateOnMain {
-                        appState.appInfo = nextApp
-                    }
-                    showAppInFiles(appInfo: nextApp, appState: appState, locations: locations)
-                }
-            }
-        } else {
-            // All external apps processed
-            if appWasRemoved {
-                updateOnMain {
-                    appState.appInfo = .empty
-                    search = ""
-                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                        appState.currentView = .empty
-                    }
-                }
-            }
-
-            // Handle oneshot mode termination
-            if oneShotMode && !appState.multiMode {
-                updateOnMain {
-                    NSApp.terminate(nil)
-                }
-            }
         }
     }
 
@@ -346,8 +330,8 @@ struct FilesView: View {
                 }
             }
 
-            // Handle oneshot mode termination
-            if oneShotMode && !appState.multiMode {
+            // Handle oneshot mode termination (only when launched externally for a single app)
+            if oneShotMode && appState.externalMode && !appState.multiMode {
                 updateOnMain {
                     NSApp.terminate(nil)
                 }

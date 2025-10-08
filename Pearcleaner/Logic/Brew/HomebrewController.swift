@@ -462,19 +462,26 @@ class HomebrewController {
             fullName: fullName,
             isDeprecated: deprecated ?? false,
             deprecationReason: deprecationReason,
+            deprecationDate: deprecationDate,
             isDisabled: disabled ?? false,
             disableDate: disableDate,
+            disableReason: disableReason,
             conflictsWith: conflicts,
             isBottled: cask ? nil : (version != nil),
             isKegOnly: kegOnly,
             kegOnlyReason: kegOnlyReason,
             buildDependencies: buildDependencies,
+            optionalDependencies: optionalDependencies,
+            recommendedDependencies: recommendedDependencies,
+            usesFromMacos: usesFromMacos,
             aliases: aliases,
             versionedFormulae: versionedFormulae,
-            requirements: nil,  // Will be parsed later if needed
+            requirements: requirements?.isEmpty == false ? requirements!.joined(separator: ", ") : nil,
             caskName: nil,  // Not needed for single package fetch
             autoUpdates: autoUpdates,
-            artifacts: artifacts
+            artifacts: artifacts,
+            url: url,
+            appcast: appcast
         )
     }
 
@@ -1116,19 +1123,26 @@ class HomebrewController {
             fullName: fullName,
             isDeprecated: isDeprecated,
             deprecationReason: deprecationReason,
+            deprecationDate: nil,  // Not available in JWS cache
             isDisabled: isDisabled,
             disableDate: disableDate,
+            disableReason: nil,  // Not available in JWS cache
             conflictsWith: conflictsWith.isEmpty ? nil : conflictsWith,
             isBottled: isBottled,
             isKegOnly: isKegOnly,
             kegOnlyReason: kegOnlyReason,
             buildDependencies: buildDependencies,
+            optionalDependencies: nil,  // Not available in JWS cache
+            recommendedDependencies: nil,  // Not available in JWS cache
+            usesFromMacos: nil,  // Not available in JWS cache
             aliases: aliases,
             versionedFormulae: versionedFormulae,
             requirements: requirements,
             caskName: caskName,
             autoUpdates: autoUpdates,
-            artifacts: artifacts
+            artifacts: artifacts,
+            url: nil,  // Not available in JWS cache
+            appcast: nil  // Not available in JWS cache
         )
     }
 }

@@ -305,7 +305,7 @@ class AppCachePlist {
             // 5. Process ONLY new apps (heavy operation with MDLS + getAppInfo)
             if !newPaths.isEmpty {
                 let newApps = processNewApps(appPaths: Array(newPaths))
-                try saveToCache(newApps)
+                try addToCache(newApps)
             }
 
             // 6. Load all from cache for UI
@@ -428,6 +428,14 @@ class AppCachePlist {
     func saveToCache(_ apps: [AppInfo]) throws {
         let cachedApps = apps.map { CachedAppInfoPlist.from($0) }
         let container = AppCachePlistContainer(apps: cachedApps)
+        try saveContainer(container)
+    }
+
+    /// Add apps to existing cache (appends without replacing)
+    func addToCache(_ apps: [AppInfo]) throws {
+        var container = try loadContainer()
+        let newCachedApps = apps.map { CachedAppInfoPlist.from($0) }
+        container.apps.append(contentsOf: newCachedApps)
         try saveContainer(container)
     }
 

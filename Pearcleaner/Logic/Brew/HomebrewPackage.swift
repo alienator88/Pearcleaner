@@ -22,8 +22,10 @@ struct HomebrewSearchResult: Identifiable, Hashable {
     let fullName: String?
     let isDeprecated: Bool
     let deprecationReason: String?
+    let deprecationDate: String?
     let isDisabled: Bool
     let disableDate: String?
+    let disableReason: String?
     let conflictsWith: [String]?
 
     // Formula-specific fields (from JWS)
@@ -31,6 +33,9 @@ struct HomebrewSearchResult: Identifiable, Hashable {
     let isKegOnly: Bool?
     let kegOnlyReason: String?
     let buildDependencies: [String]?
+    let optionalDependencies: [String]?
+    let recommendedDependencies: [String]?
+    let usesFromMacos: [String]?
     let aliases: [String]?
     let versionedFormulae: [String]?
     let requirements: String?
@@ -39,6 +44,8 @@ struct HomebrewSearchResult: Identifiable, Hashable {
     let caskName: [String]?
     let autoUpdates: Bool?
     let artifacts: [String]?
+    let url: String?
+    let appcast: String?
 }
 
 struct HomebrewAnalytics {

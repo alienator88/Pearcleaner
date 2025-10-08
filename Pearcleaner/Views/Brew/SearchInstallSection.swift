@@ -141,19 +141,26 @@ struct SearchInstallSection: View {
             fullName: nil,
             isDeprecated: false,
             deprecationReason: nil,
+            deprecationDate: nil,
             isDisabled: false,
             disableDate: nil,
+            disableReason: nil,
             conflictsWith: nil,
             isBottled: nil,
             isKegOnly: nil,
             kegOnlyReason: nil,
             buildDependencies: nil,
+            optionalDependencies: nil,
+            recommendedDependencies: nil,
+            usesFromMacos: nil,
             aliases: nil,
             versionedFormulae: nil,
             requirements: nil,
             caskName: nil,
             autoUpdates: nil,
-            artifacts: nil
+            artifacts: nil,
+            url: nil,
+            appcast: nil
         )
     }
 
@@ -1098,45 +1105,93 @@ struct DetailsSectionView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            // Description
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Description")
-                    .font(.caption)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                Text(package.description ?? "N/A")
-                    .font(.caption)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText.opacity(package.description == nil ? 0.5 : 1.0))
-            }
-
-            // Homepage
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Homepage")
-                    .font(.caption)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                if let homepage = package.homepage, let url = URL(string: homepage) {
-                    Link(homepage, destination: url)
+            // Description (only if present)
+            if let description = package.description {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Description")
                         .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-                } else {
-                    Text("N/A")
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    Text(description)
                         .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.5))
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                 }
             }
 
-            // License
-            DetailRow(label: "License", value: package.license ?? "N/A", colorScheme: colorScheme, isNA: package.license == nil)
+            // Homepage (only if present)
+            if let homepage = package.homepage, let url = URL(string: homepage) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Homepage")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    Link(homepage, destination: url)
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                }
+            }
 
-            // Tap
-            DetailRow(label: "Tap", value: package.tap ?? "N/A", colorScheme: colorScheme, isNA: package.tap == nil)
+            // License (only if present)
+            if let license = package.license {
+                DetailRow(label: "License", value: license, colorScheme: colorScheme, isNA: false)
+            }
 
-            // Installation type (formulae only)
-            if !isCask {
+            // Tap (only if present)
+            if let tap = package.tap {
+                DetailRow(label: "Tap", value: tap, colorScheme: colorScheme, isNA: false)
+            }
+
+            // Deprecated warning
+            if package.isDeprecated {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("⚠️ Deprecated")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                    if let reason = package.deprecationReason {
+                        Text(reason)
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                    }
+                    if let date = package.deprecationDate {
+                        Text("Since: \(date)")
+                            .font(.caption2)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                }
+                .padding()
+                .background(Color.orange.opacity(0.1))
+                .cornerRadius(8)
+            }
+
+            // Disabled warning
+            if package.isDisabled {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("🚫 Disabled")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                    if let reason = package.disableReason {
+                        Text(reason)
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                    }
+                    if let date = package.disableDate {
+                        Text("Since: \(date)")
+                            .font(.caption2)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                }
+                .padding()
+                .background(Color.red.opacity(0.1))
+                .cornerRadius(8)
+            }
+
+            // Installation type (formulae only, only if present)
+            if !isCask, let isBottled = package.isBottled {
                 DetailRow(
                     label: "Installation",
-                    value: package.isBottled == true ? "Bottled (pre-built binary)" : (package.isBottled == false ? "From source" : "N/A"),
+                    value: isBottled ? "Bottled (pre-built binary)" : "From source",
                     colorScheme: colorScheme,
-                    isNA: package.isBottled == nil
+                    isNA: false
                 )
             }
 
@@ -1158,12 +1213,12 @@ struct DetailsSectionView: View {
                 }
             }
 
-            // Requirements
-            if !isCask {
-                DetailRow(label: "Requirements", value: package.requirements ?? "N/A", colorScheme: colorScheme, isNA: package.requirements == nil)
+            // Requirements (only if present)
+            if !isCask, let requirements = package.requirements {
+                DetailRow(label: "Requirements", value: requirements, colorScheme: colorScheme, isNA: false)
             }
 
-            // Conflicts
+            // Conflicts (only if present)
             if let conflicts = package.conflictsWith, !conflicts.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("⚠️ Conflicts With")
@@ -1177,46 +1232,120 @@ struct DetailsSectionView: View {
                 .padding()
                 .background(Color.yellow.opacity(0.1))
                 .cornerRadius(8)
-            } else {
-                DetailRow(label: "Conflicts", value: "N/A", colorScheme: colorScheme, isNA: true)
             }
 
-            // Artifacts (casks only)
-            if isCask {
-                if let artifacts = package.artifacts, !artifacts.isEmpty {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Artifacts")
+            // Artifacts (only if present)
+            if isCask, let artifacts = package.artifacts, !artifacts.isEmpty {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Artifacts")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    ForEach(artifacts, id: \.self) { artifact in
+                        Text("• \(artifact)")
                             .font(.caption)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        ForEach(artifacts, id: \.self) { artifact in
-                            Text("• \(artifact)")
-                                .font(.caption)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                        }
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                     }
-                } else {
-                    DetailRow(label: "Artifacts", value: "N/A", colorScheme: colorScheme, isNA: true)
                 }
             }
 
-            // Aliases (formulae only)
-            if !isCask {
+            // Aliases (only if present)
+            if !isCask, let aliases = package.aliases, !aliases.isEmpty {
                 DetailRow(
                     label: "Aliases",
-                    value: (package.aliases?.isEmpty == false) ? package.aliases!.joined(separator: ", ") : "N/A",
+                    value: aliases.joined(separator: ", "),
                     colorScheme: colorScheme,
-                    isNA: package.aliases?.isEmpty != false
+                    isNA: false
                 )
             }
 
-            // Versioned formulae (formulae only)
-            if !isCask {
+            // Versioned formulae (only if present)
+            if !isCask, let versionedFormulae = package.versionedFormulae, !versionedFormulae.isEmpty {
                 DetailRow(
                     label: "Other Versions",
-                    value: (package.versionedFormulae?.isEmpty == false) ? package.versionedFormulae!.joined(separator: ", ") : "N/A",
+                    value: versionedFormulae.joined(separator: ", "),
                     colorScheme: colorScheme,
-                    isNA: package.versionedFormulae?.isEmpty != false
+                    isNA: false
                 )
+            }
+
+            // Optional dependencies (formulae only)
+            if !isCask, let optionalDeps = package.optionalDependencies, !optionalDeps.isEmpty {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Optional Dependencies")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    Text(optionalDeps.joined(separator: ", "))
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                }
+            }
+
+            // Recommended dependencies (formulae only)
+            if !isCask, let recommendedDeps = package.recommendedDependencies, !recommendedDeps.isEmpty {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Recommended Dependencies")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    Text(recommendedDeps.joined(separator: ", "))
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                }
+            }
+
+            // Uses from macOS (formulae only)
+            if !isCask, let usesFromMacos = package.usesFromMacos, !usesFromMacos.isEmpty {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Uses from macOS")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    Text(usesFromMacos.joined(separator: ", "))
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                }
+            }
+
+            // Download URL (casks only)
+            if isCask, let url = package.url {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Download URL")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    if let urlObj = URL(string: url) {
+                        Link(url, destination: urlObj)
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                    } else {
+                        Text(url)
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                    }
+                }
+            }
+
+            // Appcast URL (casks only)
+            if isCask, let appcast = package.appcast {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Appcast URL")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    if let urlObj = URL(string: appcast) {
+                        Link(appcast, destination: urlObj)
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                    } else {
+                        Text(appcast)
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                    }
+                }
             }
         }
     }
