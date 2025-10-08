@@ -46591,6 +46591,9 @@
     "This package is unsigned or unverified. The package was not cryptographically signed, or its signature could not be verified." : {
 
     },
+    "This will completely uninstall %@ and remove all associated files. This action cannot be undone." : {
+
+    },
     "This will exclude selected items from future scans. Exclusion list can be edited from Settings > Folders tab or the sidebar in this view." : {
       "localizations" : {
         "de" : {

@@ -451,6 +451,18 @@ struct SearchInstallSection: View {
                 updateCategorizedPackages()
             }
         }
+        .onChange(of: brewManager.installedFormulae.count) { _ in
+            // Update categories when installed formulae change
+            if searchType == .installed {
+                updateCategorizedPackages()
+            }
+        }
+        .onChange(of: brewManager.installedCasks.count) { _ in
+            // Update categories when installed casks change
+            if searchType == .installed {
+                updateCategorizedPackages()
+            }
+        }
         .onChange(of: brewManager.outdatedPackageNames) { _ in
             // Update categories when outdated packages change
             if searchType == .installed {
@@ -489,8 +501,10 @@ struct SearchResultRowView: View {
     @Environment(\.colorScheme) var colorScheme
     @State private var isHovered: Bool = false
     @State private var isInstalling: Bool = false
+    @State private var isUninstalling: Bool = false
     @State private var showInstallAlert: Bool = false
     @State private var showUpdateAlert: Bool = false
+    @State private var showUninstallAlert: Bool = false
     @State private var localPinState: Bool?  // Local state for immediate UI update
 
     private var isAlreadyInstalled: Bool {
@@ -629,6 +643,14 @@ struct SearchResultRowView: View {
                         .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
+            } else if isUninstalling {
+                HStack(spacing: 6) {
+                    ProgressView()
+                        .scaleEffect(0.8)
+                    Text("Uninstalling...")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                }
             } else if isOutdated {
                 Button {
                     showUpdateAlert = true
@@ -645,14 +667,19 @@ struct SearchResultRowView: View {
                 .buttonStyle(.plain)
 
             } else if isAlreadyInstalled {
-                HStack(spacing: 6) {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(.green)
-                    Text("Installed")
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                Button {
+                    showUninstallAlert = true
+                } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: "trash")
+                            .foregroundStyle(.red)
+                        Text("Uninstall")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                    .frame(width: 75, alignment: .trailing)
                 }
-                .frame(width: 65, alignment: .trailing)
+                .buttonStyle(.plain)
             } else {
                 Button("Install") {
                     showInstallAlert = true
@@ -710,6 +737,33 @@ struct SearchResultRowView: View {
             }
         } message: {
             Text("This will upgrade \(result.name) to the latest version using Homebrew. This may take several minutes.")
+        }
+        .alert("Uninstall \(result.name)?", isPresented: $showUninstallAlert) {
+            Button("Cancel", role: .cancel) { }
+            Button("Uninstall", role: .destructive) {
+                Task { @MainActor in
+                    isUninstalling = true
+                    defer { isUninstalling = false }
+
+                    do {
+                        try await HomebrewUninstaller.shared.uninstallPackage(name: result.name, cask: isCask, zap: true)
+
+                        // Remove from installed lists instead of full refresh
+                        let shortName = result.name.components(separatedBy: "/").last ?? result.name
+                        if isCask {
+                            brewManager.installedCasks.removeAll { $0.name == result.name || $0.name == shortName }
+                        } else {
+                            brewManager.installedFormulae.removeAll { $0.name == result.name || $0.name == shortName }
+                        }
+                        brewManager.outdatedPackageNames.remove(result.name)
+                        brewManager.outdatedPackageNames.remove(shortName)
+                    } catch {
+                        printOS("Error uninstalling package \(result.name): \(error)")
+                    }
+                }
+            }
+        } message: {
+            Text("This will completely uninstall \(result.name) and remove all associated files. This action cannot be undone.")
         }
     }
 }
@@ -1258,6 +1312,8 @@ struct InstallButtonSection: View {
     @Binding var showInstallAlert: Bool
     let brewManager: HomebrewManager
     let colorScheme: ColorScheme
+    @State private var showUninstallAlert: Bool = false
+    @State private var isUninstalling: Bool = false
 
     private var isOutdated: Bool {
         guard isAlreadyInstalled else { return false }
@@ -1291,6 +1347,15 @@ struct InstallButtonSection: View {
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
             }
             .frame(maxWidth: .infinity)
+        } else if isUninstalling {
+            HStack(spacing: 8) {
+                ProgressView()
+                    .scaleEffect(0.8)
+                Text("Uninstalling...")
+                    .font(.caption)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+            }
+            .frame(maxWidth: .infinity)
         } else if isOutdated {
             HStack(spacing: 6) {
                 Image(systemName: "arrow.up.circle.fill")
@@ -1301,14 +1366,43 @@ struct InstallButtonSection: View {
             }
             .frame(maxWidth: .infinity)
         } else if isAlreadyInstalled {
-            HStack(spacing: 6) {
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(.green)
-                Text("Installed")
-                    .font(.caption)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+            Button("Uninstall") {
+                showUninstallAlert = true
             }
+            .buttonStyle(ControlGroupButtonStyle(
+                foregroundColor: .red,
+                shape: Capsule(style: .continuous),
+                level: .primary,
+                skipControlGroup: true
+            ))
             .frame(maxWidth: .infinity)
+            .alert("Uninstall \(package.name)?", isPresented: $showUninstallAlert) {
+                Button("Cancel", role: .cancel) { }
+                Button("Uninstall", role: .destructive) {
+                    Task { @MainActor in
+                        isUninstalling = true
+                        defer { isUninstalling = false }
+
+                        do {
+                            try await HomebrewUninstaller.shared.uninstallPackage(name: package.name, cask: isCask, zap: true)
+
+                            // Remove from installed lists instead of full refresh
+                            let shortName = package.name.components(separatedBy: "/").last ?? package.name
+                            if isCask {
+                                brewManager.installedCasks.removeAll { $0.name == package.name || $0.name == shortName }
+                            } else {
+                                brewManager.installedFormulae.removeAll { $0.name == package.name || $0.name == shortName }
+                            }
+                            brewManager.outdatedPackageNames.remove(package.name)
+                            brewManager.outdatedPackageNames.remove(shortName)
+                        } catch {
+                            printOS("Error uninstalling package \(package.name): \(error)")
+                        }
+                    }
+                }
+            } message: {
+                Text("This will completely uninstall \(package.name) and remove all associated files. This action cannot be undone.")
+            }
         } else {
             Button("Install") {
                 showInstallAlert = true
