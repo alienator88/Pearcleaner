@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: - Legacy Model (for search/list views)
+
 struct HomebrewSearchResult: Identifiable, Hashable {
     let id = UUID()
     let name: String
@@ -46,6 +48,147 @@ struct HomebrewSearchResult: Identifiable, Hashable {
     let artifacts: [String]?
     let url: String?
     let appcast: String?
+}
+
+// MARK: - Type-Safe Package Details Models
+
+/// Enum wrapper for type-safe package details
+enum PackageDetailsType {
+    case formula(FormulaDetails)
+    case cask(CaskDetails)
+
+    var name: String {
+        switch self {
+        case .formula(let details): return details.name
+        case .cask(let details): return details.name
+        }
+    }
+
+    var isCask: Bool {
+        switch self {
+        case .formula: return false
+        case .cask: return true
+        }
+    }
+}
+
+/// Base protocol with fields common to both formulae and casks
+protocol HomebrewPackageDetails {
+    var name: String { get }
+    var description: String? { get }
+    var homepage: String? { get }
+    var license: String? { get }
+    var version: String? { get }
+    var dependencies: [String]? { get }
+    var caveats: String? { get }
+    var tap: String? { get }
+    var fullName: String? { get }
+    var isDeprecated: Bool { get }
+    var deprecationReason: String? { get }
+    var deprecationDate: String? { get }
+    var isDisabled: Bool { get }
+    var disableDate: String? { get }
+    var disableReason: String? { get }
+    var conflictsWith: [String]? { get }
+}
+
+/// Formula-specific package details
+struct FormulaDetails: HomebrewPackageDetails {
+    // Common fields
+    let name: String
+    let description: String?
+    let homepage: String?
+    let license: String?
+    let version: String?
+    let dependencies: [String]?
+    let caveats: String?
+    let tap: String?
+    let fullName: String?
+    let isDeprecated: Bool
+    let deprecationReason: String?
+    let deprecationDate: String?
+    let isDisabled: Bool
+    let disableDate: String?
+    let disableReason: String?
+    let conflictsWith: [String]?
+
+    // Formula-specific fields
+    let isBottled: Bool?
+    let isKegOnly: Bool?
+    let kegOnlyReason: String?
+    let buildDependencies: [String]?
+    let optionalDependencies: [String]?
+    let recommendedDependencies: [String]?
+    let usesFromMacos: [String]?
+    let aliases: [String]?
+    let versionedFormulae: [String]?
+    let requirements: String?
+    let service: ServiceInfo?
+
+    // Replacement suggestions
+    let deprecationReplacementFormula: String?
+    let deprecationReplacementCask: String?
+    let disableReplacementFormula: String?
+    let disableReplacementCask: String?
+}
+
+/// Cask-specific package details
+struct CaskDetails: HomebrewPackageDetails {
+    // Common fields
+    let name: String
+    let description: String?
+    let homepage: String?
+    let license: String?
+    let version: String?
+    let dependencies: [String]?
+    let caveats: String?
+    let tap: String?
+    let fullName: String?
+    let isDeprecated: Bool
+    let deprecationReason: String?
+    let deprecationDate: String?
+    let isDisabled: Bool
+    let disableDate: String?
+    let disableReason: String?
+    let conflictsWith: [String]?
+
+    // Cask-specific fields
+    let caskName: [String]?
+    let autoUpdates: Bool?
+    let artifacts: [String]?
+    let url: String?
+    let appcast: String?
+    let minimumMacOSVersion: String?
+    let architectureRequirement: ArchRequirement?
+
+    // Replacement suggestions
+    let deprecationReplacementFormula: String?
+    let deprecationReplacementCask: String?
+    let disableReplacementFormula: String?
+    let disableReplacementCask: String?
+}
+
+/// Service/daemon information for formulae
+struct ServiceInfo {
+    let run: [String]?  // Command array
+    let runType: String?  // immediate, interval, cron, etc.
+    let workingDir: String?
+    let keepAlive: Bool?
+}
+
+/// Architecture requirement for casks
+enum ArchRequirement: String {
+    case intel = "x86_64"
+    case arm = "arm64"
+    case universal = "universal"
+
+    var displayName: String {
+        switch self {
+        case .intel: return "Intel only"
+        case .arm: return "Apple Silicon only"
+        case .universal: return "Universal (Intel & Apple Silicon)"
+        }
+    }
 }
 
 struct HomebrewAnalytics {

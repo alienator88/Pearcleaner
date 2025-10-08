@@ -789,7 +789,7 @@ struct PackageDetailsDrawer: View {
     @State private var isLoadingFullPackageInfo: Bool = false
     @State private var isInstalling: Bool = false
     @State private var showInstallAlert: Bool = false
-    @State private var fullPackageInfo: HomebrewSearchResult?  // Full package data from API
+    @State private var packageDetails: PackageDetailsType?  // Type-safe package details
 
     private var isAlreadyInstalled: Bool {
         let shortName = package.name.components(separatedBy: "/").last ?? package.name
@@ -798,12 +798,6 @@ struct PackageDetailsDrawer: View {
         } else {
             return brewManager.installedFormulae.contains { $0.name == package.name || $0.name == shortName }
         }
-    }
-
-
-    // Use full package info if available, otherwise use the passed-in package
-    private var displayedPackage: HomebrewSearchResult {
-        return fullPackageInfo ?? package
     }
 
     // Check if package data is incomplete (from installed package conversion)
@@ -823,71 +817,30 @@ struct PackageDetailsDrawer: View {
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else {
-                // Scrollable details
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 16) {
-                        // Package header
-                        PackageHeaderSection(package: displayedPackage, isCask: isCask, colorScheme: colorScheme)
-
-                        // Installed info (if package is installed)
-                        // Note: InstalledPackage model is now minimal (name+desc only)
-                        // No path/size info available in list view
-                        // if let installedInfo = installedPackageInfo {
-                        //     InstalledInfoSection(packageInfo: installedInfo, colorScheme: colorScheme)
-                        // }
-
-                        // Deprecation warning
-                        if displayedPackage.isDeprecated || displayedPackage.isDisabled {
-                            DeprecationWarningBanner(
-                                deprecated: displayedPackage.isDeprecated,
-                                reason: displayedPackage.deprecationReason,
-                                disableDate: displayedPackage.disableDate,
-                                colorScheme: colorScheme
-                            )
-                        }
-
-                        // Analytics
-                        if let analytics = analytics {
-                            AnalyticsSection(analytics: analytics, isCask: isCask, colorScheme: colorScheme)
-                        }
-
-                        Divider()
-
-                        // Basic info
-                        DetailsSectionView(package: displayedPackage, isCask: isCask, colorScheme: colorScheme)
-
-                        // Dependencies
-                        if (displayedPackage.dependencies != nil && !displayedPackage.dependencies!.isEmpty) ||
-                           (displayedPackage.buildDependencies != nil && !displayedPackage.buildDependencies!.isEmpty) {
-                            DependenciesSection(
-                                runtimeDeps: displayedPackage.dependencies ?? [],
-                                buildDeps: displayedPackage.buildDependencies ?? [],
-                                installedFormulae: brewManager.installedFormulae.map { $0.name },
-                                colorScheme: colorScheme
-                            )
-                        }
-
-                        // Caveats
-                        if let caveats = displayedPackage.caveats {
-                            CaveatsSection(caveats: caveats, colorScheme: colorScheme)
-                        }
-                    }
-                    .padding()
+            } else if let packageDetails = packageDetails {
+                // Render type-safe package details
+                switch packageDetails {
+                case .formula(let formula):
+                    FormulaDetailsView(
+                        formula: formula,
+                        analytics: analytics,
+                        isInstalling: $isInstalling,
+                        isAlreadyInstalled: isAlreadyInstalled,
+                        showInstallAlert: $showInstallAlert,
+                        brewManager: brewManager,
+                        colorScheme: colorScheme
+                    )
+                case .cask(let cask):
+                    CaskDetailsView(
+                        cask: cask,
+                        analytics: analytics,
+                        isInstalling: $isInstalling,
+                        isAlreadyInstalled: isAlreadyInstalled,
+                        showInstallAlert: $showInstallAlert,
+                        brewManager: brewManager,
+                        colorScheme: colorScheme
+                    )
                 }
-                .scrollIndicators(.visible)
-
-                // Install button pinned to bottom (outside ScrollView)
-                InstallButtonSection(
-                    package: displayedPackage,
-                    isCask: isCask,
-                    isInstalling: $isInstalling,
-                    isAlreadyInstalled: isAlreadyInstalled,
-                    showInstallAlert: $showInstallAlert,
-                    brewManager: brewManager,
-                    colorScheme: colorScheme
-                )
-                .padding()
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -899,9 +852,6 @@ struct PackageDetailsDrawer: View {
     }
 
     private func loadFullPackageInfoIfNeeded() {
-        // If package data is incomplete, fetch full info from API
-        guard needsFullData else { return }
-
         Task {
             isLoadingFullPackageInfo = true
 
@@ -909,14 +859,13 @@ struct PackageDetailsDrawer: View {
                 // Extract short name for matching (e.g., "homebrew/core/node" -> "node")
                 let shortName = package.name.components(separatedBy: "/").last ?? package.name
 
-                // Fetch complete package info from Homebrew API
-                fullPackageInfo = try await HomebrewController.shared.getPackageInfo(
+                // Fetch type-safe package details from Homebrew API
+                packageDetails = try await HomebrewController.shared.getPackageDetailsTyped(
                     name: shortName,
                     cask: isCask
                 )
             } catch {
                 printOS("Failed to fetch package info for \(package.name): \(error)")
-                // Keep using partial info from installed package
             }
 
             isLoadingFullPackageInfo = false
@@ -950,6 +899,229 @@ struct PackageDetailsDrawer: View {
                 await brewManager.loadInstalledPackages()
             }
         }
+    }
+}
+
+// MARK: - Formula Details View
+
+struct FormulaDetailsView: View {
+    let formula: FormulaDetails
+    let analytics: HomebrewAnalytics?
+    @Binding var isInstalling: Bool
+    let isAlreadyInstalled: Bool
+    @Binding var showInstallAlert: Bool
+    let brewManager: HomebrewManager
+    let colorScheme: ColorScheme
+
+    @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
+
+    var body: some View {
+        ScrollView(.vertical, showsIndicators: scrollIndicators) {
+            VStack(alignment: .leading, spacing: 16) {
+                    // Package name and version
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(formula.name)
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                        if let version = formula.version {
+                            Text("v\(version)")
+                                .font(.caption)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        }
+                    }
+
+                // Deprecation/Disable warnings
+                if formula.isDeprecated || formula.isDisabled {
+                    DeprecationDisableWarning(
+                        isDeprecated: formula.isDeprecated,
+                        deprecationReason: formula.deprecationReason,
+                        deprecationDate: formula.deprecationDate,
+                        isDisabled: formula.isDisabled,
+                        disableReason: formula.disableReason,
+                        disableDate: formula.disableDate,
+                        colorScheme: colorScheme
+                    )
+                }
+
+                // Replacement suggestions
+                ReplacementSuggestionsSection(
+                    deprecationReplacementFormula: formula.deprecationReplacementFormula,
+                    deprecationReplacementCask: formula.deprecationReplacementCask,
+                    disableReplacementFormula: formula.disableReplacementFormula,
+                    disableReplacementCask: formula.disableReplacementCask,
+                    brewManager: brewManager,
+                    colorScheme: colorScheme
+                )
+
+                // Analytics
+                if let analytics = analytics {
+                    AnalyticsSection(analytics: analytics, isCask: false, colorScheme: colorScheme)
+                }
+
+                Divider()
+
+                // Service info
+                if let service = formula.service {
+                    ServiceInfoSection(service: service, colorScheme: colorScheme)
+                }
+
+                // Basic info
+                FormulaDetailsSectionView(formula: formula, colorScheme: colorScheme)
+
+                // Dependencies
+                if (formula.dependencies != nil && !formula.dependencies!.isEmpty) ||
+                   (formula.buildDependencies != nil && !formula.buildDependencies!.isEmpty) {
+                    DependenciesSection(
+                        runtimeDeps: formula.dependencies ?? [],
+                        buildDeps: formula.buildDependencies ?? [],
+                        installedFormulae: brewManager.installedFormulae.map { $0.name },
+                        colorScheme: colorScheme
+                    )
+                }
+
+                // Caveats
+                if let caveats = formula.caveats {
+                    CaveatsSection(caveats: caveats, colorScheme: colorScheme)
+                }
+            }
+            .padding()
+        }
+        .scrollIndicators(scrollIndicators ? .visible : .hidden)
+
+        // Install button pinned to bottom
+        InstallButtonSection(
+            packageName: formula.name,
+            isCask: false,
+            isInstalling: $isInstalling,
+            isAlreadyInstalled: isAlreadyInstalled,
+            showInstallAlert: $showInstallAlert,
+            brewManager: brewManager,
+            colorScheme: colorScheme
+        )
+        .padding()
+    }
+}
+
+// MARK: - Cask Details View
+
+struct CaskDetailsView: View {
+    let cask: CaskDetails
+    let analytics: HomebrewAnalytics?
+    @Binding var isInstalling: Bool
+    let isAlreadyInstalled: Bool
+    @Binding var showInstallAlert: Bool
+    let brewManager: HomebrewManager
+    let colorScheme: ColorScheme
+
+    @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
+
+    var body: some View {
+        ScrollView(.vertical, showsIndicators: scrollIndicators) {
+            VStack(alignment: .leading, spacing: 16) {
+                // Package name and version
+                VStack(alignment: .leading, spacing: 4) {
+                    // Cask display name
+                    if let caskNames = cask.caskName, !caskNames.isEmpty {
+                        Text(caskNames.joined(separator: ", "))
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                    }
+
+                    // Cask token
+                    Text(cask.name)
+                        .font(cask.caskName != nil ? .callout : .title2)
+                        .fontWeight(cask.caskName != nil ? .medium : .bold)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                    // Version with auto-updates badge
+                    if let version = cask.version {
+                        HStack(spacing: 4) {
+                            Text("v\(version)")
+                                .font(.caption)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                            if let autoUpdates = cask.autoUpdates, autoUpdates {
+                                Text("(auto_updates)")
+                                    .font(.caption2)
+                                    .foregroundStyle(.green)
+                            }
+                        }
+                    }
+                }
+
+                // Deprecation/Disable warnings
+                if cask.isDeprecated || cask.isDisabled {
+                    DeprecationDisableWarning(
+                        isDeprecated: cask.isDeprecated,
+                        deprecationReason: cask.deprecationReason,
+                        deprecationDate: cask.deprecationDate,
+                        isDisabled: cask.isDisabled,
+                        disableReason: cask.disableReason,
+                        disableDate: cask.disableDate,
+                        colorScheme: colorScheme
+                    )
+                }
+
+                // Replacement suggestions
+                ReplacementSuggestionsSection(
+                    deprecationReplacementFormula: cask.deprecationReplacementFormula,
+                    deprecationReplacementCask: cask.deprecationReplacementCask,
+                    disableReplacementFormula: cask.disableReplacementFormula,
+                    disableReplacementCask: cask.disableReplacementCask,
+                    brewManager: brewManager,
+                    colorScheme: colorScheme
+                )
+
+                // System requirements
+                SystemRequirementsSection(
+                    minimumMacOSVersion: cask.minimumMacOSVersion,
+                    architectureRequirement: cask.architectureRequirement,
+                    colorScheme: colorScheme
+                )
+
+                // Analytics
+                if let analytics = analytics {
+                    AnalyticsSection(analytics: analytics, isCask: true, colorScheme: colorScheme)
+                }
+
+                Divider()
+
+                // Basic info
+                CaskDetailsSectionView(cask: cask, colorScheme: colorScheme)
+
+                // Dependencies (formula dependencies for casks)
+                if let dependencies = cask.dependencies, !dependencies.isEmpty {
+                    DependenciesSection(
+                        runtimeDeps: dependencies,
+                        buildDeps: [],
+                        installedFormulae: brewManager.installedFormulae.map { $0.name },
+                        colorScheme: colorScheme
+                    )
+                }
+
+                // Caveats
+                if let caveats = cask.caveats {
+                    CaveatsSection(caveats: caveats, colorScheme: colorScheme)
+                }
+            }
+            .padding()
+        }
+        .scrollIndicators(scrollIndicators ? .visible : .hidden)
+
+        // Install button pinned to bottom
+        InstallButtonSection(
+            packageName: cask.name,
+            isCask: true,
+            isInstalling: $isInstalling,
+            isAlreadyInstalled: isAlreadyInstalled,
+            showInstallAlert: $showInstallAlert,
+            brewManager: brewManager,
+            colorScheme: colorScheme
+        )
+        .padding()
     }
 }
 
@@ -1380,6 +1552,9 @@ struct DependenciesSection: View {
                         if installedFormulae.contains(dep) {
                             Text("✓")
                                 .foregroundStyle(.green)
+                        } else {
+                            Text("✗")
+                                .foregroundStyle(.red)
                         }
                     }
                     .font(.caption)
@@ -1402,6 +1577,9 @@ struct DependenciesSection: View {
                         if installedFormulae.contains(dep) {
                             Text("✓")
                                 .foregroundStyle(.green)
+                        } else {
+                            Text("✗")
+                                .foregroundStyle(.red)
                         }
                     }
                     .font(.caption)
@@ -1432,138 +1610,6 @@ struct CaveatsSection: View {
 }
 
 // MARK: - Install Button Section
-
-struct InstallButtonSection: View {
-    let package: HomebrewSearchResult
-    let isCask: Bool
-    @Binding var isInstalling: Bool
-    let isAlreadyInstalled: Bool
-    @Binding var showInstallAlert: Bool
-    let brewManager: HomebrewManager
-    let colorScheme: ColorScheme
-    @State private var showUninstallAlert: Bool = false
-    @State private var isUninstalling: Bool = false
-
-    private var isOutdated: Bool {
-        guard isAlreadyInstalled else { return false }
-        let shortName = package.name.components(separatedBy: "/").last ?? package.name
-
-        // Find the installed package
-        let installedPackage: InstalledPackage?
-        if isCask {
-            installedPackage = brewManager.installedCasks.first { $0.name == package.name || $0.name == shortName }
-        } else {
-            installedPackage = brewManager.installedFormulae.first { $0.name == package.name || $0.name == shortName }
-        }
-
-        guard let installed = installedPackage,
-              let installedVersion = installed.version,
-              let latestVersion = package.version else {
-            return false
-        }
-
-        // Compare versions - simple string comparison
-        return installedVersion != latestVersion
-    }
-
-    var body: some View {
-        if isInstalling {
-            HStack(spacing: 8) {
-                ProgressView()
-                    .scaleEffect(0.8)
-                Text("Installing...")
-                    .font(.caption)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-            }
-            .frame(maxWidth: .infinity)
-        } else if isUninstalling {
-            HStack(spacing: 8) {
-                ProgressView()
-                    .scaleEffect(0.8)
-                Text("Uninstalling...")
-                    .font(.caption)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-            }
-            .frame(maxWidth: .infinity)
-        } else if isOutdated {
-            HStack(spacing: 6) {
-                Image(systemName: "arrow.up.circle.fill")
-                    .foregroundStyle(.orange)
-                Text("Update")
-                    .font(.caption)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-            }
-            .frame(maxWidth: .infinity)
-        } else if isAlreadyInstalled {
-            Button("Uninstall") {
-                showUninstallAlert = true
-            }
-            .buttonStyle(ControlGroupButtonStyle(
-                foregroundColor: .red,
-                shape: Capsule(style: .continuous),
-                level: .primary,
-                skipControlGroup: true
-            ))
-            .frame(maxWidth: .infinity)
-            .alert("Uninstall \(package.name)?", isPresented: $showUninstallAlert) {
-                Button("Cancel", role: .cancel) { }
-                Button("Uninstall", role: .destructive) {
-                    Task { @MainActor in
-                        isUninstalling = true
-                        defer { isUninstalling = false }
-
-                        do {
-                            try await HomebrewUninstaller.shared.uninstallPackage(name: package.name, cask: isCask, zap: true)
-
-                            // Remove from installed lists instead of full refresh
-                            let shortName = package.name.components(separatedBy: "/").last ?? package.name
-                            if isCask {
-                                brewManager.installedCasks.removeAll { $0.name == package.name || $0.name == shortName }
-                            } else {
-                                brewManager.installedFormulae.removeAll { $0.name == package.name || $0.name == shortName }
-                            }
-                            brewManager.outdatedPackageNames.remove(package.name)
-                            brewManager.outdatedPackageNames.remove(shortName)
-                        } catch {
-                            printOS("Error uninstalling package \(package.name): \(error)")
-                        }
-                    }
-                }
-            } message: {
-                Text("This will completely uninstall \(package.name) and remove all associated files. This action cannot be undone.")
-            }
-        } else {
-            Button("Install") {
-                showInstallAlert = true
-            }
-            .buttonStyle(ControlGroupButtonStyle(
-                foregroundColor: ThemeColors.shared(for: colorScheme).accent,
-                shape: Capsule(style: .continuous),
-                level: .primary,
-                skipControlGroup: true
-            ))
-            .frame(maxWidth: .infinity)
-            .alert("Install \(package.name)?", isPresented: $showInstallAlert) {
-                Button("Cancel", role: .cancel) { }
-                Button("Install") {
-                    Task { @MainActor in
-                        isInstalling = true
-                        defer { isInstalling = false }
-
-                        do {
-                            try await HomebrewController.shared.installPackage(name: package.name, cask: isCask)
-                            await brewManager.loadInstalledPackages()
-                        } catch {
-                            printOS("Error installing package \(package.name): \(error)")
-                        }
-                    }
-                }
-            } message: {
-                Text("This will install \(package.name) using Homebrew. This may take several minutes.")
-            }
-        }
-    }
-}
 
 // MARK: - Detail Row Helper
 
@@ -1641,5 +1687,584 @@ struct InstalledInfoSection: View {
         }
 
         return totalSize > 0 ? totalSize : nil
+    }
+}
+
+// MARK: - New Sections for Type-Safe Models
+
+// Combined Deprecation/Disable Warning
+struct DeprecationDisableWarning: View {
+    let isDeprecated: Bool
+    let deprecationReason: String?
+    let deprecationDate: String?
+    let isDisabled: Bool
+    let disableReason: String?
+    let disableDate: String?
+    let colorScheme: ColorScheme
+
+    var body: some View {
+        VStack(spacing: 8) {
+            if isDeprecated {
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                        Text("DEPRECATED")
+                            .fontWeight(.bold)
+                    }
+                    .foregroundStyle(.white)
+
+                    if let reason = deprecationReason {
+                        Text("Reason: \(reason)")
+                            .font(.caption)
+                            .foregroundStyle(.white)
+                    }
+
+                    if let date = deprecationDate {
+                        Text("Since: \(date)")
+                            .font(.caption)
+                            .foregroundStyle(.white)
+                    }
+                }
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color.orange.opacity(0.8))
+                .cornerRadius(8)
+            }
+
+            if isDisabled {
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack {
+                        Image(systemName: "xmark.circle.fill")
+                        Text("DISABLED")
+                            .fontWeight(.bold)
+                    }
+                    .foregroundStyle(.white)
+
+                    if let reason = disableReason {
+                        Text("Reason: \(reason)")
+                            .font(.caption)
+                            .foregroundStyle(.white)
+                    }
+
+                    if let date = disableDate {
+                        Text("Since: \(date)")
+                            .font(.caption)
+                            .foregroundStyle(.white)
+                    }
+                }
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color.red.opacity(0.8))
+                .cornerRadius(8)
+            }
+        }
+    }
+}
+
+// Replacement Suggestions Section
+struct ReplacementSuggestionsSection: View {
+    let deprecationReplacementFormula: String?
+    let deprecationReplacementCask: String?
+    let disableReplacementFormula: String?
+    let disableReplacementCask: String?
+    let brewManager: HomebrewManager
+    let colorScheme: ColorScheme
+
+    private var hasReplacements: Bool {
+        deprecationReplacementFormula != nil || deprecationReplacementCask != nil ||
+        disableReplacementFormula != nil || disableReplacementCask != nil
+    }
+
+    var body: some View {
+        if hasReplacements {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("📦 Recommended Replacements")
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    if let formula = deprecationReplacementFormula ?? disableReplacementFormula {
+                        ReplacementButton(name: formula, isCask: false, brewManager: brewManager, colorScheme: colorScheme)
+                    }
+
+                    if let cask = deprecationReplacementCask ?? disableReplacementCask {
+                        ReplacementButton(name: cask, isCask: true, brewManager: brewManager, colorScheme: colorScheme)
+                    }
+                }
+            }
+            .padding()
+            .background(ThemeColors.shared(for: colorScheme).accent.opacity(0.1))
+            .cornerRadius(8)
+        }
+    }
+}
+
+struct ReplacementButton: View {
+    let name: String
+    let isCask: Bool
+    let brewManager: HomebrewManager
+    let colorScheme: ColorScheme
+    @State private var isInstalling = false
+
+    var body: some View {
+        Button {
+            Task {
+                isInstalling = true
+                defer { isInstalling = false }
+
+                do {
+                    try await HomebrewController.shared.installPackage(name: name, cask: isCask)
+                    await brewManager.loadInstalledPackages()
+                } catch {
+                    printOS("Failed to install replacement \(name): \(error)")
+                }
+            }
+        } label: {
+            HStack(spacing: 6) {
+                if isInstalling {
+                    ProgressView()
+                        .scaleEffect(0.7)
+                } else {
+                    Image(systemName: "arrow.down.circle.fill")
+                }
+                Text("Install \(name)")
+                Text("(\(isCask ? "cask" : "formula"))")
+                    .font(.caption2)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+            }
+            .font(.caption)
+            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+        }
+        .buttonStyle(.plain)
+        .disabled(isInstalling)
+    }
+}
+
+// System Requirements Section (Casks)
+struct SystemRequirementsSection: View {
+    let minimumMacOSVersion: String?
+    let architectureRequirement: ArchRequirement?
+    let colorScheme: ColorScheme
+
+    private var hasRequirements: Bool {
+        minimumMacOSVersion != nil || architectureRequirement != nil
+    }
+
+    var body: some View {
+        if hasRequirements {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("💻 System Requirements")
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    if let macOSVersion = minimumMacOSVersion {
+                        HStack(spacing: 4) {
+                            Text("•")
+                            Text("macOS: \(macOSVersion)")
+                        }
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                    }
+
+                    if let arch = architectureRequirement {
+                        HStack(spacing: 4) {
+                            Text("•")
+                            Text("Architecture: \(arch.displayName)")
+                        }
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                    }
+                }
+            }
+            .padding()
+            .background(Color.blue.opacity(0.1))
+            .cornerRadius(8)
+        }
+    }
+}
+
+// Service Info Section (Formulae)
+struct ServiceInfoSection: View {
+    let service: ServiceInfo
+    let colorScheme: ColorScheme
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("⚙️ Service/Daemon")
+                .font(.caption)
+                .fontWeight(.semibold)
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+            VStack(alignment: .leading, spacing: 4) {
+                if let run = service.run, !run.isEmpty {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Run Command:")
+                            .font(.caption2)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        Text(run.joined(separator: " "))
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                    }
+                }
+
+                if let runType = service.runType {
+                    HStack(spacing: 4) {
+                        Text("•")
+                        Text("Run Type: \(runType)")
+                    }
+                    .font(.caption)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                }
+
+                if let workingDir = service.workingDir {
+                    HStack(spacing: 4) {
+                        Text("•")
+                        Text("Working Directory: \(workingDir)")
+                    }
+                    .font(.caption)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                }
+
+                if let keepAlive = service.keepAlive, keepAlive {
+                    HStack(spacing: 4) {
+                        Text("•")
+                        Text("Keep Alive: Always")
+                    }
+                    .font(.caption)
+                    .foregroundStyle(.green)
+                }
+            }
+        }
+        .padding()
+        .background(Color.purple.opacity(0.1))
+        .cornerRadius(8)
+    }
+}
+
+// Formula-specific details section
+struct FormulaDetailsSectionView: View {
+    let formula: FormulaDetails
+    let colorScheme: ColorScheme
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            // Description
+            if let description = formula.description {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Description")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    Text(description)
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                }
+            }
+
+            // Homepage
+            if let homepage = formula.homepage, let url = URL(string: homepage) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Homepage")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    Link(homepage, destination: url)
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                }
+            }
+
+            // License
+            if let license = formula.license {
+                DetailRow(label: "License", value: license, colorScheme: colorScheme, isNA: false)
+            }
+
+            // Tap
+            if let tap = formula.tap {
+                DetailRow(label: "Tap", value: tap, colorScheme: colorScheme, isNA: false)
+            }
+
+            // Installation type
+            if let isBottled = formula.isBottled {
+                DetailRow(
+                    label: "Installation",
+                    value: isBottled ? "Bottled (pre-built binary)" : "From source",
+                    colorScheme: colorScheme,
+                    isNA: false
+                )
+            }
+
+            // Keg-only
+            if let isKegOnly = formula.isKegOnly, isKegOnly {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("🔒 Keg-Only")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                    Text(formula.kegOnlyReason ?? "Not symlinked to Homebrew prefix")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                }
+                .padding()
+                .background(Color.blue.opacity(0.1))
+                .cornerRadius(8)
+            }
+
+            // Requirements
+            if let requirements = formula.requirements {
+                DetailRow(label: "Requirements", value: requirements, colorScheme: colorScheme, isNA: false)
+            }
+
+            // Conflicts
+            if let conflicts = formula.conflictsWith, !conflicts.isEmpty {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("⚠️ Conflicts With")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                    Text(conflicts.joined(separator: ", "))
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                }
+                .padding()
+                .background(Color.yellow.opacity(0.1))
+                .cornerRadius(8)
+            }
+
+            // Aliases
+            if let aliases = formula.aliases, !aliases.isEmpty {
+                DetailRow(
+                    label: "Aliases",
+                    value: aliases.joined(separator: ", "),
+                    colorScheme: colorScheme,
+                    isNA: false
+                )
+            }
+
+            // Versioned formulae
+            if let versionedFormulae = formula.versionedFormulae, !versionedFormulae.isEmpty {
+                DetailRow(
+                    label: "Other Versions",
+                    value: versionedFormulae.joined(separator: ", "),
+                    colorScheme: colorScheme,
+                    isNA: false
+                )
+            }
+
+            // Optional dependencies
+            if let optionalDeps = formula.optionalDependencies, !optionalDeps.isEmpty {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Optional Dependencies")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    Text(optionalDeps.joined(separator: ", "))
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                }
+            }
+
+            // Recommended dependencies
+            if let recommendedDeps = formula.recommendedDependencies, !recommendedDeps.isEmpty {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Recommended Dependencies")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    Text(recommendedDeps.joined(separator: ", "))
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                }
+            }
+
+            // Uses from macOS
+            if let usesFromMacos = formula.usesFromMacos, !usesFromMacos.isEmpty {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Uses from macOS")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    Text(usesFromMacos.joined(separator: ", "))
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                }
+            }
+        }
+    }
+}
+
+// Cask-specific details section
+struct CaskDetailsSectionView: View {
+    let cask: CaskDetails
+    let colorScheme: ColorScheme
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            // Description
+            if let description = cask.description {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Description")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    Text(description)
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                }
+            }
+
+            // Homepage
+            if let homepage = cask.homepage, let url = URL(string: homepage) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Homepage")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    Link(homepage, destination: url)
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                }
+            }
+
+            // License
+            if let license = cask.license {
+                DetailRow(label: "License", value: license, colorScheme: colorScheme, isNA: false)
+            }
+
+            // Tap
+            if let tap = cask.tap {
+                DetailRow(label: "Tap", value: tap, colorScheme: colorScheme, isNA: false)
+            }
+
+            // Conflicts
+            if let conflicts = cask.conflictsWith, !conflicts.isEmpty {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("⚠️ Conflicts With")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                    Text(conflicts.joined(separator: ", "))
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                }
+                .padding()
+                .background(Color.yellow.opacity(0.1))
+                .cornerRadius(8)
+            }
+
+            // Artifacts
+            if let artifacts = cask.artifacts, !artifacts.isEmpty {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Artifacts")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    ForEach(artifacts, id: \.self) { artifact in
+                        Text("• \(artifact)")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                    }
+                }
+            }
+
+            // Download URL
+            if let url = cask.url {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Download URL")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    if let urlObj = URL(string: url) {
+                        Link(url, destination: urlObj)
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                    } else {
+                        Text(url)
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                    }
+                }
+            }
+
+            // Appcast URL
+            if let appcast = cask.appcast {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Appcast URL")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    if let urlObj = URL(string: appcast) {
+                        Link(appcast, destination: urlObj)
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                    } else {
+                        Text(appcast)
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Updated InstallButtonSection to accept packageName instead of package object
+struct InstallButtonSection: View {
+    let packageName: String
+    let isCask: Bool
+    @Binding var isInstalling: Bool
+    let isAlreadyInstalled: Bool
+    @Binding var showInstallAlert: Bool
+    let brewManager: HomebrewManager
+    let colorScheme: ColorScheme
+
+    var body: some View {
+        HStack {
+            Spacer()
+
+            if isInstalling {
+                HStack(spacing: 8) {
+                    ProgressView()
+                        .scaleEffect(0.9)
+                    Text("Installing...")
+                        .font(.callout)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                }
+            } else if isAlreadyInstalled {
+                Text("Installed")
+                    .font(.callout)
+                    .fontWeight(.medium)
+                    .foregroundStyle(.green)
+            } else {
+                Button("Install") {
+                    showInstallAlert = true
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(ThemeColors.shared(for: colorScheme).accent)
+            }
+
+            Spacer()
+        }
+        .frame(height: 44)
+        .alert("Install \(packageName)?", isPresented: $showInstallAlert) {
+            Button("Cancel", role: .cancel) { }
+            Button("Install") {
+                Task { @MainActor in
+                    isInstalling = true
+                    defer { isInstalling = false }
+
+                    do {
+                        try await HomebrewController.shared.installPackage(name: packageName, cask: isCask)
+                        await brewManager.loadInstalledPackages()
+                    } catch {
+                        printOS("Error installing package \(packageName): \(error)")
+                    }
+                }
+            }
+        } message: {
+            Text("This will install \(packageName) using Homebrew. This may take several minutes.")
+        }
     }
 }

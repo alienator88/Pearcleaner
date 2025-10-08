@@ -1722,6 +1722,9 @@
     "• %@" : {
 
     },
+    "⚙️ Service/Daemon" : {
+
+    },
     "⚠️ Conflicts With" : {
 
     },
@@ -1734,7 +1737,16 @@
     "✓" : {
 
     },
+    "✗" : {
+
+    },
+    "💻 System Requirements" : {
+
+    },
     "📊 Popularity" : {
+
+    },
+    "📦 Recommended Replacements" : {
 
     },
     "🔒 Keg-Only" : {
@@ -5996,6 +6008,9 @@
           }
         }
       }
+    },
+    "Architecture: %@" : {
+
     },
     "Are you sure you want to remove these files?" : {
       "localizations" : {
@@ -13649,6 +13664,9 @@
           }
         }
       }
+    },
+    "DISABLED" : {
+
     },
     "Dismiss" : {
       "extractionState" : "manual",
@@ -21386,6 +21404,9 @@
         }
       }
     },
+    "Install %@" : {
+
+    },
     "Install %@?" : {
       "localizations" : {
         "de" : {
@@ -23277,6 +23298,9 @@
           }
         }
       }
+    },
+    "Keep Alive: Always" : {
+
     },
     "Kind" : {
       "localizations" : {
@@ -25738,6 +25762,9 @@
           }
         }
       }
+    },
+    "macOS: %@" : {
+
     },
     "Made with ❤️ by Alin Lupascu" : {
       "extractionState" : "manual",
@@ -38486,6 +38513,9 @@
         }
       }
     },
+    "Run Command:" : {
+
+    },
     "Run Doctor" : {
       "localizations" : {
         "de" : {
@@ -38579,6 +38609,9 @@
           }
         }
       }
+    },
+    "Run Type: %@" : {
+
     },
     "Running homebrew cleanup" : {
 
@@ -54091,6 +54124,9 @@
       }
     },
     "Will be disabled on %@" : {
+
+    },
+    "Working Directory: %@" : {
 
     },
     "Workspace Storage Cleaner" : {

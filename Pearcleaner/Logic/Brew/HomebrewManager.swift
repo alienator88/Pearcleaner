@@ -191,7 +191,6 @@ class HomebrewManager: ObservableObject {
             // Update Homebrew first to ensure name files are up to date
             if forceRefresh {
                 try await HomebrewController.shared.updateBrew()
-                printOS("Successfully updated Homebrew before loading package names")
             }
 
             // Load package names from tiny text files (172KB total vs 44MB JWS)

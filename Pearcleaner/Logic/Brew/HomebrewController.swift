@@ -114,25 +114,38 @@ class HomebrewController {
 
     /// Load package names from text files (formula_names.txt or cask_names.txt)
     /// Returns array of package names only - no descriptions or other metadata
+    /// Falls back to .before.txt files if current files don't exist (e.g., after brew update)
     func loadPackageNames(cask: Bool) async throws -> [String] {
         let fileName = cask ? "cask_names.txt" : "formula_names.txt"
+        let beforeFileName = cask ? "cask_names.before.txt" : "formula_names.before.txt"
         let apiCachePath = FileManager.default.homeDirectoryForCurrentUser
             .appendingPathComponent("Library/Caches/Homebrew/api")
-        let filePath = apiCachePath.appendingPathComponent(fileName).path
 
-        // Check if file exists
-        guard FileManager.default.fileExists(atPath: filePath) else {
-            printOS("Package names file not found: \(filePath)")
-            throw HomebrewError.commandFailed("Names file not found")
+        // Try current file first
+        let currentFilePath = apiCachePath.appendingPathComponent(fileName).path
+        let beforeFilePath = apiCachePath.appendingPathComponent(beforeFileName).path
+
+        // Determine which file to use
+        let filePathToUse: String
+        if FileManager.default.fileExists(atPath: currentFilePath) {
+            filePathToUse = currentFilePath
+        } else if FileManager.default.fileExists(atPath: beforeFilePath) {
+            filePathToUse = beforeFilePath
+        } else {
+            throw HomebrewError.commandFailed("Neither \(fileName) nor \(beforeFileName) found")
         }
 
         // Read file content
-        let content = try String(contentsOfFile: filePath, encoding: .utf8)
+        let content = try String(contentsOfFile: filePathToUse, encoding: .utf8)
 
         // Split by newlines and filter empty lines
         let names = content.components(separatedBy: .newlines)
             .map { $0.trimmingCharacters(in: .whitespaces) }
             .filter { !$0.isEmpty }
+
+        guard !names.isEmpty else {
+            throw HomebrewError.commandFailed("Package names file is empty: \(filePathToUse)")
+        }
 
         return names
     }
@@ -482,6 +495,231 @@ class HomebrewController {
             artifacts: artifacts,
             url: url,
             appcast: appcast
+        )
+    }
+
+    /// Fetch type-safe package details from Homebrew API
+    /// Returns either FormulaDetails or CaskDetails wrapped in PackageDetailsType
+    func getPackageDetailsTyped(name: String, cask: Bool) async throws -> PackageDetailsType {
+        // First check Homebrew's local cache
+        let cacheDir = FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent("Library/Caches/Homebrew/api")
+
+        let cacheFile = cask ?
+            cacheDir.appendingPathComponent("cask/\(name).json") :
+            cacheDir.appendingPathComponent("formula/\(name).json")
+
+        let data: Data
+
+        // Check local cache first (faster)
+        if FileManager.default.fileExists(atPath: cacheFile.path) {
+            data = try Data(contentsOf: cacheFile)
+        } else {
+            // Fetch from API
+            let url = cask ?
+                URL(string: "https://formulae.brew.sh/api/cask/\(name).json")! :
+                URL(string: "https://formulae.brew.sh/api/formula/\(name).json")!
+
+            (data, _) = try await URLSession.shared.data(from: url)
+        }
+
+        let json = try JSON(data: data)
+
+        if cask {
+            return .cask(try parseCaskDetails(json: json, name: name))
+        } else {
+            return .formula(try parseFormulaDetails(json: json, name: name))
+        }
+    }
+
+    private func parseFormulaDetails(json: JSON, name: String) throws -> FormulaDetails {
+        // Common fields
+        let description = json["desc"].string
+        let homepage = json["homepage"].string
+        let license = json["license"].string
+        let version = json["versions"]["stable"].string
+        let caveats = json["caveats"].string
+        let dependencies = json["dependencies"].arrayValue.map { $0.stringValue }
+        let conflicts = json["conflicts_with"].arrayValue.map { $0.stringValue }
+        let tap = json["tap"].string
+        let fullName = json["full_name"].string
+        let deprecated = json["deprecated"].bool ?? false
+        let deprecationDate = json["deprecation_date"].string
+        let deprecationReason = json["deprecation_reason"].string
+        let disabled = json["disabled"].bool ?? false
+        let disableDate = json["disable_date"].string
+        let disableReason = json["disable_reason"].string
+
+        // Formula-specific fields
+        let kegOnly = json["keg_only"].bool
+        let kegOnlyReason: String?
+        if let explanation = json["keg_only_reason"]["explanation"].string, !explanation.isEmpty {
+            kegOnlyReason = explanation
+        } else if let reason = json["keg_only_reason"]["reason"].string {
+            switch reason {
+            case ":provided_by_macos":
+                kegOnlyReason = "macOS already provides this software"
+            case ":versioned_formula":
+                kegOnlyReason = "This is a versioned formula"
+            case ":shadowed_by_macos":
+                kegOnlyReason = "Shadowed by macOS"
+            default:
+                kegOnlyReason = "Not symlinked to Homebrew prefix"
+            }
+        } else {
+            kegOnlyReason = nil
+        }
+
+        let requirements = json["requirements"].arrayValue.map { $0.stringValue }
+        let buildDependencies = json["build_dependencies"].arrayValue.map { $0.stringValue }
+        let optionalDependencies = json["optional_dependencies"].arrayValue.map { $0.stringValue }
+        let recommendedDependencies = json["recommended_dependencies"].arrayValue.map { $0.stringValue }
+        let usesFromMacos = json["uses_from_macos"].arrayValue.map { $0.stringValue }
+        let versionedFormulae = json["versioned_formulae"].arrayValue.map { $0.stringValue }
+        let aliases = json["aliases"].arrayValue.map { $0.stringValue }
+
+        // Service info (only if actually defined, not just null)
+        let service: ServiceInfo?
+        if json["service"].exists() && json["service"].type != .null {
+            let run = json["service"]["run"].arrayValue.map { $0.stringValue }
+            let runType = json["service"]["run_type"].string
+            let workingDir = json["service"]["working_dir"].string
+            let keepAlive = json["service"]["keep_alive"]["always"].bool
+
+            // Only create ServiceInfo if there's actual data
+            if !run.isEmpty || runType != nil || workingDir != nil || keepAlive != nil {
+                service = ServiceInfo(run: run.isEmpty ? nil : run, runType: runType, workingDir: workingDir, keepAlive: keepAlive)
+            } else {
+                service = nil
+            }
+        } else {
+            service = nil
+        }
+
+        // Replacement suggestions
+        let deprecationReplacementFormula = json["deprecation_replacement_formula"].string
+        let deprecationReplacementCask = json["deprecation_replacement_cask"].string
+        let disableReplacementFormula = json["disable_replacement_formula"].string
+        let disableReplacementCask = json["disable_replacement_cask"].string
+
+        return FormulaDetails(
+            name: name,
+            description: description,
+            homepage: homepage,
+            license: license,
+            version: version,
+            dependencies: dependencies.isEmpty ? nil : dependencies,
+            caveats: caveats,
+            tap: tap,
+            fullName: fullName,
+            isDeprecated: deprecated,
+            deprecationReason: deprecationReason,
+            deprecationDate: deprecationDate,
+            isDisabled: disabled,
+            disableDate: disableDate,
+            disableReason: disableReason,
+            conflictsWith: conflicts.isEmpty ? nil : conflicts,
+            isBottled: version != nil,
+            isKegOnly: kegOnly,
+            kegOnlyReason: kegOnlyReason,
+            buildDependencies: buildDependencies.isEmpty ? nil : buildDependencies,
+            optionalDependencies: optionalDependencies.isEmpty ? nil : optionalDependencies,
+            recommendedDependencies: recommendedDependencies.isEmpty ? nil : recommendedDependencies,
+            usesFromMacos: usesFromMacos.isEmpty ? nil : usesFromMacos,
+            aliases: aliases.isEmpty ? nil : aliases,
+            versionedFormulae: versionedFormulae.isEmpty ? nil : versionedFormulae,
+            requirements: requirements.isEmpty ? nil : requirements.joined(separator: ", "),
+            service: service,
+            deprecationReplacementFormula: deprecationReplacementFormula,
+            deprecationReplacementCask: deprecationReplacementCask,
+            disableReplacementFormula: disableReplacementFormula,
+            disableReplacementCask: disableReplacementCask
+        )
+    }
+
+    private func parseCaskDetails(json: JSON, name: String) throws -> CaskDetails {
+        // Common fields
+        let description = json["desc"].string
+        let homepage = json["homepage"].string
+        let license = json["license"].string
+        let version = json["version"].string
+        let caveats = json["caveats"].string
+        let dependencies = json["depends_on"]["formula"].arrayValue.map { $0.stringValue }
+        let conflicts = json["conflicts_with"].arrayValue.map { $0.stringValue }
+        let tap = json["tap"].string
+        let fullName = json["full_token"].string ?? json["token"].string
+        let deprecated = json["deprecated"].bool ?? false
+        let deprecationDate = json["deprecation_date"].string
+        let deprecationReason = json["deprecation_reason"].string
+        let disabled = json["disabled"].bool ?? false
+        let disableDate = json["disable_date"].string
+        let disableReason = json["disable_reason"].string
+
+        // Cask-specific fields
+        let caskName = json["name"].arrayValue.map { $0.stringValue }
+        let autoUpdates = json["auto_updates"].bool
+        let artifacts = json["artifacts"].arrayValue.compactMap { $0.dictionaryObject?.keys.first }
+        let url = json["url"].string
+        let appcast = json["appcast"].string
+
+        // System requirements
+        let minimumMacOSVersion: String?
+        if let macosReq = json["depends_on"]["macos"].dictionary?.first {
+            minimumMacOSVersion = "\(macosReq.key) \(macosReq.value.arrayValue.first?.stringValue ?? "")"
+        } else {
+            minimumMacOSVersion = nil
+        }
+
+        let architectureRequirement: ArchRequirement?
+        if let archArray = json["depends_on"]["arch"].array {
+            let archs = archArray.map { $0.stringValue }
+            if archs.contains("x86_64") && archs.contains("arm64") {
+                architectureRequirement = .universal
+            } else if archs.contains("x86_64") {
+                architectureRequirement = .intel
+            } else if archs.contains("arm64") {
+                architectureRequirement = .arm
+            } else {
+                architectureRequirement = nil
+            }
+        } else {
+            architectureRequirement = nil
+        }
+
+        // Replacement suggestions
+        let deprecationReplacementFormula = json["deprecation_replacement_formula"].string
+        let deprecationReplacementCask = json["deprecation_replacement_cask"].string
+        let disableReplacementFormula = json["disable_replacement_formula"].string
+        let disableReplacementCask = json["disable_replacement_cask"].string
+
+        return CaskDetails(
+            name: name,
+            description: description,
+            homepage: homepage,
+            license: license,
+            version: version,
+            dependencies: dependencies.isEmpty ? nil : dependencies,
+            caveats: caveats,
+            tap: tap,
+            fullName: fullName,
+            isDeprecated: deprecated,
+            deprecationReason: deprecationReason,
+            deprecationDate: deprecationDate,
+            isDisabled: disabled,
+            disableDate: disableDate,
+            disableReason: disableReason,
+            conflictsWith: conflicts.isEmpty ? nil : conflicts,
+            caskName: caskName.isEmpty ? nil : caskName,
+            autoUpdates: autoUpdates,
+            artifacts: artifacts.isEmpty ? nil : artifacts,
+            url: url,
+            appcast: appcast,
+            minimumMacOSVersion: minimumMacOSVersion,
+            architectureRequirement: architectureRequirement,
+            deprecationReplacementFormula: deprecationReplacementFormula,
+            deprecationReplacementCask: deprecationReplacementCask,
+            disableReplacementFormula: disableReplacementFormula,
+            disableReplacementCask: disableReplacementCask
         )
     }
 
