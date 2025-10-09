@@ -21,30 +21,58 @@ class HomebrewUninstaller {
     /// Uninstalls a Homebrew package directly without calling brew uninstall
     /// This replicates Homebrew's uninstall behavior using privileged helper for root operations
     func uninstallPackage(name: String, cask: Bool, zap: Bool = true) async throws {
-        // Get package info
-        let arguments = ["info", "--json=v2", name]
-        let result = try await HomebrewController.shared.runBrewCommand(arguments)
-
-        guard let jsonData = result.output.data(using: String.Encoding.utf8) else {
-            throw HomebrewError.jsonParseError
-        }
-
-        let json = try JSON(data: jsonData)
-
         if cask {
-            guard let caskInfo = json["casks"].arrayValue.first else {
-                throw HomebrewError.commandFailed("Cask \(name) not found")
+            // Try loading from INSTALL_RECEIPT.json first (instant)
+            let caskInfo: JSON
+            do {
+                caskInfo = try loadCaskInfoFromReceipt(name: name)
+            } catch {
+                // Fallback to brew info command (slower but works if receipt missing)
+                let arguments = ["info", "--json=v2", name]
+                let result = try await HomebrewController.shared.runBrewCommand(arguments)
+
+                guard let jsonData = result.output.data(using: String.Encoding.utf8) else {
+                    throw HomebrewError.jsonParseError
+                }
+
+                let json = try JSON(data: jsonData)
+                guard let info = json["casks"].arrayValue.first else {
+                    throw HomebrewError.commandFailed("Cask \(name) not found")
+                }
+                caskInfo = info
             }
             try await uninstallCask(name: name, info: caskInfo, zap: zap)
         } else {
-            guard let formulaInfo = json["formulae"].arrayValue.first else {
-                throw HomebrewError.commandFailed("Formula \(name) not found")
-            }
-            try await uninstallFormula(name: name, info: formulaInfo)
+            // Formulae don't need info JSON - brew uninstall handles everything
+            try await uninstallFormula(name: name, info: JSON())
         }
 
-        // Run standard brew cleanup after successful uninstall
-        try await HomebrewController.shared.runCleanup()
+        // Run brew cleanup in background without blocking
+        Task.detached(priority: .background) {
+            try? await HomebrewController.shared.runCleanup()
+        }
+    }
+
+    // MARK: - INSTALL_RECEIPT Helper
+
+    /// Load cask info from INSTALL_RECEIPT.json (instant, no brew command needed)
+    /// Converts receipt format to brew info format for compatibility with uninstallCask()
+    private func loadCaskInfoFromReceipt(name: String) throws -> JSON {
+        let receiptPath = "\(brewPrefix)/Caskroom/\(name)/.metadata/INSTALL_RECEIPT.json"
+
+        guard FileManager.default.fileExists(atPath: receiptPath) else {
+            throw HomebrewError.commandFailed("INSTALL_RECEIPT.json not found for \(name)")
+        }
+
+        let data = try Data(contentsOf: URL(fileURLWithPath: receiptPath))
+        let receipt = try JSON(data: data)
+
+        // Convert INSTALL_RECEIPT format to brew info format
+        var caskInfo = JSON()
+        caskInfo["token"] = JSON(name)
+        caskInfo["artifacts"] = receipt["uninstall_artifacts"]
+
+        return caskInfo
     }
 
     // MARK: - Cask Uninstall
@@ -210,15 +238,38 @@ class HomebrewUninstaller {
     // MARK: - Formula Uninstall
 
     private func uninstallFormula(name: String, info: JSON) async throws {
-        // Get installed versions
-        let cellarPath = "\(brewPrefix)/Cellar/\(name)"
+        // Try using brew uninstall command first (proper uninstall with symlink cleanup)
+        let arguments = ["uninstall", name, "--force"]
 
-        guard FileManager.default.fileExists(atPath: cellarPath) else {
-            throw HomebrewError.commandFailed("Formula \(name) is not installed")
+        do {
+            let result = try await HomebrewController.shared.runBrewCommand(arguments)
+
+            // Check if brew command failed due to permission error
+            if result.error.contains("Could not remove") && result.error.contains("keg") {
+                // Permission error - fallback to privileged command
+                let cellarPath = "\(brewPrefix)/Cellar/\(name)"
+                if FileManager.default.fileExists(atPath: cellarPath) {
+                    try await runPrivilegedCommand("rm -rf \"\(cellarPath)\"")
+                    // Also clean up symlinks (ignore errors if they don't exist)
+                    _ = try? await runPrivilegedCommand("rm -f \"\(brewPrefix)/opt/\(name)\"")
+                    _ = try? await runPrivilegedCommand("rm -f \"\(brewPrefix)/var/homebrew/linked/\(name)\"")
+                }
+            } else if !result.error.isEmpty && !result.error.contains("Warning") {
+                // Other error - throw it
+                throw HomebrewError.commandFailed(result.error)
+            }
+            // Success - brew uninstall handled everything
+        } catch {
+            // Fallback: If brew command itself fails, try direct deletion
+            let cellarPath = "\(brewPrefix)/Cellar/\(name)"
+            if FileManager.default.fileExists(atPath: cellarPath) {
+                try await runPrivilegedCommand("rm -rf \"\(cellarPath)\"")
+                _ = try? await runPrivilegedCommand("rm -f \"\(brewPrefix)/opt/\(name)\"")
+                _ = try? await runPrivilegedCommand("rm -f \"\(brewPrefix)/var/homebrew/linked/\(name)\"")
+            } else {
+                throw HomebrewError.commandFailed("Formula \(name) is not installed")
+            }
         }
-
-        // Delete the Cellar directory
-        try await runPrivilegedCommand("rm -rf \"\(cellarPath)\"")
     }
 
     // MARK: - Uninstall Directive Handlers

@@ -167,7 +167,7 @@ class FileManagerUndo {
         var status = false
 
         if HelperToolManager.shared.isHelperToolInstalled {
-            printOS(isRestore ? "Attempting restore using helper tool" : "Attempting delete using helper tool")
+//            printOS(isRestore ? "Attempting restore using helper tool" : "Attempting delete using helper tool")
             let semaphore = DispatchSemaphore(value: 0)
             var success = false
             var output = ""
@@ -189,7 +189,7 @@ class FileManagerUndo {
             }
         } else {
             if isCLI || !hasProtectedFiles {
-                printOS(isRestore ? "Attempting restore using direct shell command" : "Attempting delete using direct shell command")
+//                printOS(isRestore ? "Attempting restore using direct shell command" : "Attempting delete using direct shell command")
                 let result = runDirectShellCommand(command: commands)
                 status = result.0
                 if !status {
