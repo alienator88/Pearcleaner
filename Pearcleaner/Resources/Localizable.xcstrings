@@ -21347,19 +21347,19 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自製醫生"
+            "value" : "Homebrew 診斷"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自制医生"
+            "value" : "Homebrew 诊断"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自製醫生"
+            "value" : "Homebrew 診斷"
           }
         }
       }
@@ -21647,19 +21647,19 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自製版本"
+            "value" : "Homebrew 版本"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自制版本"
+            "value" : "Homebrew 版本"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自製版本"
+            "value" : "Homebrew 版本"
           }
         }
       }
@@ -41701,19 +41701,19 @@
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正在運行自製軟件清理"
+            "value" : "正在運行Homebrew清理"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正在运行自制软件清理"
+            "value" : "正在运行Homebrew清理"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正在運行自製軟件清理"
+            "value" : "正在運行Homebrew清理"
           }
         }
       }
