@@ -429,6 +429,7 @@ struct SearchInstallSection: View {
                                 .padding(.horizontal, 20)
                                 .padding(.bottom, 20)
                             }
+                            .id(searchType) // Give each tab its own scroll identity
                             .scrollIndicators(scrollIndicators ? .automatic : .never)
                         }
                     }
@@ -553,6 +554,107 @@ struct SearchResultRowView: View {
         return brewManager.installedFormulae.first(where: { $0.name == result.name || $0.name == shortName })?.isPinned ?? false
     }
 
+    @ViewBuilder
+    private var actionButtons: some View {
+        if isInstalling || updatingPackages.contains(result.name) {
+            HStack(spacing: 6) {
+                ProgressView()
+                    .scaleEffect(0.8)
+                Text("Installing...")
+                    .font(.caption)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+            }
+        } else if isUninstalling {
+            HStack(spacing: 6) {
+                ProgressView()
+                    .scaleEffect(0.8)
+                Text("Uninstalling...")
+                    .font(.caption)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+            }
+        } else if isOutdated {
+            HStack(spacing: 8) {
+                Button("Update") {
+                    showUpdateAlert = true
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(.orange)
+
+                Button("Uninstall") {
+                    showUninstallAlert = true
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(.red)
+            }
+            .frame(alignment: .trailing)
+        } else if isAlreadyInstalled {
+            Button("Uninstall") {
+                showUninstallAlert = true
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(.red)
+        } else {
+            Button("Install") {
+                showInstallAlert = true
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+        }
+    }
+
+    @ViewBuilder
+    private var secondaryActionButtons: some View {
+        // Tap indicator (custom taps only)
+        if let tap = result.tap, tap != "homebrew/core" && tap != "homebrew/cask" {
+            Image(systemName: "spigot")
+                .font(.system(size: 14))
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                .help("Installed from tap: \(tap)")
+        }
+
+        // Pin button (formulae only, and only if installed)
+        if !isCask && isAlreadyInstalled {
+            Button {
+                // Capture current state before toggling
+                let currentlyPinned = isPinned
+
+                // Toggle local state immediately for instant UI feedback
+                localPinState = !currentlyPinned
+
+                // Perform actual pin/unpin in background
+                Task {
+                    do {
+                        if currentlyPinned {
+                            try await HomebrewController.shared.unpinPackage(name: result.name)
+                        } else {
+                            try await HomebrewController.shared.pinPackage(name: result.name)
+                        }
+                    } catch {
+                        printOS("Failed to toggle pin: \(error)")
+                        // Revert local state on error
+                        localPinState = currentlyPinned
+                    }
+                }
+            } label: {
+                Image(systemName: isPinned ? "pin.fill" : "pin")
+                    .font(.system(size: 14))
+                    .foregroundStyle(isPinned ? .orange : ThemeColors.shared(for: colorScheme).secondaryText)
+            }
+            .buttonStyle(.plain)
+            .help(isPinned ? "Unpin version" : "Pin version")
+        }
+
+        // Info button
+        Button {
+            onInfoTapped()
+        } label: {
+            Image(systemName: "info.circle")
+                .font(.system(size: 16))
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+        }
+        .buttonStyle(.plain)
+    }
+
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
             // Package icon
@@ -591,110 +693,14 @@ struct SearchResultRowView: View {
 
             Spacer()
 
-            // Tap indicator (if from third-party tap)
-            if let tap = result.tap, tap != "homebrew/core" && tap != "homebrew/cask" {
-                Image(systemName: "spigot")
-                    .font(.system(size: 14))
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    .help("Installed from tap: \(tap)")
-            }
+            // Install/Uninstall/Update action buttons
+            actionButtons
 
-            // Pin button (formulae only, and only if installed)
-            if !isCask && isAlreadyInstalled {
-                Button {
-                    // Capture current state before toggling
-                    let currentlyPinned = isPinned
+            // Tap indicator, Pin and Info buttons
+            secondaryActionButtons
 
-                    // Toggle local state immediately for instant UI feedback
-                    localPinState = !currentlyPinned
 
-                    // Perform actual pin/unpin in background
-                    Task {
-                        do {
-                            if currentlyPinned {
-                                try await HomebrewController.shared.unpinPackage(name: result.name)
-                            } else {
-                                try await HomebrewController.shared.pinPackage(name: result.name)
-                            }
-                        } catch {
-                            printOS("Failed to toggle pin: \(error)")
-                            // Revert local state on error
-                            localPinState = currentlyPinned
-                        }
-                    }
-                } label: {
-                    Image(systemName: isPinned ? "pin.fill" : "pin")
-                        .font(.system(size: 14))
-                        .foregroundStyle(isPinned ? .orange : ThemeColors.shared(for: colorScheme).secondaryText)
-                }
-                .buttonStyle(.plain)
-                .help(isPinned ? "Unpin version" : "Pin version")
-            }
 
-            // Info button
-            Button {
-                onInfoTapped()
-            } label: {
-                Image(systemName: "info.circle")
-                    .font(.system(size: 16))
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-            }
-            .buttonStyle(.plain)
-
-            // Install/Installed/Update status
-            if isInstalling || updatingPackages.contains(result.name) {
-                HStack(spacing: 6) {
-                    ProgressView()
-                        .scaleEffect(0.8)
-                    Text("Installing...")
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                }
-            } else if isUninstalling {
-                HStack(spacing: 6) {
-                    ProgressView()
-                        .scaleEffect(0.8)
-                    Text("Uninstalling...")
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                }
-            } else if isOutdated {
-                Button {
-                    showUpdateAlert = true
-                } label: {
-                    HStack(spacing: 6) {
-                        Image(systemName: "arrow.up.circle.fill")
-                            .foregroundStyle(.orange)
-                        Text("Update")
-                            .font(.caption)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    }
-                    .frame(width: 65, alignment: .trailing)
-                }
-                .buttonStyle(.plain)
-
-            } else if isAlreadyInstalled {
-                Button {
-                    showUninstallAlert = true
-                } label: {
-                    HStack(spacing: 6) {
-                        Image(systemName: "trash")
-                            .foregroundStyle(.red)
-                        Text("Uninstall")
-                            .font(.caption)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    }
-                    .frame(width: 75, alignment: .trailing)
-                }
-                .buttonStyle(.plain)
-            } else {
-                Button("Install") {
-                    showInstallAlert = true
-                }
-                .buttonStyle(.plain)
-                .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-
-            }
         }
         .padding()
         .background(
