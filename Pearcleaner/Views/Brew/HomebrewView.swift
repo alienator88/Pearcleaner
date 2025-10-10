@@ -75,19 +75,25 @@ struct HomebrewView: View {
                 ZStack {
                     VStack(spacing: 0) {
                         // Section Picker
-                        Picker("", selection: $selectedSection) {
-                            ForEach(HomebrewViewSection.allCases, id: \.self) { section in
-                                Label(section.rawValue, systemImage: section.icon)
-                                    .tag(section)
+                        HStack {
+                            Spacer()
+                            Picker("", selection: $selectedSection) {
+                                ForEach(HomebrewViewSection.allCases, id: \.self) { section in
+                                    Label(section.rawValue, systemImage: section.icon)
+                                        .tag(section)
+                                }
                             }
+                            .labelsHidden()
+                            .pickerStyle(.segmented)
+                            .fixedSize()
+                            .disabled(isLoadingInitialData)
+                            .opacity(isLoadingInitialData ? 0.5 : 1.0)
+                            Spacer()
                         }
-                        .labelsHidden()
-                        .pickerStyle(.segmented)
                         .padding(.horizontal, 20)
                         .padding(.top, 10)
                         .padding(.bottom, 5)
-                        .disabled(isLoadingInitialData)
-                        .opacity(isLoadingInitialData ? 0.5 : 1.0)
+
 
                         // Section Content
                         Group {

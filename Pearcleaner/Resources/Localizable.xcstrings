@@ -649,6 +649,16 @@
         }
       }
     },
+    "%@: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@: %2$@"
+          }
+        }
+      }
+    },
     "%lld app%@" : {
       "localizations" : {
         "de" : {
@@ -8929,6 +8939,9 @@
           }
         }
       }
+    },
+    "Bottled (pre-built binary)" : {
+
     },
     "Broad" : {
       "localizations" : {
@@ -21683,6 +21696,9 @@
         }
       }
     },
+    "From source" : {
+
+    },
     "Full app size" : {
       "localizations" : {
         "de" : {
@@ -26036,6 +26052,9 @@
           }
         }
       }
+    },
+    "Installation" : {
+
     },
     "Installation failed: %@" : {
       "localizations" : {

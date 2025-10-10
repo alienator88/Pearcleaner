@@ -10,8 +10,7 @@ import AlinFoundation
 
 enum HomebrewSearchType: String, CaseIterable {
     case installed = "Installed"
-    case formulae = "Formulae"
-    case casks = "Casks"
+    case available = "Available"
 }
 
 struct SearchInstallSection: View {
@@ -30,27 +29,31 @@ struct SearchInstallSection: View {
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
     private var displayedResults: [HomebrewSearchResult] {
-        let source: [HomebrewSearchResult]
-        switch searchType {
-        case .formulae:
-            source = brewManager.allAvailableFormulae
-        case .casks:
-            source = brewManager.allAvailableCasks
-        case .installed:
-            // For installed, we'll handle categorization in categorizedInstalledPackages
-            return []
-        }
+        if searchType == .available {
+            // Flat list for Available tab - all packages combined
+            let allPackages = brewManager.allAvailableFormulae + brewManager.allAvailableCasks
 
-        // Source is already sorted, just filter if needed
-        if searchQuery.isEmpty {
-            return source
+            if searchQuery.isEmpty {
+                return allPackages
+            } else {
+                return allPackages.filter { $0.name.localizedCaseInsensitiveContains(searchQuery) }
+            }
         } else {
-            return source.filter { $0.name.localizedCaseInsensitiveContains(searchQuery) }
+            // Installed uses categorized view
+            return []
         }
     }
 
     // Update cached categories when data changes
     private func updateCategorizedPackages() {
+        if searchType == .installed {
+            updateInstalledCategories()
+        } else {
+            updateAvailableCategories()
+        }
+    }
+
+    private func updateInstalledCategories() {
         let allConverted = (brewManager.installedFormulae + brewManager.installedCasks).map { convertToSearchResult($0) }
 
         // Filter by search query if needed
@@ -92,6 +95,25 @@ struct SearchInstallSection: View {
         }
         if !outdated.isEmpty {
             categories.append((title: "Outdated", packages: outdated))
+        }
+
+        cachedCategories = categories
+    }
+
+    private func updateAvailableCategories() {
+        // Build categories without filtering - use raw arrays
+        // Filtering will happen in real-time during rendering if search is active
+        var categories: [(title: String, packages: [HomebrewSearchResult])] = []
+
+        let formulae = brewManager.allAvailableFormulae
+        let casks = brewManager.allAvailableCasks
+
+        // Only add non-empty categories
+        if !formulae.isEmpty {
+            categories.append((title: "Formulae", packages: formulae))
+        }
+        if !casks.isEmpty {
+            categories.append((title: "Casks", packages: casks))
         }
 
         cachedCategories = categories
@@ -146,6 +168,7 @@ struct SearchInstallSection: View {
             disableDate: nil,
             disableReason: nil,
             conflictsWith: nil,
+            conflictsWithReasons: nil,
             isBottled: nil,
             isKegOnly: nil,
             kegOnlyReason: nil,
@@ -258,7 +281,7 @@ struct SearchInstallSection: View {
             }
             .pickerStyle(.segmented)
             .labelsHidden()
-            .frame(width: 240)
+            .fixedSize()
             .onChange(of: searchType) { _ in
                 // Clear search when switching tabs
                 searchQuery = ""
@@ -270,33 +293,28 @@ struct SearchInstallSection: View {
 
     @ViewBuilder
     private var resultsCountBar: some View {
-        if (searchType == .installed && !cachedCategories.isEmpty) || (!displayedResults.isEmpty) {
+        let showBar = (searchType == .installed && !cachedCategories.isEmpty) ||
+                      (searchType == .available && (!brewManager.allAvailableFormulae.isEmpty || !brewManager.allAvailableCasks.isEmpty))
+
+        if showBar {
             HStack {
-                if searchType == .installed {
-                    // Count unique packages (exclude Outdated category since it's duplicates)
-                    let totalCount = cachedCategories
-                        .filter { $0.title != "Outdated" }
-                        .reduce(0) { $0 + $1.packages.count }
-                    Text("\(totalCount) package\(totalCount == 1 ? "" : "s")")
+                let totalCount = searchType == .installed
+                    ? cachedCategories.filter { $0.title != "Outdated" }.reduce(0) { $0 + $1.packages.count }
+                    : (brewManager.allAvailableFormulae.count + brewManager.allAvailableCasks.count)
+
+                Text("\(totalCount) package\(totalCount == 1 ? "" : "s")")
+                    .font(.caption)
+                    .monospacedDigit()
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                if (searchType == .installed && brewManager.isLoadingPackages) ||
+                   (searchType == .available && brewManager.isLoadingAvailablePackages) {
+                    Text("Loading...")
                         .font(.caption)
-                        .monospacedDigit()
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-
-                    if brewManager.isLoadingPackages {
-                        Text("Loading...")
-                            .font(.caption)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    }
-
-                    Spacer()
-                } else {
-                    Text("\(displayedResults.count) result\(displayedResults.count == 1 ? "" : "s")")
-                        .font(.caption)
-                        .monospacedDigit()
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-
-                    Spacer()
                 }
+
+                Spacer()
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 10)
@@ -332,8 +350,7 @@ struct SearchInstallSection: View {
                                 Spacer()
                             }
                             .frame(maxWidth: .infinity)
-                        } else if (searchType == .installed && cachedCategories.isEmpty && !searchQuery.isEmpty) ||
-                                  (searchType != .installed && displayedResults.isEmpty && !searchQuery.isEmpty) {
+                        } else if ((searchType == .installed && cachedCategories.isEmpty) || (searchType == .available && displayedResults.isEmpty)) && !searchQuery.isEmpty {
                             VStack(alignment: .center) {
                                 Spacer()
                                 Image(systemName: "exclamationmark.magnifyingglass")
@@ -397,32 +414,81 @@ struct SearchInstallSection: View {
 
                                                 // Packages in category (only if not collapsed)
                                                 if !collapsedCategories.contains(category.title) {
-                                                    ForEach(category.packages) { result in
-                                                        SearchResultRowView(
-                                                            result: result,
-                                                            isCask: brewManager.installedCasks.contains(where: { $0.name == result.name }),
-                                                            onInfoTapped: {
-                                                                let isCask = brewManager.installedCasks.contains(where: { $0.name == result.name })
-                                                                onPackageSelected(result, isCask)
-                                                            },
-                                                            updatingPackages: updatingPackages
-                                                        )
+                                                    LazyVStack(spacing: 8) {
+                                                        ForEach(category.packages) { result in
+                                                            SearchResultRowView(
+                                                                result: result,
+                                                                isCask: brewManager.installedCasks.contains(where: { $0.name == result.name }),
+                                                                onInfoTapped: {
+                                                                    let isCask = brewManager.installedCasks.contains(where: { $0.name == result.name })
+                                                                    onPackageSelected(result, isCask)
+                                                                },
+                                                                updatingPackages: updatingPackages
+                                                            )
+                                                        }
                                                     }
                                                 }
                                             }
                                         }
                                     } else {
-                                        // Show flat list for Browse/Formulae/Casks
-                                        ForEach(displayedResults) { result in
-                                            SearchResultRowView(
-                                                result: result,
-                                                isCask: searchType == .casks || brewManager.allAvailableCasks.contains(where: { $0.name == result.name }),
-                                                onInfoTapped: {
-                                                    let isCask = searchType == .casks || brewManager.allAvailableCasks.contains(where: { $0.name == result.name })
-                                                    onPackageSelected(result, isCask)
-                                                },
-                                                updatingPackages: updatingPackages
-                                            )
+                                        // Show categorized view for Available tab - directly reference arrays
+                                        let categories: [(title: String, packages: [HomebrewSearchResult], isCask: Bool)] = [
+                                            ("Formulae", brewManager.allAvailableFormulae, false),
+                                            ("Casks", brewManager.allAvailableCasks, true)
+                                        ]
+
+                                        ForEach(categories, id: \.title) { category in
+                                            let filteredPackages = searchQuery.isEmpty
+                                                ? category.packages
+                                                : category.packages.filter { $0.name.localizedCaseInsensitiveContains(searchQuery) }
+
+                                            if !filteredPackages.isEmpty {
+                                                VStack(alignment: .leading, spacing: 8) {
+                                                    // Category header (collapsible)
+                                                    Button(action: {
+                                                        withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
+                                                            toggleCategoryCollapse(for: category.title)
+                                                        }
+                                                    }) {
+                                                        HStack {
+                                                            Image(systemName: collapsedCategories.contains(category.title) ? "chevron.right" : "chevron.down")
+                                                                .font(.caption)
+                                                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                                                .frame(width: 10)
+
+                                                            Text(category.title)
+                                                                .font(.headline)
+                                                                .fontWeight(.semibold)
+                                                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                                                            Text(verbatim: "(\(filteredPackages.count))")
+                                                                .font(.caption)
+                                                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                                                            Spacer()
+                                                        }
+                                                    }
+                                                    .buttonStyle(.plain)
+                                                    .contentShape(Rectangle())
+                                                    .padding(.top, category.title == "Formulae" ? 0 : 12)
+
+                                                    // Packages in category (only if not collapsed) - LazyVStack is conditional!
+                                                    if !collapsedCategories.contains(category.title) {
+                                                        LazyVStack(spacing: 8) {
+                                                            ForEach(filteredPackages) { result in
+                                                                SearchResultRowView(
+                                                                    result: result,
+                                                                    isCask: category.isCask,
+                                                                    onInfoTapped: {
+                                                                        onPackageSelected(result, category.isCask)
+                                                                    },
+                                                                    updatingPackages: updatingPackages
+                                                                )
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -482,8 +548,8 @@ struct SearchInstallSection: View {
                 updateCategorizedPackages()
             }
         }
-        .onChange(of: searchType) { newType in
-            if newType == .installed {
+        .onChange(of: searchType) { _ in
+            if searchType == .installed {
                 updateCategorizedPackages()
             }
         }
@@ -628,6 +694,18 @@ struct SearchResultRowView: View {
                             try await HomebrewController.shared.unpinPackage(name: result.name)
                         } else {
                             try await HomebrewController.shared.pinPackage(name: result.name)
+                        }
+
+                        // Update the installed formula's isPinned status
+                        await MainActor.run {
+                            let shortName = result.name.components(separatedBy: "/").last ?? result.name
+                            if let index = brewManager.installedFormulae.firstIndex(where: {
+                                $0.name == result.name || $0.name == shortName
+                            }) {
+                                var updatedFormula = brewManager.installedFormulae[index]
+                                updatedFormula.isPinned = !currentlyPinned
+                                brewManager.installedFormulae[index] = updatedFormula
+                            }
                         }
                     } catch {
                         printOS("Failed to toggle pin: \(error)")
@@ -879,8 +957,10 @@ struct PackageDetailsDrawer: View {
     }
 
     private func loadAnalytics() {
-        // Skip analytics for tap packages (only available for homebrew/core and homebrew/cask)
-        guard let tap = package.tap, tap == "homebrew/core" || tap == "homebrew/cask" else {
+        // Skip analytics for third-party tap packages (only available for homebrew/core and homebrew/cask)
+        // If tap is nil, assume it's from the default tap (homebrew/core for formulae, homebrew/cask for casks)
+        let tap = package.tap ?? (isCask ? "homebrew/cask" : "homebrew/core")
+        guard tap == "homebrew/core" || tap == "homebrew/cask" else {
             return
         }
 
@@ -921,6 +1001,9 @@ struct FormulaDetailsView: View {
 
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
 
+    @State private var fileCount: Int?
+    @State private var totalSize: Int64?
+
     var body: some View {
         ScrollView(.vertical, showsIndicators: scrollIndicators) {
             VStack(alignment: .leading, spacing: 16) {
@@ -932,9 +1015,20 @@ struct FormulaDetailsView: View {
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
                         if let version = formula.version {
-                            Text(verbatim: "v\(version)")
-                                .font(.caption)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            HStack(spacing: 4) {
+                                Text(verbatim: "v\(version)")
+                                    .font(.caption)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                                // Show pinned icon if this formula is pinned
+                                if let installedFormula = brewManager.installedFormulae.first(where: {
+                                    $0.name == formula.name || $0.name == formula.name.components(separatedBy: "/").last
+                                }), installedFormula.isPinned {
+                                    Image(systemName: "pin.fill")
+                                        .font(.caption)
+                                        .foregroundStyle(.orange)
+                                }
+                            }
                         }
                     }
 
@@ -974,7 +1068,12 @@ struct FormulaDetailsView: View {
                 }
 
                 // Basic info
-                FormulaDetailsSectionView(formula: formula, colorScheme: colorScheme)
+                FormulaDetailsSectionView(
+                    formula: formula,
+                    fileCount: fileCount,
+                    totalSize: totalSize,
+                    colorScheme: colorScheme
+                )
 
                 // Dependencies
                 if (formula.dependencies != nil && !formula.dependencies!.isEmpty) ||
@@ -995,6 +1094,9 @@ struct FormulaDetailsView: View {
             .padding()
         }
         .scrollIndicators(scrollIndicators ? .visible : .hidden)
+        .onAppear {
+            loadInstallationDetails()
+        }
 
         // Install button pinned to bottom
         InstallButtonSection(
@@ -1007,6 +1109,42 @@ struct FormulaDetailsView: View {
             colorScheme: colorScheme
         )
         .padding()
+    }
+
+    private func loadInstallationDetails() {
+        // Only load if formula is installed
+        guard isAlreadyInstalled else { return }
+
+        Task {
+            let brewPrefix = "/opt/homebrew"
+
+            // Find the installed version from brewManager
+            if let installedFormula = brewManager.installedFormulae.first(where: {
+                $0.name == formula.name || $0.name == formula.name.components(separatedBy: "/").last
+            }), let version = installedFormula.version {
+                let cellarPath = "\(brewPrefix)/Cellar/\(formula.name)/\(version)"
+
+                // Calculate file count and total size
+                if let enumerator = FileManager.default.enumerator(atPath: cellarPath) {
+                    var count = 0
+                    var size: Int64 = 0
+
+                    while let _ = enumerator.nextObject() {
+                        count += 1
+                        // Get file attributes for size
+                        if let fileAttributes = enumerator.fileAttributes,
+                           let fileSize = fileAttributes[.size] as? Int64 {
+                            size += fileSize
+                        }
+                    }
+
+                    await MainActor.run {
+                        fileCount = count
+                        totalSize = size
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -1954,6 +2092,8 @@ struct ServiceInfoSection: View {
 // Formula-specific details section
 struct FormulaDetailsSectionView: View {
     let formula: FormulaDetails
+    let fileCount: Int?
+    let totalSize: Int64?
     let colorScheme: ColorScheme
 
     var body: some View {
@@ -1994,12 +2134,24 @@ struct FormulaDetailsSectionView: View {
 
             // Installation type
             if let isBottled = formula.isBottled {
-                DetailRow(
-                    label: "Installation",
-                    value: isBottled ? "Bottled (pre-built binary)" : "From source",
-                    colorScheme: colorScheme,
-                    isNA: false
-                )
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Installation")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(isBottled ? "Bottled (pre-built binary)" : "From source")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                        // Show file count and size if available
+                        if let count = fileCount, let size = totalSize {
+                            Text(installationSizeText(count: count, size: size))
+                                .font(.caption)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        }
+                    }
+                }
             }
 
             // Keg-only
@@ -2030,9 +2182,22 @@ struct FormulaDetailsSectionView: View {
                         .font(.caption)
                         .fontWeight(.semibold)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                    Text(conflicts.joined(separator: ", "))
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                    if let reasons = formula.conflictsWithReasons, reasons.count == conflicts.count {
+                        // Show conflicts with their reasons
+                        VStack(alignment: .leading, spacing: 2) {
+                            ForEach(Array(zip(conflicts, reasons)), id: \.0) { conflict, reason in
+                                Text("\(conflict): \(reason)")
+                                    .font(.caption)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            }
+                        }
+                    } else {
+                        // No reasons available, just show conflicts
+                        Text(conflicts.joined(separator: ", "))
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                    }
                 }
                 .padding()
                 .background(Color.yellow.opacity(0.1))
@@ -2096,6 +2261,14 @@ struct FormulaDetailsSectionView: View {
             }
         }
     }
+
+    private func installationSizeText(count: Int, size: Int64) -> String {
+        let formatter = ByteCountFormatter()
+        formatter.allowsNonnumericFormatting = false
+        formatter.countStyle = .file
+        let sizeString = formatter.string(fromByteCount: size)
+        return "(\(count) files, \(sizeString))"
+    }
 }
 
 // Cask-specific details section
@@ -2146,9 +2319,22 @@ struct CaskDetailsSectionView: View {
                         .font(.caption)
                         .fontWeight(.semibold)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                    Text(conflicts.joined(separator: ", "))
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                    if let reasons = cask.conflictsWithReasons, reasons.count == conflicts.count {
+                        // Show conflicts with their reasons
+                        VStack(alignment: .leading, spacing: 2) {
+                            ForEach(Array(zip(conflicts, reasons)), id: \.0) { conflict, reason in
+                                Text("\(conflict): \(reason)")
+                                    .font(.caption)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            }
+                        }
+                    } else {
+                        // No reasons available, just show conflicts
+                        Text(conflicts.joined(separator: ", "))
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                    }
                 }
                 .padding()
                 .background(Color.yellow.opacity(0.1))

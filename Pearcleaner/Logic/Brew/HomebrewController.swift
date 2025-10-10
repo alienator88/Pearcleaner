@@ -414,6 +414,7 @@ class HomebrewController {
         let caveats = json["caveats"].string
         let dependencies = cask ? json["depends_on"]["formula"].arrayValue.map { $0.stringValue } : json["dependencies"].arrayValue.map { $0.stringValue }
         let conflicts = json["conflicts_with"].arrayValue.map { $0.stringValue }
+        let conflictsReasons = json["conflicts_with_reasons"].arrayValue.map { $0.stringValue }
 
         // Parse extended fields
         let tap = json["tap"].string
@@ -453,7 +454,15 @@ class HomebrewController {
         let buildDependencies = cask ? nil : json["build_dependencies"].arrayValue.map { $0.stringValue }
         let optionalDependencies = cask ? nil : json["optional_dependencies"].arrayValue.map { $0.stringValue }
         let recommendedDependencies = cask ? nil : json["recommended_dependencies"].arrayValue.map { $0.stringValue }
-        let usesFromMacos = cask ? nil : json["uses_from_macos"].arrayValue.map { $0.stringValue }
+        let usesFromMacos = cask ? nil : json["uses_from_macos"].arrayValue.compactMap { item -> String? in
+            if let str = item.string {
+                return str
+            } else if let dict = item.dictionaryObject, let key = dict.keys.first {
+                // Handle {"bison": "build"} format - just show the name
+                return key
+            }
+            return nil
+        }
         let versionedFormulae = cask ? nil : json["versioned_formulae"].arrayValue.map { $0.stringValue }
         let aliases = cask ? nil : json["aliases"].arrayValue.map { $0.stringValue }
 
@@ -480,6 +489,7 @@ class HomebrewController {
             disableDate: disableDate,
             disableReason: disableReason,
             conflictsWith: conflicts,
+            conflictsWithReasons: conflictsReasons.isEmpty ? nil : conflictsReasons,
             isBottled: cask ? nil : (version != nil),
             isKegOnly: kegOnly,
             kegOnlyReason: kegOnlyReason,
@@ -541,6 +551,7 @@ class HomebrewController {
         let caveats = json["caveats"].string
         let dependencies = json["dependencies"].arrayValue.map { $0.stringValue }
         let conflicts = json["conflicts_with"].arrayValue.map { $0.stringValue }
+        let conflictsReasons = json["conflicts_with_reasons"].arrayValue.map { $0.stringValue }
         let tap = json["tap"].string
         let fullName = json["full_name"].string
         let deprecated = json["deprecated"].bool ?? false
@@ -574,7 +585,15 @@ class HomebrewController {
         let buildDependencies = json["build_dependencies"].arrayValue.map { $0.stringValue }
         let optionalDependencies = json["optional_dependencies"].arrayValue.map { $0.stringValue }
         let recommendedDependencies = json["recommended_dependencies"].arrayValue.map { $0.stringValue }
-        let usesFromMacos = json["uses_from_macos"].arrayValue.map { $0.stringValue }
+        let usesFromMacos = json["uses_from_macos"].arrayValue.compactMap { item -> String? in
+            if let str = item.string {
+                return str
+            } else if let dict = item.dictionaryObject, let key = dict.keys.first {
+                // Handle {"bison": "build"} format - just show the name
+                return key
+            }
+            return nil
+        }
         let versionedFormulae = json["versioned_formulae"].arrayValue.map { $0.stringValue }
         let aliases = json["aliases"].arrayValue.map { $0.stringValue }
 
@@ -619,6 +638,7 @@ class HomebrewController {
             disableDate: disableDate,
             disableReason: disableReason,
             conflictsWith: conflicts.isEmpty ? nil : conflicts,
+            conflictsWithReasons: conflictsReasons.isEmpty ? nil : conflictsReasons,
             isBottled: version != nil,
             isKegOnly: kegOnly,
             kegOnlyReason: kegOnlyReason,
@@ -646,6 +666,7 @@ class HomebrewController {
         let caveats = json["caveats"].string
         let dependencies = json["depends_on"]["formula"].arrayValue.map { $0.stringValue }
         let conflicts = json["conflicts_with"].arrayValue.map { $0.stringValue }
+        let conflictsReasons = json["conflicts_with_reasons"].arrayValue.map { $0.stringValue }
         let tap = json["tap"].string
         let fullName = json["full_token"].string ?? json["token"].string
         let deprecated = json["deprecated"].bool ?? false
@@ -709,6 +730,7 @@ class HomebrewController {
             disableDate: disableDate,
             disableReason: disableReason,
             conflictsWith: conflicts.isEmpty ? nil : conflicts,
+            conflictsWithReasons: conflictsReasons.isEmpty ? nil : conflictsReasons,
             caskName: caskName.isEmpty ? nil : caskName,
             autoUpdates: autoUpdates,
             artifacts: artifacts.isEmpty ? nil : artifacts,
@@ -1297,6 +1319,7 @@ class HomebrewController {
         let isDisabled = item["disabled"].bool ?? false
         let disableDate = item["disable_date"].string
         let conflictsWith = item["conflicts_with"].arrayValue.map { $0.stringValue }
+        let conflictsWithReasons = item["conflicts_with_reasons"].arrayValue.map { $0.stringValue }
 
         // Formula-specific fields
         let isBottled = cask ? nil : (item["versions"]["bottle"].bool ?? false)
@@ -1366,6 +1389,7 @@ class HomebrewController {
             disableDate: disableDate,
             disableReason: nil,  // Not available in JWS cache
             conflictsWith: conflictsWith.isEmpty ? nil : conflictsWith,
+            conflictsWithReasons: conflictsWithReasons.isEmpty ? nil : conflictsWithReasons,
             isBottled: isBottled,
             isKegOnly: isKegOnly,
             kegOnlyReason: kegOnlyReason,

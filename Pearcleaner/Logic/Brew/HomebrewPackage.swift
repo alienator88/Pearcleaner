@@ -29,6 +29,7 @@ struct HomebrewSearchResult: Identifiable, Hashable {
     let disableDate: String?
     let disableReason: String?
     let conflictsWith: [String]?
+    let conflictsWithReasons: [String]?
 
     // Formula-specific fields (from JWS)
     let isBottled: Bool?
@@ -90,6 +91,7 @@ protocol HomebrewPackageDetails {
     var disableDate: String? { get }
     var disableReason: String? { get }
     var conflictsWith: [String]? { get }
+    var conflictsWithReasons: [String]? { get }
 }
 
 /// Formula-specific package details
@@ -111,6 +113,7 @@ struct FormulaDetails: HomebrewPackageDetails {
     let disableDate: String?
     let disableReason: String?
     let conflictsWith: [String]?
+    let conflictsWithReasons: [String]?
 
     // Formula-specific fields
     let isBottled: Bool?
@@ -151,6 +154,7 @@ struct CaskDetails: HomebrewPackageDetails {
     let disableDate: String?
     let disableReason: String?
     let conflictsWith: [String]?
+    let conflictsWithReasons: [String]?
 
     // Cask-specific fields
     let caskName: [String]?
@@ -208,7 +212,7 @@ struct InstalledPackage: Identifiable, Equatable, Hashable {
     let description: String?
     let version: String?
     let isCask: Bool
-    let isPinned: Bool
+    var isPinned: Bool
 
     static func == (lhs: InstalledPackage, rhs: InstalledPackage) -> Bool {
         return lhs.name == rhs.name && lhs.isCask == rhs.isCask
