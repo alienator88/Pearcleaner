@@ -1366,43 +1366,63 @@ struct AnalyticsSection: View {
     let colorScheme: ColorScheme
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 12) {
             Text("📊 Popularity")
                 .font(.caption)
                 .fontWeight(.semibold)
                 .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
-            VStack(alignment: .leading, spacing: 4) {
+            HStack(spacing: 0) {
+                // 365 days
                 if let installs365d = analytics.install365d {
-                    Text(verbatim: "365d: \(installs365d.formatted())")
+                    VStack(spacing: 4) {
+                        Text(verbatim: "\(installs365d.formatted())")
+                            .font(.title3)
+                            .fontWeight(.bold)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                        Text("365 days")
+                            .font(.caption2)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                    .frame(maxWidth: .infinity)
                 }
+
+                if analytics.install365d != nil && analytics.install90d != nil {
+                    Divider()
+                        .frame(height: 40)
+                }
+
+                // 90 days
                 if let installs90d = analytics.install90d {
-                    Text(verbatim: "90d: \(installs90d.formatted())")
+                    VStack(spacing: 4) {
+                        Text(verbatim: "\(installs90d.formatted())")
+                            .font(.title3)
+                            .fontWeight(.bold)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                        Text("90 days")
+                            .font(.caption2)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                    .frame(maxWidth: .infinity)
                 }
+
+                if analytics.install90d != nil && analytics.install30d != nil {
+                    Divider()
+                        .frame(height: 40)
+                }
+
+                // 30 days
                 if let installs30d = analytics.install30d {
-                    Text(verbatim: "30d: \(installs30d.formatted())")
-                }
-            }
-            .font(.caption2)
-            .monospacedDigit()
-            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-
-            // Formula-specific: install-on-request
-            if !isCask {
-                if let installOnRequest365d = analytics.installOnRequest365d {
-                    Text(verbatim: "install-on-request: \(installOnRequest365d.formatted()) (365d)")
-                        .font(.caption2)
-                        .monospacedDigit()
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        .padding(.top, 4)
-                }
-
-                if let buildError30d = analytics.buildError30d, buildError30d > 0 {
-                    Text(verbatim: "build-error: \(buildError30d) (30d)")
-                        .font(.caption2)
-                        .monospacedDigit()
-                        .foregroundStyle(.red)
-                        .padding(.top, 4)
+                    VStack(spacing: 4) {
+                        Text(verbatim: "\(installs30d.formatted())")
+                            .font(.title3)
+                            .fontWeight(.bold)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                        Text("30 days")
+                            .font(.caption2)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                    .frame(maxWidth: .infinity)
                 }
             }
         }

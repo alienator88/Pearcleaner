@@ -199,10 +199,6 @@ struct HomebrewAnalytics {
     let install30d: Int?
     let install90d: Int?
     let install365d: Int?
-    let installOnRequest30d: Int?
-    let installOnRequest90d: Int?
-    let installOnRequest365d: Int?
-    let buildError30d: Int?
 }
 
 // Lightweight model for installed packages list (only name + description + version displayed)

@@ -827,30 +827,18 @@ class HomebrewController {
             return HomebrewAnalytics(
                 install30d: install30d,
                 install90d: install90d,
-                install365d: install365d,
-                installOnRequest30d: nil,
-                installOnRequest90d: nil,
-                installOnRequest365d: nil,
-                buildError30d: nil
+                install365d: install365d
             )
         } else {
-            // Formula: full structure with install_on_request and build_error
+            // Formula: only fetch install counts (not install_on_request or build_error)
             let install30d = analytics["install"]["30d"].dictionary?.values.reduce(0) { $0 + ($1.int ?? 0) }
             let install90d = analytics["install"]["90d"].dictionary?.values.reduce(0) { $0 + ($1.int ?? 0) }
             let install365d = analytics["install"]["365d"].dictionary?.values.reduce(0) { $0 + ($1.int ?? 0) }
-            let installOnRequest30d = analytics["install_on_request"]["30d"].dictionary?.values.reduce(0) { $0 + ($1.int ?? 0) }
-            let installOnRequest90d = analytics["install_on_request"]["90d"].dictionary?.values.reduce(0) { $0 + ($1.int ?? 0) }
-            let installOnRequest365d = analytics["install_on_request"]["365d"].dictionary?.values.reduce(0) { $0 + ($1.int ?? 0) }
-            let buildError30d = analytics["build_error"]["30d"].dictionary?.values.reduce(0) { $0 + ($1.int ?? 0) }
 
             return HomebrewAnalytics(
                 install30d: install30d,
                 install90d: install90d,
-                install365d: install365d,
-                installOnRequest30d: installOnRequest30d,
-                installOnRequest90d: installOnRequest90d,
-                installOnRequest365d: installOnRequest365d,
-                buildError30d: buildError30d
+                install365d: install365d
             )
         }
     }
