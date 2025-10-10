@@ -9,6 +9,7 @@ import AlinFoundation
 import Foundation
 import ServiceManagement
 import SwiftUI
+import SwiftyJSON
 import UniformTypeIdentifiers
 
 
@@ -604,36 +605,59 @@ private func buildCaskLookupTable() -> [String: String] {
 
         for cask in casks {
             let caskSubPath = caskroomPath + cask
+            let receiptPath = "\(caskSubPath)/.metadata/INSTALL_RECEIPT.json"
 
-            // Add safety check for each cask directory
-            guard fileManager.fileExists(atPath: caskSubPath) else { continue }
+            // Try to read INSTALL_RECEIPT.json for fast lookup
+            if let receiptData = try? Data(contentsOf: URL(fileURLWithPath: receiptPath)) {
+                do {
+                    let json = try JSON(data: receiptData)
 
-            do {
-                let versions = try fileManager.contentsOfDirectory(atPath: caskSubPath).filter { !$0.hasPrefix(".") }
-
-                if let latestVersion = versions.first {
-                    let appDirectory = "\(caskSubPath)/\(latestVersion)/"
-
-                    // Add safety check for app directory
-                    guard fileManager.fileExists(atPath: appDirectory) else { continue }
-
-                    do {
-                        let appsInDir = try fileManager.contentsOfDirectory(atPath: appDirectory).filter {
-                            !$0.hasPrefix(".") && $0.hasSuffix(".app") && !$0.lowercased().contains("uninstall")
+                    // Find "app" artifact in uninstall_artifacts array
+                    for artifact in json["uninstall_artifacts"].arrayValue {
+                        if let apps = artifact["app"].array {
+                            for appName in apps {
+                                if let appStr = appName.string {
+                                    let realAppName = appStr.replacingOccurrences(of: ".app", with: "").lowercased()
+                                    appToCask[realAppName] = cask
+                                }
+                            }
                         }
-
-                        for appFile in appsInDir {
-                            let realAppName = appFile.replacingOccurrences(of: ".app", with: "").lowercased()
-                            appToCask[realAppName] = cask
-                        }
-                    } catch {
-                        printOS("Error reading app directory \(appDirectory): \(error)")
-                        continue
                     }
+                } catch {
+                    printOS("Error parsing INSTALL_RECEIPT.json for \(cask): \(error)")
+                    // Fall through to directory scanning fallback
                 }
-            } catch {
-                printOS("Error reading cask directory \(caskSubPath): \(error)")
-                continue
+            } else {
+                // Fallback: If INSTALL_RECEIPT.json doesn't exist or can't be read, scan directories
+                // (This handles older casks or edge cases)
+                guard fileManager.fileExists(atPath: caskSubPath) else { continue }
+
+                do {
+                    let versions = try fileManager.contentsOfDirectory(atPath: caskSubPath).filter { !$0.hasPrefix(".") }
+
+                    if let latestVersion = versions.first {
+                        let appDirectory = "\(caskSubPath)/\(latestVersion)/"
+
+                        guard fileManager.fileExists(atPath: appDirectory) else { continue }
+
+                        do {
+                            let appsInDir = try fileManager.contentsOfDirectory(atPath: appDirectory).filter {
+                                !$0.hasPrefix(".") && $0.hasSuffix(".app") && !$0.lowercased().contains("uninstall")
+                            }
+
+                            for appFile in appsInDir {
+                                let realAppName = appFile.replacingOccurrences(of: ".app", with: "").lowercased()
+                                appToCask[realAppName] = cask
+                            }
+                        } catch {
+                            printOS("Error reading app directory \(appDirectory): \(error)")
+                            continue
+                        }
+                    }
+                } catch {
+                    printOS("Error reading cask directory \(caskSubPath): \(error)")
+                    continue
+                }
             }
         }
     } catch {

@@ -2207,7 +2207,7 @@ struct FormulaDetailsSectionView: View {
                         // Show conflicts with their reasons
                         VStack(alignment: .leading, spacing: 2) {
                             ForEach(Array(zip(conflicts, reasons)), id: \.0) { conflict, reason in
-                                Text("\(conflict): \(reason)")
+                                Text(verbatim: "\(conflict): \(reason)")
                                     .font(.caption)
                                     .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                             }
@@ -2344,7 +2344,7 @@ struct CaskDetailsSectionView: View {
                         // Show conflicts with their reasons
                         VStack(alignment: .leading, spacing: 2) {
                             ForEach(Array(zip(conflicts, reasons)), id: \.0) { conflict, reason in
-                                Text("\(conflict): \(reason)")
+                                Text(verbatim: "\(conflict): \(reason)")
                                     .font(.caption)
                                     .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                             }

@@ -275,11 +275,6 @@ struct FilesView: View {
                     printOS("Homebrew cleanup failed for \(caskName): \(error.localizedDescription)")
                 }
 
-                // Clear progress flag
-                await MainActor.run {
-                    appState.isBrewCleanupInProgress = false
-                }
-
                 // Remove the CURRENT app from the queue (not necessarily the first)
                 await MainActor.run {
                     if let index = appState.externalPaths.firstIndex(of: currentAppPath) {
@@ -287,8 +282,13 @@ struct FilesView: View {
                     }
                 }
 
-                // Now process remaining apps
+                // Process remaining apps (transitions UI state)
                 await processRemainingApps(appWasRemoved: appWasRemoved)
+
+                // Clear progress flag AFTER UI has transitioned
+                await MainActor.run {
+                    appState.isBrewCleanupInProgress = false
+                }
             }
             return
         }
