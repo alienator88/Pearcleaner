@@ -923,28 +923,26 @@ struct PathLibrary {
                 "~/Library/Logs/AndroidStudio/",
                 "~/Library/Caches/Google/AndroidStudio*/"
             ]),
-            PathEnv(name: "Cargo (Rust)", paths: [
-                "~/.cargo/bin/",
+            PathEnv(name: "Cargo", paths: [
+                "~/.cargo/",
+                "~/.cargo/git/",
                 "~/.cargo/registry/"
             ]),
             PathEnv(name: "Carthage", paths: [
                 "~/Carthage/",
                 "~/Library/Caches/org.carthage.CarthageKit/"
             ]),
-            PathEnv(name: "Swift", paths: [
-                "~/.swiftpm/",
+            PathEnv(name: "CocoaPods", paths: [
+                "~/Library/Caches/CocoaPods/",
+                "~/.cocoapods/repos/"
             ]),
-            PathEnv(name: "Composer (PHP)", paths: [
+            PathEnv(name: "Composer", paths: [
                 "~/.composer/cache/"
             ]),
             PathEnv(name: "Conda", paths: [
                 "~/.conda/",
                 "~/anaconda3/envs/",
                 "~/miniconda3/envs/"
-            ]),
-            PathEnv(name: "CocoaPods", paths: [
-                "~/Library/Caches/CocoaPods/",
-                "~/.cocoapods/repos/"
             ]),
             PathEnv(name: "Cursor", paths: [
                 "~/Library/Application Support/Cursor/",
@@ -976,7 +974,7 @@ struct PathLibrary {
                 "~/.stack/global-project/",
                 "~/.stack/snapshots/"
             ]),
-            PathEnv(name: "IntelliJ IDEA (JetBrains Products)", paths: [
+            PathEnv(name: "IntelliJ IDEA", paths: [
                 "~/Library/Application Support/JetBrains/",
                 "~/Library/Caches/JetBrains/",
                 "~/Library/Logs/JetBrains/"
@@ -988,7 +986,7 @@ struct PathLibrary {
                 "/nix/store/",
                 "~/.cache/nix/"
             ]),
-            PathEnv(name: "NPM", paths: [
+            PathEnv(name: "Npm", paths: [
                 "/usr/local/lib/node_modules/",
                 "~/.nvm/versions/node/*/",
                 "~/.npm/",
@@ -1001,7 +999,7 @@ struct PathLibrary {
             PathEnv(name: "Poetry", paths: [
                 "~/Library/Caches/pypoetry/"
             ]),
-            PathEnv(name: "Pub (Dart/Flutter)", paths: [
+            PathEnv(name: "Pub", paths: [
                 "~/.pub-cache/",
                 "~/Library/Caches/flutter_engine/"
             ]),
@@ -1012,6 +1010,9 @@ struct PathLibrary {
             PathEnv(name: "Ruby Gems", paths: [
                 "~/.gem/",
                 "~/.gem/ruby/*/"
+            ]),
+            PathEnv(name: "Swift", paths: [
+                "~/.swiftpm/",
             ]),
             PathEnv(name: "VS Code", paths: [
                 "~/Library/Application Support/Code/",
