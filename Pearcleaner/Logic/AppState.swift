@@ -516,8 +516,23 @@ enum CurrentPage: Int, CaseIterable, Identifiable {
     case packages
     case plugins
     case services
+    case updater
 
     var id: Int { rawValue }
+
+    /// Pages that are hidden in release builds (only visible in DEBUG mode)
+    static var debugOnlyPages: [CurrentPage] {
+        return [.updater]
+    }
+
+    /// Returns all pages filtered based on build configuration
+    static var availablePages: [CurrentPage] {
+        #if DEBUG
+        return CurrentPage.allCases
+        #else
+        return CurrentPage.allCases.filter { !debugOnlyPages.contains($0) }
+        #endif
+    }
 
     var details: (title: String, icon: String) {
         switch self {
@@ -539,6 +554,8 @@ enum CurrentPage: Int, CaseIterable, Identifiable {
             return (String(localized: "Plugins"), "puzzlepiece")
         case .services:
             return (String(localized: "Services"), "gearshape.2")
+        case .updater:
+            return (String(localized: "Updater"), "arrow.down.circle")
         }
     }
 

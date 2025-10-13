@@ -1,0 +1,7 @@
+module StoreFoundation [system] [no_undeclared_includes] {
+	requires macos, objc
+	use Foundation
+	link framework "StoreFoundation"
+	umbrella header "StoreFoundation.h"
+	export *
+}

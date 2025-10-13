@@ -71,6 +71,12 @@ struct EnvironmentCleanerView: View {
                 } else {
                     appState.selectedEnvironment = nil
                 }
+            } else {
+                // Default to "All" if no environment is selected and paths exist
+                if let allEnvironment = paths.first(where: { $0.name == "All" }),
+                   !allEnvironment.paths.isEmpty {
+                    appState.selectedEnvironment = allEnvironment
+                }
             }
 
             // Clear selection when refreshing paths
@@ -132,7 +138,7 @@ struct EnvironmentCleanerView: View {
             .controlGroup(Capsule(style: .continuous), level: .primary)
             .padding(.top, 5)
 
-            if let selectedEnvironment = appState.selectedEnvironment {
+            if let selectedEnvironment = appState.selectedEnvironment, filteredPaths.count > 0 {
 
                 // Stats header
                 HStack {

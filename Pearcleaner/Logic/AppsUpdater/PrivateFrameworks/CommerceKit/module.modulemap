@@ -1,0 +1,7 @@
+module CommerceKit [system] [no_undeclared_includes] {
+	requires macos, objc
+	use StoreFoundation
+	link framework "CommerceKit"
+	umbrella header "CommerceKit.h"
+	export *
+}

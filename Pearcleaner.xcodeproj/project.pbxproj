@@ -234,6 +234,8 @@
 		C7923DCC2E90807F005C5632 /* Brew */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Brew; sourceTree = "<group>"; };
 		C7C05FD72E8DA12C006D0476 /* Brew */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Brew; sourceTree = "<group>"; };
 		C7C05FF12E8DEE85006D0476 /* Data */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Data; sourceTree = "<group>"; };
+		C7C693E92E9D73DD0081CF25 /* AppsUpdater */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = AppsUpdater; sourceTree = "<group>"; };
+		C7C693FC2E9D74D50081CF25 /* AppsUpdaterView */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = AppsUpdaterView; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -282,6 +284,7 @@
 				C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */,
 				C78D7B202D556F16003DD49F /* AppPathsFetch.swift */,
 				C77B90152AF19377009CC655 /* AppState.swift */,
+				C7C693E92E9D73DD0081CF25 /* AppsUpdater */,
 				C7923DCC2E90807F005C5632 /* Brew */,
 				C7A2A4D52DDB957D006E05E4 /* CLI.swift */,
 				C74FDC622BCD833D00B8960F /* Conditions.swift */,
@@ -372,6 +375,7 @@
 		C77B901F2AF1B390009CC655 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				C7C693FC2E9D74D50081CF25 /* AppsUpdaterView */,
 				C74649EE2E4800BB002D1C63 /* AppsView */,
 				C7C05FD72E8DA12C006D0476 /* Brew */,
 				C74422402E4936700002D277 /* DaemonView.swift */,
@@ -381,10 +385,10 @@
 				C74649E62E48000C002D1C63 /* LipoView */,
 				C72D03B22E4D3FB900ADC1B4 /* MainWindow.swift */,
 				C74422422E494D7E0002D277 /* PackageView.swift */,
+				C7C693D22E9D51EA0081CF25 /* PermissionsSheetView.swift */,
 				C7BB99282E8AF1CB007BBB81 /* PluginsView.swift */,
 				C74649FA2E48076B002D1C63 /* Settings */,
 				C74649EA2E48008A002D1C63 /* ZombieView */,
-				C7C693D22E9D51EA0081CF25 /* PermissionsSheetView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -475,6 +479,8 @@
 				C7923DCC2E90807F005C5632 /* Brew */,
 				C7C05FD72E8DA12C006D0476 /* Brew */,
 				C7C05FF12E8DEE85006D0476 /* Data */,
+				C7C693E92E9D73DD0081CF25 /* AppsUpdater */,
+				C7C693FC2E9D74D50081CF25 /* AppsUpdaterView */,
 			);
 			name = Pearcleaner;
 			packageProductDependencies = (
@@ -932,10 +938,8 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = "$(APP_VERSION)";
-				OTHER_LDFLAGS = (
-					"-weak_framework",
-					SwiftData,
-				);
+				OTHER_LDFLAGS = "";
+				OTHER_SWIFT_FLAGS = "-Xcc -fmodule-map-file=/Users/alin/GitHub/PearcleanerGH/Pearcleaner/Logic/AppsUpdater/PrivateFrameworks/CommerceKit/module.modulemap -Xcc -fmodule-map-file=/Users/alin/GitHub/PearcleanerGH/Pearcleaner/Logic/AppsUpdater/PrivateFrameworks/StoreFoundation/module.modulemap";
 				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.Pearcleaner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -987,10 +991,8 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = "$(APP_VERSION)";
-				OTHER_LDFLAGS = (
-					"-weak_framework",
-					SwiftData,
-				);
+				OTHER_LDFLAGS = "";
+				OTHER_SWIFT_FLAGS = "-Xcc -fmodule-map-file=/Users/alin/GitHub/PearcleanerGH/Pearcleaner/Logic/AppsUpdater/PrivateFrameworks/CommerceKit/module.modulemap -Xcc -fmodule-map-file=/Users/alin/GitHub/PearcleanerGH/Pearcleaner/Logic/AppsUpdater/PrivateFrameworks/StoreFoundation/module.modulemap";
 				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.Pearcleaner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

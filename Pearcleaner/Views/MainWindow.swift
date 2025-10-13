@@ -71,6 +71,9 @@ struct MainWindow: View {
 
                     case .homebrew:
                         HomebrewView()
+
+                    case .updater:
+                        AppsUpdaterView()
                     }
                 }
 
@@ -114,10 +117,8 @@ struct MainWindow: View {
 
                 // Page Selector
                 Menu {
-                    ForEach(CurrentPage.allCases, id: \.self) { page in
+                    ForEach(CurrentPage.availablePages, id: \.self) { page in
                         Button {
-
-
                             // Animate only the page content transition
                             withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
                                 // Reset appInfo when changing pages

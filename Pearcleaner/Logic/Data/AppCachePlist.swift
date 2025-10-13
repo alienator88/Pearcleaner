@@ -308,7 +308,15 @@ class AppCachePlist {
                 try addToCache(newApps)
             }
 
-            // 6. Load all from cache for UI
+            // 6. Check for updated apps (apps that exist but have changed)
+            let updatedPaths = try findUpdatedApps(from: Array(cachedPaths.intersection(currentPaths)))
+            if !updatedPaths.isEmpty {
+                printOS("🔄 Detected \(updatedPaths.count) updated apps, refreshing cache")
+                let updatedApps = processNewApps(appPaths: updatedPaths)
+                try updateInCache(updatedApps)
+            }
+
+            // 7. Load all from cache for UI
             let allApps = try loadFromCache()
             return allApps
 
@@ -444,6 +452,46 @@ class AppCachePlist {
         var container = try loadContainer()
         container.apps.removeAll { paths.contains($0.path) }
         try saveContainer(container)
+    }
+
+    /// Update apps in cache (replace existing entries)
+    func updateInCache(_ apps: [AppInfo]) throws {
+        var container = try loadContainer()
+        let paths = apps.map { $0.path.path }
+
+        // Remove old entries
+        container.apps.removeAll { paths.contains($0.path) }
+
+        // Add updated entries
+        let updatedCachedApps = apps.map { CachedAppInfoPlist.from($0) }
+        container.apps.append(contentsOf: updatedCachedApps)
+
+        try saveContainer(container)
+    }
+
+    /// Find apps that have been updated (contentChangeDate changed)
+    func findUpdatedApps(from paths: [String]) throws -> [String] {
+        let container = try loadContainer()
+        let cachedApps = Dictionary(uniqueKeysWithValues: container.apps.map { ($0.path, $0) })
+
+        var updatedPaths: [String] = []
+
+        for path in paths {
+            guard let cachedApp = cachedApps[path] else { continue }
+
+            // Get current modification date
+            let attributes = try? FileManager.default.attributesOfItem(atPath: path)
+            let currentModDate = attributes?[.modificationDate] as? Date
+
+            // Compare with cached date
+            if let currentDate = currentModDate,
+               let cachedDate = cachedApp.contentChangeDate,
+               currentDate > cachedDate {
+                updatedPaths.append(path)
+            }
+        }
+
+        return updatedPaths
     }
 
     /// Get all cached app paths (fast query)
