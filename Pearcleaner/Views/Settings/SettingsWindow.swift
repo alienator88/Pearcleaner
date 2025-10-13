@@ -88,7 +88,7 @@ struct SettingsView: View {
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
                 .sheet(isPresented: $showPerms, content: {
-                    PermissionsListView()
+                    PermissionsSheetView()
                 })
             }
             .controlSize(.small)
