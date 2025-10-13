@@ -939,8 +939,8 @@ struct PathLibrary {
             ]),
             PathEnv(name: "Conda", paths: [
                 "~/.conda/",
-                "~/anaconda3/envs/",
-                "~/miniconda3/envs/"
+                "~/anaconda3/",
+                "~/miniconda3/"
             ]),
             PathEnv(name: "CocoaPods", paths: [
                 "~/Library/Caches/CocoaPods/",
@@ -996,22 +996,28 @@ struct PathLibrary {
                 "~/Library/pnpm/store"
             ]),
             PathEnv(name: "Pip", paths: [
-                "~/.cache/pip/"
+                "~/Library/Caches/pip/"
             ]),
             PathEnv(name: "Poetry", paths: [
-                "~/Library/Caches/pypoetry/"
+                "~/Library/Caches/pypoetry/",
+                "~/Library/Application Support/pypoetry/"
             ]),
             PathEnv(name: "Pub (Dart/Flutter)", paths: [
                 "~/.pub-cache/",
                 "~/Library/Caches/flutter_engine/"
             ]),
             PathEnv(name: "Pyenv", paths: [
-                "~/.pyenv/cache/",
-                "~/.pyenv/versions/"
+                "~/.pyenv/",
+                "~/.pyenv/cache/"
             ]),
             PathEnv(name: "Ruby Gems", paths: [
                 "~/.gem/",
                 "~/.gem/ruby/*/"
+            ]),
+            PathEnv(name: "Uv", paths: [
+                "~/.cache/uv/",
+                "~/.config/uv/",
+                "~/.local/share/uv/"
             ]),
             PathEnv(name: "VS Code", paths: [
                 "~/Library/Application Support/Code/",
