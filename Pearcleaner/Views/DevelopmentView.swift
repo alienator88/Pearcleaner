@@ -1053,6 +1053,12 @@ struct PathLibrary {
                 "~/.cache/yarn/",
                 "~/.yarn-cache/",
                 "~/.yarn/global/"
+            ]),
+            PathEnv(name: "Zed", paths: [
+                "~/.config/zed/",
+                "~/Library/Caches/Zed/",
+                "~/Library/Application Support/Zed/",
+                "~/Library/Application Support/Zed/node/cache/"
             ])
         ]
             .map { PathEnv(name: $0.name, paths: $0.paths.sorted()) } // Sort paths within each environment
