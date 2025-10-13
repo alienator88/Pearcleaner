@@ -41,6 +41,7 @@
 		C7BB992F2E8B225F007BBB81 /* FileSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BB992E2E8B225F007BBB81 /* FileSearchView.swift */; };
 		C7BE91A82C9E37AB009FA129 /* FinderOpen.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C78121632BC892A000BE06BD /* FinderOpen.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C7C05FED2E8DA27F006D0476 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = C7C05FEC2E8DA27F006D0476 /* SwiftyJSON */; };
+		C7C693D32E9D51EA0081CF25 /* PermissionsSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C693D22E9D51EA0081CF25 /* PermissionsSheetView.swift */; };
 		C7C90DD32DA81C5D0056769A /* Lipo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C90DD22DA81C590056769A /* Lipo.swift */; };
 		C7CC10E42E94734E0057B7E2 /* ProcessEnv.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7CC10E32E9473480057B7E2 /* ProcessEnv.swift */; };
 		C7D31D512AFF00F300C7ED9E /* Locations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D502AFF00F300C7ED9E /* Locations.swift */; };
@@ -159,6 +160,7 @@
 		C7B3AB072D83900B00D829C5 /* com.alienator88.PearcleanerSentinel.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = com.alienator88.PearcleanerSentinel.plist; sourceTree = "<group>"; };
 		C7BB99282E8AF1CB007BBB81 /* PluginsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginsView.swift; sourceTree = "<group>"; };
 		C7BB992E2E8B225F007BBB81 /* FileSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSearchView.swift; sourceTree = "<group>"; };
+		C7C693D22E9D51EA0081CF25 /* PermissionsSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsSheetView.swift; sourceTree = "<group>"; };
 		C7C90DD22DA81C590056769A /* Lipo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lipo.swift; sourceTree = "<group>"; };
 		C7CC10E32E9473480057B7E2 /* ProcessEnv.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessEnv.swift; sourceTree = "<group>"; };
 		C7D31D502AFF00F300C7ED9E /* Locations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locations.swift; sourceTree = "<group>"; };
@@ -382,6 +384,7 @@
 				C7BB99282E8AF1CB007BBB81 /* PluginsView.swift */,
 				C74649FA2E48076B002D1C63 /* Settings */,
 				C74649EA2E48008A002D1C63 /* ZombieView */,
+				C7C693D22E9D51EA0081CF25 /* PermissionsSheetView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -628,6 +631,7 @@
 				C77B901A2AF1938F009CC655 /* Logic.swift in Sources */,
 				C78D7B212D556F1A003DD49F /* AppPathsFetch.swift in Sources */,
 				C770D7DB2CE7C9AD00B3492A /* DevelopmentView.swift in Sources */,
+				C7C693D32E9D51EA0081CF25 /* PermissionsSheetView.swift in Sources */,
 				C74422412E4936750002D277 /* DaemonView.swift in Sources */,
 				C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */,
 				C73545EB2D8496E000A3DC0C /* HelperToolManager.swift in Sources */,
