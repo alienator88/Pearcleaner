@@ -13,7 +13,6 @@ struct SettingsView: View {
     @EnvironmentObject var fsm: FolderSettingsManager
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var updater: Updater
-    @Binding var search: String
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.general.selectedTab") private var selectedTab: CurrentTabView = .general
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
@@ -115,7 +114,7 @@ struct SettingsView: View {
                 GeneralSettingsTab()
                     .environmentObject(appState)
             case .interface:
-                InterfaceSettingsTab(search: $search)
+                InterfaceSettingsTab()
             case .folders:
                 FolderSettingsTab()
             case .update:

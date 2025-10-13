@@ -25,7 +25,6 @@ struct ZombieView: View {
     @AppStorage("settings.general.confirmAlert") private var confirmAlert: Bool = false
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @Environment(\.colorScheme) var colorScheme
-    @Binding var search: String
     @State private var searchZ: String = ""
     @State private var selectedZombieItemsLocal: Set<URL> = []
     @State private var memoizedFiles: [URL] = []
@@ -364,7 +363,6 @@ struct ZombieView: View {
                     if selectedZombieItemsLocal.count == appState.zombieFile.fileSize.keys.count {
                         updateOnMain {
                             appState.zombieFile = .empty
-                            search = ""
                             searchZ = ""
                             withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                                 appState.currentView = .empty

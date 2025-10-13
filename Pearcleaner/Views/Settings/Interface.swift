@@ -26,8 +26,6 @@ struct InterfaceSettingsTab: View {
     @AppStorage("settings.interface.multiSelect") private var multiSelect: Bool = false
     @AppStorage("settings.interface.greetingEnabled") private var greetingEnabled: Bool = true
 
-    @Binding var search: String
-
     var body: some View {
 
         VStack(spacing: 20) {

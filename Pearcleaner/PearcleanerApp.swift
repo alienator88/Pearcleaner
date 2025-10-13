@@ -20,10 +20,7 @@ struct PearcleanerApp: App {
     @StateObject var locations = Locations()
     @StateObject var fsm = FolderSettingsManager.shared
     @StateObject private var updater = Updater(owner: "alienator88", repo: "Pearcleaner")
-    //MARK: AppStorage
-    @AppStorage("settings.general.brew") private var brew: Bool = false
     //MARK: States
-    @State private var search = ""
     @State private var isDraggingOver = false
 
     init() {
@@ -50,7 +47,7 @@ struct PearcleanerApp: App {
     var body: some Scene {
 
         WindowGroup {
-            MainWindow(search: $search, isDraggingOver: $isDraggingOver)
+            MainWindow(isDraggingOver: $isDraggingOver)
                 .environmentObject(appState)
                 .environmentObject(locations)
                 .environmentObject(fsm)
@@ -107,9 +104,9 @@ struct PearcleanerApp: App {
             AppCommands(appState: appState, locations: locations, fsm: fsm, updater: updater)
         }
 
-        
+
         Window("Settings", id: "settings") {
-                SettingsView(search: $search)
+                SettingsView()
                     .environmentObject(appState)
                     .environmentObject(locations)
                     .environmentObject(fsm)

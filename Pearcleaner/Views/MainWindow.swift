@@ -23,7 +23,6 @@ struct MainWindow: View {
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.tutorial.switchUtilitiesShown") private var tutorialShown: Bool = true
 
-    @Binding var search: String
     @Binding var isDraggingOver: Bool
     @State private var showSys: Bool = true
     @State private var showUsr: Bool = true
@@ -49,7 +48,7 @@ struct MainWindow: View {
                         applicationsView
 
                     case .orphans:
-                        ZombieView(search: $search)
+                        ZombieView()
 
                     case .development:
                         EnvironmentCleanerView()
@@ -248,7 +247,7 @@ struct MainWindow: View {
         HStack(alignment: .center, spacing: 0) {
 
             // App List
-            AppSearchView(search: $search)
+            AppSearchView()
                 .frame(width: sidebarWidth)
                 .transition(.opacity)
                 .ifGlassMain()
@@ -263,10 +262,10 @@ struct MainWindow: View {
                         MountedVolumeView()
                             .id(appState.appInfo.id)
                     case .files:
-                        FilesView(search: $search)
+                        FilesView()
                             .id(appState.appInfo.id)
                     case .zombie:
-                        ZombieView(search: $search)
+                        ZombieView()
                             .id(appState.appInfo.id)
                     }
                 }

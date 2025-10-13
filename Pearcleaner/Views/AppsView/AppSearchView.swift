@@ -16,7 +16,7 @@ struct AppSearchView: View {
     @EnvironmentObject var updater: Updater
     @EnvironmentObject var permissionManager: PermissionManager
     @Environment(\.colorScheme) var colorScheme
-    @Binding var search: String
+    @State private var search: String = ""
     @AppStorage("settings.general.selectedSortAppsList") var selectedSortOption: SortOption =
         .alphabetical
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true

@@ -28,7 +28,6 @@ struct FilesView: View {
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @State private var showAlert = false
     @Environment(\.colorScheme) var colorScheme
-    @Binding var search: String
     @State private var sortedFiles: [URL] = []
     @State private var infoSidebar: Bool = false
 
@@ -323,7 +322,6 @@ struct FilesView: View {
             if appWasRemoved {
                 updateOnMain {
                     appState.appInfo = .empty
-                    search = ""
                     withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                         appState.currentView = .empty
                     }
@@ -356,7 +354,6 @@ struct FilesView: View {
                     // If no more items are left, set appInfo to .empty and change page to default view
                     updateOnMain {
                         appState.appInfo = .empty
-                        search = ""
                         withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                             appState.currentView = .empty
                         }
