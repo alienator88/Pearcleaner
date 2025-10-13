@@ -12,43 +12,87 @@ import AlinFoundation
 
 class AppStoreUpdateChecker {
     static func checkForUpdates(apps: [AppInfo], adamIDs: [URL: UInt64]) async -> [UpdateableApp] {
-        var updateableApps: [UpdateableApp] = []
+        guard !adamIDs.isEmpty else { return [] }
 
-        for (url, adamID) in adamIDs {
-            guard let appInfo = apps.first(where: { $0.path == url }) else { continue }
+        // Convert dictionary to array for chunking
+        let adamIDArray = Array(adamIDs)
 
-            // First check if app still exists in App Store to avoid popup
-            let appStoreInfo = await getAppStoreInfo(adamID: adamID)
-            guard let appStoreURL = appStoreInfo else {
-                continue
-            }
+        // Create optimal chunks based on CPU cores (smaller chunks for App Store API calls)
+        let chunks = createOptimalChunks(from: adamIDArray, minChunkSize: 3, maxChunkSize: 10)
 
-            do {
-                // Check for update using mas CLI approach: start download, check metadata, cancel immediately
-                let version = try await checkVersion(for: adamID, currentVersion: appInfo.appVersion)
-
-                // Only add if there's actually an update available
-                if let availableVersion = version {
-                    if availableVersion != appInfo.appVersion {
-                        let updateableApp = UpdateableApp(
-                            appInfo: appInfo,
-                            availableVersion: availableVersion,
-                            source: .appStore,
-                            adamID: adamID,
-                            appStoreURL: appStoreURL,  // Include the URL we fetched
-                            status: .idle,
-                            progress: 0.0
-                        )
-                        updateableApps.append(updateableApp)
-                    }
+        // Process chunks concurrently using TaskGroup
+        return await withTaskGroup(of: [UpdateableApp].self) { group in
+            for chunk in chunks {
+                group.addTask {
+                    await checkChunk(chunk: chunk, apps: apps)
                 }
-            } catch {
-                // Catch errors like "no downloads" or network errors
-                continue
             }
+
+            // Collect results from all chunks
+            var allUpdates: [UpdateableApp] = []
+            for await chunkUpdates in group {
+                allUpdates.append(contentsOf: chunkUpdates)
+            }
+
+            return allUpdates
+        }
+    }
+
+    /// Check a chunk of apps for updates concurrently
+    private static func checkChunk(chunk: [(URL, UInt64)], apps: [AppInfo]) async -> [UpdateableApp] {
+        await withTaskGroup(of: UpdateableApp?.self) { group in
+            for (url, adamID) in chunk {
+                group.addTask {
+                    await checkSingleApp(url: url, adamID: adamID, apps: apps)
+                }
+            }
+
+            // Collect non-nil results
+            var updates: [UpdateableApp] = []
+            for await update in group {
+                if let update = update {
+                    updates.append(update)
+                }
+            }
+
+            return updates
+        }
+    }
+
+    /// Check a single app for updates
+    private static func checkSingleApp(url: URL, adamID: UInt64, apps: [AppInfo]) async -> UpdateableApp? {
+        guard let appInfo = apps.first(where: { $0.path == url }) else { return nil }
+
+        // First check if app still exists in App Store to avoid popup
+        guard let appStoreURL = await getAppStoreInfo(adamID: adamID) else {
+            return nil
         }
 
-        return updateableApps
+        do {
+            // Check for update using mas CLI approach: start download, check metadata, cancel immediately
+            let version = try await checkVersion(for: adamID, currentVersion: appInfo.appVersion)
+
+            // Only add if App Store version is GREATER than installed version
+            if let availableVersion = version, availableVersion > appInfo.appVersion {
+                return UpdateableApp(
+                    appInfo: appInfo,
+                    availableVersion: availableVersion,
+                    source: .appStore,
+                    adamID: adamID,
+                    appStoreURL: appStoreURL,
+                    status: .idle,
+                    progress: 0.0,
+                    releaseTitle: nil,
+                    releaseDescription: nil,
+                    releaseDate: nil
+                )
+            }
+        } catch {
+            // Catch errors like "no downloads" or network errors
+            return nil
+        }
+
+        return nil
     }
 
     private static func getAppStoreInfo(adamID: UInt64) async -> String? {

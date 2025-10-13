@@ -34,7 +34,10 @@ class HomebrewUpdateChecker {
                     adamID: nil,
                     appStoreURL: nil,
                     status: .idle,
-                    progress: 0.0
+                    progress: 0.0,
+                    releaseTitle: nil,
+                    releaseDescription: nil,
+                    releaseDate: nil
                 )
                 updateableApps.append(updateableApp)
             }

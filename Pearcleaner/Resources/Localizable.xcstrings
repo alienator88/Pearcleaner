@@ -43060,6 +43060,9 @@
         }
       }
     },
+    "Released: %@" : {
+
+    },
     "Releases" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -62411,6 +62414,9 @@
           }
         }
       }
+    },
+    "View Changes" : {
+
     },
     "View Debug Window" : {
       "localizations" : {

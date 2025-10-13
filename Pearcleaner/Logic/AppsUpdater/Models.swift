@@ -59,6 +59,11 @@ struct UpdateableApp: Identifiable {
     var status: UpdateStatus = .idle
     var progress: Double = 0.0
 
+    // Sparkle metadata (optional, only populated for Sparkle apps)
+    let releaseTitle: String?
+    let releaseDescription: String?
+    let releaseDate: String?
+
     var canUpdate: Bool {
         source == .homebrew || source == .appStore
     }
