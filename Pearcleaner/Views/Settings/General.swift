@@ -25,9 +25,7 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.spotlight") private var spotlight = false
     @AppStorage("settings.general.permanentDelete") private var permanentDelete: Bool = false
     @AppStorage("settings.general.searchSensitivity") private var sensitivityLevel: SearchSensitivityLevel = .strict
-    @AppStorage("settings.cache.enabled") private var cacheEnabled: Bool = true
     @State private var showAppIconInMenu = UserDefaults.showAppIconInMenu
-    @State private var cacheSize: String = "Calculating..."
 
     var body: some View {
         VStack(spacing: 20) {
@@ -206,70 +204,6 @@ struct GeneralSettingsTab: View {
 
                 })
 
-            // === Cache ==========================================================================================================
-            PearGroupBox(
-                header: { Text("Cache").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2) },
-                content: {
-                    VStack(spacing: 5) {
-                        // Main toggle row
-                        HStack(spacing: 0) {
-                            Image(systemName: cacheEnabled ? "tray.full.fill" : "tray")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 15, height: 15)
-                                .padding(.trailing)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                            VStack(alignment: .leading, spacing: 0) {
-                                HStack(spacing: 0) {
-                                    Text("Enable app data caching")
-                                        .font(.callout)
-                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                                    InfoButton(text: String(localized: "Pearcleaner caches app metadata to improve loading times. When disabled, apps will be scanned fresh each time. Disabling this will clear existing cached data."))
-                                }
-                            }
-                            Spacer()
-                            Toggle(isOn: $cacheEnabled, label: {
-                            })
-                            .toggleStyle(SettingsToggle())
-                            .onChange(of: cacheEnabled) { newValue in
-                                if !newValue {
-                                    // Wipe cache when disabled
-                                    clearAppCache(showAlert: false)
-                                }
-                            }
-                        }
-                        .padding(5)
-
-                        // Secondary row (cache info and clear button) - only shown when enabled
-                        if cacheEnabled {
-                            HStack(spacing: 0) {
-                                Image(systemName: "")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 15, height: 15)
-                                    .padding(.trailing)
-                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(cacheSize)
-                                        .font(.caption)
-                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                                }
-                                Spacer()
-
-                                Button {
-                                    clearAppCache(showAlert: true)
-                                } label: {
-                                    Text("Clear Cache")
-                                        .font(.callout)
-                                        .foregroundStyle(.red)
-                                }
-                                .buttonStyle(.borderless)
-                            }
-                            .padding([.horizontal, .bottom], 5)
-                        }
-                    }
-                })
-
             // === Sentinel =====================================================================================================
             PearGroupBox(
                 header: { Text("Sentinel Monitor").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2) },
@@ -428,75 +362,12 @@ struct GeneralSettingsTab: View {
                 appState.updateExtensionStatus()
                 fixLegacySymlink()
                 isCLISymlinked = checkCLISymlink()
-
-                // Calculate cache size if on macOS 14+
-                if #available(macOS 14.0, *) {
-                    await calculateCacheSize()
-                }
             }
 
         }
 
     }
 
-    // MARK: - Cache Management
-
-    private func calculateCacheSize() async {
-        let appSupportURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-            .appendingPathComponent("Pearcleaner")
-        let plistURL = appSupportURL.appendingPathComponent("AppCache.plist")
-
-        // Calculate size of plist cache file
-        let fileManager = FileManager.default
-        var totalSize: Int64 = 0
-
-        // Check plist file
-        if let attrs = try? fileManager.attributesOfItem(atPath: plistURL.path),
-           let fileSize = attrs[.size] as? Int64 {
-            totalSize += fileSize
-        }
-
-        await MainActor.run {
-            if totalSize > 0 {
-                cacheSize = "Cache size: \(formatByte(size: totalSize).human)"
-            } else {
-                cacheSize = "No cached data"
-            }
-        }
-    }
-
-    private func clearAppCache(showAlert: Bool = true) {
-        Task { @MainActor in
-            do {
-                try await AppCachePlist.shared.clearCache()
-
-                // Recalculate cache size
-                await calculateCacheSize()
-
-                // Show confirmation alert only if requested
-                if showAlert {
-                    let alert = NSAlert()
-                    alert.messageText = "Cache Cleared"
-                    alert.informativeText = "The app data cache has been cleared successfully. The cache will be rebuilt on the next app launch."
-                    alert.alertStyle = .informational
-                    alert.addButton(withTitle: "OK")
-                    alert.runModal()
-                }
-            } catch {
-                printOS("❌ Failed to clear cache: \(error)")
-
-                // Show error alert only if requested
-                if showAlert {
-                    let alert = NSAlert()
-                    alert.messageText = "Cache Clear Failed"
-                    alert.informativeText = "Failed to clear the cache: \(error.localizedDescription)"
-                    alert.alertStyle = .warning
-                    alert.addButton(withTitle: "OK")
-                    alert.runModal()
-                }
-            }
-        }
-    }
 
 }
 

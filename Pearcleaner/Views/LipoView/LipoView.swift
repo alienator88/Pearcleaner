@@ -667,14 +667,9 @@ struct LipoAppRowView: View {
                     bundleAllApps += UInt64(app.bundleSize)
                 }
 
-                // Persist to AppState.sortedApps and cache
+                // Persist to AppState.sortedApps (in-memory only, no cache)
                 if let index = AppState.shared.sortedApps.firstIndex(where: { $0.path == app.path }) {
                     AppState.shared.sortedApps[index].lipoSavings = Int64(savings)
-                }
-
-                // Update plist cache
-                Task {
-                    await AppCachePlist.updateLipoSavingsInCache(appPath: app.path.path, savings: Int64(savings))
                 }
 
                 isCalculating = false

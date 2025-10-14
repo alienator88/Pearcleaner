@@ -55,8 +55,8 @@ class UpdateManager: ObservableObject {
                 // Remove from list after upgrade
                 updatesBySource[.homebrew]?.removeAll { $0.id == app.id }
 
-                // Refresh all apps cache (same as CMD+R)
-                await refreshAllApps()
+                // Refresh apps
+                await refreshApps()
             }
 
         case .appStore:
@@ -134,8 +134,6 @@ class UpdateManager: ObservableObject {
         let maxAttempts = 40 // 40 attempts = ~20 seconds max wait
         let pollInterval: UInt64 = 500_000_000 // 0.5 seconds
 
-        printOS("🔍 Verifying \(app.appInfo.appName): current=\(currentVersion), expecting update")
-
         var bundleWasRemoved = false
 
         for attempt in 0..<maxAttempts {
@@ -148,28 +146,19 @@ class UpdateManager: ObservableObject {
                 // metadata may not always match what actually gets installed
                 if bundleWasRemoved {
                     // Bundle was removed and now exists again - App Store finished!
-                    printOS("✅ Verification succeeded for \(app.appInfo.appName): bundle reappeared with version \(diskVersion)")
                     await removeFromUpdatesList(appID: app.id, source: .appStore)
-                    await refreshAllApps()
+                    await refreshApps()
                     return
                 } else if diskVersion != currentVersion {
                     // Version changed without bundle removal - also a success
-                    printOS("✅ Verification succeeded for \(app.appInfo.appName): version changed from \(currentVersion) to \(diskVersion)")
                     await removeFromUpdatesList(appID: app.id, source: .appStore)
-                    await refreshAllApps()
+                    await refreshApps()
                     return
-                } else if attempt % 4 == 0 {
-                    // Log every 2 seconds
-                    printOS("⏱️ Still waiting for \(app.appInfo.appName): disk=\(diskVersion)")
                 }
             } else {
                 // Bundle doesn't exist - it's being replaced
                 if !bundleWasRemoved {
                     bundleWasRemoved = true
-                    printOS("🗑️ Bundle removed for \(app.appInfo.appName) - waiting for replacement...")
-                } else if attempt % 4 == 0 {
-                    // Log every 2 seconds when file doesn't exist
-                    printOS("⏱️ Still waiting for \(app.appInfo.appName): bundle not found on disk yet")
                 }
             }
         }
@@ -181,7 +170,7 @@ class UpdateManager: ObservableObject {
             printOS("⚠️ App Store update verification timed out for \(app.appInfo.appName): bundle still missing")
         }
         await removeFromUpdatesList(appID: app.id, source: .appStore)
-        await refreshAllApps()
+        await refreshApps()
     }
 
     /// Read bundle version directly from Info.plist without Bundle caching
@@ -210,23 +199,15 @@ class UpdateManager: ObservableObject {
         updatesBySource[source]?.removeAll { $0.id == appID }
     }
 
-    /// Refresh all apps after an update (same as CMD+R)
-    /// This ensures the cache is updated with fresh data from disk
-    private func refreshAllApps() async {
-        // Use the same approach as CMD+R: force refresh to bypass cache and rescan from disk
-        // This creates NEW Bundle instances which bypasses Foundation's Bundle caching
-        printOS("🔄 Refreshing all apps cache after update")
-
+    /// Refresh all apps after an update
+    private func refreshApps() async {
         let folderPaths = await MainActor.run {
             FolderSettingsManager.shared.folderPaths
         }
 
-        await withCheckedContinuation { continuation in
-            AppCachePlist.loadAndUpdateApps(folderPaths: folderPaths, forceRefresh: true) {
-                continuation.resume()
-            }
-        }
+        loadApps(folderPaths: folderPaths)
 
-        printOS("✅ Cache refresh completed")
+        // Wait for apps to load
+        try? await Task.sleep(nanoseconds: 500_000_000)
     }
 }

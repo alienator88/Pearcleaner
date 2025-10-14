@@ -95,7 +95,8 @@ class AppState: ObservableObject {
             creationDate: nil,
             contentChangeDate: nil,
             lastUsedDate: nil,
-            entitlements: nil
+            entitlements: nil,
+            adamID: nil
         )
 
         self.zombieFile = ZombieFile(
@@ -342,6 +343,7 @@ struct AppInfo: Identifiable, Equatable, Hashable {
     let contentChangeDate: Date?
     let lastUsedDate: Date?
     let entitlements: [String]?
+    let adamID: UInt64?  // App Store adam ID (nil if not from App Store)
 
     var totalSize: Int64 {
         return fileSize.values.reduce(0, +)
@@ -373,7 +375,7 @@ struct AppInfo: Identifiable, Equatable, Hashable {
         id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "",
         appVersion: "", appIcon: nil, webApp: false, wrapped: false, system: false, arch: .empty,
         cask: nil, steam: false, bundleSize: 0, lipoSavings: 0, fileSize: [:], fileSizeLogical: [:], fileIcon: [:],
-        creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, entitlements: nil)
+        creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, entitlements: nil, adamID: nil)
 
 }
 

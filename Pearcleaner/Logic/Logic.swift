@@ -25,6 +25,18 @@ func createOptimalChunks<T>(from array: [T], minChunkSize: Int = 10, maxChunkSiz
     return array.chunked(into: chunkSize)
 }
 
+/// Load apps from specified folder paths and update AppState
+/// This is the main entry point for loading/refreshing apps
+func loadApps(folderPaths: [String]) {
+    DispatchQueue.global(qos: .userInitiated).async {
+        let apps = getSortedApps(paths: folderPaths)
+
+        Task { @MainActor in
+            AppState.shared.sortedApps = apps
+            AppState.shared.restoreZombieAssociations()
+        }
+    }
+}
 
 
 // Get all apps from /Applications and ~/Applications
@@ -776,11 +788,6 @@ func removeApp(appState: AppState, withPath path: URL) {
         // Remove from sortedApps if found
         if let index = appState.sortedApps.firstIndex(where: { $0.path == path }) {
             appState.sortedApps.remove(at: index)
-        }
-
-        // Remove from plist cache
-        Task { @MainActor in
-            try? AppCachePlist.shared.removeFromCache(paths: [path.path])
         }
 
         if HelperToolManager.shared.isHelperToolInstalled {

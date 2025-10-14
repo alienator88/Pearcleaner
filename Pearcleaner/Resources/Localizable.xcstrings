@@ -10227,6 +10227,7 @@
       }
     },
     "Cache" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -12036,6 +12037,7 @@
       }
     },
     "Clear Cache" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -18095,6 +18097,7 @@
       }
     },
     "Enable app data caching" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -38505,6 +38508,7 @@
       }
     },
     "Pearcleaner caches app metadata to improve loading times. When disabled, apps will be scanned fresh each time. Disabling this will clear existing cached data." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

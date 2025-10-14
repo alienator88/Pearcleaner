@@ -320,10 +320,9 @@ struct SimpleSearchStyleSidebar: TextFieldStyle {
 
                 Section(header: Text("Options")) {
                     Button("Refresh List") {
-                        // Use loadAndUpdateApps with forceRefresh to bypass cache
                         Task { @MainActor in
                             withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                                AppCachePlist.loadAndUpdateApps(folderPaths: fsm.folderPaths, forceRefresh: true)
+                                loadApps(folderPaths: fsm.folderPaths)
                             }
                         }
                     }

@@ -29,9 +29,7 @@ struct PearcleanerApp: App {
 
         //MARK: Pre-load apps data during app initialization
         let folderPaths = fsm.folderPaths
-        Task { @MainActor in
-            AppCachePlist.loadAndUpdateApps(folderPaths: folderPaths)
-        }
+        loadApps(folderPaths: folderPaths)
 
         //MARK: Check permissions
         let permissionManager = PermissionManager.shared

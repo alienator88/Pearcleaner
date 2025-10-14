@@ -14,7 +14,12 @@ class UpdateCoordinator {
         async let homebrewApps = HomebrewUpdateChecker.checkForUpdates(apps: apps)
 
         async let appStoreApps: [UpdateableApp] = {
-            let adamIDs = await AppStoreDetector.findAppStoreApps(from: apps)
+            // Extract adamIDs directly from apps (pre-loaded during app scan)
+            let adamIDs = Dictionary(uniqueKeysWithValues:
+                apps.compactMap { app in
+                    app.adamID.map { (app.path, $0) }
+                }
+            )
             let updates = await AppStoreUpdateChecker.checkForUpdates(apps: apps, adamIDs: adamIDs)
             return updates
         }()
