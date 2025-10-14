@@ -66,7 +66,7 @@ struct PackageView: View {
     @AppStorage("settings.general.permanentDelete") private var permanentDelete: Bool = false
 
     // Uninstall sheet state
-    @State private var showUninstallSheet = false
+    @State private var uninstallSheetWindow: NSWindow?
     @State private var packageToUninstall: PackageInfo?
     @State private var filesToUninstall: [String] = []
     @State private var selectedFilesToUninstall: Set<String> = []
@@ -266,25 +266,6 @@ struct PackageView: View {
                 .disabled(isLoading)
             }
 
-        }
-        .sheet(isPresented: $showUninstallSheet) {
-            if let package = packageToUninstall {
-                PackageUninstallSheet(
-                    package: package,
-                    files: filesToUninstall,
-                    selectedFiles: $selectedFilesToUninstall,
-                    onConfirm: {
-                        showUninstallSheet = false
-                        Task {
-                            await performFullUninstall(package, selectedFiles: Array(selectedFilesToUninstall))
-                        }
-                    },
-                    onCancel: {
-                        showUninstallSheet = false
-                    }
-                )
-                .id(package.packageId) // Force view recreation when package changes
-            }
         }
     }
 
@@ -493,7 +474,7 @@ struct PackageView: View {
                 self.packageToUninstall = package
                 self.filesToUninstall = []
                 self.selectedFilesToUninstall = []
-                self.showUninstallSheet = true
+                self.showUninstallSheet(package: package, files: [])
             }
 
             // Load BOM files in background
@@ -514,7 +495,11 @@ struct PackageView: View {
         await MainActor.run {
             if existingFiles.isEmpty {
                 // Close the sheet if it was open
-                self.showUninstallSheet = false
+                if let sheetWindow = self.uninstallSheetWindow,
+                   let parentWindow = NSApp.keyWindow {
+                    parentWindow.endSheet(sheetWindow)
+                }
+                self.uninstallSheetWindow = nil
 
                 showCustomAlert(
                     title: "No Files Found",
@@ -527,18 +512,67 @@ struct PackageView: View {
                 return
             }
 
-            // Set all data first before showing the sheet
+            // Set all data
             self.packageToUninstall = updatedPackage
             self.filesToUninstall = existingFiles
             self.selectedFilesToUninstall = Set(existingFiles) // All checked by default
+
+            // Show the sheet
+            self.showUninstallSheet(package: updatedPackage, files: existingFiles)
+        }
+    }
+
+    private func showUninstallSheet(package: PackageInfo, files: [String]) {
+        guard let parentWindow = NSApp.keyWindow ?? NSApp.windows.first(where: { $0.isVisible }) else {
+            return
         }
 
-        // Small delay to ensure state updates have propagated before showing sheet
-        try? await Task.sleep(nanoseconds: 50_000_000) // 50ms
+        // Create the SwiftUI view
+        let contentView = PackageUninstallSheet(
+            package: package,
+            files: files,
+            selectedFiles: $selectedFilesToUninstall,
+            onConfirm: {
+                if let sheetWindow = self.uninstallSheetWindow {
+                    parentWindow.endSheet(sheetWindow)
+                }
+                self.uninstallSheetWindow = nil
+                Task {
+                    await performFullUninstall(package, selectedFiles: Array(self.selectedFilesToUninstall))
+                }
+            },
+            onCancel: {
+                if let sheetWindow = self.uninstallSheetWindow {
+                    parentWindow.endSheet(sheetWindow)
+                }
+                self.uninstallSheetWindow = nil
+            }
+        )
 
-        await MainActor.run {
-            self.showUninstallSheet = true
+        // If sheet already exists, update its content
+        if let existingSheet = uninstallSheetWindow,
+           let hostingController = existingSheet.contentViewController as? NSHostingController<PackageUninstallSheet> {
+            hostingController.rootView = contentView
+            return
         }
+
+        // Create new sheet window
+        let hostingController = NSHostingController(rootView: contentView)
+
+        let sheetWindow = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 600, height: 500),
+            styleMask: [.titled, .closable],
+            backing: .buffered,
+            defer: false
+        )
+        sheetWindow.title = "Uninstall Package"
+        sheetWindow.contentViewController = hostingController
+        sheetWindow.isReleasedWhenClosed = false
+
+        // Present as sheet
+        parentWindow.beginSheet(sheetWindow)
+
+        self.uninstallSheetWindow = sheetWindow
     }
 
     private func performFullUninstall(_ package: PackageInfo, selectedFiles: [String]) async {
@@ -1342,7 +1376,14 @@ private func getBomFilesByExistence(for package: PackageInfo) -> (existing: [Str
         "/usr", "/usr/bin", "/usr/lib", "/usr/libexec", "/usr/local", "/usr/local/bin",
         "/usr/local/lib", "/usr/local/share", "/usr/sbin", "/usr/share", "/var",
         "/var/db", "/var/log", "/private", "/private/etc", "/private/tmp",
-        "/private/var", "/etc", "/tmp", "/opt", "/opt/local", "/opt/local/bin", "/opt/local/lib"
+        "/private/var", "/etc", "/tmp", "/opt", "/opt/local", "/opt/local/bin", "/opt/local/lib",
+        // Additional high-risk directories that should NEVER be deleted as parent directories
+        "/Library/Extensions",  // Kernel extensions
+        "/Library/Audio", "/Library/Audio/Plug-Ins", "/Library/Audio/Plug-Ins/HAL",  // Audio plugins
+        "/Library/Audio/Plug-Ins/Components", "/Library/Audio/Plug-Ins/VST", "/Library/Audio/Plug-Ins/VST3",
+        "/Library/Preferences",  // System preferences
+        "/Library/LaunchAgents", "/Library/LaunchDaemons",  // Launch items
+        "/Library/Components"  // System components
     ]
     
     var existingFiles: [String] = []
@@ -1364,11 +1405,12 @@ private func getBomFilesByExistence(for package: PackageInfo) -> (existing: [Str
     }
     
     for file in filesToProcess {
-        // Filter out system directories
+        // Filter out system directories themselves (but NOT their children)
+        // e.g., filter "/Library/Extensions" but allow "/Library/Extensions/Foo.kext"
         if systemDirectoriesToFilter.contains(file) {
             continue
         }
-        
+
         // Check if file exists
         if FileManager.default.fileExists(atPath: file) {
             existingFiles.append(file)
@@ -1384,26 +1426,59 @@ private func getBomFilesByExistence(for package: PackageInfo) -> (existing: [Str
     return (filteredExistingFiles.sorted(), filteredDeletedFiles.sorted())
 }
 
-// Helper function to remove redundant child paths when parent directories are already in the list
+// Helper function to remove redundant child paths for known bundle types
+// This collapses bundle internals (e.g., Foo.app/Contents/...) into just the bundle (Foo.app)
+// SAFETY: Only collapses recognized bundle extensions, never arbitrary directories
 private func removeRedundantChildPaths(_ paths: [String]) -> [String] {
+    // Comprehensive list of macOS bundle types that should be collapsed
+    let bundleExtensions = [
+        // Applications & System
+        ".app", ".appex", ".xpc",
+
+        // Drivers & Kernel
+        ".kext", ".driver",
+
+        // Plugins & Components
+        ".plugin", ".bundle", ".component",
+        ".vst", ".vst3", ".au",
+
+        // Frameworks & Libraries
+        ".framework", ".dylib",
+
+        // System Services
+        ".service", ".prefPane", ".menu",
+        ".qlgenerator", ".saver", ".mdimporter",
+        ".action", ".workflow",
+
+        // Development
+        ".xcodeproj", ".xcworkspace", ".playground",
+        ".xcframework", ".dSYM",
+
+        // Miscellaneous
+        ".pkg", ".lpkg", ".clr", ".slideSaver"
+    ]
+
     let sortedPaths = paths.sorted()
     var result: [String] = []
-    
+
     for path in sortedPaths {
-        var isRedundant = false
-        
+        var isInsideBundle = false
+
+        // Check if this path is inside a known bundle type
         for existingPath in result {
-            if path.hasPrefix(existingPath + "/") {
-                isRedundant = true
+            // Only treat as redundant if parent is a recognized bundle
+            let isBundle = bundleExtensions.contains { existingPath.hasSuffix($0) }
+            if isBundle && path.hasPrefix(existingPath + "/") {
+                isInsideBundle = true
                 break
             }
         }
-        
-        if !isRedundant {
+
+        if !isInsideBundle {
             result.append(path)
         }
     }
-    
+
     return result
 }
 

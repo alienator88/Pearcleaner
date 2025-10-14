@@ -131,7 +131,7 @@ class UpdateManager: ObservableObject {
         let appPath = app.appInfo.path
         let currentVersion = app.appInfo.appVersion
         let maxAttempts = 40 // 40 attempts = ~20 seconds max wait
-        let pollInterval: UInt64 = 500_000_000 // 0.5 seconds
+        let pollInterval: UInt64 = 1_000_000_000 // 1 second
 
         var bundleWasRemoved = false
 
