@@ -88,8 +88,8 @@ struct AppsUpdaterView: View {
                     Spacer()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if !updateManager.hasUpdates {
-                // Empty state - centered
+            } else if updateManager.updatesBySource.isEmpty {
+                // Empty state - centered (only shown before first scan)
                 VStack(alignment: .center, spacing: 10) {
                     Spacer()
                     Image(systemName: "checkmark.circle")
@@ -105,55 +105,43 @@ struct AppsUpdaterView: View {
             } else {
                 ScrollView {
                     LazyVStack(spacing: 0) {
-                        // Homebrew Category
-                        if let homebrewApps = updateManager.updatesBySource[.homebrew],
-                           !homebrewApps.isEmpty {
-                            CategorySection(
-                                title: "Homebrew",
-                                icon: "mug",
-                                apps: homebrewApps,
-                                searchText: searchText,
-                                collapsed: collapsedCategories.contains("Homebrew"),
-                                onToggle: { toggleCategory("Homebrew") },
-                                onUpdateAll: {
-                                    Task { await updateManager.updateAll(source: .homebrew) }
-                                },
-                                isFirst: true
-                            )
-                        }
+                        // Always show all categories (alphabetical order)
+                        CategorySection(
+                            title: "App Store",
+                            icon: "storefront.fill",
+                            apps: updateManager.updatesBySource[.appStore] ?? [],
+                            searchText: searchText,
+                            collapsed: (updateManager.updatesBySource[.appStore]?.isEmpty ?? true) || collapsedCategories.contains("App Store"),
+                            onToggle: { toggleCategory("App Store") },
+                            onUpdateAll: {
+                                Task { await updateManager.updateAll(source: .appStore) }
+                            },
+                            isFirst: true
+                        )
 
-                        // App Store Category
-                        if let appStoreApps = updateManager.updatesBySource[.appStore],
-                           !appStoreApps.isEmpty {
-                            CategorySection(
-                                title: "App Store",
-                                icon: "storefront.fill",
-                                apps: appStoreApps,
-                                searchText: searchText,
-                                collapsed: collapsedCategories.contains("App Store"),
-                                onToggle: { toggleCategory("App Store") },
-                                onUpdateAll: {
-                                    Task { await updateManager.updateAll(source: .appStore) }
-                                },
-                                isFirst: updateManager.updatesBySource[.homebrew]?.isEmpty ?? true
-                            )
-                        }
+                        CategorySection(
+                            title: "Homebrew",
+                            icon: "mug",
+                            apps: updateManager.updatesBySource[.homebrew] ?? [],
+                            searchText: searchText,
+                            collapsed: (updateManager.updatesBySource[.homebrew]?.isEmpty ?? true) || collapsedCategories.contains("Homebrew"),
+                            onToggle: { toggleCategory("Homebrew") },
+                            onUpdateAll: {
+                                Task { await updateManager.updateAll(source: .homebrew) }
+                            },
+                            isFirst: false
+                        )
 
-                        // Sparkle Category
-                        if let sparkleApps = updateManager.updatesBySource[.sparkle],
-                           !sparkleApps.isEmpty {
-                            CategorySection(
-                                title: "Sparkle",
-                                icon: "sparkles",
-                                apps: sparkleApps,
-                                searchText: searchText,
-                                collapsed: collapsedCategories.contains("Sparkle"),
-                                onToggle: { toggleCategory("Sparkle") },
-                                onUpdateAll: nil,  // No "Update All" for Sparkle
-                                isFirst: (updateManager.updatesBySource[.homebrew]?.isEmpty ?? true) &&
-                                        (updateManager.updatesBySource[.appStore]?.isEmpty ?? true)
-                            )
-                        }
+                        CategorySection(
+                            title: "Sparkle",
+                            icon: "sparkles",
+                            apps: updateManager.updatesBySource[.sparkle] ?? [],
+                            searchText: searchText,
+                            collapsed: (updateManager.updatesBySource[.sparkle]?.isEmpty ?? true) || collapsedCategories.contains("Sparkle"),
+                            onToggle: { toggleCategory("Sparkle") },
+                            onUpdateAll: nil,  // No "Update All" for Sparkle
+                            isFirst: false
+                        )
                     }
                     .padding(.horizontal, 20)
                     .padding(.bottom, 20)
@@ -170,7 +158,7 @@ struct AppsUpdaterView: View {
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                             .font(.title2)
                             .fontWeight(.bold)
-                        Text("Check for app updates from multiple sources")
+                        Text("Check for app updates from App Store, Homebrew and Sparkle")
                             .font(.callout)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }
@@ -274,9 +262,19 @@ struct CategorySection: View {
 
             // Packages in category (only if not collapsed)
             if !collapsed {
-                LazyVStack(spacing: 8) {
-                    ForEach(searchText.isEmpty ? apps : filteredApps) { app in
-                        UpdateRowView(app: app)
+                if filteredApps.isEmpty {
+                    // Empty state
+                    Text("No \(title.lowercased()) apps to update")
+                        .font(.callout)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.vertical, 12)
+                        .padding(.horizontal, 8)
+                } else {
+                    LazyVStack(spacing: 8) {
+                        ForEach(searchText.isEmpty ? apps : filteredApps) { app in
+                            UpdateRowView(app: app)
+                        }
                     }
                 }
             }

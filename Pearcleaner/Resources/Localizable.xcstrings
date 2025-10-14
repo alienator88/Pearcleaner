@@ -9060,6 +9060,7 @@
       }
     },
     "BETA" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -11183,7 +11184,7 @@
         }
       }
     },
-    "Check for app updates from multiple sources" : {
+    "Check for app updates from App Store, Homebrew and Sparkle" : {
 
     },
     "Check for potential issues" : {
@@ -34044,6 +34045,9 @@
         }
       }
     },
+    "No %@ apps to update" : {
+
+    },
     "No apps available for thinning" : {
       "localizations" : {
         "de" : {
@@ -37231,6 +37235,9 @@
           }
         }
       }
+    },
+    "Open to Update" : {
+
     },
     "Operation failed: %@" : {
       "localizations" : {

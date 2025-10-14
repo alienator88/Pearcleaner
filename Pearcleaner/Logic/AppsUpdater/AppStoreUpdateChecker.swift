@@ -11,20 +11,17 @@ import StoreFoundation
 import AlinFoundation
 
 class AppStoreUpdateChecker {
-    static func checkForUpdates(apps: [AppInfo], adamIDs: [URL: UInt64]) async -> [UpdateableApp] {
-        guard !adamIDs.isEmpty else { return [] }
-
-        // Convert dictionary to array for chunking
-        let adamIDArray = Array(adamIDs)
+    static func checkForUpdates(apps: [AppInfo]) async -> [UpdateableApp] {
+        guard !apps.isEmpty else { return [] }
 
         // Create optimal chunks based on CPU cores (smaller chunks for App Store API calls)
-        let chunks = createOptimalChunks(from: adamIDArray, minChunkSize: 3, maxChunkSize: 10)
+        let chunks = createOptimalChunks(from: apps, minChunkSize: 3, maxChunkSize: 10)
 
         // Process chunks concurrently using TaskGroup
         return await withTaskGroup(of: [UpdateableApp].self) { group in
             for chunk in chunks {
                 group.addTask {
-                    await checkChunk(chunk: chunk, apps: apps)
+                    await checkChunk(chunk: chunk)
                 }
             }
 
@@ -39,11 +36,11 @@ class AppStoreUpdateChecker {
     }
 
     /// Check a chunk of apps for updates concurrently
-    private static func checkChunk(chunk: [(URL, UInt64)], apps: [AppInfo]) async -> [UpdateableApp] {
+    private static func checkChunk(chunk: [AppInfo]) async -> [UpdateableApp] {
         await withTaskGroup(of: UpdateableApp?.self) { group in
-            for (url, adamID) in chunk {
+            for app in chunk {
                 group.addTask {
-                    await checkSingleApp(url: url, adamID: adamID, apps: apps)
+                    await checkSingleApp(app: app)
                 }
             }
 
@@ -60,117 +57,86 @@ class AppStoreUpdateChecker {
     }
 
     /// Check a single app for updates
-    private static func checkSingleApp(url: URL, adamID: UInt64, apps: [AppInfo]) async -> UpdateableApp? {
-        guard let appInfo = apps.first(where: { $0.path == url }) else { return nil }
-
-        // First check if app still exists in App Store to avoid popup
-        guard let metadata = await getAppStoreInfo(adamID: adamID) else {
+    private static func checkSingleApp(app: AppInfo) async -> UpdateableApp? {
+        // Query iTunes Search API using bundle ID to get app info (adamID, version, metadata)
+        guard let appStoreInfo = await getAppStoreInfo(bundleID: app.bundleIdentifier) else {
             return nil
         }
 
-        do {
-            // Check for update using mas CLI approach: start download, check metadata, cancel immediately
-            let version = try await checkVersion(for: adamID, currentVersion: appInfo.appVersion)
-
-            // Only add if App Store version is GREATER than installed version
-            if let availableVersion = version, availableVersion > appInfo.appVersion {
-                return UpdateableApp(
-                    appInfo: appInfo,
-                    availableVersion: availableVersion,
-                    source: .appStore,
-                    adamID: adamID,
-                    appStoreURL: metadata.appStoreURL,
-                    status: .idle,
-                    progress: 0.0,
-                    releaseTitle: nil,
-                    releaseDescription: metadata.releaseNotes,
-                    releaseDate: metadata.releaseDate
-                )
-            }
-        } catch {
-            // Catch errors like "no downloads" or network errors
-            return nil
+        // Only add if App Store version is GREATER than installed version
+        if appStoreInfo.version > app.appVersion {
+            return UpdateableApp(
+                appInfo: app,
+                availableVersion: appStoreInfo.version,
+                source: .appStore,
+                adamID: appStoreInfo.adamID,
+                appStoreURL: appStoreInfo.appStoreURL,
+                status: .idle,
+                progress: 0.0,
+                releaseTitle: nil,
+                releaseDescription: appStoreInfo.releaseNotes,
+                releaseDate: appStoreInfo.releaseDate
+            )
         }
 
         return nil
     }
 
-    private struct AppStoreMetadata {
+    private struct AppStoreInfo {
+        let adamID: UInt64
+        let version: String
         let appStoreURL: String
         let releaseNotes: String?
         let releaseDate: String?
     }
 
-    private static func getAppStoreInfo(adamID: UInt64) async -> AppStoreMetadata? {
-        // Query iTunes Search API to check if app is still available and get its URL + metadata
-        guard let url = URL(string: "https://itunes.apple.com/lookup?id=\(adamID)") else {
+    private static func getAppStoreInfo(bundleID: String) async -> AppStoreInfo? {
+        // Query iTunes Search API using bundle ID to get all app info at once
+        guard let endpoint = URL(string: "https://itunes.apple.com/lookup") else {
+            return nil
+        }
+
+        let languageCode = Locale.current.region?.identifier ?? "US"
+        var components = URLComponents(url: endpoint, resolvingAgainstBaseURL: false)
+        components?.queryItems = [
+            URLQueryItem(name: "bundleId", value: bundleID),
+            URLQueryItem(name: "country", value: languageCode),
+            URLQueryItem(name: "limit", value: "1")
+        ]
+
+        guard let url = components?.url else {
             return nil
         }
 
         do {
-            let (data, _) = try await URLSession.shared.data(from: url)
+            let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 30)
+            let (data, _) = try await URLSession.shared.data(for: request)
+
             if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
                let resultCount = json["resultCount"] as? Int,
                resultCount > 0,
                let results = json["results"] as? [[String: Any]],
                let firstResult = results.first,
+               let trackId = firstResult["trackId"] as? UInt64,
+               let version = firstResult["version"] as? String,
                let trackViewUrl = firstResult["trackViewUrl"] as? String {
 
-                // Extract release notes and date if available
+                // Extract optional metadata
                 let releaseNotes = firstResult["releaseNotes"] as? String
                 let releaseDate = firstResult["currentVersionReleaseDate"] as? String
 
-                return AppStoreMetadata(
+                return AppStoreInfo(
+                    adamID: trackId,
+                    version: version,
                     appStoreURL: trackViewUrl,
                     releaseNotes: releaseNotes,
                     releaseDate: releaseDate
                 )
             }
         } catch {
-            // Error checking availability - silently fail
+            // Error querying iTunes API - silently fail
         }
 
         return nil
     }
-
-    private static func checkVersion(for adamID: UInt64, currentVersion: String) async throws -> String? {
-        // Use iTunes Search API instead of CommerceKit to avoid triggering App Store popup
-        // This is a simple HTTP request that doesn't initiate any purchase operations
-        guard let endpoint = URL(string: "https://itunes.apple.com/lookup") else {
-            throw NSError(domain: NSURLErrorDomain, code: NSURLErrorUnsupportedURL, userInfo: nil)
-        }
-
-        let languageCode = Locale.current.regionCode ?? "US"
-        var components = URLComponents(url: endpoint, resolvingAgainstBaseURL: false)
-        components?.queryItems = [
-            URLQueryItem(name: "id", value: "\(adamID)"),
-            URLQueryItem(name: "country", value: languageCode)
-        ]
-
-        guard let url = components?.url else {
-            throw NSError(domain: NSURLErrorDomain, code: NSURLErrorUnsupportedURL, userInfo: nil)
-        }
-
-        // Perform HTTP request (no CommerceKit, no purchase operation, no popup)
-        let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 30)
-        let (data, _) = try await URLSession.shared.data(for: request)
-
-        // Parse JSON response
-        let json = try JSONDecoder().decode(iTunesSearchResponse.self, from: data)
-        guard let result = json.results.first else { return nil }
-
-        return result.version
-    }
-}
-
-// MARK: - iTunes Search API Models
-
-/// Response from iTunes Search API
-private struct iTunesSearchResponse: Codable {
-    let results: [iTunesApp]
-}
-
-/// App information from iTunes Search API
-private struct iTunesApp: Codable {
-    let version: String
 }

@@ -49,14 +49,10 @@ class MetadataAppInfoFetcher {
         // Get entitlements for the app
         let entitlements = getEntitlements(for: path.path)
 
-        // Extract adamID if available
-        let adamIDNumber = metadata["kMDItemAppStoreAdamID"] as? NSNumber
-        let adamID = adamIDNumber?.uint64Value
-
         return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName,
                        appVersion: version, appIcon: appIcon, webApp: webApp, wrapped: wrapped, system: system,
                        arch: arch, cask: cask, steam: false, bundleSize: logicalSize, fileSize: [:],
-                       fileSizeLogical: [:], fileIcon: [:], creationDate: creationDate, contentChangeDate: contentChangeDate, lastUsedDate: lastUsedDate, entitlements: entitlements, adamID: adamID)
+                       fileSizeLogical: [:], fileIcon: [:], creationDate: creationDate, contentChangeDate: contentChangeDate, lastUsedDate: lastUsedDate, entitlements: entitlements)
     }
 }
 
@@ -115,8 +111,7 @@ func getMDLSMetadata(for paths: [String]) -> [String: [String: Any]]? {
         kMDItemFSName,
         kMDItemVersion,
         kMDItemLogicalSize,
-        kMDItemPhysicalSize,
-        "kMDItemAppStoreAdamID" as CFString
+        kMDItemPhysicalSize
     ]
 
     // OPTIMIZATION: Process in parallel chunks
@@ -237,7 +232,7 @@ class AppInfoFetcher {
         let entitlements = getEntitlements(for: path.path)
 
         return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName, appVersion: appVersion, appIcon: appIcon,
-                       webApp: webApp, wrapped: wrapped, system: system, arch: arch, cask: cask, steam: false, bundleSize: 0, fileSize: [:], fileSizeLogical: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, entitlements: entitlements, adamID: nil)
+                       webApp: webApp, wrapped: wrapped, system: system, arch: arch, cask: cask, steam: false, bundleSize: 0, fileSize: [:], fileSizeLogical: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, entitlements: entitlements)
     }
 
 }
@@ -324,7 +319,7 @@ class SteamAppInfoFetcher {
         return AppInfo(id: UUID(), path: launcherPath, bundleIdentifier: bundleIdentifier, appName: appName,
                        appVersion: appVersion, appIcon: appIcon, webApp: webApp, wrapped: false,
                        system: system, arch: arch, cask: nil, steam: true, bundleSize: 0, fileSize: [:],
-                       fileSizeLogical: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, entitlements: entitlements, adamID: nil)
+                       fileSizeLogical: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, entitlements: entitlements)
     }
 }
 

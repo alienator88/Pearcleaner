@@ -130,13 +130,12 @@ class UpdateManager: ObservableObject {
     private func waitForBundleUpdate(app: UpdateableApp) async {
         let appPath = app.appInfo.path
         let currentVersion = app.appInfo.appVersion
-        let expectedVersion = app.availableVersion ?? currentVersion
         let maxAttempts = 40 // 40 attempts = ~20 seconds max wait
         let pollInterval: UInt64 = 500_000_000 // 0.5 seconds
 
         var bundleWasRemoved = false
 
-        for attempt in 0..<maxAttempts {
+        for _ in 0..<maxAttempts {
             try? await Task.sleep(nanoseconds: pollInterval)
 
             // Read version directly from Info.plist to avoid Bundle caching issues

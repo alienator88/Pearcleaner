@@ -9,18 +9,23 @@ import Foundation
 import AlinFoundation
 
 class UpdateCoordinator {
+    /// Check if an app is from the App Store by verifying receipt existence
+    private static func isAppStoreApp(_ app: AppInfo) -> Bool {
+        guard let bundle = Bundle(url: app.path),
+              let receiptPath = bundle.appStoreReceiptURL?.path else {
+            return false
+        }
+        return FileManager.default.fileExists(atPath: receiptPath)
+    }
+
     static func scanForUpdates(apps: [AppInfo]) async -> [UpdateSource: [UpdateableApp]] {
         // Run all three detectors concurrently
         async let homebrewApps = HomebrewUpdateChecker.checkForUpdates(apps: apps)
 
         async let appStoreApps: [UpdateableApp] = {
-            // Extract adamIDs directly from apps (pre-loaded during app scan)
-            let adamIDs = Dictionary(uniqueKeysWithValues:
-                apps.compactMap { app in
-                    app.adamID.map { (app.path, $0) }
-                }
-            )
-            let updates = await AppStoreUpdateChecker.checkForUpdates(apps: apps, adamIDs: adamIDs)
+            // Filter apps that have App Store receipts
+            let appStoreApps = apps.filter { isAppStoreApp($0) }
+            let updates = await AppStoreUpdateChecker.checkForUpdates(apps: appStoreApps)
             return updates
         }()
 

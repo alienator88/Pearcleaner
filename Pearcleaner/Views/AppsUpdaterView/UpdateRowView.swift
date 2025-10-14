@@ -48,7 +48,7 @@ struct UpdateRowView: View {
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
             }
         } else {
-            Button(app.source == .sparkle ? "Open" : "Update") {
+            Button(app.source == .sparkle ? "Open to Update" : "Update") {
                 Task { await updateManager.updateApp(app) }
             }
             .buttonStyle(.plain)

@@ -711,14 +711,16 @@ struct HelperBadge: View {
 
 
 struct BetaBadge: View {
+    let label: String
     let fontSize: CGFloat
 
-    init(fontSize: CGFloat = 10) {
+    init(label: String = "BETA", fontSize: CGFloat = 10) {
+        self.label = label
         self.fontSize = fontSize
     }
 
     var body: some View {
-        Text("BETA").font(.system(size: fontSize)).foregroundStyle(.orange)
+        Text(label).font(.system(size: fontSize)).foregroundStyle(.orange)
             .padding(1).padding(.horizontal, 2)
             .overlay {
                 RoundedRectangle(cornerRadius: 4)
