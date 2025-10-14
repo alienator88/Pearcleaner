@@ -18,18 +18,29 @@ class UpdateCoordinator {
         return FileManager.default.fileExists(atPath: receiptPath)
     }
 
-    static func scanForUpdates(apps: [AppInfo]) async -> [UpdateSource: [UpdateableApp]] {
-        // Run all three detectors concurrently
-        async let homebrewApps = HomebrewUpdateChecker.checkForUpdates(apps: apps)
+    static func scanForUpdates(
+        apps: [AppInfo],
+        checkAppStore: Bool,
+        checkHomebrew: Bool,
+        checkSparkle: Bool
+    ) async -> [UpdateSource: [UpdateableApp]] {
 
-        async let appStoreApps: [UpdateableApp] = {
-            // Filter apps that have App Store receipts
-            let appStoreApps = apps.filter { isAppStoreApp($0) }
-            let updates = await AppStoreUpdateChecker.checkForUpdates(apps: appStoreApps)
-            return updates
+        // Run detectors concurrently (only if enabled)
+        async let homebrewApps: [UpdateableApp] = {
+            guard checkHomebrew else { return [] }
+            return await HomebrewUpdateChecker.checkForUpdates(apps: apps)
         }()
 
-        async let sparkleApps = SparkleDetector.findSparkleApps(from: apps)
+        async let appStoreApps: [UpdateableApp] = {
+            guard checkAppStore else { return [] }
+            let appStoreApps = apps.filter { isAppStoreApp($0) }
+            return await AppStoreUpdateChecker.checkForUpdates(apps: appStoreApps)
+        }()
+
+        async let sparkleApps: [UpdateableApp] = {
+            guard checkSparkle else { return [] }
+            return await SparkleDetector.findSparkleApps(from: apps)
+        }()
 
         // Wait for all results
         let (brew, store, sparkle) = await (homebrewApps, appStoreApps, sparkleApps)

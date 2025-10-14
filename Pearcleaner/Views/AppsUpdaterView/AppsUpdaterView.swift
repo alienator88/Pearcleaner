@@ -16,15 +16,64 @@ struct AppsUpdaterView: View {
     @State private var collapsedCategories: Set<String> = []
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+    @AppStorage("settings.updater.checkAppStore") private var checkAppStore: Bool = true
+    @AppStorage("settings.updater.checkHomebrew") private var checkHomebrew: Bool = true
+    @AppStorage("settings.updater.checkSparkle") private var checkSparkle: Bool = true
 
     private var totalUpdateCount: Int {
         updateManager.updatesBySource.values.reduce(0) { $0 + $1.count }
     }
 
+    private var allSourcesDisabled: Bool {
+        !checkAppStore && !checkHomebrew && !checkSparkle
+    }
+
     @ViewBuilder
     private var resultsCountBar: some View {
-        if updateManager.hasUpdates {
-            HStack {
+        if updateManager.hasUpdates || updateManager.lastScanDate != nil {
+            HStack(spacing: 12) {
+                // Left: Source checkboxes with icons and names
+                HStack(spacing: 12) {
+                    SourceCheckbox(
+                        isEnabled: $checkAppStore,
+                        name: "App Store",
+                        icon: "storefront.fill",
+                        onChange: { isEnabled in
+                            // Only rescan when checking ON, not when unchecking
+                            if isEnabled {
+                                Task { await updateManager.scanForUpdates() }
+                            }
+                        }
+                    )
+
+                    SourceCheckbox(
+                        isEnabled: $checkHomebrew,
+                        name: "Homebrew",
+                        icon: "mug.fill",
+                        onChange: { isEnabled in
+                            // Only rescan when checking ON, not when unchecking
+                            if isEnabled {
+                                Task { await updateManager.scanForUpdates() }
+                            }
+                        }
+                    )
+
+                    SourceCheckbox(
+                        isEnabled: $checkSparkle,
+                        name: "Sparkle",
+                        icon: "sparkles",
+                        onChange: { isEnabled in
+                            // Only rescan when checking ON, not when unchecking
+                            if isEnabled {
+                                Task { await updateManager.scanForUpdates() }
+                            }
+                        }
+                    )
+                }
+
+                Divider().frame(height: 16)
+
+                // Middle: Update count
                 Text("\(totalUpdateCount) update\(totalUpdateCount == 1 ? "" : "s")")
                     .font(.caption)
                     .monospacedDigit()
@@ -37,6 +86,16 @@ struct AppsUpdaterView: View {
                 }
 
                 Spacer()
+
+                // Right: Timeline (same as PackageView)
+                if let lastScan = updateManager.lastScanDate {
+                    TimelineView(.periodic(from: lastScan, by: 1.0)) { _ in
+                        Text("Updated \(formatRelativeTime(lastScan))")
+                            .font(.caption)
+                            .monospacedDigit()
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                }
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 10)
@@ -88,8 +147,8 @@ struct AppsUpdaterView: View {
                     Spacer()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if updateManager.updatesBySource.isEmpty {
-                // Empty state - centered (only shown before first scan)
+            } else if updateManager.updatesBySource.isEmpty || allSourcesDisabled {
+                // Empty state - centered (shown before first scan OR when all sources disabled)
                 VStack(alignment: .center, spacing: 10) {
                     Spacer()
                     Image(systemName: "checkmark.circle")
@@ -105,45 +164,52 @@ struct AppsUpdaterView: View {
             } else {
                 ScrollView {
                     LazyVStack(spacing: 0) {
-                        // Always show all categories (alphabetical order)
-                        CategorySection(
-                            title: "App Store",
-                            icon: "storefront.fill",
-                            apps: updateManager.updatesBySource[.appStore] ?? [],
-                            searchText: searchText,
-                            collapsed: (updateManager.updatesBySource[.appStore]?.isEmpty ?? true) || collapsedCategories.contains("App Store"),
-                            onToggle: { toggleCategory("App Store") },
-                            onUpdateAll: {
-                                Task { await updateManager.updateAll(source: .appStore) }
-                            },
-                            isFirst: true
-                        )
+                        // Show categories only if their checkbox is enabled
+                        if checkAppStore {
+                            CategorySection(
+                                title: "App Store",
+                                icon: "storefront.fill",
+                                apps: updateManager.updatesBySource[.appStore] ?? [],
+                                searchText: searchText,
+                                collapsed: (updateManager.updatesBySource[.appStore]?.isEmpty ?? true) || collapsedCategories.contains("App Store"),
+                                onToggle: { toggleCategory("App Store") },
+                                onUpdateAll: {
+                                    Task { await updateManager.updateAll(source: .appStore) }
+                                },
+                                isFirst: true
+                            )
+                        }
 
-                        CategorySection(
-                            title: "Homebrew",
-                            icon: "mug",
-                            apps: updateManager.updatesBySource[.homebrew] ?? [],
-                            searchText: searchText,
-                            collapsed: (updateManager.updatesBySource[.homebrew]?.isEmpty ?? true) || collapsedCategories.contains("Homebrew"),
-                            onToggle: { toggleCategory("Homebrew") },
-                            onUpdateAll: {
-                                Task { await updateManager.updateAll(source: .homebrew) }
-                            },
-                            isFirst: false
-                        )
+                        if checkHomebrew {
+                            CategorySection(
+                                title: "Homebrew",
+                                icon: "mug",
+                                apps: updateManager.updatesBySource[.homebrew] ?? [],
+                                searchText: searchText,
+                                collapsed: (updateManager.updatesBySource[.homebrew]?.isEmpty ?? true) || collapsedCategories.contains("Homebrew"),
+                                onToggle: { toggleCategory("Homebrew") },
+                                onUpdateAll: {
+                                    Task { await updateManager.updateAll(source: .homebrew) }
+                                },
+                                isFirst: !checkAppStore
+                            )
+                        }
 
-                        CategorySection(
-                            title: "Sparkle",
-                            icon: "sparkles",
-                            apps: updateManager.updatesBySource[.sparkle] ?? [],
-                            searchText: searchText,
-                            collapsed: (updateManager.updatesBySource[.sparkle]?.isEmpty ?? true) || collapsedCategories.contains("Sparkle"),
-                            onToggle: { toggleCategory("Sparkle") },
-                            onUpdateAll: nil,  // No "Update All" for Sparkle
-                            isFirst: false
-                        )
+                        if checkSparkle {
+                            CategorySection(
+                                title: "Sparkle",
+                                icon: "sparkles",
+                                apps: updateManager.updatesBySource[.sparkle] ?? [],
+                                searchText: searchText,
+                                collapsed: (updateManager.updatesBySource[.sparkle]?.isEmpty ?? true) || collapsedCategories.contains("Sparkle"),
+                                onToggle: { toggleCategory("Sparkle") },
+                                onUpdateAll: nil,  // No "Update All" for Sparkle
+                                isFirst: !checkAppStore && !checkHomebrew
+                            )
+                        }
                     }
                     .padding(.horizontal, 20)
+                    .padding(.top, 10)
                     .padding(.bottom, 20)
                 }
                 .scrollIndicators(scrollIndicators ? .visible : .hidden)
@@ -279,6 +345,42 @@ struct CategorySection: View {
                 }
             }
         }
+    }
+}
+
+// MARK: - Source Checkbox Component
+
+struct SourceCheckbox: View {
+    @Binding var isEnabled: Bool
+    let name: String
+    let icon: String
+    let onChange: (Bool) -> Void
+    @Environment(\.colorScheme) var colorScheme
+
+    var body: some View {
+        Button(action: {
+            isEnabled.toggle()
+            onChange(isEnabled) // Pass new state
+        }) {
+            HStack(spacing: 4) {
+                // Circular checkbox (Plugin Manager style)
+                Image(systemName: isEnabled ? "checkmark.circle.fill" : "circle")
+                    .foregroundStyle(isEnabled ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
+                    .font(.title3)
+
+                // Source icon
+                Image(systemName: icon)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    .font(.caption)
+
+                // Source name
+                Text(name)
+                    .font(.caption)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+            }
+        }
+        .buttonStyle(.plain)
+        .help(isEnabled ? "Click to disable" : "Click to enable")
     }
 }
 

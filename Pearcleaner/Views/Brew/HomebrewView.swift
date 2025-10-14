@@ -159,7 +159,7 @@ struct HomebrewView: View {
                             .font(.callout)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }
-                    BetaBadge()
+
                 }
 
             }

@@ -20,6 +20,10 @@ class UpdateManager: ObservableObject {
     // Track apps currently being verified to prevent duplicate verification tasks
     private var verifyingApps: Set<UUID> = []
 
+    @AppStorage("settings.updater.checkAppStore") private var checkAppStore: Bool = true
+    @AppStorage("settings.updater.checkHomebrew") private var checkHomebrew: Bool = true
+    @AppStorage("settings.updater.checkSparkle") private var checkSparkle: Bool = true
+
     private init() {}
 
     var hasUpdates: Bool {
@@ -33,8 +37,13 @@ class UpdateManager: ObservableObject {
         // Get apps from AppState
         let apps = AppState.shared.sortedApps
 
-        // Scan for updates using coordinator
-        updatesBySource = await UpdateCoordinator.scanForUpdates(apps: apps)
+        // Scan for updates using coordinator, passing checkbox states
+        updatesBySource = await UpdateCoordinator.scanForUpdates(
+            apps: apps,
+            checkAppStore: checkAppStore,
+            checkHomebrew: checkHomebrew,
+            checkSparkle: checkSparkle
+        )
         lastScanDate = Date()
     }
 
