@@ -100,6 +100,11 @@ class FileManagerUndo {
                 undoManager.setActionName("Delete File")
             }
 
+            // Play trash sound after successful deletion
+            if !isCLI {
+                playTrashSound()
+            }
+
             finalStatus = true
         } else {
             //            printOS("Trash Error: \(isCLI ? "Could not run commands directly with sudo." : "Could not perform privileged commands.")")

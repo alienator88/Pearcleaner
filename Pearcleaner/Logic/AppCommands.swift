@@ -77,6 +77,12 @@ struct AppCommands: Commands {
                         } else if appState.currentPage == .fileSearch {
                             // For file search view, post notification to refresh
                             NotificationCenter.default.post(name: NSNotification.Name("FileSearchViewShouldRefresh"), object: nil)
+                        } else if appState.currentPage == .orphans {
+                            // For orphans view, post notification to refresh
+                            NotificationCenter.default.post(name: NSNotification.Name("ZombieViewShouldRefresh"), object: nil)
+                        } else if appState.currentPage == .packages {
+                            // For packages view, post notification to refresh
+                            NotificationCenter.default.post(name: NSNotification.Name("PackagesViewShouldRefresh"), object: nil)
                         } else {
                             loadApps(folderPaths: fsm.folderPaths)
                             // After reload, if we're viewing files, refresh the file view
@@ -183,6 +189,15 @@ struct AppCommands: Commands {
                     Text("Services")
                 }
                 .keyboardShortcut("9", modifiers: .command)
+
+                Button
+                {
+                    appState.currentPage = .updater
+
+                } label: {
+                    Text("Updater")
+                }
+                .keyboardShortcut("0", modifiers: .command)
 
             } label: {
                 Label("Navigate To", systemImage: "location.north.fill")

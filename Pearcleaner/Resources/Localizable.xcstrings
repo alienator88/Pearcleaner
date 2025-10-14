@@ -12554,9 +12554,6 @@
         }
       }
     },
-    "Click to disable" : {
-
-    },
     "Click to dismiss" : {
       "localizations" : {
         "de" : {
@@ -12662,9 +12659,6 @@
           }
         }
       }
-    },
-    "Click to enable" : {
-
     },
     "Click to search" : {
       "extractionState" : "manual",

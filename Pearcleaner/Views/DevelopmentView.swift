@@ -271,10 +271,9 @@ struct EnvironmentCleanerView: View {
 
                             Button("Delete \(selectedPaths.count) Selected Folders") {
                                 showCustomAlert(title: "Warning", message: "This will delete \(selectedPaths.count) selected folders. Are you sure?", style: .warning, onOk: {
-                                    for path in selectedPaths {
-                                        let expanded = NSString(string: path).expandingTildeInPath
-                                        let _ = try? FileManager.default.removeItem(atPath: expanded)
-                                    }
+                                    let urls = selectedPaths.map { URL(fileURLWithPath: NSString(string: $0).expandingTildeInPath) }
+                                    let bundleName = "Development - Folders (\(selectedPaths.count))"
+                                    let _ = FileManagerUndo.shared.deleteFiles(at: urls, bundleName: bundleName)
                                     selectedPaths.removeAll()
                                     refreshPaths()
                                     if let env = appState.selectedEnvironment,
@@ -294,15 +293,20 @@ struct EnvironmentCleanerView: View {
 
                             Button("Delete \(selectedPaths.count) Selected Contents") {
                                 showCustomAlert(title: "Warning", message: "This will delete the contents of \(selectedPaths.count) selected folders. Are you sure?", style: .warning, onOk: {
+                                    var allContentURLs: [URL] = []
+                                    let fm = FileManager.default
                                     for path in selectedPaths {
                                         let expanded = NSString(string: path).expandingTildeInPath
-                                        let fm = FileManager.default
                                         if let contents = try? fm.contentsOfDirectory(atPath: expanded) {
                                             for item in contents {
                                                 let itemPath = (expanded as NSString).appendingPathComponent(item)
-                                                let _ = try? fm.removeItem(atPath: itemPath)
+                                                allContentURLs.append(URL(fileURLWithPath: itemPath))
                                             }
                                         }
+                                    }
+                                    if !allContentURLs.isEmpty {
+                                        let bundleName = "Development - Contents (\(selectedPaths.count))"
+                                        let _ = FileManagerUndo.shared.deleteFiles(at: allContentURLs, bundleName: bundleName)
                                     }
                                     selectedPaths.removeAll()
                                     refreshPaths()
@@ -641,9 +645,15 @@ struct PathRowView: View {
         let fileManager = FileManager.default
         do {
             let contents = try fileManager.contentsOfDirectory(atPath: matchedPath)
+            var contentURLs: [URL] = []
             for item in contents {
                 let itemPath = (matchedPath as NSString).appendingPathComponent(item)
-                try fileManager.removeItem(atPath: itemPath)
+                contentURLs.append(URL(fileURLWithPath: itemPath))
+            }
+            if !contentURLs.isEmpty {
+                let folderName = (matchedPath as NSString).lastPathComponent
+                let bundleName = "Development - \(folderName) Contents"
+                let _ = FileManagerUndo.shared.deleteFiles(at: contentURLs, bundleName: bundleName)
             }
             checkPath(path) // Recheck the state after deletion
         } catch {
@@ -652,12 +662,12 @@ struct PathRowView: View {
     }
 
     private func deleteFolder(_ matchedPath: String) {
-        let fileManager = FileManager.default
-        do {
-            try fileManager.removeItem(atPath: matchedPath)
+        let folderName = (matchedPath as NSString).lastPathComponent
+        let bundleName = "Development - \(folderName)"
+        let url = URL(fileURLWithPath: matchedPath)
+        let result = FileManagerUndo.shared.deleteFiles(at: [url], bundleName: bundleName)
+        if result {
             onDelete()
-        } catch {
-            printOS("Error deleting folder: \(error)")
         }
     }
 }
@@ -899,17 +909,20 @@ struct WorkspaceStorageCleanerView: View {
     }
     
     private func cleanOrphanedWorkspace(_ workspace: OrphanedWorkspace) {
-        do {
-            try FileManager.default.removeItem(atPath: workspace.path)
+        let bundleName = "Development - Workspace (\(workspace.name))"
+        let url = URL(fileURLWithPath: workspace.path)
+        let result = FileManagerUndo.shared.deleteFiles(at: [url], bundleName: bundleName)
+        if result {
             orphanedWorkspaces.removeAll { $0.id == workspace.id }
-        } catch {
-            printOS("Error removing workspace \(workspace.name): \(error)")
         }
     }
-    
+
     private func cleanAllOrphanedWorkspaces() {
-        for workspace in orphanedWorkspaces {
-            cleanOrphanedWorkspace(workspace)
+        let urls = orphanedWorkspaces.map { URL(fileURLWithPath: $0.path) }
+        let bundleName = "Development - Workspaces (\(orphanedWorkspaces.count))"
+        let result = FileManagerUndo.shared.deleteFiles(at: urls, bundleName: bundleName)
+        if result {
+            orphanedWorkspaces.removeAll()
         }
     }
 

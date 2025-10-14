@@ -224,7 +224,7 @@ struct PackageView: View {
                 refreshPackages()
             }
         }
-        .onReceive(NotificationCenter.default.publisher(for: .NSUndoManagerDidUndoChange)) { _ in
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("PackagesViewShouldRefresh"))) { _ in
             // Refresh packages when undo is performed
             refreshPackages()
         }

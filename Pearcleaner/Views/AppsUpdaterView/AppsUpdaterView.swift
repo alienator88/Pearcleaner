@@ -380,7 +380,6 @@ struct SourceCheckbox: View {
             }
         }
         .buttonStyle(.plain)
-        .help(isEnabled ? "Click to disable" : "Click to enable")
     }
 }
 

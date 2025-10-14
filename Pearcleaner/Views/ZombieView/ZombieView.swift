@@ -265,6 +265,15 @@ struct ZombieView: View {
                 // Only trigger scan if warning has been acknowledged
                 startFileScan()
             }
+
+            // Listen for undo refresh notification
+            NotificationCenter.default.addObserver(
+                forName: NSNotification.Name("ZombieViewShouldRefresh"),
+                object: nil,
+                queue: .main
+            ) { _ in
+                startSearch()
+            }
         }
         .toolbarBackground(.hidden, for: .windowToolbar)
         .toolbar {
@@ -356,8 +365,9 @@ struct ZombieView: View {
             Task {
 
                 let selectedItemsArray = Array(selectedZombieItemsLocal)
+                let bundleName = "Orphaned Files (\(selectedItemsArray.count))"
 
-                let result = moveFilesToTrash(appState: appState, at: selectedItemsArray)
+                let result = FileManagerUndo.shared.deleteFiles(at: selectedItemsArray, bundleName: bundleName)
                 if result {
 
                     if selectedZombieItemsLocal.count == appState.zombieFile.fileSize.keys.count {

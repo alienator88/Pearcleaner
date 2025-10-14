@@ -324,10 +324,6 @@ func moveFilesToTrash(appState: AppState, at fileURLs: [URL]) -> Bool {
 
     let result = FileManagerUndo.shared.deleteFiles(at: validFileURLs)
 
-    if result {
-        playTrashSound()
-    }
-
     return result
 }
 
