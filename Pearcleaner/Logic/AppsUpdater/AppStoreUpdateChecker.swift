@@ -64,7 +64,7 @@ class AppStoreUpdateChecker {
         guard let appInfo = apps.first(where: { $0.path == url }) else { return nil }
 
         // First check if app still exists in App Store to avoid popup
-        guard let appStoreURL = await getAppStoreInfo(adamID: adamID) else {
+        guard let metadata = await getAppStoreInfo(adamID: adamID) else {
             return nil
         }
 
@@ -79,12 +79,12 @@ class AppStoreUpdateChecker {
                     availableVersion: availableVersion,
                     source: .appStore,
                     adamID: adamID,
-                    appStoreURL: appStoreURL,
+                    appStoreURL: metadata.appStoreURL,
                     status: .idle,
                     progress: 0.0,
                     releaseTitle: nil,
-                    releaseDescription: nil,
-                    releaseDate: nil
+                    releaseDescription: metadata.releaseNotes,
+                    releaseDate: metadata.releaseDate
                 )
             }
         } catch {
@@ -95,8 +95,14 @@ class AppStoreUpdateChecker {
         return nil
     }
 
-    private static func getAppStoreInfo(adamID: UInt64) async -> String? {
-        // Query iTunes Search API to check if app is still available and get its URL
+    private struct AppStoreMetadata {
+        let appStoreURL: String
+        let releaseNotes: String?
+        let releaseDate: String?
+    }
+
+    private static func getAppStoreInfo(adamID: UInt64) async -> AppStoreMetadata? {
+        // Query iTunes Search API to check if app is still available and get its URL + metadata
         guard let url = URL(string: "https://itunes.apple.com/lookup?id=\(adamID)") else {
             return nil
         }
@@ -109,7 +115,16 @@ class AppStoreUpdateChecker {
                let results = json["results"] as? [[String: Any]],
                let firstResult = results.first,
                let trackViewUrl = firstResult["trackViewUrl"] as? String {
-                return trackViewUrl
+
+                // Extract release notes and date if available
+                let releaseNotes = firstResult["releaseNotes"] as? String
+                let releaseDate = firstResult["currentVersionReleaseDate"] as? String
+
+                return AppStoreMetadata(
+                    appStoreURL: trackViewUrl,
+                    releaseNotes: releaseNotes,
+                    releaseDate: releaseDate
+                )
             }
         } catch {
             // Error checking availability - silently fail

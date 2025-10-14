@@ -127,7 +127,7 @@ struct AppsUpdaterView: View {
                            !appStoreApps.isEmpty {
                             CategorySection(
                                 title: "App Store",
-                                icon: "storefront",
+                                icon: "storefront.fill",
                                 apps: appStoreApps,
                                 searchText: searchText,
                                 collapsed: collapsedCategories.contains("App Store"),

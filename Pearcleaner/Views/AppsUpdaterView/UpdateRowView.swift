@@ -58,8 +58,8 @@ struct UpdateRowView: View {
 
     @ViewBuilder
     private var secondaryActionButtons: some View {
-        // View Changes button for Sparkle apps (if metadata available)
-        if app.source == .sparkle, app.releaseDescription != nil || app.releaseTitle != nil {
+        // View Changes button for Sparkle and App Store apps (if metadata available)
+        if (app.source == .sparkle || app.source == .appStore), app.releaseDescription != nil || app.releaseTitle != nil {
             Button {
                 withAnimation(.easeInOut(duration: 0.3)) {
                     isExpanded.toggle()
@@ -70,19 +70,6 @@ struct UpdateRowView: View {
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
             }
             .buttonStyle(.plain)
-        }
-
-        // Info button for App Store apps
-        if app.source == .appStore, let appStoreURL = app.appStoreURL {
-            Button {
-                openInAppStore(urlString: appStoreURL)
-            } label: {
-                Image(systemName: "info.circle")
-                    .font(.system(size: 16))
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-            }
-            .buttonStyle(.plain)
-            .help("View in App Store")
         }
     }
 
@@ -118,6 +105,19 @@ struct UpdateRowView: View {
                                 .font(.footnote)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                         }
+
+                        // Info button for App Store apps
+                        if app.source == .appStore, let appStoreURL = app.appStoreURL {
+                            Button {
+                                openInAppStore(urlString: appStoreURL)
+                            } label: {
+                                Image(systemName: "info.circle")
+                                    .font(.system(size: 14))
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                            }
+                            .buttonStyle(.plain)
+                            .help("View in App Store")
+                        }
                     }
 
                     // Source label
@@ -136,8 +136,8 @@ struct UpdateRowView: View {
             }
             .padding()
 
-            // Expanded release notes (Sparkle only)
-            if isExpanded, app.source == .sparkle {
+            // Expanded release notes (Sparkle and App Store)
+            if isExpanded, (app.source == .sparkle || app.source == .appStore) {
                 VStack(alignment: .leading, spacing: 12) {
                     Divider()
                         .padding(.horizontal)
@@ -165,15 +165,17 @@ struct UpdateRowView: View {
                                     options: [.documentType: NSAttributedString.DocumentType.html,
                                              .characterEncoding: String.Encoding.utf8.rawValue],
                                     documentAttributes: nil
-                                ), let attributedString = try? AttributedString(nsAttributedString) {
-                                    Text(attributedString)
-                                        .font(.callout)
+                                ) {
+                                    // Create standardized attributed string with system body font
+                                    let standardizedString = standardizeFont(in: nsAttributedString)
+
+                                    Text(standardizedString)
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .textSelection(.enabled)
                                 } else {
                                     // Fallback to stripped HTML if parsing fails
                                     Text(stripHTML(description))
-                                        .font(.callout)
+                                        .font(.body)
                                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .textSelection(.enabled)
@@ -211,6 +213,8 @@ struct UpdateRowView: View {
             return "Downloading..."
         case .installing:
             return "Installing..."
+        case .verifying:
+            return "Verifying installation..."
         case .completed:
             return "Completed"
         case .failed(let message):
@@ -234,12 +238,21 @@ struct UpdateRowView: View {
     }
 
     private func formatDate(_ dateString: String) -> String {
-        // Try to parse the date string (e.g., "26 September 2025 10:00:00 +0700")
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd MMMM yyyy HH:mm:ss Z"
-        formatter.locale = Locale(identifier: "en_US_POSIX")
+        // Try to parse Sparkle date format (e.g., "26 September 2025 10:00:00 +0700")
+        let sparkleFormatter = DateFormatter()
+        sparkleFormatter.dateFormat = "dd MMMM yyyy HH:mm:ss Z"
+        sparkleFormatter.locale = Locale(identifier: "en_US_POSIX")
 
-        if let date = formatter.date(from: dateString) {
+        if let date = sparkleFormatter.date(from: dateString) {
+            let displayFormatter = DateFormatter()
+            displayFormatter.dateStyle = .medium
+            displayFormatter.timeStyle = .none
+            return displayFormatter.string(from: date)
+        }
+
+        // Try to parse App Store ISO 8601 date format (e.g., "2025-10-06T20:58:03Z")
+        let iso8601Formatter = ISO8601DateFormatter()
+        if let date = iso8601Formatter.date(from: dateString) {
             let displayFormatter = DateFormatter()
             displayFormatter.dateStyle = .medium
             displayFormatter.timeStyle = .none
@@ -248,6 +261,17 @@ struct UpdateRowView: View {
 
         // If parsing fails, return the original string
         return dateString
+    }
+
+    private func standardizeFont(in nsAttributedString: NSAttributedString) -> AttributedString {
+        // Create a mutable version and override all fonts to system body font
+        let mutableString = NSMutableAttributedString(attributedString: nsAttributedString)
+        let systemFont = NSFont.systemFont(ofSize: NSFont.systemFontSize)
+        let range = NSRange(location: 0, length: mutableString.length)
+        mutableString.addAttribute(.font, value: systemFont, range: range)
+
+        // Convert back to AttributedString for SwiftUI
+        return (AttributedString(mutableString))
     }
 
     private func stripHTML(_ html: String) -> String {

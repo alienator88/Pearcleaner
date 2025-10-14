@@ -30,6 +30,7 @@ enum UpdateStatus: Equatable {
     case checking
     case downloading
     case installing
+    case verifying
     case completed
     case failed(String)
 
@@ -39,6 +40,7 @@ enum UpdateStatus: Equatable {
              (.checking, .checking),
              (.downloading, .downloading),
              (.installing, .installing),
+             (.verifying, .verifying),
              (.completed, .completed):
             return true
         case (.failed(let lhsMsg), .failed(let rhsMsg)):

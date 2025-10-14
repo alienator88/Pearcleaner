@@ -1179,6 +1179,16 @@
         }
       }
     },
+    "%lld of %lld file%@ selected" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld of %2$lld file%3$@ selected"
+          }
+        }
+      }
+    },
     "%lld package%@" : {
       "localizations" : {
         "de" : {
@@ -21165,6 +21175,9 @@
         }
       }
     },
+    "Filter files..." : {
+
+    },
     "Filter Type" : {
       "localizations" : {
         "de" : {
@@ -30726,6 +30739,9 @@
         }
       }
     },
+    "Loading package files..." : {
+
+    },
     "Loading packages..." : {
       "localizations" : {
         "de" : {
@@ -33169,6 +33185,9 @@
           }
         }
       }
+    },
+    "Move to Trash" : {
+
     },
     "Multi-select disabled in sidebar app list" : {
       "localizations" : {
@@ -58906,6 +58925,9 @@
           }
         }
       }
+    },
+    "Uninstall Package" : {
+
     },
     "Uninstall Pearcleaner" : {
       "extractionState" : "manual",

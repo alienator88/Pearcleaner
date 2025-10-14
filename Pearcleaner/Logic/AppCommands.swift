@@ -197,7 +197,7 @@ struct AppCommands: Commands {
             Button {
                 Task { @MainActor in
                     withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                        AppCachePlist.loadAndUpdateApps(folderPaths: fsm.folderPaths)
+                        AppCachePlist.loadAndUpdateApps(folderPaths: fsm.folderPaths, forceRefresh: true)
                     }
                 }
             } label: {

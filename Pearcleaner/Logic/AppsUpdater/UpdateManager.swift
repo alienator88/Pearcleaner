@@ -17,6 +17,9 @@ class UpdateManager: ObservableObject {
     @Published var isScanning: Bool = false
     @Published var lastScanDate: Date?
 
+    // Track apps currently being verified to prevent duplicate verification tasks
+    private var verifyingApps: Set<UUID> = []
+
     private init() {}
 
     var hasUpdates: Bool {
@@ -51,6 +54,9 @@ class UpdateManager: ObservableObject {
 
                 // Remove from list after upgrade
                 updatesBySource[.homebrew]?.removeAll { $0.id == app.id }
+
+                // Refresh all apps cache (same as CMD+R)
+                await refreshAllApps()
             }
 
         case .appStore:
@@ -69,11 +75,29 @@ class UpdateManager: ObservableObject {
                         if var apps = self.updatesBySource[.appStore],
                            let index = apps.firstIndex(where: { $0.id == app.id }) {
                             apps[index].progress = progress
-                            self.updatesBySource[.appStore] = apps
 
-                            // Remove from list when complete
-                            if progress >= 1.0 {
-                                self.updatesBySource[.appStore]?.removeAll { $0.id == app.id }
+                            // Update status based on App Store phase
+                            if status.contains("Installing") {
+                                // Phase 1: App Store is removing old bundle and installing new one
+                                apps[index].status = .installing
+                                self.updatesBySource[.appStore] = apps
+                            } else if status.contains("Completed") {
+                                // Phase 5: CommerceKit finished, transition to verifying
+                                // Only start verification once to prevent duplicate tasks
+                                if !self.verifyingApps.contains(app.id) {
+                                    self.verifyingApps.insert(app.id)
+                                    apps[index].status = .verifying
+                                    self.updatesBySource[.appStore] = apps
+
+                                    // Start monitoring the app bundle for version change
+                                    Task {
+                                        await self.waitForBundleUpdate(app: app)
+                                        self.verifyingApps.remove(app.id)
+                                    }
+                                }
+                            } else {
+                                // Phase 0 or other: Keep current status or set to downloading
+                                self.updatesBySource[.appStore] = apps
                             }
                         }
                     }
@@ -82,7 +106,14 @@ class UpdateManager: ObservableObject {
 
         case .sparkle:
             // Open the app so it can self-update
-            NSWorkspace.shared.open(app.appInfo.path)
+            let configuration = NSWorkspace.OpenConfiguration()
+            configuration.activates = true
+
+            do {
+                try await NSWorkspace.shared.open(app.appInfo.path, configuration: configuration)
+            } catch {
+                printOS("Failed to open Sparkle app: \(error.localizedDescription)")
+            }
         }
     }
 
@@ -92,5 +123,110 @@ class UpdateManager: ObservableObject {
         for app in apps {
             await updateApp(app)
         }
+    }
+
+    /// Wait for the App Store to finish replacing the bundle on disk
+    /// This monitors the app bundle and removes it from the update list once the version changes
+    private func waitForBundleUpdate(app: UpdateableApp) async {
+        let appPath = app.appInfo.path
+        let currentVersion = app.appInfo.appVersion
+        let expectedVersion = app.availableVersion ?? currentVersion
+        let maxAttempts = 40 // 40 attempts = ~20 seconds max wait
+        let pollInterval: UInt64 = 500_000_000 // 0.5 seconds
+
+        printOS("🔍 Verifying \(app.appInfo.appName): current=\(currentVersion), expecting update")
+
+        var bundleWasRemoved = false
+
+        for attempt in 0..<maxAttempts {
+            try? await Task.sleep(nanoseconds: pollInterval)
+
+            // Read version directly from Info.plist to avoid Bundle caching issues
+            if let diskVersion = readBundleVersionDirectly(at: appPath) {
+                // Strategy: Detect when bundle was removed and then reappeared with any version
+                // This is more reliable than matching exact version strings since CommerceKit
+                // metadata may not always match what actually gets installed
+                if bundleWasRemoved {
+                    // Bundle was removed and now exists again - App Store finished!
+                    printOS("✅ Verification succeeded for \(app.appInfo.appName): bundle reappeared with version \(diskVersion)")
+                    await removeFromUpdatesList(appID: app.id, source: .appStore)
+                    await refreshAllApps()
+                    return
+                } else if diskVersion != currentVersion {
+                    // Version changed without bundle removal - also a success
+                    printOS("✅ Verification succeeded for \(app.appInfo.appName): version changed from \(currentVersion) to \(diskVersion)")
+                    await removeFromUpdatesList(appID: app.id, source: .appStore)
+                    await refreshAllApps()
+                    return
+                } else if attempt % 4 == 0 {
+                    // Log every 2 seconds
+                    printOS("⏱️ Still waiting for \(app.appInfo.appName): disk=\(diskVersion)")
+                }
+            } else {
+                // Bundle doesn't exist - it's being replaced
+                if !bundleWasRemoved {
+                    bundleWasRemoved = true
+                    printOS("🗑️ Bundle removed for \(app.appInfo.appName) - waiting for replacement...")
+                } else if attempt % 4 == 0 {
+                    // Log every 2 seconds when file doesn't exist
+                    printOS("⏱️ Still waiting for \(app.appInfo.appName): bundle not found on disk yet")
+                }
+            }
+        }
+
+        // Timeout: remove from list anyway after max wait time
+        if let diskVersion = readBundleVersionDirectly(at: appPath) {
+            printOS("⚠️ App Store update verification timed out for \(app.appInfo.appName): final version on disk is \(diskVersion)")
+        } else {
+            printOS("⚠️ App Store update verification timed out for \(app.appInfo.appName): bundle still missing")
+        }
+        await removeFromUpdatesList(appID: app.id, source: .appStore)
+        await refreshAllApps()
+    }
+
+    /// Read bundle version directly from Info.plist without Bundle caching
+    /// This ensures we always get fresh data from disk during verification
+    private func readBundleVersionDirectly(at path: URL) -> String? {
+        let plistPath = path.appendingPathComponent("Contents/Info.plist")
+
+        guard FileManager.default.fileExists(atPath: plistPath.path),
+              let plistData = try? Data(contentsOf: plistPath),
+              let plist = try? PropertyListSerialization.propertyList(from: plistData, format: nil) as? [String: Any] else {
+            return nil
+        }
+
+        // Prefer CFBundleShortVersionString, fallback to CFBundleVersion
+        if let shortVersion = plist["CFBundleShortVersionString"] as? String, !shortVersion.isEmpty {
+            return shortVersion
+        } else if let version = plist["CFBundleVersion"] as? String, !version.isEmpty {
+            return version
+        }
+
+        return nil
+    }
+
+    /// Remove an app from the updates list
+    private func removeFromUpdatesList(appID: UUID, source: UpdateSource) async {
+        updatesBySource[source]?.removeAll { $0.id == appID }
+    }
+
+    /// Refresh all apps after an update (same as CMD+R)
+    /// This ensures the cache is updated with fresh data from disk
+    private func refreshAllApps() async {
+        // Use the same approach as CMD+R: force refresh to bypass cache and rescan from disk
+        // This creates NEW Bundle instances which bypasses Foundation's Bundle caching
+        printOS("🔄 Refreshing all apps cache after update")
+
+        let folderPaths = await MainActor.run {
+            FolderSettingsManager.shared.folderPaths
+        }
+
+        await withCheckedContinuation { continuation in
+            AppCachePlist.loadAndUpdateApps(folderPaths: folderPaths, forceRefresh: true) {
+                continuation.resume()
+            }
+        }
+
+        printOS("✅ Cache refresh completed")
     }
 }

@@ -157,22 +157,29 @@ class AppCachePlist {
     /// Loads and updates apps using cache or fallback scan
     /// - Parameters:
     ///   - folderPaths: Array of folder paths to scan for apps
+    ///   - forceRefresh: If true, bypasses cache and rescans all apps, then updates cache
     ///   - completion: Optional completion handler called after loading
-    static func loadAndUpdateApps(folderPaths: [String], completion: @escaping () -> Void = {}) {
+    static func loadAndUpdateApps(folderPaths: [String], forceRefresh: Bool = false, completion: @escaping () -> Void = {}) {
         DispatchQueue.global(qos: .userInitiated).async {
             let sortedApps: Task<[AppInfo], Never>
 
             // Check if caching is enabled
             let cacheEnabled = UserDefaults.standard.bool(forKey: "settings.cache.enabled")
 
-            if cacheEnabled {
-                sortedApps = Task { @MainActor in
-                    AppCachePlist.shared.loadAppsWithCache(folderPaths: folderPaths)
+            if forceRefresh || !cacheEnabled {
+                // Force refresh: bypass cache, do full scan, then update cache
+                sortedApps = Task {
+                    let apps = getSortedApps(paths: folderPaths)
+                    // Update cache with fresh data
+                    if cacheEnabled {
+                        try? AppCachePlist.shared.saveToCache(apps)
+                    }
+                    return apps
                 }
             } else {
-                // Caching disabled - fall back to direct scan
-                sortedApps = Task {
-                    getSortedApps(paths: folderPaths)
+                // Normal mode: use smart cache with modification date checks
+                sortedApps = Task { @MainActor in
+                    AppCachePlist.shared.loadAppsWithCache(folderPaths: folderPaths)
                 }
             }
 
@@ -498,6 +505,21 @@ class AppCachePlist {
     func getCachedPaths() throws -> Set<String> {
         let container = try loadContainer()
         return Set(container.apps.map { $0.path })
+    }
+
+    /// Force update specific apps in cache, ignoring modification date check
+    /// Used after external updates (Homebrew/App Store) that may not change mod date
+    /// - Parameter paths: Array of app URLs to force-refresh
+    func forceUpdateApps(at paths: [URL]) throws {
+        guard !paths.isEmpty else { return }
+
+        // Re-read app info from disk
+        let freshApps = paths.compactMap { AppInfoFetcher.getAppInfo(atPath: $0) }
+
+        if !freshApps.isEmpty {
+            printOS("🔄 Force updating \(freshApps.count) app(s) in cache")
+            try updateInCache(freshApps)
+        }
     }
 
     /// Clear entire cache by deleting plist file

@@ -65,6 +65,12 @@ struct PackageView: View {
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.general.permanentDelete") private var permanentDelete: Bool = false
 
+    // Uninstall sheet state
+    @State private var showUninstallSheet = false
+    @State private var packageToUninstall: PackageInfo?
+    @State private var filesToUninstall: [String] = []
+    @State private var selectedFilesToUninstall: Set<String> = []
+
     private var filteredPackages: [PackageInfo] {
         var packages = self.packages.filter { !$0.packageId.hasPrefix("com.apple.") }
 
@@ -218,6 +224,10 @@ struct PackageView: View {
                 refreshPackages()
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: .NSUndoManagerDidUndoChange)) { _ in
+            // Refresh packages when undo is performed
+            refreshPackages()
+        }
         .toolbarBackground(.hidden, for: .windowToolbar)
         .toolbar {
             TahoeToolbarItem(placement: .navigation) {
@@ -257,8 +267,27 @@ struct PackageView: View {
             }
 
         }
+        .sheet(isPresented: $showUninstallSheet) {
+            if let package = packageToUninstall {
+                PackageUninstallSheet(
+                    package: package,
+                    files: filesToUninstall,
+                    selectedFiles: $selectedFilesToUninstall,
+                    onConfirm: {
+                        showUninstallSheet = false
+                        Task {
+                            await performFullUninstall(package, selectedFiles: Array(selectedFilesToUninstall))
+                        }
+                    },
+                    onCancel: {
+                        showUninstallSheet = false
+                    }
+                )
+                .id(package.packageId) // Force view recreation when package changes
+            }
+        }
     }
-    
+
     private func toggleExpansion(for packageId: String) {
         if expandedPackages.contains(packageId) {
             expandedPackages.remove(packageId)
@@ -365,7 +394,7 @@ struct PackageView: View {
 
     private func uninstallPackage(_ package: PackageInfo) {
         Task {
-            await performFullUninstall(package)
+            await prepareUninstall(package)
         }
     }
 
@@ -454,57 +483,117 @@ struct PackageView: View {
         }
     }
 
-    private func performFullUninstall(_ package: PackageInfo) async {
-        let success = await withCheckedContinuation { continuation in
+    private func prepareUninstall(_ package: PackageInfo) async {
+        // Ensure BOM files are loaded before showing the sheet
+        var updatedPackage = package
+
+        if !package.bomFilesLoaded {
+            // Show sheet with loading state
+            await MainActor.run {
+                self.packageToUninstall = package
+                self.filesToUninstall = []
+                self.selectedFilesToUninstall = []
+                self.showUninstallSheet = true
+            }
+
+            // Load BOM files in background
+            let bomFiles = await loadBOMFiles(for: package.packageId)
+
+            // Update package with loaded files
+            await MainActor.run {
+                if let index = packages.firstIndex(where: { $0.packageId == package.packageId }) {
+                    packages[index].bomFiles = bomFiles
+                    packages[index].bomFilesLoaded = true
+                    updatedPackage = packages[index]
+                }
+            }
+        }
+
+        let (existingFiles, _) = getBomFilesByExistence(for: updatedPackage)
+
+        await MainActor.run {
+            if existingFiles.isEmpty {
+                // Close the sheet if it was open
+                self.showUninstallSheet = false
+
+                showCustomAlert(
+                    title: "No Files Found",
+                    message: "No files found to uninstall for package '\(package.displayName)'.\n\nWould you like to forget this package? This will remove it from system records only.",
+                    style: .informational,
+                    onOk: {
+                        forgetPackage(package)
+                    }
+                )
+                return
+            }
+
+            // Set all data first before showing the sheet
+            self.packageToUninstall = updatedPackage
+            self.filesToUninstall = existingFiles
+            self.selectedFilesToUninstall = Set(existingFiles) // All checked by default
+        }
+
+        // Small delay to ensure state updates have propagated before showing sheet
+        try? await Task.sleep(nanoseconds: 50_000_000) // 50ms
+
+        await MainActor.run {
+            self.showUninstallSheet = true
+        }
+    }
+
+    private func performFullUninstall(_ package: PackageInfo, selectedFiles: [String]) async {
+        // Step 1: Delete BOM files using FileManagerUndo (moves to Trash with undo support)
+        let bomFilesSuccess = await withCheckedContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
-                // Step 1: Get all BOM files (should already be loaded from onAppear)
-                let (existingFiles, _) = getBomFilesByExistence(for: package)
-
-                // Step 2: Get receipt paths
-                let receiptPaths = package.receiptStoragePaths
-
-                var commands: [String] = []
-
-                // Step 3: Build command to delete all BOM files
-                if !existingFiles.isEmpty {
-                    let quotedBomPaths = existingFiles.map { "\"\($0)\"" }.joined(separator: " ")
-                    commands.append("rm -rf \(quotedBomPaths)")
-                }
-
-                // Step 4: Build command to delete all receipt files
-                if !receiptPaths.isEmpty {
-                    let quotedReceiptPaths = receiptPaths.map { "\"\($0)\"" }.joined(separator: " ")
-                    commands.append("rm -f \(quotedReceiptPaths)")
-                }
-
-                guard !commands.isEmpty else {
-                    printOS("⚠️ No files to remove for package \(package.packageId)")
-                    continuation.resume(returning: false)
+                if selectedFiles.isEmpty {
+                    continuation.resume(returning: true)
                     return
                 }
 
-                // Combine all commands
-                let fullCommand = commands.joined(separator: " && ")
+                // Convert file paths to URLs
+                let urls = selectedFiles.map { URL(fileURLWithPath: $0) }
+
+                // Use FileManagerUndo to move files to Trash (supports undo)
+                let bundleName = "Package - \(package.displayName)"
+                let success = FileManagerUndo.shared.deleteFiles(at: urls, bundleName: bundleName)
+
+                continuation.resume(returning: success)
+            }
+        }
+
+        // Step 2: Delete receipt files (must use privileged commands as they're system files)
+        let receiptsSuccess = await withCheckedContinuation { continuation in
+            DispatchQueue.global(qos: .userInitiated).async {
+                let receiptPaths = package.receiptStoragePaths
+
+                guard !receiptPaths.isEmpty else {
+                    continuation.resume(returning: true)
+                    return
+                }
+
+                // Build command to delete receipt files
+                let quotedReceiptPaths = receiptPaths.map { "\"\($0)\"" }.joined(separator: " ")
+                let command = "rm -f \(quotedReceiptPaths)"
 
                 var success = false
 
-                // Use privileged command execution
+                // Use privileged command execution for receipts
                 if HelperToolManager.shared.isHelperToolInstalled {
                     let semaphore = DispatchSemaphore(value: 0)
                     Task {
-                        let result = await HelperToolManager.shared.runCommand(fullCommand)
+                        let result = await HelperToolManager.shared.runCommand(command)
                         success = result.0
                         if !success {
-                            printOS("Package uninstall failed: \(result.1)")
+                            printOS("Package receipt deletion failed: \(result.1)")
                         }
                         semaphore.signal()
                     }
                     semaphore.wait()
                 } else {
-                    let result = performPrivilegedCommands(commands: fullCommand)
+                    let result = performPrivilegedCommands(commands: command)
                     success = result.0
                     if !success {
-                        printOS("Package uninstall failed: \(result.1)")
+                        printOS("Package receipt deletion failed: \(result.1)")
                     }
                 }
 
@@ -513,7 +602,7 @@ struct PackageView: View {
         }
 
         await MainActor.run {
-            if success {
+            if bomFilesSuccess && receiptsSuccess {
                 // Remove the package from the local array
                 packages.removeAll { $0.packageId == package.packageId }
                 packageIds.removeAll { $0 == package.packageId }
@@ -521,9 +610,17 @@ struct PackageView: View {
                 // Also remove from expanded packages if it was expanded
                 expandedPackages.remove(package.packageId)
             } else {
+                var message = "Failed to fully uninstall package '\(package.displayName)'."
+                if !bomFilesSuccess {
+                    message += " Some files could not be deleted."
+                }
+                if !receiptsSuccess {
+                    message += " Receipt files could not be removed."
+                }
+
                 showCustomAlert(
                     title: "Uninstall Failed",
-                    message: "Failed to fully uninstall package '\(package.displayName)'. Some files may require additional permissions or may not exist.",
+                    message: message,
                     style: .critical
                 )
             }
@@ -1367,6 +1464,152 @@ struct BomFileRowView: View {
         .padding(.vertical, 2)
         .background(index % 2 == 0 ? Color.clear : ThemeColors.shared(for: colorScheme).secondaryText.opacity(0.05))
         .opacity(exists ? 1.0 : 0.6)
+    }
+}
+
+// MARK: - Package Uninstall Sheet
+
+struct PackageUninstallSheet: View {
+    let package: PackageInfo
+    let files: [String]
+    @Binding var selectedFiles: Set<String>
+    let onConfirm: () -> Void
+    let onCancel: () -> Void
+
+    @State private var searchText = ""
+    @Environment(\.colorScheme) var colorScheme
+
+    private var filteredFiles: [String] {
+        if searchText.isEmpty {
+            return files
+        }
+        return files.filter { $0.localizedCaseInsensitiveContains(searchText) }
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            // Header
+            VStack(spacing: 8) {
+                Text("Uninstall Package")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                Text(package.displayName)
+                    .font(.headline)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                Text("\(selectedFiles.count) of \(files.count) file\(files.count == 1 ? "" : "s") selected")
+                    .font(.caption)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+            }
+            .padding()
+
+            Divider()
+
+            // Search bar
+            HStack {
+                Image(systemName: "magnifyingglass")
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                TextField("Filter files...", text: $searchText)
+                    .textFieldStyle(.plain)
+
+                if !searchText.isEmpty {
+                    Button {
+                        searchText = ""
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding()
+
+            Divider()
+
+            // File list or loading state
+            if files.isEmpty {
+                // Loading state
+                VStack(spacing: 12) {
+                    ProgressView()
+                        .scaleEffect(1.5)
+                    Text("Loading package files...")
+                        .font(.callout)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                }
+                .frame(maxWidth: .infinity, maxHeight: 400)
+                .frame(minHeight: 200)
+            } else {
+                ScrollView {
+                    LazyVStack(alignment: .leading, spacing: 2) {
+                        ForEach(filteredFiles, id: \.self) { file in
+                            HStack(spacing: 8) {
+                                Button {
+                                    toggleSelection(file)
+                                } label: {
+                                    Image(systemName: selectedFiles.contains(file) ? "checkmark.square.fill" : "square")
+                                        .foregroundStyle(selectedFiles.contains(file) ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
+                                }
+                                .buttonStyle(.plain)
+
+                                Text(file)
+                                    .font(.caption)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                                    .lineLimit(1)
+                                    .truncationMode(.middle)
+
+                                Spacer()
+                            }
+                            .padding(.horizontal)
+                            .padding(.vertical, 4)
+                            .background(filteredFiles.firstIndex(of: file).map { $0 % 2 == 0 } == true ? Color.clear : ThemeColors.shared(for: colorScheme).secondaryText.opacity(0.05))
+                        }
+                    }
+                    .padding(.vertical, 8)
+                }
+                .frame(maxHeight: 400)
+            }
+
+            Divider()
+
+            // Bottom controls
+            HStack {
+                Button(selectedFiles.count == files.count ? "Deselect All" : "Select All") {
+                    if selectedFiles.count == files.count {
+                        selectedFiles.removeAll()
+                    } else {
+                        selectedFiles = Set(files)
+                    }
+                }
+                .buttonStyle(.borderless)
+                .disabled(files.isEmpty)
+
+                Spacer()
+
+                Button("Cancel") {
+                    onCancel()
+                }
+                .keyboardShortcut(.cancelAction)
+
+                Button("Move to Trash") {
+                    onConfirm()
+                }
+                .keyboardShortcut(.defaultAction)
+                .disabled(selectedFiles.isEmpty || files.isEmpty)
+            }
+            .padding()
+        }
+        .frame(width: 600, height: 500)
+    }
+
+    private func toggleSelection(_ file: String) {
+        if selectedFiles.contains(file) {
+            selectedFiles.remove(file)
+        } else {
+            selectedFiles.insert(file)
+        }
     }
 }
 
