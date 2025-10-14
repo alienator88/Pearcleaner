@@ -204,6 +204,8 @@ class UpdateManager: ObservableObject {
             FolderSettingsManager.shared.folderPaths
         }
 
+        // Flush bundle caches before reloading to ensure fresh version info
+        flushBundleCaches(for: AppState.shared.sortedApps)
         loadApps(folderPaths: folderPaths)
 
         // Wait for apps to load

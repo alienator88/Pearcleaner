@@ -25,6 +25,22 @@ func createOptimalChunks<T>(from array: [T], minChunkSize: Int = 10, maxChunkSiz
     return array.chunked(into: chunkSize)
 }
 
+/// Flush bundle caches for the given app paths to ensure fresh version info
+/// - Parameter apps: Array of AppInfo objects whose bundles should have caches flushed
+/// - Discussion: (NS)Bundle caches Info.plist data. After app updates, old version info may be
+///               returned. Flushing the cache using private API ensures current data is read.
+///               This matches the approach used by the Latest app.
+func flushBundleCaches(for apps: [AppInfo]) {
+    for app in apps {
+        autoreleasepool {
+            guard let bundle = Bundle(url: app.path) else { return }
+            if let bundleRef = CFBundleCreate(nil, bundle.bundleURL as CFURL) {
+                _CFBundleFlushBundleCaches(bundleRef)
+            }
+        }
+    }
+}
+
 /// Load apps from specified folder paths and update AppState
 /// This is the main entry point for loading/refreshing apps
 func loadApps(folderPaths: [String]) {

@@ -7,6 +7,9 @@
 
 #import <Foundation/Foundation.h>
 
+// CFBundle Private API
+#import "CFBundle_Private.h"
+
 // PackageKit Private Framework Headers
 #import "PKBOM.h"
 #import "PKBundleComponent.h"

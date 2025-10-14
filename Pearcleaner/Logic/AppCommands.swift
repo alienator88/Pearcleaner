@@ -197,6 +197,8 @@ struct AppCommands: Commands {
             Button {
                 Task { @MainActor in
                     withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                        // Flush bundle caches before reloading to ensure fresh version info
+                        flushBundleCaches(for: appState.sortedApps)
                         loadApps(folderPaths: fsm.folderPaths)
                     }
                 }
