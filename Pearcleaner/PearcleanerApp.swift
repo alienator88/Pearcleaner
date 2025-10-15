@@ -28,7 +28,7 @@ struct PearcleanerApp: App {
         handleLaunchMode()
 
         //MARK: Pre-load apps data during app initialization
-        let folderPaths = fsm.folderPaths
+        let folderPaths = FolderSettingsManager.shared.folderPaths
         loadApps(folderPaths: folderPaths)
 
         //MARK: Check permissions

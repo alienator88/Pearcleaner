@@ -386,44 +386,48 @@ struct UserProfile {
     let image: NSImage?
 }
 
-func getUserProfile() -> UserProfile {
-    do {
-        let session = ODSession.default()
-        let node = try ODNode(session: session, type: UInt32(kODNodeTypeLocalNodes))
-        let record = try node.record(
-            withRecordType: kODRecordTypeUsers,
-            name: NSUserName(),
-            attributes: ["dsAttrTypeStandard:RealName",
-                         kODAttributeTypeJPEGPhoto]
-        )
+func getUserProfile() async -> UserProfile {
+    // Use Task.detached to completely break QoS inheritance and escalation
+    // This prevents the system from escalating to match the caller's QoS
+    await Task.detached(priority: .medium) {
+        do {
+            let session = ODSession.default()
+            let node = try ODNode(session: session, type: UInt32(kODNodeTypeLocalNodes))
+            let record = try node.record(
+                withRecordType: kODRecordTypeUsers,
+                name: NSUserName(),
+                attributes: ["dsAttrTypeStandard:RealName",
+                             kODAttributeTypeJPEGPhoto]
+            )
 
-        // First name
-        var firstName: String? = nil
-        if let realName = (try? record.values(forAttribute: "dsAttrTypeStandard:RealName") as? [String])?.first {
-            firstName = realName.components(separatedBy: " ").first
+            // First name
+            var firstName: String? = nil
+            if let realName = (try? record.values(forAttribute: "dsAttrTypeStandard:RealName") as? [String])?.first {
+                firstName = realName.components(separatedBy: " ").first
+            }
+
+            // JPEG photo
+            var resizedImage: NSImage? = nil
+            if let dataList = try? record.values(forAttribute: kODAttributeTypeJPEGPhoto) as? [Data],
+               let data = dataList.first,
+               let img = NSImage(data: data) {
+                let targetSize = NSSize(width: 50, height: 50)
+                let resized = NSImage(size: targetSize)
+                resized.lockFocus()
+                img.draw(in: NSRect(origin: .zero, size: targetSize),
+                         from: NSRect(origin: .zero, size: img.size),
+                         operation: .copy,
+                         fraction: 1.0)
+                resized.unlockFocus()
+                resizedImage = resized
+            }
+
+            return UserProfile(firstName: firstName, image: resizedImage)
+        } catch {
+            printOS("Failed fetching user profile: \(error)")
+            return UserProfile(firstName: nil, image: nil)
         }
-
-        // JPEG photo
-        var resizedImage: NSImage? = nil
-        if let dataList = try? record.values(forAttribute: kODAttributeTypeJPEGPhoto) as? [Data],
-           let data = dataList.first,
-           let img = NSImage(data: data) {
-            let targetSize = NSSize(width: 50, height: 50)
-            let resized = NSImage(size: targetSize)
-            resized.lockFocus()
-            img.draw(in: NSRect(origin: .zero, size: targetSize),
-                     from: NSRect(origin: .zero, size: img.size),
-                     operation: .copy,
-                     fraction: 1.0)
-            resized.unlockFocus()
-            resizedImage = resized
-        }
-
-        return UserProfile(firstName: firstName, image: resizedImage)
-    } catch {
-        printOS("Failed fetching user profile: \(error)")
-        return UserProfile(firstName: nil, image: nil)
-    }
+    }.value
 }
 
 // Check if file/folder name has localized variant

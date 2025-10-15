@@ -1291,6 +1291,9 @@
         }
       }
     },
+    "%lld outdated" : {
+
+    },
     "%lld package%@" : {
       "localizations" : {
         "de" : {
@@ -2144,6 +2147,9 @@
           }
         }
       }
+    },
+    "|" : {
+
     },
     "⚙️ Service/Daemon" : {
       "localizations" : {

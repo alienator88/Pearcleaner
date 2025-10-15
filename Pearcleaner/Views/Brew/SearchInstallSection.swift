@@ -85,16 +85,16 @@ struct SearchInstallSection: View {
         formulae.sort { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
         casks.sort { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
 
-        // Build categories in order: Formulae, Casks, Outdated
+        // Build categories in order: Outdated, Formulae, Casks
         var categories: [(title: String, packages: [HomebrewSearchResult])] = []
+        if !outdated.isEmpty {
+            categories.append((title: "Outdated", packages: outdated))
+        }
         if !formulae.isEmpty {
             categories.append((title: "Formulae", packages: formulae))
         }
         if !casks.isEmpty {
             categories.append((title: "Casks", packages: casks))
-        }
-        if !outdated.isEmpty {
-            categories.append((title: "Outdated", packages: outdated))
         }
 
         cachedCategories = categories
@@ -306,6 +306,21 @@ struct SearchInstallSection: View {
                     .font(.caption)
                     .monospacedDigit()
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                // Show outdated count for Installed tab
+                if searchType == .installed {
+                    let outdatedCount = brewManager.outdatedPackageNames.count
+                    if outdatedCount > 0 {
+                        Text("|")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                        Text("\(outdatedCount) outdated")
+                            .font(.caption)
+                            .monospacedDigit()
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                }
 
                 if (searchType == .installed && brewManager.isLoadingPackages) ||
                    (searchType == .available && brewManager.isLoadingAvailablePackages) {

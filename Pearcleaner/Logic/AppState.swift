@@ -522,7 +522,7 @@ enum CurrentPage: Int, CaseIterable, Identifiable {
 
     /// Pages that are hidden in release builds (only visible in DEBUG mode)
     static var debugOnlyPages: [CurrentPage] {
-        return [.updater]
+        return []
     }
 
     /// Returns all pages filtered based on build configuration

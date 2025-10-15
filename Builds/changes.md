@@ -1,5 +1,12 @@
 ### What's New
 
+- [x] Quick follow-up, forgot to unhide the new Updater page in the dropdown list for the release build..oops
+- [x] Show number of outdated brew packages in statusbar under searchbar, reorder categories to show outdated at the top - #377
+- [x] Fix QOS issue on a function by detaching from parent Task
+- [x] Fix accessing StateObject on app load outside of a swiftui view
+
+--- Previous Release ---
+
 - [x] BETA: New Updater view to handle App Store, Homebrew, Sparkle updates for installed apps. (Very very beta, Sparkle updater apps don't support in-app updating yet. I didn't have many apps needing updates to test all 3 sources with so very likely some bugs to be found!)
 - [x] Default development environments selector to All if not empty on view load
 - [x] Add more safeguards in place when fully uninstalling a macOS package and tweak related file search logic - #375

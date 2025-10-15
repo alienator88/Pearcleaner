@@ -521,7 +521,9 @@ struct ProfileMenuView: View {
             }
         }
         .onAppear {
-            profile = getUserProfile()
+            Task {
+                profile = await getUserProfile()
+            }
         }
     }
 }
