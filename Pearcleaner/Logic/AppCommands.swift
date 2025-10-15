@@ -72,17 +72,17 @@ struct AppCommands: Commands {
                     let result = undoTrash()
                     if result {
                         if appState.currentPage == .plugins {
-                            // For plugins view, post notification to refresh
-                            NotificationCenter.default.post(name: NSNotification.Name("PluginsViewShouldRefresh"), object: nil)
+                            // For plugins view, post notification to undo
+                            NotificationCenter.default.post(name: NSNotification.Name("PluginsViewShouldUndo"), object: nil)
                         } else if appState.currentPage == .fileSearch {
-                            // For file search view, post notification to refresh
-                            NotificationCenter.default.post(name: NSNotification.Name("FileSearchViewShouldRefresh"), object: nil)
+                            // For file search view, post notification to undo
+                            NotificationCenter.default.post(name: NSNotification.Name("FileSearchViewShouldUndo"), object: nil)
                         } else if appState.currentPage == .orphans {
-                            // For orphans view, post notification to refresh
-                            NotificationCenter.default.post(name: NSNotification.Name("ZombieViewShouldRefresh"), object: nil)
+                            // For orphans view, post notification to undo
+                            NotificationCenter.default.post(name: NSNotification.Name("ZombieViewShouldUndo"), object: nil)
                         } else if appState.currentPage == .packages {
-                            // For packages view, post notification to refresh
-                            NotificationCenter.default.post(name: NSNotification.Name("PackagesViewShouldRefresh"), object: nil)
+                            // For packages view, post notification to undo
+                            NotificationCenter.default.post(name: NSNotification.Name("PackagesViewShouldUndo"), object: nil)
                         } else {
                             loadApps(folderPaths: fsm.folderPaths)
                             // After reload, if we're viewing files, refresh the file view
@@ -211,14 +211,47 @@ struct AppCommands: Commands {
 
             Button {
                 Task { @MainActor in
-                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                        // Flush bundle caches before reloading to ensure fresh version info
-                        flushBundleCaches(for: appState.sortedApps)
-                        loadApps(folderPaths: fsm.folderPaths)
+                    switch appState.currentPage {
+                    case .applications:
+                        if appState.currentView == .files {
+                            // User is viewing an app's files - refresh the files list
+                            let currentAppInfo = appState.appInfo
+                            updateOnMain {
+                                appState.selectedItems = []
+                            }
+                            withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                                showAppInFiles(appInfo: currentAppInfo, appState: appState, locations: locations)
+                            }
+                        } else {
+                            // User is on empty view or app list - refresh the app list
+                            withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                                // Flush bundle caches before reloading to ensure fresh version info
+                                flushBundleCaches(for: appState.sortedApps)
+                                loadApps(folderPaths: fsm.folderPaths)
+                            }
+                        }
+                    case .development:
+                        NotificationCenter.default.post(name: NSNotification.Name("DevelopmentViewShouldRefresh"), object: nil)
+                    case .fileSearch:
+                        NotificationCenter.default.post(name: NSNotification.Name("FileSearchViewShouldRefresh"), object: nil)
+                    case .homebrew:
+                        NotificationCenter.default.post(name: NSNotification.Name("HomebrewViewShouldRefresh"), object: nil)
+                    case .lipo:
+                        NotificationCenter.default.post(name: NSNotification.Name("LipoViewShouldRefresh"), object: nil)
+                    case .orphans:
+                        NotificationCenter.default.post(name: NSNotification.Name("ZombieViewShouldRefresh"), object: nil)
+                    case .packages:
+                        NotificationCenter.default.post(name: NSNotification.Name("PackagesViewShouldRefresh"), object: nil)
+                    case .plugins:
+                        NotificationCenter.default.post(name: NSNotification.Name("PluginsViewShouldRefresh"), object: nil)
+                    case .services:
+                        NotificationCenter.default.post(name: NSNotification.Name("DaemonViewShouldRefresh"), object: nil)
+                    case .updater:
+                        NotificationCenter.default.post(name: NSNotification.Name("UpdaterViewShouldRefresh"), object: nil)
                     }
                 }
             } label: {
-                Label("Refresh Apps", systemImage: "arrow.counterclockwise.circle")
+                Label("Refresh", systemImage: "arrow.counterclockwise.circle")
             }
             .keyboardShortcut("r", modifiers: .command)
 

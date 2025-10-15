@@ -334,6 +334,9 @@ struct EnvironmentCleanerView: View {
         .onAppear {
             refreshPaths()
         }
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("DevelopmentViewShouldRefresh"))) { _ in
+            refreshPaths()
+        }
         .toolbarBackground(.hidden, for: .windowToolbar)
         .toolbar {
             TahoeToolbarItem(placement: .navigation) {

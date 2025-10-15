@@ -266,7 +266,16 @@ struct ZombieView: View {
                 startFileScan()
             }
 
-            // Listen for undo refresh notification
+            // Listen for undo notification
+            NotificationCenter.default.addObserver(
+                forName: NSNotification.Name("ZombieViewShouldUndo"),
+                object: nil,
+                queue: .main
+            ) { _ in
+                startSearch()
+            }
+
+            // Listen for refresh notification
             NotificationCenter.default.addObserver(
                 forName: NSNotification.Name("ZombieViewShouldRefresh"),
                 object: nil,

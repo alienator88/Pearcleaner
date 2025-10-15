@@ -1,10 +1,9 @@
 ### What's New
 
-- [x] Make cask uninstall and brew cleanup much faster by reading install receipts instead of the huge(15MB) json cache homebrew uses
-- [x] Make formula uninstall more performant as well by offloading cleanup to background task after formula removal
-- [x] Show uninstall button for brew packages with update available - #369
-- [x] Merge Formulae/Casks tabs into one Available tab with collapsible sections like Installed tab
-- [x] Show more details in info drawer for homebrew packages
-- [x] Make cask lookup table more efficient by using install receipts instead of recursive directory scans
-- [x] Fix flash of text “There are no files to remove” for a second after brew cleanup finishes
-- [x] Update translations (Added Italian , thanks @Roccobot)
+- [x] BETA: New Updater view to handle App Store, Homebrew, Sparkle updates for installed apps. (Very very beta, Sparkle updater apps don't support in-app updating yet. I didn't have many apps needing updates to test all 3 sources with so very likely some bugs to be found!)
+- [x] Default development environments selector to All if not empty on view load
+- [x] Add more safeguards in place when fully uninstalling a macOS package and tweak related file search logic - #375
+- [x] Permissions view sheet colors hard to see - #370
+- [x] Add zed to dev environments - PR#374
+- [x] Add uv to dev environments, misc changes - PR#373
+- [x] Update translations

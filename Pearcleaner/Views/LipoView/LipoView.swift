@@ -344,6 +344,9 @@ struct LipoView: View {
                 .frame(width: 400, height: 250)
                 .background(GlassEffect(material: .hudWindow, blendingMode: .behindWindow))
             })
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("LipoViewShouldRefresh"))) { _ in
+            refreshList()
+        }
         .toolbarBackground(.hidden, for: .windowToolbar)
         .toolbar {
             TahoeToolbarItem(placement: .navigation) {

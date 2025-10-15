@@ -216,6 +216,11 @@ struct AppsUpdaterView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("UpdaterViewShouldRefresh"))) { _ in
+            Task {
+                await updateManager.scanForUpdates()
+            }
+        }
         .toolbar {
             TahoeToolbarItem(placement: .navigation) {
                 HStack {

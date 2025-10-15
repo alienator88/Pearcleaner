@@ -271,6 +271,9 @@ struct DaemonView: View {
                 refreshLaunchItems()
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("DaemonViewShouldRefresh"))) { _ in
+            refreshLaunchItems()
+        }
         .toolbarBackground(.hidden, for: .windowToolbar)
         .toolbar {
             TahoeToolbarItem(placement: .navigation) {

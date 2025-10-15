@@ -147,6 +147,19 @@ struct HomebrewView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("HomebrewViewShouldRefresh"))) { _ in
+            Task {
+                switch selectedSection {
+                case .browse:
+                    await brewManager.loadInstalledPackages()
+                    await brewManager.loadAvailablePackages(appState: appState, forceRefresh: true)
+                case .taps:
+                    await brewManager.loadTaps()
+                case .maintenance:
+                    await brewManager.refreshMaintenance()
+                }
+            }
+        }
         .toolbar {
             TahoeToolbarItem(placement: .navigation) {
                 HStack {

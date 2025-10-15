@@ -446,11 +446,17 @@ struct FileSearchView: View {
                 .background(ThemeColors.shared(for: colorScheme).primaryBG)
             }
         }
-        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("FileSearchViewShouldRefresh"))) { _ in
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("FileSearchViewShouldUndo"))) { _ in
             // Restore deleted items from cache after undo
             if !deletedItemsCache.isEmpty {
                 results.append(contentsOf: deletedItemsCache)
                 deletedItemsCache.removeAll()
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("FileSearchViewShouldRefresh"))) { _ in
+            // Re-run search with current parameters if a search has been performed
+            if hasSearched {
+                startSearch()
             }
         }
         .toolbarBackground(.hidden, for: .windowToolbar)

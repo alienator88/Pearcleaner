@@ -127,6 +127,13 @@ struct FilesView: View {
                 showAlert = true
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("FileSearchViewShouldRefresh"))) { _ in
+            // Refresh current app's files
+            if !appState.appInfo.bundleIdentifier.isEmpty {
+                let currentAppInfo = appState.appInfo
+                showAppInFiles(appInfo: currentAppInfo, appState: appState, locations: locations)
+            }
+        }
         .toolbarBackground(.hidden, for: .windowToolbar)
         .toolbar {
 
