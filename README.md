@@ -29,7 +29,7 @@ This project was born out of wanting to learn more on how macOS deals with app i
 
 ## Features
 ### Core
-- **App Uninstall • Orphaned File Search • Development Environment Manager • File Search • Homebrew Manager • App Lipo • PKG Manager • Plugin Manager • Services Manager**
+- **App Uninstall • Orphaned File Search • Development Environment Manager • File Search • Homebrew Manager • App Lipo • PKG Manager • Plugin Manager • Services Manager • Apps Updater** 
 - Drag/drop apps, CLI support, and deep link automation [view](https://github.com/alienator88/Pearcleaner/wiki/Deep-Link-Guide)
 - List or Grid view with badges for web/iOS apps
 - Finder Extension for right-click uninstall
