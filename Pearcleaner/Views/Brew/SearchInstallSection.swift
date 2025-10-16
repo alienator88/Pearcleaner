@@ -818,6 +818,14 @@ struct SearchResultRowView: View {
                     do {
                         try await HomebrewController.shared.installPackage(name: result.name, cask: isCask)
                         await brewManager.loadInstalledPackages()
+
+                        // Refresh AppState.sortedApps to include newly installed GUI app (casks only)
+                        if isCask {
+                            let folderPaths = FolderSettingsManager.shared.folderPaths
+                            flushBundleCaches(for: AppState.shared.sortedApps)
+                            loadApps(folderPaths: folderPaths)
+                            try? await Task.sleep(nanoseconds: 500_000_000)
+                        }
                     } catch {
                         printOS("Error installing package \(result.name): \(error)")
                     }
@@ -836,6 +844,14 @@ struct SearchResultRowView: View {
                     do {
                         try await HomebrewController.shared.upgradePackage(name: result.name)
                         await brewManager.loadInstalledPackages()
+
+                        // Refresh AppState.sortedApps to reflect updated version (casks only)
+                        if isCask {
+                            let folderPaths = FolderSettingsManager.shared.folderPaths
+                            flushBundleCaches(for: AppState.shared.sortedApps)
+                            loadApps(folderPaths: folderPaths)
+                            try? await Task.sleep(nanoseconds: 500_000_000)
+                        }
                     } catch {
                         printOS("Error updating package \(result.name): \(error)")
                     }
@@ -858,6 +874,12 @@ struct SearchResultRowView: View {
                         let shortName = result.name.components(separatedBy: "/").last ?? result.name
                         if isCask {
                             brewManager.installedCasks.removeAll { $0.name == result.name || $0.name == shortName }
+
+                            // Refresh AppState.sortedApps to remove uninstalled app (casks only)
+                            let folderPaths = FolderSettingsManager.shared.folderPaths
+                            flushBundleCaches(for: AppState.shared.sortedApps)
+                            loadApps(folderPaths: folderPaths)
+                            try? await Task.sleep(nanoseconds: 500_000_000)
                         } else {
                             brewManager.installedFormulae.removeAll { $0.name == result.name || $0.name == shortName }
                         }
@@ -2485,6 +2507,14 @@ struct InstallButtonSection: View {
                     do {
                         try await HomebrewController.shared.installPackage(name: packageName, cask: isCask)
                         await brewManager.loadInstalledPackages()
+
+                        // Refresh AppState.sortedApps to include newly installed GUI app (casks only)
+                        if isCask {
+                            let folderPaths = FolderSettingsManager.shared.folderPaths
+                            flushBundleCaches(for: AppState.shared.sortedApps)
+                            loadApps(folderPaths: folderPaths)
+                            try? await Task.sleep(nanoseconds: 500_000_000)
+                        }
                     } catch {
                         printOS("Error installing package \(packageName): \(error)")
                     }
