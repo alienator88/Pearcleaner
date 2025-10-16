@@ -70,4 +70,9 @@ struct UpdateableApp: Identifiable {
     var canUpdate: Bool {
         source == .homebrew || source == .appStore
     }
+
+    /// Unique identifier for tracking hidden apps
+    var uniqueIdentifier: String {
+        appInfo.bundleIdentifier
+    }
 }

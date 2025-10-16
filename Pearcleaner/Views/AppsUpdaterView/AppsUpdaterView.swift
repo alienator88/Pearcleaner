@@ -14,6 +14,7 @@ struct AppsUpdaterView: View {
     @Environment(\.colorScheme) var colorScheme
     @State private var searchText = ""
     @State private var collapsedCategories: Set<String> = []
+    @State private var hiddenSidebar: Bool = false
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.updater.checkAppStore") private var checkAppStore: Bool = true
@@ -104,37 +105,38 @@ struct AppsUpdaterView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            // Search bar (matching Homebrew style)
-            HStack {
-                Image(systemName: "magnifyingglass")
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+        ZStack {
+            VStack(spacing: 0) {
+                // Search bar (matching Homebrew style)
+                HStack {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
-                TextField("Search...", text: $searchText)
-                    .textFieldStyle(.plain)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                    TextField("Search...", text: $searchText)
+                        .textFieldStyle(.plain)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
-                if !searchText.isEmpty {
-                    Button {
-                        searchText = ""
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    if !searchText.isEmpty {
+                        Button {
+                            searchText = ""
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        }
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
                 }
-            }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .controlGroup(Capsule(style: .continuous), level: .primary)
-            .padding(.horizontal, 20)
-            .padding(.top, 10)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .controlGroup(Capsule(style: .continuous), level: .primary)
+                .padding(.horizontal, 20)
+                .padding(.top, 10)
 
-            // Results count bar
-            resultsCountBar
+                // Results count bar
+                resultsCountBar
 
-            // Category-based list
-            if updateManager.isScanning {
+                // Category-based list
+                if updateManager.isScanning {
                 // Loading state - centered
                 VStack(alignment: .center, spacing: 10) {
                     Spacer()
@@ -239,7 +241,14 @@ struct AppsUpdaterView: View {
                 }
                 .scrollIndicators(scrollIndicators ? .visible : .hidden)
             }
+            }
+            .opacity(hiddenSidebar ? 0.5 : 1)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+            UpdaterDetailsSidebar(hiddenSidebar: $hiddenSidebar)
         }
+        .animation(animationEnabled ? .spring(response: 0.35, dampingFraction: 0.8) : .none, value: hiddenSidebar)
+        .transition(.opacity)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("UpdaterViewShouldRefresh"))) { _ in
             Task {
@@ -272,6 +281,13 @@ struct AppsUpdaterView: View {
                 }
                 .disabled(updateManager.isScanning)
                 .help("Scan for app updates")
+
+                Button {
+                    hiddenSidebar.toggle()
+                } label: {
+                    Label("Hidden", systemImage: "sidebar.trailing")
+                }
+                .help("Show hidden updates")
             }
         }
         .task {
@@ -301,6 +317,7 @@ struct CategorySection<TrailingContent: View>: View {
     let trailingContent: (() -> TrailingContent)?
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+    @StateObject private var updateManager = UpdateManager.shared
 
     // Initializer for categories without trailing content
     init(
@@ -420,7 +437,12 @@ struct CategorySection<TrailingContent: View>: View {
                 } else {
                     LazyVStack(spacing: 8) {
                         ForEach(searchText.isEmpty ? apps : filteredApps) { app in
-                            UpdateRowView(app: app)
+                            UpdateRowView(
+                                app: app,
+                                onHideToggle: { app in
+                                    updateManager.hideApp(app)
+                                }
+                            )
                         }
                     }
                 }

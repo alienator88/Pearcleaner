@@ -14,6 +14,7 @@ class UpdateManager: ObservableObject {
     static let shared = UpdateManager()
 
     @Published var updatesBySource: [UpdateSource: [UpdateableApp]] = [:]
+    @Published var hiddenUpdates: [UpdateableApp] = []
     @Published var isScanning: Bool = false
     @Published var lastScanDate: Date?
 
@@ -24,11 +25,73 @@ class UpdateManager: ObservableObject {
     @AppStorage("settings.updater.checkHomebrew") private var checkHomebrew: Bool = true
     @AppStorage("settings.updater.checkSparkle") private var checkSparkle: Bool = true
     @AppStorage("settings.updater.includeSparklePreReleases") private var includeSparklePreReleases: Bool = false
+    @AppStorage("settings.updater.hiddenAppsData") private var hiddenAppsData: Data = Data()
 
     private init() {}
 
     var hasUpdates: Bool {
-        updatesBySource.values.contains { !$0.isEmpty }
+        updatesBySource.values.contains { !$0.isEmpty } || !hiddenUpdates.isEmpty
+    }
+
+    /// Computed property for easy access to hidden apps mapping (bundleID -> source)
+    private var hiddenApps: [String: UpdateSource] {
+        get {
+            guard let decoded = try? JSONDecoder().decode([String: String].self, from: hiddenAppsData) else {
+                return [:]
+            }
+            // Convert String to UpdateSource
+            return decoded.compactMapValues { UpdateSource(rawValue: $0) }
+        }
+        set {
+            // Convert UpdateSource to String for storage
+            let stringDict = newValue.mapValues { $0.rawValue }
+            hiddenAppsData = (try? JSONEncoder().encode(stringDict)) ?? Data()
+        }
+    }
+
+    /// Hide an app (move to hidden category)
+    func hideApp(_ app: UpdateableApp) {
+        var hidden = hiddenApps
+        hidden[app.uniqueIdentifier] = app.source
+        hiddenApps = hidden
+
+        // Move app from its source category to hidden
+        moveAppToHidden(app)
+    }
+
+    /// Unhide an app (restore to original category)
+    func unhideApp(_ app: UpdateableApp) {
+        var hidden = hiddenApps
+        hidden.removeValue(forKey: app.uniqueIdentifier)
+        hiddenApps = hidden
+
+        // Move app from hidden back to its original source category
+        moveAppFromHidden(app)
+    }
+
+    /// Move an app from its source category to hidden
+    private func moveAppToHidden(_ app: UpdateableApp) {
+        // Remove from source category
+        updatesBySource[app.source]?.removeAll { $0.id == app.id }
+
+        // Add to hidden
+        if !hiddenUpdates.contains(where: { $0.id == app.id }) {
+            hiddenUpdates.append(app)
+        }
+    }
+
+    /// Move an app from hidden back to its original source category
+    private func moveAppFromHidden(_ app: UpdateableApp) {
+        // Remove from hidden
+        hiddenUpdates.removeAll { $0.id == app.id }
+
+        // Add back to source category
+        if updatesBySource[app.source] == nil {
+            updatesBySource[app.source] = []
+        }
+        if !updatesBySource[app.source]!.contains(where: { $0.id == app.id }) {
+            updatesBySource[app.source]!.append(app)
+        }
     }
 
     func scanForUpdates() async {
@@ -52,13 +115,31 @@ class UpdateManager: ObservableObject {
         let apps = AppState.shared.sortedApps
 
         // Scan for updates using coordinator, passing checkbox states
-        updatesBySource = await UpdateCoordinator.scanForUpdates(
+        let allUpdates = await UpdateCoordinator.scanForUpdates(
             apps: apps,
             checkAppStore: checkAppStore,
             checkHomebrew: checkHomebrew,
             checkSparkle: checkSparkle,
             includeSparklePreReleases: includeSparklePreReleases
         )
+
+        // Separate hidden from visible updates
+        let hidden = hiddenApps
+        var visibleUpdates: [UpdateSource: [UpdateableApp]] = [:]
+        var hiddenUpdatesList: [UpdateableApp] = []
+
+        for (source, apps) in allUpdates {
+            let visible = apps.filter { !hidden.keys.contains($0.uniqueIdentifier) }
+            let hiddenApps = apps.filter { hidden.keys.contains($0.uniqueIdentifier) }
+
+            if !visible.isEmpty {
+                visibleUpdates[source] = visible
+            }
+            hiddenUpdatesList.append(contentsOf: hiddenApps)
+        }
+
+        updatesBySource = visibleUpdates
+        hiddenUpdates = hiddenUpdatesList
         lastScanDate = Date()
     }
 

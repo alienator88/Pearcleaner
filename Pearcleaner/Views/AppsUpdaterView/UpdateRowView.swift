@@ -10,6 +10,7 @@ import AlinFoundation
 
 struct UpdateRowView: View {
     let app: UpdateableApp
+    let onHideToggle: (UpdateableApp) -> Void
     @StateObject private var updateManager = UpdateManager.shared
     @Environment(\.colorScheme) var colorScheme
     @State private var isHovered: Bool = false
@@ -71,21 +72,41 @@ struct UpdateRowView: View {
             }
             .buttonStyle(.plain)
         }
+
+        // Hide button (always shown, positioned last - furthest trailing)
+        Button {
+            onHideToggle(app)
+        } label: {
+            Image(systemName: "eye.slash")
+                .font(.system(size: 14))
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+        }
+        .buttonStyle(.plain)
+        .help("Hide update")
     }
 
     var body: some View {
         VStack(spacing: 0) {
             // Main row
             HStack(alignment: .center, spacing: 12) {
-                // Source icon (circular background)
-                ZStack {
-                    Circle()
-                        .fill(sourceColor.opacity(0.2))
+                // App icon (use actual app icon if available, fallback to source icon)
+                if let appIcon = app.appInfo.appIcon {
+                    Image(nsImage: appIcon)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
                         .frame(width: 40, height: 40)
+                        .cornerRadius(8)
+                } else {
+                    // Fallback to source icon with colored background
+                    ZStack {
+                        Circle()
+                            .fill(sourceColor.opacity(0.2))
+                            .frame(width: 40, height: 40)
 
-                    Image(systemName: sourceIcon)
-                        .font(.system(size: 18, weight: .medium))
-                        .foregroundStyle(sourceColor)
+                        Image(systemName: sourceIcon)
+                            .font(.system(size: 18, weight: .medium))
+                            .foregroundStyle(sourceColor)
+                    }
                 }
 
                 // App name and version
