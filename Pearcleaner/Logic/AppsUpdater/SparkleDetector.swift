@@ -22,7 +22,10 @@ class SparkleDetector {
             }
 
             // Check for Sparkle feed URL
-            if let feedURL = infoDict["SUFeedURL"] as? String ?? infoDict["SUFeedUrl"] as? String {
+            if let feedURLRaw = infoDict["SUFeedURL"] as? String ?? infoDict["SUFeedUrl"] as? String {
+                // Remove surrounding quotes/apostrophes (handles malformed Info.plist entries)
+                let feedURL = feedURLRaw.unquoted
+
                 // Extract both version types from Info.plist
                 let shortVersion = infoDict["CFBundleShortVersionString"] as? String ?? ""
                 let buildVersion = infoDict["CFBundleVersion"] as? String ?? ""
@@ -145,6 +148,18 @@ class SparkleDetector {
 
             // Only show update if available > installed
             if availableVer > installedVer {
+                // Check minimum OS version compatibility
+                if let minimumOS = candidateItem.minimumSystemVersion {
+                    // Parse minimum OS version (e.g., "13.0", "14.5")
+                    if let minOSVersion = parseOperatingSystemVersion(minimumOS) {
+                        // Check if current system meets the requirement
+                        if !ProcessInfo.processInfo.isOperatingSystemAtLeast(minOSVersion) {
+                            // Update requires newer macOS - skip this update
+                            return nil
+                        }
+                    }
+                }
+
                 return UpdateableApp(
                     appInfo: appInfo,
                     availableVersion: appcastVersionToCompare,
@@ -177,6 +192,18 @@ class SparkleDetector {
 
         return parser.items
     }
+
+    /// Parse macOS version string (e.g., "13.0", "14.5.1") into OperatingSystemVersion
+    private static func parseOperatingSystemVersion(_ versionString: String) -> OperatingSystemVersion? {
+        let components = versionString.split(separator: ".").compactMap { Int($0) }
+        guard !components.isEmpty else { return nil }
+
+        return OperatingSystemVersion(
+            majorVersion: components.count > 0 ? components[0] : 0,
+            minorVersion: components.count > 1 ? components[1] : 0,
+            patchVersion: components.count > 2 ? components[2] : 0
+        )
+    }
 }
 
 // Sparkle metadata structure
@@ -184,6 +211,7 @@ private struct SparkleMetadata {
     let shortVersionString: String?  // User-facing version (e.g., "6.0")
     let buildVersion: String         // Internal/build version (e.g., "6.0.2020")
     let channel: String?             // Release channel (e.g., "beta", "pre", "internal") - nil means stable/default channel
+    let minimumSystemVersion: String? // Minimum macOS version required (e.g., "13.0")
     let title: String?
     let description: String?
     let releaseNotesLink: String?    // Link to release notes page
@@ -198,9 +226,11 @@ private class SparkleAppcastParser: NSObject, XMLParserDelegate {
     private var shortVersionString: String?
     private var internalVersion: String?
     private var releaseChannel: String?
+    private var minimumSystemVersion: String?
     private var releaseTitle: String?
     private var releaseDescription: String?
     private var releaseNotesLink: String?
+    private var fullReleaseNotesLink: String?
     private var releaseDate: String?
 
     private var currentElement = ""
@@ -218,9 +248,11 @@ private class SparkleAppcastParser: NSObject, XMLParserDelegate {
             shortVersionString = nil
             internalVersion = nil
             releaseChannel = nil
+            minimumSystemVersion = nil
             releaseTitle = nil
             releaseDescription = nil
             releaseNotesLink = nil
+            fullReleaseNotesLink = nil
             releaseDate = nil
         }
 
@@ -275,6 +307,11 @@ private class SparkleAppcastParser: NSObject, XMLParserDelegate {
                 releaseNotesLink = currentText
             }
 
+            // Extract full release notes link (fallback)
+            if (elementName == "fullReleaseNotesLink" || elementName == "sparkle:fullReleaseNotesLink") && fullReleaseNotesLink == nil && !currentText.isEmpty {
+                fullReleaseNotesLink = currentText
+            }
+
             // Extract pubDate
             if elementName == "pubDate" && releaseDate == nil && !currentText.isEmpty {
                 releaseDate = currentText
@@ -285,16 +322,25 @@ private class SparkleAppcastParser: NSObject, XMLParserDelegate {
                 releaseChannel = currentText
             }
 
+            // Extract minimum system version
+            if (elementName == "minimumSystemVersion" || elementName == "sparkle:minimumSystemVersion") && minimumSystemVersion == nil && !currentText.isEmpty {
+                minimumSystemVersion = currentText
+            }
+
             // Exit item - save it if it has a valid version
             if elementName == "item" {
                 if let buildVer = internalVersion {
+                    // Use releaseNotesLink, fallback to fullReleaseNotesLink
+                    let finalReleaseNotesLink = releaseNotesLink ?? fullReleaseNotesLink
+
                     let metadata = SparkleMetadata(
                         shortVersionString: shortVersionString,
                         buildVersion: buildVer,
                         channel: releaseChannel,
+                        minimumSystemVersion: minimumSystemVersion,
                         title: releaseTitle,
                         description: releaseDescription,
-                        releaseNotesLink: releaseNotesLink,
+                        releaseNotesLink: finalReleaseNotesLink,
                         pubDate: releaseDate
                     )
                     items.append(metadata)
@@ -305,5 +351,14 @@ private class SparkleAppcastParser: NSObject, XMLParserDelegate {
         }
 
         currentText = ""
+    }
+}
+
+// MARK: - String Extension
+private extension String {
+    /// Removes surrounding quotes and apostrophes from the string
+    /// Handles malformed Info.plist entries like: "https://example.com" or 'https://example.com'
+    var unquoted: String {
+        return trimmingCharacters(in: CharacterSet(charactersIn: "'\""))
     }
 }
