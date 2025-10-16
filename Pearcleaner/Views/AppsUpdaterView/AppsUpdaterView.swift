@@ -30,52 +30,15 @@ struct AppsUpdaterView: View {
         !checkAppStore && !checkHomebrew && !checkSparkle
     }
 
+    private var hasVisibleUpdates: Bool {
+        updateManager.updatesBySource.values.contains { !$0.isEmpty }
+    }
+
     @ViewBuilder
     private var resultsCountBar: some View {
         if updateManager.hasUpdates || updateManager.lastScanDate != nil {
             HStack(spacing: 12) {
-                // Left: Source checkboxes with icons and names
-                HStack(spacing: 12) {
-                    SourceCheckbox(
-                        isEnabled: $checkAppStore,
-                        name: "App Store",
-                        icon: "storefront.fill",
-                        onChange: { isEnabled in
-                            // Only rescan when checking ON, not when unchecking
-                            if isEnabled {
-                                Task { await updateManager.scanForUpdates() }
-                            }
-                        }
-                    )
-
-                    SourceCheckbox(
-                        isEnabled: $checkHomebrew,
-                        name: "Homebrew",
-                        icon: "mug.fill",
-                        onChange: { isEnabled in
-                            // Only rescan when checking ON, not when unchecking
-                            if isEnabled {
-                                Task { await updateManager.scanForUpdates() }
-                            }
-                        }
-                    )
-
-                    SourceCheckbox(
-                        isEnabled: $checkSparkle,
-                        name: "Sparkle",
-                        icon: "sparkles",
-                        onChange: { isEnabled in
-                            // Only rescan when checking ON, not when unchecking
-                            if isEnabled {
-                                Task { await updateManager.scanForUpdates() }
-                            }
-                        }
-                    )
-                }
-
-                Divider().frame(height: 16)
-
-                // Middle: Update count
+                // Update count
                 Text("\(totalUpdateCount) update\(totalUpdateCount == 1 ? "" : "s")")
                     .font(.caption)
                     .monospacedDigit()
@@ -89,7 +52,7 @@ struct AppsUpdaterView: View {
 
                 Spacer()
 
-                // Right: Timeline (same as PackageView)
+                // Timeline
                 if let lastScan = updateManager.lastScanDate {
                     TimelineView(.periodic(from: lastScan, by: 1.0)) { _ in
                         Text("Updated \(formatRelativeTime(lastScan))")
@@ -136,8 +99,8 @@ struct AppsUpdaterView: View {
                 resultsCountBar
 
                 // Category-based list
-                if updateManager.isScanning {
-                // Loading state - centered
+                if updateManager.isScanning || updateManager.lastScanDate == nil {
+                // Loading state - centered (shown when scanning OR before first scan)
                 VStack(alignment: .center, spacing: 10) {
                     Spacer()
                     ProgressView()
@@ -150,8 +113,8 @@ struct AppsUpdaterView: View {
                     Spacer()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if updateManager.updatesBySource.isEmpty || allSourcesDisabled {
-                // Empty state - centered (shown before first scan OR when all sources disabled)
+            } else if !hasVisibleUpdates || allSourcesDisabled {
+                // Empty state - centered (shown when no visible updates OR all sources disabled)
                 VStack(alignment: .center, spacing: 10) {
                     Spacer()
                     Image(systemName: "checkmark.circle")
@@ -207,31 +170,7 @@ struct AppsUpdaterView: View {
                                 collapsed: (updateManager.updatesBySource[.sparkle]?.isEmpty ?? true) || collapsedCategories.contains("Sparkle"),
                                 onToggle: { toggleCategory("Sparkle") },
                                 onUpdateAll: nil,  // No "Update All" for Sparkle
-                                isFirst: !checkAppStore && !checkHomebrew,
-                                trailingContent: {
-                                    Button(action: {
-                                        includeSparklePreReleases.toggle()
-                                        Task { await updateManager.scanForUpdates() }
-                                    }) {
-                                        HStack(spacing: 4) {
-                                            // Circular checkbox (matching source checkboxes)
-                                            Image(systemName: includeSparklePreReleases ? "checkmark.circle.fill" : "circle")
-                                                .foregroundStyle(includeSparklePreReleases ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
-                                                .font(.title3)
-
-                                            // Flask icon
-                                            Image(systemName: "flask")
-                                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                                                .font(.caption)
-
-                                            // Label
-                                            Text("Pre-releases")
-                                                .font(.caption)
-                                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                                        }
-                                    }
-                                    .buttonStyle(.plain)
-                                }
+                                isFirst: !checkAppStore && !checkHomebrew
                             )
                         }
                     }
@@ -245,7 +184,13 @@ struct AppsUpdaterView: View {
             .opacity(hiddenSidebar ? 0.5 : 1)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            UpdaterDetailsSidebar(hiddenSidebar: $hiddenSidebar)
+            UpdaterDetailsSidebar(
+                hiddenSidebar: $hiddenSidebar,
+                checkAppStore: $checkAppStore,
+                checkHomebrew: $checkHomebrew,
+                checkSparkle: $checkSparkle,
+                includeSparklePreReleases: $includeSparklePreReleases
+            )
         }
         .animation(animationEnabled ? .spring(response: 0.35, dampingFraction: 0.8) : .none, value: hiddenSidebar)
         .transition(.opacity)
@@ -385,11 +330,13 @@ struct CategorySection<TrailingContent: View>: View {
                     Image(systemName: collapsed ? "chevron.right" : "chevron.down")
                         .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        .opacity(filteredApps.isEmpty ? 0 : 1)
                         .frame(width: 10)
 
                     Image(systemName: icon)
                         .font(.headline)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                        .frame(width: 20)
 
                     Text(title)
                         .font(.headline)
@@ -422,7 +369,7 @@ struct CategorySection<TrailingContent: View>: View {
             }
             .buttonStyle(.plain)
             .contentShape(Rectangle())
-            .padding(.top, isFirst ? 0 : 12)
+            .padding(.top, isFirst ? 0 : 20)
 
             // Packages in category (only if not collapsed)
             if !collapsed {
@@ -448,41 +395,6 @@ struct CategorySection<TrailingContent: View>: View {
                 }
             }
         }
-    }
-}
-
-// MARK: - Source Checkbox Component
-
-struct SourceCheckbox: View {
-    @Binding var isEnabled: Bool
-    let name: String
-    let icon: String
-    let onChange: (Bool) -> Void
-    @Environment(\.colorScheme) var colorScheme
-
-    var body: some View {
-        Button(action: {
-            isEnabled.toggle()
-            onChange(isEnabled) // Pass new state
-        }) {
-            HStack(spacing: 4) {
-                // Circular checkbox (Plugin Manager style)
-                Image(systemName: isEnabled ? "checkmark.circle.fill" : "circle")
-                    .foregroundStyle(isEnabled ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
-                    .font(.title3)
-
-                // Source icon
-                Image(systemName: icon)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    .font(.caption)
-
-                // Source name
-                Text(name)
-                    .font(.caption)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-            }
-        }
-        .buttonStyle(.plain)
     }
 }
 

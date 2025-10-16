@@ -13,6 +13,10 @@ import AlinFoundation
 // Main updater hidden sidebar view
 struct UpdaterDetailsSidebar: View {
     @Binding var hiddenSidebar: Bool
+    @Binding var checkAppStore: Bool
+    @Binding var checkHomebrew: Bool
+    @Binding var checkSparkle: Bool
+    @Binding var includeSparklePreReleases: Bool
     @StateObject private var updateManager = UpdateManager.shared
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
@@ -22,9 +26,15 @@ struct UpdaterDetailsSidebar: View {
             HStack {
                 Spacer()
 
-                VStack(alignment: .leading, spacing: 12) {
-                    UpdaterHiddenHeaderSection(hiddenCount: updateManager.hiddenUpdates.count)
+                VStack(alignment: .leading, spacing: 14) {
+                    UpdaterSourceCheckboxSection(
+                        checkAppStore: $checkAppStore,
+                        checkHomebrew: $checkHomebrew,
+                        checkSparkle: $checkSparkle,
+                        includeSparklePreReleases: $includeSparklePreReleases
+                    )
                     Divider()
+                    UpdaterHiddenHeaderSection(hiddenCount: updateManager.hiddenUpdates.count)
                     UpdaterHiddenAppsSection(hiddenApps: updateManager.hiddenUpdates)
                     Spacer()
                     UpdaterHiddenSidebarFooter()
@@ -43,31 +53,142 @@ struct UpdaterDetailsSidebar: View {
     }
 }
 
+// Source checkboxes section component
+struct UpdaterSourceCheckboxSection: View {
+    @Binding var checkAppStore: Bool
+    @Binding var checkHomebrew: Bool
+    @Binding var checkSparkle: Bool
+    @Binding var includeSparklePreReleases: Bool
+    @StateObject private var updateManager = UpdateManager.shared
+    @Environment(\.colorScheme) var colorScheme
+
+    private var selectedSourcesCount: Int {
+        [checkAppStore, checkHomebrew, checkSparkle].filter { $0 }.count
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            // Header
+            HStack(spacing: 8) {
+                Text("Sources")
+                    .font(.headline)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                Text(verbatim: "(\(selectedSourcesCount))")
+                    .font(.headline)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+            }
+
+            // App Store checkbox
+            Button(action: {
+                checkAppStore.toggle()
+                if checkAppStore {
+                    Task { await updateManager.scanForUpdates() }
+                }
+            }) {
+                HStack(spacing: 8) {
+                    Image(systemName: checkAppStore ? "checkmark.circle.fill" : "circle")
+                        .foregroundStyle(checkAppStore ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
+                        .font(.title3)
+
+                    Image(systemName: "storefront.fill")
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        .font(.caption)
+                        .frame(width: 16)
+
+                    Text("App Store")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                }
+            }
+            .buttonStyle(.plain)
+
+            // Homebrew checkbox
+            Button(action: {
+                checkHomebrew.toggle()
+                if checkHomebrew {
+                    Task { await updateManager.scanForUpdates() }
+                }
+            }) {
+                HStack(spacing: 8) {
+                    Image(systemName: checkHomebrew ? "checkmark.circle.fill" : "circle")
+                        .foregroundStyle(checkHomebrew ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
+                        .font(.title3)
+
+                    Image(systemName: "mug")
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        .font(.caption)
+                        .frame(width: 16)
+
+                    Text("Homebrew")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                }
+            }
+            .buttonStyle(.plain)
+
+            HStack(spacing: 8) {
+                Button(action: {
+                    checkSparkle.toggle()
+                    if checkSparkle {
+                        Task { await updateManager.scanForUpdates() }
+                    }
+                }) {
+                    HStack(spacing: 8) {
+                        Image(systemName: checkSparkle ? "checkmark.circle.fill" : "circle")
+                            .foregroundStyle(checkSparkle ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
+                            .font(.title3)
+
+                        Image(systemName: "sparkles")
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            .font(.caption)
+                            .frame(width: 16)
+
+                        Text("Sparkle")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                }
+                .buttonStyle(.plain)
+
+                Spacer()
+
+                // Pre-releases button
+                Button(action: {
+                    includeSparklePreReleases.toggle()
+                    Task { await updateManager.scanForUpdates() }
+                }) {
+                    if #available(macOS 14.0, *) {
+                        Image(systemName: includeSparklePreReleases ? "flask.fill" : "flask")
+                            .foregroundStyle(includeSparklePreReleases ? .green : ThemeColors.shared(for: colorScheme).secondaryText)
+                    } else {
+                        Image(systemName: "testtube.2")
+                            .foregroundStyle(includeSparklePreReleases ? .green : ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                }
+                .buttonStyle(.plain)
+                .help(includeSparklePreReleases ? "Disable pre-releases" : "Enable pre-releases")
+            }
+        }
+    }
+}
+
 // Header info component
 struct UpdaterHiddenHeaderSection: View {
     let hiddenCount: Int
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 8) {
-                Image(systemName: "eye.slash")
-                    .font(.headline)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+        HStack(spacing: 8) {
+            Text("Hidden Updates")
+                .font(.headline)
+                .fontWeight(.semibold)
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
-                Text("Hidden Updates")
-                    .font(.headline)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-            }
-
-            HStack(spacing: 0) {
-                Text("Hidden Apps:")
-                Spacer()
-                Text(verbatim: "\(hiddenCount)")
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-            }
-            .font(.caption)
+            Text(verbatim: "(\(hiddenCount))")
+                .font(.headline)
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
         }
     }
 }

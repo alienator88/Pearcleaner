@@ -7667,6 +7667,9 @@
         }
       }
     },
+    "App Store" : {
+
+    },
     "Appcast URL" : {
       "localizations" : {
         "de" : {
@@ -17227,6 +17230,9 @@
         }
       }
     },
+    "Disable pre-releases" : {
+
+    },
     "Disabled" : {
       "localizations" : {
         "de" : {
@@ -18504,6 +18510,9 @@
           }
         }
       }
+    },
+    "Enable pre-releases" : {
+
     },
     "Enabled" : {
       "localizations" : {
@@ -24034,9 +24043,6 @@
       }
     },
     "Hidden" : {
-
-    },
-    "Hidden Apps:" : {
 
     },
     "Hidden Updates" : {
@@ -41155,6 +41161,7 @@
       }
     },
     "Pre-releases" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -53274,6 +53281,9 @@
         }
       }
     },
+    "Sources" : {
+
+    },
     "Space Savings: %d%%" : {
       "comment" : "Lipo result title",
       "localizations" : {
@@ -53487,6 +53497,9 @@
           }
         }
       }
+    },
+    "Sparkle" : {
+
     },
     "Sponsor" : {
       "extractionState" : "manual",

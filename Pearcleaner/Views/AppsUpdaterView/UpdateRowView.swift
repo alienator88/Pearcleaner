@@ -113,19 +113,8 @@ struct UpdateRowView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 4) {
                         Text(app.appInfo.appName)
-                            .font(.headline)
+                            .font(.title2)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-
-                        // Show version inline
-                        if let availableVersion = app.availableVersion {
-                            Text(verbatim: "(\(app.appInfo.appVersion) → \(availableVersion))")
-                                .font(.footnote)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        } else if app.source == .sparkle {
-                            Text(verbatim: "(\(app.appInfo.appVersion))")
-                                .font(.footnote)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        }
 
                         // Info button for App Store apps
                         if app.source == .appStore, let appStoreURL = app.appStoreURL {
@@ -141,10 +130,16 @@ struct UpdateRowView: View {
                         }
                     }
 
-                    // Source label
-                    Text(app.source.rawValue)
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    // Version info (larger font)
+                    if let availableVersion = app.availableVersion {
+                        Text(verbatim: "\(app.appInfo.appVersion) → \(availableVersion)")
+                            .font(.callout)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    } else if app.source == .sparkle {
+                        Text(verbatim: "\(app.appInfo.appVersion)")
+                            .font(.callout)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
                 }
 
                 Spacer()
