@@ -89,7 +89,15 @@ class SparkleDetector {
 
             // Filter pre-releases BEFORE finding best item (not after!)
             if !includePreReleases {
-                items = items.filter { $0.channel == nil }  // Keep only stable releases
+                // Stage 1: Filter by channel tag (e.g., BetterDisplay with <sparkle:channel>beta</sparkle:channel>)
+                items = items.filter { $0.channel == nil }
+
+                // Stage 2: Filter by SemVer pre-release identifier (e.g., Transmission with version "4.1.0-beta.2")
+                items = items.filter { item in
+                    let version = item.shortVersionString ?? item.buildVersion
+                    guard let semVer = SemanticVersion(version) else { return true }  // Keep if not parseable
+                    return !semVer.isPreRelease  // Exclude if pre-release (has -beta, -rc, -alpha, etc.)
+                }
             }
 
             // After filtering, check if we have any items left
