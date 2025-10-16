@@ -37,6 +37,7 @@ class HomebrewUpdateChecker {
                     progress: 0.0,
                     releaseTitle: nil,
                     releaseDescription: nil,
+                    releaseNotesLink: nil,
                     releaseDate: nil
                 )
                 updateableApps.append(updateableApp)

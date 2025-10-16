@@ -19,6 +19,7 @@ struct AppsUpdaterView: View {
     @AppStorage("settings.updater.checkAppStore") private var checkAppStore: Bool = true
     @AppStorage("settings.updater.checkHomebrew") private var checkHomebrew: Bool = true
     @AppStorage("settings.updater.checkSparkle") private var checkSparkle: Bool = true
+    @AppStorage("settings.updater.includeSparklePreReleases") private var includeSparklePreReleases: Bool = false
 
     private var totalUpdateCount: Int {
         updateManager.updatesBySource.values.reduce(0) { $0 + $1.count }
@@ -204,7 +205,31 @@ struct AppsUpdaterView: View {
                                 collapsed: (updateManager.updatesBySource[.sparkle]?.isEmpty ?? true) || collapsedCategories.contains("Sparkle"),
                                 onToggle: { toggleCategory("Sparkle") },
                                 onUpdateAll: nil,  // No "Update All" for Sparkle
-                                isFirst: !checkAppStore && !checkHomebrew
+                                isFirst: !checkAppStore && !checkHomebrew,
+                                trailingContent: {
+                                    Button(action: {
+                                        includeSparklePreReleases.toggle()
+                                        Task { await updateManager.scanForUpdates() }
+                                    }) {
+                                        HStack(spacing: 4) {
+                                            // Circular checkbox (matching source checkboxes)
+                                            Image(systemName: includeSparklePreReleases ? "checkmark.circle.fill" : "circle")
+                                                .foregroundStyle(includeSparklePreReleases ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
+                                                .font(.title3)
+
+                                            // Flask icon
+                                            Image(systemName: "flask")
+                                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                                .font(.caption)
+
+                                            // Label
+                                            Text("Pre-releases")
+                                                .font(.caption)
+                                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                        }
+                                    }
+                                    .buttonStyle(.plain)
+                                }
                             )
                         }
                     }
@@ -264,7 +289,7 @@ struct AppsUpdaterView: View {
 }
 
 // Category section component (matching Homebrew layout)
-struct CategorySection: View {
+struct CategorySection<TrailingContent: View>: View {
     let title: String
     let icon: String
     let apps: [UpdateableApp]
@@ -273,8 +298,54 @@ struct CategorySection: View {
     let onToggle: () -> Void
     let onUpdateAll: (() -> Void)?
     let isFirst: Bool
+    let trailingContent: (() -> TrailingContent)?
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+
+    // Initializer for categories without trailing content
+    init(
+        title: String,
+        icon: String,
+        apps: [UpdateableApp],
+        searchText: String,
+        collapsed: Bool,
+        onToggle: @escaping () -> Void,
+        onUpdateAll: (() -> Void)?,
+        isFirst: Bool
+    ) where TrailingContent == EmptyView {
+        self.title = title
+        self.icon = icon
+        self.apps = apps
+        self.searchText = searchText
+        self.collapsed = collapsed
+        self.onToggle = onToggle
+        self.onUpdateAll = onUpdateAll
+        self.isFirst = isFirst
+        self.trailingContent = nil
+    }
+
+    // Initializer for categories with trailing content
+    init(
+        title: String,
+        icon: String,
+        apps: [UpdateableApp],
+        searchText: String,
+        collapsed: Bool,
+        onToggle: @escaping () -> Void,
+        onUpdateAll: (() -> Void)?,
+        isFirst: Bool,
+        @ViewBuilder trailingContent: @escaping () -> TrailingContent
+    ) {
+        self.title = title
+        self.icon = icon
+        self.apps = apps
+        self.searchText = searchText
+        self.collapsed = collapsed
+        self.onToggle = onToggle
+        self.onUpdateAll = onUpdateAll
+        self.isFirst = isFirst
+        self.trailingContent = trailingContent
+    }
 
     private var filteredApps: [UpdateableApp] {
         if searchText.isEmpty {
@@ -313,6 +384,11 @@ struct CategorySection: View {
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
                     Spacer()
+
+                    // Optional trailing content (e.g., Sparkle pre-release toggle)
+                    if let trailingContent = trailingContent {
+                        trailingContent()
+                    }
 
                     // Show "Update All" button if more than 1 app
                     if let onUpdateAll = onUpdateAll, filteredApps.count > 1 {

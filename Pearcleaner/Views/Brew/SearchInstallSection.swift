@@ -311,7 +311,7 @@ struct SearchInstallSection: View {
                 if searchType == .installed {
                     let outdatedCount = brewManager.outdatedPackageNames.count
                     if outdatedCount > 0 {
-                        Text("|")
+                        Text(verbatim: "|")
                             .font(.caption)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 

@@ -22,7 +22,8 @@ class UpdateCoordinator {
         apps: [AppInfo],
         checkAppStore: Bool,
         checkHomebrew: Bool,
-        checkSparkle: Bool
+        checkSparkle: Bool,
+        includeSparklePreReleases: Bool
     ) async -> [UpdateSource: [UpdateableApp]] {
 
         // Run detectors concurrently (only if enabled)
@@ -39,7 +40,7 @@ class UpdateCoordinator {
 
         async let sparkleApps: [UpdateableApp] = {
             guard checkSparkle else { return [] }
-            return await SparkleDetector.findSparkleApps(from: apps)
+            return await SparkleDetector.findSparkleApps(from: apps, includePreReleases: includeSparklePreReleases)
         }()
 
         // Wait for all results

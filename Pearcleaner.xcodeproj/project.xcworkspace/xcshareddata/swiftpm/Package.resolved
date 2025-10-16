@@ -1,5 +1,5 @@
 {
-  "originHash" : "fb41a67ffbcfd76111abe70f32601203c898d62d11211fbc83fedad574b0fd82",
+  "originHash" : "d3b1abad30706ef72864ac5a7ccbd8ee7023cb7496f506cc3aa33a3137eb0461",
   "pins" : [
     {
       "identity" : "alinfoundation",
@@ -17,6 +17,15 @@
       "state" : {
         "branch" : "main",
         "revision" : "5cb8badc28c7a4b7f59a05b8f0da37c363d25b6a"
+      }
+    },
+    {
+      "identity" : "semanticversion",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SwiftPackageIndex/SemanticVersion",
+      "state" : {
+        "revision" : "3b18d75a3cece558fb98e72d7dd5c83394d86d5b",
+        "version" : "0.5.1"
       }
     },
     {

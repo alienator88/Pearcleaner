@@ -192,7 +192,7 @@ struct GeneralSettingsTab: View {
                 },
                 content: {
                     HStack {
-                        Text("Less files").textCase(.uppercase).font(.caption2).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        Text("Fewer files").textCase(.uppercase).font(.caption2).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                         Slider(value: Binding(
                             get: { Double(sensitivityLevel.rawValue) },
                             set: { sensitivityLevel = SearchSensitivityLevel(rawValue: Int($0)) ?? .strict }
@@ -399,7 +399,7 @@ enum SearchSensitivityLevel: Int, CaseIterable, Identifiable {
     var description: String {
         switch self {
         case .strict:
-            return String(localized: "Exact app name and bundle ID matches against found files (Less files, most accurate)")
+            return String(localized: "Exact app name and bundle ID matches against found files (Fewer files, most accurate)")
         case .enhanced:
             return String(localized: "Strict level and also includes Spotlight metadata search (Slightly more files, still accurate)")
         case .balanced:

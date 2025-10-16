@@ -9,6 +9,7 @@ import Foundation
 import CommerceKit
 import StoreFoundation
 import AlinFoundation
+import SemanticVersion
 
 class AppStoreUpdateChecker {
     static func checkForUpdates(apps: [AppInfo]) async -> [UpdateableApp] {
@@ -63,8 +64,18 @@ class AppStoreUpdateChecker {
             return nil
         }
 
+        // Normalize versions to 3 components (SemanticVersion requires major.minor.patch)
+        let normalizedInstalled = normalizeVersion(app.appVersion)
+        let normalizedAvailable = normalizeVersion(appStoreInfo.version)
+
+        // Use SemanticVersion for robust comparison (handles all version formats correctly)
+        guard let installedVer = SemanticVersion(normalizedInstalled),
+              let availableVer = SemanticVersion(normalizedAvailable) else {
+            return nil  // Invalid version format, skip
+        }
+
         // Only add if App Store version is GREATER than installed version
-        if appStoreInfo.version > app.appVersion {
+        if availableVer > installedVer {
             return UpdateableApp(
                 appInfo: app,
                 availableVersion: appStoreInfo.version,
@@ -75,11 +86,30 @@ class AppStoreUpdateChecker {
                 progress: 0.0,
                 releaseTitle: nil,
                 releaseDescription: appStoreInfo.releaseNotes,
+                releaseNotesLink: nil,
                 releaseDate: appStoreInfo.releaseDate
             )
         }
 
         return nil
+    }
+
+    /// Normalize version string to have 3 components (major.minor.patch)
+    /// SemanticVersion requires all 3 components, but some apps use 2-component versions
+    /// Examples: "4.9" → "4.9.0", "2.92" → "2.92.0", "4.10.0" → "4.10.0"
+    private static func normalizeVersion(_ version: String) -> String {
+        let components = version.split(separator: ".").map(String.init)
+
+        switch components.count {
+        case 0:
+            return "0.0.0"  // Invalid, use default
+        case 1:
+            return "\(components[0]).0.0"  // "4" → "4.0.0"
+        case 2:
+            return "\(components[0]).\(components[1]).0"  // "4.9" → "4.9.0"
+        default:
+            return version  // Already 3+ components, use as-is
+        }
     }
 
     private struct AppStoreInfo {
@@ -91,18 +121,39 @@ class AppStoreUpdateChecker {
     }
 
     private static func getAppStoreInfo(bundleID: String) async -> AppStoreInfo? {
-        // Query iTunes Search API using bundle ID to get all app info at once
+        // Two-stage fetch strategy (matching Latest app's approach):
+        // 1. Try desktopSoftware first (Mac-native apps - most accurate)
+        // 2. Fallback to macSoftware (broader: includes Catalyst and iOS apps)
+
+        if let info = await fetchAppStoreInfo(bundleID: bundleID, entity: "desktopSoftware") {
+            return info
+        }
+
+        // Fallback to broader entity type
+        return await fetchAppStoreInfo(bundleID: bundleID, entity: "macSoftware")
+    }
+
+    private static func fetchAppStoreInfo(bundleID: String, entity: String?) async -> AppStoreInfo? {
+        // Query iTunes Search API using bundle ID
         guard let endpoint = URL(string: "https://itunes.apple.com/lookup") else {
             return nil
         }
 
         let languageCode = Locale.current.region?.identifier ?? "US"
         var components = URLComponents(url: endpoint, resolvingAgainstBaseURL: false)
-        components?.queryItems = [
+
+        var queryItems = [
             URLQueryItem(name: "bundleId", value: bundleID),
             URLQueryItem(name: "country", value: languageCode),
             URLQueryItem(name: "limit", value: "1")
         ]
+
+        // Add entity parameter if provided (desktopSoftware or macSoftware)
+        if let entity = entity {
+            queryItems.append(URLQueryItem(name: "entity", value: entity))
+        }
+
+        components?.queryItems = queryItems
 
         guard let url = components?.url else {
             return nil

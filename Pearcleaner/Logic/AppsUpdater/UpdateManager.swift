@@ -23,6 +23,7 @@ class UpdateManager: ObservableObject {
     @AppStorage("settings.updater.checkAppStore") private var checkAppStore: Bool = true
     @AppStorage("settings.updater.checkHomebrew") private var checkHomebrew: Bool = true
     @AppStorage("settings.updater.checkSparkle") private var checkSparkle: Bool = true
+    @AppStorage("settings.updater.includeSparklePreReleases") private var includeSparklePreReleases: Bool = false
 
     private init() {}
 
@@ -34,7 +35,20 @@ class UpdateManager: ObservableObject {
         isScanning = true
         defer { isScanning = false }
 
-        // Get apps from AppState
+        // Reload apps to detect newly installed/uninstalled apps and version changes
+        // This ensures we scan with current state, not cached AppState.shared.sortedApps
+        let folderPaths = await MainActor.run {
+            FolderSettingsManager.shared.folderPaths
+        }
+
+        // Flush bundle caches and reload apps from disk
+        flushBundleCaches(for: AppState.shared.sortedApps)
+        loadApps(folderPaths: folderPaths)
+
+        // Wait for apps to finish loading (500ms should be sufficient)
+        try? await Task.sleep(nanoseconds: 500_000_000)
+
+        // Get freshly loaded apps from AppState
         let apps = AppState.shared.sortedApps
 
         // Scan for updates using coordinator, passing checkbox states
@@ -42,7 +56,8 @@ class UpdateManager: ObservableObject {
             apps: apps,
             checkAppStore: checkAppStore,
             checkHomebrew: checkHomebrew,
-            checkSparkle: checkSparkle
+            checkSparkle: checkSparkle,
+            includeSparklePreReleases: includeSparklePreReleases
         )
         lastScanDate = Date()
     }

@@ -157,7 +157,7 @@ struct UpdateRowView: View {
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                         }
 
-                        // Release description
+                        // Release description (HTML or plain text)
                         if let description = app.releaseDescription {
                             ScrollView {
                                 if let nsAttributedString = try? NSAttributedString(
@@ -173,8 +173,8 @@ struct UpdateRowView: View {
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .textSelection(.enabled)
                                 } else {
-                                    // Fallback to stripped HTML if parsing fails
-                                    Text(stripHTML(description))
+                                    // Fallback: show raw text if HTML parsing fails
+                                    Text(description)
                                         .font(.body)
                                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -182,6 +182,21 @@ struct UpdateRowView: View {
                                 }
                             }
                             .frame(maxHeight: 200)
+                        }
+
+                        // Release notes link (separate clickable link)
+                        if let link = app.releaseNotesLink, let url = URL(string: link) {
+                            Link(destination: url) {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "link")
+                                        .font(.caption)
+                                    Text("View Full Release Notes")
+                                        .font(.body)
+                                }
+                                .foregroundStyle(.blue)
+                            }
+                            .buttonStyle(.plain)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         }
                     }
                     .padding(.horizontal)
@@ -272,27 +287,5 @@ struct UpdateRowView: View {
 
         // Convert back to AttributedString for SwiftUI
         return (AttributedString(mutableString))
-    }
-
-    private func stripHTML(_ html: String) -> String {
-        // Basic HTML stripping - remove tags and decode entities
-        var result = html
-
-        // Remove HTML tags
-        result = result.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression)
-
-        // Decode common HTML entities
-        result = result.replacingOccurrences(of: "&lt;", with: "<")
-        result = result.replacingOccurrences(of: "&gt;", with: ">")
-        result = result.replacingOccurrences(of: "&amp;", with: "&")
-        result = result.replacingOccurrences(of: "&quot;", with: "\"")
-        result = result.replacingOccurrences(of: "&#39;", with: "'")
-        result = result.replacingOccurrences(of: "&nbsp;", with: " ")
-
-        // Clean up extra whitespace
-        result = result.replacingOccurrences(of: "\\s+", with: " ", options: .regularExpression)
-        result = result.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        return result
     }
 }

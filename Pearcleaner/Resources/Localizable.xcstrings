@@ -2148,9 +2148,6 @@
         }
       }
     },
-    "|" : {
-
-    },
     "⚙️ Service/Daemon" : {
       "localizations" : {
         "de" : {
@@ -19254,111 +19251,8 @@
         }
       }
     },
-    "Exact app name and bundle ID matches against found files (Less files, most accurate)" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Exakter App-Name und Bundle-ID-Abgleich mit gefundenen Dateien (Weniger Dateien, am genauesten)"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Coincidencias exactas de nombre de aplicación y ID de paquete con archivos encontrados (menos archivos, más preciso)"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Le nom exact de l'application et l'ID du bundle correspondent aux fichiers trouvés (moins de fichiers, plus précis)"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kecocokan nama aplikasi dan ID bundel yang tepat terhadap file yang ditemukan (Lebih sedikit file, paling akurat)"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Corrispondenza esatta del nome dell'app e dell'ID del pacchetto con i file trovati (meno file, più accurato)"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "見つかったファイルに対する正確なアプリ名とバンドルIDの一致（ファイル数が少ないが、最も正確）"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dokładna nazwa aplikacji i identyfikator pakietu pasują do znalezionych plików (mniej plików, większa dokładność)"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Correspondência exata do nome do aplicativo e ID do pacote com os arquivos encontrados (Menos arquivos, maior precisão)"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Точное совпадение названия приложения и идентификатора пакета с найденными файлами (меньше файлов, наибольшая точность)"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Presné zhody názvu aplikácie a identifikátora balíka s nájdenými súbormi (menej súborov, najpresnejšie)"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Natančno ujemanje imena aplikacije in ID-ja paketa z najdenimi datotekami (manj datotek, najbolj natančno)"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bulunan dosyalarla tam uygulama adı ve paket kimliği eşleştirmeleri (Daha az dosya, en doğru)"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Точна відповідність назви програми та ідентифікатора пакету з знайденими файлами (Менше файлів, найточніше)"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Khớp tên ứng dụng và ID gói chính xác với các tệp tìm thấy (ít tệp hơn, chính xác nhất)"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "与找到的文件精确匹配应用名称和捆绑 ID（文件较少，最准确）"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "精確的應用程式名稱和 bundle ID 與找到的檔案匹配（檔案較少，最準確）"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "精確的應用程式名稱和Bundle ID匹配找到的文件（較少文件，最準確）"
-          }
-        }
-      }
+    "Exact app name and bundle ID matches against found files (Fewer files, most accurate)" : {
+
     },
     "Example privileged commands" : {
       "localizations" : {
@@ -20741,6 +20635,9 @@
           }
         }
       }
+    },
+    "Fewer files" : {
+
     },
     "File Search" : {
       "localizations" : {
@@ -29344,112 +29241,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更少"
-          }
-        }
-      }
-    },
-    "Less files" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Weniger Dateien"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menos archivos"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Moins de fichiers"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lebih sedikit file"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Meno file"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "少ないファイル"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mniej plików"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menos arquivos"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Меньше файлов"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menej súborov"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Manj datotek"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Daha az dosya"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Менше файлів"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ít tệp hơn"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "更少文件"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "較少的檔案"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "較少檔案"
           }
         }
       }
@@ -41038,6 +40829,9 @@
           }
         }
       }
+    },
+    "Pre-releases" : {
+
     },
     "Prune Translations" : {
       "comment" : "Prune alert title",
@@ -63570,6 +63364,9 @@
           }
         }
       }
+    },
+    "View Full Release Notes" : {
+
     },
     "View in App Store" : {
       "localizations" : {

@@ -158,7 +158,7 @@ struct AppDetails: View {
                 }
 
                 HStack {
-                    Text("Less files").textCase(.uppercase).font(.caption2).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    Text("Fewer files").textCase(.uppercase).font(.caption2).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     Slider(value: Binding(
                         get: { Double(localSensitivityLevel.rawValue) },
                         set: { newValue in
