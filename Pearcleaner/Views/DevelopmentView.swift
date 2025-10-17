@@ -167,8 +167,10 @@ struct EnvironmentCleanerView: View {
                 }
                 .padding(.vertical)
 
-                // Add workspace storage cleaner for VS Code and Cursor
-                if selectedEnvironment.name == "VS Code" || selectedEnvironment.name == "Cursor" {
+                // Add workspace storage cleaner for certain IDEs
+                let workspaceIDEs = ["VS Code", "Cursor", "Zed"]
+
+                if workspaceIDEs.contains(selectedEnvironment.name) {
                     WorkspaceStorageCleanerView(ideName: selectedEnvironment.name)
                         .id(selectedEnvironment.name)
                         .padding(.bottom, 10)
@@ -355,7 +357,7 @@ struct EnvironmentCleanerView: View {
                         Group {
                             if environment.paths.isEmpty {
                                 Text(verbatim: "\(environment.name) (0)")
-                                    .foregroundStyle(.gray)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                             } else {
                                 Button {
                                     appState.selectedEnvironment = environment
@@ -534,11 +536,11 @@ struct PathRowView: View {
                     Text(expandTilde(path))
                         .lineLimit(1)
                         .truncationMode(.middle)
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
                     Spacer()
                     Text("Not Found")
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
             }
         }
@@ -776,7 +778,8 @@ struct WorkspaceStorageCleanerView: View {
                         }
                     }
                     .scrollIndicators(scrollIndicators ? .automatic : .never)
-                    .frame(height: 180)
+                    .frame(maxHeight: 180)
+                    .fixedSize(horizontal: false, vertical: true)
 
                     HStack {
                         Spacer()

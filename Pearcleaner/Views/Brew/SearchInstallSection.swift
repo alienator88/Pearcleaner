@@ -1365,18 +1365,18 @@ struct DeprecationWarningBanner: View {
                 Text("DEPRECATED")
                     .fontWeight(.bold)
             }
-            .foregroundStyle(.white)
+            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
             if let reason = reason {
                 Text("Reason: \(formatReason(reason))")
                     .font(.caption)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
             }
 
             if let date = disableDate {
                 Text("Will be disabled on \(date)")
                     .font(.caption)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
             }
         }
         .padding()
@@ -1912,18 +1912,18 @@ struct DeprecationDisableWarning: View {
                         Text("DEPRECATED")
                             .fontWeight(.bold)
                     }
-                    .foregroundStyle(.white)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
                     if let reason = deprecationReason {
                         Text("Reason: \(reason)")
                             .font(.caption)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                     }
 
                     if let date = deprecationDate {
                         Text("Since: \(date)")
                             .font(.caption)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                     }
                 }
                 .padding()
@@ -1939,18 +1939,18 @@ struct DeprecationDisableWarning: View {
                         Text("DISABLED")
                             .fontWeight(.bold)
                     }
-                    .foregroundStyle(.white)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
                     if let reason = disableReason {
                         Text("Reason: \(reason)")
                             .font(.caption)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                     }
 
                     if let date = disableDate {
                         Text("Since: \(date)")
                             .font(.caption)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                     }
                 }
                 .padding()

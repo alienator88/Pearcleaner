@@ -142,16 +142,16 @@ struct GridAppItem: View {
                 // Dimmed background with centered X when selected and hovered
                 ZStack {
                     RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.black.opacity(0.6))
+                        .fill(ThemeColors.shared(for: colorScheme).primaryBG.opacity(0.8))
 
                     ZStack {
                         Circle()
-                            .fill(Color.white.opacity(0.9))
+                            .fill(ThemeColors.shared(for: colorScheme).secondaryBG.opacity(0.9))
                             .frame(width: 32, height: 32)
 
                         Image(systemName: "xmark")
                             .font(.system(size: 14, weight: .medium))
-                            .foregroundColor(.black)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                     }
                 }
                 .allowsHitTesting(false)

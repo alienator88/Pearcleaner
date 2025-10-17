@@ -192,7 +192,7 @@ struct AppListItems: View {
                         if isSelected {
                             Image(systemName: "xmark")
                                 .font(.system(size: 10, weight: .medium))
-                                .foregroundColor(.white)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                                 .opacity(isSelected ? 1 : 0)
                         }
                     }
