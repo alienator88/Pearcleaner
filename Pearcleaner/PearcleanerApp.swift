@@ -111,7 +111,7 @@ struct PearcleanerApp: App {
                     .environmentObject(updater)
                     .environmentObject(permissionManager)
                     .movableByWindowBackground()
-                    .frame(width: 800, height: 810)
+                    .frame(width: 800, height: 650)
         }
         .windowStyle(.hiddenTitleBar)
         .windowToolbarStyle(.unified)

@@ -51580,6 +51580,9 @@
         }
       }
     },
+    "Show sidebar on view load" : {
+
+    },
     "Showing last 3 releases" : {
       "extractionState" : "manual",
       "localizations" : {

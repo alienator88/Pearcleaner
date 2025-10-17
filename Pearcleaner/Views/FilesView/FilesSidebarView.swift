@@ -227,12 +227,17 @@ struct AppDetails: View {
 struct ExtraOptions: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.colorScheme) var colorScheme
-    
+    @AppStorage("settings.files.showSidebarOnLoad") private var showSidebarOnLoad: Bool = false
+
     var body: some View {
         HStack() {
             Text("Click to dismiss").font(.caption).foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.5))
             Spacer()
             Menu {
+                Toggle("Show sidebar on view load", isOn: $showSidebarOnLoad)
+
+                Divider()
+
                 if appState.appInfo.arch == .universal {
                     Button("Lipo Architectures") {
                         let title = NSLocalizedString("App Lipo", comment: "Lipo alert title")

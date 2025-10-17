@@ -25,6 +25,7 @@ struct FilesView: View {
     @AppStorage("settings.interface.details") private var detailsEnabled: Bool = true
     @AppStorage("settings.general.oneshot") private var oneShotMode: Bool = false
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
+    @AppStorage("settings.files.showSidebarOnLoad") private var showSidebarOnLoad: Bool = false
     @State private var showAlert = false
     @Environment(\.colorScheme) var colorScheme
     @State private var sortedFiles: [URL] = []
@@ -114,6 +115,9 @@ struct FilesView: View {
         .onAppear {
             if !warning {
                 showAlert = true
+            }
+            if showSidebarOnLoad {
+                infoSidebar = true
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("FileSearchViewShouldRefresh"))) { _ in
