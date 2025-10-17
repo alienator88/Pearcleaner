@@ -458,7 +458,6 @@ struct PathRowView: View {
     @State private var matchingPaths: [String] = []
     @State private var sizeLoading: Bool = true
     @State private var size: Int64 = 0
-    @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
 
     var body: some View {
 
@@ -518,7 +517,7 @@ struct PathRowView: View {
                         .onAppear {
                             DispatchQueue.global(qos: .userInitiated).async {
                                 if let url = URL(string: matchedPath) {
-                                    let calculatedSize = sizeType == "Real" ? totalSizeOnDisk(for: url).real : totalSizeOnDisk(for: url).logical
+                                    let calculatedSize = totalSizeOnDisk(for: url)
 
                                     DispatchQueue.main.async {
                                         self.size = calculatedSize

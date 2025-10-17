@@ -59,7 +59,7 @@ class AppState: ObservableObject {
             }
 
             // Step 2: If we reach here, we need to calculate the size
-            let calculatedSize = totalSizeOnDisk(for: appInfo.path).logical
+            let calculatedSize = totalSizeOnDisk(for: appInfo.path)
             DispatchQueue.main.async {
                 // Update the state and the array
                 updateState(calculatedSize)
@@ -90,7 +90,6 @@ class AppState: ObservableObject {
             steam: false,
             bundleSize: 0,
             fileSize: [:],
-            fileSizeLogical: [:],
             fileIcon: [:],
             creationDate: nil,
             contentChangeDate: nil,
@@ -101,7 +100,6 @@ class AppState: ObservableObject {
         self.zombieFile = ZombieFile(
             id: UUID(),
             fileSize: [:],
-            fileSizeLogical: [:],
             fileIcon: [:]
         )
 
@@ -147,7 +145,6 @@ class AppState: ObservableObject {
                     // Add to the current appInfo if it matches, or find and update the correct one
                     if let appIndex = sortedApps.firstIndex(where: { $0.path == appInfo.path }) {
                         sortedApps[appIndex].fileSize[zombieFile] = 0  // Placeholder size
-                        sortedApps[appIndex].fileSizeLogical[zombieFile] = 0  // Placeholder size
                         // Icon will be fetched during normal scan process
                     }
                 }
@@ -335,8 +332,7 @@ struct AppInfo: Identifiable, Equatable, Hashable {
     let steam: Bool  // New property to mark Steam games
     var bundleSize: Int64  // Only used in the app list view
     var lipoSavings: Int64?  // Cached lipo savings (nil=not calculated, 0=no savings, >0=savings available)
-    var fileSize: [URL: Int64]
-    var fileSizeLogical: [URL: Int64]
+    var fileSize: [URL: Int64]  // Logical file sizes (matches Finder)
     var fileIcon: [URL: NSImage?]
     let creationDate: Date?
     let contentChangeDate: Date?
@@ -345,10 +341,6 @@ struct AppInfo: Identifiable, Equatable, Hashable {
 
     var totalSize: Int64 {
         return fileSize.values.reduce(0, +)
-    }
-
-    var totalSizeLogical: Int64 {
-        return fileSizeLogical.values.reduce(0, +)
     }
 
     var executableURL: URL? {
@@ -372,24 +364,20 @@ struct AppInfo: Identifiable, Equatable, Hashable {
     static let empty = AppInfo(
         id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "",
         appVersion: "", appIcon: nil, webApp: false, wrapped: false, system: false, arch: .empty,
-        cask: nil, steam: false, bundleSize: 0, lipoSavings: 0, fileSize: [:], fileSizeLogical: [:], fileIcon: [:],
+        cask: nil, steam: false, bundleSize: 0, lipoSavings: 0, fileSize: [:], fileIcon: [:],
         creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, entitlements: nil)
 
 }
 
 struct ZombieFile: Identifiable, Equatable, Hashable {
     let id: UUID
-    var fileSize: [URL: Int64]
-    var fileSizeLogical: [URL: Int64]
+    var fileSize: [URL: Int64]  // Logical file sizes (matches Finder)
     var fileIcon: [URL: NSImage?]
     var totalSize: Int64 {
         return fileSize.values.reduce(0, +)
     }
-    var totalSizeLogical: Int64 {
-        return fileSizeLogical.values.reduce(0, +)
-    }
 
-    static let empty = ZombieFile(id: UUID(), fileSize: [:], fileSizeLogical: [:], fileIcon: [:])
+    static let empty = ZombieFile(id: UUID(), fileSize: [:], fileIcon: [:])
 
 }
 
@@ -646,7 +634,6 @@ extension AppState {
                 // Add to current app's tracking if not already present
                 if appInfo.fileSize[zombieFile] == nil {
                     appInfo.fileSize[zombieFile] = 0  // Will be calculated during scan
-                    appInfo.fileSizeLogical[zombieFile] = 0
                 }
             }
         }

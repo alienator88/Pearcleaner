@@ -394,7 +394,7 @@ struct PluginsView: View {
                         let size: Int64
                         if isDirectory {
                             // Use totalSizeOnDisk for directories/bundles
-                            size = totalSizeOnDisk(for: itemURL).real
+                            size = totalSizeOnDisk(for: itemURL)
                         } else {
                             // Use regular fileSize for individual files
                             size = resourceValues.fileSize.map { Int64($0) } ?? 0

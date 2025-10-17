@@ -25,9 +25,8 @@ struct FileListView: View {
     let locations: Locations
     let windowController: WindowManager
     let handleUninstallAction: () -> Void
-    let sizeType: String
     let displaySizeTotal: String
-    let totalSelectedSize: (real: String, logical: String)
+    let totalSelectedSize: String
     let updateSortedFiles: () -> Void
     let removeSingleZombieAssociation: (URL) -> Void
     let removePath: (URL) -> Void

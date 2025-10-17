@@ -313,8 +313,7 @@ func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool
                     // Create a new appInfo instance with updated size values
                     var updatedAppInfo = AppState.shared.appInfo
                     updatedAppInfo.bundleSize = newSize
-                    updatedAppInfo.fileSize[AppState.shared.appInfo.path] = newFileSize.real
-                    updatedAppInfo.fileSizeLogical[AppState.shared.appInfo.path] = newFileSize.logical
+                    updatedAppInfo.fileSize[AppState.shared.appInfo.path] = newFileSize
                     updatedAppInfo.arch = isOSArm() ? .arm : .intel
                     // Replace the whole appInfo object
                     AppState.shared.appInfo = updatedAppInfo
@@ -331,7 +330,7 @@ func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool
                 }
             }
         } else { // Update the appInfo in sortedApps array
-            let calculatedSize = totalSizeOnDisk(for: appBundlePath).logical
+            let calculatedSize = totalSizeOnDisk(for: appBundlePath)
             DispatchQueue.main.async {
                 // Update the array
                 if let index = AppState.shared.sortedApps.firstIndex(where: { $0.path == appBundlePath }) {

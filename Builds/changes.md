@@ -1,6 +1,6 @@
 ### What's New
 
-- [x] Grammar fixes - #378
-- [x] Add toggle for Sparkle pre-release builds - #379
-- [x] Add SemanticVersion check package for the Apps Updater logic - #379
-- [x] Fix App Store app versions with only 2 version components failing to be read - #379
+- [x] Refresh appcache after homebrew cask modifications
+- [x] Add details sidebar to Updater view
+- [x] Move app source and hidden updates to the new sidebar
+- [x] More appcast.xml enhancements to capture more apps - #381

@@ -542,7 +542,6 @@ struct LipoAppRowView: View {
     @Binding var bundleAllApps: UInt64
     @State private var isCalculating: Bool = false
     @State private var calculatedSavings: UInt64?
-    @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
 
     var body: some View {
         HStack(spacing: 15) {

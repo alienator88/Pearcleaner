@@ -38,7 +38,7 @@ public struct FatArch {
 // Function to thin an entire app bundle with size tracking
 public func thinAppBundle(at bundlePath: URL, dryRun: Bool = false) -> (Bool, [String: UInt64]?) {
     // Get the total bundle size before thinning
-    let preTotalSize = UInt64(totalSizeOnDisk(for: bundlePath).logical)
+    let preTotalSize = UInt64(totalSizeOnDisk(for: bundlePath))
     
     let result = recursivelyThinBundle(at: bundlePath, dryRun: dryRun)
     
@@ -51,7 +51,7 @@ public func thinAppBundle(at bundlePath: URL, dryRun: Bool = false) -> (Bool, [S
             return (true, sizes)
         } else {
             // For real thinning, get the actual bundle size after thinning
-            let postTotalSize = UInt64(totalSizeOnDisk(for: bundlePath).logical)
+            let postTotalSize = UInt64(totalSizeOnDisk(for: bundlePath))
             let sizes = ["pre": preTotalSize, "post": postTotalSize]
             return (true, sizes)
         }
@@ -433,25 +433,21 @@ public func getArchitectureSliceSizes(from executablePath: String) throws -> (ar
 
 
 
-// Get size of files
-public func totalSizeOnDisk(for paths: [URL]) -> (real: Int64, logical: Int64) {
+// Get size of files (logical size - matches Finder)
+public func totalSizeOnDisk(for paths: [URL]) -> Int64 {
     let fileManager = FileManager.default
-    var totalAllocatedSize: Int64 = 0
     var totalFileSize: Int64 = 0
 
     for url in paths {
         var isDirectory: ObjCBool = false
         if fileManager.fileExists(atPath: url.path, isDirectory: &isDirectory) {
-            let keys: [URLResourceKey] = [.totalFileAllocatedSizeKey, .fileSizeKey]
+            let keys: [URLResourceKey] = [.fileSizeKey]
             if isDirectory.boolValue {
                 // It's a directory, recurse into it
                 if let enumerator = fileManager.enumerator(at: url, includingPropertiesForKeys: keys, errorHandler: nil) {
                     for case let fileURL as URL in enumerator {
                         do {
                             let fileAttributes = try fileURL.resourceValues(forKeys: Set(keys))
-                            if let allocatedSize = fileAttributes.totalFileAllocatedSize {
-                                totalAllocatedSize += Int64(allocatedSize)
-                            }
                             if let fileSize = fileAttributes.fileSize {
                                 totalFileSize += Int64(fileSize)
                             }
@@ -464,9 +460,6 @@ public func totalSizeOnDisk(for paths: [URL]) -> (real: Int64, logical: Int64) {
                 // It's a file
                 do {
                     let fileAttributes = try url.resourceValues(forKeys: Set(keys))
-                    if let allocatedSize = fileAttributes.totalFileAllocatedSize {
-                        totalAllocatedSize += Int64(allocatedSize)
-                    }
                     if let fileSize = fileAttributes.fileSize {
                         totalFileSize += Int64(fileSize)
                     }
@@ -477,11 +470,11 @@ public func totalSizeOnDisk(for paths: [URL]) -> (real: Int64, logical: Int64) {
         }
     }
 
-    return (real: totalAllocatedSize, logical: totalFileSize)
+    return totalFileSize
 }
 
 
 
-public func totalSizeOnDisk(for path: URL) -> (real: Int64, logical: Int64) {
+public func totalSizeOnDisk(for path: URL) -> Int64 {
     return totalSizeOnDisk(for: [path])
 }

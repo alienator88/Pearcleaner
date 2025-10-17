@@ -21,7 +21,6 @@ struct ZombieView: View {
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.general.selectedSort") var selectedSort: SortOptionList = .name
-    @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @AppStorage("settings.general.confirmAlert") private var confirmAlert: Bool = false
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @Environment(\.colorScheme) var colorScheme
@@ -29,10 +28,8 @@ struct ZombieView: View {
     @State private var selectedZombieItemsLocal: Set<URL> = []
     @State private var memoizedFiles: [URL] = []
     @State private var lastSearchTermUsed: String? = nil
-    @State private var totalRealSize: Int64 = 0
-    @State private var totalLogicalSize: Int64 = 0
-    @State private var totalRealSizeUninstallBtn: String = ""
-    @State private var totalLogicalSizeUninstallBtn: String = ""
+    @State private var totalSize: Int64 = 0
+    @State private var totalSizeUninstallBtn: String = ""
     @State private var infoSidebar: Bool = false
     @State private var lastRefreshDate: Date?
     @State private var isRefreshing: Bool = false
@@ -51,7 +48,7 @@ struct ZombieView: View {
 
                             TextField("Search...", text: $searchZ)
                                 .onChange(of: searchZ) { newValue in
-                                    updateMemoizedFiles(for: newValue, sizeType: sizeType, selectedSort: selectedSort)
+                                    updateMemoizedFiles(for: newValue, selectedSort: selectedSort)
                                 }
                                 .textFieldStyle(.plain)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
@@ -115,8 +112,8 @@ struct ZombieView: View {
                             ScrollView() {
                                 LazyVStack(spacing: 8) {
                                     ForEach(memoizedFiles, id: \.self) { file in
-                                        if let fileSize = appState.zombieFile.fileSize[file], let fileSizeL = appState.zombieFile.fileSizeLogical[file], let fileIcon = appState.zombieFile.fileIcon[file], let iconImage = fileIcon.map(Image.init(nsImage:)) {
-                                            ZombieFileDetailsItem(size: fileSize, sizeL: fileSizeL, icon: iconImage, path: file, memoizedFiles: $memoizedFiles, isSelected: self.binding(for: file))
+                                        if let fileSize = appState.zombieFile.fileSize[file], let fileIcon = appState.zombieFile.fileIcon[file], let iconImage = fileIcon.map(Image.init(nsImage:)) {
+                                            ZombieFileDetailsItem(size: fileSize, icon: iconImage, path: file, memoizedFiles: $memoizedFiles, isSelected: self.binding(for: file))
                                         }
                                     }
 
@@ -233,7 +230,7 @@ struct ZombieView: View {
             }
             .onChange(of: appState.zombieFile.fileSize) { _ in
                 // Update memoized files whenever new files are added
-                updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSort: selectedSort, force: true)
+                updateMemoizedFiles(for: searchZ, selectedSort: selectedSort, force: true)
             }
             .sheet(isPresented: $showAlert, content: {
                     VStack(spacing: 10) {
@@ -302,7 +299,7 @@ struct ZombieView: View {
                     ForEach(SortOptionList.allCases, id: \.self) { sortOption in
                         Button {
                             selectedSort = sortOption
-                            updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSort: selectedSort, force: true)
+                            updateMemoizedFiles(for: searchZ, selectedSort: selectedSort, force: true)
                         } label: {
                             Label(sortOption.title, systemImage: sortOption.systemImage)
                         }
@@ -391,14 +388,13 @@ struct ZombieView: View {
                     } else {
                         // Remove items from the list
                         appState.zombieFile.fileSize = appState.zombieFile.fileSize.filter { !selectedZombieItemsLocal.contains($0.key) }
-                        appState.zombieFile.fileSizeLogical = appState.zombieFile.fileSizeLogical.filter { !selectedZombieItemsLocal.contains($0.key) }
                         appState.zombieFile.fileIcon = appState.zombieFile.fileIcon.filter { !selectedZombieItemsLocal.contains($0.key) }
 
                         // Clear the selection
                         selectedZombieItemsLocal.removeAll()
 
                         // Update memoized files and total sizes
-                        updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSort: selectedSort, force: true)
+                        updateMemoizedFiles(for: searchZ, selectedSort: selectedSort, force: true)
                     }
                 }
 
@@ -455,30 +451,25 @@ struct ZombieView: View {
     }
 
 
-    private func updateMemoizedFiles(for searchTerm: String, sizeType: String, selectedSort: SortOptionList, force: Bool = false) {
-        if !force && searchTerm == lastSearchTermUsed && self.sizeType == sizeType && self.selectedSort == selectedSort {
+    private func updateMemoizedFiles(for searchTerm: String, selectedSort: SortOptionList, force: Bool = false) {
+        if !force && searchTerm == lastSearchTermUsed && self.selectedSort == selectedSort {
             return
         }
 
-        let results = filterAndSortFiles(for: searchTerm, sizeType: sizeType, selectedSort: selectedSort)
+        let results = filterAndSortFiles(for: searchTerm, selectedSort: selectedSort)
         memoizedFiles = results.files
-        totalRealSize = results.totalRealSize
-        totalLogicalSize = results.totalLogicalSize
+        totalSize = results.totalSize
         lastSearchTermUsed = searchTerm
-        self.sizeType = sizeType
         self.selectedSort = selectedSort
         updateTotalSizes()
     }
 
-    private func filterAndSortFiles(for searchTerm: String, sizeType: String, selectedSort: SortOptionList) -> (files: [URL], totalRealSize: Int64, totalLogicalSize: Int64) {
-        let fileSizeReal = appState.zombieFile.fileSize
-        let fileSizeLogical = appState.zombieFile.fileSizeLogical
+    private func filterAndSortFiles(for searchTerm: String, selectedSort: SortOptionList) -> (files: [URL], totalSize: Int64) {
+        let fileSize = appState.zombieFile.fileSize
 
-        let filteredFilesReal = fileSizeReal.filter { url, _ in searchTerm.isEmpty || url.lastPathComponent.localizedCaseInsensitiveContains(searchTerm) }
-        let filteredFilesLogical = fileSizeLogical.filter { url, _ in searchTerm.isEmpty || url.lastPathComponent.localizedCaseInsensitiveContains(searchTerm) }
+        let filteredFiles = fileSize.filter { url, _ in searchTerm.isEmpty || url.lastPathComponent.localizedCaseInsensitiveContains(searchTerm) }
 
-        let filesToSort = sizeType == "Real" ? filteredFilesReal : filteredFilesLogical
-        let sortedFilteredFiles = filesToSort.sorted { (left, right) -> Bool in
+        let sortedFilteredFiles = filteredFiles.sorted { (left, right) -> Bool in
             switch selectedSort {
             case .name:
                 return left.key.lastPathComponent.pearFormat() < right.key.lastPathComponent.pearFormat()
@@ -489,55 +480,33 @@ struct ZombieView: View {
             }
         }.map(\.key)
 
-        let totalRealSize = filteredFilesReal.values.reduce(0, +)
-        let totalLogicalSize = filteredFilesLogical.values.reduce(0, +)
+        let totalSize = filteredFiles.values.reduce(0, +)
 
-        return (sortedFilteredFiles, totalRealSize, totalLogicalSize)
+        return (sortedFilteredFiles, totalSize)
     }
 
-    func calculateTotalSelectedZombieSize() -> (real: String, logical: String, finder: String) {
-        var totalReal: Int64 = 0
-        var totalLogical: Int64 = 0
+    func calculateTotalSelectedZombieSize() -> String {
+        var total: Int64 = 0
 
         for url in selectedZombieItemsLocal {
-            let realSize = appState.zombieFile.fileSize[url] ?? 0
-            let logicalSize = appState.zombieFile.fileSizeLogical[url] ?? 0
-            totalReal += realSize
-            totalLogical += logicalSize
+            let size = appState.zombieFile.fileSize[url] ?? 0
+            total += size
         }
 
-        return (formatByte(size: totalReal).human,
-                formatByte(size: totalLogical).human,
-                "\(formatByte(size: totalLogicalSize).byte) (\(formatByte(size: totalReal).human))")
+        return formatByte(size: total).human
     }
 
     private func updateTotalSizes() {
-        let sizes = calculateTotalSelectedZombieSize()
-        totalRealSizeUninstallBtn = sizes.real
-        totalLogicalSizeUninstallBtn = sizes.logical
+        totalSizeUninstallBtn = calculateTotalSelectedZombieSize()
     }
 
     private var displaySizeText: String {
-        switch sizeType {
-        case "Logical":
-            return totalLogicalSizeUninstallBtn
-        case "Real":
-            return totalRealSizeUninstallBtn
-        default:
-            return totalRealSizeUninstallBtn
-        }
+        return totalSizeUninstallBtn
     }
 
 
     private var displaySizeTotal: String {
-        switch sizeType {
-        case "Real":
-            return formatByte(size: totalRealSize).human
-        case "Logical":
-            return formatByte(size: totalLogicalSize).human
-        default:
-            return "\(formatByte(size: totalLogicalSize).byte) (\(formatByte(size: totalRealSize).human))"
-        }
+        return formatByte(size: totalSize).human
     }
 
     private func excludeAllSelectedItems() {
@@ -550,7 +519,6 @@ struct ZombieView: View {
 
             // Remove from appState zombie file details
             appState.zombieFile.fileSize.removeValue(forKey: path)
-            appState.zombieFile.fileSizeLogical.removeValue(forKey: path)
             appState.zombieFile.fileIcon.removeValue(forKey: path)
         }
 
@@ -571,7 +539,6 @@ struct ZombieView: View {
             
             // Remove from appState zombie file details
             appState.zombieFile.fileSize.removeValue(forKey: path)
-            appState.zombieFile.fileSizeLogical.removeValue(forKey: path)
             appState.zombieFile.fileIcon.removeValue(forKey: path)
         }
         
@@ -583,27 +550,24 @@ struct ZombieView: View {
         // Add back to zombie file data if it exists
         if FileManager.default.fileExists(atPath: fileURL.path) {
             if let fileSize = getFileSize(path: fileURL) {
-                appState.zombieFile.fileSize[fileURL] = fileSize.real
-                appState.zombieFile.fileSizeLogical[fileURL] = fileSize.logical
+                appState.zombieFile.fileSize[fileURL] = fileSize
                 appState.zombieFile.fileIcon[fileURL] = getFileIcon(for: fileURL)
             }
-            
+
             // Add back to memoized files if it matches current search
-            if (searchZ.isEmpty || fileURL.lastPathComponent.localizedCaseInsensitiveContains(searchZ)) && 
+            if (searchZ.isEmpty || fileURL.lastPathComponent.localizedCaseInsensitiveContains(searchZ)) &&
                !memoizedFiles.contains(fileURL) {
                 memoizedFiles.append(fileURL)
                 // Re-sort to maintain proper order
-                updateMemoizedFiles(for: searchZ, sizeType: sizeType, selectedSort: selectedSort, force: true)
+                updateMemoizedFiles(for: searchZ, selectedSort: selectedSort, force: true)
             }
         }
     }
 
-    private func getFileSize(path: URL) -> (real: Int64, logical: Int64)? {
+    private func getFileSize(path: URL) -> Int64? {
         do {
-            let resourceValues = try path.resourceValues(forKeys: [.fileSizeKey, .fileAllocatedSizeKey])
-            let logical = Int64(resourceValues.fileSize ?? 0)
-            let real = Int64(resourceValues.fileAllocatedSize ?? 0)
-            return (real: real, logical: logical)
+            let resourceValues = try path.resourceValues(forKeys: [.fileSizeKey])
+            return Int64(resourceValues.fileSize ?? 0)
         } catch {
             return nil
         }
@@ -622,10 +586,8 @@ struct ZombieFileDetailsItem: View {
     @EnvironmentObject var fsm: FolderSettingsManager
     @Environment(\.colorScheme) var colorScheme
     @State private var isHovered = false
-    @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     let size: Int64?
-    let sizeL: Int64?
     let icon: Image?
     let path: URL
     @Binding var memoizedFiles: [URL]
@@ -694,8 +656,7 @@ struct ZombieFileDetailsItem: View {
 
             Spacer()
 
-            let displaySize = sizeType == "Real" ? formatByte(size: size!).human :
-            formatByte(size: sizeL!).human
+            let displaySize = formatByte(size: size!).human
 
             Text(verbatim: "\(displaySize)")
                 .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
@@ -736,7 +697,6 @@ struct ZombieFileDetailsItem: View {
                             fsm.addPathZ(path.path)
                             memoizedFiles.removeAll { $0 == path }
                             appState.zombieFile.fileSize.removeValue(forKey: path)
-                            appState.zombieFile.fileSizeLogical.removeValue(forKey: path)
                             appState.zombieFile.fileIcon.removeValue(forKey: path)
                             
                             if isSelected {
@@ -759,7 +719,6 @@ struct ZombieFileDetailsItem: View {
                 memoizedFiles.removeAll { $0 == path }
                 // Also remove from selectedZombieItemsLocal if it exists
                 appState.zombieFile.fileSize.removeValue(forKey: path)
-                appState.zombieFile.fileSizeLogical.removeValue(forKey: path)
                 appState.zombieFile.fileIcon.removeValue(forKey: path)
                 // Use @EnvironmentObject to access the parent's selectedZombieItemsLocal
                 if isSelected {

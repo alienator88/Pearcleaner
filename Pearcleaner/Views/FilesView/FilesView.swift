@@ -19,7 +19,6 @@ struct FilesView: View {
     @AppStorage("settings.general.brew") private var brew: Bool = false
     //    @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
     @AppStorage("settings.general.selectedSort") var selectedSort: SortOptionList = .name
-    @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @AppStorage("settings.general.filesWarning") private var warning: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.general.confirmAlert") private var confirmAlert: Bool = false
@@ -33,25 +32,16 @@ struct FilesView: View {
 
     var body: some View {
 
-        var totalSelectedSize: (real: String, logical: String) {
-            var totalReal: Int64 = 0
-            var totalLogical: Int64 = 0
+        var totalSelectedSize: String {
+            var total: Int64 = 0
             for url in appState.selectedItems {
-                let realSize = appState.appInfo.fileSize[url] ?? 0
-                let logicalSize = appState.appInfo.fileSizeLogical[url] ?? 0
-                totalReal += realSize
-                totalLogical += logicalSize
+                let size = appState.appInfo.fileSize[url] ?? 0
+                total += size
             }
-            return (
-                real: formatByte(size: totalReal).human,
-                logical: formatByte(size: totalLogical).human
-            )
+            return formatByte(size: total).human
         }
 
-        let displaySizeTotal =
-            sizeType == "Real"
-            ? formatByte(size: appState.appInfo.totalSize).human
-            : formatByte(size: appState.appInfo.totalSizeLogical).human
+        let displaySizeTotal = formatByte(size: appState.appInfo.totalSize).human
 
         VStack(alignment: .center) {
             if appState.showProgress {
@@ -76,7 +66,6 @@ struct FilesView: View {
                         locations: locations,
                         windowController: windowController,
                         handleUninstallAction: handleUninstallAction,
-                        sizeType: sizeType,
                         displaySizeTotal: displaySizeTotal,
                         totalSelectedSize: totalSelectedSize,
                         updateSortedFiles: updateSortedFiles,
@@ -204,8 +193,6 @@ struct FilesView: View {
                                 appState.appInfo.fileSize = appState.appInfo.fileSize.filter {
                                     !selectedItemsArray.contains($0.key)
                                 }
-                                appState.appInfo.fileSizeLogical = appState.appInfo.fileSizeLogical
-                                    .filter { !selectedItemsArray.contains($0.key) }
                                 appState.appInfo.fileIcon = appState.appInfo.fileIcon.filter {
                                     !selectedItemsArray.contains($0.key)
                                 }
@@ -422,9 +409,6 @@ struct FilesView: View {
             appState.appInfo.fileSize = appState.appInfo.fileSize.filter {
                 !associatedFiles.contains($0.key)
             }
-            appState.appInfo.fileSizeLogical = appState.appInfo.fileSizeLogical.filter {
-                !associatedFiles.contains($0.key)
-            }
             appState.appInfo.fileIcon = appState.appInfo.fileIcon.filter {
                 !associatedFiles.contains($0.key)
             }
@@ -451,7 +435,6 @@ struct FilesView: View {
 
             // Update app info storage
             appState.appInfo.fileSize.removeValue(forKey: path)
-            appState.appInfo.fileSizeLogical.removeValue(forKey: path)
             appState.appInfo.fileIcon.removeValue(forKey: path)
 
             // Update sorted list
@@ -487,7 +470,6 @@ struct FileDetailsItem: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.colorScheme) var colorScheme
     @State private var isHovered = false
-    @AppStorage("settings.general.sizeType") var sizeType: String = "Real"
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     let path: URL
     let removeAssociation: (URL) -> Void
@@ -495,14 +477,10 @@ struct FileDetailsItem: View {
 
     var body: some View {
 
-        let realSize = appState.appInfo.fileSize[path] ?? 0
-        let logicalSize = appState.appInfo.fileSizeLogical[path] ?? 0
+        let size = appState.appInfo.fileSize[path] ?? 0
         let fileIcon = appState.appInfo.fileIcon[path]
         let iconImage = fileIcon.flatMap { $0.map(Image.init(nsImage:)) }
-
-        let displaySize =
-            sizeType == "Real"
-            ? formatByte(size: realSize).human : formatByte(size: logicalSize).human
+        let displaySize = formatByte(size: size).human
 
         HStack(alignment: .center, spacing: 15) {
             Button(action: {

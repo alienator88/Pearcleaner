@@ -1147,7 +1147,7 @@ struct SizeCell: View {
         Task.detached(priority: .utility) {
             let size = totalSizeOnDisk(for: result.url)
             await MainActor.run {
-                calculatedFolderSizes[result.url] = size.logical
+                calculatedFolderSizes[result.url] = size
                 isCalculating = false
             }
         }

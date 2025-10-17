@@ -456,7 +456,6 @@ class AppPathFinder {
         }
 
         var fileSize: [URL: Int64] = [:]
-        var fileSizeLogical: [URL: Int64] = [:]
         var fileIcon: [URL: NSImage?] = [:]
         let chunks = createOptimalChunks(from: tempCollection)
         let queue = DispatchQueue(label: "size-calculation", qos: .userInitiated, attributes: .concurrent)
@@ -466,32 +465,23 @@ class AppPathFinder {
             group.enter()
             queue.async {
                 var localFileSize: [URL: Int64] = [:]
-                var localFileSizeLogical: [URL: Int64] = [:]
                 var localFileIcon: [URL: NSImage?] = [:]
 
                 for path in chunk {
                     let size = spotlightSizeForURL(path)
-                    localFileSize[path] = size.real
-                    localFileSizeLogical[path] = size.logical
+                    localFileSize[path] = size
                     localFileIcon[path] = self.getSmartIcon(for: path)
                 }
 
                 // Merge results safely
                 DispatchQueue.main.sync {
                     fileSize.merge(localFileSize) { $1 }
-                    fileSizeLogical.merge(localFileSizeLogical) { $1 }
                     fileIcon.merge(localFileIcon) { $1 }
                 }
                 group.leave()
             }
         }
         group.wait()
-        //        for path in tempCollection {
-        //            let size = spotlightSizeForURL(path)
-        //            fileSize[path] = size.real
-        //            fileSizeLogical[path] = size.logical
-        //            fileIcon[path] = getIconForFileOrFolderNS(atPath: path)
-        //        }
         let arch = checkAppBundleArchitecture(at: self.appInfo.path.path)
         var updatedCollection = tempCollection
         if updatedCollection.count == 1, let firstURL = updatedCollection.first, firstURL.path.contains(".Trash") {
@@ -500,7 +490,6 @@ class AppPathFinder {
 
         DispatchQueue.main.async {
             self.appInfo.fileSize = fileSize
-            self.appInfo.fileSizeLogical = fileSizeLogical
             self.appInfo.fileIcon = fileIcon
             self.appInfo.arch = arch
             self.appState?.appInfo = self.appInfo
@@ -566,17 +555,17 @@ class AppPathFinder {
 }
 
 // Get size using Spotlight metadata, fallback to manual calculation if needed
-private func spotlightSizeForURL(_ url: URL) -> (real: Int64, logical: Int64) {
+private func spotlightSizeForURL(_ url: URL) -> Int64 {
     let metadataItem = NSMetadataItem(url: url)
-    let real = metadataItem?.value(forAttribute: "kMDItemPhysicalSize") as? Int64
     let logical = metadataItem?.value(forAttribute: "kMDItemLogicalSize") as? Int64
 
-    if let real = real, let logical = logical {
+    if let logical = logical {
         //        print("Found Spotlight size")
-        return (real, logical)
+        return logical
     }
 
+    // Fallback to manual calculation using totalSizeOnDisk from Lipo.swift
     let fallback = totalSizeOnDisk(for: url)
     //    print("Fallback to manual calculation")
-    return (real ?? fallback.real, logical ?? fallback.logical)
+    return logical ?? fallback
 }

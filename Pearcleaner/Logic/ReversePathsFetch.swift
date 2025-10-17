@@ -16,7 +16,6 @@ class ReversePathsSearcher {
     private let fileManager = FileManager.default
     private var collection: [URL] = []
     private var fileSize: [URL: Int64] = [:]
-    private var fileSizeLogical: [URL: Int64] = [:]
     private var fileIcon: [URL: NSImage?] = [:]
     private let dispatchGroup = DispatchGroup()
     private let sortedApps: [AppInfo]
@@ -49,7 +48,7 @@ class ReversePathsSearcher {
     }
 
     private func processLocationsStreaming() async {
-        var batch: [(url: URL, size: (real: Int64, logical: Int64), icon: NSImage?)] = []
+        var batch: [(url: URL, size: Int64, icon: NSImage?)] = []
         let batchSize = 10
 
         for location in locations.reverse.paths where fileManager.fileExists(atPath: location) {
@@ -70,7 +69,7 @@ class ReversePathsSearcher {
         }
     }
 
-    private func processLocationStreaming(_ location: String, batch: inout [(url: URL, size: (real: Int64, logical: Int64), icon: NSImage?)], batchSize: Int) async {
+    private func processLocationStreaming(_ location: String, batch: inout [(url: URL, size: Int64, icon: NSImage?)], batchSize: Int) async {
         do {
             let contents = try fileManager.contentsOfDirectory(atPath: location)
             for itemName in contents {
@@ -85,7 +84,7 @@ class ReversePathsSearcher {
         }
     }
 
-    private func processItemStreaming(_ itemName: String, itemURL: URL, batch: inout [(url: URL, size: (real: Int64, logical: Int64), icon: NSImage?)], batchSize: Int) async {
+    private func processItemStreaming(_ itemName: String, itemURL: URL, batch: inout [(url: URL, size: Int64, icon: NSImage?)], batchSize: Int) async {
         let itemPath = itemURL.path.pearFormat()
         let exclusionList = fsm.fileFolderPathsZ.map { $0.pearFormat() }
 
@@ -113,15 +112,14 @@ class ReversePathsSearcher {
         }
     }
 
-    private func flushBatch(_ batch: inout [(url: URL, size: (real: Int64, logical: Int64), icon: NSImage?)]) async {
+    private func flushBatch(_ batch: inout [(url: URL, size: Int64, icon: NSImage?)]) async {
         let batchCopy = batch
         batch.removeAll()
 
         await MainActor.run {
             var updatedZombieFile = self.appState?.zombieFile ?? ZombieFile.empty
             for item in batchCopy {
-                updatedZombieFile.fileSize[item.url] = item.size.real
-                updatedZombieFile.fileSizeLogical[item.url] = item.size.logical
+                updatedZombieFile.fileSize[item.url] = item.size
                 updatedZombieFile.fileIcon[item.url] = item.icon
             }
             self.appState?.zombieFile = updatedZombieFile
@@ -242,8 +240,7 @@ class ReversePathsSearcher {
     private func calculateFileDetails() {
         collection.forEach { path in
             let size = totalSizeOnDisk(for: path)
-            fileSize[path] = size.real
-            fileSizeLogical[path] = size.logical
+            fileSize[path] = size
             fileIcon[path] = getIconForFileOrFolderNS(atPath: path)
         }
     }
@@ -252,7 +249,6 @@ class ReversePathsSearcher {
         dispatchGroup.notify(queue: .main) {
             var updatedZombieFile = ZombieFile.empty
             updatedZombieFile.fileSize = self.fileSize
-            updatedZombieFile.fileSizeLogical = self.fileSizeLogical
             updatedZombieFile.fileIcon = self.fileIcon
             self.appState?.zombieFile = updatedZombieFile
             self.appState?.showProgress = false

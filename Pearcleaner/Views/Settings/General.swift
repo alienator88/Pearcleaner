@@ -19,7 +19,6 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.brew") private var brew: Bool = false
     @AppStorage("settings.general.oneshot") private var oneShotMode: Bool = false
     @AppStorage("settings.general.confirmAlert") private var confirmAlert: Bool = false
-    @AppStorage("settings.general.sizeType") var sizeType: String = "Logical"
     @AppStorage("settings.general.cli") private var isCLISymlinked = false
     @AppStorage("settings.general.namesearchstrict") private var nameSearchStrict = false
     @AppStorage("settings.general.spotlight") private var spotlight = false
@@ -132,30 +131,6 @@ struct GeneralSettingsTab: View {
                         }
                         .padding(5)
 
-
-                        HStack(spacing: 0) {
-                            Image(systemName: "plus.forwardslash.minus")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 15, height: 15)
-                                .padding(.trailing)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                            VStack(alignment: .leading, spacing: 5) {
-                                Text("File size display options")
-                                    .font(.callout)
-                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                            }
-                            InfoButton(text: String(localized: "Real size type will show how much actual allocated space the file has on disk.\n\nLogical type shows the binary size. The filesystem can compress and deduplicate sectors on disk, so real size is sometimes smaller (or bigger) than logical size.\n\nFinder size is similar to if you right click > Get Info on a file in Finder, which will show both the logical and real sizes together."))
-                            Spacer()
-                            Picker(selection: $sizeType) {
-                                Text("Real")
-                                    .tag("Real")
-                                Text("Logical")
-                                    .tag("Logical")
-                            } label: { EmptyView() }
-                                .buttonStyle(.borderless)
-                        }
-                        .padding(.vertical, 5)
 
                     }
 
