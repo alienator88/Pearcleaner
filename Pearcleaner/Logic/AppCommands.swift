@@ -53,7 +53,15 @@ struct AppCommands: Commands {
             .keyboardShortcut("u", modifiers: .command)
 
             Button {
-                appState.triggerUninstallAlert()
+                showCustomAlert(
+                    title: "Warning!",
+                    message: "Pearcleaner and all of its files will be cleanly removed, are you sure?",
+                    okText: "Uninstall",
+                    style: .warning,
+                    onOk: {
+                        uninstallPearcleaner(appState: appState, locations: locations)
+                    }
+                )
             } label: {
                 Label("Uninstall Pearcleaner", systemImage: "trash.fill")
             }

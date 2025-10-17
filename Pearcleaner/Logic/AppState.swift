@@ -36,7 +36,6 @@ class AppState: ObservableObject {
     @Published var progressStep: Int = 0
     @Published var leftoverProgress: (String, Double) = ("", 0.0)
     @Published var finderExtensionEnabled: Bool = false
-    @Published var showUninstallAlert: Bool = false
     @Published var externalMode: Bool = false
     @Published var multiMode: Bool = false
     @Published var externalPaths: [URL] = []  // for handling multiple app from drops or deeplinks
@@ -146,10 +145,6 @@ class AppState: ObservableObject {
         DispatchQueue.main.async {
             self.finderExtensionEnabled = extensionStatus
         }
-    }
-
-    func triggerUninstallAlert() {
-        self.showUninstallAlert = true
     }
 
     // Add this method to restore zombie file associations

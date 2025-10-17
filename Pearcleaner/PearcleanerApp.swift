@@ -20,8 +20,6 @@ struct PearcleanerApp: App {
     @StateObject var locations = Locations()
     @StateObject var fsm = FolderSettingsManager.shared
     @StateObject private var updater = Updater(owner: "alienator88", repo: "Pearcleaner")
-    //MARK: States
-    @State private var isDraggingOver = false
 
     init() {
         //MARK: GUI or CLI launch mode.
@@ -45,54 +43,12 @@ struct PearcleanerApp: App {
     var body: some Scene {
 
         WindowGroup {
-            MainWindow(isDraggingOver: $isDraggingOver)
+            MainWindow()
                 .environmentObject(appState)
                 .environmentObject(locations)
                 .environmentObject(fsm)
                 .environmentObject(updater)
                 .environmentObject(permissionManager)
-                .handlesExternalEvents(preferring: Set(arrayLiteral: "pear"), allowing: Set(arrayLiteral: "*"))
-                .onDrop(of: ["public.file-url"], isTargeted: $isDraggingOver) { providers, _ in
-                    var droppedURLs: [URL] = []
-                    let dispatchGroup = DispatchGroup()
-
-                    for provider in providers {
-                        dispatchGroup.enter()
-                        provider.loadItem(forTypeIdentifier: "public.file-url") { data, error in
-                            if let data = data as? Data, let url = URL(dataRepresentation: data, relativeTo: nil) {
-                                droppedURLs.append(url)
-                            }
-                            dispatchGroup.leave()
-                        }
-                    }
-
-                    dispatchGroup.notify(queue: .main) {
-                        let deeplinkManager = DeeplinkManager(updater: updater, fsm: fsm)
-                        for url in droppedURLs {
-                            deeplinkManager.manage(url: url, appState: appState, locations: locations)
-                        }
-                    }
-
-                    return true
-                }
-                .onOpenURL(perform: { url in
-                    let deeplinkManager = DeeplinkManager(updater: updater, fsm: fsm)
-                    deeplinkManager.manage(url: url, appState: appState, locations: locations)
-                })
-                .alert(isPresented: $appState.showUninstallAlert) {
-                    Alert(
-                        title: Text("Warning!"),
-                        message: Text("Pearcleaner and all of its files will be cleanly removed, are you sure?"),
-                        primaryButton: .destructive(Text("Uninstall")) {
-                            uninstallPearcleaner(appState: appState, locations: locations)
-                        },
-                        secondaryButton: .cancel()
-                    )
-                }
-                .sheet(isPresented: $updater.sheet, content: {
-                    /// This will show the update sheet based on the frequency check function only
-                    updater.getUpdateView()
-                })
 
         }
         .windowStyle(.hiddenTitleBar)

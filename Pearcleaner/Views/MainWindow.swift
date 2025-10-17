@@ -23,7 +23,7 @@ struct MainWindow: View {
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.tutorial.switchUtilitiesShown") private var tutorialShown: Bool = true
 
-    @Binding var isDraggingOver: Bool
+    @State private var isDraggingOver: Bool = false
     @State private var showSys: Bool = true
     @State private var showUsr: Bool = true
     @State private var showMenu = false
@@ -100,6 +100,22 @@ struct MainWindow: View {
         }
         .background(backgroundView(color: ThemeColors.shared(for: colorScheme).primaryBG))
         .frame(minWidth: appState.currentPage == .orphans ? 700 : 900, minHeight: 600)
+        .handlesExternalEvents(preferring: Set(arrayLiteral: "pear"), allowing: Set(arrayLiteral: "*"))
+        .handleFileDrop(
+            updater: updater,
+            fsm: fsm,
+            appState: appState,
+            locations: locations,
+            isTargeted: $isDraggingOver
+        )
+        .onOpenURL(perform: { url in
+            let deeplinkManager = DeeplinkManager(updater: updater, fsm: fsm)
+            deeplinkManager.manage(url: url, appState: appState, locations: locations)
+        })
+        .sheet(isPresented: $updater.sheet, content: {
+            /// This will show the update sheet based on the frequency check function only
+            updater.getUpdateView()
+        })
         .onReceive(
             NotificationCenter.default.publisher(for: NSWindow.didEnterFullScreenNotification)
         ) { _ in

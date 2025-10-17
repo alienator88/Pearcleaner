@@ -148,7 +148,7 @@ struct PackageView: View {
                     Spacer()
                 }
                 .frame(maxWidth: .infinity)
-            } else if packages.isEmpty && !isLoading {
+            } else if filteredPackages.isEmpty && !isLoading {
                 VStack(alignment: .center) {
                     Spacer()
                     Text("No packages found")

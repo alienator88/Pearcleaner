@@ -769,3 +769,41 @@ struct ProgressStepView: View {
         .frame(height: 48)
     }
 }
+
+// MARK: - File Drop Handler Extension
+
+extension View {
+    /// Handle file drop operations and route to deeplink manager
+    func handleFileDrop(
+        updater: Updater,
+        fsm: FolderSettingsManager,
+        appState: AppState,
+        locations: Locations,
+        isTargeted: Binding<Bool>
+    ) -> some View {
+        self.onDrop(of: ["public.file-url"], isTargeted: isTargeted) { providers, _ in
+            var droppedURLs: [URL] = []
+            let dispatchGroup = DispatchGroup()
+
+            for provider in providers {
+                dispatchGroup.enter()
+                provider.loadItem(forTypeIdentifier: "public.file-url") { data, error in
+                    if let data = data as? Data,
+                       let url = URL(dataRepresentation: data, relativeTo: nil) {
+                        droppedURLs.append(url)
+                    }
+                    dispatchGroup.leave()
+                }
+            }
+
+            dispatchGroup.notify(queue: .main) {
+                let deeplinkManager = DeeplinkManager(updater: updater, fsm: fsm)
+                for url in droppedURLs {
+                    deeplinkManager.manage(url: url, appState: appState, locations: locations)
+                }
+            }
+
+            return true
+        }
+    }
+}

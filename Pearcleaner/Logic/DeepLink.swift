@@ -211,13 +211,16 @@ class DeeplinkManager {
             appState.currentPage = .applications
             break
         case DeepLinkActions.openSettings:
-
             if let page = queryItems.first(where: { $0.name == "name" })?.value {
+                // Query parameter provided - match to specific tab
                 let search = page.lowercased()
                 let allPages = CurrentTabView.allCases
                 if let matchedPage = allPages.first(where: { $0.title.lowercased().contains(search) }) {
                     openAppSettingsWindow(tab: matchedPage, updater: updater)
                 }
+            } else {
+                // No query parameter - open with default general tab
+                openAppSettingsWindow(tab: .general, updater: updater)
             }
             break
         case DeepLinkActions.openPermissions:
