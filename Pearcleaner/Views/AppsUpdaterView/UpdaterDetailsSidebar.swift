@@ -92,7 +92,7 @@ struct UpdaterSourceCheckboxSection: View {
                         .foregroundStyle(checkAppStore ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
                         .font(.title3)
 
-                    Image(systemName: "storefront.fill")
+                    Image(systemName: ifOSBelow(macOS: 14) ? "cart.fill" : "storefront.fill")
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                         .font(.caption)
                         .frame(width: 16)
@@ -228,7 +228,7 @@ struct UpdaterHiddenAppRow: View {
 
     private var sourceIcon: String {
         switch app.source {
-        case .appStore: return "storefront.fill"
+        case .appStore: return ifOSBelow(macOS: 14) ? "cart.fill" : "storefront.fill"
         case .homebrew: return "mug"
         case .sparkle: return "sparkles"
         }

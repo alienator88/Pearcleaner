@@ -48,7 +48,7 @@ struct ThemeColors {
         "#1a1b1f", // backgroundMain
         "#2d2e33", // backgroundPanel
         "#ffffff", // textPrimary
-        "#8f9093", // textSecondary
+        "#929292", // textSecondary
         "#419cff"  // accentPrimary
     ]
     
@@ -56,7 +56,7 @@ struct ThemeColors {
         "#fdfcfa", // backgroundMain
         "#f6f5f2", // backgroundPanel
         "#1e1e1e", // textPrimary
-        "#92a0b5", // textSecondary
+        "#676767", // textSecondary
         "#0068da"  // accentPrimary
     ]
     

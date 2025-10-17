@@ -212,7 +212,7 @@ struct MainWindow: View {
                         color: .orange,
                         help: "Helper Not Installed"
                     ) {
-                        openAppSettingsWindow(tab: .helper)
+                        openAppSettingsWindow(tab: .helper, updater: updater)
                     }
                 }
 

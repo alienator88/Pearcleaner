@@ -134,7 +134,7 @@ struct AppsUpdaterView: View {
                         if checkAppStore {
                             CategorySection(
                                 title: "App Store",
-                                icon: "storefront.fill",
+                                icon: ifOSBelow(macOS: 14) ? "cart.fill" : "storefront.fill",
                                 apps: updateManager.updatesBySource[.appStore] ?? [],
                                 searchText: searchText,
                                 collapsed: (updateManager.updatesBySource[.appStore]?.isEmpty ?? true) || collapsedCategories.contains("App Store"),

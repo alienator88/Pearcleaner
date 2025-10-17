@@ -103,19 +103,6 @@ struct PearcleanerApp: App {
         }
 
 
-        Window("Settings", id: "settings") {
-                SettingsView()
-                    .environmentObject(appState)
-                    .environmentObject(locations)
-                    .environmentObject(fsm)
-                    .environmentObject(updater)
-                    .environmentObject(permissionManager)
-                    .movableByWindowBackground()
-                    .frame(width: 800, height: 710)
-        }
-        .windowStyle(.hiddenTitleBar)
-        .windowToolbarStyle(.unified)
-        .windowResizability(.contentSize)
 
     }
 }

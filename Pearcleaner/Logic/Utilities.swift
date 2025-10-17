@@ -362,23 +362,42 @@ func killApp(appId: String, completion: @escaping () -> Void = {}) {
 }
 
 
+//MARK: Broken on 13.0
 // Open app settings
-func openAppSettings() {
-    if #available(macOS 14.0, *) {
-        @Environment(\.openSettings) var openSettings
-        openSettings()
-    } else {
-        NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
-    }
-}
+//func openAppSettings() {
+//    if #available(macOS 14.0, *) {
+//        @Environment(\.openSettings) var openSettings
+//        openSettings()
+//    } else {
+//        NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+//    }
+//}
 
 
-func openAppSettingsWindow(tab: CurrentTabView = .general) {
-    @Environment(\.openWindow) var openWindow
-    @AppStorage("settings.general.selectedTab") var selectedTab: CurrentTabView = .general
+func openAppSettingsWindow(tab: CurrentTabView = .general, updater: Updater) {
+    // Update tab selection
+    UserDefaults.standard.set(tab.rawValue, forKey: "settings.general.selectedTab")
 
-    selectedTab = tab
-    openWindow(id: "settings")
+    // Create SettingsView with environment objects
+    let settingsView = SettingsView()
+        .environmentObject(AppState.shared)
+        .environmentObject(Locations())
+        .environmentObject(FolderSettingsManager.shared)
+        .environmentObject(updater)
+        .environmentObject(PermissionManager.shared)
+        .frame(width: 800, height: 710)
+        .movableByWindowBackground()
+        .navigationTitle("")
+
+    // Open using WindowManager
+    WindowManager.shared.open(
+        id: "settings",
+        with: settingsView,
+        width: 800,
+        height: 710,
+        resizable: false,
+        toolbarStyle: .unified
+    )
 }
 
 // Get user profile picture

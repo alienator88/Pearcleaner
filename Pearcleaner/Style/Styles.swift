@@ -697,17 +697,16 @@ struct SettingsToggle: ToggleStyle {
 }
 
 
-struct HelperBadge: View {
-    @AppStorage("settings.general.selectedTab") private var selectedTab: CurrentTabView = .general
-
-    var body: some View {
-        AlertNotification(label: String(localized:"Helper Not Installed"), icon: "key", buttonAction: {
-            selectedTab = .helper
-            openAppSettings()
-        }, btnColor: Color.orange, hideLabel: false)
-
-    }
-}
+//struct HelperBadge: View {
+//    @EnvironmentObject var updater: Updater
+//
+//    var body: some View {
+//        AlertNotification(label: String(localized:"Helper Not Installed"), icon: "key", buttonAction: {
+//            openAppSettingsWindow(tab: .helper, updater: updater)
+//        }, btnColor: Color.orange, hideLabel: false)
+//
+//    }
+//}
 
 
 struct BetaBadge: View {

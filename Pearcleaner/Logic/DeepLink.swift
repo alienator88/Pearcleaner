@@ -216,7 +216,7 @@ class DeeplinkManager {
                 let search = page.lowercased()
                 let allPages = CurrentTabView.allCases
                 if let matchedPage = allPages.first(where: { $0.title.lowercased().contains(search) }) {
-                    openAppSettingsWindow(tab: matchedPage)
+                    openAppSettingsWindow(tab: matchedPage, updater: updater)
                 }
             }
             break

@@ -31,8 +31,7 @@ struct AppCommands: Commands {
         CommandGroup(replacing: .appInfo) {
 
             Button {
-//                selectedTab = .about
-                openAppSettingsWindow(tab: .about)
+                openAppSettingsWindow(tab: .about, updater: updater)
             } label: {
                 Label("About \(Bundle.main.name)", systemImage: "info.circle.fill")
             }
@@ -40,7 +39,7 @@ struct AppCommands: Commands {
             Divider()
 
             Button {
-                openAppSettingsWindow()
+                openAppSettingsWindow(updater: updater)
             } label: {
                 Label("Settings", systemImage: "gearshape")
             }

@@ -23940,6 +23940,7 @@
       }
     },
     "Helper Not Installed" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
