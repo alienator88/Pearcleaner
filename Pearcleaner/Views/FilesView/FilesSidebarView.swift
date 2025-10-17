@@ -243,7 +243,10 @@ struct ExtraOptions: View {
                         let title = NSLocalizedString("App Lipo", comment: "Lipo alert title")
                         let message = String(format: NSLocalizedString("Pearcleaner will strip the %@ architecture from %@'s executable file to save space. Would you like to proceed?", comment: "Lipo alert message"), isOSArm() ? "intel" : "arm64", appState.appInfo.appName)
                         showCustomAlert(title: title, message: message, style: .informational, onOk: {
-                            let _ = thinAppBundleArchitecture(at: appState.appInfo.path, of: appState.appInfo.arch)
+                            // Kill app if running before lipo'ing to prevent corruption
+                            killApp(appId: appState.appInfo.bundleIdentifier) {
+                                let _ = thinAppBundleArchitecture(at: appState.appInfo.path, of: appState.appInfo.arch)
+                            }
                         })
                     }
                 }

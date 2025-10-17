@@ -12,6 +12,12 @@ import SwiftUI
 
 let home = FileManager.default.homeDirectoryForCurrentUser.path
 
+struct AutoSlimStats: Codable {
+    var originalSize: Int64
+    var currentSize: Int64
+    var lastRunVersion: String
+}
+
 class AppState: ObservableObject {
     // MARK: - Singleton Instance
     static let shared = AppState()
@@ -44,6 +50,28 @@ class AppState: ObservableObject {
 
     // Per-app sensitivity level storage
     @Published var perAppSensitivity: [String: SearchSensitivityLevel] = [:]
+
+    // Auto-slim stats storage
+    @AppStorage("settings.app.autoSlim.stats") var autoSlimStatsData: Data = Data()
+
+    var autoSlimStats: AutoSlimStats {
+        get {
+            guard !autoSlimStatsData.isEmpty,
+                  let stats = try? JSONDecoder().decode(AutoSlimStats.self, from: autoSlimStatsData) else {
+                return AutoSlimStats(originalSize: 0, currentSize: 0, lastRunVersion: "")
+            }
+            return stats
+        }
+        set {
+            if let encoded = try? JSONEncoder().encode(newValue) {
+                autoSlimStatsData = encoded
+            }
+        }
+    }
+
+    var autoSlimSavings: Int64 {
+        return max(0, autoSlimStats.originalSize - autoSlimStats.currentSize)
+    }
 
     func getBundleSize(for appInfo: AppInfo, updateState: @escaping (Int64) -> Void) {
         DispatchQueue.global(qos: .userInitiated).async {

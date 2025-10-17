@@ -253,7 +253,7 @@ func checkAppBundleArchitecture(at appBundlePath: String) -> Arch {
 
 
 // Main function that now directly uses the Mach-O helper
-func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool = false, dryRun: Bool = false) -> (Bool, [String: UInt64]?) {
+func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool = false, dryRun: Bool = false, showAlert: Bool = true) -> (Bool, [String: UInt64]?) {
     // Reset bundle size to 0 before starting (only for real thinning)
     if !dryRun {
         updateOnMain {
@@ -319,13 +319,15 @@ func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool
                     AppState.shared.appInfo = updatedAppInfo
 
                     // Show savings information if we have size data
-                    if let bundleSizes = sizes,
-                       let preSize = bundleSizes["pre"],
-                       let postSize = bundleSizes["post"] {
-                        let savingsPercentage = Int((Double(preSize - postSize) / Double(preSize)) * 100)
-                        let title = String(format: NSLocalizedString("Space Savings: %d%%", comment: "Lipo result title"), savingsPercentage)
-                        let message = String(format: NSLocalizedString("Bundle thinning complete.\nTotal space saved from all binaries in bundle.", comment: "Lipo result message"))
-                        showCustomAlert(title: title, message: message, style: .informational)
+                    if showAlert {
+                        if let bundleSizes = sizes,
+                           let preSize = bundleSizes["pre"],
+                           let postSize = bundleSizes["post"] {
+                            let savingsPercentage = Int((Double(preSize - postSize) / Double(preSize)) * 100)
+                            let title = String(format: NSLocalizedString("Space Savings: %d%%", comment: "Lipo result title"), savingsPercentage)
+                            let message = String(format: NSLocalizedString("Bundle thinning complete.\nTotal space saved from all binaries in bundle.", comment: "Lipo result message"))
+                            showCustomAlert(title: title, message: message, style: .informational)
+                        }
                     }
                 }
             }

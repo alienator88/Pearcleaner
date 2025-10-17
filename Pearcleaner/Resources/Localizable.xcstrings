@@ -9050,6 +9050,9 @@
         }
       }
     },
+    "Auto slim Pearcleaner" : {
+
+    },
     "Automation" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -47437,6 +47440,16 @@
         }
       }
     },
+    "Saved: %@ (%lld%%)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Saved: %1$@ (%2$lld%%)"
+          }
+        }
+      }
+    },
     "Scan" : {
       "localizations" : {
         "de" : {
@@ -52328,6 +52341,7 @@
       }
     },
     "Slim Pearcleaner" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

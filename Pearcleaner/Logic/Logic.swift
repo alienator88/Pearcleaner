@@ -569,7 +569,73 @@ func pruneLanguages(in appBundlePath: String) async throws {
     try FileManager.default.setAttributes([.modificationDate: Date()], ofItemAtPath: appBundlePath)
 }
 
+// Auto-slim: Remove unused architectures and translations (synchronous, runs on app termination)
+func performAutoSlim() {
+    let currentVersion = Bundle.main.version
+    let bundlePath = Bundle.main.bundlePath
+    let bundleURL = URL(fileURLWithPath: bundlePath)
 
+    // Slim bundle based on architecture type
+    let arch = checkAppBundleArchitecture(at: bundlePath)
+
+    if arch == .universal {
+        // Universal: Use ditto copy-replace pattern (safe for binary modification)
+        let dittoArch = isOSArm() ? "arm64" : "x86_64"
+        let tempDir = FileManager.default.temporaryDirectory
+        let tempAppPath = tempDir.appendingPathComponent("Pearcleaner-slim.app")
+
+        do {
+            // Remove temp if exists
+            try? FileManager.default.removeItem(at: tempAppPath)
+
+            // Use ditto to thin during copy
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: "/usr/bin/ditto")
+            process.arguments = ["--arch", dittoArch, bundlePath, tempAppPath.path]
+            try process.run()
+            process.waitUntilExit()
+
+            if process.terminationStatus == 0 {
+                // Prune translations from temp copy (not running bundle!)
+                let semaphore = DispatchSemaphore(value: 0)
+                Task {
+                    do {
+                        try await pruneLanguages(in: tempAppPath.path)
+                    } catch {
+                        // Silent failure
+                    }
+                    semaphore.signal()
+                }
+                semaphore.wait()
+
+                // Replace original with fully-processed temp copy
+                try FileManager.default.removeItem(at: bundleURL)
+                try FileManager.default.moveItem(at: tempAppPath, to: bundleURL)
+            }
+        } catch {
+            // Silent failure
+        }
+
+    } else {
+        // Arch-specific: Prune translations directly from running bundle (safe, no binary modification)
+        let semaphore = DispatchSemaphore(value: 0)
+        Task {
+            do {
+                try await pruneLanguages(in: bundlePath)
+            } catch {
+                // Silent failure
+            }
+            semaphore.signal()
+        }
+        semaphore.wait()
+    }
+
+    // Update version and reset current size (will be recalculated on next launch)
+    var stats = AppState.shared.autoSlimStats
+    stats.lastRunVersion = currentVersion
+    stats.currentSize = 0  // Reset so next launch recalculates the new size
+    AppState.shared.autoSlimStats = stats
+}
 
 // FinderExtension Sequoia Fix
 func manageFinderPlugin(install: Bool) {

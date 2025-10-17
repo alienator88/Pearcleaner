@@ -33,32 +33,6 @@ struct AboutSettingsTab: View {
 
                 Text("Made with ❤️ by Alin Lupascu").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.footnote)
 
-                Menu("Slim Pearcleaner") {
-                    let arch = checkAppBundleArchitecture(at: Bundle.main.bundlePath)
-                    if arch == .universal {
-                        Button("Lipo Architectures") {
-                            let title = NSLocalizedString("App Lipo", comment: "Lipo alert title")
-                            let message = String(format: NSLocalizedString("Pearcleaner will strip the %@ architecture from %@'s executable file to save space. Would you like to proceed?", comment: "Lipo alert message"), isOSArm() ? "intel" : "arm64", appState.appInfo.appName)
-                            showCustomAlert(title: title, message: message, style: .informational, onOk: {
-                                let _ = thinAppBundleArchitecture(at: URL(fileURLWithPath: Bundle.main.bundlePath), of: isOSArm() ? Arch.intel : Arch.arm)
-                            })
-                        }
-                    }
-
-                    Button("Prune Translations") {
-                        let title = NSLocalizedString("Prune Translations", comment: "Prune alert title")
-                        let message = String(format: NSLocalizedString("This will remove all unused language translation files", comment: "Prune alert message"))
-                        showCustomAlert(title: title, message: message, style: .warning, onOk: {
-                            Task {
-                                do {
-                                    try await pruneLanguages(in: Bundle.main.bundlePath)
-                                } catch {
-                                    printOS("Translation prune error: \(error)")
-                                }
-                            }
-                        })
-                    }
-                }
             }
             .padding(.vertical, 50)
 
