@@ -111,10 +111,25 @@ struct UpdateRowView: View {
 
                 // App name and version
                 VStack(alignment: .leading, spacing: 4) {
-                    HStack(spacing: 4) {
+                    HStack(spacing: 8) {
                         Text(app.appInfo.appName)
                             .font(.title2)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                        // Pre-release indicator (Sparkle only)
+                        if app.source == .sparkle && app.isPreRelease {
+                            if #available(macOS 14.0, *) {
+                                Image(systemName: "flask.fill")
+                                    .font(.body)
+                                    .foregroundStyle(.green)
+                                    .help("Pre-release")
+                            } else {
+                                Image(systemName: "testtube.2")
+                                    .font(.body)
+                                    .foregroundStyle(.green)
+                                    .help("Pre-release")
+                            }
+                        }
 
                         // Info button for App Store apps
                         if app.source == .appStore, let appStoreURL = app.appStoreURL {

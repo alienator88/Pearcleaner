@@ -160,6 +160,19 @@ class SparkleDetector {
                     }
                 }
 
+                // Determine if this is a pre-release update
+                let isPreRelease: Bool = {
+                    // Check if has channel tag (e.g., "beta", "pre", "internal")
+                    if candidateItem.channel != nil {
+                        return true
+                    }
+                    // Check if version has SemVer pre-release identifier (e.g., "4.1.0-beta.2")
+                    if let semVer = SemanticVersion(appcastVersionToCompare), semVer.isPreRelease {
+                        return true
+                    }
+                    return false
+                }()
+
                 return UpdateableApp(
                     appInfo: appInfo,
                     availableVersion: appcastVersionToCompare,
@@ -171,7 +184,8 @@ class SparkleDetector {
                     releaseTitle: candidateItem.title,
                     releaseDescription: candidateItem.description,
                     releaseNotesLink: candidateItem.releaseNotesLink,
-                    releaseDate: candidateItem.pubDate
+                    releaseDate: candidateItem.pubDate,
+                    isPreRelease: isPreRelease
                 )
             }
         } catch {

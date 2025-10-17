@@ -87,7 +87,8 @@ class AppStoreUpdateChecker {
                 releaseTitle: nil,
                 releaseDescription: appStoreInfo.releaseNotes,
                 releaseNotesLink: nil,
-                releaseDate: appStoreInfo.releaseDate
+                releaseDate: appStoreInfo.releaseDate,
+                isPreRelease: false  // App Store updates are not pre-releases
             )
         }
 

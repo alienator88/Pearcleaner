@@ -38,7 +38,8 @@ class HomebrewUpdateChecker {
                     releaseTitle: nil,
                     releaseDescription: nil,
                     releaseNotesLink: nil,
-                    releaseDate: nil
+                    releaseDate: nil,
+                    isPreRelease: false  // Homebrew updates are not pre-releases
                 )
                 updateableApps.append(updateableApp)
             }

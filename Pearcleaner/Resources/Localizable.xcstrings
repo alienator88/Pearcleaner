@@ -12325,19 +12325,19 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "清除"
+            "value" : "透视"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "清除"
+            "value" : "透视"
           }
         },
         "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "清除"
+            "value" : "透视"
           }
         }
       }
@@ -41159,6 +41159,9 @@
           }
         }
       }
+    },
+    "Pre-release" : {
+
     },
     "Prune Translations" : {
       "comment" : "Prune alert title",
