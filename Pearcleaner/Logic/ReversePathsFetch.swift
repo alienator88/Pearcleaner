@@ -22,6 +22,30 @@ class ReversePathsSearcher {
     private let streamingMode: Bool
     private var shouldStop = false
 
+    // Cached formatted data to avoid repeated .pearFormat() calls
+    private lazy var formattedExclusionList: [String] = {
+        fsm.fileFolderPathsZ.map { $0.pearFormat() }
+    }()
+
+    private struct CachedAppIdentifiers {
+        let formattedBundleId: String
+        let formattedAppName: String
+        let formattedEntitlements: [String]
+    }
+
+    private lazy var cachedAppIdentifiers: [CachedAppIdentifiers] = {
+        sortedApps.map { app in
+            CachedAppIdentifiers(
+                formattedBundleId: app.bundleIdentifier.pearFormat(),
+                formattedAppName: app.appName.pearFormat(),
+                formattedEntitlements: app.entitlements?.compactMap { entitlement in
+                    let formatted = entitlement.pearFormat()
+                    return formatted.isEmpty ? nil : formatted
+                } ?? []
+            )
+        }
+    }()
+
     init(appState: AppState? = nil, locations: Locations, fsm: FolderSettingsManager, sortedApps: [AppInfo], streamingMode: Bool = true) {
         self.appState = appState
         self.locations = locations
@@ -72,39 +96,40 @@ class ReversePathsSearcher {
     private func processLocationStreaming(_ location: String, batch: inout [(url: URL, size: Int64, icon: NSImage?)], batchSize: Int) async {
         do {
             let contents = try fileManager.contentsOfDirectory(atPath: location)
-            for itemName in contents {
+            for scannedItemName in contents {
                 if shouldStop {
                     return
                 }
-                let itemURL = URL(fileURLWithPath: location).appendingPathComponent(itemName)
-                await processItemStreaming(itemName, itemURL: itemURL, batch: &batch, batchSize: batchSize)
+                let scannedItemURL = URL(fileURLWithPath: location).appendingPathComponent(scannedItemName)
+                await processItemStreaming(scannedItemName, scannedItemURL: scannedItemURL, batch: &batch, batchSize: batchSize)
             }
         } catch {
             printOS("Error processing location: \(location), error: \(error)")
         }
     }
 
-    private func processItemStreaming(_ itemName: String, itemURL: URL, batch: inout [(url: URL, size: Int64, icon: NSImage?)], batchSize: Int) async {
-        let itemPath = itemURL.path.pearFormat()
-        let exclusionList = fsm.fileFolderPathsZ.map { $0.pearFormat() }
+    private func processItemStreaming(_ scannedItemName: String, scannedItemURL: URL, batch: inout [(url: URL, size: Int64, icon: NSImage?)], batchSize: Int) async {
+        let normalizedItemPath = scannedItemURL.path.pearFormat()
 
-        if exclusionList.contains(itemPath) || itemPath.contains("dsstore") || itemPath.contains("daemonnameoridentifierhere") || exclusionList.first(where: { itemPath.contains($0) }) != nil {
+        if formattedExclusionList.contains(normalizedItemPath) || normalizedItemPath.contains("dsstore") || normalizedItemPath.contains("daemonnameoridentifierhere") || formattedExclusionList.first(where: { normalizedItemPath.contains($0) }) != nil {
             return
         }
-        guard !isUUIDFormatted(itemName.pearFormat()),
-              !skipReverse.contains(where: { itemName.pearFormat().contains($0) }),
-              isSupportedFileType(at: itemURL.path),
-              !isRelatedToInstalledApp(itemURL: itemURL),
-        !isExcludedByConditions(itemPath: itemPath) else {
+
+        let normalizedItemName = scannedItemName.pearFormat()
+        guard !isUUIDFormatted(normalizedItemName),
+              !skipReverse.contains(where: { normalizedItemName.contains($0) }),
+              isSupportedFileType(at: scannedItemURL.path),
+              !isRelatedToInstalledApp(scannedItemURL: scannedItemURL),
+        !isExcludedByConditions(normalizedItemPath: normalizedItemPath) else {
             return
         }
 
         // Calculate file details immediately
-        let size = totalSizeOnDisk(for: itemURL)
-        let icon = getIconForFileOrFolderNS(atPath: itemURL)
+        let size = totalSizeOnDisk(for: scannedItemURL)
+        let icon = getIconForFileOrFolderNS(atPath: scannedItemURL)
 
         // Add to batch
-        batch.append((url: itemURL, size: size, icon: icon))
+        batch.append((url: scannedItemURL, size: size, icon: icon))
 
         // Flush batch when it reaches the batch size
         if batch.count >= batchSize {
@@ -149,57 +174,55 @@ class ReversePathsSearcher {
 
         do {
             let contents = try fileManager.contentsOfDirectory(atPath: location)
-            contents.forEach { itemName in
-                let itemURL = URL(fileURLWithPath: location).appendingPathComponent(itemName)
-                processItem(itemName, itemURL: itemURL)
+            contents.forEach { scannedItemName in
+                let scannedItemURL = URL(fileURLWithPath: location).appendingPathComponent(scannedItemName)
+                processItem(scannedItemName, scannedItemURL: scannedItemURL)
             }
         } catch {
             printOS("Error processing location: \(location), error: \(error)")
         }
     }
 
-    private func processItem(_ itemName: String, itemURL: URL) {
-        let itemPath = itemURL.path.pearFormat()
-        let exclusionList = fsm.fileFolderPathsZ.map { $0.pearFormat() }
+    private func processItem(_ scannedItemName: String, scannedItemURL: URL) {
+        let normalizedItemPath = scannedItemURL.path.pearFormat()
 
-        if exclusionList.contains(itemPath) || itemPath.contains("dsstore") || itemPath.contains("daemonnameoridentifierhere") || exclusionList.first(where: { itemPath.contains($0) }) != nil {
-            return
-        }
-        guard !isUUIDFormatted(itemName.pearFormat()),
-              !skipReverse.contains(where: { itemName.pearFormat().contains($0) }),
-              isSupportedFileType(at: itemURL.path),
-              !isRelatedToInstalledApp(itemURL: itemURL),
-        !isExcludedByConditions(itemPath: itemPath) else {
-
+        if formattedExclusionList.contains(normalizedItemPath) || normalizedItemPath.contains("dsstore") || normalizedItemPath.contains("daemonnameoridentifierhere") || formattedExclusionList.first(where: { normalizedItemPath.contains($0) }) != nil {
             return
         }
 
-        collection.append(itemURL)
+        let normalizedItemName = scannedItemName.pearFormat()
+        guard !isUUIDFormatted(normalizedItemName),
+              !skipReverse.contains(where: { normalizedItemName.contains($0) }),
+              isSupportedFileType(at: scannedItemURL.path),
+              !isRelatedToInstalledApp(scannedItemURL: scannedItemURL),
+        !isExcludedByConditions(normalizedItemPath: normalizedItemPath) else {
+
+            return
+        }
+
+        collection.append(scannedItemURL)
     }
 
-    private func isRelatedToInstalledApp(itemURL: URL) -> Bool {
-        let itemPath = itemURL.path.pearFormat()
+    private func isRelatedToInstalledApp(scannedItemURL: URL) -> Bool {
+        let normalizedItemPath = scannedItemURL.path.pearFormat()
 
-        for app in sortedApps {
-            if itemPath.contains(app.bundleIdentifier.pearFormat()) ||
-                itemPath.contains(app.appName.pearFormat()) {
+        for (index, cached) in cachedAppIdentifiers.enumerated() {
+            if normalizedItemPath.contains(cached.formattedBundleId) ||
+                normalizedItemPath.contains(cached.formattedAppName) {
                 return true
             }
 
-            // Check entitlements-based matching
-            if let entitlements = app.entitlements {
-                for entitlement in entitlements {
-                    let entitlementFormatted = entitlement.pearFormat()
-                    if !entitlementFormatted.isEmpty && itemPath.contains(entitlementFormatted) {
-                        return true
-                    }
+            // Check entitlements-based matching (using pre-formatted entitlements)
+            for entitlementFormatted in cached.formattedEntitlements {
+                if normalizedItemPath.contains(entitlementFormatted) {
+                    return true
                 }
             }
 
             // Check if the path contains /Containers or /Group Containers
-            if itemURL.path.contains("/Containers/") {
-                let containerName = itemURL.containerNameByUUID().pearFormat()
-                if containerName.contains(app.bundleIdentifier.pearFormat()) {
+            if scannedItemURL.path.contains("/Containers/") {
+                let containerName = scannedItemURL.containerNameByUUID().pearFormat()
+                if containerName.contains(cached.formattedBundleId) {
                     return true
                 }
             }
@@ -207,22 +230,22 @@ class ReversePathsSearcher {
         return false
     }
 
-    private func isExcludedByConditions(itemPath: String) -> Bool {
+    private func isExcludedByConditions(normalizedItemPath: String) -> Bool {
 
         for condition in conditions {
-            // Ensure the condition's bundle_id matches an installed app
-            guard sortedApps.contains(where: { $0.bundleIdentifier.pearFormat() == condition.bundle_id.pearFormat() || $0.bundleIdentifier.pearFormat().contains(condition.bundle_id.pearFormat()) }) else {
+            // Ensure the condition's bundle_id matches an installed app (condition.bundle_id is already formatted in Conditions.swift)
+            guard cachedAppIdentifiers.contains(where: { $0.formattedBundleId == condition.bundle_id || $0.formattedBundleId.contains(condition.bundle_id) }) else {
                 continue
             }
 
-            // Include keywords
-            if condition.include.contains(where: { itemPath.contains($0.pearFormat()) }) {
+            // Include keywords (condition.include is already formatted in Conditions.swift)
+            if condition.include.contains(where: { normalizedItemPath.contains($0) }) {
                 return true
             }
 
             // Include force
             if let includeForce = condition.includeForce,
-               includeForce.contains(where: { itemPath.contains($0.path.pearFormat()) }) {
+               includeForce.contains(where: { normalizedItemPath.contains($0.path.pearFormat()) }) {
                 return true
             }
         }
