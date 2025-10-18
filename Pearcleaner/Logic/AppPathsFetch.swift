@@ -38,7 +38,7 @@ class AppPathFinder {
     }()
 
     // Change from lazy var to regular property initialized in init
-    private let cachedIdentifiers: (bundleIdentifierL: String, bundle: String, nameL: String, nameLFiltered: String, nameP: String, useBundleIdentifier: Bool, companyName: String?)
+    private let cachedIdentifiers: (formattedBundleId: String, bundleLastTwoComponents: String, formattedAppName: String, appNameLettersOnly: String, pathComponentName: String, useBundleIdentifier: Bool, formattedCompanyName: String?, formattedEntitlements: [String])
 
     // Computed property to get the effective sensitivity level
     private var effectiveSensitivityLevel: SearchSensitivityLevel {
@@ -55,26 +55,32 @@ class AppPathFinder {
         self.completion = completion
 
         // Initialize cachedIdentifiers eagerly and thread-safely
-        let bundleIdentifierL = appInfo.bundleIdentifier.pearFormat()
+        let formattedBundleId = appInfo.bundleIdentifier.pearFormat()
         let bundleComponents = appInfo.bundleIdentifier
             .components(separatedBy: ".")
             .compactMap { $0 != "-" ? $0.lowercased() : nil }
-        let bundle = bundleComponents.suffix(2).joined()
-        let nameL = appInfo.appName.pearFormat()
-        let nameLFiltered = nameL.filter { $0.isLetter }
-        let nameP = appInfo.path.lastPathComponent.replacingOccurrences(of: ".app", with: "")
+        let bundleLastTwoComponents = bundleComponents.suffix(2).joined()
+        let formattedAppName = appInfo.appName.pearFormat()
+        let appNameLettersOnly = formattedAppName.filter { $0.isLetter }
+        let pathComponentName = appInfo.path.lastPathComponent.replacingOccurrences(of: ".app", with: "")
         let useBundleIdentifier = AppPathFinder.isValidBundleIdentifier(appInfo.bundleIdentifier)
 
         // Extract company/dev name from 3-component bundle IDs (e.g., "com.knollsoft.Rectangle" -> "knollsoft")
-        let companyName: String?
+        let formattedCompanyName: String?
         let rawComponents = appInfo.bundleIdentifier.components(separatedBy: ".")
         if rawComponents.count == 3 {
-            companyName = rawComponents[1].pearFormat()
+            formattedCompanyName = rawComponents[1].pearFormat()
         } else {
-            companyName = nil
+            formattedCompanyName = nil
         }
 
-        self.cachedIdentifiers = (bundleIdentifierL, bundle, nameL, nameLFiltered, nameP, useBundleIdentifier, companyName)
+        // Pre-format entitlements once to avoid repeated formatting in the hot path
+        let formattedEntitlements: [String] = appInfo.entitlements?.compactMap { entitlement in
+            let formatted = entitlement.pearFormat()
+            return formatted.isEmpty ? nil : formatted
+        } ?? []
+
+        self.cachedIdentifiers = (formattedBundleId, bundleLastTwoComponents, formattedAppName, appNameLettersOnly, pathComponentName, useBundleIdentifier, formattedCompanyName, formattedEntitlements)
     }
 
     // Process the initial URL
@@ -126,21 +132,21 @@ class AppPathFinder {
     private func processLocation(_ location: String) {
         if let contents = try? FileManager.default.contentsOfDirectory(atPath: location) {
             var localResults: [URL] = []
-            for item in contents {
-                let itemURL = URL(fileURLWithPath: location).appendingPathComponent(item)
-                let itemL: String
-                if itemURL.hasDirectoryPath || itemURL.pathExtension.isEmpty {
+            for scannedItem in contents {
+                let scannedItemURL = URL(fileURLWithPath: location).appendingPathComponent(scannedItem)
+                let normalizedItemName: String
+                if scannedItemURL.hasDirectoryPath || scannedItemURL.pathExtension.isEmpty {
                     // It's a directory or has no extension - don't remove anything
-                    itemL = item.pearFormat()
+                    normalizedItemName = scannedItem.pearFormat()
                 } else {
                     // It's a file with an extension - remove the extension
-                    itemL = (item as NSString).deletingPathExtension.pearFormat()
+                    normalizedItemName = (scannedItem as NSString).deletingPathExtension.pearFormat()
                 }
                 var isDirectory: ObjCBool = false
-                if FileManager.default.fileExists(atPath: itemURL.path, isDirectory: &isDirectory) {
-                    if shouldSkipItem(itemL, at: itemURL) { continue }
-                    if specificCondition(itemL: itemL, itemURL: itemURL) {
-                        localResults.append(itemURL)
+                if FileManager.default.fileExists(atPath: scannedItemURL.path, isDirectory: &isDirectory) {
+                    if shouldSkipItem(normalizedItemName, at: scannedItemURL) { continue }
+                    if specificCondition(normalizedItemName: normalizedItemName, scannedItemURL: scannedItemURL) {
+                        localResults.append(scannedItemURL)
                     }
                 }
             }
@@ -171,17 +177,17 @@ class AppPathFinder {
     }
 
     // Skip items based on conditions and membership in collectionSet
-    private func shouldSkipItem(_ itemL: String, at itemURL: URL) -> Bool {
+    private func shouldSkipItem(_ normalizedItemName: String, at scannedItemURL: URL) -> Bool {
         var containsItem = false
         collectionAccessQueue.sync {
-            containsItem = self.collectionSet.contains(itemURL)
+            containsItem = self.collectionSet.contains(scannedItemURL)
         }
         if containsItem {
             return true
         }
         for skipCondition in skipConditions {
-            if skipCondition.skipPrefix.contains(where: itemL.hasPrefix) {
-                let isAllowed = skipCondition.allowPrefixes.contains(where: itemL.hasPrefix)
+            if skipCondition.skipPrefix.contains(where: normalizedItemName.hasPrefix) {
+                let isAllowed = skipCondition.allowPrefixes.contains(where: normalizedItemName.hasPrefix)
                 if !isAllowed {
                     return true
                 }
@@ -191,32 +197,32 @@ class AppPathFinder {
     }
 
     // Check if an item meets specific conditions using cached identifiers
-    private func specificCondition(itemL: String, itemURL: URL) -> Bool {
+    private func specificCondition(normalizedItemName: String, scannedItemURL: URL) -> Bool {
         let cached = self.cachedIdentifiers
-        
+
         // Special handling for Steam games: also check Desktop for shortcuts
-        if itemURL.path.contains("/Desktop/") && itemURL.pathExtension == "app" {
-            let desktopAppName = itemURL.deletingPathExtension().lastPathComponent.pearFormat()
-            if desktopAppName == cached.nameL || desktopAppName == cached.nameLFiltered {
+        if scannedItemURL.path.contains("/Desktop/") && scannedItemURL.pathExtension == "app" {
+            let desktopAppName = scannedItemURL.deletingPathExtension().lastPathComponent.pearFormat()
+            if desktopAppName == cached.formattedAppName || desktopAppName == cached.appNameLettersOnly {
                 return true
             }
         }
 
         // Special handling for Steam game main folder
-        if self.appInfo.steam && itemURL.path.contains("/Library/Application Support/Steam/steamapps/common/") {
-            let folderName = itemURL.lastPathComponent.pearFormat()
+        if self.appInfo.steam && scannedItemURL.path.contains("/Library/Application Support/Steam/steamapps/common/") {
+            let folderName = scannedItemURL.lastPathComponent.pearFormat()
             // Check if this folder matches the game name
-            if folderName == cached.nameL || folderName == cached.nameLFiltered {
+            if folderName == cached.formattedAppName || folderName == cached.appNameLettersOnly {
                 return true
             }
         }
 
         // Special handling for Steam game manifest files
-        if self.appInfo.steam && itemURL.path.contains("/Library/Application Support/Steam/steamapps/") && 
-           itemURL.lastPathComponent.hasPrefix("appmanifest_") && itemURL.pathExtension == "acf" {
-            
+        if self.appInfo.steam && scannedItemURL.path.contains("/Library/Application Support/Steam/steamapps/") &&
+           scannedItemURL.lastPathComponent.hasPrefix("appmanifest_") && scannedItemURL.pathExtension == "acf" {
+
             // Extract the game ID from the filename (e.g., "appmanifest_1289310.acf" -> "1289310")
-            let filename = itemURL.lastPathComponent
+            let filename = scannedItemURL.lastPathComponent
             if let gameIdFromFile = extractGameId(from: filename) {
                 // Get the game ID from the Steam launcher's run.sh file
                 if let gameIdFromLauncher = getSteamGameId(from: self.appInfo.path) {
@@ -225,46 +231,43 @@ class AppPathFinder {
             }
         }
 
-        // Check entitlements-based matching
-        if let entitlements = self.appInfo.entitlements {
-            for entitlement in entitlements {
-                let entitlementFormatted = entitlement.pearFormat()
-                if !entitlementFormatted.isEmpty && itemL.contains(entitlementFormatted) {
-                    return true
-                }
+        // Check entitlements-based matching (using pre-formatted entitlements)
+        for entitlementFormatted in cached.formattedEntitlements {
+            if normalizedItemName.contains(entitlementFormatted) {
+                return true
             }
         }
 
         for condition in conditions {
-            if cached.useBundleIdentifier && cached.bundleIdentifierL.contains(condition.bundle_id) {
-                if condition.exclude.contains(where: { itemL.pearFormat().contains($0.pearFormat()) }) {
+            if cached.useBundleIdentifier && cached.formattedBundleId.contains(condition.bundle_id) {
+                if condition.exclude.contains(where: { normalizedItemName.contains($0) }) {
                     return false
                 }
-                if condition.include.contains(where: { itemL.pearFormat().contains($0.pearFormat()) }) {
+                if condition.include.contains(where: { normalizedItemName.contains($0) }) {
                     return true
                 }
             }
         }
         if self.appInfo.webApp {
-            return itemL.contains(cached.bundleIdentifierL)
+            return normalizedItemName.contains(cached.formattedBundleId)
         }
-        let bundleMatch = itemL.contains(cached.bundleIdentifierL) || itemL.contains(cached.bundle)
+        let bundleMatch = normalizedItemName.contains(cached.formattedBundleId) || normalizedItemName.contains(cached.bundleLastTwoComponents)
         let sensitivity = effectiveSensitivityLevel == .strict || effectiveSensitivityLevel == .enhanced
 
         // Prevent false matches when cached values are empty strings
-        let nameLMatch = !cached.nameL.isEmpty && (sensitivity ? itemL == cached.nameL : itemL.contains(cached.nameL))
-        let namePMatch = !cached.nameP.isEmpty && (sensitivity ? itemL == cached.nameP : itemL.contains(cached.nameP))
-        let nameLFilteredMatch = !cached.nameLFiltered.isEmpty && (sensitivity ? itemL == cached.nameLFiltered : itemL.contains(cached.nameLFiltered))
+        let appNameMatch = !cached.formattedAppName.isEmpty && (sensitivity ? normalizedItemName == cached.formattedAppName : normalizedItemName.contains(cached.formattedAppName))
+        let pathNameMatch = !cached.pathComponentName.isEmpty && (sensitivity ? normalizedItemName == cached.pathComponentName : normalizedItemName.contains(cached.pathComponentName))
+        let appNameLettersMatch = !cached.appNameLettersOnly.isEmpty && (sensitivity ? normalizedItemName == cached.appNameLettersOnly : normalizedItemName.contains(cached.appNameLettersOnly))
 
         // Bundle ID component matching (Enhanced level and above)
         let companyMatch: Bool
-        if effectiveSensitivityLevel != .strict, let company = cached.companyName, !company.isEmpty {
-            companyMatch = sensitivity ? itemL == company : itemL.contains(company)
+        if effectiveSensitivityLevel != .strict, let company = cached.formattedCompanyName, !company.isEmpty {
+            companyMatch = sensitivity ? normalizedItemName == company : normalizedItemName.contains(company)
         } else {
             companyMatch = false
         }
 
-        return (cached.useBundleIdentifier && bundleMatch) || (nameLMatch || namePMatch || nameLFilteredMatch) || companyMatch
+        return (cached.useBundleIdentifier && bundleMatch) || (appNameMatch || pathNameMatch || appNameLettersMatch) || companyMatch
     }
     
     // Helper function to extract game ID from manifest filename

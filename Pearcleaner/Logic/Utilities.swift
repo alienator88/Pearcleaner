@@ -674,17 +674,20 @@ func formattedMDDate(from date: Date) -> String {
 // --- Extend String to remove periods, spaces and lowercase the string
 extension String {
     func pearFormat() -> String {
-        // First, handle non-Latin scripts by preserving Unicode letters
-        let preserveUnicode = self.unicodeScalars.compactMap { scalar in
+        // Optimized version: directly build result string without intermediate array
+        var result = ""
+        result.reserveCapacity(self.count) // Pre-allocate to avoid reallocation
+
+        // Iterate unicode scalars and append alphanumerics directly
+        for scalar in self.unicodeScalars {
             if CharacterSet.alphanumerics.contains(scalar) {
-                return Character(scalar)
-            } else {
-                return nil
+                result.unicodeScalars.append(scalar)
             }
         }
-        
-        let result = String(preserveUnicode).lowercased()
-        
+
+        // Lowercase the result
+        result = result.lowercased()
+
         // If the result is empty after processing, return the original string
         // to avoid false matches with empty string comparisons
         return result.isEmpty ? self : result
