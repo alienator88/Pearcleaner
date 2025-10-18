@@ -38,7 +38,7 @@ class AppPathFinder {
     }()
 
     // Change from lazy var to regular property initialized in init
-    private let cachedIdentifiers: (bundleIdentifierL: String, bundle: String, nameL: String, nameLFiltered: String, nameP: String, useBundleIdentifier: Bool)
+    private let cachedIdentifiers: (bundleIdentifierL: String, bundle: String, nameL: String, nameLFiltered: String, nameP: String, useBundleIdentifier: Bool, companyName: String?)
 
     // Computed property to get the effective sensitivity level
     private var effectiveSensitivityLevel: SearchSensitivityLevel {
@@ -64,7 +64,17 @@ class AppPathFinder {
         let nameLFiltered = nameL.filter { $0.isLetter }
         let nameP = appInfo.path.lastPathComponent.replacingOccurrences(of: ".app", with: "")
         let useBundleIdentifier = AppPathFinder.isValidBundleIdentifier(appInfo.bundleIdentifier)
-        self.cachedIdentifiers = (bundleIdentifierL, bundle, nameL, nameLFiltered, nameP, useBundleIdentifier)
+
+        // Extract company/dev name from 3-component bundle IDs (e.g., "com.knollsoft.Rectangle" -> "knollsoft")
+        let companyName: String?
+        let rawComponents = appInfo.bundleIdentifier.components(separatedBy: ".")
+        if rawComponents.count == 3 {
+            companyName = rawComponents[1].pearFormat()
+        } else {
+            companyName = nil
+        }
+
+        self.cachedIdentifiers = (bundleIdentifierL, bundle, nameL, nameLFiltered, nameP, useBundleIdentifier, companyName)
     }
 
     // Process the initial URL
@@ -240,13 +250,21 @@ class AppPathFinder {
         }
         let bundleMatch = itemL.contains(cached.bundleIdentifierL) || itemL.contains(cached.bundle)
         let sensitivity = effectiveSensitivityLevel == .strict || effectiveSensitivityLevel == .enhanced
-        
+
         // Prevent false matches when cached values are empty strings
         let nameLMatch = !cached.nameL.isEmpty && (sensitivity ? itemL == cached.nameL : itemL.contains(cached.nameL))
         let namePMatch = !cached.nameP.isEmpty && (sensitivity ? itemL == cached.nameP : itemL.contains(cached.nameP))
         let nameLFilteredMatch = !cached.nameLFiltered.isEmpty && (sensitivity ? itemL == cached.nameLFiltered : itemL.contains(cached.nameLFiltered))
-        
-        return (cached.useBundleIdentifier && bundleMatch) || (nameLMatch || namePMatch || nameLFilteredMatch)
+
+        // Bundle ID component matching (Enhanced level and above)
+        let companyMatch: Bool
+        if effectiveSensitivityLevel != .strict, let company = cached.companyName, !company.isEmpty {
+            companyMatch = sensitivity ? itemL == company : itemL.contains(company)
+        } else {
+            companyMatch = false
+        }
+
+        return (cached.useBundleIdentifier && bundleMatch) || (nameLMatch || namePMatch || nameLFilteredMatch) || companyMatch
     }
     
     // Helper function to extract game ID from manifest filename
