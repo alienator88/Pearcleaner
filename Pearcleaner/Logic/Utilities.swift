@@ -715,3 +715,93 @@ func formatRelativeTime(_ date: Date) -> String {
     formatter.unitsStyle = .abbreviated
     return formatter.localizedString(for: date, relativeTo: Date())
 }
+
+/// Generate system and Pearcleaner environment information string for debugging
+func getSystemDebugString() -> String {
+    let processInfo = ProcessInfo.processInfo
+    let osVersion = processInfo.operatingSystemVersionString
+    let osVersionParts = processInfo.operatingSystemVersion
+    let pcVersion = Bundle.main.version
+    let pcBuild = Bundle.main.buildVersion
+    let pcBundleID = Bundle.main.bundleIdentifier ?? "unknown"
+
+    // Architecture info
+    #if arch(arm64)
+    let archRunning = "arm64 (Apple Silicon)"
+    #elseif arch(x86_64)
+    let archRunning = "x86_64 (Intel)"
+    #else
+    let archRunning = "unknown"
+    #endif
+
+    // Memory info
+    let physicalMemory = processInfo.physicalMemory
+    let memoryFormatted = formatBytes(Int64(physicalMemory))
+
+    // Processor info
+    let processorCount = processInfo.processorCount
+    let activeProcessorCount = processInfo.activeProcessorCount
+
+    // System uptime
+    let uptime = processInfo.systemUptime
+    let uptimeFormatted = formatTimeInterval(uptime)
+
+    // Pearcleaner memory usage
+    var taskInfo = mach_task_basic_info()
+    var count = mach_msg_type_number_t(MemoryLayout<mach_task_basic_info>.size)/4
+    let result = withUnsafeMutablePointer(to: &taskInfo) {
+        $0.withMemoryRebound(to: integer_t.self, capacity: 1) {
+            task_info(mach_task_self_, task_flavor_t(MACH_TASK_BASIC_INFO), $0, &count)
+        }
+    }
+    let memoryUsage = result == KERN_SUCCESS ? formatBytes(Int64(taskInfo.resident_size)) : "unknown"
+
+    // Full Disk Access status
+    let hasFullDiskAccess = FileManager.default.isReadableFile(atPath: "/Library/Application Support/com.apple.TCC/TCC.db")
+
+    return """
+
+    ====================================
+    System & Pearcleaner Debug Info
+    ====================================
+    Pearcleaner Version: \(pcVersion) (Build \(pcBuild))
+    Bundle ID: \(pcBundleID)
+    Running Architecture: \(archRunning)
+    Memory Usage: \(memoryUsage)
+    ====================================
+    macOS Version: \(osVersion)
+    macOS Build: \(osVersionParts.majorVersion).\(osVersionParts.minorVersion).\(osVersionParts.patchVersion)
+    ====================================
+    System Memory: \(memoryFormatted)
+    Processor Cores: \(processorCount) total, \(activeProcessorCount) active
+    System Uptime: \(uptimeFormatted)
+    ====================================
+    Full Disk Access: \(hasFullDiskAccess ? "✓ Granted" : "✗ Not Granted")
+    ====================================
+    Timestamp: \(Date().description)
+    ====================================
+    """
+}
+
+/// Format time interval into human-readable string
+private func formatTimeInterval(_ interval: TimeInterval) -> String {
+    let days = Int(interval) / 86400
+    let hours = (Int(interval) % 86400) / 3600
+    let minutes = (Int(interval) % 3600) / 60
+
+    if days > 0 {
+        return "\(days)d \(hours)h \(minutes)m"
+    } else if hours > 0 {
+        return "\(hours)h \(minutes)m"
+    } else {
+        return "\(minutes)m"
+    }
+}
+
+/// Format bytes into human-readable string
+func formatBytes(_ bytes: Int64) -> String {
+    let formatter = ByteCountFormatter()
+    formatter.allowedUnits = [.useAll]
+    formatter.countStyle = .file
+    return formatter.string(fromByteCount: bytes)
+}

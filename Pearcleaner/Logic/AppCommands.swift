@@ -295,6 +295,10 @@ struct AppCommands: Commands {
             .keyboardShortcut("c", modifiers: [.command, .option])
             .disabled(appState.selectedItems.isEmpty)
 
+        }
+
+        CommandGroup(after: .help) {
+            // Debug options
             Button {
                 withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                     windowController.open(with: ConsoleView(), width: 600, height: 400)
@@ -304,9 +308,16 @@ struct AppCommands: Commands {
             }
             .keyboardShortcut("d", modifiers: .command)
 
-        }
+            Button {
+                // Export debug info to file
+                exportDebugInfo(appState: appState)
+            } label: {
+                Label("Export Debug Info...", systemImage: "info.circle")
+            }
+            .keyboardShortcut("i", modifiers: [.command, .shift])
 
-        CommandGroup(after: .help) {
+            Divider()
+
             // GitHub Menu
             Button
             {

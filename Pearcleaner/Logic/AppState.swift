@@ -392,6 +392,49 @@ struct AppInfo: Identifiable, Equatable, Hashable {
 
 }
 
+extension AppInfo {
+    /// Generate debug string that excludes NSImage properties for cleaner output
+    func getDebugString() -> String {
+        // Format file paths with sizes
+        let filePathsFormatted = fileSize
+            .sorted { $0.key.path < $1.key.path }
+            .map { "  • \($0.key.path) (\(formatBytes($0.value)))" }
+            .joined(separator: "\n")
+
+        return """
+        ====================================
+        AppInfo Debug Output
+        ====================================
+        ID: \(id)
+        App Name: \(appName)
+        Bundle ID: \(bundleIdentifier)
+        Path: \(path.path)
+        Version: \(appVersion)
+        ====================================
+        Architecture: \(arch)
+        Web App: \(webApp)
+        Wrapped: \(wrapped)
+        System App: \(system)
+        Steam Game: \(steam)
+        Cask: \(cask ?? "nil")
+        ====================================
+        Bundle Size: \(formatBytes(bundleSize))
+        Total Size: \(formatBytes(totalSize))
+        Lipo Savings: \(lipoSavings.map { formatBytes($0) } ?? "nil")
+        ====================================
+        Creation Date: \(creationDate?.description ?? "nil")
+        Content Change: \(contentChangeDate?.description ?? "nil")
+        Last Used: \(lastUsedDate?.description ?? "nil")
+        ====================================
+        Entitlements: \(entitlements?.joined(separator: ", ") ?? "nil")
+        ====================================
+        Files (\(fileSize.count)):
+        \(filePathsFormatted.isEmpty ? "  (none)" : filePathsFormatted)
+        ====================================
+        """
+    }
+}
+
 struct ZombieFile: Identifiable, Equatable, Hashable {
     let id: UUID
     var fileSize: [URL: Int64]  // Logical file sizes (matches Finder)

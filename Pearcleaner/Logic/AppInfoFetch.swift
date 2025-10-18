@@ -351,14 +351,6 @@ private func getEntitlements(for appPath: String) -> [String]? {
                 results.append(teamIdentifier)
             }
 
-            // com.apple.security.temporary-exception.files.home-relative-path.read-write
-            if let tempExceptionPaths = entitlements["com.apple.security.temporary-exception.files.home-relative-path.read-write"] as? [String] {
-                for path in tempExceptionPaths {
-                    let lastComponent = URL(fileURLWithPath: path).lastPathComponent
-                    results.append(lastComponent)
-                }
-            }
-
             // com.apple.security.application-groups
             if let appGroups = entitlements["com.apple.security.application-groups"] as? [String] {
                 results.append(contentsOf: appGroups)
@@ -368,6 +360,9 @@ private func getEntitlements(for appPath: String) -> [String]? {
             if let icloudContainers = entitlements["com.apple.developer.icloud-container-identifiers"] as? [String] {
                 results.append(contentsOf: icloudContainers)
             }
+
+            // Note: Path-based entitlements (like temporary-exception.files paths) are not extracted
+            // as they cause false positives by matching generic folder names like "Desktop", "Documents"
 
             return results.isEmpty ? nil : results
         }

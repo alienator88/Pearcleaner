@@ -858,6 +858,56 @@ func saveURLsToFile(appState: AppState, copy: Bool = false) {
 
 }
 
+/// Export debug information to a file with conditional content based on app context
+func exportDebugInfo(appState: AppState) {
+    let panel = NSOpenPanel()
+    panel.canChooseFiles = false
+    panel.canChooseDirectories = true
+    panel.allowsMultipleSelection = false
+    panel.prompt = "Select Folder"
+
+    if panel.runModal() == .OK, let selectedFolder = panel.url {
+        // Determine filename based on context
+        let filename: String
+        if appState.currentView == .files && !appState.appInfo.bundleIdentifier.isEmpty {
+            // App-specific debug
+            filename = "Debug-\(appState.appInfo.appName)(v\(appState.appInfo.appVersion)).txt"
+        } else {
+            // System-only debug
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd_HH-mm-ss"
+            let timestamp = dateFormatter.string(from: Date())
+            filename = "PearcleanerDiagnostics-\(timestamp).txt"
+        }
+
+        let filePath = selectedFolder.appendingPathComponent(filename)
+
+        // Generate debug content based on context
+        let debugContent: String
+        if appState.currentView == .files && !appState.appInfo.bundleIdentifier.isEmpty {
+            // Full debug: AppInfo + System
+            debugContent = appState.appInfo.getDebugString() + "\n" + getSystemDebugString()
+        } else {
+            // System-only debug
+            debugContent = getSystemDebugString()
+        }
+
+        do {
+            try debugContent.write(to: filePath, atomically: true, encoding: .utf8)
+            printOS("Debug info saved successfully at \(filePath.path)")
+            // Open Finder and select the file
+            NSWorkspace.shared.selectFile(
+                filePath.path,
+                inFileViewerRootedAtPath: filePath.deletingLastPathComponent().path)
+        } catch {
+            printOS("Error saving debug info: \(error)")
+        }
+    } else {
+        printOS("Folder selection was canceled.")
+    }
+}
+
+
 // Remove app from cache
 func removeApp(appState: AppState, withPath path: URL) {
     @AppStorage("settings.general.brew") var brew: Bool = false
