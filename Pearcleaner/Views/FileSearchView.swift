@@ -670,8 +670,27 @@ struct FileSearchView: View {
 
     private func performRename(result: FileSearchResult, newName: String) {
         let newURL = result.url.deletingLastPathComponent().appendingPathComponent(newName)
-        do {
-            try FileManager.default.moveItem(at: result.url, to: newURL)
+
+        // Always use helper for file operations (works for all file types)
+        var success = false
+
+        if HelperToolManager.shared.isHelperToolInstalled {
+            let command = "/bin/mv \"\(result.url.path)\" \"\(newURL.path)\""
+            let semaphore = DispatchSemaphore(value: 0)
+            Task {
+                let result = await HelperToolManager.shared.runCommand(command)
+                success = result.0
+                semaphore.signal()
+            }
+            semaphore.wait()
+        } else {
+            // Fallback to performPrivilegedCommands if helper not installed
+            let command = "/bin/mv \"\(result.url.path)\" \"\(newURL.path)\""
+            let result = performPrivilegedCommands(commands: command)
+            success = result.0
+        }
+
+        if success {
             // Update the result in the list
             if let index = results.firstIndex(where: { $0.id == result.id }) {
                 let updatedResult = FileSearchResult(
@@ -685,7 +704,9 @@ struct FileSearchView: View {
                 )
                 results[index] = updatedResult
             }
-        } catch {
+        } else {
+            let error = NSError(domain: "com.pearcleaner.rename", code: 1,
+                              userInfo: [NSLocalizedDescriptionKey: "Failed to rename file"])
             showCustomAlert(
                 title: "Rename Failed",
                 message: "Failed to rename '\(result.name)' to '\(newName)'. Error: \(error.localizedDescription)",

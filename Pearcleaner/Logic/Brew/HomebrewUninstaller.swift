@@ -398,8 +398,10 @@ class HomebrewUninstaller {
         let expandedPath = expandPath(path)
 
         if FileManager.default.fileExists(atPath: expandedPath) {
-            let url = URL(fileURLWithPath: expandedPath)
-            try FileManager.default.trashItem(at: url, resultingItemURL: nil)
+            // Always use helper to move to trash (works for all file types)
+            let fileName = (expandedPath as NSString).lastPathComponent
+            let trashPath = NSHomeDirectory() + "/.Trash/" + fileName
+            try await runPrivilegedCommand("/bin/mv \"\(expandedPath)\" \"\(trashPath)\"")
         }
     }
 

@@ -264,7 +264,7 @@ struct ExtraOptions: View {
                         showCustomAlert(title: title, message: message, style: .warning, onOk: {
                             Task {
                                 do {
-                                    try await pruneLanguages(in: appState.appInfo.path.path)
+                                    try await pruneLanguages(in: appState.appInfo.path.path, showAlert: true)
                                 } catch {
                                     printOS("Translation prune error: \(error)")
                                 }
@@ -354,12 +354,17 @@ struct ExtraOptions: View {
     }
 
     private func performManualPrune() async {
+        // Filter selected languages from available languages by code
+        let languagesToRemove = availableLanguages.filter { language in
+            selectedLanguagesToRemove.contains(language.code)
+        }
+
         do {
-            try await pruneLanguagesManual(in: appState.appInfo.path.path, removeLanguages: selectedLanguagesToRemove)
+            try await pruneLanguagesManual(languagesToRemove: languagesToRemove)
 
             // Show success message
             await MainActor.run {
-                let removedCount = selectedLanguagesToRemove.count
+                let removedCount = languagesToRemove.count
                 let keptCount = availableLanguages.count - removedCount
                 showCustomAlert(
                     title: "Translations Pruned",
