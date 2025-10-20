@@ -5,6 +5,9 @@
       "comment" : "Do not translate",
       "shouldTranslate" : false
     },
+    "(%@)" : {
+
+    },
     "(Build %@)" : {
       "localizations" : {
         "de" : {
@@ -1287,6 +1290,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已選擇 %1$lld 個檔案中的 %2$lld 個%3$@"
+          }
+        }
+      }
+    },
+    "%lld of %lld language%@ selected for removal" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld of %2$lld language%3$@ selected for removal"
           }
         }
       }
@@ -9153,6 +9166,9 @@
         }
       }
     },
+    "Auto Prune (Keep macOS Language)" : {
+
+    },
     "Auto slim Pearcleaner" : {
       "localizations" : {
         "de" : {
@@ -12125,6 +12141,12 @@
           }
         }
       }
+    },
+    "Choose Languages..." : {
+
+    },
+    "Choose Translations to Remove" : {
+
     },
     "Clean stored files and cache for common IDEs" : {
       "localizations" : {
@@ -21906,6 +21928,9 @@
         }
       }
     },
+    "Filter languages..." : {
+
+    },
     "Filter Type" : {
       "localizations" : {
         "de" : {
@@ -22118,6 +22143,9 @@
           }
         }
       }
+    },
+    "Finding available languages..." : {
+
     },
     "Finding orphaned files, please wait..." : {
       "extractionState" : "manual",
@@ -31360,6 +31388,9 @@
           }
         }
       }
+    },
+    "Loading languages..." : {
+
     },
     "Loading launch services..." : {
       "localizations" : {
@@ -41990,6 +42021,9 @@
         }
       }
     },
+    "Preferred language" : {
+
+    },
     "Prune Translations" : {
       "comment" : "Prune alert title",
       "localizations" : {
@@ -45392,6 +45426,9 @@
           }
         }
       }
+    },
+    "Remove Selected" : {
+
     },
     "Remove tap" : {
       "localizations" : {
@@ -58687,6 +58724,7 @@
     },
     "This will remove all unused language translation files" : {
       "comment" : "Prune alert message",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -58791,6 +58829,9 @@
           }
         }
       }
+    },
+    "This will remove all unused language translation files except your macOS language" : {
+      "comment" : "Prune alert message"
     },
     "This will upgrade %@ to the latest version using Homebrew. This may take several minutes." : {
       "localizations" : {
@@ -59534,6 +59575,9 @@
           }
         }
       }
+    },
+    "Translations" : {
+
     },
     "Transparent material" : {
       "extractionState" : "manual",

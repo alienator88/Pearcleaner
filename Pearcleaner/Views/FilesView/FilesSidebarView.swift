@@ -229,6 +229,11 @@ struct ExtraOptions: View {
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.files.showSidebarOnLoad") private var showSidebarOnLoad: Bool = false
 
+    // Translation selection sheet state
+    @State private var languageSheetWindow: NSWindow?
+    @State private var availableLanguages: [LanguageInfo] = []
+    @State private var selectedLanguagesToRemove: Set<String> = []
+
     var body: some View {
         HStack() {
             Text("Click to dismiss").font(.caption).foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.5))
@@ -250,18 +255,27 @@ struct ExtraOptions: View {
                         })
                     }
                 }
-                Button("Prune Translations") {
-                    let title = NSLocalizedString("Prune Translations", comment: "Prune alert title")
-                    let message = String(format: NSLocalizedString("This will remove all unused language translation files", comment: "Prune alert message"))
-                    showCustomAlert(title: title, message: message, style: .warning, onOk: {
-                        Task {
-                            do {
-                                try await pruneLanguages(in: appState.appInfo.path.path)
-                            } catch {
-                                printOS("Translation prune error: \(error)")
+
+                Menu("Translations") {
+                    Button("Auto Prune (Keep macOS Language)") {
+                        let title = NSLocalizedString("Prune Translations", comment: "Prune alert title")
+                        let message = String(format: NSLocalizedString("This will remove all unused language translation files except your macOS language", comment: "Prune alert message"))
+                        showCustomAlert(title: title, message: message, style: .warning, onOk: {
+                            Task {
+                                do {
+                                    try await pruneLanguages(in: appState.appInfo.path.path)
+                                } catch {
+                                    printOS("Translation prune error: \(error)")
+                                }
                             }
+                        })
+                    }
+
+                    Button("Choose Languages...") {
+                        Task {
+                            await showLanguageSelectionSheet()
                         }
-                    })
+                    }
                 }
             } label: {
                 Label("Options", systemImage: "ellipsis.circle")
@@ -269,6 +283,90 @@ struct ExtraOptions: View {
             .menuStyle(.borderlessButton)
             .menuIndicator(.hidden)
             .fixedSize()
+        }
+    }
+
+    // MARK: - Language Selection Sheet
+
+    private func showLanguageSelectionSheet() async {
+        guard let parentWindow = NSApp.keyWindow ?? NSApp.windows.first(where: { $0.isVisible }) else {
+            return
+        }
+
+        // Load languages in background
+        let languages = await findAvailableLanguages(in: appState.appInfo.path.path)
+
+        await MainActor.run {
+            // Set initial state: no languages selected (user will select what to remove)
+            self.availableLanguages = languages
+            self.selectedLanguagesToRemove = []
+
+            // Create the SwiftUI view
+            let contentView = TranslationSelectionSheet(
+                appName: appState.appInfo.appName,
+                appPath: appState.appInfo.path.path,
+                languages: languages,
+                selectedLanguages: $selectedLanguagesToRemove,
+                onConfirm: {
+                    if let sheetWindow = self.languageSheetWindow {
+                        parentWindow.endSheet(sheetWindow)
+                    }
+                    self.languageSheetWindow = nil
+                    Task {
+                        await performManualPrune()
+                    }
+                },
+                onCancel: {
+                    if let sheetWindow = self.languageSheetWindow {
+                        parentWindow.endSheet(sheetWindow)
+                    }
+                    self.languageSheetWindow = nil
+                }
+            )
+
+            // Create sheet window
+            let hostingController = NSHostingController(rootView: contentView)
+
+            let sheetWindow = NSWindow(
+                contentRect: NSRect(x: 0, y: 0, width: 600, height: 500),
+                styleMask: [.titled, .closable],
+                backing: .buffered,
+                defer: false
+            )
+            sheetWindow.title = "Choose Translations"
+            sheetWindow.contentViewController = hostingController
+            sheetWindow.isReleasedWhenClosed = false
+
+            // Present as sheet
+            parentWindow.beginSheet(sheetWindow)
+
+            self.languageSheetWindow = sheetWindow
+        }
+    }
+
+    private func performManualPrune() async {
+        do {
+            try await pruneLanguagesManual(in: appState.appInfo.path.path, removeLanguages: selectedLanguagesToRemove)
+
+            // Show success message
+            await MainActor.run {
+                let removedCount = selectedLanguagesToRemove.count
+                let keptCount = availableLanguages.count - removedCount
+                showCustomAlert(
+                    title: "Translations Pruned",
+                    message: "Successfully removed \(removedCount) language\(removedCount == 1 ? "" : "s"). Kept \(keptCount) language\(keptCount == 1 ? "" : "s").",
+                    style: .informational
+                )
+            }
+        } catch {
+            await MainActor.run {
+                showCustomAlert(
+                    title: "Prune Failed",
+                    message: "Failed to prune translations: \(error.localizedDescription)",
+                    style: .critical
+                )
+            }
+            printOS("Manual translation prune error: \(error)")
         }
     }
 }

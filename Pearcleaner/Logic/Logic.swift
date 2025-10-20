@@ -451,7 +451,152 @@ func handleLaunchMode() {
 
 }
 
-// Remove translations that are not in use
+// MARK: - Translation Pruning
+
+/// Information about a language translation in an app bundle
+struct LanguageInfo: Identifiable, Hashable {
+    let id = UUID()
+    let code: String                // e.g., "en", "es", "en-GB"
+    let displayName: String         // Localized language name
+    let isPreferred: Bool           // Is in user's macOS preferred languages
+    let fileCount: Int              // Number of files in .lproj folder
+    let lprojPaths: [URL]           // All .lproj folder paths for this language
+}
+
+/// Find all available language translations in an app bundle
+/// - Parameter appBundlePath: Path to .app bundle
+/// - Returns: Array of LanguageInfo for all languages found (excludes Base.lproj)
+func findAvailableLanguages(in appBundlePath: String) async -> [LanguageInfo] {
+    let fileManager = FileManager.default
+    let contentsPath = (appBundlePath as NSString).appendingPathComponent("Contents/Resources")
+
+    // Find all .lproj folders in Resources and PlugIns
+    let searchPaths = ["Contents/Resources", "Contents/PlugIns"]
+    var lprojPathsByLang: [String: [URL]] = [:]
+
+    for searchPath in searchPaths {
+        let fullSearchPath = URL(fileURLWithPath: appBundlePath).appendingPathComponent(searchPath)
+        guard fileManager.fileExists(atPath: fullSearchPath.path),
+              let enumerator = fileManager.enumerator(at: fullSearchPath, includingPropertiesForKeys: [.isDirectoryKey], options: [.skipsHiddenFiles]) else { continue }
+
+        while let fileURL = enumerator.nextObject() as? URL {
+            if fileURL.pathExtension == "lproj" {
+                let langCode = fileURL.deletingPathExtension().lastPathComponent
+                // Skip Base.lproj - never removable
+                if langCode != "Base" {
+                    lprojPathsByLang[langCode, default: []].append(fileURL)
+                }
+            }
+        }
+    }
+
+    guard !lprojPathsByLang.isEmpty else { return [] }
+
+    // Get user's preferred language codes
+    let preferredLangs = Set(Locale.preferredLanguages.map { String($0.prefix(2)) })
+
+    // Build LanguageInfo for each language
+    var languages: [LanguageInfo] = []
+
+    for (langCode, paths) in lprojPathsByLang {
+        // Get base language code (e.g., "en" from "en-GB")
+        let baseLangCode = String(langCode.prefix(2))
+
+        // Check if this is a preferred language
+        let isPreferred = preferredLangs.contains(baseLangCode) ||
+                         preferredLangs.contains(langCode)
+
+        // Count files in first .lproj folder (representative)
+        let fileCount = (try? fileManager.contentsOfDirectory(atPath: paths[0].path))?.count ?? 0
+
+        // Get localized display name
+        let displayName = Locale.current.localizedString(forLanguageCode: langCode) ?? langCode
+
+        languages.append(LanguageInfo(
+            code: langCode,
+            displayName: displayName,
+            isPreferred: isPreferred,
+            fileCount: fileCount,
+            lprojPaths: paths
+        ))
+    }
+
+    // Sort: preferred first, then alphabetically
+    return languages.sorted { first, second in
+        if first.isPreferred != second.isPreferred {
+            return first.isPreferred
+        }
+        return first.displayName.localizedCaseInsensitiveCompare(second.displayName) == .orderedAscending
+    }
+}
+
+/// Remove translation files manually based on user selection
+/// - Parameters:
+///   - appBundlePath: Path to .app bundle
+///   - removeLanguages: Set of language codes to remove (e.g., ["fr", "de"])
+func pruneLanguagesManual(in appBundlePath: String, removeLanguages: Set<String>) async throws {
+    let fileManager = FileManager.default
+
+    // Find all .lproj folders in Resources and PlugIns
+    let searchPaths = ["Contents/Resources", "Contents/PlugIns"]
+    var lprojPaths: [URL] = []
+
+    for searchPath in searchPaths {
+        let fullSearchPath = URL(fileURLWithPath: appBundlePath).appendingPathComponent(searchPath)
+        guard fileManager.fileExists(atPath: fullSearchPath.path),
+              let enumerator = fileManager.enumerator(at: fullSearchPath, includingPropertiesForKeys: [.isDirectoryKey], options: [.skipsHiddenFiles]) else { continue }
+
+        while let fileURL = enumerator.nextObject() as? URL {
+            if fileURL.pathExtension == "lproj" {
+                lprojPaths.append(fileURL)
+            }
+        }
+    }
+
+    guard !lprojPaths.isEmpty else { return }
+
+    // Filter .lproj folders to remove based on user selection
+    let lprojsToRemove = lprojPaths.filter { lprojURL in
+        let langCode = lprojURL.deletingPathExtension().lastPathComponent
+        // Check if this language should be removed
+        return removeLanguages.contains(langCode)
+    }
+
+    // If there are files to remove, move them to Trash in an organized folder
+    if !lprojsToRemove.isEmpty {
+        // Get app name from bundle path
+        let appName = (appBundlePath as NSString).lastPathComponent.replacingOccurrences(of: ".app", with: "")
+
+        // Create a unique folder name in Trash
+        let trashFolderName = "\(appName) - Translations"
+        let trashURL = fileManager.urls(for: .trashDirectory, in: .userDomainMask).first!
+        let destinationFolder = trashURL.appendingPathComponent(trashFolderName)
+
+        // Create the destination folder in Trash
+        try fileManager.createDirectory(at: destinationFolder, withIntermediateDirectories: true)
+
+        // Move each .lproj folder to the Trash folder
+        for sourceURL in lprojsToRemove {
+            let fileName = sourceURL.lastPathComponent
+            let destinationURL = destinationFolder.appendingPathComponent(fileName)
+
+            do {
+                // If destination exists (from previous prune), remove it first
+                if fileManager.fileExists(atPath: destinationURL.path) {
+                    try fileManager.removeItem(at: destinationURL)
+                }
+                try fileManager.moveItem(at: sourceURL, to: destinationURL)
+            } catch {
+                printOS("⚠️ Failed to move \(fileName): \(error.localizedDescription)")
+            }
+        }
+    }
+
+    // Update timestamp to refresh bundle size
+    try FileManager.default.setAttributes([.modificationDate: Date()], ofItemAtPath: appBundlePath)
+}
+
+// Remove translations that are not in use (AUTO mode - keeps user's macOS language)
 func pruneLanguages(in appBundlePath: String) async throws {
     let fileManager = FileManager.default
     let contentsPath = (appBundlePath as NSString).appendingPathComponent("Contents/Resources")
