@@ -510,6 +510,7 @@ struct FileSearchView: View {
                     Label("Add Filter", systemImage: "line.3.horizontal.decrease.circle")
                 }
                 .labelStyle(.titleAndIcon)
+                .menuIndicator(.hidden)
 
                 Button {
                     results.removeAll()

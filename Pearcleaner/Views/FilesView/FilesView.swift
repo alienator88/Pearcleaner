@@ -146,6 +146,8 @@ struct FilesView: View {
                     Label(selectedSort.title, systemImage: selectedSort.systemImage)
                 }
                 .labelStyle(.titleAndIcon)
+                .menuIndicator(.hidden)
+
 
                 Button {
                     let currentAppInfo = appState.appInfo

@@ -74,6 +74,9 @@ class AppStoreUpdateChecker {
             return nil  // Invalid version format, skip
         }
 
+        // Detect if this is a wrapped iOS app
+        let isIOSApp = UpdateCoordinator.isIOSApp(app)
+
         // Only add if App Store version is GREATER than installed version
         if availableVer > installedVer {
             return UpdateableApp(
@@ -88,7 +91,8 @@ class AppStoreUpdateChecker {
                 releaseDescription: appStoreInfo.releaseNotes,
                 releaseNotesLink: nil,
                 releaseDate: appStoreInfo.releaseDate,
-                isPreRelease: false  // App Store updates are not pre-releases
+                isPreRelease: false,  // App Store updates are not pre-releases
+                isIOSApp: isIOSApp
             )
         }
 
@@ -122,16 +126,22 @@ class AppStoreUpdateChecker {
     }
 
     private static func getAppStoreInfo(bundleID: String) async -> AppStoreInfo? {
-        // Two-stage fetch strategy (matching Latest app's approach):
+        // Three-stage fetch strategy (matching Latest app's approach):
         // 1. Try desktopSoftware first (Mac-native apps - most accurate)
         // 2. Fallback to macSoftware (broader: includes Catalyst and iOS apps)
+        // 3. Fallback to software (all platforms: catches iPad/iOS apps that run via "Designed for iPad")
 
         if let info = await fetchAppStoreInfo(bundleID: bundleID, entity: "desktopSoftware") {
             return info
         }
 
         // Fallback to broader entity type
-        return await fetchAppStoreInfo(bundleID: bundleID, entity: "macSoftware")
+        if let info = await fetchAppStoreInfo(bundleID: bundleID, entity: "macSoftware") {
+            return info
+        }
+
+        // Final fallback for iPad/iOS apps
+        return await fetchAppStoreInfo(bundleID: bundleID, entity: "software")
     }
 
     private static func fetchAppStoreInfo(bundleID: String, entity: String?) async -> AppStoreInfo? {

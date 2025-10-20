@@ -67,6 +67,7 @@ struct UpdateableApp: Identifiable {
     let releaseNotesLink: String?  // URL to external release notes page
     let releaseDate: String?
     let isPreRelease: Bool  // True for Sparkle pre-release updates (has channel tag or SemVer pre-release identifier)
+    let isIOSApp: Bool  // True for wrapped iPad/iOS apps that must be updated via App Store app
 
     var canUpdate: Bool {
         source == .homebrew || source == .appStore

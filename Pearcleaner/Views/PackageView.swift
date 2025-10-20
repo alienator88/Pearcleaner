@@ -9,12 +9,20 @@ import SwiftUI
 import AlinFoundation
 
 enum PackageSortOption: String, CaseIterable {
-    case packageName = "Package Name"
-    case packageId = "Package ID"
+    case packageName = "Name"
+    case packageId = "ID"
     case installer = "Installer"
-    
+
     var displayName: String {
         return self.rawValue
+    }
+
+    var systemImage: String {
+        switch self {
+        case .packageName: return "list.bullet"
+        case .packageId: return "number"
+        case .installer: return "app.badge"
+        }
     }
 }
 
@@ -254,13 +262,14 @@ struct PackageView: View {
                         Button {
                             sortOption = option
                         } label: {
-                            Label(option.displayName, systemImage: "list.bullet")
+                            Label(option.displayName, systemImage: option.systemImage)
                         }
                     }
                 } label: {
-                    Label(sortOption.displayName, systemImage: "list.bullet")
+                    Label(sortOption.displayName, systemImage: sortOption.systemImage)
                 }
                 .labelStyle(.titleAndIcon)
+                .menuIndicator(.hidden)
 
                 Button {
                     refreshPackages()

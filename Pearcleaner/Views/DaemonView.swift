@@ -303,6 +303,7 @@ struct DaemonView: View {
                     Label(selectedFilter.rawValue, systemImage: selectedFilter.systemImage)
                 }
                 .labelStyle(.titleAndIcon)
+                .menuIndicator(.hidden)
 
                 Button {
                     refreshLaunchItems()

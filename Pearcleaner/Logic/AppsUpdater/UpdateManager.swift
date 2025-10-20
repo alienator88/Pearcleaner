@@ -244,7 +244,7 @@ class UpdateManager: ObservableObject {
             try? await Task.sleep(nanoseconds: pollInterval)
 
             // Read version directly from Info.plist to avoid Bundle caching issues
-            if let diskVersion = readBundleVersionDirectly(at: appPath) {
+            if let diskVersion = readBundleVersionDirectly(at: appPath, wrapped: app.appInfo.wrapped) {
                 // Strategy: Detect when bundle was removed and then reappeared with any version
                 // This is more reliable than matching exact version strings since CommerceKit
                 // metadata may not always match what actually gets installed
@@ -268,7 +268,7 @@ class UpdateManager: ObservableObject {
         }
 
         // Timeout: remove from list anyway after max wait time
-        if let diskVersion = readBundleVersionDirectly(at: appPath) {
+        if let diskVersion = readBundleVersionDirectly(at: appPath, wrapped: app.appInfo.wrapped) {
             printOS("⚠️ App Store update verification timed out for \(app.appInfo.appName): final version on disk is \(diskVersion)")
         } else {
             printOS("⚠️ App Store update verification timed out for \(app.appInfo.appName): bundle still missing")
@@ -279,23 +279,46 @@ class UpdateManager: ObservableObject {
 
     /// Read bundle version directly from Info.plist without Bundle caching
     /// This ensures we always get fresh data from disk during verification
-    private func readBundleVersionDirectly(at path: URL) -> String? {
-        let plistPath = path.appendingPathComponent("Contents/Info.plist")
+    private func readBundleVersionDirectly(at path: URL, wrapped: Bool) -> String? {
+        if wrapped {
+            // iPad/iOS app: read version from iTunesMetadata.plist
+            // For wrapped apps, path points to the inner bundle (e.g., /Applications/X.app/Wrapper/Twitter.app/)
+            // We need to go up 2 levels to get to the outer wrapper (e.g., /Applications/X.app/)
+            let outerWrapperPath = path.deletingLastPathComponent().deletingLastPathComponent()
+            let iTunesMetadataPath = outerWrapperPath.appendingPathComponent("Wrapper/iTunesMetadata.plist")
 
-        guard FileManager.default.fileExists(atPath: plistPath.path),
-              let plistData = try? Data(contentsOf: plistPath),
-              let plist = try? PropertyListSerialization.propertyList(from: plistData, format: nil) as? [String: Any] else {
+            guard let plistData = try? Data(contentsOf: iTunesMetadataPath),
+                  let plist = try? PropertyListSerialization.propertyList(from: plistData, format: nil) as? [String: Any] else {
+                return nil
+            }
+
+            // Read from iTunesMetadata.plist (uses different keys than Info.plist)
+            if let version = plist["bundleShortVersionString"] as? String, !version.isEmpty {
+                return version
+            } else if let version = plist["bundleVersion"] as? String, !version.isEmpty {
+                return version
+            }
+
+            return nil
+        } else {
+            // Standard Mac app: Contents/Info.plist
+            let plistPath = path.appendingPathComponent("Contents/Info.plist")
+
+            guard FileManager.default.fileExists(atPath: plistPath.path),
+                  let plistData = try? Data(contentsOf: plistPath),
+                  let plist = try? PropertyListSerialization.propertyList(from: plistData, format: nil) as? [String: Any] else {
+                return nil
+            }
+
+            // Prefer CFBundleShortVersionString, fallback to CFBundleVersion
+            if let shortVersion = plist["CFBundleShortVersionString"] as? String, !shortVersion.isEmpty {
+                return shortVersion
+            } else if let version = plist["CFBundleVersion"] as? String, !version.isEmpty {
+                return version
+            }
+
             return nil
         }
-
-        // Prefer CFBundleShortVersionString, fallback to CFBundleVersion
-        if let shortVersion = plist["CFBundleShortVersionString"] as? String, !shortVersion.isEmpty {
-            return shortVersion
-        } else if let version = plist["CFBundleVersion"] as? String, !version.isEmpty {
-            return version
-        }
-
-        return nil
     }
 
     /// Remove an app from the updates list

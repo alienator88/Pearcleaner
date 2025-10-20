@@ -9,12 +9,38 @@ import Foundation
 import AlinFoundation
 
 class UpdateCoordinator {
+    /// Check if an app is a wrapped iPad/iOS app (Latest's approach)
+    static func isIOSApp(_ app: AppInfo) -> Bool {
+        if !app.wrapped { return false }
+
+        // For wrapped apps, app.path points to inner bundle (e.g., /Applications/X.app/Wrapper/Twitter.app/)
+        // Go up 2 levels to outer wrapper (e.g., /Applications/X.app/)
+        let outerWrapperPath = app.path.deletingLastPathComponent().deletingLastPathComponent()
+        let wrappedBundlePath = outerWrapperPath.appendingPathComponent("WrappedBundle")
+
+        // Check if WrappedBundle symlink exists (definitive sign of iOS app)
+        return FileManager.default.fileExists(atPath: wrappedBundlePath.path)
+    }
+
     /// Check if an app is from the App Store by verifying receipt existence
     private static func isAppStoreApp(_ app: AppInfo) -> Bool {
+        // Check for wrapped iPad/iOS app first (use wrapped flag from AppInfo)
+        if app.wrapped {
+            // For wrapped apps, app.path points to the inner bundle (e.g., /Applications/X.app/Wrapper/Twitter.app/)
+            // We need to go up 2 levels to get to the outer wrapper (e.g., /Applications/X.app/)
+            let outerWrapperPath = app.path.deletingLastPathComponent().deletingLastPathComponent()
+            let iTunesMetadataPath = outerWrapperPath.appendingPathComponent("Wrapper/iTunesMetadata.plist").path
+            if FileManager.default.fileExists(atPath: iTunesMetadataPath) {
+                return true
+            }
+        }
+
+        // Check for traditional Mac app receipt
         guard let bundle = Bundle(url: app.path),
               let receiptPath = bundle.appStoreReceiptURL?.path else {
             return false
         }
+
         return FileManager.default.fileExists(atPath: receiptPath)
     }
 

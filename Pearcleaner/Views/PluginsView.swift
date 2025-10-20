@@ -17,6 +17,15 @@ enum PluginSortOption: String, CaseIterable {
     var displayName: String {
         return self.rawValue
     }
+
+    var systemImage: String {
+        switch self {
+        case .name: return "list.bullet"
+        case .category: return "folder.fill"
+        case .size: return "arrow.up.arrow.down"
+        case .dateModified: return "clock"
+        }
+    }
 }
 
 struct PluginInfo: Identifiable, Hashable, Equatable {
@@ -300,13 +309,14 @@ struct PluginsView: View {
                         Button {
                             sortOption = option
                         } label: {
-                            Label(option.displayName, systemImage: "list.bullet")
+                            Label(option.displayName, systemImage: option.systemImage)
                         }
                     }
                 } label: {
-                    Label(sortOption.displayName, systemImage: "list.bullet")
+                    Label(sortOption.displayName, systemImage: sortOption.systemImage)
                 }
                 .labelStyle(.titleAndIcon)
+                .menuIndicator(.hidden)
 
                 Button {
                     refreshPlugins()

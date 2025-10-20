@@ -185,7 +185,8 @@ class SparkleDetector {
                     releaseDescription: candidateItem.description,
                     releaseNotesLink: candidateItem.releaseNotesLink,
                     releaseDate: candidateItem.pubDate,
-                    isPreRelease: isPreRelease
+                    isPreRelease: isPreRelease,
+                    isIOSApp: false  // Sparkle apps are never iOS apps
                 )
             }
         } catch {

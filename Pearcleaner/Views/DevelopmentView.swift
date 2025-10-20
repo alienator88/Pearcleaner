@@ -369,9 +369,10 @@ struct EnvironmentCleanerView: View {
                         }
                     }
                 } label: {
-                    Text(appState.selectedEnvironment?.name ?? "Select Environment")
+                    Label(appState.selectedEnvironment?.name ?? "Select Environment", systemImage: "list.bullet")
                 }
                 .labelStyle(.titleAndIcon)
+                .menuIndicator(.hidden)
 
                 Button {
                     refreshPaths()

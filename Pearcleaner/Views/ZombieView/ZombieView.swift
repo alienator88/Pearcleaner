@@ -308,6 +308,7 @@ struct ZombieView: View {
                     Label(selectedSort.title, systemImage: selectedSort.systemImage)
                 }
                 .labelStyle(.titleAndIcon)
+                .menuIndicator(.hidden)
 
                 if appState.showProgress {
                     Button {

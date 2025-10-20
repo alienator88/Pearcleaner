@@ -377,6 +377,7 @@ struct LipoView: View {
                     Label(selectedSort.rawValue, systemImage: selectedSort.systemImage)
                 }
                 .labelStyle(.titleAndIcon)
+                .menuIndicator(.hidden)
 
                 Button {
                     refreshList()

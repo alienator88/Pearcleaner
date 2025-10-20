@@ -180,6 +180,15 @@ struct AppsUpdaterView: View {
                 }
                 .scrollIndicators(scrollIndicators ? .visible : .hidden)
             }
+
+                // Beta footer
+                if !updateManager.isScanning && updateManager.lastScanDate != nil {
+                    Link("While in beta, report issues with missing or incorrect updates here", destination: URL(string: "https://github.com/alienator88/Pearcleaner/issues/381")!)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                        .padding(.vertical, 8)
+                        .padding(.bottom, 4)
+                        .frame(maxWidth: .infinity)
+                }
             }
             .opacity(hiddenSidebar ? 0.5 : 1)
             .frame(maxWidth: .infinity, maxHeight: .infinity)

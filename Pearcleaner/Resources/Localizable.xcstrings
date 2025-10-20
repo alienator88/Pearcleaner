@@ -63253,6 +63253,9 @@
         }
       }
     },
+    "Update in App Store" : {
+
+    },
     "Update in progress" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -66873,6 +66876,9 @@
           }
         }
       }
+    },
+    "While in beta, report issues with missing or incorrect updates here" : {
+
     },
     "Will be disabled on %@" : {
       "localizations" : {

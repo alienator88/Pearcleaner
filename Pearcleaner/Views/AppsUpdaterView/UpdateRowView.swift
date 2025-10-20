@@ -49,8 +49,16 @@ struct UpdateRowView: View {
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
             }
         } else {
-            Button(app.source == .sparkle ? "Open to Update" : "Update") {
-                Task { await updateManager.updateApp(app) }
+            Button {
+                if app.isIOSApp, let appStoreURL = app.appStoreURL {
+                    // iOS apps: Open App Store page
+                    openInAppStore(urlString: appStoreURL)
+                } else {
+                    // Regular apps: Use CommerceKit or open to update
+                    Task { await updateManager.updateApp(app) }
+                }
+            } label: {
+                Text(app.isIOSApp ? "Update in App Store" : (app.source == .sparkle ? "Open to Update" : "Update"))
             }
             .buttonStyle(.plain)
             .foregroundStyle(.orange)
@@ -147,7 +155,7 @@ struct UpdateRowView: View {
 
                     // Version info (larger font)
                     if let availableVersion = app.availableVersion {
-                        Text(verbatim: "\(app.appInfo.appVersion) → \(availableVersion)")
+                        Text(verbatim: "\(app.appInfo.appVersion) → \(availableVersion)\(app.isIOSApp ? " (iOS apps have to be updated in the App Store)" : "")")
                             .font(.callout)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     } else if app.source == .sparkle {
