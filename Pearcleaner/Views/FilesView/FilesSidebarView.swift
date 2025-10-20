@@ -233,6 +233,7 @@ struct ExtraOptions: View {
     @State private var languageSheetWindow: NSWindow?
     @State private var availableLanguages: [LanguageInfo] = []
     @State private var selectedLanguagesToRemove: Set<String> = []
+    @State private var isLoadingLanguages: Bool = false
 
     var body: some View {
         HStack() {
@@ -293,20 +294,19 @@ struct ExtraOptions: View {
             return
         }
 
-        // Load languages in background
-        let languages = await findAvailableLanguages(in: appState.appInfo.path.path)
-
         await MainActor.run {
-            // Set initial state: no languages selected (user will select what to remove)
-            self.availableLanguages = languages
+            // Set initial loading state
+            self.isLoadingLanguages = true
+            self.availableLanguages = []
             self.selectedLanguagesToRemove = []
 
-            // Create the SwiftUI view
+            // Create the SwiftUI view with loading state
             let contentView = TranslationSelectionSheet(
                 appName: appState.appInfo.appName,
                 appPath: appState.appInfo.path.path,
-                languages: languages,
+                languages: $availableLanguages,
                 selectedLanguages: $selectedLanguagesToRemove,
+                isLoading: $isLoadingLanguages,
                 onConfirm: {
                     if let sheetWindow = self.languageSheetWindow {
                         parentWindow.endSheet(sheetWindow)
@@ -337,10 +337,19 @@ struct ExtraOptions: View {
             sheetWindow.contentViewController = hostingController
             sheetWindow.isReleasedWhenClosed = false
 
-            // Present as sheet
+            // Present as sheet (shows loading state immediately)
             parentWindow.beginSheet(sheetWindow)
 
             self.languageSheetWindow = sheetWindow
+        }
+
+        // Load languages in background
+        let languages = await findAvailableLanguages(in: appState.appInfo.path.path)
+
+        // Update with results
+        await MainActor.run {
+            self.availableLanguages = languages
+            self.isLoadingLanguages = false
         }
     }
 

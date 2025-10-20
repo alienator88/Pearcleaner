@@ -11,8 +11,9 @@ import AlinFoundation
 struct TranslationSelectionSheet: View {
     let appName: String
     let appPath: String
-    let languages: [LanguageInfo]
+    @Binding var languages: [LanguageInfo]
     @Binding var selectedLanguages: Set<String>
+    @Binding var isLoading: Bool
     let onConfirm: () -> Void
     let onCancel: () -> Void
 
@@ -46,8 +47,12 @@ struct TranslationSelectionSheet: View {
                     .font(.headline)
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
-                if languages.isEmpty {
+                if isLoading {
                     Text("Loading languages...")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                } else if languages.isEmpty {
+                    Text("No translations found")
                         .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 } else {
@@ -60,30 +65,32 @@ struct TranslationSelectionSheet: View {
 
             Divider()
 
-            // Search bar
-            HStack {
-                Image(systemName: "magnifyingglass")
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+            // Search bar (only show if not loading and has languages)
+            if !isLoading && !languages.isEmpty {
+                HStack {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
-                TextField("Filter languages...", text: $searchText)
-                    .textFieldStyle(.plain)
+                    TextField("Filter languages...", text: $searchText)
+                        .textFieldStyle(.plain)
 
-                if !searchText.isEmpty {
-                    Button {
-                        searchText = ""
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    if !searchText.isEmpty {
+                        Button {
+                            searchText = ""
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        }
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
                 }
+                .padding()
+
+                Divider()
             }
-            .padding()
 
-            Divider()
-
-            // Language list or loading state
-            if languages.isEmpty {
+            // Language list, loading state, or empty state
+            if isLoading {
                 // Loading state
                 VStack(spacing: 12) {
                     ProgressView()
@@ -91,6 +98,24 @@ struct TranslationSelectionSheet: View {
                     Text("Finding available languages...")
                         .font(.callout)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                }
+                .frame(maxWidth: .infinity, maxHeight: 400)
+                .frame(minHeight: 200)
+            } else if languages.isEmpty {
+                // Empty state - no languages found
+                VStack(spacing: 12) {
+                    Image(systemName: "exclamationmark.triangle")
+                        .font(.system(size: 48))
+                        .foregroundStyle(.orange)
+                    Text("No Translations Found")
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                    Text("This app has no removable language translation files.")
+                        .font(.callout)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 40)
                 }
                 .frame(maxWidth: .infinity, maxHeight: 400)
                 .frame(minHeight: 200)
@@ -138,32 +163,34 @@ struct TranslationSelectionSheet: View {
 
             Divider()
 
-            // Selection controls
-            HStack(spacing: 12) {
-                Button {
-                    selectAll()
-                } label: {
-                    Text("Select All")
-                        .font(.caption)
-                }
-                .buttonStyle(.borderless)
-                .disabled(allSelected || languages.isEmpty)
+            // Selection controls (only show if not loading and has languages)
+            if !isLoading && !languages.isEmpty {
+                HStack(spacing: 12) {
+                    Button {
+                        selectAll()
+                    } label: {
+                        Text("Select All")
+                            .font(.caption)
+                    }
+                    .buttonStyle(.borderless)
+                    .disabled(allSelected)
 
-                Button {
-                    deselectAll()
-                } label: {
-                    Text("Deselect All")
-                        .font(.caption)
-                }
-                .buttonStyle(.borderless)
-                .disabled(selectedLanguages.isEmpty || languages.isEmpty)
+                    Button {
+                        deselectAll()
+                    } label: {
+                        Text("Deselect All")
+                            .font(.caption)
+                    }
+                    .buttonStyle(.borderless)
+                    .disabled(selectedLanguages.isEmpty)
 
-                Spacer()
+                    Spacer()
+                }
+                .padding(.horizontal)
+                .padding(.vertical, 8)
+
+                Divider()
             }
-            .padding(.horizontal)
-            .padding(.vertical, 8)
-
-            Divider()
 
             // Bottom buttons
             HStack {
@@ -178,7 +205,7 @@ struct TranslationSelectionSheet: View {
                     onConfirm()
                 }
                 .keyboardShortcut(.defaultAction)
-                .disabled(selectedLanguages.isEmpty || languages.isEmpty)
+                .disabled(isLoading || selectedLanguages.isEmpty)
             }
             .padding()
         }

@@ -37341,6 +37341,12 @@
         }
       }
     },
+    "No translations found" : {
+
+    },
+    "No Translations Found" : {
+
+    },
     "No Update 😌" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -57551,6 +57557,9 @@
           }
         }
       }
+    },
+    "This app has no removable language translation files." : {
+
     },
     "This app is located in %@" : {
       "extractionState" : "manual",

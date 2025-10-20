@@ -386,7 +386,7 @@ func openAppSettingsWindow(tab: CurrentTabView = .general, updater: Updater) {
         .environmentObject(updater)
         .environmentObject(PermissionManager.shared)
         .frame(width: 800, height: 710)
-        .movableByWindowBackground()
+//        .movableByWindowBackground()
         .navigationTitle("")
 
     // Open using WindowManager
