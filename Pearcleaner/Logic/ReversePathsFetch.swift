@@ -206,7 +206,7 @@ class ReversePathsSearcher {
     private func isRelatedToInstalledApp(scannedItemURL: URL) -> Bool {
         let normalizedItemPath = scannedItemURL.path.pearFormat()
 
-        for (index, cached) in cachedAppIdentifiers.enumerated() {
+        for (_, cached) in cachedAppIdentifiers.enumerated() {
             if normalizedItemPath.contains(cached.formattedBundleId) ||
                 normalizedItemPath.contains(cached.formattedAppName) {
                 return true

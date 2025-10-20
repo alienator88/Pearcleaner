@@ -468,7 +468,6 @@ struct LanguageInfo: Identifiable, Hashable {
 /// - Returns: Array of LanguageInfo for all languages found (excludes Base.lproj)
 func findAvailableLanguages(in appBundlePath: String) async -> [LanguageInfo] {
     let fileManager = FileManager.default
-    let contentsPath = (appBundlePath as NSString).appendingPathComponent("Contents/Resources")
 
     // Find all .lproj folders in Resources, PlugIns, and Frameworks
     let searchPaths = ["Contents/Resources", "Contents/PlugIns", "Contents/Frameworks"]
@@ -611,9 +610,9 @@ func pruneLanguages(in appBundlePath: String, showAlert: Bool = false) async thr
 
     // Show success alert if requested (for UI-triggered pruning)
     if showAlert {
+        let removedCount = languagesToRemove.count
+        let keptCount = allLanguages.count - removedCount
         await MainActor.run {
-            let removedCount = languagesToRemove.count
-            let keptCount = allLanguages.count - removedCount
             showCustomAlert(
                 title: "Translations Pruned",
                 message: "Successfully removed \(removedCount) language\(removedCount == 1 ? "" : "s"). Kept \(keptCount) language\(keptCount == 1 ? "" : "s").",
