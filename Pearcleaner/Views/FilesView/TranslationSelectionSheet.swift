@@ -107,7 +107,7 @@ struct TranslationSelectionSheet: View {
                     Image(systemName: "exclamationmark.triangle")
                         .font(.system(size: 48))
                         .foregroundStyle(.orange)
-                    Text("No Translations Found")
+                    Text("No translations found")
                         .font(.title3)
                         .fontWeight(.semibold)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
@@ -137,7 +137,7 @@ struct TranslationSelectionSheet: View {
                                         .font(.callout)
                                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
-                                    Text("(\(language.code))")
+                                    Text(verbatim: "(\(language.code))")
                                         .font(.caption2)
                                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
