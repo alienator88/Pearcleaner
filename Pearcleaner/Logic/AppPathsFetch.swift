@@ -331,7 +331,15 @@ class AppPathFinder {
 
         let appName = self.appInfo.appName
         let bundleID = self.appInfo.bundleIdentifier
-        query.predicate = NSPredicate(format: "kMDItemDisplayName CONTAINS[cd] %@ OR kMDItemPath CONTAINS[cd] %@", appName, bundleID)
+
+        // Build predicate based on sensitivity level
+        if self.effectiveSensitivityLevel == .enhanced {
+            // Enhanced: Use exact match in Spotlight query for efficiency
+            query.predicate = NSPredicate(format: "kMDItemDisplayName ==[cd] %@ OR kMDItemDisplayName ==[cd] %@ OR kMDItemPath CONTAINS[cd] %@", appName, bundleID, bundleID)
+        } else {
+            // Broad: Use partial match (cast wide net)
+            query.predicate = NSPredicate(format: "kMDItemDisplayName CONTAINS[cd] %@ OR kMDItemPath CONTAINS[cd] %@", appName, bundleID)
+        }
         query.searchScopes = [NSMetadataQueryUserHomeScope]
 
         let finishedNotification = NotificationCenter.default.addObserver(forName: .NSMetadataQueryDidFinishGathering, object: query, queue: nil) { _ in
@@ -342,7 +350,9 @@ class AppPathFinder {
             }.compactMap {
                 URL(fileURLWithPath: $0 as! String)
             }
-            if self.effectiveSensitivityLevel == .strict || self.effectiveSensitivityLevel == .enhanced {
+
+            // Enhanced mode: Post-filter to ensure exact filename matches
+            if self.effectiveSensitivityLevel == .enhanced {
                 let nameFormatted = appName.pearFormat()
                 let bundleFormatted = bundleID.pearFormat()
                 results = results.filter { url in
@@ -350,6 +360,7 @@ class AppPathFinder {
                     return pathFormatted == nameFormatted || pathFormatted == bundleFormatted
                 }
             }
+            // Broad mode: Keep all Spotlight results (no post-filtering)
             CFRunLoopStop(CFRunLoopGetCurrent())
         }
 
@@ -362,7 +373,6 @@ class AppPathFinder {
         CFRunLoopRun()
 
         NotificationCenter.default.removeObserver(finishedNotification)
-
         return results
     }
 
