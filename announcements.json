@@ -1,13 +1,4 @@
 {
-   "10.0.0": {
-    "features": [
-      "Privileged Helper Service: Pearcleaner now supports using a privileged helper service to perform operations that require administrative permissions. This will eventually replace the current mechanism which uses Authorization Services as it's deprecated by Apple. More information in Settings > Helper tab.",
-      "App Lipo: There's a new Lipo(beta) view available in the menu which will show all universal apps and strip the app binary of the unused architectures to save some space. Universal apps will also show a Lipo button on the App Details view next to the Uninstall button to perform the same procedure on each app individually."
-    ],
-    "caveats": [
-        "Testing"
-    ]
-  },
   "4.4.0": {
     "features": [
       "Privileged Helper Service: Pearcleaner now supports using a privileged helper service to perform operations that require administrative permissions. This will eventually replace the current mechanism which uses Authorization Services as it's deprecated by Apple. More information in Settings > Helper tab.",
