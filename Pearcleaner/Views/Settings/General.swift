@@ -24,8 +24,10 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.spotlight") private var spotlight = false
     @AppStorage("settings.general.permanentDelete") private var permanentDelete: Bool = false
     @AppStorage("settings.general.searchSensitivity") private var sensitivityLevel: SearchSensitivityLevel = .smart
+    @AppStorage("settings.general.deepLevelAlertShown") private var deepLevelAlertShown: Bool = false
     @AppStorage("settings.app.autoSlim") private var autoSlim: Bool = false
     @State private var showAppIconInMenu = UserDefaults.showAppIconInMenu
+    @State private var showDeepAlert: Bool = false
 
     var body: some View {
         VStack(spacing: 20) {
@@ -236,9 +238,22 @@ struct GeneralSettingsTab: View {
                             get: { Double(sensitivityLevel.rawValue) },
                             set: { sensitivityLevel = SearchSensitivityLevel(rawValue: Int($0)) ?? .strict }
                         ), in: 0...Double(SearchSensitivityLevel.allCases.count - 1), step: 1)
+                        .tint(sensitivityLevel.color)
+                        .onChange(of: sensitivityLevel) { newLevel in
+                            if newLevel == .deep && !deepLevelAlertShown {
+                                showDeepAlert = true
+                            }
+                        }
                         Text("Most files").textCase(.uppercase).font(.caption2).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }
                     .padding(5)
+                    .alert("Deep Search Level", isPresented: $showDeepAlert) {
+                        Button("OK") {
+                            deepLevelAlertShown = true
+                        }
+                    } message: {
+                        Text(SearchSensitivityLevel.deep.description)
+                    }
 
 
                 })

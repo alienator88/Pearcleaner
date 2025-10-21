@@ -940,7 +940,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
 				MARKETING_VERSION = "$(APP_VERSION)";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
@@ -994,7 +994,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
 				MARKETING_VERSION = "$(APP_VERSION)";
 				OTHER_LDFLAGS = "";
 				OTHER_SWIFT_FLAGS = "-Xcc -fmodule-map-file=/Users/alin/GitHub/PearcleanerGH/Pearcleaner/Logic/AppsUpdater/PrivateFrameworks/CommerceKit/module.modulemap -Xcc -fmodule-map-file=/Users/alin/GitHub/PearcleanerGH/Pearcleaner/Logic/AppsUpdater/PrivateFrameworks/StoreFoundation/module.modulemap";

@@ -28,7 +28,6 @@ struct MainWindow: View {
     @State private var showUsr: Bool = true
     @State private var showMenu = false
     @State private var isFullscreen = false
-    @State private var isMenuOpen = false
 
     // Badges
     @State private var showUpdateView = false
@@ -132,46 +131,37 @@ struct MainWindow: View {
             TahoeToolbarItem(placement: .navigation, isGroup: true) {
 
                 // Page Selector
-                CustomMenuDropdown(
-                    isOpen: $isMenuOpen,
-                    selectedItem: $appState.currentPage,
-                    items: CurrentPage.availablePages,
-                    spacing: 10
-                ) {
-                    // Button label
-                    Image(systemName: appState.currentPage.icon)
-                } itemContent: { page, isSelected in
-                    // Menu item content
-                    HStack(spacing: 12) {
-                        // Checkbox (matches PluginsView style)
-                        Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                            .foregroundStyle(isSelected
-                                ? ThemeColors.shared(for: colorScheme).accent
-                                : .clear)
-                            .font(.title3)
+                Menu {
+                    ForEach(CurrentPage.availablePages, id: \.self) { page in
+                        Button {
+                            // Animate only the page content transition
+                            withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
+                                // Reset appInfo when changing pages
+                                if page == .applications {
+                                    appState.appInfo = .empty
+                                    appState.currentView = .empty
+                                }
+                            }
 
-                        // Page icon
-                        Image(systemName: page.icon)
-                            .font(.body)
+                            // Change page immediately (no animation on toolbar icon)
+                            appState.currentPage = page
 
-                        // Page title
-                        Text(page.title)
-                            .font(.body)
-                    }
-                }
-                .onChange(of: appState.currentPage) { newPage in
-                    // Animate only the page content transition
-                    withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
-                        // Reset appInfo when changing pages
-                        if newPage == .applications {
-                            appState.appInfo = .empty
-                            appState.currentView = .empty
+                            // Hide tutorial when user interacts with menu
+                            tutorialShown = false
+                        } label: {
+                            HStack(spacing: 8) {
+                                Image(systemName: page.icon)
+                                    .frame(width: 16)
+                                Text(page.title)
+                            }
                         }
                     }
-
-                    // Hide tutorial when user interacts with menu
-                    tutorialShown = false
+                } label: {
+                    HStack {
+                        Image(systemName: appState.currentPage.icon)
+                    }
                 }
+                .menuIndicator(.hidden)
 
                 if tutorialShown {
                     HStack {
@@ -239,7 +229,7 @@ struct MainWindow: View {
                         color: .orange,
                         help: "Helper Not Installed"
                     ) {
-                        openAppSettingsWindow(tab: .helper, updater: updater)
+                        openAppSettingsWindow(tab: .general, updater: updater)
                     }
                 }
 

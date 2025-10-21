@@ -823,8 +823,7 @@ struct SearchResultRowView: View {
                         if isCask {
                             let folderPaths = FolderSettingsManager.shared.folderPaths
                             flushBundleCaches(for: AppState.shared.sortedApps)
-                            loadApps(folderPaths: folderPaths)
-                            try? await Task.sleep(nanoseconds: 500_000_000)
+                            await loadAppsAsync(folderPaths: folderPaths)
                         }
                     } catch {
                         printOS("Error installing package \(result.name): \(error)")
@@ -849,8 +848,7 @@ struct SearchResultRowView: View {
                         if isCask {
                             let folderPaths = FolderSettingsManager.shared.folderPaths
                             flushBundleCaches(for: AppState.shared.sortedApps)
-                            loadApps(folderPaths: folderPaths)
-                            try? await Task.sleep(nanoseconds: 500_000_000)
+                            await loadAppsAsync(folderPaths: folderPaths)
                         }
                     } catch {
                         printOS("Error updating package \(result.name): \(error)")
@@ -878,8 +876,7 @@ struct SearchResultRowView: View {
                             // Refresh AppState.sortedApps to remove uninstalled app (casks only)
                             let folderPaths = FolderSettingsManager.shared.folderPaths
                             flushBundleCaches(for: AppState.shared.sortedApps)
-                            loadApps(folderPaths: folderPaths)
-                            try? await Task.sleep(nanoseconds: 500_000_000)
+                            await loadAppsAsync(folderPaths: folderPaths)
                         } else {
                             brewManager.installedFormulae.removeAll { $0.name == result.name || $0.name == shortName }
                         }
@@ -2512,8 +2509,7 @@ struct InstallButtonSection: View {
                         if isCask {
                             let folderPaths = FolderSettingsManager.shared.folderPaths
                             flushBundleCaches(for: AppState.shared.sortedApps)
-                            loadApps(folderPaths: folderPaths)
-                            try? await Task.sleep(nanoseconds: 500_000_000)
+                            await loadAppsAsync(folderPaths: folderPaths)
                         }
                     } catch {
                         printOS("Error installing package \(packageName): \(error)")

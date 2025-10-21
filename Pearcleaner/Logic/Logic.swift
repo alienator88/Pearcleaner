@@ -54,6 +54,20 @@ func loadApps(folderPaths: [String]) {
     }
 }
 
+// Awaitable version that waits for apps to finish loading
+func loadAppsAsync(folderPaths: [String]) async {
+    // Load apps on background thread
+    let apps = await Task.detached(priority: .userInitiated) {
+        getSortedApps(paths: folderPaths)
+    }.value
+
+    // Update AppState on MainActor
+    await MainActor.run {
+        AppState.shared.sortedApps = apps
+        AppState.shared.restoreZombieAssociations()
+    }
+}
+
 
 // Get all apps from /Applications and ~/Applications
 func getSortedApps(paths: [String]) -> [AppInfo] {

@@ -41,10 +41,22 @@ struct AppSearchView: View {
                     .padding()
                     .padding(.top, 20)
 
-                AppsListView(
-                    search: $search, filteredApps: filteredApps, isGridMode: appState.isGridMode
-                )
-                .padding([.bottom, .horizontal], 5)
+                if !filteredApps.isEmpty {
+                    AppsListView(
+                        search: $search, filteredApps: filteredApps, isGridMode: appState.isGridMode
+                    )
+                    .padding([.bottom, .horizontal], 5)
+                } else {
+                    VStack {
+                        Spacer()
+                        Text("No results")
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            .font(.title2)
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+
 
             }
         }

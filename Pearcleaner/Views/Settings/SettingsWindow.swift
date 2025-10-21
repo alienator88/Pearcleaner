@@ -153,7 +153,7 @@ struct SidebarItemView: View {
                 .font(.system(size: 14, weight: .regular))
                 .foregroundStyle(isSelected ? ThemeColors.shared(for: colorScheme).primaryText : ThemeColors.shared(for: colorScheme).secondaryText)
             if !HelperToolManager.shared.isHelperToolInstalled && title.lowercased().contains("helper") {
-                Image(systemName: "exclamationmark.triangle.fill")
+                Image(systemName: "exclamationmark.triangle")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .foregroundStyle(.orange)

@@ -217,7 +217,7 @@ struct LipoOptionsSection: View {
             } label: {
                 Label("Options", systemImage: "ellipsis.circle")
             }
-            .menuStyle(.borderlessButton)
+            .menuStyle(.borderedButton)
             .menuIndicator(.hidden)
             .fixedSize()
 

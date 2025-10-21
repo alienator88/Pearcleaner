@@ -106,10 +106,7 @@ class UpdateManager: ObservableObject {
 
         // Flush bundle caches and reload apps from disk
         flushBundleCaches(for: AppState.shared.sortedApps)
-        loadApps(folderPaths: folderPaths)
-
-        // Wait for apps to finish loading (500ms should be sufficient)
-        try? await Task.sleep(nanoseconds: 500_000_000)
+        await loadAppsAsync(folderPaths: folderPaths)
 
         // Get freshly loaded apps from AppState
         let apps = AppState.shared.sortedApps
@@ -334,9 +331,6 @@ class UpdateManager: ObservableObject {
 
         // Flush bundle caches before reloading to ensure fresh version info
         flushBundleCaches(for: AppState.shared.sortedApps)
-        loadApps(folderPaths: folderPaths)
-
-        // Wait for apps to load
-        try? await Task.sleep(nanoseconds: 500_000_000)
+        await loadAppsAsync(folderPaths: folderPaths)
     }
 }
