@@ -50,6 +50,9 @@ struct UpdateSettingsTab: View {
                     Label("Announcement", systemImage: "star")
                 }
                     .buttonStyle(ControlGroupButtonStyle(foregroundColor: ThemeColors.shared(for: colorScheme).primaryText, shape: .capsule))
+                    .sheet(isPresented: $updater.showAnnouncementSheet, content: {
+                        updater.getAnnouncementView()
+                    })
 
 
                 Button {
