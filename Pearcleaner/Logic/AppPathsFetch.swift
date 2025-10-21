@@ -16,7 +16,7 @@ class AppPathFinder {
     private var locations: Locations
     private var containerCollection: [URL] = []
     private let collectionAccessQueue = DispatchQueue(label: "com.alienator88.Pearcleaner.appPathFinder.collectionAccess")
-    @AppStorage("settings.general.searchSensitivity") private var sensitivityLevel: SearchSensitivityLevel = .strict
+    @AppStorage("settings.general.searchSensitivity") private var sensitivityLevel: SearchSensitivityLevel = .smart
     
     // Optional override sensitivity level for per-app settings
     private var overrideSensitivityLevel: SearchSensitivityLevel?
@@ -252,7 +252,7 @@ class AppPathFinder {
             return normalizedItemName.contains(cached.formattedBundleId)
         }
         let bundleMatch = normalizedItemName.contains(cached.formattedBundleId) || normalizedItemName.contains(cached.bundleLastTwoComponents)
-        let sensitivity = effectiveSensitivityLevel == .strict || effectiveSensitivityLevel == .enhanced
+        let sensitivity = effectiveSensitivityLevel == .strict
 
         // Prevent false matches when cached values are empty strings
         let appNameMatch = !cached.formattedAppName.isEmpty && (sensitivity ? normalizedItemName == cached.formattedAppName : normalizedItemName.contains(cached.formattedAppName))
@@ -322,7 +322,7 @@ class AppPathFinder {
 
     // Check spotlight index for leftovers missed by manual search
     private func spotlightSupplementalPaths() -> [URL] {
-        guard effectiveSensitivityLevel == .enhanced || effectiveSensitivityLevel == .broad else { return [] }
+        // Spotlight enabled for all levels (always-on supplemental search)
         updateOnMain {
             self.appState?.progressStep = 1
         }
@@ -333,13 +333,51 @@ class AppPathFinder {
         let bundleID = self.appInfo.bundleIdentifier
 
         // Build predicate based on sensitivity level
-        if self.effectiveSensitivityLevel == .enhanced {
-            // Enhanced: Use exact match in Spotlight query for efficiency
-            query.predicate = NSPredicate(format: "kMDItemDisplayName ==[cd] %@ OR kMDItemDisplayName ==[cd] %@ OR kMDItemPath CONTAINS[cd] %@", appName, bundleID, bundleID)
-        } else {
-            // Broad: Use partial match (cast wide net)
-            query.predicate = NSPredicate(format: "kMDItemDisplayName CONTAINS[cd] %@ OR kMDItemPath CONTAINS[cd] %@", appName, bundleID)
+        switch self.effectiveSensitivityLevel {
+        case .strict:
+            // Strict: Only exact filename matches
+            query.predicate = NSPredicate(format:
+                "kMDItemDisplayName ==[cd] %@ OR kMDItemDisplayName ==[cd] %@",
+                appName, bundleID)
+
+        case .smart:
+            // Smart: Partial matching in name and path
+            query.predicate = NSPredicate(format:
+                "kMDItemDisplayName CONTAINS[cd] %@ OR kMDItemPath CONTAINS[cd] %@",
+                appName, bundleID)
+
+        case .deep:
+            // Deep: Fuzzy search with metadata and AND logic for multi-word names
+            var subpredicates: [NSPredicate] = [
+                NSPredicate(format: "kMDItemDisplayName CONTAINS[cd] %@", appName),
+                NSPredicate(format: "kMDItemPath CONTAINS[cd] %@", bundleID),
+                NSPredicate(format: "kMDItemTextContent CONTAINS[cd] %@", appName),
+                NSPredicate(format: "kMDItemComment CONTAINS[cd] %@", appName),
+                NSPredicate(format: "kMDItemCreator ==[cd] %@", bundleID)
+            ]
+
+            // Add wildcard predicate: ALL name parts must be present (AND logic)
+            let nameParts = appName.split(separator: " ")
+            if nameParts.count > 1 {
+                // For multi-word names: each part must appear in display name OR path
+                let partPredicates = nameParts.map { part in
+                    NSCompoundPredicate(orPredicateWithSubpredicates: [
+                        NSPredicate(format: "kMDItemDisplayName LIKE[cd] %@", "*\(part)*"),
+                        NSPredicate(format: "kMDItemPath LIKE[cd] %@", "*\(part)*")
+                    ])
+                }
+                // All parts must be present (AND)
+                let allPartsPresent = NSCompoundPredicate(andPredicateWithSubpredicates: partPredicates)
+                subpredicates.append(allPartsPresent)
+            } else {
+                // Single word: just add LIKE for that word
+                subpredicates.append(NSPredicate(format: "kMDItemDisplayName LIKE[cd] %@", "*\(appName)*"))
+            }
+
+            // Combine all conditions with OR (any match wins)
+            query.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: subpredicates)
         }
+
         query.searchScopes = [NSMetadataQueryUserHomeScope]
 
         let finishedNotification = NotificationCenter.default.addObserver(forName: .NSMetadataQueryDidFinishGathering, object: query, queue: nil) { _ in
@@ -351,8 +389,8 @@ class AppPathFinder {
                 URL(fileURLWithPath: $0 as! String)
             }
 
-            // Enhanced mode: Post-filter to ensure exact filename matches
-            if self.effectiveSensitivityLevel == .enhanced {
+            // Post-filter: Only for Strict level
+            if self.effectiveSensitivityLevel == .strict {
                 let nameFormatted = appName.pearFormat()
                 let bundleFormatted = bundleID.pearFormat()
                 results = results.filter { url in
@@ -360,7 +398,8 @@ class AppPathFinder {
                     return pathFormatted == nameFormatted || pathFormatted == bundleFormatted
                 }
             }
-            // Broad mode: Keep all Spotlight results (no post-filtering)
+            // Smart and Deep: No post-filter, trust the Spotlight query results
+
             CFRunLoopStop(CFRunLoopGetCurrent())
         }
 

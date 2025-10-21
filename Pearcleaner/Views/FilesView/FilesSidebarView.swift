@@ -124,8 +124,8 @@ struct AppDetails: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
     @Environment(\.colorScheme) var colorScheme
-    @AppStorage("settings.general.searchSensitivity") private var globalSensitivityLevel: SearchSensitivityLevel = .strict
-    @State private var localSensitivityLevel: SearchSensitivityLevel = .strict
+    @AppStorage("settings.general.searchSensitivity") private var globalSensitivityLevel: SearchSensitivityLevel = .smart
+    @State private var localSensitivityLevel: SearchSensitivityLevel = .smart
     @State private var isSliderActive: Bool = false
 
     var body: some View {
