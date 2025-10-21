@@ -1,10 +1,73 @@
 {
-    "4.4.0": "- Privileged Helper Service: Pearcleaner now supports using a privileged helper service to perform operations that require administrative permissions. This will eventually replace the current mechanism which uses Authorization Services as it's deprecated by Apple. More information in Settings > Helper tab.|- App Lipo: There's a new Lipo(beta) view available in the menu which will show all universal apps and strip the app binary of the unused architectures to save some space. Universal apps will also show a Lipo button on the App Details view next to the Uninstall button to perform the same procedure on each app individually.",
-    "3.9.2": "- Multilingual Support: If you would like to help translate Pearcleaner to your language, please see GitHub issue #83",
-    "3.7.0": "- App List Size Sorting: You can now sort the sidebar app list alphabetically or by descending size. Click the User/System header to toggle or from the searchbar menu|- Leftover Files: On first use, a warning/explanation sheet will be presented to the user",
-    "3.5.0": "- Finder Extension: When enabled, you can right click an app in finder and uninstall with Pearcleaner directly|- Theme System: You can now select a base theme color for the application window",
-    "3.3.0": "- Folder Settings: Add more directories where Pearcleaner should search for app files|- Progress: Show progress bar on startup when loading all app files with instant search enabled|- App Icon: Show background color behind app icons in FilesView based on icon's average color mapping|- Progress: Show time counter on regular file search views",
-    "3.2.0": "- Menubar Item: You can choose to access Pearcleaner from the menubar. This will show a slightly modified Mini Mode view.",
-    "3.1.0": "- Homebrew Cleanup: If you install apps using brew, you can now enable Homebrew cleanup in the settings to have Pearcleaner alert Homebrew that the app was removed externally from Homebrew and keep the brew app list synced.",
-    "3.0.0": "- Instant Search: Enable in settings to load app files on startup|- Semantic Versioning: Going forward will use semver (Ex. v0.0.0)|-Feature Alert: For each version, a feature alert will popup once on startup to show details|- Leftover File Cleaning: Search your Mac for files leftover by uninstalled apps|- Sidebar Drag Handle: Resize the sidebar in regular mode|- Redesign UI/Settings/Icon: Some new buttons, layout changes, new official app icon and pear color theme accents|- File Sort: Sort files alphabetically or by size|- Socket File Removal: Finds socket files that aren't even visible in Finder with show hidden files enabled|- OSLog Output: Will print errors to the Console app for easier troubleshooting"
+   "10.0.0": {
+    "features": [
+      "Privileged Helper Service: Pearcleaner now supports using a privileged helper service to perform operations that require administrative permissions. This will eventually replace the current mechanism which uses Authorization Services as it's deprecated by Apple. More information in Settings > Helper tab.",
+      "App Lipo: There's a new Lipo(beta) view available in the menu which will show all universal apps and strip the app binary of the unused architectures to save some space. Universal apps will also show a Lipo button on the App Details view next to the Uninstall button to perform the same procedure on each app individually."
+    ],
+    "caveats": [
+        "Testing"
+    ]
+  }
+  "4.4.0": {
+    "features": [
+      "Privileged Helper Service: Pearcleaner now supports using a privileged helper service to perform operations that require administrative permissions. This will eventually replace the current mechanism which uses Authorization Services as it's deprecated by Apple. More information in Settings > Helper tab.",
+      "App Lipo: There's a new Lipo(beta) view available in the menu which will show all universal apps and strip the app binary of the unused architectures to save some space. Universal apps will also show a Lipo button on the App Details view next to the Uninstall button to perform the same procedure on each app individually."
+    ],
+    "caveats": []
+  },
+  "3.9.2": {
+    "features": [
+      "Multilingual Support: If you would like to help translate Pearcleaner to your language, please see GitHub issue #83"
+    ],
+    "caveats": []
+  },
+  "3.7.0": {
+    "features": [
+      "App List Size Sorting: You can now sort the sidebar app list alphabetically or by descending size. Click the User/System header to toggle or from the searchbar menu",
+      "Leftover Files: On first use, a warning/explanation sheet will be presented to the user"
+    ],
+    "caveats": []
+  },
+  "3.5.0": {
+    "features": [
+      "Finder Extension: When enabled, you can right click an app in finder and uninstall with Pearcleaner directly",
+      "Theme System: You can now select a base theme color for the application window"
+    ],
+    "caveats": []
+  },
+  "3.3.0": {
+    "features": [
+      "Folder Settings: Add more directories where Pearcleaner should search for app files",
+      "Progress: Show progress bar on startup when loading all app files with instant search enabled",
+      "App Icon: Show background color behind app icons in FilesView based on icon's average color mapping",
+      "Progress: Show time counter on regular file search views"
+    ],
+    "caveats": []
+  },
+  "3.2.0": {
+    "features": [
+      "Menubar Item: You can choose to access Pearcleaner from the menubar. This will show a slightly modified Mini Mode view."
+    ],
+    "caveats": []
+  },
+  "3.1.0": {
+    "features": [
+      "Homebrew Cleanup: If you install apps using brew, you can now enable Homebrew cleanup in the settings to have Pearcleaner alert Homebrew that the app was removed externally from Homebrew and keep the brew app list synced."
+    ],
+    "caveats": []
+  },
+  "3.0.0": {
+    "features": [
+      "Instant Search: Enable in settings to load app files on startup",
+      "Semantic Versioning: Going forward will use semver (Ex. v0.0.0)",
+      "Feature Alert: For each version, a feature alert will popup once on startup to show details",
+      "Leftover File Cleaning: Search your Mac for files leftover by uninstalled apps",
+      "Sidebar Drag Handle: Resize the sidebar in regular mode",
+      "Redesign UI/Settings/Icon: Some new buttons, layout changes, new official app icon and pear color theme accents",
+      "File Sort: Sort files alphabetically or by size",
+      "Socket File Removal: Finds socket files that aren't even visible in Finder with show hidden files enabled",
+      "OSLog Output: Will print errors to the Console app for easier troubleshooting"
+    ],
+    "caveats": []
+  }
 }
