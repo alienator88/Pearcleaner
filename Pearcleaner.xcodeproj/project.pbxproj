@@ -40,7 +40,6 @@
 		C7BB99292E8AF1CB007BBB81 /* PluginsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BB99282E8AF1CB007BBB81 /* PluginsView.swift */; };
 		C7BB992F2E8B225F007BBB81 /* FileSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BB992E2E8B225F007BBB81 /* FileSearchView.swift */; };
 		C7BE91A82C9E37AB009FA129 /* FinderOpen.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C78121632BC892A000BE06BD /* FinderOpen.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		C7C05FED2E8DA27F006D0476 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = C7C05FEC2E8DA27F006D0476 /* SwiftyJSON */; };
 		C7C693D32E9D51EA0081CF25 /* PermissionsSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C693D22E9D51EA0081CF25 /* PermissionsSheetView.swift */; };
 		C7C90DD32DA81C5D0056769A /* Lipo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C90DD22DA81C590056769A /* Lipo.swift */; };
 		C7CC10E42E94734E0057B7E2 /* ProcessEnv.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7CC10E32E9473480057B7E2 /* ProcessEnv.swift */; };
@@ -260,7 +259,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C7DD93952EA1519F00C457BF /* SemanticVersion in Frameworks */,
-				C7C05FED2E8DA27F006D0476 /* SwiftyJSON in Frameworks */,
 				C74E55512D0773190007EC2C /* IfritStatic in Frameworks */,
 				C76EDCD62C45DC82000CF29D /* AlinFoundation in Frameworks */,
 				C7A2A4D92DDB95C4006E05E4 /* ArgumentParser in Frameworks */,
@@ -490,7 +488,6 @@
 				C7736E4E2C49A44200917293 /* AlinFoundation */,
 				C74E55502D0773190007EC2C /* IfritStatic */,
 				C7A2A4D82DDB95C4006E05E4 /* ArgumentParser */,
-				C7C05FEC2E8DA27F006D0476 /* SwiftyJSON */,
 				C7DD93942EA1519F00C457BF /* SemanticVersion */,
 			);
 			productName = PeakPurge;
@@ -568,7 +565,6 @@
 				C7736E4D2C49A44200917293 /* XCRemoteSwiftPackageReference "AlinFoundation" */,
 				C74E554D2D0773190007EC2C /* XCRemoteSwiftPackageReference "Ifrit" */,
 				C7A2A4D72DDB95C4006E05E4 /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
-				C7C05FEB2E8DA27F006D0476 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
 				C7DD93932EA1519F00C457BF /* XCRemoteSwiftPackageReference "SemanticVersion" */,
 			);
 			preferredProjectObjectVersion = 56;
@@ -1164,14 +1160,6 @@
 				minimumVersion = 1.5.0;
 			};
 		};
-		C7C05FEB2E8DA27F006D0476 /* XCRemoteSwiftPackageReference "SwiftyJSON" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftyJSON/SwiftyJSON.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.0.2;
-			};
-		};
 		C7DD93932EA1519F00C457BF /* XCRemoteSwiftPackageReference "SemanticVersion" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SwiftPackageIndex/SemanticVersion";
@@ -1201,11 +1189,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C7A2A4D72DDB95C4006E05E4 /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
 			productName = ArgumentParser;
-		};
-		C7C05FEC2E8DA27F006D0476 /* SwiftyJSON */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C7C05FEB2E8DA27F006D0476 /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
-			productName = SwiftyJSON;
 		};
 		C7C90DDD2DA8221B0056769A /* AlinFoundation */ = {
 			isa = XCSwiftPackageProductDependency;

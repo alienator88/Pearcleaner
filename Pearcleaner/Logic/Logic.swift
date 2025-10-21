@@ -9,7 +9,6 @@ import AlinFoundation
 import Foundation
 import ServiceManagement
 import SwiftUI
-import SwiftyJSON
 import UniformTypeIdentifiers
 
 
@@ -788,13 +787,15 @@ private func buildCaskLookupTable() -> [String: String] {
             // Try to read INSTALL_RECEIPT.json for fast lookup
             if let receiptData = try? Data(contentsOf: URL(fileURLWithPath: receiptPath)) {
                 do {
-                    let json = try JSON(data: receiptData)
+                    guard let json = try JSONSerialization.jsonObject(with: receiptData) as? [String: Any] else {
+                        throw NSError(domain: "JSONParse", code: 1, userInfo: nil)
+                    }
 
                     // Find "app" artifact in uninstall_artifacts array
-                    for artifact in json["uninstall_artifacts"].arrayValue {
-                        if let apps = artifact["app"].array {
-                            for appName in apps {
-                                if let appStr = appName.string {
+                    if let artifacts = json["uninstall_artifacts"] as? [[String: Any]] {
+                        for artifact in artifacts {
+                            if let apps = artifact["app"] as? [String] {
+                                for appStr in apps {
                                     let realAppName = appStr.replacingOccurrences(of: ".app", with: "").lowercased()
                                     appToCask[realAppName] = cask
                                 }

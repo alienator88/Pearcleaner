@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftyJSON
 import AlinFoundation
 import ServiceManagement
 
@@ -23,7 +22,7 @@ class HomebrewUninstaller {
     func uninstallPackage(name: String, cask: Bool, zap: Bool = true) async throws {
         if cask {
             // Try loading from INSTALL_RECEIPT.json first (instant)
-            let caskInfo: JSON
+            let caskInfo: [String: Any]
             do {
                 caskInfo = try loadCaskInfoFromReceipt(name: name)
             } catch {
@@ -35,8 +34,9 @@ class HomebrewUninstaller {
                     throw HomebrewError.jsonParseError
                 }
 
-                let json = try JSON(data: jsonData)
-                guard let info = json["casks"].arrayValue.first else {
+                guard let json = try JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
+                      let casks = json["casks"] as? [[String: Any]],
+                      let info = casks.first else {
                     throw HomebrewError.commandFailed("Cask \(name) not found")
                 }
                 caskInfo = info
@@ -44,7 +44,7 @@ class HomebrewUninstaller {
             try await uninstallCask(name: name, info: caskInfo, zap: zap)
         } else {
             // Formulae don't need info JSON - brew uninstall handles everything
-            try await uninstallFormula(name: name, info: JSON())
+            try await uninstallFormula(name: name, info: [:])
         }
 
         // Run brew cleanup in background without blocking
@@ -57,7 +57,7 @@ class HomebrewUninstaller {
 
     /// Load cask info from INSTALL_RECEIPT.json (instant, no brew command needed)
     /// Converts receipt format to brew info format for compatibility with uninstallCask()
-    private func loadCaskInfoFromReceipt(name: String) throws -> JSON {
+    private func loadCaskInfoFromReceipt(name: String) throws -> [String: Any] {
         let receiptPath = "\(brewPrefix)/Caskroom/\(name)/.metadata/INSTALL_RECEIPT.json"
 
         guard FileManager.default.fileExists(atPath: receiptPath) else {
@@ -65,11 +65,13 @@ class HomebrewUninstaller {
         }
 
         let data = try Data(contentsOf: URL(fileURLWithPath: receiptPath))
-        let receipt = try JSON(data: data)
+        guard let receipt = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            throw HomebrewError.jsonParseError
+        }
 
         // Convert INSTALL_RECEIPT format to brew info format
-        var caskInfo = JSON()
-        caskInfo["token"] = JSON(name)
+        var caskInfo: [String: Any] = [:]
+        caskInfo["token"] = name
         caskInfo["artifacts"] = receipt["uninstall_artifacts"]
 
         return caskInfo
@@ -77,8 +79,9 @@ class HomebrewUninstaller {
 
     // MARK: - Cask Uninstall
 
-    private func uninstallCask(name: String, info: JSON, zap: Bool) async throws {
-        let token = info["token"].stringValue
+    private func uninstallCask(name: String, info: [String: Any], zap: Bool) async throws {
+        let token = info["token"] as? String ?? name
+        var filesToDelete: [URL] = []
 
         // Collect all process names and services to kill
         var processNamesToKill: Set<String> = []
@@ -86,10 +89,10 @@ class HomebrewUninstaller {
         var appName: String?
 
         // Process artifacts (includes uninstall directives and app info)
-        if let artifacts = info["artifacts"].array {
+        if let artifacts = info["artifacts"] as? [[String: Any]] {
             // Collect app name for process killing
             for artifact in artifacts {
-                if let appArray = artifact["app"].array, let app = appArray.first?.stringValue {
+                if let appArray = artifact["app"] as? [String], let app = appArray.first {
                     appName = app.replacingOccurrences(of: ".app", with: "")
                     processNamesToKill.insert(appName!)
                 }
@@ -97,30 +100,32 @@ class HomebrewUninstaller {
 
             // Collect quit and launchctl names from uninstall directives
             for artifact in artifacts {
-                if let uninstallDirectives = artifact["uninstall"].array {
+                if let uninstallDirectives = artifact["uninstall"] as? [[String: Any]] {
                     for directive in uninstallDirectives {
-                        if let quit = directive["quit"].string {
+                        if let quit = directive["quit"] as? String {
                             processNamesToKill.insert(quit)
                         }
-                        if let launchctl = directive["launchctl"].string {
+                        if let launchctl = directive["launchctl"] as? String {
                             serviceNamesToKill.insert(launchctl)
                         }
                     }
                 }
             }
 
-            // First pass: Process uninstall directives
+            // First pass: Process service/script directives and collect file paths
             for artifact in artifacts {
-                if let uninstallDirectives = artifact["uninstall"].array, !uninstallDirectives.isEmpty {
-                    try await processCaskUninstallDirectives(uninstallDirectives, caskName: token, allProcessNames: processNamesToKill, allServiceNames: serviceNamesToKill)
+                if let uninstallDirectives = artifact["uninstall"] as? [[String: Any]], !uninstallDirectives.isEmpty {
+                    let files = try await processCaskUninstallDirectives(uninstallDirectives, caskName: token, allProcessNames: processNamesToKill, allServiceNames: serviceNamesToKill)
+                    filesToDelete.append(contentsOf: files)
                 }
             }
 
             // Process zap directives if requested
             if zap {
                 for artifact in artifacts {
-                    if let zapDirectives = artifact["zap"].array, !zapDirectives.isEmpty {
-                        try await processCaskUninstallDirectives(zapDirectives, caskName: token, allProcessNames: processNamesToKill, allServiceNames: serviceNamesToKill)
+                    if let zapDirectives = artifact["zap"] as? [[String: Any]], !zapDirectives.isEmpty {
+                        let files = try await processCaskUninstallDirectives(zapDirectives, caskName: token, allProcessNames: processNamesToKill, allServiceNames: serviceNamesToKill)
+                        filesToDelete.append(contentsOf: files)
                     }
                 }
             }
@@ -130,114 +135,142 @@ class HomebrewUninstaller {
                 try await runPrivilegedCommand("pkill -9 -f '\(processName)' 2>/dev/null || killall -9 '\(processName)' 2>/dev/null || true")
             }
 
-            // Second pass: Remove the app from /Applications or ~/Applications
+            // Collect app paths
             for artifact in artifacts {
-                if let appArray = artifact["app"].array, let appFullName = appArray.first?.stringValue {
+                if let appArray = artifact["app"] as? [String], let appFullName = appArray.first {
                     let systemAppPath = "/Applications/\(appFullName)"
                     let userAppPath = NSHomeDirectory() + "/Applications/\(appFullName)"
 
                     if FileManager.default.fileExists(atPath: systemAppPath) {
-                        try await runPrivilegedCommand("rm -rf \"\(systemAppPath)\"")
+                        filesToDelete.append(URL(fileURLWithPath: systemAppPath))
                     } else if FileManager.default.fileExists(atPath: userAppPath) {
-                        try FileManager.default.removeItem(atPath: userAppPath)
+                        filesToDelete.append(URL(fileURLWithPath: userAppPath))
                     }
                 }
             }
         }
 
-        // Remove Caskroom directory and metadata
+        // Collect Caskroom directory
         let caskroomPath = "\(brewPrefix)/Caskroom/\(token)"
         if FileManager.default.fileExists(atPath: caskroomPath) {
-            try await runPrivilegedCommand("rm -rf \"\(caskroomPath)\"")
+            filesToDelete.append(URL(fileURLWithPath: caskroomPath))
+        }
+
+        // Delete all collected files in one batch with cask name
+        if !filesToDelete.isEmpty {
+            let bundleName = "\(token) (Homebrew Cask)"
+            let _ = FileManagerUndo.shared.deleteFiles(at: filesToDelete, bundleName: bundleName)
         }
     }
 
-    private func processCaskUninstallDirectives(_ directives: [JSON], caskName: String, allProcessNames: Set<String>, allServiceNames: Set<String>) async throws {
+    private func processCaskUninstallDirectives(_ directives: [[String: Any]], caskName: String, allProcessNames: Set<String>, allServiceNames: Set<String>) async throws -> [URL] {
         // Process directives in the order Homebrew processes them
         // Based on abstract_uninstall.rb from Homebrew source
 
+        var filesToDelete: [URL] = []
+
         for directive in directives {
-            if directive["early_script"].dictionaryObject != nil {
-                try await handleEarlyScript(directive["early_script"])
+            if let earlyScript = directive["early_script"] as? [String: Any] {
+                try await handleEarlyScript(earlyScript)
             }
         }
 
         for directive in directives {
-            if let launchctl = directive["launchctl"].string {
+            if let launchctl = directive["launchctl"] as? String {
                 try await handleLaunchctl(launchctl)
             }
         }
 
         for directive in directives {
-            if let quit = directive["quit"].string {
+            if let quit = directive["quit"] as? String {
                 try await handleQuit(quit)
             }
         }
 
         for directive in directives {
-            if directive["signal"].array != nil {
-                try await handleSignal(directive["signal"])
+            if let signal = directive["signal"] as? [Any] {
+                try await handleSignal(signal)
             }
         }
 
         for directive in directives {
-            if let loginItem = directive["login_item"].string {
+            if let loginItem = directive["login_item"] as? String {
                 try await handleLoginItem(loginItem)
             }
         }
 
         for directive in directives {
-            if let kext = directive["kext"].string {
+            if let kext = directive["kext"] as? String {
                 try await handleKext(kext)
             }
         }
 
         for directive in directives {
-            if directive["script"].dictionaryObject != nil {
-                try await handleScript(directive["script"])
+            if let script = directive["script"] as? [String: Any] {
+                try await handleScript(script)
             }
         }
 
         for directive in directives {
-            if let pkgutil = directive["pkgutil"].string {
+            if let pkgutil = directive["pkgutil"] as? String {
                 try await handlePkgutil(pkgutil)
             }
         }
 
         for directive in directives {
-            if let delete = directive["delete"].array {
-                for path in delete {
-                    try await handleDelete(path.stringValue)
+            if let deleteArray = directive["delete"] as? [String] {
+                for path in deleteArray {
+                    let expandedPath = expandPath(path)
+                    if FileManager.default.fileExists(atPath: expandedPath) {
+                        filesToDelete.append(URL(fileURLWithPath: expandedPath))
+                    }
                 }
-            } else if let delete = directive["delete"].string {
-                try await handleDelete(delete)
+            } else if let deleteString = directive["delete"] as? String {
+                let expandedPath = expandPath(deleteString)
+                if FileManager.default.fileExists(atPath: expandedPath) {
+                    filesToDelete.append(URL(fileURLWithPath: expandedPath))
+                }
             }
         }
 
         for directive in directives {
-            if let trash = directive["trash"].array {
-                for path in trash {
-                    try await handleTrash(path.stringValue)
+            if let trashArray = directive["trash"] as? [String] {
+                for path in trashArray {
+                    let expandedPath = expandPath(path)
+                    if FileManager.default.fileExists(atPath: expandedPath) {
+                        filesToDelete.append(URL(fileURLWithPath: expandedPath))
+                    }
                 }
-            } else if let trash = directive["trash"].string {
-                try await handleTrash(trash)
+            } else if let trashString = directive["trash"] as? String {
+                let expandedPath = expandPath(trashString)
+                if FileManager.default.fileExists(atPath: expandedPath) {
+                    filesToDelete.append(URL(fileURLWithPath: expandedPath))
+                }
             }
         }
 
         for directive in directives {
-            if let rmdir = directive["rmdir"].array {
-                for path in rmdir {
-                    try await handleRmdir(path.stringValue)
+            if let rmdirArray = directive["rmdir"] as? [String] {
+                for path in rmdirArray {
+                    let expandedPath = expandPath(path)
+                    if FileManager.default.fileExists(atPath: expandedPath) {
+                        filesToDelete.append(URL(fileURLWithPath: expandedPath))
+                    }
                 }
-            } else if let rmdir = directive["rmdir"].string {
-                try await handleRmdir(rmdir)
+            } else if let rmdirString = directive["rmdir"] as? String {
+                let expandedPath = expandPath(rmdirString)
+                if FileManager.default.fileExists(atPath: expandedPath) {
+                    filesToDelete.append(URL(fileURLWithPath: expandedPath))
+                }
             }
         }
+
+        return filesToDelete
     }
 
     // MARK: - Formula Uninstall
 
-    private func uninstallFormula(name: String, info: JSON) async throws {
+    private func uninstallFormula(name: String, info: [String: Any]) async throws {
         // Try using brew uninstall command first (proper uninstall with symlink cleanup)
         let arguments = ["uninstall", name, "--force"]
 
@@ -274,10 +307,10 @@ class HomebrewUninstaller {
 
     // MARK: - Uninstall Directive Handlers
 
-    private func handleEarlyScript(_ value: JSON) async throws {
-        guard let executable = value["executable"].string else { return }
+    private func handleEarlyScript(_ value: [String: Any]) async throws {
+        guard let executable = value["executable"] as? String else { return }
 
-        let args = value["args"].arrayValue.map { $0.stringValue }
+        let args = (value["args"] as? [String]) ?? []
         let command = ([executable] + args).joined(separator: " ")
 
         try await runPrivilegedCommand(command)
@@ -333,9 +366,10 @@ class HomebrewUninstaller {
         }
     }
 
-    private func handleSignal(_ value: JSON) async throws {
-        guard let signal = value[0].string,
-              let process = value[1].string else { return }
+    private func handleSignal(_ value: [Any]) async throws {
+        guard value.count >= 2,
+              let signal = value[0] as? String,
+              let process = value[1] as? String else { return }
 
         try await runPrivilegedCommand("pkill -\(signal) \(process)")
     }
@@ -355,10 +389,10 @@ class HomebrewUninstaller {
         try await runPrivilegedCommand("kextunload -b \(value)")
     }
 
-    private func handleScript(_ value: JSON) async throws {
-        guard let executable = value["executable"].string else { return }
+    private func handleScript(_ value: [String: Any]) async throws {
+        guard let executable = value["executable"] as? String else { return }
 
-        let args = value["args"].arrayValue.map { $0.stringValue }
+        let args = (value["args"] as? [String]) ?? []
         let command = ([executable] + args).joined(separator: " ")
 
         try await runPrivilegedCommand(command)

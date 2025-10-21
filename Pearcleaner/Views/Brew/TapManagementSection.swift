@@ -268,17 +268,19 @@ struct TapRowView: View {
         .alert("Remove \(tap.name)?", isPresented: $showRemoveAlert) {
             Button("Cancel", role: .cancel) { }
             Button("Remove", role: .destructive) {
-                Task {
+                Task { @MainActor in
                     isRemoving = true
-                    do {
-                        try await HomebrewController.shared.removeTap(name: tap.name)
-                        await brewManager.loadTaps()
+                    defer { isRemoving = false }
 
-                        // Note: No need to update Browse cache - we load names dynamically now
+                    do {
+                        // Always use force flag - leaves packages installed
+                        try await HomebrewController.shared.removeTap(name: tap.name, force: true)
+                        // Just remove from list instead of reloading all taps
+                        brewManager.removeTapFromList(name: tap.name)
+                        // Don't reload installed packages - they're still there
                     } catch {
                         printOS("Error removing tap: \(error)")
                     }
-                    isRemoving = false
                 }
             }
         } message: {

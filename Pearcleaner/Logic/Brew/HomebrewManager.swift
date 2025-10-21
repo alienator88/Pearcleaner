@@ -140,6 +140,10 @@ class HomebrewManager: ObservableObject {
         }
     }
 
+    func removeTapFromList(name: String) {
+        availableTaps.removeAll { $0.name == name }
+    }
+
     func loadBrewVersion() async {
         do {
             brewVersion = try await HomebrewController.shared.getBrewVersion()

@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftyJSON
 import AlinFoundation
 
 enum HomebrewError: Error {
@@ -249,129 +248,134 @@ class HomebrewController {
         let arguments = ["info", "--json=v2", "--installed"]
         let result = try await runBrewCommand(arguments)
 
-        guard let jsonData = result.output.data(using: .utf8) else {
+        guard let jsonData = result.output.data(using: .utf8),
+              let json = try JSONSerialization.jsonObject(with: jsonData) as? [String: Any] else {
             throw HomebrewError.jsonParseError
         }
 
-        let json = try JSON(data: jsonData)
         var formulae: [HomebrewPackageInfo] = []
         var casks: [HomebrewPackageInfo] = []
 
         // Parse formulae
-        for packageJson in json["formulae"].arrayValue {
-            let name = packageJson["name"].stringValue
+        if let formulaeArray = json["formulae"] as? [[String: Any]] {
+            for packageJson in formulaeArray {
+                guard let name = packageJson["name"] as? String else { continue }
 
-            // Skip if no installed versions
-            guard !packageJson["installed"].arrayValue.isEmpty else {
-                continue
-            }
-
-            let versions = packageJson["installed"].arrayValue.map { $0["version"].stringValue }
-
-            // Get installation date from unix timestamp
-            var installedOn: Date? = nil
-            if let timeInterval = packageJson["installed"].arrayValue.first?["time"].double {
-                installedOn = Date(timeIntervalSince1970: timeInterval)
-            }
-
-            let sizeInBytes: Int64? = nil
-            let isPinned = packageJson["pinned"].boolValue
-            let isOutdated = packageJson["outdated"].boolValue
-            let description = packageJson["desc"].string
-            let homepage = packageJson["homepage"].string
-            let tap = packageJson["tap"].string
-
-            // Calculate Cellar path and file count
-            var installedPath: String? = nil
-            var fileCount: Int? = nil
-            if let firstVersion = versions.first {
-                let cellarPath = "\(brewPrefix)/Cellar/\(name)/\(firstVersion)"
-                installedPath = cellarPath
-
-                // Count files in Cellar directory
-                if let enumerator = FileManager.default.enumerator(atPath: cellarPath) {
-                    var count = 0
-                    while enumerator.nextObject() != nil {
-                        count += 1
-                    }
-                    fileCount = count
+                // Skip if no installed versions
+                guard let installedArray = packageJson["installed"] as? [[String: Any]],
+                      !installedArray.isEmpty else {
+                    continue
                 }
-            }
 
-            let package = HomebrewPackageInfo(
-                name: name,
-                isCask: false,
-                installedOn: installedOn,
-                versions: versions,
-                sizeInBytes: sizeInBytes,
-                isPinned: isPinned,
-                isOutdated: isOutdated,
-                description: description,
-                homepage: homepage,
-                tap: tap,
-                installedPath: installedPath,
-                fileCount: fileCount
-            )
-            formulae.append(package)
+                let versions = installedArray.compactMap { $0["version"] as? String }
+
+                // Get installation date from unix timestamp
+                var installedOn: Date? = nil
+                if let timeInterval = installedArray.first?["time"] as? Double {
+                    installedOn = Date(timeIntervalSince1970: timeInterval)
+                }
+
+                let sizeInBytes: Int64? = nil
+                let isPinned = (packageJson["pinned"] as? Bool) ?? false
+                let isOutdated = (packageJson["outdated"] as? Bool) ?? false
+                let description = packageJson["desc"] as? String
+                let homepage = packageJson["homepage"] as? String
+                let tap = packageJson["tap"] as? String
+
+                // Calculate Cellar path and file count
+                var installedPath: String? = nil
+                var fileCount: Int? = nil
+                if let firstVersion = versions.first {
+                    let cellarPath = "\(brewPrefix)/Cellar/\(name)/\(firstVersion)"
+                    installedPath = cellarPath
+
+                    // Count files in Cellar directory
+                    if let enumerator = FileManager.default.enumerator(atPath: cellarPath) {
+                        var count = 0
+                        while enumerator.nextObject() != nil {
+                            count += 1
+                        }
+                        fileCount = count
+                    }
+                }
+
+                let package = HomebrewPackageInfo(
+                    name: name,
+                    isCask: false,
+                    installedOn: installedOn,
+                    versions: versions,
+                    sizeInBytes: sizeInBytes,
+                    isPinned: isPinned,
+                    isOutdated: isOutdated,
+                    description: description,
+                    homepage: homepage,
+                    tap: tap,
+                    installedPath: installedPath,
+                    fileCount: fileCount
+                )
+                formulae.append(package)
+            }
         }
 
         // Parse casks
-        for packageJson in json["casks"].arrayValue {
-            let name = packageJson["token"].stringValue
+        if let casksArray = json["casks"] as? [[String: Any]] {
+            for packageJson in casksArray {
+                guard let name = packageJson["token"] as? String else { continue }
 
-            // Check if installed (string field for casks)
-            guard !packageJson["installed"].stringValue.isEmpty else {
-                continue
-            }
-
-            let version = packageJson["installed"].stringValue
-            let versions = [version]
-
-            // Get installation date from unix timestamp
-            var installedOn: Date? = nil
-            if let timeInterval = packageJson["installed_time"].double {
-                installedOn = Date(timeIntervalSince1970: timeInterval)
-            }
-
-            let sizeInBytes: Int64? = nil
-            let isPinned = false  // Casks don't support pinning
-            let isOutdated = packageJson["outdated"].boolValue
-            let description = packageJson["desc"].string
-            let homepage = packageJson["homepage"].string
-            let tap = packageJson["tap"].string
-
-            // Calculate Caskroom path and file count
-            var installedPath: String? = nil
-            var fileCount: Int? = nil
-            if let firstVersion = versions.first {
-                let caskroomPath = "\(brewPrefix)/Caskroom/\(name)/\(firstVersion)"
-                installedPath = caskroomPath
-
-                // Count files in Caskroom directory
-                if let enumerator = FileManager.default.enumerator(atPath: caskroomPath) {
-                    var count = 0
-                    while enumerator.nextObject() != nil {
-                        count += 1
-                    }
-                    fileCount = count
+                // Check if installed (string field for casks)
+                guard let installed = packageJson["installed"] as? String, !installed.isEmpty else {
+                    continue
                 }
-            }
 
-            let package = HomebrewPackageInfo(
-                name: name,
-                isCask: true,
-                installedOn: installedOn,
-                versions: versions,
-                sizeInBytes: sizeInBytes,
-                isPinned: isPinned,
-                isOutdated: isOutdated,
-                description: description,
-                homepage: homepage,
-                tap: tap,
-                installedPath: installedPath,
-                fileCount: fileCount
-            )
-            casks.append(package)
+                let version = installed
+                let versions = [version]
+
+                // Get installation date from unix timestamp
+                var installedOn: Date? = nil
+                if let timeInterval = packageJson["installed_time"] as? Double {
+                    installedOn = Date(timeIntervalSince1970: timeInterval)
+                }
+
+                let sizeInBytes: Int64? = nil
+                let isPinned = false  // Casks don't support pinning
+                let isOutdated = (packageJson["outdated"] as? Bool) ?? false
+                let description = packageJson["desc"] as? String
+                let homepage = packageJson["homepage"] as? String
+                let tap = packageJson["tap"] as? String
+
+                // Calculate Caskroom path and file count
+                var installedPath: String? = nil
+                var fileCount: Int? = nil
+                if let firstVersion = versions.first {
+                    let caskroomPath = "\(brewPrefix)/Caskroom/\(name)/\(firstVersion)"
+                    installedPath = caskroomPath
+
+                    // Count files in Caskroom directory
+                    if let enumerator = FileManager.default.enumerator(atPath: caskroomPath) {
+                        var count = 0
+                        while enumerator.nextObject() != nil {
+                            count += 1
+                        }
+                        fileCount = count
+                    }
+                }
+
+                let package = HomebrewPackageInfo(
+                    name: name,
+                    isCask: true,
+                    installedOn: installedOn,
+                    versions: versions,
+                    sizeInBytes: sizeInBytes,
+                    isPinned: isPinned,
+                    isOutdated: isOutdated,
+                    description: description,
+                    homepage: homepage,
+                    tap: tap,
+                    installedPath: installedPath,
+                    fileCount: fileCount
+                )
+                casks.append(package)
+            }
         }
 
         return (formulae: formulae, casks: casks)
@@ -404,35 +408,45 @@ class HomebrewController {
             (data, _) = try await URLSession.shared.data(from: url)
         }
 
-        let json = try JSON(data: data)
+        guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            throw HomebrewError.jsonParseError
+        }
 
         // Parse common fields
-        let description = json["desc"].string
-        let homepage = json["homepage"].string
-        let license = json["license"].string
-        let version = cask ? json["version"].string : json["versions"]["stable"].string
-        let caveats = json["caveats"].string
-        let dependencies = cask ? json["depends_on"]["formula"].arrayValue.map { $0.stringValue } : json["dependencies"].arrayValue.map { $0.stringValue }
-        let conflicts = json["conflicts_with"].arrayValue.map { $0.stringValue }
-        let conflictsReasons = json["conflicts_with_reasons"].arrayValue.map { $0.stringValue }
+        let description = json["desc"] as? String
+        let homepage = json["homepage"] as? String
+        let license = json["license"] as? String
+        let version: String? = cask ? (json["version"] as? String) : ((json["versions"] as? [String: Any])?["stable"] as? String)
+        let caveats = json["caveats"] as? String
+        let dependencies: [String]
+        if cask {
+            let dependsOn = json["depends_on"] as? [String: Any]
+            dependencies = (dependsOn?["formula"] as? [String]) ?? []
+        } else {
+            dependencies = (json["dependencies"] as? [String]) ?? []
+        }
+        let conflicts = (json["conflicts_with"] as? [String]) ?? []
+        let conflictsReasons = (json["conflicts_with_reasons"] as? [String]) ?? []
 
         // Parse extended fields
-        let tap = json["tap"].string
-        let fullName = json["full_name"].string
-        let deprecated = json["deprecated"].bool
-        let deprecationDate = json["deprecation_date"].string
-        let deprecationReason = json["deprecation_reason"].string
-        let disabled = json["disabled"].bool
-        let disableDate = json["disable_date"].string
-        let disableReason = json["disable_reason"].string
+        let tap = json["tap"] as? String
+        let fullName = json["full_name"] as? String
+        let deprecated = json["deprecated"] as? Bool
+        let deprecationDate = json["deprecation_date"] as? String
+        let deprecationReason = json["deprecation_reason"] as? String
+        let disabled = json["disabled"] as? Bool
+        let disableDate = json["disable_date"] as? String
+        let disableReason = json["disable_reason"] as? String
 
         // Formula-specific fields
-        let kegOnly = cask ? nil : json["keg_only"].bool
+        let kegOnly = cask ? nil : (json["keg_only"] as? Bool)
         let kegOnlyReason: String?
         if !cask {
-            if let explanation = json["keg_only_reason"]["explanation"].string, !explanation.isEmpty {
+            if let kegOnlyReasonDict = json["keg_only_reason"] as? [String: Any],
+               let explanation = kegOnlyReasonDict["explanation"] as? String, !explanation.isEmpty {
                 kegOnlyReason = explanation
-            } else if let reason = json["keg_only_reason"]["reason"].string {
+            } else if let kegOnlyReasonDict = json["keg_only_reason"] as? [String: Any],
+                      let reason = kegOnlyReasonDict["reason"] as? String {
                 switch reason {
                 case ":provided_by_macos":
                     kegOnlyReason = "macOS already provides this software"
@@ -450,27 +464,27 @@ class HomebrewController {
             kegOnlyReason = nil
         }
 
-        let requirements = cask ? nil : json["requirements"].arrayValue.map { $0.stringValue }
-        let buildDependencies = cask ? nil : json["build_dependencies"].arrayValue.map { $0.stringValue }
-        let optionalDependencies = cask ? nil : json["optional_dependencies"].arrayValue.map { $0.stringValue }
-        let recommendedDependencies = cask ? nil : json["recommended_dependencies"].arrayValue.map { $0.stringValue }
-        let usesFromMacos = cask ? nil : json["uses_from_macos"].arrayValue.compactMap { item -> String? in
-            if let str = item.string {
+        let requirements = cask ? nil : (json["requirements"] as? [String])
+        let buildDependencies = cask ? nil : (json["build_dependencies"] as? [String])
+        let optionalDependencies = cask ? nil : (json["optional_dependencies"] as? [String])
+        let recommendedDependencies = cask ? nil : (json["recommended_dependencies"] as? [String])
+        let usesFromMacos: [String]? = cask ? nil : (json["uses_from_macos"] as? [Any])?.compactMap { item -> String? in
+            if let str = item as? String {
                 return str
-            } else if let dict = item.dictionaryObject, let key = dict.keys.first {
+            } else if let dict = item as? [String: Any], let key = dict.keys.first {
                 // Handle {"bison": "build"} format - just show the name
                 return key
             }
             return nil
         }
-        let versionedFormulae = cask ? nil : json["versioned_formulae"].arrayValue.map { $0.stringValue }
-        let aliases = cask ? nil : json["aliases"].arrayValue.map { $0.stringValue }
+        let versionedFormulae = cask ? nil : (json["versioned_formulae"] as? [String])
+        let aliases = cask ? nil : (json["aliases"] as? [String])
 
         // Cask-specific fields
-        let autoUpdates = cask ? json["auto_updates"].bool : nil
-        let artifacts = cask ? json["artifacts"].arrayValue.compactMap { $0.dictionaryObject?.keys.first } : nil
-        let url = cask ? json["url"].string : nil
-        let appcast = cask ? json["appcast"].string : nil
+        let autoUpdates = cask ? (json["auto_updates"] as? Bool) : nil
+        let artifacts = cask ? (json["artifacts"] as? [[String: Any]])?.compactMap { $0.keys.first } : nil
+        let url = cask ? (json["url"] as? String) : nil
+        let appcast = cask ? (json["appcast"] as? String) : nil
 
         return HomebrewSearchResult(
             name: name,
@@ -533,7 +547,9 @@ class HomebrewController {
             (data, _) = try await URLSession.shared.data(from: url)
         }
 
-        let json = try JSON(data: data)
+        guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            throw HomebrewError.jsonParseError
+        }
 
         if cask {
             return .cask(try parseCaskDetails(json: json, name: name))
@@ -542,31 +558,33 @@ class HomebrewController {
         }
     }
 
-    private func parseFormulaDetails(json: JSON, name: String) throws -> FormulaDetails {
+    private func parseFormulaDetails(json: [String: Any], name: String) throws -> FormulaDetails {
         // Common fields
-        let description = json["desc"].string
-        let homepage = json["homepage"].string
-        let license = json["license"].string
-        let version = json["versions"]["stable"].string
-        let caveats = json["caveats"].string
-        let dependencies = json["dependencies"].arrayValue.map { $0.stringValue }
-        let conflicts = json["conflicts_with"].arrayValue.map { $0.stringValue }
-        let conflictsReasons = json["conflicts_with_reasons"].arrayValue.map { $0.stringValue }
-        let tap = json["tap"].string
-        let fullName = json["full_name"].string
-        let deprecated = json["deprecated"].bool ?? false
-        let deprecationDate = json["deprecation_date"].string
-        let deprecationReason = json["deprecation_reason"].string
-        let disabled = json["disabled"].bool ?? false
-        let disableDate = json["disable_date"].string
-        let disableReason = json["disable_reason"].string
+        let description = json["desc"] as? String
+        let homepage = json["homepage"] as? String
+        let license = json["license"] as? String
+        let version = (json["versions"] as? [String: Any])?["stable"] as? String
+        let caveats = json["caveats"] as? String
+        let dependencies = (json["dependencies"] as? [String]) ?? []
+        let conflicts = (json["conflicts_with"] as? [String]) ?? []
+        let conflictsReasons = (json["conflicts_with_reasons"] as? [String]) ?? []
+        let tap = json["tap"] as? String
+        let fullName = json["full_name"] as? String
+        let deprecated = (json["deprecated"] as? Bool) ?? false
+        let deprecationDate = json["deprecation_date"] as? String
+        let deprecationReason = json["deprecation_reason"] as? String
+        let disabled = (json["disabled"] as? Bool) ?? false
+        let disableDate = json["disable_date"] as? String
+        let disableReason = json["disable_reason"] as? String
 
         // Formula-specific fields
-        let kegOnly = json["keg_only"].bool
+        let kegOnly = json["keg_only"] as? Bool
         let kegOnlyReason: String?
-        if let explanation = json["keg_only_reason"]["explanation"].string, !explanation.isEmpty {
+        if let kegOnlyReasonDict = json["keg_only_reason"] as? [String: Any],
+           let explanation = kegOnlyReasonDict["explanation"] as? String, !explanation.isEmpty {
             kegOnlyReason = explanation
-        } else if let reason = json["keg_only_reason"]["reason"].string {
+        } else if let kegOnlyReasonDict = json["keg_only_reason"] as? [String: Any],
+                  let reason = kegOnlyReasonDict["reason"] as? String {
             switch reason {
             case ":provided_by_macos":
                 kegOnlyReason = "macOS already provides this software"
@@ -581,29 +599,29 @@ class HomebrewController {
             kegOnlyReason = nil
         }
 
-        let requirements = json["requirements"].arrayValue.map { $0.stringValue }
-        let buildDependencies = json["build_dependencies"].arrayValue.map { $0.stringValue }
-        let optionalDependencies = json["optional_dependencies"].arrayValue.map { $0.stringValue }
-        let recommendedDependencies = json["recommended_dependencies"].arrayValue.map { $0.stringValue }
-        let usesFromMacos = json["uses_from_macos"].arrayValue.compactMap { item -> String? in
-            if let str = item.string {
+        let requirements = (json["requirements"] as? [String]) ?? []
+        let buildDependencies = (json["build_dependencies"] as? [String]) ?? []
+        let optionalDependencies = (json["optional_dependencies"] as? [String]) ?? []
+        let recommendedDependencies = (json["recommended_dependencies"] as? [String]) ?? []
+        let usesFromMacos = (json["uses_from_macos"] as? [Any])?.compactMap { item -> String? in
+            if let str = item as? String {
                 return str
-            } else if let dict = item.dictionaryObject, let key = dict.keys.first {
+            } else if let dict = item as? [String: Any], let key = dict.keys.first {
                 // Handle {"bison": "build"} format - just show the name
                 return key
             }
             return nil
-        }
-        let versionedFormulae = json["versioned_formulae"].arrayValue.map { $0.stringValue }
-        let aliases = json["aliases"].arrayValue.map { $0.stringValue }
+        } ?? []
+        let versionedFormulae = (json["versioned_formulae"] as? [String]) ?? []
+        let aliases = (json["aliases"] as? [String]) ?? []
 
         // Service info (only if actually defined, not just null)
         let service: ServiceInfo?
-        if json["service"].exists() && json["service"].type != .null {
-            let run = json["service"]["run"].arrayValue.map { $0.stringValue }
-            let runType = json["service"]["run_type"].string
-            let workingDir = json["service"]["working_dir"].string
-            let keepAlive = json["service"]["keep_alive"]["always"].bool
+        if let serviceDict = json["service"] as? [String: Any], !serviceDict.isEmpty {
+            let run = (serviceDict["run"] as? [String]) ?? []
+            let runType = serviceDict["run_type"] as? String
+            let workingDir = serviceDict["working_dir"] as? String
+            let keepAlive = (serviceDict["keep_alive"] as? [String: Any])?["always"] as? Bool
 
             // Only create ServiceInfo if there's actual data
             if !run.isEmpty || runType != nil || workingDir != nil || keepAlive != nil {
@@ -616,10 +634,10 @@ class HomebrewController {
         }
 
         // Replacement suggestions
-        let deprecationReplacementFormula = json["deprecation_replacement_formula"].string
-        let deprecationReplacementCask = json["deprecation_replacement_cask"].string
-        let disableReplacementFormula = json["disable_replacement_formula"].string
-        let disableReplacementCask = json["disable_replacement_cask"].string
+        let deprecationReplacementFormula = json["deprecation_replacement_formula"] as? String
+        let deprecationReplacementCask = json["deprecation_replacement_cask"] as? String
+        let disableReplacementFormula = json["disable_replacement_formula"] as? String
+        let disableReplacementCask = json["disable_replacement_cask"] as? String
 
         return FormulaDetails(
             name: name,
@@ -657,48 +675,51 @@ class HomebrewController {
         )
     }
 
-    private func parseCaskDetails(json: JSON, name: String) throws -> CaskDetails {
+    private func parseCaskDetails(json: [String: Any], name: String) throws -> CaskDetails {
         // Common fields
-        let description = json["desc"].string
-        let homepage = json["homepage"].string
-        let license = json["license"].string
-        let version = json["version"].string
-        let caveats = json["caveats"].string
-        let dependencies = json["depends_on"]["formula"].arrayValue.map { $0.stringValue }
-        let conflicts = json["conflicts_with"].arrayValue.map { $0.stringValue }
-        let conflictsReasons = json["conflicts_with_reasons"].arrayValue.map { $0.stringValue }
-        let tap = json["tap"].string
-        let fullName = json["full_token"].string ?? json["token"].string
-        let deprecated = json["deprecated"].bool ?? false
-        let deprecationDate = json["deprecation_date"].string
-        let deprecationReason = json["deprecation_reason"].string
-        let disabled = json["disabled"].bool ?? false
-        let disableDate = json["disable_date"].string
-        let disableReason = json["disable_reason"].string
+        let description = json["desc"] as? String
+        let homepage = json["homepage"] as? String
+        let license = json["license"] as? String
+        let version = json["version"] as? String
+        let caveats = json["caveats"] as? String
+        let dependencies = ((json["depends_on"] as? [String: Any])?["formula"] as? [String]) ?? []
+        let conflicts = (json["conflicts_with"] as? [String]) ?? []
+        let conflictsReasons = (json["conflicts_with_reasons"] as? [String]) ?? []
+        let tap = json["tap"] as? String
+        let fullName = (json["full_token"] as? String) ?? (json["token"] as? String)
+        let deprecated = (json["deprecated"] as? Bool) ?? false
+        let deprecationDate = json["deprecation_date"] as? String
+        let deprecationReason = json["deprecation_reason"] as? String
+        let disabled = (json["disabled"] as? Bool) ?? false
+        let disableDate = json["disable_date"] as? String
+        let disableReason = json["disable_reason"] as? String
 
         // Cask-specific fields
-        let caskName = json["name"].arrayValue.map { $0.stringValue }
-        let autoUpdates = json["auto_updates"].bool
-        let artifacts = json["artifacts"].arrayValue.compactMap { $0.dictionaryObject?.keys.first }
-        let url = json["url"].string
-        let appcast = json["appcast"].string
+        let caskName = (json["name"] as? [String]) ?? []
+        let autoUpdates = json["auto_updates"] as? Bool
+        let artifacts = (json["artifacts"] as? [[String: Any]])?.compactMap { $0.keys.first }
+        let url = json["url"] as? String
+        let appcast = json["appcast"] as? String
 
         // System requirements
         let minimumMacOSVersion: String?
-        if let macosReq = json["depends_on"]["macos"].dictionary?.first {
-            minimumMacOSVersion = "\(macosReq.key) \(macosReq.value.arrayValue.first?.stringValue ?? "")"
+        if let dependsOn = json["depends_on"] as? [String: Any],
+           let macosDict = dependsOn["macos"] as? [String: Any],
+           let firstKey = macosDict.keys.first {
+            let versionArray = macosDict[firstKey] as? [String] ?? []
+            minimumMacOSVersion = "\(firstKey) \(versionArray.first ?? "")"
         } else {
             minimumMacOSVersion = nil
         }
 
         let architectureRequirement: ArchRequirement?
-        if let archArray = json["depends_on"]["arch"].array {
-            let archs = archArray.map { $0.stringValue }
-            if archs.contains("x86_64") && archs.contains("arm64") {
+        if let dependsOn = json["depends_on"] as? [String: Any],
+           let archArray = dependsOn["arch"] as? [String] {
+            if archArray.contains("x86_64") && archArray.contains("arm64") {
                 architectureRequirement = .universal
-            } else if archs.contains("x86_64") {
+            } else if archArray.contains("x86_64") {
                 architectureRequirement = .intel
-            } else if archs.contains("arm64") {
+            } else if archArray.contains("arm64") {
                 architectureRequirement = .arm
             } else {
                 architectureRequirement = nil
@@ -708,10 +729,10 @@ class HomebrewController {
         }
 
         // Replacement suggestions
-        let deprecationReplacementFormula = json["deprecation_replacement_formula"].string
-        let deprecationReplacementCask = json["deprecation_replacement_cask"].string
-        let disableReplacementFormula = json["disable_replacement_formula"].string
-        let disableReplacementCask = json["disable_replacement_cask"].string
+        let deprecationReplacementFormula = json["deprecation_replacement_formula"] as? String
+        let deprecationReplacementCask = json["deprecation_replacement_cask"] as? String
+        let disableReplacementFormula = json["disable_replacement_formula"] as? String
+        let disableReplacementCask = json["disable_replacement_cask"] as? String
 
         return CaskDetails(
             name: name,
@@ -733,7 +754,7 @@ class HomebrewController {
             conflictsWithReasons: conflictsReasons.isEmpty ? nil : conflictsReasons,
             caskName: caskName.isEmpty ? nil : caskName,
             autoUpdates: autoUpdates,
-            artifacts: artifacts.isEmpty ? nil : artifacts,
+            artifacts: artifacts?.isEmpty == false ? artifacts : nil,
             url: url,
             appcast: appcast,
             minimumMacOSVersion: minimumMacOSVersion,
@@ -757,20 +778,21 @@ class HomebrewController {
         if FileManager.default.fileExists(atPath: jwsFile.path) {
             do {
                 let jwsData = try Data(contentsOf: jwsFile)
-                let jwsJson = try JSON(data: jwsData)
-
-                guard let payloadString = jwsJson["payload"].string,
+                guard let jwsJson = try JSONSerialization.jsonObject(with: jwsData) as? [String: Any],
+                      let payloadString = jwsJson["payload"] as? String,
                       let payloadData = payloadString.data(using: .utf8) else {
                     throw HomebrewError.jsonParseError
                 }
 
-                let payload = try JSON(data: payloadData)
+                guard let payload = try JSONSerialization.jsonObject(with: payloadData) as? [[String: Any]] else {
+                    throw HomebrewError.jsonParseError
+                }
 
                 // Find the package in the payload
-                for item in payload.arrayValue {
-                    let itemName = cask ? item["token"].stringValue : item["name"].stringValue
+                for item in payload {
+                    let itemName = cask ? (item["token"] as? String) : (item["name"] as? String)
                     if itemName == name {
-                        return (description: item["desc"].string, homepage: item["homepage"].string)
+                        return (description: item["desc"] as? String, homepage: item["homepage"] as? String)
                     }
                 }
             } catch {
@@ -785,10 +807,12 @@ class HomebrewController {
             URL(string: "https://formulae.brew.sh/api/formula/\(name).json")!
 
         let (data, _) = try await URLSession.shared.data(from: url)
-        let json = try JSON(data: data)
+        guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            throw HomebrewError.jsonParseError
+        }
 
-        let description = json["desc"].string
-        let homepage = json["homepage"].string
+        let description = json["desc"] as? String
+        let homepage = json["homepage"] as? String
 
         return (description: description, homepage: homepage)
     }
@@ -815,14 +839,17 @@ class HomebrewController {
             (data, _) = try await URLSession.shared.data(from: url)
         }
 
-        let json = try JSON(data: data)
-        let analytics = json["analytics"]
+        guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let analytics = json["analytics"] as? [String: Any] else {
+            throw HomebrewError.jsonParseError
+        }
 
         if cask {
             // Cask: simpler structure {"install": {"30d": {"name": 123}}}
-            let install30d = analytics["install"]["30d"].dictionary?.values.first?.int
-            let install90d = analytics["install"]["90d"].dictionary?.values.first?.int
-            let install365d = analytics["install"]["365d"].dictionary?.values.first?.int
+            let install = analytics["install"] as? [String: Any]
+            let install30d = (install?["30d"] as? [String: Int])?.values.first
+            let install90d = (install?["90d"] as? [String: Int])?.values.first
+            let install365d = (install?["365d"] as? [String: Int])?.values.first
 
             return HomebrewAnalytics(
                 install30d: install30d,
@@ -831,9 +858,10 @@ class HomebrewController {
             )
         } else {
             // Formula: only fetch install counts (not install_on_request or build_error)
-            let install30d = analytics["install"]["30d"].dictionary?.values.reduce(0) { $0 + ($1.int ?? 0) }
-            let install90d = analytics["install"]["90d"].dictionary?.values.reduce(0) { $0 + ($1.int ?? 0) }
-            let install365d = analytics["install"]["365d"].dictionary?.values.reduce(0) { $0 + ($1.int ?? 0) }
+            let install = analytics["install"] as? [String: Any]
+            let install30d = (install?["30d"] as? [String: Int])?.values.reduce(0, +)
+            let install90d = (install?["90d"] as? [String: Int])?.values.reduce(0, +)
+            let install365d = (install?["365d"] as? [String: Int])?.values.reduce(0, +)
 
             return HomebrewAnalytics(
                 install30d: install30d,
@@ -947,8 +975,13 @@ class HomebrewController {
         }
     }
 
-    func removeTap(name: String) async throws {
-        let arguments = ["untap", name]
+    func removeTap(name: String, force: Bool = false) async throws {
+        var arguments = ["untap"]
+        if force {
+            arguments.append("--force")
+        }
+        arguments.append(name)
+
         let result = try await runBrewCommand(arguments)
 
         if !result.error.contains("Untapped") && result.error.contains("Error") {
@@ -982,8 +1015,11 @@ class HomebrewController {
     func getLatestBrewVersionFromGitHub() async throws -> String {
         let url = URL(string: "https://api.github.com/repos/Homebrew/brew/releases/latest")!
         let (data, _) = try await URLSession.shared.data(from: url)
-        let json = try JSON(data: data)
-        return json["tag_name"].stringValue
+        guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let tagName = json["tag_name"] as? String else {
+            throw HomebrewError.jsonParseError
+        }
+        return tagName
     }
 
     func checkForBrewUpdate() async throws -> (current: String, latest: String, updateAvailable: Bool) {
@@ -1278,45 +1314,50 @@ class HomebrewController {
         let arguments = ["info", "--json=v2", fullName]
         let result = try await runBrewCommand(arguments)
 
-        guard let jsonData = result.output.data(using: .utf8) else {
+        guard let jsonData = result.output.data(using: .utf8),
+              let json = try JSONSerialization.jsonObject(with: jsonData) as? [String: Any] else {
             return nil
         }
 
-        let json = try JSON(data: jsonData)
-        let array = cask ? json["casks"].arrayValue : json["formulae"].arrayValue
-
-        guard let item = array.first else {
+        let array = cask ? (json["casks"] as? [[String: Any]]) : (json["formulae"] as? [[String: Any]])
+        guard let item = array?.first else {
             return nil
         }
 
-        let name = cask ? item["full_token"].stringValue : item["full_name"].stringValue
-        let desc = item["desc"].string
-        let homepage = item["homepage"].string
-        let license = item["license"].string
-        let version = cask ? item["version"].string : item["versions"]["stable"].string
-        let dependencies = cask ?
-            item["depends_on"]["formula"].arrayValue.map { $0.stringValue } :
-            item["dependencies"].arrayValue.map { $0.stringValue }
-        let caveats = item["caveats"].string
+        let name = cask ? (item["full_token"] as? String ?? "") : (item["full_name"] as? String ?? "")
+        let desc = item["desc"] as? String
+        let homepage = item["homepage"] as? String
+        let license = item["license"] as? String
+        let version: String? = cask ? (item["version"] as? String) : ((item["versions"] as? [String: Any])?["stable"] as? String)
+        let dependencies: [String]
+        if cask {
+            let dependsOn = item["depends_on"] as? [String: Any]
+            dependencies = (dependsOn?["formula"] as? [String]) ?? []
+        } else {
+            dependencies = (item["dependencies"] as? [String]) ?? []
+        }
+        let caveats = item["caveats"] as? String
 
         // Common fields
-        let tap = item["tap"].string
-        let fullName = item["full_name"].string
-        let isDeprecated = item["deprecated"].bool ?? false
-        let deprecationReason = item["deprecation_reason"].string
-        let isDisabled = item["disabled"].bool ?? false
-        let disableDate = item["disable_date"].string
-        let conflictsWith = item["conflicts_with"].arrayValue.map { $0.stringValue }
-        let conflictsWithReasons = item["conflicts_with_reasons"].arrayValue.map { $0.stringValue }
+        let tap = item["tap"] as? String
+        let _ = item["full_name"] as? String  // Unused, but keep for consistency
+        let isDeprecated = (item["deprecated"] as? Bool) ?? false
+        let deprecationReason = item["deprecation_reason"] as? String
+        let isDisabled = (item["disabled"] as? Bool) ?? false
+        let disableDate = item["disable_date"] as? String
+        let conflictsWith = (item["conflicts_with"] as? [String]) ?? []
+        let conflictsWithReasons = (item["conflicts_with_reasons"] as? [String]) ?? []
 
         // Formula-specific fields
-        let isBottled = cask ? nil : (item["versions"]["bottle"].bool ?? false)
-        let isKegOnly = cask ? nil : (item["keg_only"].bool ?? false)
+        let isBottled = cask ? nil : ((item["versions"] as? [String: Any])?["bottle"] as? Bool ?? false)
+        let isKegOnly = cask ? nil : (item["keg_only"] as? Bool ?? false)
         let kegOnlyReason: String?
         if !cask {
-            if let explanation = item["keg_only_reason"]["explanation"].string, !explanation.isEmpty {
+            if let kegOnlyReasonDict = item["keg_only_reason"] as? [String: Any],
+               let explanation = kegOnlyReasonDict["explanation"] as? String, !explanation.isEmpty {
                 kegOnlyReason = explanation
-            } else if let reason = item["keg_only_reason"]["reason"].string {
+            } else if let kegOnlyReasonDict = item["keg_only_reason"] as? [String: Any],
+                      let reason = kegOnlyReasonDict["reason"] as? String {
                 switch reason {
                 case ":provided_by_macos":
                     kegOnlyReason = "macOS already provides this software"
@@ -1333,13 +1374,13 @@ class HomebrewController {
         } else {
             kegOnlyReason = nil
         }
-        let buildDependencies = cask ? nil : item["build_dependencies"].arrayValue.map { $0.stringValue }
-        let aliases = cask ? nil : item["aliases"].arrayValue.map { $0.stringValue }
-        let versionedFormulae = cask ? nil : item["versioned_formulae"].arrayValue.map { $0.stringValue }
+        let buildDependencies = cask ? nil : (item["build_dependencies"] as? [String])
+        let aliases = cask ? nil : (item["aliases"] as? [String])
+        let versionedFormulae = cask ? nil : (item["versioned_formulae"] as? [String])
         let requirements: String?
         if !cask {
-            requirements = item["requirements"].arrayValue.compactMap { req in
-                if req["name"].string == "macos", let version = req["version"].string {
+            requirements = (item["requirements"] as? [[String: Any]])?.compactMap { req in
+                if req["name"] as? String == "macos", let version = req["version"] as? String {
                     return "macOS >= \(version)"
                 }
                 return nil
@@ -1349,12 +1390,12 @@ class HomebrewController {
         }
 
         // Cask-specific fields
-        let caskName = cask ? item["name"].arrayValue.map { $0.stringValue } : nil
-        let autoUpdates = cask ? item["auto_updates"].bool : nil
-        let artifacts = cask ? item["artifacts"].arrayValue.compactMap { artifact -> String? in
-            if let app = artifact["app"].array?.first?.string {
+        let caskName = cask ? (item["name"] as? [String]) : nil
+        let autoUpdates = cask ? (item["auto_updates"] as? Bool) : nil
+        let artifacts = cask ? (item["artifacts"] as? [[String: Any]])?.compactMap { artifact -> String? in
+            if let appArray = artifact["app"] as? [String], let app = appArray.first {
                 return "\(app) (App)"
-            } else if let pkg = artifact["pkg"].array?.first?.string {
+            } else if let pkgArray = artifact["pkg"] as? [String], let pkg = pkgArray.first {
                 return "\(pkg) (Pkg)"
             }
             return nil
