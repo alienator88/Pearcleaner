@@ -1,7 +1,7 @@
 ---
-name: General Questions (DO NOT OPEN ISSUE)
+name: DO NOT OPEN ISSUES WITH THIS OPTION
 about: If you have general questions that are not a bug or feature request, please go to the Discussions tab and open a new question
-title: "[GENERAL] DO NOT OPEN AN ISSUE FOR GENERAL QUESTIONS"
+title: "DO NOT OPEN AN ISSUE FOR GENERAL QUESTIONS"
 labels: ''
 assignees: ''
 

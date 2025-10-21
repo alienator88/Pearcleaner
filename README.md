@@ -59,8 +59,8 @@ This project was born out of wanting to learn more on how macOS deals with app i
 ## Issues
 > [!WARNING]
 > - When submitting issues, please use the appropriate issue template corresponding with your problem [HERE](https://github.com/alienator88/Pearcleaner/issues/new/choose)
-> - Beta versions of macOS will not be supported until general release
-
+> - Issues with no template will be closed
+> - This is a personal/hobby app, therefore the project is fairly opinionated. Opinion-based requests (e.g., “the layout would look better this way”) will not be considered.
 
 ## Requirements
 > [!NOTE]

@@ -9,8 +9,9 @@ assignees: ''
 
 > [!WARNING]
 > This is a personal/hobby app, therefore the project is fairly opinionated.  
-> Only new feature requests will be considered.  
-> Opinion-based requests (e.g., “the layout would look better this way”) will be closed.
+> Opinion-based requests (e.g., “the layout would look better this way”) will not be considered.
+> ### Issues with the template below removed will be closed!
+> ---
 
 **Is your feature request related to a problem? Please describe.**
 
