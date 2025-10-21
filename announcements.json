@@ -7,7 +7,7 @@
     "caveats": [
         "Testing"
     ]
-  }
+  },
   "4.4.0": {
     "features": [
       "Privileged Helper Service: Pearcleaner now supports using a privileged helper service to perform operations that require administrative permissions. This will eventually replace the current mechanism which uses Authorization Services as it's deprecated by Apple. More information in Settings > Helper tab.",
