@@ -1,11 +1,7 @@
 ### What's New
 
-- [x] Disable Settings window click to drag modifier and safe frame - #389
-- [x] Add debug file printing in menu bar Help for troubleshooting issues
-- [x] Related files search/orphans search algorithm optimizations
-- [x] Search files against bundle id company component in sensitivity levels higher than strict - #385
-- [x] Remove entitlement paths from file searching as it was too broad for certain apps - #386
-- [x] Fix padding on toolbar menu pickers in multiple views for Tahoe - #390
-- [x] Fix iOS apps not showing updates in Updater view - #381
-- [x] Add translation pruning option to manually select languages in app Files view > details sidebar > options - #389
+- [x] Fix Settings Helper toolbar buttons not showing when launching straight into the tab
+- [x] Show “no results” text when filtering apps list via search and there's no valid options to show
+- [x] Optimize app refresh functions to await for Updater/Homebrew views
+- [x] Simplify sensitivity levels to 3 and always use supplemental spotlight search. Strict(searches for exact matches), Smart(default, searches for exact and contains matches), Deep(searches within file contents, finder comments and metadata as well)
 - [x] Translations

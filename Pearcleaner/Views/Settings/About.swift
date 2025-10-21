@@ -118,28 +118,6 @@ struct AboutSettingsTab: View {
             }
 
         }
-        .toolbar {
-            ToolbarItem { Spacer() }
-            ToolbarItem {
-                Button(action: {
-                    NSWorkspace.shared.open(URL(string: "https://github.com/sponsors/alienator88")!)
-                }, label: {
-                    Label {
-                        Text("Sponsor")
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                            .font(.body)
-                            .bold()
-                    } icon: {
-                        Image(systemName: "heart")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 16, height: 16)
-                            .foregroundStyle(.pink)
-                    }
-                    .labelStyle(.titleAndIcon)
-                })
-            }
-        }
     }
 
     private func resetUserDefaults() {

@@ -99,7 +99,7 @@ struct MainWindow: View {
 
         }
         .background(backgroundView(color: ThemeColors.shared(for: colorScheme).primaryBG))
-        .frame(minWidth: appState.currentPage == .orphans ? 700 : 900, minHeight: 600)
+        .frame(minWidth: 900, minHeight: 610)
         .handlesExternalEvents(preferring: Set(arrayLiteral: "pear"), allowing: Set(arrayLiteral: "*"))
         .handleFileDrop(
             updater: updater,
@@ -229,7 +229,7 @@ struct MainWindow: View {
                         color: .orange,
                         help: "Helper Not Installed"
                     ) {
-                        openAppSettingsWindow(tab: .general, updater: updater)
+                        openAppSettingsWindow(tab: .helper, updater: updater)
                     }
                 }
 

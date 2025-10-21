@@ -248,7 +248,7 @@ struct GeneralSettingsTab: View {
                     }
                     .padding(5)
                     .alert("Deep Search Level", isPresented: $showDeepAlert) {
-                        Button("OK") {
+                        Button("Okay") {
                             deepLevelAlertShown = true
                         }
                     } message: {
