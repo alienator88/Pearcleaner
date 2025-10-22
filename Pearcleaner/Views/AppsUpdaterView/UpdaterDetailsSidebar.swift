@@ -17,6 +17,7 @@ struct UpdaterDetailsSidebar: View {
     @Binding var checkHomebrew: Bool
     @Binding var checkSparkle: Bool
     @Binding var includeSparklePreReleases: Bool
+    @Binding var includeHomebrewFormulae: Bool
     @StateObject private var updateManager = UpdateManager.shared
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
@@ -31,7 +32,8 @@ struct UpdaterDetailsSidebar: View {
                         checkAppStore: $checkAppStore,
                         checkHomebrew: $checkHomebrew,
                         checkSparkle: $checkSparkle,
-                        includeSparklePreReleases: $includeSparklePreReleases
+                        includeSparklePreReleases: $includeSparklePreReleases,
+                        includeHomebrewFormulae: $includeHomebrewFormulae
                     )
                     Divider()
                     UpdaterHiddenHeaderSection(hiddenCount: updateManager.hiddenUpdates.count)
@@ -59,6 +61,7 @@ struct UpdaterSourceCheckboxSection: View {
     @Binding var checkHomebrew: Bool
     @Binding var checkSparkle: Bool
     @Binding var includeSparklePreReleases: Bool
+    @Binding var includeHomebrewFormulae: Bool
     @StateObject private var updateManager = UpdateManager.shared
     @Environment(\.colorScheme) var colorScheme
 
@@ -104,29 +107,44 @@ struct UpdaterSourceCheckboxSection: View {
             }
             .buttonStyle(.plain)
 
-            // Homebrew checkbox
-            Button(action: {
-                checkHomebrew.toggle()
-                if checkHomebrew {
+            // Homebrew checkbox with formulae toggle
+            HStack(spacing: 8) {
+                Button(action: {
+                    checkHomebrew.toggle()
+                    if checkHomebrew {
+                        Task { await updateManager.scanForUpdates() }
+                    }
+                }) {
+                    HStack(spacing: 8) {
+                        Image(systemName: checkHomebrew ? "checkmark.circle.fill" : "circle")
+                            .foregroundStyle(checkHomebrew ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
+                            .font(.title3)
+
+                        Image(systemName: "mug")
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            .font(.caption)
+                            .frame(width: 16)
+
+                        Text("Homebrew")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                }
+                .buttonStyle(.plain)
+
+                Spacer()
+
+                // Formulae toggle button
+                Button(action: {
+                    includeHomebrewFormulae.toggle()
                     Task { await updateManager.scanForUpdates() }
+                }) {
+                    Image(systemName: includeHomebrewFormulae ? "terminal.fill" : "terminal")
+                        .foregroundStyle(includeHomebrewFormulae ? .orange : ThemeColors.shared(for: colorScheme).secondaryText)
                 }
-            }) {
-                HStack(spacing: 8) {
-                    Image(systemName: checkHomebrew ? "checkmark.circle.fill" : "circle")
-                        .foregroundStyle(checkHomebrew ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
-                        .font(.title3)
-
-                    Image(systemName: "mug")
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        .font(.caption)
-                        .frame(width: 16)
-
-                    Text("Homebrew")
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                }
+                .buttonStyle(.plain)
+                .help(includeHomebrewFormulae ? "Disable CLI tools (formulae)" : "Enable CLI tools (formulae)")
             }
-            .buttonStyle(.plain)
 
             HStack(spacing: 8) {
                 Button(action: {

@@ -8,11 +8,24 @@
 import Foundation
 import AlinFoundation
 
-enum HomebrewError: Error {
+enum HomebrewError: Error, LocalizedError {
     case brewNotFound
     case commandFailed(String)
     case jsonParseError
     case packageNotFound
+
+    var errorDescription: String? {
+        switch self {
+        case .brewNotFound:
+            return "Homebrew not found. Please install Homebrew first."
+        case .commandFailed(let message):
+            return message.trimmingCharacters(in: .whitespacesAndNewlines)
+        case .jsonParseError:
+            return "Failed to parse JSON response from Homebrew API"
+        case .packageNotFound:
+            return "Package not found in Homebrew"
+        }
+    }
 }
 
 class HomebrewController {
@@ -150,7 +163,7 @@ class HomebrewController {
     }
 
     /// Extract name, description, version, and pin status from formula .rb file
-    private func getFormulaNameDescVersionPin(name: String) async -> (String, String, String, Bool)? {
+    func getFormulaNameDescVersionPin(name: String) async -> (String, String, String, Bool)? {
         let cellarPath = "\(brewPrefix)/Cellar/\(name)"
 
         // Find latest version directory
@@ -520,6 +533,13 @@ class HomebrewController {
             url: url,
             appcast: appcast
         )
+    }
+
+    /// Get just the available version for a formula (checks cache first, API fallback)
+    /// Lightweight wrapper around getPackageInfo for version-only queries
+    func getFormulaVersion(name: String) async throws -> String? {
+        let packageInfo = try await getPackageInfo(name: name, cask: false)
+        return packageInfo.version
     }
 
     /// Fetch type-safe package details from Homebrew API

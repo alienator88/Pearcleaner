@@ -25,6 +25,7 @@ class UpdateManager: ObservableObject {
     @AppStorage("settings.updater.checkHomebrew") private var checkHomebrew: Bool = true
     @AppStorage("settings.updater.checkSparkle") private var checkSparkle: Bool = true
     @AppStorage("settings.updater.includeSparklePreReleases") private var includeSparklePreReleases: Bool = false
+    @AppStorage("settings.updater.includeHomebrewFormulae") private var includeHomebrewFormulae: Bool = false
     @AppStorage("settings.updater.hiddenAppsData") private var hiddenAppsData: Data = Data()
 
     private init() {}
@@ -117,7 +118,8 @@ class UpdateManager: ObservableObject {
             checkAppStore: checkAppStore,
             checkHomebrew: checkHomebrew,
             checkSparkle: checkSparkle,
-            includeSparklePreReleases: includeSparklePreReleases
+            includeSparklePreReleases: includeSparklePreReleases,
+            includeHomebrewFormulae: includeHomebrewFormulae
         )
 
         // Separate hidden from visible updates
@@ -152,13 +154,24 @@ class UpdateManager: ObservableObject {
                 }
 
                 // Perform upgrade
-                try? await HomebrewController.shared.upgradePackage(name: cask)
+                do {
+                    try await HomebrewController.shared.upgradePackage(name: cask)
 
-                // Remove from list after upgrade
-                updatesBySource[.homebrew]?.removeAll { $0.id == app.id }
+                    // Only remove from list if upgrade succeeded
+                    updatesBySource[.homebrew]?.removeAll { $0.id == app.id }
 
-                // Refresh apps
-                await refreshApps()
+                    // Refresh apps
+                    await refreshApps()
+                } catch {
+                    // Update status to failed on error
+                    if var apps = updatesBySource[.homebrew],
+                       let index = apps.firstIndex(where: { $0.id == app.id }) {
+                        apps[index].status = .failed(error.localizedDescription)
+                        apps[index].progress = 0.0  // Reset progress indicator
+                        updatesBySource[.homebrew] = apps
+                    }
+                    printOS("Error updating Homebrew package \(cask): \(error)")
+                }
             }
 
         case .appStore:

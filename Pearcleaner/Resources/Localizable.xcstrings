@@ -12770,6 +12770,9 @@
         }
       }
     },
+    "CLI Tool (Formula)" : {
+
+    },
     "Click for apps list" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -17763,6 +17766,9 @@
         }
       }
     },
+    "Disable CLI tools (formulae)" : {
+
+    },
     "Disable pre-releases" : {
       "localizations" : {
         "de" : {
@@ -18933,6 +18939,9 @@
           }
         }
       }
+    },
+    "Enable CLI tools (formulae)" : {
+
     },
     "Enable context menu extension for Finder" : {
       "extractionState" : "manual",

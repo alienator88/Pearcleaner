@@ -49,13 +49,14 @@ class UpdateCoordinator {
         checkAppStore: Bool,
         checkHomebrew: Bool,
         checkSparkle: Bool,
-        includeSparklePreReleases: Bool
+        includeSparklePreReleases: Bool,
+        includeHomebrewFormulae: Bool
     ) async -> [UpdateSource: [UpdateableApp]] {
 
         // Run detectors concurrently (only if enabled)
         async let homebrewApps: [UpdateableApp] = {
             guard checkHomebrew else { return [] }
-            return await HomebrewUpdateChecker.checkForUpdates(apps: apps)
+            return await HomebrewUpdateChecker.checkForUpdates(apps: apps, includeFormulae: includeHomebrewFormulae)
         }()
 
         async let appStoreApps: [UpdateableApp] = {

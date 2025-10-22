@@ -40,15 +40,8 @@ struct UpdateRowView: View {
 
     @ViewBuilder
     private var actionButtons: some View {
-        if app.status != .idle {
-            HStack(spacing: 6) {
-                ProgressView()
-                    .scaleEffect(0.8)
-                Text(statusText(for: app.status))
-                    .font(.caption)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-            }
-        } else {
+        switch app.status {
+        case .idle:
             Button {
                 if app.isIOSApp, let appStoreURL = app.appStoreURL {
                     // iOS apps: Open App Store page
@@ -62,6 +55,21 @@ struct UpdateRowView: View {
             }
             .buttonStyle(.plain)
             .foregroundStyle(.orange)
+
+        case .checking, .downloading, .installing, .verifying:
+            HStack(spacing: 6) {
+                ProgressView()
+                    .scaleEffect(0.8)
+                Text(statusText(for: app.status))
+                    .font(.caption)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+            }
+
+        case .completed, .failed:
+            // Show status text without spinner
+            Text(statusText(for: app.status))
+                .font(.caption)
+                .foregroundStyle(app.status == .completed ? .green : .red)
         }
     }
 
@@ -127,16 +135,33 @@ struct UpdateRowView: View {
                         // Pre-release indicator (Sparkle only)
                         if app.source == .sparkle && app.isPreRelease {
                             if #available(macOS 14.0, *) {
-                                Image(systemName: "flask.fill")
-                                    .font(.body)
-                                    .foregroundStyle(.green)
-                                    .help("Pre-release")
+                                ZStack {
+                                    Image(systemName: "flask.fill")
+                                        .font(.body)
+                                        .foregroundStyle(.green)
+                                }
+                                .frame(width: 20)
+                                .help("Pre-release")
                             } else {
-                                Image(systemName: "testtube.2")
-                                    .font(.body)
-                                    .foregroundStyle(.green)
-                                    .help("Pre-release")
+                                ZStack {
+                                    Image(systemName: "testtube.2")
+                                        .font(.body)
+                                        .foregroundStyle(.green)
+                                }
+                                .frame(width: 20)
+                                .help("Pre-release")
                             }
+                        }
+
+                        // CLI tool indicator (Homebrew formulae only)
+                        if app.source == .homebrew && app.appInfo.bundleIdentifier.hasPrefix("com.homebrew.formula.") {
+                            ZStack {
+                                Image(systemName: "terminal.fill")
+                                    .font(.body)
+                                    .foregroundStyle(.orange)
+                            }
+                            .frame(width: 20)
+                            .help("CLI Tool (Formula)")
                         }
 
                         // Info button for App Store apps
