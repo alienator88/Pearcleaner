@@ -46,7 +46,6 @@
 		C7D31D512AFF00F300C7ED9E /* Locations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D502AFF00F300C7ED9E /* Locations.swift */; };
 		C7DD49EA2BAB4D8100CCBA16 /* AppInfoFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */; };
 		C7DD49EE2BAB7F6000CCBA16 /* ReversePathsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */; };
-		C7DD93952EA1519F00C457BF /* SemanticVersion in Frameworks */ = {isa = PBXBuildFile; productRef = C7DD93942EA1519F00C457BF /* SemanticVersion */; };
 		C7F539382AF60865007DF1B2 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F539372AF60865007DF1B2 /* Utilities.swift */; };
 		C7F8436B2CBF066F00E3E30A /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C7F8436A2CBF066F00E3E30A /* Localizable.xcstrings */; };
 		C7FBD9DF2DAD66D500151934 /* AlinFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = C7C90DDD2DA8221B0056769A /* AlinFoundation */; };
@@ -258,7 +257,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C7DD93952EA1519F00C457BF /* SemanticVersion in Frameworks */,
 				C74E55512D0773190007EC2C /* IfritStatic in Frameworks */,
 				C76EDCD62C45DC82000CF29D /* AlinFoundation in Frameworks */,
 				C7A2A4D92DDB95C4006E05E4 /* ArgumentParser in Frameworks */,
@@ -488,7 +486,6 @@
 				C7736E4E2C49A44200917293 /* AlinFoundation */,
 				C74E55502D0773190007EC2C /* IfritStatic */,
 				C7A2A4D82DDB95C4006E05E4 /* ArgumentParser */,
-				C7DD93942EA1519F00C457BF /* SemanticVersion */,
 			);
 			productName = PeakPurge;
 			productReference = C77B90002AF18E2E009CC655 /* Pearcleaner.app */;
@@ -565,7 +562,6 @@
 				C7736E4D2C49A44200917293 /* XCRemoteSwiftPackageReference "AlinFoundation" */,
 				C74E554D2D0773190007EC2C /* XCRemoteSwiftPackageReference "Ifrit" */,
 				C7A2A4D72DDB95C4006E05E4 /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
-				C7DD93932EA1519F00C457BF /* XCRemoteSwiftPackageReference "SemanticVersion" */,
 			);
 			preferredProjectObjectVersion = 56;
 			productRefGroup = C77B90012AF18E2E009CC655 /* Products */;
@@ -1160,14 +1156,6 @@
 				minimumVersion = 1.5.0;
 			};
 		};
-		C7DD93932EA1519F00C457BF /* XCRemoteSwiftPackageReference "SemanticVersion" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftPackageIndex/SemanticVersion";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.5.1;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1194,11 +1182,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C7736E4D2C49A44200917293 /* XCRemoteSwiftPackageReference "AlinFoundation" */;
 			productName = AlinFoundation;
-		};
-		C7DD93942EA1519F00C457BF /* SemanticVersion */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C7DD93932EA1519F00C457BF /* XCRemoteSwiftPackageReference "SemanticVersion" */;
-			productName = SemanticVersion;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

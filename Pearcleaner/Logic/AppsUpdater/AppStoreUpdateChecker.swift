@@ -9,7 +9,6 @@ import Foundation
 import CommerceKit
 import StoreFoundation
 import AlinFoundation
-import SemanticVersion
 
 class AppStoreUpdateChecker {
     static func checkForUpdates(apps: [AppInfo]) async -> [UpdateableApp] {
@@ -64,14 +63,13 @@ class AppStoreUpdateChecker {
             return nil
         }
 
-        // Normalize versions to 3 components (SemanticVersion requires major.minor.patch)
-        let normalizedInstalled = normalizeVersion(app.appVersion)
-        let normalizedAvailable = normalizeVersion(appStoreInfo.version)
+        // Use Version for robust comparison (handles 1, 2, 3+ component versions)
+        let installedVer = Version(versionNumber: app.appVersion, buildNumber: nil)
+        let availableVer = Version(versionNumber: appStoreInfo.version, buildNumber: nil)
 
-        // Use SemanticVersion for robust comparison (handles all version formats correctly)
-        guard let installedVer = SemanticVersion(normalizedInstalled),
-              let availableVer = SemanticVersion(normalizedAvailable) else {
-            return nil  // Invalid version format, skip
+        // Skip if versions are empty/invalid
+        guard !installedVer.isEmpty && !availableVer.isEmpty else {
+            return nil
         }
 
         // Detect if this is a wrapped iOS app
@@ -97,24 +95,6 @@ class AppStoreUpdateChecker {
         }
 
         return nil
-    }
-
-    /// Normalize version string to have 3 components (major.minor.patch)
-    /// SemanticVersion requires all 3 components, but some apps use 2-component versions
-    /// Examples: "4.9" → "4.9.0", "2.92" → "2.92.0", "4.10.0" → "4.10.0"
-    private static func normalizeVersion(_ version: String) -> String {
-        let components = version.split(separator: ".").map(String.init)
-
-        switch components.count {
-        case 0:
-            return "0.0.0"  // Invalid, use default
-        case 1:
-            return "\(components[0]).0.0"  // "4" → "4.0.0"
-        case 2:
-            return "\(components[0]).\(components[1]).0"  // "4.9" → "4.9.0"
-        default:
-            return version  // Already 3+ components, use as-is
-        }
     }
 
     private struct AppStoreInfo {

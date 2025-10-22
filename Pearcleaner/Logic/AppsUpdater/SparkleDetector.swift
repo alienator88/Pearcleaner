@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SemanticVersion
 
 class SparkleDetector {
     static func findSparkleApps(from apps: [AppInfo], includePreReleases: Bool = false) async -> [UpdateableApp] {
@@ -95,11 +94,10 @@ class SparkleDetector {
                 // Stage 1: Filter by channel tag (e.g., BetterDisplay with <sparkle:channel>beta</sparkle:channel>)
                 items = items.filter { $0.channel == nil }
 
-                // Stage 2: Filter by SemVer pre-release identifier (e.g., Transmission with version "4.1.0-beta.2")
+                // Stage 2: Filter by version string pre-release patterns (e.g., Transmission with version "4.1.0-beta.2")
                 items = items.filter { item in
                     let version = item.shortVersionString ?? item.buildVersion
-                    guard let semVer = SemanticVersion(version) else { return true }  // Keep if not parseable
-                    return !semVer.isPreRelease  // Exclude if pre-release (has -beta, -rc, -alpha, etc.)
+                    return !isPreReleaseVersion(version)  // Exclude if pre-release (has -beta, -rc, -alpha, etc.)
                 }
             }
 
@@ -111,14 +109,11 @@ class SparkleDetector {
                 let ver1 = item1.shortVersionString ?? item1.buildVersion
                 let ver2 = item2.shortVersionString ?? item2.buildVersion
 
-                // Compare using SemanticVersion
-                guard let semVer1 = SemanticVersion(ver1),
-                      let semVer2 = SemanticVersion(ver2) else {
-                    // Fallback to string comparison if parsing fails
-                    return ver1 < ver2
-                }
+                // Compare using Version (supports 2, 3, 4+ component versions)
+                let version1 = Version(versionNumber: ver1, buildNumber: nil)
+                let version2 = Version(versionNumber: ver2, buildNumber: nil)
 
-                return semVer1 < semVer2
+                return version1 < version2
             }!
 
             // Smart version comparison (matching Latest app's logic):
@@ -140,10 +135,13 @@ class SparkleDetector {
                 appcastVersionToCompare = candidateItem.buildVersion
             }
 
-            // Use SemanticVersion for robust comparison
-            guard let installedVer = SemanticVersion(appVersionToCompare),
-                  let availableVer = SemanticVersion(appcastVersionToCompare) else {
-                return nil  // Invalid version format
+            // Use Version for robust comparison (supports 2, 3, 4+ component versions)
+            let installedVer = Version(versionNumber: appVersionToCompare, buildNumber: nil)
+            let availableVer = Version(versionNumber: appcastVersionToCompare, buildNumber: nil)
+
+            // Skip if versions are empty/invalid
+            guard !installedVer.isEmpty && !availableVer.isEmpty else {
+                return nil
             }
 
             // Only show update if available > installed
@@ -166,8 +164,8 @@ class SparkleDetector {
                     if candidateItem.channel != nil {
                         return true
                     }
-                    // Check if version has SemVer pre-release identifier (e.g., "4.1.0-beta.2")
-                    if let semVer = SemanticVersion(appcastVersionToCompare), semVer.isPreRelease {
+                    // Check if version has pre-release identifier (e.g., "4.1.0-beta.2", "1.0rc1")
+                    if isPreReleaseVersion(appcastVersionToCompare) {
                         return true
                     }
                     return false
