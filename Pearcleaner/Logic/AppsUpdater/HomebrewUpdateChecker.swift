@@ -19,15 +19,25 @@ class HomebrewUpdateChecker {
 
         var updateableApps: [UpdateableApp] = []
 
-        // Process casks (GUI apps)
-        for appInfo in brewApps {
-            guard let cask = appInfo.cask else { continue }
+        // Process casks (GUI apps) - fetch available versions concurrently
+        let outdatedCasks = brewApps.filter { $0.cask != nil && outdatedNames.contains($0.cask!) }
 
-            // Check if this cask is in the outdated list
-            if outdatedNames.contains(cask) {
+        await withTaskGroup(of: (AppInfo, String?).self) { group in
+            for appInfo in outdatedCasks {
+                guard let cask = appInfo.cask else { continue }
+
+                group.addTask {
+                    // Get available version from API/cache
+                    let availableVersion = try? await HomebrewController.shared.getCaskVersion(name: cask)
+                    return (appInfo, availableVersion)
+                }
+            }
+
+            // Collect results and create UpdateableApp entries
+            for await (appInfo, availableVersion) in group {
                 let updateableApp = UpdateableApp(
                     appInfo: appInfo,
-                    availableVersion: nil, // We don't have the new version easily available
+                    availableVersion: availableVersion,  // Available version from Homebrew API (may have commit hash)
                     source: .homebrew,
                     adamID: nil,
                     appStoreURL: nil,

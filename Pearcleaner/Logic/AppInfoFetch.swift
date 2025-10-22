@@ -19,7 +19,16 @@ class MetadataAppInfoFetcher {
         let appName = displayName.isEmpty ? fsName : displayName
 
         let bundleIdentifier = metadata["kMDItemCFBundleIdentifier"] as? String ?? ""
-        let version = metadata["kMDItemVersion"] as? String ?? ""
+
+        // Get version directly from bundle Info.plist instead of metadata (always up-to-date)
+        let version: String = {
+            guard let bundle = Bundle(url: path) else { return "" }
+            let shortVersion = bundle.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+            if !shortVersion.isEmpty {
+                return shortVersion
+            }
+            return bundle.infoDictionary?["CFBundleVersion"] as? String ?? ""
+        }()
 
         // Sizes
         let logicalSize = metadata["kMDItemLogicalSize"] as? Int64 ?? 0
@@ -109,7 +118,6 @@ func getMDLSMetadata(for paths: [String]) -> [String: [String: Any]]? {
         kMDItemDisplayName,
         kMDItemCFBundleIdentifier,
         kMDItemFSName,
-        kMDItemVersion,
         kMDItemLogicalSize,
         kMDItemPhysicalSize
     ]

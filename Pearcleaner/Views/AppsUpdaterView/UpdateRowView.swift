@@ -180,7 +180,13 @@ struct UpdateRowView: View {
 
                     // Version info (larger font)
                     if let availableVersion = app.availableVersion {
-                        Text(verbatim: "\(app.appInfo.appVersion) → \(availableVersion)\(app.isIOSApp ? " (iOS apps have to be updated in the App Store)" : "")")
+                        // Clean Homebrew versions for display (strip commit hash)
+                        let displayInstalledVersion = app.source == .homebrew ?
+                            app.appInfo.appVersion.cleanBrewVersionForDisplay() : app.appInfo.appVersion
+                        let displayAvailableVersion = app.source == .homebrew ?
+                            availableVersion.cleanBrewVersionForDisplay() : availableVersion
+
+                        Text(verbatim: "\(displayInstalledVersion) → \(displayAvailableVersion)\(app.isIOSApp ? " (iOS apps have to be updated in the App Store)" : "")")
                             .font(.callout)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     } else if app.source == .sparkle {

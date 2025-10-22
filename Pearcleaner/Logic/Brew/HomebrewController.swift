@@ -28,6 +28,18 @@ enum HomebrewError: Error, LocalizedError {
     }
 }
 
+extension String {
+    /// Strip commit hash from Homebrew version for display purposes
+    /// Example: "0.14.1,fc796f5b140d2dc2d21015e56b70c0c1567a2fd7" -> "0.14.1"
+    /// Note: Only use for UI display, not for logic/comparisons
+    func cleanBrewVersionForDisplay() -> String {
+        if let commaIndex = self.firstIndex(of: ",") {
+            return String(self[..<commaIndex])
+        }
+        return self
+    }
+}
+
 class HomebrewController {
     static let shared = HomebrewController()
     private let brewPath: String
@@ -542,6 +554,13 @@ class HomebrewController {
         return packageInfo.version
     }
 
+    /// Get just the available version for a cask (checks cache first, API fallback)
+    /// Lightweight wrapper around getPackageInfo for version-only queries
+    func getCaskVersion(name: String) async throws -> String? {
+        let packageInfo = try await getPackageInfo(name: name, cask: true)
+        return packageInfo.version
+    }
+
     /// Fetch type-safe package details from Homebrew API
     /// Returns either FormulaDetails or CaskDetails wrapped in PackageDetailsType
     func getPackageDetailsTyped(name: String, cask: Bool) async throws -> PackageDetailsType {
@@ -957,7 +976,7 @@ class HomebrewController {
 
     /// Get list of outdated package names from brew outdated
     func getOutdatedPackages() async throws -> Set<String> {
-        let arguments = ["outdated", "--quiet"]
+        let arguments = ["outdated", "--quiet", "--greedy"]
         let result = try await runBrewCommand(arguments)
 
         if result.error.contains("Error") {
