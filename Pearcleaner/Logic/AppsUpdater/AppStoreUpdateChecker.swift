@@ -106,7 +106,6 @@ class AppStoreUpdateChecker {
     }
 
     private static func getAppStoreInfo(bundleID: String) async -> AppStoreInfo? {
-        // Three-stage fetch strategy (matching Latest app's approach):
         // 1. Try desktopSoftware first (Mac-native apps - most accurate)
         // 2. Fallback to macSoftware (broader: includes Catalyst and iOS apps)
         // 3. Fallback to software (all platforms: catches iPad/iOS apps that run via "Designed for iPad")

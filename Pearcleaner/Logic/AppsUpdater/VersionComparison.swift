@@ -4,9 +4,8 @@
 //
 //  Created by Alin Lupascu on 10/22/25.
 //
-//  Version comparison logic adapted from Latest app (https://github.com/mangerlahn/Latest)
 //  Based on Sparkle Framework's version comparison algorithm
-//  License: MIT (from Latest project)
+//  License: MIT
 //
 
 import Foundation
@@ -194,7 +193,6 @@ fileprivate extension String {
 
             else {
                 // Unable to parse - skip this character and continue
-                // This is more lenient than Latest's fatalError
                 scanner.currentIndex = scanner.string.index(after: scanner.currentIndex)
             }
         }

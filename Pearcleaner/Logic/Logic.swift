@@ -28,7 +28,6 @@ func createOptimalChunks<T>(from array: [T], minChunkSize: Int = 10, maxChunkSiz
 /// - Parameter apps: Array of AppInfo objects whose bundles should have caches flushed
 /// - Discussion: (NS)Bundle caches Info.plist data. After app updates, old version info may be
 ///               returned. Flushing the cache using private API ensures current data is read.
-///               This matches the approach used by the Latest app.
 func flushBundleCaches(for apps: [AppInfo]) {
     for app in apps {
         autoreleasepool {

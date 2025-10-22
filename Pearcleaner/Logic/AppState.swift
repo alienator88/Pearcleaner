@@ -435,6 +435,13 @@ extension AppInfo {
     }
 }
 
+// MARK: - Fuzzy Search
+extension AppInfo: FuzzySearchable {
+    var searchableString: String {
+        return appName
+    }
+}
+
 struct ZombieFile: Identifiable, Equatable, Hashable {
     let id: UUID
     var fileSize: [URL: Int64]  // Logical file sizes (matches Finder)

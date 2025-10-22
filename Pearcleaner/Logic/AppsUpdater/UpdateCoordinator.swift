@@ -9,7 +9,7 @@ import Foundation
 import AlinFoundation
 
 class UpdateCoordinator {
-    /// Check if an app is a wrapped iPad/iOS app (Latest's approach)
+    /// Check if an app is a wrapped iPad/iOS app 
     static func isIOSApp(_ app: AppInfo) -> Bool {
         if !app.wrapped { return false }
 

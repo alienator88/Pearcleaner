@@ -6,7 +6,6 @@
 //
 
 import AlinFoundation
-import Ifrit
 import SwiftUI
 
 struct AppSearchView: View {
@@ -146,14 +145,9 @@ struct AppSearchView: View {
         if search.isEmpty {
             apps = appState.sortedApps
         } else {
-            let fuse = Fuse()
-            apps = appState.sortedApps.filter { app in
-                if app.appName.localizedCaseInsensitiveContains(search) {
-                    return true
-                }
-                let result = fuse.searchSync(search, in: app.appName)
-                return result?.score ?? 1.0 < 0.4  // Adjust threshold as needed (lower = stricter)
-            }
+            // Use custom fuzzy search algorithm
+            let searchResults = appState.sortedApps.fuzzySearch(query: search)
+            apps = searchResults.map { $0.item }
         }
 
         // Sort based on the selected option

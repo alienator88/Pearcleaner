@@ -19,10 +19,10 @@
 		C74206E52E79E47400BDDB6A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C74206E42E79E47400BDDB6A /* Assets.xcassets */; };
 		C74422412E4936750002D277 /* DaemonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74422402E4936700002D277 /* DaemonView.swift */; };
 		C74422432E494D830002D277 /* PackageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74422422E494D7E0002D277 /* PackageView.swift */; };
-		C74E55512D0773190007EC2C /* IfritStatic in Frameworks */ = {isa = PBXBuildFile; productRef = C74E55502D0773190007EC2C /* IfritStatic */; };
 		C74FDC632BCD833D00B8960F /* Conditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74FDC622BCD833D00B8960F /* Conditions.swift */; };
 		C7575D392B0182DE006A600A /* PearcleanerSentinel in CopyFiles */ = {isa = PBXBuildFile; fileRef = C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C76EDCD62C45DC82000CF29D /* AlinFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = C76EDCD52C45DC82000CF29D /* AlinFoundation */; };
+		C77020292EA94D0A00240D58 /* FuzzySearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77020282EA94D0A00240D58 /* FuzzySearch.swift */; };
 		C770B6ED2E78DF9D005A0ABD /* Glass.icon in Resources */ = {isa = PBXBuildFile; fileRef = C770B6EC2E78DF9D005A0ABD /* Glass.icon */; };
 		C770D7DB2CE7C9AD00B3492A /* DevelopmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C770D7DA2CE7C9A100B3492A /* DevelopmentView.swift */; };
 		C7736E4F2C49A44200917293 /* AlinFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = C7736E4E2C49A44200917293 /* AlinFoundation */; };
@@ -137,6 +137,7 @@
 		C74422422E494D7E0002D277 /* PackageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageView.swift; sourceTree = "<group>"; };
 		C74451F62D93774700146AF8 /* announcements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = announcements.json; sourceTree = "<group>"; };
 		C74FDC622BCD833D00B8960F /* Conditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conditions.swift; sourceTree = "<group>"; };
+		C77020282EA94D0A00240D58 /* FuzzySearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuzzySearch.swift; sourceTree = "<group>"; };
 		C770B6EC2E78DF9D005A0ABD /* Glass.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Glass.icon; sourceTree = "<group>"; };
 		C770D7DA2CE7C9A100B3492A /* DevelopmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevelopmentView.swift; sourceTree = "<group>"; };
 		C77B90002AF18E2E009CC655 /* Pearcleaner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pearcleaner.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -232,7 +233,6 @@
 		C783F9492E903B53003450E7 /* PKG */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = PKG; sourceTree = "<group>"; };
 		C7923DCC2E90807F005C5632 /* Brew */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Brew; sourceTree = "<group>"; };
 		C7C05FD72E8DA12C006D0476 /* Brew */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Brew; sourceTree = "<group>"; };
-		C7C05FF12E8DEE85006D0476 /* Data */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Data; sourceTree = "<group>"; };
 		C7C693E92E9D73DD0081CF25 /* AppsUpdater */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = AppsUpdater; sourceTree = "<group>"; };
 		C7C693FC2E9D74D50081CF25 /* AppsUpdaterView */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = AppsUpdaterView; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -257,7 +257,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C74E55512D0773190007EC2C /* IfritStatic in Frameworks */,
 				C76EDCD62C45DC82000CF29D /* AlinFoundation in Frameworks */,
 				C7A2A4D92DDB95C4006E05E4 /* ArgumentParser in Frameworks */,
 				C783F93A2E9039EB003450E7 /* PackageKit.framework in Frameworks */,
@@ -285,6 +284,7 @@
 				C7A2A4D52DDB957D006E05E4 /* CLI.swift */,
 				C74FDC622BCD833D00B8960F /* Conditions.swift */,
 				C72893042AFD42E600C8C1CD /* DeepLink.swift */,
+				C77020282EA94D0A00240D58 /* FuzzySearch.swift */,
 				C73545EA2D8496DA00A3DC0C /* HelperToolManager.swift */,
 				C7C90DD22DA81C590056769A /* Lipo.swift */,
 				C7D31D502AFF00F300C7ED9E /* Locations.swift */,
@@ -295,7 +295,6 @@
 				C7F539372AF60865007DF1B2 /* Utilities.swift */,
 				C7C693E92E9D73DD0081CF25 /* AppsUpdater */,
 				C7923DCC2E90807F005C5632 /* Brew */,
-				C7C05FF12E8DEE85006D0476 /* Data */,
 				C783F8FD2E903707003450E7 /* FileSearch */,
 				C783F9492E903B53003450E7 /* PKG */,
 			);
@@ -476,7 +475,6 @@
 				C783F9492E903B53003450E7 /* PKG */,
 				C7923DCC2E90807F005C5632 /* Brew */,
 				C7C05FD72E8DA12C006D0476 /* Brew */,
-				C7C05FF12E8DEE85006D0476 /* Data */,
 				C7C693E92E9D73DD0081CF25 /* AppsUpdater */,
 				C7C693FC2E9D74D50081CF25 /* AppsUpdaterView */,
 			);
@@ -484,7 +482,6 @@
 			packageProductDependencies = (
 				C76EDCD52C45DC82000CF29D /* AlinFoundation */,
 				C7736E4E2C49A44200917293 /* AlinFoundation */,
-				C74E55502D0773190007EC2C /* IfritStatic */,
 				C7A2A4D82DDB95C4006E05E4 /* ArgumentParser */,
 			);
 			productName = PeakPurge;
@@ -560,7 +557,6 @@
 			mainGroup = C77B8FF72AF18E2E009CC655;
 			packageReferences = (
 				C7736E4D2C49A44200917293 /* XCRemoteSwiftPackageReference "AlinFoundation" */,
-				C74E554D2D0773190007EC2C /* XCRemoteSwiftPackageReference "Ifrit" */,
 				C7A2A4D72DDB95C4006E05E4 /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
 			);
 			preferredProjectObjectVersion = 56;
@@ -626,6 +622,7 @@
 				C77B90162AF19377009CC655 /* AppState.swift in Sources */,
 				C7DD49EE2BAB7F6000CCBA16 /* ReversePathsFetch.swift in Sources */,
 				C72D03B52E4D3FB900ADC1B4 /* MainWindow.swift in Sources */,
+				C77020292EA94D0A00240D58 /* FuzzySearch.swift in Sources */,
 				C7BB99292E8AF1CB007BBB81 /* PluginsView.swift in Sources */,
 				C7C90DD32DA81C5D0056769A /* Lipo.swift in Sources */,
 				C7A2A4D62DDB957D006E05E4 /* CLI.swift in Sources */,
@@ -763,8 +760,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 107;
-				APP_VERSION = 5.2.8;
+				APP_BUILD = 108;
+				APP_VERSION = 5.2.9;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -836,8 +833,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 107;
-				APP_VERSION = 5.2.8;
+				APP_BUILD = 108;
+				APP_VERSION = 5.2.9;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1132,14 +1129,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		C74E554D2D0773190007EC2C /* XCRemoteSwiftPackageReference "Ifrit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/ukushu/Ifrit.git";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
 		C7736E4D2C49A44200917293 /* XCRemoteSwiftPackageReference "AlinFoundation" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/alienator88/AlinFoundation";
@@ -1159,11 +1148,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		C74E55502D0773190007EC2C /* IfritStatic */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C74E554D2D0773190007EC2C /* XCRemoteSwiftPackageReference "Ifrit" */;
-			productName = IfritStatic;
-		};
 		C76EDCD52C45DC82000CF29D /* AlinFoundation */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AlinFoundation;

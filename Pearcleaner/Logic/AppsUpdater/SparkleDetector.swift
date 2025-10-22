@@ -116,7 +116,6 @@ class SparkleDetector {
                 return version1 < version2
             }!
 
-            // Smart version comparison (matching Latest app's logic):
             // - If appcast has shortVersionString, compare with app's CFBundleShortVersionString
             // - If appcast only has version (build number), compare with app's CFBundleVersion
             // - This prevents false positives like DiskDrill (6.0 vs 6.0.2020)
