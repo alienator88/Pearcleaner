@@ -57,7 +57,7 @@ struct PearcleanerUpdateBanner: View {
 
                     // Version info
                     if let newVersion = newVersion {
-                        Text("\(updater.currentVersion) → \(newVersion)")
+                        Text(verbatim: "\(updater.currentVersion) → \(newVersion)")
                             .font(.callout)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }
@@ -120,7 +120,7 @@ struct PearcleanerUpdateBanner: View {
 
                         // Percentage (only show during active update)
                         if isUpdating {
-                            Text("\(Int(updater.progressBar.1 * 100))%")
+                            Text(verbatim: "\(Int(updater.progressBar.1 * 100))%")
                                 .font(.callout)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                         }
