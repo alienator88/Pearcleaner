@@ -22,6 +22,7 @@ struct BadgeOverlay: View {
     @ObservedObject var permissionManager = PermissionManager.shared
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+    @AppStorage("settings.interface.badgeOverlaysEnabled") private var badgeOverlaysEnabled: Bool = true
     @State private var isVisible: Bool = false
     @State private var isExpanded: Bool = false
     @State private var showPermissionList: Bool = false
@@ -59,7 +60,7 @@ struct BadgeOverlay: View {
     }
 
     private var shouldShowOverlay: Bool {
-        currentOverlay != nil
+        badgeOverlaysEnabled && currentOverlay != nil
     }
 
     var body: some View {

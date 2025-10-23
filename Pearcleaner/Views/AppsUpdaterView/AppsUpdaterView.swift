@@ -11,6 +11,7 @@ import AlinFoundation
 struct AppsUpdaterView: View {
     @StateObject private var updateManager = UpdateManager.shared
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var updater: Updater
     @Environment(\.colorScheme) var colorScheme
     @State private var searchText = ""
     @State private var collapsedCategories: Set<String> = []
@@ -131,6 +132,14 @@ struct AppsUpdaterView: View {
             } else {
                 ScrollView {
                     LazyVStack(spacing: 0) {
+                        // Pearcleaner self-update banner (appears first, before categories)
+                        // Only show if user hasn't disabled update checking AND update is available
+                        if updater.updateFrequency != .none && updater.updateAvailable {
+                            PearcleanerUpdateBanner()
+                            Divider()
+                                .padding(.vertical)
+                        }
+
                         // Show categories only if their checkbox is enabled
                         if checkAppStore {
                             CategorySection(

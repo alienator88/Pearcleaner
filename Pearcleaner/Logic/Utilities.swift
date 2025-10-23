@@ -373,9 +373,22 @@ func killApp(appId: String, completion: @escaping () -> Void = {}) {
 //}
 
 
-func openAppSettingsWindow(tab: CurrentTabView = .general, updater: Updater) {
-    // Update tab selection
-    UserDefaults.standard.set(tab.rawValue, forKey: "settings.general.selectedTab")
+func openAppSettingsWindow(tab: CurrentTabView? = nil, updater: Updater) {
+    // Determine which tab to open:
+    // 1. If caller explicitly passes a tab (not nil), use it and save as new preference
+    // 2. Otherwise, check for saved tab preference
+    // 3. If no saved preference, default to .general
+
+    if let requestedTab = tab {
+        // Explicit tab request - use it and save as new preference
+        UserDefaults.standard.set(requestedTab.rawValue, forKey: "settings.general.selectedTab")
+    } else if UserDefaults.standard.object(forKey: "settings.general.selectedTab") == nil {
+        // No saved preference - default to general and save it
+        UserDefaults.standard.set(CurrentTabView.general.rawValue, forKey: "settings.general.selectedTab")
+    }
+    // Otherwise, use the existing saved preference (no need to set it again)
+
+    // Note: Tab changes during use are handled by @AppStorage in SettingsView
 
     // Create SettingsView with environment objects
     let settingsView = SettingsView()

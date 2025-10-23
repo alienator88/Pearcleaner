@@ -25,6 +25,7 @@ struct InterfaceSettingsTab: View {
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.interface.multiSelect") private var multiSelect: Bool = false
     @AppStorage("settings.interface.greetingEnabled") private var greetingEnabled: Bool = true
+    @AppStorage("settings.interface.badgeOverlaysEnabled") private var badgeOverlaysEnabled: Bool = true
 
     var body: some View {
 
@@ -176,6 +177,26 @@ struct InterfaceSettingsTab: View {
                         }
                         Spacer()
                         Toggle(isOn: $greetingEnabled, label: {
+                        })
+                        .toggleStyle(SettingsToggle())
+                    }
+                    .padding(5)
+
+
+                    HStack(spacing: 0) {
+                        Image(systemName: badgeOverlaysEnabled ? "bell.badge.fill" : "bell.badge")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 15, height: 15)
+                            .padding(.trailing)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text(badgeOverlaysEnabled ? String(localized: "Badge notification overlays enabled") : String(localized: "Badge notification overlays disabled"))
+                                .font(.callout)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                        }
+                        Spacer()
+                        Toggle(isOn: $badgeOverlaysEnabled, label: {
                         })
                         .toggleStyle(SettingsToggle())
                     }

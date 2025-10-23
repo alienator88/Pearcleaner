@@ -219,8 +219,8 @@ class DeeplinkManager {
                     openAppSettingsWindow(tab: matchedPage, updater: updater)
                 }
             } else {
-                // No query parameter - open with default general tab
-                openAppSettingsWindow(tab: .general, updater: updater)
+                // No query parameter - open with saved preference (or general if none saved)
+                openAppSettingsWindow(updater: updater)
             }
             break
         case DeepLinkActions.openPermissions:

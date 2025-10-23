@@ -462,6 +462,16 @@
         }
       }
     },
+    "%@ → %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ → %2$@"
+          }
+        }
+      }
+    },
     "%@ is already on the latest release available" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2497,6 +2507,9 @@
           }
         }
       }
+    },
+    "%lld%%" : {
+
     },
     "⚙️ Service/Daemon" : {
       "localizations" : {
@@ -10241,6 +10254,12 @@
           }
         }
       }
+    },
+    "Badge notification overlays disabled" : {
+
+    },
+    "Badge notification overlays enabled" : {
+
     },
     "Bill of Materials" : {
       "localizations" : {
@@ -30346,6 +30365,9 @@
         }
       }
     },
+    "Install Update" : {
+
+    },
     "Installation" : {
       "localizations" : {
         "de" : {
@@ -43499,6 +43521,9 @@
           }
         }
       }
+    },
+    "Pearcleaner" : {
+
     },
     "Pearcleaner and all of its files will be cleanly removed, are you sure?" : {
       "extractionState" : "manual",
