@@ -23,7 +23,7 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.namesearchstrict") private var nameSearchStrict = false
     @AppStorage("settings.general.spotlight") private var spotlight = false
     @AppStorage("settings.general.permanentDelete") private var permanentDelete: Bool = false
-    @AppStorage("settings.general.searchSensitivity") private var sensitivityLevel: SearchSensitivityLevel = .smart
+    @AppStorage("settings.general.searchSensitivity") private var sensitivityLevel: SearchSensitivityLevel = .strict
     @AppStorage("settings.general.deepLevelAlertShown") private var deepLevelAlertShown: Bool = false
     @AppStorage("settings.app.autoSlim") private var autoSlim: Bool = false
     @State private var showAppIconInMenu = UserDefaults.showAppIconInMenu
@@ -213,10 +213,12 @@ struct GeneralSettingsTab: View {
                     The search sensitivity level controls how strict or lenient Pearcleaner is when finding related files for an app:
 
                     • Strict – \(SearchSensitivityLevel.strict.description)
-                    • Smart – \(SearchSensitivityLevel.smart.description)
+                    
+                    • Enhanced – \(SearchSensitivityLevel.enhanced.description)
+                    
                     • Deep – \(SearchSensitivityLevel.deep.description)
 
-                    Higher levels may find more files but may include some unrelated results. It is recommended to check found files manually at these levels.
+                    At levels higher than Strict it is recommended to check found files manually.
                     """))
                         Spacer()
                         Text(verbatim: "\(sensitivityLevel.title)")
@@ -428,14 +430,14 @@ struct GeneralSettingsTab: View {
 
 
 enum SearchSensitivityLevel: Int, CaseIterable, Identifiable {
-    case strict, smart, deep
+    case strict, enhanced, deep
 
     var id: Int { rawValue }
 
     var title: String {
         switch self {
         case .strict: return String(localized: "Strict")
-        case .smart: return String(localized: "Smart")
+        case .enhanced: return String(localized: "Enhanced")
         case .deep: return String(localized: "Deep")
         }
     }
@@ -443,7 +445,7 @@ enum SearchSensitivityLevel: Int, CaseIterable, Identifiable {
     var color: Color {
         switch self {
         case .strict: return .orange
-        case .smart: return .green
+        case .enhanced: return .green
         case .deep: return .red
         }
     }
@@ -451,11 +453,11 @@ enum SearchSensitivityLevel: Int, CaseIterable, Identifiable {
     var description: String {
         switch self {
         case .strict:
-            return String(localized: "Only exact app name and bundle ID matches. Most conservative, safest for all apps.")
-        case .smart:
-            return String(localized: "Finds related files using partial name matching and company name. Recommended as default option.")
+            return String(localized: "Exact string matches only for app name, bundle ID, and entitlements. Most conservative, recommended as default choice.")
+        case .enhanced:
+            return String(localized: "Everything in Strict plus partial string matches. May find a few unrelated files in some cases.")
         case .deep:
-            return String(localized: "Searches file contents, metadata, Finder comments, and files created by the app. Most comprehensive cleanup, but will likely have a small amount of unrelated files.")
+            return String(localized: "Everything in Enhanced plus adds company name and team identifier. Searches file contents, metadata, Finder comments, and files created by the app. Most comprehensive cleanup, finds all resources associated with the app and the developer, even other apps they create.")
         }
     }
 

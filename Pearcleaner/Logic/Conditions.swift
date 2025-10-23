@@ -86,20 +86,32 @@ var conditions: [Condition] = [
     ),
     Condition(
         bundle_id: "com.microsoft.edgemac",
-        include: ["microsoft"],
+        include: [],
         exclude: ["vscode", "rdc", "appcenter", "office", "oneauth"],
         includeForce: nil
     ),
     Condition(
+        bundle_id: "com.microsoft.teams2",
+        include: [],
+        exclude: ["office"],
+        includeForce: nil
+    ),
+    Condition(
         bundle_id: "org.mozilla.firefox",
-        include: ["mozilla", "firefox"],
-        exclude: [],
+        include: ["firefox"],
+        exclude: ["thunderbird"],
+        includeForce: nil
+    ),
+    Condition(
+        bundle_id: "org.mozilla.thunderbird",
+        include: [],
+        exclude: ["firefox"],
         includeForce: nil
     ),
     Condition(
         bundle_id: "org.mozilla.firefox.nightly",
         include: ["mozilla", "firefox"],
-        exclude: [],
+        exclude: ["thunderbird"],
         includeForce: nil
     ),
     Condition(
@@ -178,7 +190,7 @@ var conditions: [Condition] = [
 
 
 
-// Skip com.apple files/folders since most are system originated, allow some for apps
+// Skip some system files/folders
 let skipConditions: [SkipCondition] = [
     SkipCondition(
         skipPrefix: ["mobiledocuments", "reminders", "dsstore", ".DS_Store"],

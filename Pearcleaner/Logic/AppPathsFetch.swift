@@ -16,7 +16,7 @@ class AppPathFinder {
     private var locations: Locations
     private var containerCollection: [URL] = []
     private let collectionAccessQueue = DispatchQueue(label: "com.alienator88.Pearcleaner.appPathFinder.collectionAccess")
-    @AppStorage("settings.general.searchSensitivity") private var sensitivityLevel: SearchSensitivityLevel = .smart
+    @AppStorage("settings.general.searchSensitivity") private var sensitivityLevel: SearchSensitivityLevel = .strict
     
     // Optional override sensitivity level for per-app settings
     private var overrideSensitivityLevel: SearchSensitivityLevel?
@@ -38,7 +38,7 @@ class AppPathFinder {
     }()
 
     // Change from lazy var to regular property initialized in init
-    private let cachedIdentifiers: (formattedBundleId: String, bundleLastTwoComponents: String, formattedAppName: String, appNameLettersOnly: String, pathComponentName: String, useBundleIdentifier: Bool, formattedCompanyName: String?, formattedEntitlements: [String])
+    private let cachedIdentifiers: (formattedBundleId: String, bundleLastTwoComponents: String, formattedAppName: String, appNameLettersOnly: String, pathComponentName: String, useBundleIdentifier: Bool, formattedCompanyName: String?, formattedEntitlements: [String], formattedTeamIdentifier: String?)
 
     // Computed property to get the effective sensitivity level
     private var effectiveSensitivityLevel: SearchSensitivityLevel {
@@ -80,7 +80,10 @@ class AppPathFinder {
             return formatted.isEmpty ? nil : formatted
         } ?? []
 
-        self.cachedIdentifiers = (formattedBundleId, bundleLastTwoComponents, formattedAppName, appNameLettersOnly, pathComponentName, useBundleIdentifier, formattedCompanyName, formattedEntitlements)
+        // Pre-format team identifier once
+        let formattedTeamIdentifier = appInfo.teamIdentifier?.pearFormat()
+
+        self.cachedIdentifiers = (formattedBundleId, bundleLastTwoComponents, formattedAppName, appNameLettersOnly, pathComponentName, useBundleIdentifier, formattedCompanyName, formattedEntitlements, formattedTeamIdentifier)
     }
 
     // Process the initial URL
@@ -232,8 +235,13 @@ class AppPathFinder {
         }
 
         // Check entitlements-based matching (using pre-formatted entitlements)
+        // Strict: exact match only, Enhanced/Deep: contains match
         for entitlementFormatted in cached.formattedEntitlements {
-            if normalizedItemName.contains(entitlementFormatted) {
+            let isMatch = effectiveSensitivityLevel == .strict
+                ? normalizedItemName == entitlementFormatted
+                : normalizedItemName.contains(entitlementFormatted)
+
+            if isMatch {
                 return true
             }
         }
@@ -251,7 +259,8 @@ class AppPathFinder {
         if self.appInfo.webApp {
             return normalizedItemName.contains(cached.formattedBundleId)
         }
-        let bundleMatch = normalizedItemName.contains(cached.formattedBundleId) || normalizedItemName.contains(cached.bundleLastTwoComponents)
+
+        let fullBundleMatch = normalizedItemName.contains(cached.formattedBundleId)
         let sensitivity = effectiveSensitivityLevel == .strict
 
         // Prevent false matches when cached values are empty strings
@@ -259,15 +268,31 @@ class AppPathFinder {
         let pathNameMatch = !cached.pathComponentName.isEmpty && (sensitivity ? normalizedItemName == cached.pathComponentName : normalizedItemName.contains(cached.pathComponentName))
         let appNameLettersMatch = !cached.appNameLettersOnly.isEmpty && (sensitivity ? normalizedItemName == cached.appNameLettersOnly : normalizedItemName.contains(cached.appNameLettersOnly))
 
-        // Bundle ID component matching (Enhanced level and above)
+        // Bundle ID component matching (Enhanced/Deep levels only)
+        let twoComponentMatch: Bool
+        if effectiveSensitivityLevel != .strict {
+            twoComponentMatch = normalizedItemName.contains(cached.bundleLastTwoComponents)
+        } else {
+            twoComponentMatch = false
+        }
+
+        // Company name matching (Deep level only)
         let companyMatch: Bool
-        if effectiveSensitivityLevel != .strict, let company = cached.formattedCompanyName, !company.isEmpty {
-            companyMatch = sensitivity ? normalizedItemName == company : normalizedItemName.contains(company)
+        if effectiveSensitivityLevel == .deep, let company = cached.formattedCompanyName, !company.isEmpty {
+            companyMatch = normalizedItemName.contains(company)
         } else {
             companyMatch = false
         }
 
-        return (cached.useBundleIdentifier && bundleMatch) || (appNameMatch || pathNameMatch || appNameLettersMatch) || companyMatch
+        // Team identifier matching (Deep level only)
+        let teamIdMatch: Bool
+        if effectiveSensitivityLevel == .deep, let teamId = cached.formattedTeamIdentifier, !teamId.isEmpty {
+            teamIdMatch = normalizedItemName.contains(teamId)
+        } else {
+            teamIdMatch = false
+        }
+
+        return (cached.useBundleIdentifier && fullBundleMatch) || (appNameMatch || pathNameMatch || appNameLettersMatch) || twoComponentMatch || companyMatch || teamIdMatch
     }
     
     // Helper function to extract game ID from manifest filename
@@ -322,7 +347,9 @@ class AppPathFinder {
 
     // Check spotlight index for leftovers missed by manual search
     private func spotlightSupplementalPaths() -> [URL] {
-        // Spotlight enabled for all levels (always-on supplemental search)
+        // Spotlight enabled for all levels with sensitivity-appropriate matching
+        // Strict: Exact matches only (via ==[cd] predicate and post-filter)
+        // Enhanced/Deep: Contains matches (via CONTAINS[cd] predicate)
         updateOnMain {
             self.appState?.progressStep = 1
         }
@@ -340,8 +367,8 @@ class AppPathFinder {
                 "kMDItemDisplayName ==[cd] %@ OR kMDItemDisplayName ==[cd] %@",
                 appName, bundleID)
 
-        case .smart:
-            // Smart: Partial matching in name and path
+        case .enhanced:
+            // Enhanced: Partial matching in name and path
             query.predicate = NSPredicate(format:
                 "kMDItemDisplayName CONTAINS[cd] %@ OR kMDItemPath CONTAINS[cd] %@",
                 appName, bundleID)
@@ -398,7 +425,7 @@ class AppPathFinder {
                     return pathFormatted == nameFormatted || pathFormatted == bundleFormatted
                 }
             }
-            // Smart and Deep: No post-filter, trust the Spotlight query results
+            // Enhanced and Deep: No post-filter, trust the Spotlight query results
 
             CFRunLoopStop(CFRunLoopGetCurrent())
         }

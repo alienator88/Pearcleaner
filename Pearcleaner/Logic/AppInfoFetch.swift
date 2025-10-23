@@ -57,11 +57,12 @@ class MetadataAppInfoFetcher {
 
         // Get entitlements for the app
         let entitlements = getEntitlements(for: path.path)
+        let teamIdentifier = getTeamIdentifier(for: path.path)
 
         return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName,
                        appVersion: version, appIcon: appIcon, webApp: webApp, wrapped: wrapped, system: system,
                        arch: arch, cask: cask, steam: false, bundleSize: logicalSize, fileSize: [:],
-                       fileIcon: [:], creationDate: creationDate, contentChangeDate: contentChangeDate, lastUsedDate: lastUsedDate, entitlements: entitlements)
+                       fileIcon: [:], creationDate: creationDate, contentChangeDate: contentChangeDate, lastUsedDate: lastUsedDate, entitlements: entitlements, teamIdentifier: teamIdentifier)
     }
 }
 
@@ -238,9 +239,10 @@ class AppInfoFetcher {
 
         // Get entitlements for the app
         let entitlements = getEntitlements(for: path.path)
+        let teamIdentifier = getTeamIdentifier(for: path.path)
 
         return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName, appVersion: appVersion, appIcon: appIcon,
-                       webApp: webApp, wrapped: wrapped, system: system, arch: arch, cask: cask, steam: false, bundleSize: 0, fileSize: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, entitlements: entitlements)
+                       webApp: webApp, wrapped: wrapped, system: system, arch: arch, cask: cask, steam: false, bundleSize: 0, fileSize: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, entitlements: entitlements, teamIdentifier: teamIdentifier)
     }
 
 }
@@ -323,11 +325,12 @@ class SteamAppInfoFetcher {
         // but store the actual bundle path info
         // Get entitlements for the Steam app
         let entitlements = getEntitlements(for: actualBundlePath.path)
+        let teamIdentifier = getTeamIdentifier(for: actualBundlePath.path)
 
         return AppInfo(id: UUID(), path: launcherPath, bundleIdentifier: bundleIdentifier, appName: appName,
                        appVersion: appVersion, appIcon: appIcon, webApp: webApp, wrapped: false,
                        system: system, arch: arch, cask: nil, steam: true, bundleSize: 0, fileSize: [:],
-                       fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, entitlements: entitlements)
+                       fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, entitlements: entitlements, teamIdentifier: teamIdentifier)
     }
 }
 
@@ -354,11 +357,6 @@ private func getEntitlements(for appPath: String) -> [String]? {
 
             var results: [String] = []
 
-            // com.apple.developer.team-identifier
-            if let teamIdentifier = entitlements["com.apple.developer.team-identifier"] as? String {
-                results.append(teamIdentifier)
-            }
-
             // com.apple.security.application-groups
             if let appGroups = entitlements["com.apple.security.application-groups"] as? [String] {
                 results.append(contentsOf: appGroups)
@@ -373,6 +371,32 @@ private func getEntitlements(for appPath: String) -> [String]? {
             // as they cause false positives by matching generic folder names like "Desktop", "Documents"
 
             return results.isEmpty ? nil : results
+        }
+
+        return nil
+    }
+}
+
+private func getTeamIdentifier(for appPath: String) -> String? {
+    return autoreleasepool {
+        let appURL = URL(fileURLWithPath: appPath) as CFURL
+        var staticCode: SecStaticCode?
+
+        // Create a static code object for the app
+        guard SecStaticCodeCreateWithPath(appURL, [], &staticCode) == errSecSuccess,
+              let code = staticCode else {
+            return nil
+        }
+
+        // 1 << 2 is the bitmask for entitlements (kSecCSEntitlements)
+        var info: CFDictionary?
+        if SecCodeCopySigningInformation(code,
+                                         SecCSFlags(rawValue: 1 << 2),
+                                         &info) == errSecSuccess,
+           let dict = info as? [String: Any],
+           let entitlements = dict[kSecCodeInfoEntitlementsDict as String] as? [String: Any],
+           let teamIdentifier = entitlements["com.apple.developer.team-identifier"] as? String {
+            return teamIdentifier
         }
 
         return nil

@@ -289,22 +289,23 @@ extension Array where Element == Version.Segment {
 func isPreReleaseVersion(_ versionString: String) -> Bool {
     let lowercased = versionString.lowercased()
 
+    // Define pre-release keywords once (used for both patterns)
+    let preReleaseKeywords = ["beta", "alpha", "rc", "pre", "preview", "dev", "snapshot"]
+
     // Pattern 1: Dash-separated (SemVer style)
     // Examples: "1.0.0-beta", "2.0-rc1", "3.0-alpha.2"
-    if lowercased.contains("-beta") || lowercased.contains("-alpha") ||
-       lowercased.contains("-rc") || lowercased.contains("-pre") ||
-       lowercased.contains("-preview") || lowercased.contains("-dev") ||
-       lowercased.contains("-snapshot") {
-        return true
+    for keyword in preReleaseKeywords {
+        if lowercased.contains("-\(keyword)") {
+            return true
+        }
     }
 
     // Pattern 2: Text-based indicators without dash (less common but exists)
     // Examples: "1.2beta", "3.0alpha", "2.5rc1"
-    let preReleaseKeywords = ["beta", "alpha", "rc", "pre", "preview", "dev", "snapshot"]
     for keyword in preReleaseKeywords {
         // Check if keyword appears after numbers (not at the start)
         // Use regex to ensure it's part of the version, not just in app name
-        if let range = lowercased.range(of: "\\d+.*\\(keyword)", options: .regularExpression) {
+        if lowercased.range(of: "\\d+.*\(keyword)", options: .regularExpression) != nil {
             // Found keyword after digits
             return true
         }

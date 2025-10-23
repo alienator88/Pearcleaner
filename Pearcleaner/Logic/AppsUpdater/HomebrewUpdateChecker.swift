@@ -35,6 +35,23 @@ class HomebrewUpdateChecker {
 
             // Collect results and create UpdateableApp entries
             for await (appInfo, availableVersion) in group {
+                // Skip if no available version fetched
+                guard let availableVersion = availableVersion else { continue }
+
+                // Clean versions (remove commit hash) for accurate comparison
+                let installedClean = appInfo.appVersion.cleanBrewVersionForDisplay()
+                let availableClean = availableVersion.cleanBrewVersionForDisplay()
+
+                // Compare versions using Version struct (supports 4+ components)
+                let installed = Version(versionNumber: installedClean, buildNumber: nil)
+                let available = Version(versionNumber: availableClean, buildNumber: nil)
+
+                // Only add if truly outdated (available > installed)
+                // This filters out false positives from --greedy flag on auto-updating apps
+                guard !installed.isEmpty && !available.isEmpty && available > installed else {
+                    continue  // Skip if versions are equal, invalid, or installed is newer
+                }
+
                 let updateableApp = UpdateableApp(
                     appInfo: appInfo,
                     availableVersion: availableVersion,  // Available version from Homebrew API (may have commit hash)
@@ -99,7 +116,8 @@ class HomebrewUpdateChecker {
                         creationDate: nil,
                         contentChangeDate: nil,
                         lastUsedDate: nil,
-                        entitlements: nil
+                        entitlements: nil,
+                        teamIdentifier: nil
                     )
 
                     let updateableApp = UpdateableApp(
