@@ -104,10 +104,9 @@ func manageSymlink(install: Bool, symlinkName: String = "pear") {
         }
         semaphore.wait()
     } else {
-        let result = performPrivilegedCommands(commands: command)
-        if !result.0 {
-            printOS("Symlink failed: \(result.1)")
-        }
+        printOS("Helper tool required to create CLI symlink. Authorization Services has been removed.")
+        HelperToolManager.shared.triggerHelperRequiredAlert()
+        return
     }
 
     updateOnMain {

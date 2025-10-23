@@ -204,15 +204,13 @@ class FileManagerUndo {
                     }
                 }
             } else {
-                printOS(isRestore ? "Attempting restore using authorization services" : "Attempting delete using authorization services")
-                let result = performPrivilegedCommands(commands: commands)
-                status = result.0
-                if !status {
-                    printOS(isRestore ? "Restore Error: performPrivilegedCommands failed (\(result.1))" : "Trash Error: performPrivilegedCommands failed (\(result.1))")
-                    updateOnMain {
-                        AppState.shared.trashError = true
-                    }
+                // Helper required but not installed - trigger overlay and fail immediately
+                printOS(isRestore ? "Helper tool required for protected file restore. Authorization Services has been removed." : "Helper tool required for protected file deletion. Authorization Services has been removed.")
+                HelperToolManager.shared.triggerHelperRequiredAlert()
+                updateOnMain {
+                    AppState.shared.trashError = true
                 }
+                return false
             }
         }
 

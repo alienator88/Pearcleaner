@@ -27,35 +27,6 @@ struct HelperSettingsTab: View {
                         Text("Management").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2)
                         Spacer()
 //                        Button(action: {
-//                            helperToolManager.openSMSettings()
-//                        }) {
-//                            Label("Login Items", systemImage: "gear")
-//                                .padding(4)
-//                        }
-//                        .controlSize(.small)
-//                        .buttonStyle(.plain)
-//                        .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-//                        .padding(.vertical, 8)
-//                        .padding(.horizontal, 14)
-//                        .controlGroup(Capsule(style: .continuous), level: .primary)
-//                        .padding(.trailing, 5)
-//                        .contextMenu {
-//                            Button("Restart Service") {
-//                                Task {
-//                                    let result = performPrivilegedCommands(commands: "launchctl kickstart -k system/com.alienator88.Pearcleaner.PearcleanerHelper")
-//
-//                                    if !result.0 {
-//                                        printOS("Helper Kickstart Error: \(result.1)")
-//                                    }
-//                                }
-//
-//                            }
-//                            Button("Unregister Service") {
-//                                Task {
-//                                    await helperToolManager.manageHelperTool(action: .uninstall)
-//                                }
-//                            }
-//                        }
                     }
 
                 },

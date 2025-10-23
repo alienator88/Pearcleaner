@@ -153,21 +153,25 @@ struct FileListView: View {
                     }
 
                     if appState.trashError {
-                        InfoButton(
-                            text:
-                                "A trash error has occurred, please open the debug window(⌘+D) to see what went wrong or try again",
-                            color: .orange, label: "View Error", warning: true,
-                            extraView: {
-                                Button("View Debug Window") {
-                                    windowController.open(
-                                        with: ConsoleView(), width: 600, height: 400)
+                        HStack {
+                            Spacer()
+                            InfoButton(
+                                text:
+                                    "A trash error has occurred, please open the debug window(⌘+D) to see what went wrong or try again",
+                                color: .orange, label: "View Error", warning: true,
+                                extraView: {
+                                    Button("View Debug Window") {
+                                        windowController.open(
+                                            with: ConsoleView(), width: 600, height: 400)
+                                    }
                                 }
+                            )
+                            .onDisappear {
+                                appState.trashError = false
                             }
-                        )
-                        .onDisappear {
-                            appState.trashError = false
+                            .padding(.bottom)
                         }
-                        .padding(.bottom)
+
                     }
                 }
                 .opacity(infoSidebar ? 0.5 : 1)

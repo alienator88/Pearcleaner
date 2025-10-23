@@ -690,12 +690,10 @@ func performAutoSlim() {
                         printOS("Auto-slim failed: Could not replace bundle")
                     }
                 } else {
-                    // Fallback to performPrivilegedCommands if helper not installed
-                    let command = "/bin/rm -rf \"\(bundleURL.path)\" && /bin/mv \"\(tempAppPath.path)\" \"\(bundleURL.path)\""
-                    let result = performPrivilegedCommands(commands: command)
-                    if !result.0 {
-                        printOS("Auto-slim failed: Could not replace bundle - \(result.1)")
-                    }
+                    // Helper required but not installed
+                    printOS("Auto-slim failed: Helper tool required. Authorization Services has been removed.")
+                    HelperToolManager.shared.triggerHelperRequiredAlert()
+                    return
                 }
             }
         } catch {

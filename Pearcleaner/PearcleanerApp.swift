@@ -29,14 +29,14 @@ struct PearcleanerApp: App {
         let folderPaths = FolderSettingsManager.shared.folderPaths
         loadApps(folderPaths: folderPaths)
 
+        //MARK: Pre-load volume information
+        AppState.shared.loadVolumeInfo()
+
         //MARK: Check permissions
         let permissionManager = PermissionManager.shared
         permissionManager.checkPermissions(types: [.fullDiskAccess]) { results in
             permissionManager.results = results
         }
-
-        //MARK: Pre-load volume information
-        AppState.shared.loadVolumeInfo()
 
     }
 

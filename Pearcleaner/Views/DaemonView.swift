@@ -989,14 +989,10 @@ struct LaunchItemRowView: View {
                     success = result.0
                     output = result.1
                 } else {
-                    let result = await Task.detached {
-                        return performPrivilegedCommands(commands: command)
-                    }.value
-                    success = result.0
-                    output = result.1
-                    if !success {
-                        printOS("Privileged launch command failed: \(output)")
-                    }
+                    printOS("Helper tool required for launchctl operations. Authorization Services has been removed.")
+                    HelperToolManager.shared.triggerHelperRequiredAlert()
+                    success = false
+                    output = "Helper tool required"
                 }
             } else {
                 // Use direct shell command for user agents

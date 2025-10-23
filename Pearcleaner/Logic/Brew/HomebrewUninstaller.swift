@@ -474,13 +474,9 @@ class HomebrewUninstaller {
             success = result.0
             output = result.1
         } else {
-            let result = performPrivilegedCommands(commands: command)
-            success = result.0
-            output = result.1
-        }
-
-        if !success {
-            throw HomebrewError.commandFailed("Privileged command failed: \(output)")
+            printOS("Helper tool required for Homebrew uninstall. Authorization Services has been removed.")
+            HelperToolManager.shared.triggerHelperRequiredAlert()
+            throw HomebrewError.commandFailed("Helper tool required for privileged operations")
         }
 
         return output

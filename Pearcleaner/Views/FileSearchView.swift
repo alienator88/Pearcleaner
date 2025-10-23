@@ -684,10 +684,9 @@ struct FileSearchView: View {
             }
             semaphore.wait()
         } else {
-            // Fallback to performPrivilegedCommands if helper not installed
-            let command = "/bin/mv \"\(result.url.path)\" \"\(newURL.path)\""
-            let result = performPrivilegedCommands(commands: command)
-            success = result.0
+            printOS("Helper tool required to rename protected file. Authorization Services has been removed.")
+            HelperToolManager.shared.triggerHelperRequiredAlert()
+            success = false
         }
 
         if success {

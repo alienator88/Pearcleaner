@@ -48,20 +48,6 @@ struct SettingsView: View {
 
                     Button {
                         Task {
-                            let result = performPrivilegedCommands(commands: "launchctl kickstart -k system/com.alienator88.Pearcleaner.PearcleanerHelper")
-
-                            if !result.0 {
-                                printOS("Helper Kickstart Error: \(result.1)")
-                            }
-                        }
-                    } label: {
-                        Label("Restart Service", systemImage: "arrow.counterclockwise.circle")
-                            .labelStyle(.iconOnly)
-                            .help("Restart Service")
-                    }
-
-                    Button {
-                        Task {
                             await helperToolManager.manageHelperTool(action: .uninstall)
                         }
                     } label: {

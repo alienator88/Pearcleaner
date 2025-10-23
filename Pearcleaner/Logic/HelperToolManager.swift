@@ -36,6 +36,23 @@ class HelperToolManager: ObservableObject {
         return isInitialCheckComplete && !isHelperToolInstalled
     }
 
+    // Trigger to re-show overlay when privileged operations fail
+    @Published var helperRequiredButMissing: Bool = false
+
+    // Trigger overlay when operation fails due to missing helper
+    func triggerHelperRequiredAlert() {
+        updateOnMain {
+            self.helperRequiredButMissing = true
+        }
+    }
+
+    // Dismiss overlay (called by user action)
+    func dismissHelperRequiredAlert() {
+        updateOnMain {
+            self.helperRequiredButMissing = false
+        }
+    }
+
     init() {
         Task {
             await manageHelperTool()

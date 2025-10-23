@@ -448,11 +448,9 @@ struct PackageView: View {
                     }
                     semaphore.wait()
                 } else {
-                    let result = performPrivilegedCommands(commands: deleteCommand)
-                    success = result.0
-                    if !success {
-                        printOS("Package forget failed: \(result.1)")
-                    }
+                    printOS("Helper tool required to forget package. Authorization Services has been removed.")
+                    HelperToolManager.shared.triggerHelperRequiredAlert()
+                    success = false
                 }
 
                 continuation.resume(returning: success)
@@ -637,11 +635,9 @@ struct PackageView: View {
                     }
                     semaphore.wait()
                 } else {
-                    let result = performPrivilegedCommands(commands: command)
-                    success = result.0
-                    if !success {
-                        printOS("Package receipt deletion failed: \(result.1)")
-                    }
+                    printOS("Helper tool required to delete package receipt. Authorization Services has been removed.")
+                    HelperToolManager.shared.triggerHelperRequiredAlert()
+                    success = false
                 }
 
                 continuation.resume(returning: success)
@@ -1165,11 +1161,9 @@ struct PackageRowView: View {
                     }
                     semaphore.wait()
                 } else {
-                    let result = performPrivilegedCommands(commands: command)
-                    if !result.0 {
-                        printOS("File removal failed: \(result.1)")
-                    }
-                    continuation.resume(returning: result.0)
+                    printOS("Helper tool required to remove file. Authorization Services has been removed.")
+                    HelperToolManager.shared.triggerHelperRequiredAlert()
+                    continuation.resume(returning: false)
                 }
             }
         }
@@ -1225,11 +1219,9 @@ struct PackageRowView: View {
                     }
                     semaphore.wait()
                 } else {
-                    let result = performPrivilegedCommands(commands: command)
-                    if !result.0 {
-                        printOS("Bulk file removal failed: \(result.1)")
-                    }
-                    continuation.resume(returning: result.0)
+                    printOS("Helper tool required to remove files. Authorization Services has been removed.")
+                    HelperToolManager.shared.triggerHelperRequiredAlert()
+                    continuation.resume(returning: false)
                 }
             }
         }
