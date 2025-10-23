@@ -8,6 +8,10 @@
 import ServiceManagement
 import AlinFoundation
 
+extension Notification.Name {
+    static let helperRequired = Notification.Name("helperRequired")
+}
+
 @objc(HelperToolProtocol)
 public protocol HelperToolProtocol {
     func runCommand(command: String, withReply reply: @escaping (Bool, String) -> Void)
@@ -19,6 +23,7 @@ enum HelperToolAction {
     case none      // Only check status
     case install   // Install the helper tool
     case uninstall // Uninstall the helper tool
+    case reinstall // Uninstall then reinstall (fixes desync)
 }
 
 class HelperToolManager: ObservableObject {
@@ -36,21 +41,9 @@ class HelperToolManager: ObservableObject {
         return isInitialCheckComplete && !isHelperToolInstalled
     }
 
-    // Trigger to re-show overlay when privileged operations fail
-    @Published var helperRequiredButMissing: Bool = false
-
     // Trigger overlay when operation fails due to missing helper
     func triggerHelperRequiredAlert() {
-        updateOnMain {
-            self.helperRequiredButMissing = true
-        }
-    }
-
-    // Dismiss overlay (called by user action)
-    func dismissHelperRequiredAlert() {
-        updateOnMain {
-            self.helperRequiredButMissing = false
-        }
+        NotificationCenter.default.post(name: .helperRequired, object: nil)
     }
 
     init() {
@@ -111,6 +104,30 @@ class HelperToolManager: ObservableObject {
             } catch let nsError as NSError {
                 occurredError = nsError
                 printOS("Failed to unregister helper: \(nsError.localizedDescription)")
+            }
+
+        case .reinstall:
+            // Uninstall first
+            do {
+                try await service.unregister()
+                helperConnection?.invalidate()
+                helperConnection = nil
+            } catch let nsError as NSError {
+                printOS("Reinstall: Failed to unregister: \(nsError.localizedDescription)")
+            }
+
+            // Small delay to ensure launchd processes the unregister
+            try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
+
+            // Then install
+            do {
+                try service.register()
+                if service.status == .requiresApproval {
+                    SMAppService.openSystemSettingsLoginItems()
+                }
+            } catch let nsError as NSError {
+                occurredError = nsError
+                printOS("Reinstall: Failed to register: \(nsError.localizedDescription)")
             }
 
         case .none:
@@ -248,8 +265,21 @@ class HelperToolManager: ObservableObject {
             case .enabled:
                 let whoamiResult = await runCommand("whoami", skipHelperCheck: true)
                 let isRoot = whoamiResult.0 && whoamiResult.1.trimmingCharacters(in: .whitespacesAndNewlines) == "root"
+
+                if !isRoot {
+                    // Desync detected - automatically attempt to fix
+                    printOS("Helper desync detected, attempting auto-recovery...")
+                    updateOnMain {
+                        self.message = String(localized: "Service desynced, attempting recovery...")
+                    }
+
+                    // Recursively call with reinstall action
+                    await manageHelperTool(action: .reinstall)
+                    return // Exit early, reinstall will handle status updates
+                }
+
                 updateOnMain {
-                    self.message = String(localized: isRoot ? "Service successfully registered and eligible to run." : "Service successfully registered and eligible to run (Desynced)")
+                    self.message = String(localized: "Service successfully registered and eligible to run.")
                 }
             case .requiresApproval:
                 updateOnMain {

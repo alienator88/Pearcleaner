@@ -56,6 +56,16 @@ struct SettingsView: View {
                             .help("Unregister Service")
                     }
 
+                    Button {
+                        Task {
+                            await helperToolManager.manageHelperTool(action: .reinstall)
+                        }
+                    } label: {
+                        Label("Reinstall Service", systemImage: "arrow.clockwise")
+                            .labelStyle(.iconOnly)
+                            .help("Force Reinstall Service (fixes desync)")
+                    }
+
                 case .about:
                     // About tab toolbar item
                     Button(action: {

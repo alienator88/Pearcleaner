@@ -86,103 +86,92 @@ struct HelperSettingsTab: View {
                 })
 
 
-            if !showTestingUI {
-                PearGroupBox(header: {
-                    Text("Information").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2)
-                }, content: {
-                    let message: String.LocalizationValue = """
-                Pearcleaner can perform privileged operations in the following ways:
-                - Helper service 👍🏻
-                - Authorization services 👎🏻
-                
-                Helper service: Pearcleaner will only ask you to enter your password once to enable the helper, then all subsequent operations will run without any prompts as long as the helper stays enabled in Settings > Login Items. This authorization is all managed by macOS via SMAppService.
-                
-                Authorization services: Pearcleaner will ask the user for a password prompt on every single privileged operation, which can get overwhelming. These authorizations are managed by Pearcleaner and the user.
-                
-                What is a privileged operation: Whenever Pearcleaner needs to delete files from a folder (Ex. /var) the user doesn't have privileges to or undoing/restoring files back to a privileged location.
+            PearGroupBox(header: {
+                Text("Information").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2)
+            }, content: {
+                let message: LocalizedStringKey = """
+                Pearcleaner will ask you to enter your password once to enable the helper, then all subsequent privileged operations will run without any other prompts as long as the helper stays enabled in Settings > Login Items. This authorization is all managed by macOS via SMAppService.
                 """
-                    
-                    VStack(alignment: .leading, spacing: 20) {
-                        Text(String(localized: message)).foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.body).lineSpacing(5)
 
-                        Text(String(localized: "Since Authorization services have been deprecated by Apple as a less secure authentication method, it will eventually be removed from Pearcleaner and the helper service will be the only option going forward. I recommend enabling the privileged helper service as soon as possible.")).font(.footnote).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                VStack(alignment: .leading, spacing: 20) {
+                    Text(message).foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.body).lineSpacing(5)
+
+                    Text("Since **AuthorizationExecuteWithPrivileges** has been deprecated by Apple as a less secure authentication method, it has been removed from Pearcleaner and the helper tool will be the only option going forward.").font(.footnote).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                }
+
+            })
+
+            PearGroupBox(header: {
+                Text("Helper Playground").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2)
+            }, content: {
+                VStack {
+
+                    Picker("Example privileged commands", selection: $commandToRun) {
+                        Text(verbatim: "whoami").tag("whoami")
+                        Text(verbatim: "systemsetup -getsleep").tag("systemsetup -getsleep")
+                        Text(verbatim: "systemsetup -getcomputername").tag("systemsetup -getcomputername")
+                    }
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                    .pickerStyle(MenuPickerStyle())
+                    .onChange(of: commandToRun) { newValue in
+                        if helperToolManager.isHelperToolInstalled {
+                            Task {
+                                let (success, output) = await helperToolManager.runCommand(commandToRun)
+                                if success {
+                                    commandOutput = output
+                                } else {
+                                    commandOutput = "Error: \(output)"
+                                }
+                            }
+                        }
+                    }
+                    .onAppear{
+                        if helperToolManager.isHelperToolInstalled {
+                            Task {
+                                let (success, output) = await helperToolManager.runCommand(commandToRun)
+                                if success {
+                                    commandOutput = output
+                                } else {
+                                    commandOutput = "Error: \(output)"
+                                }
+                            }
+                        }
                     }
 
-                })
-            }
-
-
-
-            if showTestingUI {
-                PearGroupBox(header: {
-                    Text("Permission Testing").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2)
-                }, content: {
-                    VStack {
-
-                        Picker("Example privileged commands", selection: $commandToRun) {
-                            Text(verbatim: "whoami").tag("whoami")
-                            Text(verbatim: "systemsetup -getsleep").tag("systemsetup -getsleep")
-                            Text(verbatim: "systemsetup -getcomputername").tag("systemsetup -getcomputername")
-                        }
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                        .pickerStyle(MenuPickerStyle())
-                        .onChange(of: commandToRun) { newValue in
-                            if helperToolManager.isHelperToolInstalled {
-                                Task {
-                                    let (success, output) = await helperToolManager.runCommand(commandToRun)
-                                    if success {
-                                        commandOutput = output
-                                    } else {
-                                        commandOutput = "Error: \(output)"
-                                    }
-                                }
-                            }
-                        }
-                        .onAppear{
-                            if helperToolManager.isHelperToolInstalled {
-                                Task {
-                                    let (success, output) = await helperToolManager.runCommand(commandToRun)
-                                    if success {
-                                        commandOutput = output
-                                    } else {
-                                        commandOutput = "Error: \(output)"
-                                    }
+                    TextField("Enter manual command here, Enter to run", text: $commandToRunManual)
+                        .padding(8)
+                        .background(RoundedRectangle(cornerRadius: 8).strokeBorder(ThemeColors.shared(for: colorScheme).secondaryText.opacity(0.2), lineWidth: 1))
+                        .textFieldStyle(.plain)
+                        .onSubmit {
+                            Task {
+                                let (success, output) = await helperToolManager.runCommand(commandToRunManual)
+                                if success {
+                                    commandOutput = output
+                                } else {
+                                    commandOutput = "Error: \(output)"
                                 }
                             }
                         }
 
-                        TextField("Enter manual command here, Enter to run", text: $commandToRunManual)
-                            .padding(8)
-                            .background(RoundedRectangle(cornerRadius: 8).strokeBorder(ThemeColors.shared(for: colorScheme).secondaryText.opacity(0.2), lineWidth: 1))
-                            .textFieldStyle(.plain)
-                            .onSubmit {
-                                Task {
-                                    let (success, output) = await helperToolManager.runCommand(commandToRunManual)
-                                    if success {
-                                        commandOutput = output
-                                    } else {
-                                        commandOutput = "Error: \(output)"
-                                    }
-                                }
-                            }
-
-                        ScrollView {
-                            Text(commandOutput)
-                                .font(.system(.body, design: .monospaced))
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-                                .padding()
-                        }
-                        .frame(height: 185)
-                        .frame(maxWidth: .infinity)
-                        .background(.tertiary.opacity(0.1))
-                        .cornerRadius(8)
+                    ScrollView {
+                        Text(commandOutput)
+                            .font(.system(.body, design: .monospaced))
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+                            .padding()
                     }
-                    .padding(5)
-                })
-                .disabled(!helperToolManager.isHelperToolInstalled)
-                .opacity(helperToolManager.isHelperToolInstalled ? 1 : 0.5)
-            }
+                    .frame(height: 150)
+                    .frame(maxWidth: .infinity)
+                    .background(.tertiary.opacity(0.1))
+                    .cornerRadius(8)
+
+                    Text("**whoami** command should return 'root' if helper is running correctly.").font(.footnote).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        .padding(.top, 5)
+                }
+                .padding(5)
+            })
+            .disabled(!helperToolManager.isHelperToolInstalled)
+            .opacity(helperToolManager.isHelperToolInstalled ? 1 : 0.5)
 
 
         }

@@ -221,6 +221,7 @@
 /* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		C71DC3392EAAAFF000503474 /* Components */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Components; sourceTree = "<group>"; };
 		C73545F12D849A1B00A3DC0C /* PearcleanerHelper */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (C73545FC2D849B7E00A3DC0C /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = PearcleanerHelper; sourceTree = "<group>"; };
 		C74649E62E48000C002D1C63 /* LipoView */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = LipoView; sourceTree = "<group>"; };
 		C74649EA2E48008A002D1C63 /* ZombieView */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ZombieView; sourceTree = "<group>"; };
@@ -372,6 +373,7 @@
 		C77B901F2AF1B390009CC655 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				C71DC3392EAAAFF000503474 /* Components */,
 				C74422402E4936700002D277 /* DaemonView.swift */,
 				C770D7DA2CE7C9A100B3492A /* DevelopmentView.swift */,
 				C7BB992E2E8B225F007BBB81 /* FileSearchView.swift */,
@@ -466,6 +468,7 @@
 				C781216A2BC892A000BE06BD /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				C71DC3392EAAAFF000503474 /* Components */,
 				C74649E62E48000C002D1C63 /* LipoView */,
 				C74649EA2E48008A002D1C63 /* ZombieView */,
 				C74649EE2E4800BB002D1C63 /* AppsView */,

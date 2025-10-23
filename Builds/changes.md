@@ -1,5 +1,6 @@
 ### What's New
 
-- [x] Adjust new sensitivity level Strict to work more like it did in the previous version, it was returning a bit too much. Also made it default level - #393
-- [x] Remove team id searching as it wasn't useful and returning too 
+- [x] Adjust new sensitivity levels to work even better, caught a couple bugs - #393
+- [x] Add notification overlays for helper, permissions, updater, features
+- [x] Add self-heal function to helper tool if desync occurs
 - [x] Translations

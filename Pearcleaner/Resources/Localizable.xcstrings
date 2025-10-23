@@ -341,6 +341,9 @@
         }
       }
     },
+    "**whoami** command should return 'root' if helper is running correctly." : {
+
+    },
     "%@ (%lld file%@, %@)" : {
       "localizations" : {
         "de" : {
@@ -4062,6 +4065,9 @@
           }
         }
       }
+    },
+    "A new version of Pearcleaner is available for download." : {
+
     },
     "About" : {
       "localizations" : {
@@ -12479,6 +12485,9 @@
           }
         }
       }
+    },
+    "Check out the latest additions to Pearcleaner." : {
+
     },
     "Checking..." : {
       "localizations" : {
@@ -24947,6 +24956,9 @@
         }
       }
     },
+    "Force Reinstall Service (fixes desync)" : {
+
+    },
     "Forget" : {
       "localizations" : {
         "de" : {
@@ -26968,6 +26980,9 @@
           }
         }
       }
+    },
+    "Helper Playground" : {
+
     },
     "Hidden" : {
       "localizations" : {
@@ -33026,6 +33041,9 @@
         }
       }
     },
+    "Learn More" : {
+
+    },
     "Less" : {
       "localizations" : {
         "de" : {
@@ -36843,6 +36861,9 @@
         }
       }
     },
+    "Missing permissions:" : {
+
+    },
     "Modified" : {
       "localizations" : {
         "de" : {
@@ -38303,6 +38324,9 @@
           }
         }
       }
+    },
+    "New Feature!" : {
+
     },
     "Next update check: %@" : {
       "extractionState" : "manual",
@@ -42124,6 +42148,12 @@
     "Open Settings to enable the Privileged Helper" : {
 
     },
+    "Open System Settings" : {
+
+    },
+    "Open System Settings to grant permissions" : {
+
+    },
     "Open to Update" : {
       "localizations" : {
         "de" : {
@@ -43584,6 +43614,7 @@
       }
     },
     "Pearcleaner can perform privileged operations in the following ways:\n- Helper service 👍🏻\n- Authorization services 👎🏻\n\nHelper service: Pearcleaner will only ask you to enter your password once to enable the helper, then all subsequent operations will run without any prompts as long as the helper stays enabled in Settings > Login Items. This authorization is all managed by macOS via SMAppService.\n\nAuthorization services: Pearcleaner will ask the user for a password prompt on every single privileged operation, which can get overwhelming. These authorizations are managed by Pearcleaner and the user.\n\nWhat is a privileged operation: Whenever Pearcleaner needs to delete files from a folder (Ex. /var) the user doesn't have privileges to or undoing/restoring files back to a privileged location." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -43808,6 +43839,9 @@
         }
       }
     },
+    "Pearcleaner requires permissions to search all system locations comprehensively." : {
+
+    },
     "Pearcleaner Uninstall" : {
       "comment" : "Right click context menu item when using the Finder extension to uninstall using Pearcleaner",
       "extractionState" : "manual",
@@ -43921,6 +43955,9 @@
           }
         }
       }
+    },
+    "Pearcleaner will ask you to enter your password once to enable the helper, then all subsequent privileged operations will run without any other prompts as long as the helper stays enabled in Settings > Login Items. This authorization is all managed by macOS via SMAppService." : {
+
     },
     "Pearcleaner will strip the %@ architecture from %@'s executable file to save space. Would you like to proceed?" : {
       "comment" : "Lipo alert message",
@@ -44488,6 +44525,7 @@
       }
     },
     "Permission Testing" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -44711,6 +44749,9 @@
           }
         }
       }
+    },
+    "Permissions Missing!" : {
+
     },
     "PID: %@" : {
       "localizations" : {
@@ -48310,6 +48351,9 @@
         }
       }
     },
+    "Reinstall Service" : {
+
+    },
     "Release Notes" : {
       "localizations" : {
         "de" : {
@@ -51343,6 +51387,7 @@
       }
     },
     "Restart Service" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -55728,6 +55773,9 @@
         }
       }
     },
+    "Service desynced, attempting recovery..." : {
+
+    },
     "Service hasn’t been registered. You may register it now." : {
       "localizations" : {
         "de" : {
@@ -56287,6 +56335,9 @@
           }
         }
       }
+    },
+    "Service successfully registered and eligible to run." : {
+
     },
     "Services" : {
       "localizations" : {
@@ -57748,7 +57799,11 @@
         }
       }
     },
+    "Since **AuthorizationExecuteWithPrivileges** has been deprecated by Apple as a less secure authentication method, it has been removed from Pearcleaner and the helper tool will be the only option going forward." : {
+
+    },
     "Since Authorization services have been deprecated by Apple as a less secure authentication method, it will eventually be removed from Pearcleaner and the helper service will be the only option going forward. I recommend enabling the privileged helper service as soon as possible." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -68093,6 +68148,9 @@
         }
       }
     },
+    "Update Available!" : {
+
+    },
     "Update completed" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -70225,6 +70283,9 @@
         }
       }
     },
+    "View announcement details" : {
+
+    },
     "View Changes" : {
       "localizations" : {
         "de" : {
@@ -71349,6 +71410,12 @@
           }
         }
       }
+    },
+    "View Update" : {
+
+    },
+    "View update details and download" : {
+
     },
     "Warning" : {
       "extractionState" : "manual",
