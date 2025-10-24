@@ -180,7 +180,7 @@ struct UpdateRowView: View {
                                     }
                                 }
                             } label: {
-                                Label("Choose Appcast", systemImage: "link.circle")
+                                Label("Select Appcast", systemImage: "link.circle")
                                     .labelStyle(.titleOnly)
 //                                Image(systemName: "link.circle")
 //                                    .font(.body)
