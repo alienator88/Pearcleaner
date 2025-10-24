@@ -384,31 +384,57 @@ struct GeneralSettingsTab: View {
             PearGroupBox(
                 header: { Text("Command Line").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2) },
                 content: {
-                    HStack(spacing: 0) {
-                        Image(systemName: "terminal")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 15, height: 15)
-                            .padding(.trailing)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                        Text("Pearcleaner CLI support")
-                            .font(.callout)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                        InfoButton(text: String(localized: "Enabling the CLI will allow you to execute Pearcleaner actions from the Terminal. This will add pearcleaner command into /usr/local/bin so it's available directly from your PATH environment variable. Try it after enabling:\n\n> pear --help"))
-                        Spacer()
+                    VStack {
+                        HStack(spacing: 0) {
+                            Image(systemName: "terminal")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 15, height: 15)
+                                .padding(.trailing)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            VStack {
 
-                        Toggle(isOn: $isCLISymlinked, label: {
-                        })
-                        .toggleStyle(SettingsToggle())
-                        .onChange(of: isCLISymlinked) { newValue in
-                            if newValue {
-                                manageSymlink(install: true)
-                            } else {
-                                manageSymlink(install: false)
+                                HStack {
+                                    Text("Pearcleaner CLI support")
+                                        .font(.callout)
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                                    InfoButton(text: String(localized: "Enabling the CLI will allow you to execute Pearcleaner actions from the Terminal. This will add pearcleaner command into /usr/local/bin so it's available directly from your PATH environment variable. Try it after enabling:\n\n> pear --help"))
+                                    Spacer()
+                                }
+
+
+                                if !HelperToolManager.shared.isHelperToolInstalled {
+                                    HStack {
+                                        Text("Helper tool needs to be enabled")
+                                            .foregroundStyle(Color.red)
+                                            .font(.footnote)
+                                        Spacer()
+                                    }
+
+                                }
                             }
-                        }
 
+
+
+
+
+                            Spacer()
+
+                            Toggle(isOn: $isCLISymlinked, label: {
+                            })
+                            .toggleStyle(SettingsToggle())
+                            .onChange(of: isCLISymlinked) { newValue in
+                                if newValue {
+                                    manageSymlink(install: true)
+                                } else {
+                                    manageSymlink(install: false)
+                                }
+                            }
+                            .disabled(!HelperToolManager.shared.isHelperToolInstalled)
+
+                        }
                     }
+
                     .padding(5)
                 })
 
