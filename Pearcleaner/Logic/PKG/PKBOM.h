@@ -6,6 +6,9 @@
 
 @class NSData;
 
+struct _BOMBom;
+struct _BOMFSObject;
+
 @interface PKBOM : NSObject
 {
     NSData *_bomData;
