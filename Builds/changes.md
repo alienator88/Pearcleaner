@@ -1,6 +1,6 @@
 ### What's New
 
-- [x] ✨ Sparkle apps can now be updated directly in Pearcleaner. Had to add Sparkle framework which increased app size by ~3MB.
+- [x] ✨ Sparkle apps can now be updated directly in Pearcleaner. Had to add Sparkle framework for this which increased app size by ~3MB.
 - [x] 🍐 Pearcleaner will also show as having an update available in the Updater view now as a banner along the top.
 - [x] Add Sparkle appcast URL checks for apps that don’t expose the SUFeedURL in Info.plist. This should find some apps that Latest won't (Ex. Ghostty). This isn't a solid mechanism as I have to look inside the app binary strings for the URL and it's hit or miss probably - #381
 - [x] Add CLI toggle alert if helper is not enabled - #395

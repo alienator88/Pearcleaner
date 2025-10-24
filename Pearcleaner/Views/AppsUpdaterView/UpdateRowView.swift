@@ -312,28 +312,20 @@ struct UpdateRowView: View {
             }
         }
         .background {
-            // Progress fill background (accent color fills from left to right)
-            // Only show for Sparkle apps (they have granular progress reporting)
+            // Sparkle progress bar with twinkle effects (only for Sparkle apps)
             GeometryReader { geometry in
                 HStack(spacing: 0) {
                     if app.source == .sparkle {
-                        // Only show progress fill for active update statuses
-                        if case .downloading = app.status {
-                            Rectangle()
-                                .fill(ThemeColors.shared(for: colorScheme).accent.opacity(0.3))
-                                .frame(width: geometry.size.width * app.progress)
-                        } else if case .extracting = app.status {
-                            Rectangle()
-                                .fill(ThemeColors.shared(for: colorScheme).accent.opacity(0.3))
-                                .frame(width: geometry.size.width * app.progress)
-                        } else if case .installing = app.status {
-                            Rectangle()
-                                .fill(ThemeColors.shared(for: colorScheme).accent.opacity(0.3))
-                                .frame(width: geometry.size.width * app.progress)
-                        } else if case .verifying = app.status {
-                            Rectangle()
-                                .fill(ThemeColors.shared(for: colorScheme).accent.opacity(0.3))
-                                .frame(width: geometry.size.width * app.progress)
+                        // Show progress fill for active update statuses
+                        switch app.status {
+                        case .downloading, .extracting, .installing, .verifying:
+                            SparkleProgressBar(
+                                maxWidth: geometry.size.width,
+                                progress: app.progress,
+                                height: geometry.size.height
+                            )
+                        default:
+                            EmptyView()
                         }
                     }
 

@@ -176,6 +176,7 @@
 				ChromeBorder.swift,
 				ControlGroupChrome.swift,
 				PearGroupBox.swift,
+				SparkleProgressBar.swift,
 				Styles.swift,
 				Theme.swift,
 			);
