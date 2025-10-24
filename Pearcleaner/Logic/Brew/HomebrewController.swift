@@ -976,20 +976,39 @@ class HomebrewController {
 
     /// Get list of outdated package names from brew outdated
     func getOutdatedPackages() async throws -> Set<String> {
-        let arguments = ["outdated", "--quiet", "--greedy"]
-        let result = try await runBrewCommand(arguments)
+        var outdatedNames = Set<String>()
 
-        if result.error.contains("Error") {
-            throw HomebrewError.commandFailed(result.error)
+        // Get outdated formulae (without --greedy to avoid false positives on rebuilds)
+        let formulaeArgs = ["outdated", "--quiet", "--formula"]
+        let formulaeResult = try await runBrewCommand(formulaeArgs)
+
+        if formulaeResult.error.contains("Error") {
+            throw HomebrewError.commandFailed(formulaeResult.error)
         }
 
-        // Parse package names from output (one per line)
-        let packageNames = result.output
+        let formulaeNames = formulaeResult.output
             .components(separatedBy: "\n")
             .filter { !$0.isEmpty }
             .map { $0.trimmingCharacters(in: .whitespaces) }
 
-        return Set(packageNames)
+        outdatedNames.formUnion(formulaeNames)
+
+        // Get outdated casks (with --greedy to include auto-updating casks)
+        let caskArgs = ["outdated", "--quiet", "--cask", "--greedy"]
+        let caskResult = try await runBrewCommand(caskArgs)
+
+        if caskResult.error.contains("Error") {
+            throw HomebrewError.commandFailed(caskResult.error)
+        }
+
+        let caskNames = caskResult.output
+            .components(separatedBy: "\n")
+            .filter { !$0.isEmpty }
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+
+        outdatedNames.formUnion(caskNames)
+
+        return outdatedNames
     }
 
     // MARK: - Tap Management

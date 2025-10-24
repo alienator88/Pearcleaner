@@ -69,6 +69,23 @@ class HelperToolManager: ObservableObject {
                 }
                 SMAppService.openSystemSettingsLoginItems()
             case .enabled:
+                // Verify the helper actually works (same desync check as .none action)
+                let whoamiResult = await runCommand("whoami", skipHelperCheck: true)
+                let isRoot = whoamiResult.0 && whoamiResult.1.trimmingCharacters(in: .whitespacesAndNewlines) == "root"
+
+                if !isRoot {
+                    // Desync detected - helper claims enabled but doesn't work
+                    printOS("Helper desync detected during install attempt, attempting auto-recovery...")
+                    updateOnMain {
+                        self.message = String(localized: "Service desynced, attempting recovery...")
+                    }
+
+                    // Recursively call with reinstall action
+                    await manageHelperTool(action: .reinstall)
+                    return // Exit early, reinstall will handle status updates
+                }
+
+                // Helper verified working
                 updateOnMain {
                     self.message = String(localized: "Service is already enabled.")
                 }

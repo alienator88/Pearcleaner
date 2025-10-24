@@ -153,6 +153,43 @@ struct UpdateRowView: View {
                             }
                         }
 
+                        // Binary extraction warning (Sparkle only)
+                        if app.source == .sparkle && app.extractedFromBinary {
+                            InfoButton(
+                                text: "This app did not expose its Sparkle feed URL in Info.plist. Pearcleaner extracted it from the binary instead. Updates may not work reliably.",
+                                color: .orange, warning: true
+                            )
+                        }
+
+                        // URL picker for multiple Sparkle feed URLs
+                        if app.source == .sparkle, let urls = app.alternateSparkleURLs, urls.count > 1 {
+                            Menu {
+                                ForEach(urls, id: \.self) { url in
+                                    Button {
+                                        // Refresh the row item with the selected URL
+                                        Task {
+                                            await updateManager.refreshSparkleAppWithURL(app: app, newURL: url)
+                                        }
+                                    } label: {
+                                        HStack {
+                                            Text(url)
+                                            if url == (app.currentFeedURL ?? urls.first) {
+                                                Image(systemName: "checkmark")
+                                            }
+                                        }
+                                    }
+                                }
+                            } label: {
+                                Label("Choose Appcast", systemImage: "link.circle")
+                                    .labelStyle(.titleOnly)
+//                                Image(systemName: "link.circle")
+//                                    .font(.body)
+//                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                            }
+                            .buttonStyle(.bordered)
+                            .help("Choose Sparkle feed URL")
+                        }
+
                         // CLI tool indicator (Homebrew formulae only)
                         if app.source == .homebrew && app.appInfo.bundleIdentifier.hasPrefix("com.homebrew.formula.") {
                             ZStack {

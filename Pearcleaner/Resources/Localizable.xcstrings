@@ -13152,6 +13152,9 @@
         }
       }
     },
+    "Choose Appcast" : {
+
+    },
     "Choose Folder..." : {
       "localizations" : {
         "de" : {
@@ -13375,6 +13378,9 @@
           }
         }
       }
+    },
+    "Choose Sparkle feed URL" : {
+
     },
     "Choose Translations to Remove" : {
       "localizations" : {

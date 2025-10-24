@@ -10,9 +10,15 @@ import Foundation
 class SparkleDetector {
     static func findSparkleApps(from apps: [AppInfo], includePreReleases: Bool = false) async -> [UpdateableApp] {
         // Find all apps with Sparkle framework
-        var sparkleAppData: [(appInfo: AppInfo, feedURL: String, shortVersion: String, buildVersion: String)] = []
+        // Track extracted URLs for showing warning + URL picker UI
+        var sparkleAppData: [(appInfo: AppInfo, feedURL: String, shortVersion: String, buildVersion: String, extractedURLs: [String]?)] = []
 
         for appInfo in apps {
+            // Step 1: Check for Sparkle.framework
+            guard hasSparkleFramework(appPath: appInfo.path) else {
+                continue
+            }
+
             // Read the app's Info.plist
             let infoPlistURL = appInfo.path.appendingPathComponent("Contents/Info.plist")
 
@@ -20,16 +26,30 @@ class SparkleDetector {
                 continue
             }
 
-            // Check for Sparkle feed URL
-            if let feedURLRaw = infoDict["SUFeedURL"] as? String ?? infoDict["SUFeedUrl"] as? String {
-                // Remove surrounding quotes/apostrophes (handles malformed Info.plist entries)
-                let feedURL = feedURLRaw.unquoted
+            // Step 2: Try traditional SUFeedURL first (covers ~95% of Sparkle apps)
+            var feedURL: String? = infoDict["SUFeedURL"] as? String ?? infoDict["SUFeedUrl"] as? String
+            var extractedURLs: [String]? = nil
 
+            // Step 3: If no SUFeedURL but has signature key, try binary extraction
+            // This handles apps like Ghostty that use SPUUpdaterDelegate's feedURLString(for:)
+            if feedURL == nil && hasSparkleSignatureKey(infoDict: infoDict) {
+                // Get executable name from Info.plist
+                if let executableName = infoDict["CFBundleExecutable"] as? String {
+                    let urls = await extractFeedURLFromBinary(appPath: appInfo.path, executable: executableName)
+                    if let firstURL = urls.first {
+                        feedURL = firstURL
+                        extractedURLs = urls  // Store all URLs for picker
+                    }
+                }
+            }
+
+            // Step 4: If we have a feed URL (from either method), add to processing queue
+            if let feedURL = feedURL?.unquoted, !feedURL.isEmpty {
                 // Extract both version types from Info.plist
                 let shortVersion = infoDict["CFBundleShortVersionString"] as? String ?? ""
                 let buildVersion = infoDict["CFBundleVersion"] as? String ?? ""
 
-                sparkleAppData.append((appInfo, feedURL, shortVersion, buildVersion))
+                sparkleAppData.append((appInfo, feedURL, shortVersion, buildVersion, extractedURLs))
             }
         }
 
@@ -57,11 +77,11 @@ class SparkleDetector {
     }
 
     /// Check a chunk of Sparkle apps for updates concurrently
-    private static func checkChunk(chunk: [(appInfo: AppInfo, feedURL: String, shortVersion: String, buildVersion: String)], includePreReleases: Bool) async -> [UpdateableApp] {
+    private static func checkChunk(chunk: [(appInfo: AppInfo, feedURL: String, shortVersion: String, buildVersion: String, extractedURLs: [String]?)], includePreReleases: Bool) async -> [UpdateableApp] {
         await withTaskGroup(of: UpdateableApp?.self) { group in
-            for (appInfo, feedURL, shortVersion, buildVersion) in chunk {
+            for (appInfo, feedURL, shortVersion, buildVersion, extractedURLs) in chunk {
                 group.addTask {
-                    await checkSingleApp(appInfo: appInfo, feedURL: feedURL, shortVersion: shortVersion, buildVersion: buildVersion, includePreReleases: includePreReleases)
+                    await checkSingleApp(appInfo: appInfo, feedURL: feedURL, shortVersion: shortVersion, buildVersion: buildVersion, extractedURLs: extractedURLs, currentFeedURL: feedURL, includePreReleases: includePreReleases)
                 }
             }
 
@@ -77,8 +97,34 @@ class SparkleDetector {
         }
     }
 
+    /// Public wrapper to check a single Sparkle app with a specific feed URL
+    /// Used for refreshing an app's update check with an alternate URL
+    static func checkSingleAppWithURL(appInfo: AppInfo, feedURL: String, includePreReleases: Bool, preserveExtractedURLs: [String]? = nil, currentFeedURL: String) async -> UpdateableApp? {
+        // Read the app's Info.plist
+        let infoPlistURL = appInfo.path.appendingPathComponent("Contents/Info.plist")
+
+        guard let infoDict = NSDictionary(contentsOf: infoPlistURL) as? [String: Any] else {
+            return nil
+        }
+
+        let shortVersion = infoDict["CFBundleShortVersionString"] as? String ?? ""
+        let buildVersion = infoDict["CFBundleVersion"] as? String ?? ""
+
+        // Check for updates with the specified URL
+        // Pass through the extracted URLs to preserve binary extraction metadata
+        return await checkSingleApp(
+            appInfo: appInfo,
+            feedURL: feedURL,
+            shortVersion: shortVersion,
+            buildVersion: buildVersion,
+            extractedURLs: preserveExtractedURLs,
+            currentFeedURL: currentFeedURL,
+            includePreReleases: includePreReleases
+        )
+    }
+
     /// Check a single Sparkle app for updates
-    private static func checkSingleApp(appInfo: AppInfo, feedURL: String, shortVersion: String, buildVersion: String, includePreReleases: Bool) async -> UpdateableApp? {
+    private static func checkSingleApp(appInfo: AppInfo, feedURL: String, shortVersion: String, buildVersion: String, extractedURLs: [String]?, currentFeedURL: String, includePreReleases: Bool) async -> UpdateableApp? {
         guard let url = URL(string: feedURL) else { return nil }
 
         do {
@@ -104,12 +150,18 @@ class SparkleDetector {
             // After filtering, check if we have any items left
             guard !items.isEmpty else { return nil }
 
-            // Find the item with the highest version across all items
+            // Find the most recent item by pubDate (more reliable than version comparison)
+            // This handles apps like Ghostty with inconsistent version formats (commit hashes, semantic versions)
             let candidateItem: SparkleMetadata = items.max { item1, item2 in
+                // Compare by pubDate (RFC 822 format: "Fri, 20 Dec 2024 21:34:26 +0000")
+                if let date1 = parsePubDate(item1.pubDate),
+                   let date2 = parsePubDate(item2.pubDate) {
+                    return date1 < date2
+                }
+
+                // Fallback to version comparison if dates unavailable
                 let ver1 = item1.shortVersionString ?? item1.buildVersion
                 let ver2 = item2.shortVersionString ?? item2.buildVersion
-
-                // Compare using Version (supports 2, 3, 4+ component versions)
                 let version1 = Version(versionNumber: ver1, buildNumber: nil)
                 let version2 = Version(versionNumber: ver2, buildNumber: nil)
 
@@ -183,7 +235,10 @@ class SparkleDetector {
                     releaseNotesLink: candidateItem.releaseNotesLink,
                     releaseDate: candidateItem.pubDate,
                     isPreRelease: isPreRelease,
-                    isIOSApp: false  // Sparkle apps are never iOS apps
+                    isIOSApp: false,  // Sparkle apps are never iOS apps
+                    extractedFromBinary: extractedURLs != nil,
+                    alternateSparkleURLs: extractedURLs,
+                    currentFeedURL: currentFeedURL
                 )
             }
         } catch {
@@ -215,6 +270,107 @@ class SparkleDetector {
             minorVersion: components.count > 1 ? components[1] : 0,
             patchVersion: components.count > 2 ? components[2] : 0
         )
+    }
+
+    /// Parse RFC 822 date format from Sparkle appcast (e.g., "Fri, 20 Dec 2024 21:34:26 +0000")
+    private static func parsePubDate(_ pubDateString: String?) -> Date? {
+        guard let dateString = pubDateString else { return nil }
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss Z"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+
+        return formatter.date(from: dateString)
+    }
+
+    /// Check if app has Sparkle.framework in Contents/Frameworks
+    private static func hasSparkleFramework(appPath: URL) -> Bool {
+        let frameworkPath = appPath.appendingPathComponent("Contents/Frameworks/Sparkle.framework")
+        return FileManager.default.fileExists(atPath: frameworkPath.path)
+    }
+
+    /// Check if Info.plist has Sparkle signature verification keys
+    private static func hasSparkleSignatureKey(infoDict: [String: Any]) -> Bool {
+        return infoDict["SUPublicEDKey"] != nil || infoDict["SUPublicDSAKeyFile"] != nil
+    }
+
+    /// Extract ALL appcast URLs from binary using strings command
+    /// Returns array of all found URLs (not just first one) to support URL picker
+    private static func extractFeedURLFromBinary(appPath: URL, executable: String) async -> [String] {
+        let executablePath = appPath.appendingPathComponent("Contents/MacOS/\(executable)")
+
+        // Verify executable exists
+        guard FileManager.default.fileExists(atPath: executablePath.path) else {
+            return []
+        }
+
+        // Run strings command asynchronously in background to avoid blocking UI
+        return await withCheckedContinuation { continuation in
+            Task.detached(priority: .utility) {
+                let process = Process()
+                process.executableURL = URL(fileURLWithPath: "/usr/bin/strings")
+                process.arguments = [executablePath.path]
+
+                let pipe = Pipe()
+                process.standardOutput = pipe
+                process.standardError = Pipe() // Discard errors
+
+                do {
+                    try process.run()
+
+                    // Set timeout (2 seconds) to prevent indefinite hanging
+                    let timer = DispatchSource.makeTimerSource(queue: .global())
+                    timer.schedule(deadline: .now() + 2.0)
+                    timer.setEventHandler {
+                        if process.isRunning {
+                            process.terminate()
+                        }
+                    }
+                    timer.resume()
+
+                    // Wait for process to complete
+                    process.waitUntilExit()
+                    timer.cancel()
+
+                    // Read output
+                    let data = pipe.fileHandleForReading.readDataToEndOfFile()
+                    guard let output = String(data: data, encoding: .utf8) else {
+                        continuation.resume(returning: [])
+                        return
+                    }
+
+                    // Filter for appcast URLs using regex
+                    // Pattern matches: https?://[non-whitespace]+.(xml|appcast)
+                    let urlPattern = #"https?://[^\s]+\.(xml|appcast)"#
+                    let regex = try NSRegularExpression(pattern: urlPattern, options: [])
+                    let range = NSRange(output.startIndex..., in: output)
+
+                    // Find all matches
+                    var urls: [String] = []
+                    regex.enumerateMatches(in: output, range: range) { match, _, _ in
+                        if let match = match,
+                           let range = Range(match.range, in: output) {
+                            let url = String(output[range])
+                            // Additional validation: must contain "appcast" or end with ".xml"
+                            if url.contains("appcast") || url.hasSuffix(".xml") {
+                                urls.append(url)
+                            }
+                        }
+                    }
+
+                    // Remove duplicates while preserving order
+                    let uniqueURLs = Array(NSOrderedSet(array: urls)) as! [String]
+
+                    // Return all unique URLs (not just first)
+                    continuation.resume(returning: uniqueURLs)
+
+                } catch {
+                    // Process execution failed - return empty array
+                    continuation.resume(returning: [])
+                }
+            }
+        }
     }
 }
 

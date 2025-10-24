@@ -90,7 +90,10 @@ class AppStoreUpdateChecker {
                 releaseNotesLink: nil,
                 releaseDate: appStoreInfo.releaseDate,
                 isPreRelease: false,  // App Store updates are not pre-releases
-                isIOSApp: isIOSApp
+                isIOSApp: isIOSApp,
+                extractedFromBinary: false,
+                alternateSparkleURLs: nil,
+                currentFeedURL: nil
             )
         }
 

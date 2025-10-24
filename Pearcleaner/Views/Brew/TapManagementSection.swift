@@ -116,7 +116,7 @@ struct TapRowView: View {
                     .fill((tap.isOfficial ? Color.blue : Color.orange).opacity(0.2))
                     .frame(width: 40, height: 40)
 
-                Image(systemName: tap.isOfficial ? "homebrew" : "point.3.filled.connected.trianglepath.dotted")
+                Image(systemName: tap.isOfficial ? "mug" : "point.3.filled.connected.trianglepath.dotted")
                     .font(.system(size: 18, weight: .medium))
                     .foregroundStyle(tap.isOfficial ? .blue : .orange)
             }
@@ -179,7 +179,7 @@ struct TapRowView: View {
                         .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
-            } else if !tap.isOfficial {
+            } else { //if !tap.isOfficial {
                 Button {
                     showRemoveAlert = true
                 } label: {

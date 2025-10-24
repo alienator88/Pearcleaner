@@ -631,12 +631,24 @@ class AppPathFinder {
 
     // Custom icon function that handles .app folders intelligently
     private func getSmartIcon(for path: URL) -> NSImage? {
-        // Check if this is a .app folder
+        // For wrapped apps, check if this is the container path
+        if self.appInfo.wrapped {
+            // Get container path from inner app path
+            let containerPath = self.appInfo.path
+                .deletingLastPathComponent()  // Remove ActualApp.app
+                .deletingLastPathComponent()  // Remove Wrapper -> get Container.app
+
+            // If the current path matches the container, use the app's icon
+            if path.absoluteString == containerPath.absoluteString {
+                return self.appInfo.appIcon
+            }
+        }
+
+        // Regular logic for all other files
         if path.pathExtension == "app" {
-            // Check if it has a Contents folder (indicating it's a real app bundle)
             let contentsPath = path.appendingPathComponent("Contents")
             var isDirectory: ObjCBool = false
-            
+
             if FileManager.default.fileExists(atPath: contentsPath.path, isDirectory: &isDirectory) && isDirectory.boolValue {
                 // It's a real app bundle, get the app icon
                 return getIconForFileOrFolderNS(atPath: path)

@@ -212,8 +212,24 @@ struct FilesView: View {
                                 $0.absoluteString == appPath
                             })
 
+                            // For wrapped apps, also check if the container is being deleted
+                            let containerRemoved: Bool = {
+                                if appState.appInfo.wrapped {
+                                    // Get container path by going up two levels from inner app
+                                    // e.g., Container.app/Wrapper/ActualApp.app -> Container.app
+                                    let containerPath = appState.appInfo.path
+                                        .deletingLastPathComponent()  // Remove ActualApp.app -> Container.app/Wrapper
+                                        .deletingLastPathComponent()  // Remove Wrapper -> Container.app
+
+                                    return selectedItemsArray.contains(where: {
+                                        $0.absoluteString == containerPath.absoluteString
+                                    })
+                                }
+                                return false
+                            }()
+
                             let mainAppRemoved = !appState.appInfo.wrapped && appRemoved
-                            let wrappedAppRemoved = appState.appInfo.wrapped && appRemoved
+                            let wrappedAppRemoved = appState.appInfo.wrapped && (appRemoved || containerRemoved)
 
                             let isInTrash = appState.appInfo.path.path.contains(".Trash")
 

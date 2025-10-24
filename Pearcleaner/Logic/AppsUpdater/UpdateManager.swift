@@ -240,6 +240,33 @@ class UpdateManager: ObservableObject {
         }
     }
 
+    /// Refresh a Sparkle app's update check with a different feed URL
+    func refreshSparkleAppWithURL(app: UpdateableApp, newURL: String) async {
+        guard app.source == .sparkle else { return }
+
+        // Check for updates with the new URL, preserving the extracted URLs list
+        let updatedApp = await SparkleDetector.checkSingleAppWithURL(
+            appInfo: app.appInfo,
+            feedURL: newURL,
+            includePreReleases: includeSparklePreReleases,
+            preserveExtractedURLs: app.alternateSparkleURLs,
+            currentFeedURL: newURL
+        )
+
+        // Update the app in the list if we got a result
+        if let updatedApp = updatedApp {
+            if var apps = updatesBySource[.sparkle],
+               let index = apps.firstIndex(where: { $0.id == app.id }) {
+                apps[index] = updatedApp
+                updatesBySource[.sparkle] = apps
+            }
+        } else {
+            // No update found with new URL - optionally could remove from list
+            // For now, keep the existing entry so user can try another URL
+            printOS("No update found for \(app.appInfo.appName) with URL: \(newURL)")
+        }
+    }
+
     /// Wait for the App Store to finish replacing the bundle on disk
     /// This monitors the app bundle and removes it from the update list once the version changes
     private func waitForBundleUpdate(app: UpdateableApp) async {

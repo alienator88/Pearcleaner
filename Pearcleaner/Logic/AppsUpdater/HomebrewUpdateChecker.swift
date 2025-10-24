@@ -65,7 +65,10 @@ class HomebrewUpdateChecker {
                     releaseNotesLink: nil,
                     releaseDate: nil,
                     isPreRelease: false,  // Homebrew updates are not pre-releases
-                    isIOSApp: false  // Homebrew apps are never iOS apps
+                    isIOSApp: false,  // Homebrew apps are never iOS apps
+                    extractedFromBinary: false,
+                    alternateSparkleURLs: nil,
+                    currentFeedURL: nil
                 )
                 updateableApps.append(updateableApp)
             }
@@ -133,7 +136,10 @@ class HomebrewUpdateChecker {
                         releaseNotesLink: nil,
                         releaseDate: nil,
                         isPreRelease: false,
-                        isIOSApp: false
+                        isIOSApp: false,
+                        extractedFromBinary: false,
+                        alternateSparkleURLs: nil,
+                        currentFeedURL: nil
                     )
                     updateableApps.append(updateableApp)
                 }
