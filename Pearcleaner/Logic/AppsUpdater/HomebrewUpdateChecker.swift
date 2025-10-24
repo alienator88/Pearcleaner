@@ -98,13 +98,31 @@ class HomebrewUpdateChecker {
 
                 // Collect results and create UpdateableApp entries
                 for await (formulaName, installedVersion, availableVersion) in group {
+                    // Skip if no versions fetched
+                    guard let installedVersion = installedVersion,
+                          let availableVersion = availableVersion else { continue }
+
+                    // Clean versions for comparison (same logic as casks)
+                    let installedClean = installedVersion.cleanBrewVersionForDisplay()
+                    let availableClean = availableVersion.cleanBrewVersionForDisplay()
+
+                    // Compare versions using Version struct
+                    let installed = Version(versionNumber: installedClean, buildNumber: nil)
+                    let available = Version(versionNumber: availableClean, buildNumber: nil)
+
+                    // Only add if truly outdated (available > installed)
+                    // This filters out revision bumps where user-facing version is identical
+                    guard !installed.isEmpty && !available.isEmpty && available > installed else {
+                        continue  // Skip if versions are equal, invalid, or installed is newer
+                    }
+
                     // Create a minimal AppInfo for the formula (CLI tool)
                     let formulaAppInfo = AppInfo(
                         id: UUID(),
                         path: URL(fileURLWithPath: "/usr/local/bin/\(formulaName)"), // Placeholder path
                         bundleIdentifier: "com.homebrew.formula.\(formulaName)",
                         appName: formulaName,
-                        appVersion: installedVersion ?? "unknown",
+                        appVersion: installedVersion,
                         appIcon: nil,
                         webApp: false,
                         wrapped: false,

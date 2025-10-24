@@ -2,16 +2,14 @@
 //  SparkleUpdateDriver.swift
 //  Pearcleaner
 //
-//  Custom SPUUserDriver for programmatically controlling Sparkle updates
-//  without showing UI. Allows Pearcleaner to download and install updates
-//  for third-party Sparkle apps directly.
+//  Custom SPUUserDriver for programmatically controlling Sparkle updates.
+//  Allows Pearcleaner to download and install updates for third-party Sparkle apps directly.
 //
 
 import Foundation
 import Sparkle
 
-@MainActor
-class SparkleUpdateDriver: NSObject, SPUUserDriver, SPUUpdaterDelegate {
+class SparkleUpdateDriver: NSObject, SPUUserDriver, SPUUpdaterDelegate, @unchecked Sendable {
 
     // MARK: - Properties
 

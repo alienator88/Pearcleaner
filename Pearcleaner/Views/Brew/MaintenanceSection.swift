@@ -134,7 +134,7 @@ struct MaintenanceSection: View {
                                         }
                                         .buttonStyle(.plain)
                                         .help(isHealthy ? "Your Homebrew installation is healthy" : "Click to view issues")
-                                        .disabled(isHealthy)
+//                                        .disabled(isHealthy)
                                     }
                                 }
 

@@ -311,6 +311,38 @@ struct UpdateRowView: View {
                 }
             }
         }
+        .background {
+            // Progress fill background (accent color fills from left to right)
+            // Only show for Sparkle apps (they have granular progress reporting)
+            GeometryReader { geometry in
+                HStack(spacing: 0) {
+                    if app.source == .sparkle {
+                        // Only show progress fill for active update statuses
+                        if case .downloading = app.status {
+                            Rectangle()
+                                .fill(ThemeColors.shared(for: colorScheme).accent.opacity(0.3))
+                                .frame(width: geometry.size.width * app.progress)
+                        } else if case .extracting = app.status {
+                            Rectangle()
+                                .fill(ThemeColors.shared(for: colorScheme).accent.opacity(0.3))
+                                .frame(width: geometry.size.width * app.progress)
+                        } else if case .installing = app.status {
+                            Rectangle()
+                                .fill(ThemeColors.shared(for: colorScheme).accent.opacity(0.3))
+                                .frame(width: geometry.size.width * app.progress)
+                        } else if case .verifying = app.status {
+                            Rectangle()
+                                .fill(ThemeColors.shared(for: colorScheme).accent.opacity(0.3))
+                                .frame(width: geometry.size.width * app.progress)
+                        }
+                    }
+
+                    Spacer(minLength: 0)
+                }
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .animation(.linear(duration: 0.3), value: app.progress)
+        }
         .background(
             RoundedRectangle(cornerRadius: 8)
                 .fill(isHovered ?
