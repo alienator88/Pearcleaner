@@ -102,103 +102,95 @@ struct AppsUpdaterView: View {
 
                 // Category-based list
                 if updateManager.isScanning || updateManager.lastScanDate == nil {
-                // Loading state - centered (shown when scanning OR before first scan)
-                VStack(alignment: .center, spacing: 10) {
-                    Spacer()
-                    ProgressView()
-                        .scaleEffect(1.5)
+                    // Loading state - centered (shown when scanning OR before first scan)
+                    VStack(alignment: .center, spacing: 10) {
+                        Spacer()
+                        ProgressView()
+                            .scaleEffect(1.5)
 
-                    Text("Scanning for updates...")
-                        .font(.title2)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        Text("Scanning for updates...")
+                            .font(.title2)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
-                    Spacer()
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if !hasVisibleUpdates || allSourcesDisabled {
-                // Empty state - centered (shown when no visible updates OR all sources disabled)
-                VStack(alignment: .center, spacing: 10) {
-                    Spacer()
-                    Image(systemName: "checkmark.circle")
-                        .font(.system(size: 60))
-                        .foregroundStyle(.green)
-                    Text("All apps up to date")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                    Spacer()
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else {
-                ScrollView {
-                    LazyVStack(spacing: 0) {
-                        // Pearcleaner self-update banner (appears first, before categories)
-                        // Only show if user hasn't disabled update checking AND update is available
-                        if updater.updateFrequency != .none && updater.updateAvailable {
-                            PearcleanerUpdateBanner()
-                            Divider()
-                                .padding(.vertical)
-                        }
-
-                        // Show categories only if their checkbox is enabled
-                        if checkAppStore {
-                            CategorySection(
-                                title: "App Store",
-                                icon: ifOSBelow(macOS: 14) ? "cart.fill" : "storefront.fill",
-                                apps: updateManager.updatesBySource[.appStore] ?? [],
-                                searchText: searchText,
-                                collapsed: (updateManager.updatesBySource[.appStore]?.isEmpty ?? true) || collapsedCategories.contains("App Store"),
-                                onToggle: { toggleCategory("App Store") },
-                                onUpdateAll: {
-                                    Task { await updateManager.updateAll(source: .appStore) }
-                                },
-                                isFirst: true
-                            )
-                        }
-
-                        if checkHomebrew {
-                            CategorySection(
-                                title: "Homebrew",
-                                icon: "mug",
-                                apps: updateManager.updatesBySource[.homebrew] ?? [],
-                                searchText: searchText,
-                                collapsed: (updateManager.updatesBySource[.homebrew]?.isEmpty ?? true) || collapsedCategories.contains("Homebrew"),
-                                onToggle: { toggleCategory("Homebrew") },
-                                onUpdateAll: {
-                                    Task { await updateManager.updateAll(source: .homebrew) }
-                                },
-                                isFirst: !checkAppStore
-                            )
-                        }
-
-                        if checkSparkle {
-                            CategorySection(
-                                title: "Sparkle",
-                                icon: "sparkles",
-                                apps: updateManager.updatesBySource[.sparkle] ?? [],
-                                searchText: searchText,
-                                collapsed: (updateManager.updatesBySource[.sparkle]?.isEmpty ?? true) || collapsedCategories.contains("Sparkle"),
-                                onToggle: { toggleCategory("Sparkle") },
-                                onUpdateAll: nil,  // No "Update All" for Sparkle
-                                isFirst: !checkAppStore && !checkHomebrew
-                            )
-                        }
+                        Spacer()
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.top, 10)
-                    .padding(.bottom, 20)
-                }
-                .scrollIndicators(scrollIndicators ? .visible : .hidden)
-            }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if !hasVisibleUpdates || allSourcesDisabled {
+                    // Empty state - centered (shown when no visible updates OR all sources disabled)
+                    VStack(alignment: .center, spacing: 10) {
+                        Spacer()
+                        Image(systemName: "checkmark.circle")
+                            .font(.system(size: 60))
+                            .foregroundStyle(.green)
+                        Text("All apps up to date")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    ScrollView {
+                        LazyVStack(spacing: 0) {
+                            // Pearcleaner self-update banner (appears first, before categories)
+                            // Only show if user hasn't disabled update checking AND update is available
+                            if updater.updateFrequency != .none && updater.updateAvailable {
+                                PearcleanerUpdateBanner()
+                                Divider()
+                                    .padding(.vertical)
+                            }
 
-                // Beta footer
-                if !updateManager.isScanning && updateManager.lastScanDate != nil {
-                    Link("While in beta, report issues with missing or incorrect updates here", destination: URL(string: "https://github.com/alienator88/Pearcleaner/issues/381")!)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-                        .padding(.vertical, 8)
-                        .padding(.bottom, 4)
-                        .frame(maxWidth: .infinity)
+                            // Show categories only if their checkbox is enabled
+                            if checkAppStore {
+                                CategorySection(
+                                    title: "App Store",
+                                    icon: ifOSBelow(macOS: 14) ? "cart.fill" : "storefront.fill",
+                                    apps: updateManager.updatesBySource[.appStore] ?? [],
+                                    searchText: searchText,
+                                    collapsed: (updateManager.updatesBySource[.appStore]?.isEmpty ?? true) || collapsedCategories.contains("App Store"),
+                                    onToggle: { toggleCategory("App Store") },
+                                    onUpdateAll: {
+                                        Task { await updateManager.updateAll(source: .appStore) }
+                                    },
+                                    isFirst: true
+                                )
+                            }
+
+                            if checkHomebrew {
+                                CategorySection(
+                                    title: "Homebrew",
+                                    icon: "mug",
+                                    apps: updateManager.updatesBySource[.homebrew] ?? [],
+                                    searchText: searchText,
+                                    collapsed: (updateManager.updatesBySource[.homebrew]?.isEmpty ?? true) || collapsedCategories.contains("Homebrew"),
+                                    onToggle: { toggleCategory("Homebrew") },
+                                    onUpdateAll: {
+                                        Task { await updateManager.updateAll(source: .homebrew) }
+                                    },
+                                    isFirst: !checkAppStore
+                                )
+                            }
+
+                            if checkSparkle {
+                                CategorySection(
+                                    title: "Sparkle",
+                                    icon: "sparkles",
+                                    apps: updateManager.updatesBySource[.sparkle] ?? [],
+                                    searchText: searchText,
+                                    collapsed: (updateManager.updatesBySource[.sparkle]?.isEmpty ?? true) || collapsedCategories.contains("Sparkle"),
+                                    onToggle: { toggleCategory("Sparkle") },
+                                    onUpdateAll: nil,  // No "Update All" for Sparkle
+                                    isFirst: !checkAppStore && !checkHomebrew
+                                )
+                            }
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.top, 10)
+                        .padding(.bottom, 20)
+                    }
+                    .scrollIndicators(scrollIndicators ? .visible : .hidden)
                 }
+
             }
             .opacity(hiddenSidebar ? 0.5 : 1)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -239,6 +231,14 @@ struct AppsUpdaterView: View {
             ToolbarItem { Spacer() }
 
             TahoeToolbarItem(isGroup: true) {
+                Button {
+                    NSWorkspace.shared.open(URL(string: "https://github.com/alienator88/Pearcleaner/issues/381")!)
+                } label: {
+                    Label("Report Issue", systemImage: "ladybug.fill")
+                }
+                .disabled(updateManager.isScanning)
+                .help("While in beta, report issues with missing or incorrect updates here")
+
                 Button {
                     Task { await updateManager.scanForUpdates() }
                 } label: {

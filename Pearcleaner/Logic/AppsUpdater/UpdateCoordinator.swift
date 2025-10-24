@@ -105,6 +105,11 @@ class UpdateCoordinator {
             }
         }
 
+        // Sort each category alphabetically by app name for consistent display
+        for (source, apps) in finalResults {
+            finalResults[source] = apps.sorted { $0.appInfo.appName.localizedCaseInsensitiveCompare($1.appInfo.appName) == .orderedAscending }
+        }
+
         return finalResults
     }
 }
