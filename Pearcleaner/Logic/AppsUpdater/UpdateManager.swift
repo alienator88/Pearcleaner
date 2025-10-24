@@ -220,15 +220,45 @@ class UpdateManager: ObservableObject {
             }
 
         case .sparkle:
-            // Open the app so it can self-update
-            let configuration = NSWorkspace.OpenConfiguration()
-            configuration.activates = true
+            // Use Sparkle's updater to install directly (no need to open app)
 
-            do {
-                try await NSWorkspace.shared.open(app.appInfo.path, configuration: configuration)
-            } catch {
-                printOS("Failed to open Sparkle app: \(error.localizedDescription)")
+            // Get the feed URL from the app (prefer currentFeedURL if user switched)
+            guard let feedURL = app.currentFeedURL ?? app.alternateSparkleURLs?.first else {
+                printOS("No feed URL available for \(app.appInfo.appName)")
+                return
             }
+
+            // Set initial downloading status
+            updateStatus(for: app, status: .downloading, progress: 0.0)
+
+            // Create Sparkle update driver
+            let driver = SparkleUpdateDriver(
+                appInfo: app.appInfo,
+                feedURL: feedURL,
+                progressCallback: { [weak self] progress, status in
+                    guard let self = self else { return }
+                    Task { @MainActor in
+                        self.updateStatus(for: app, status: status, progress: progress)
+                    }
+                },
+                completionCallback: { [weak self] success, error in
+                    guard let self = self else { return }
+                    Task { @MainActor in
+                        if success {
+                            // Update completed - remove from list and refresh
+                            await self.removeFromUpdatesList(appID: app.id, source: .sparkle)
+                            await self.refreshApps()
+                        } else {
+                            // Update failed - show error
+                            let message = error?.localizedDescription ?? "Unknown error"
+                            self.updateStatus(for: app, status: .failed(message), progress: 0.0)
+                        }
+                    }
+                }
+            )
+
+            // Start the update process
+            driver.startUpdate()
         }
     }
 
@@ -237,6 +267,16 @@ class UpdateManager: ObservableObject {
 
         for app in apps {
             await updateApp(app)
+        }
+    }
+
+    /// Update the status and progress of an app in the updates list
+    private func updateStatus(for app: UpdateableApp, status: UpdateStatus, progress: Double) {
+        if var apps = updatesBySource[app.source],
+           let index = apps.firstIndex(where: { $0.id == app.id }) {
+            apps[index].status = status
+            apps[index].progress = progress
+            updatesBySource[app.source] = apps
         }
     }
 

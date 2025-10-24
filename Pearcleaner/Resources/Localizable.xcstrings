@@ -44354,6 +44354,7 @@
       }
     },
     "Open to Update" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

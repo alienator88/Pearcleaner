@@ -51,12 +51,12 @@ struct UpdateRowView: View {
                     Task { await updateManager.updateApp(app) }
                 }
             } label: {
-                Text(app.isIOSApp ? "Update in App Store" : (app.source == .sparkle ? "Open to Update" : "Update"))
+                Text(app.isIOSApp ? "Update in App Store" : "Update")
             }
             .buttonStyle(.plain)
             .foregroundStyle(.orange)
 
-        case .checking, .downloading, .installing, .verifying:
+        case .checking, .downloading, .extracting, .installing, .verifying:
             HStack(spacing: 6) {
                 ProgressView()
                     .scaleEffect(0.8)
@@ -333,6 +333,8 @@ struct UpdateRowView: View {
             return "Checking..."
         case .downloading:
             return "Downloading..."
+        case .extracting:
+            return "Extracting..."
         case .installing:
             return "Installing..."
         case .verifying:

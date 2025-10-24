@@ -29,6 +29,7 @@ enum UpdateStatus: Equatable {
     case idle
     case checking
     case downloading
+    case extracting
     case installing
     case verifying
     case completed
@@ -39,6 +40,7 @@ enum UpdateStatus: Equatable {
         case (.idle, .idle),
              (.checking, .checking),
              (.downloading, .downloading),
+             (.extracting, .extracting),
              (.installing, .installing),
              (.verifying, .verifying),
              (.completed, .completed):

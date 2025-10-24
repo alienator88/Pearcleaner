@@ -373,7 +373,6 @@
 		C77B901F2AF1B390009CC655 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				C71DC3392EAAAFF000503474 /* Components */,
 				C74422402E4936700002D277 /* DaemonView.swift */,
 				C770D7DA2CE7C9A100B3492A /* DevelopmentView.swift */,
 				C7BB992E2E8B225F007BBB81 /* FileSearchView.swift */,
@@ -383,6 +382,7 @@
 				C7C693FC2E9D74D50081CF25 /* AppsUpdaterView */,
 				C74649EE2E4800BB002D1C63 /* AppsView */,
 				C7C05FD72E8DA12C006D0476 /* Brew */,
+				C71DC3392EAAAFF000503474 /* Components */,
 				C76073F32E3C1C2C003957A7 /* FilesView */,
 				C74649E62E48000C002D1C63 /* LipoView */,
 				C74649FA2E48076B002D1C63 /* Settings */,

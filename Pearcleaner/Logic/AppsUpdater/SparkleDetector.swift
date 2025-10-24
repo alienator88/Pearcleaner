@@ -147,25 +147,49 @@ class SparkleDetector {
                 }
             }
 
+            // Stage 3: Smart commit hash filtering
+            // If ALL items are commit hashes → tip/nightly feed → keep them
+            // If feed has MIX of commit hashes and semantic versions → filter out commit hashes
+            let allItemsAreCommitHashes = items.allSatisfy { item in
+                let version = item.shortVersionString ?? item.buildVersion
+                return isCommitHashVersion(version)
+            }
+
+            // Only filter commit hashes if feed has BOTH commit hashes and semantic versions
+            if !allItemsAreCommitHashes {
+                items = items.filter { item in
+                    let version = item.shortVersionString ?? item.buildVersion
+                    return !isCommitHashVersion(version)
+                }
+            }
+
             // After filtering, check if we have any items left
             guard !items.isEmpty else { return nil }
 
-            // Find the most recent item by pubDate (more reliable than version comparison)
-            // This handles apps like Ghostty with inconsistent version formats (commit hashes, semantic versions)
+            // Find the most recent item by version comparison (primary), pubDate (fallback)
+            // Version-first handles most apps correctly (including pre-releases)
+            // pubDate fallback handles edge cases like Ghostty with commit hash versions
             let candidateItem: SparkleMetadata = items.max { item1, item2 in
-                // Compare by pubDate (RFC 822 format: "Fri, 20 Dec 2024 21:34:26 +0000")
-                if let date1 = parsePubDate(item1.pubDate),
-                   let date2 = parsePubDate(item2.pubDate) {
-                    return date1 < date2
-                }
-
-                // Fallback to version comparison if dates unavailable
+                // PRIMARY: Compare by version
                 let ver1 = item1.shortVersionString ?? item1.buildVersion
                 let ver2 = item2.shortVersionString ?? item2.buildVersion
                 let version1 = Version(versionNumber: ver1, buildNumber: nil)
                 let version2 = Version(versionNumber: ver2, buildNumber: nil)
 
-                return version1 < version2
+                // If BOTH versions are valid and different, compare by version
+                // This handles semantic versions, pre-releases, multi-component versions
+                if !version1.isEmpty && !version2.isEmpty && version1 != version2 {
+                    return version1 < version2
+                }
+
+                // FALLBACK: If one/both versions are invalid/equal, use pubDate
+                // This handles commit hashes, "tip"/"nightly" labels, equal versions
+                if let date1 = parsePubDate(item1.pubDate),
+                   let date2 = parsePubDate(item2.pubDate) {
+                    return date1 < date2
+                }
+
+                return false
             }!
 
             // - If appcast has shortVersionString, compare with app's CFBundleShortVersionString
@@ -249,6 +273,16 @@ class SparkleDetector {
         return nil
     }
 
+
+    /// Check if a version string is a commit hash (e.g., "663205b5 (2024-12-20)")
+    private static func isCommitHashVersion(_ version: String) -> Bool {
+        let commitHashPattern = "^[0-9a-f]{8,}.*$"
+        guard let regex = try? NSRegularExpression(pattern: commitHashPattern, options: .caseInsensitive) else {
+            return false
+        }
+        let range = NSRange(version.startIndex..<version.endIndex, in: version)
+        return regex.firstMatch(in: version, range: range) != nil
+    }
 
     /// Parse Sparkle appcast XML to extract all items
     private static func parseAppcastMetadata(from data: Data) -> [SparkleMetadata] {
