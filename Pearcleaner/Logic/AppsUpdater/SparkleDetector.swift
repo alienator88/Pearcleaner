@@ -361,80 +361,269 @@ class SparkleDetector {
         return infoDict["SUPublicEDKey"] != nil || infoDict["SUPublicDSAKeyFile"] != nil
     }
 
-    /// Extract ALL appcast URLs from binary using strings command
-    /// Returns array of all found URLs (not just first one) to support URL picker
-    private static func extractFeedURLFromBinary(appPath: URL, executable: String) async -> [String] {
-        let executablePath = appPath.appendingPathComponent("Contents/MacOS/\(executable)")
+    /// Collect binaries to scan for appcast URLs
+    /// Returns array of binary paths to scan in priority order: main executable, top 5 frameworks, top 5 plugins
+    private static func collectBinariesToScan(appPath: URL, executable: String) -> [URL] {
+        var binaries: [URL] = []
+        let fm = FileManager.default
 
-        // Verify executable exists
-        guard FileManager.default.fileExists(atPath: executablePath.path) else {
+        // 1. Main executable (highest priority)
+        let mainBinary = appPath.appendingPathComponent("Contents/MacOS/\(executable)")
+        if fm.fileExists(atPath: mainBinary.path) {
+            binaries.append(mainBinary)
+            logger.log(.sparkle, "    • Main executable: \(executable)")
+        }
+
+        // 2. Custom frameworks (top 5 by size)
+        let frameworksFolder = appPath.appendingPathComponent("Contents/Frameworks")
+        if let frameworkContents = try? fm.contentsOfDirectory(at: frameworksFolder, includingPropertiesForKeys: [.fileSizeKey, .isDirectoryKey]) {
+            // Filter for .framework bundles, excluding Sparkle itself (it only contains Sparkle's own URLs, not the app's appcast)
+            let frameworks = frameworkContents.filter {
+                $0.pathExtension == "framework" &&
+                !$0.lastPathComponent.lowercased().hasPrefix("sparkle")
+            }
+
+            // Sort by size (largest first) and take top 5
+            let sortedFrameworks = frameworks
+                .compactMap { frameworkBundle -> (URL, Int)? in
+                    // Find the actual binary inside: Versions/A/{FrameworkName}
+                    let frameworkName = frameworkBundle.deletingPathExtension().lastPathComponent
+                    let binaryPath = frameworkBundle.appendingPathComponent("Versions/A/\(frameworkName)")
+
+                    // Get file size
+                    guard let attributes = try? fm.attributesOfItem(atPath: binaryPath.path),
+                          let fileSize = attributes[.size] as? Int else {
+                        return nil
+                    }
+
+                    return (binaryPath, fileSize)
+                }
+                .sorted { $0.1 > $1.1 }  // Sort by size descending
+                .prefix(5)               // Take top 5
+
+            for (frameworkBinary, size) in sortedFrameworks {
+                binaries.append(frameworkBinary)
+                let sizeStr = ByteCountFormatter.string(fromByteCount: Int64(size), countStyle: .file)
+                logger.log(.sparkle, "    • Framework: \(frameworkBinary.lastPathComponent) (\(sizeStr))")
+            }
+        }
+
+        // 3. Plugins (smart filtering: UI-related names first, then by size)
+        let pluginsFolder = appPath.appendingPathComponent("Contents/MacOS/plugins")
+        if let pluginContents = try? fm.contentsOfDirectory(at: pluginsFolder, includingPropertiesForKeys: [.fileSizeKey]) {
+            // Filter for .dylib files
+            let plugins = pluginContents.filter { $0.pathExtension == "dylib" }
+
+            // Get all plugins with size info
+            let pluginsWithSize = plugins.compactMap { pluginPath -> (URL, Int)? in
+                guard let attributes = try? fm.attributesOfItem(atPath: pluginPath.path),
+                      let fileSize = attributes[.size] as? Int else {
+                    return nil
+                }
+                return (pluginPath, fileSize)
+            }
+
+            // UI-related name patterns (likely to contain appcast URLs)
+            let uiPatterns = ["macosx", "cocoa", "ui", "qt", "update", "sparkle"]
+
+            // Priority tier: Plugins with UI-related names (sorted by size)
+            let priorityPlugins = pluginsWithSize
+                .filter { (url, _) in
+                    let name = url.lastPathComponent.lowercased()
+                    return uiPatterns.contains { name.contains($0) }
+                }
+                .sorted { $0.1 > $1.1 }  // Sort by size descending
+
+            // Fallback tier: Remaining plugins by size
+            let remainingPlugins = pluginsWithSize
+                .filter { (url, _) in
+                    let name = url.lastPathComponent.lowercased()
+                    return !uiPatterns.contains { name.contains($0) }
+                }
+                .sorted { $0.1 > $1.1 }  // Sort by size descending
+
+            // Combine: priority first, then fallback (total limit: 5)
+            let selectedPlugins = (priorityPlugins + remainingPlugins).prefix(5)
+
+            for (pluginPath, size) in selectedPlugins {
+                binaries.append(pluginPath)
+                let sizeStr = ByteCountFormatter.string(fromByteCount: Int64(size), countStyle: .file)
+                let isPriority = uiPatterns.contains { pluginPath.lastPathComponent.lowercased().contains($0) }
+                let marker = isPriority ? "🎯" : "  "
+                logger.log(.sparkle, "    \(marker) Plugin: \(pluginPath.lastPathComponent) (\(sizeStr))")
+            }
+        }
+
+        return binaries
+    }
+
+    /// Extract Sparkle feed URL from app binaries (main executable, frameworks, plugins)
+    /// Scans main executable first (no timeout), then frameworks/plugins concurrently (with timeout)
+    /// Returns array of unique URLs found (or empty array if none found)
+    private static func extractFeedURLFromBinary(appPath: URL, executable: String) async -> [String] {
+        logger.log(.sparkle, "  🔍 Scanning binaries for appcast URLs...")
+
+        // Collect all binaries to scan (main, frameworks, plugins)
+        let binaries = collectBinariesToScan(appPath: appPath, executable: executable)
+
+        guard !binaries.isEmpty else {
+            logger.log(.sparkle, "    ❌ No binaries found to scan")
             return []
         }
 
-        // Run strings command asynchronously in background to avoid blocking UI
-        return await withCheckedContinuation { continuation in
-            Task.detached(priority: .utility) {
-                let process = Process()
-                process.executableURL = URL(fileURLWithPath: "/usr/bin/strings")
-                process.arguments = [executablePath.path]
+        logger.log(.sparkle, "    Found \(binaries.count) binaries to scan")
 
-                let pipe = Pipe()
-                process.standardOutput = pipe
-                process.standardError = Pipe() // Discard errors
+        // Separate main executable from others
+        let mainBinaryPath = appPath.appendingPathComponent("Contents/MacOS/\(executable)")
+        let otherBinaries = binaries.filter { $0 != mainBinaryPath }
 
-                do {
-                    try process.run()
+        // STEP 1: Scan main executable first (no size limit)
+        if binaries.contains(mainBinaryPath) {
+            logger.log(.sparkle, "    [1/\(binaries.count)] Scanning: \(executable) (main)")
+            let urls = await scanBinaryForAppcastURLs(binaryPath: mainBinaryPath, sizeLimit: nil)
 
-                    // Set timeout (2 seconds) to prevent indefinite hanging
-                    let timer = DispatchSource.makeTimerSource(queue: .global())
-                    timer.schedule(deadline: .now() + 2.0)
-                    timer.setEventHandler {
-                        if process.isRunning {
-                            process.terminate()
-                        }
-                    }
-                    timer.resume()
+            if !urls.isEmpty {
+                logger.log(.sparkle, "    ✓ Found \(urls.count) URL(s) in \(executable):")
+                for url in urls {
+                    logger.log(.sparkle, "      - \(url)")
+                }
+                return urls  // Early exit - found in main executable
+            } else {
+                logger.log(.sparkle, "      No URLs found")
+            }
+        }
 
-                    // Wait for process to complete
-                    process.waitUntilExit()
-                    timer.cancel()
+        // STEP 2: Scan frameworks/plugins concurrently (with size limits)
+        guard !otherBinaries.isEmpty else {
+            logger.log(.sparkle, "    ❌ No appcast URLs found in any binary")
+            return []
+        }
 
-                    // Read output
-                    let data = pipe.fileHandleForReading.readDataToEndOfFile()
-                    guard let output = String(data: data, encoding: .utf8) else {
-                        continuation.resume(returning: [])
-                        return
-                    }
+        // Create optimal chunks for concurrent processing
+        let chunks = createOptimalChunks(from: otherBinaries, minChunkSize: 2, maxChunkSize: 5)
+        logger.log(.sparkle, "    Scanning \(otherBinaries.count) frameworks/plugins concurrently...")
 
-                    // Filter for appcast URLs using regex
-                    // Pattern matches: https?://[non-whitespace]+.(xml|appcast)
-                    let urlPattern = #"https?://[^\s]+\.(xml|appcast)"#
-                    let regex = try NSRegularExpression(pattern: urlPattern, options: [])
-                    let range = NSRange(output.startIndex..., in: output)
+        // Scan chunks concurrently and collect ALL URLs from ALL binaries
+        return await withTaskGroup(of: [(String, String)].self) { group in
+            for chunk in chunks {
+                group.addTask {
+                    var chunkResults: [(String, String)] = []  // (binaryName, url) pairs
 
-                    // Find all matches
-                    var urls: [String] = []
-                    regex.enumerateMatches(in: output, range: range) { match, _, _ in
-                        if let match = match,
-                           let range = Range(match.range, in: output) {
-                            let url = String(output[range])
-                            // Additional validation: must contain "appcast" or end with ".xml"
-                            if url.contains("appcast") || url.hasSuffix(".xml") {
-                                urls.append(url)
+                    // Scan each binary in chunk sequentially
+                    for binaryPath in chunk {
+                        let binaryName = binaryPath.lastPathComponent
+
+                        // Determine size limit based on binary type:
+                        // - Frameworks: 30 MB limit (allows UI frameworks, skips bloated libraries like ChatGPT 62 MB)
+                        // - Plugins: 15 MB limit (allows UI plugins, skips large codec/network libraries)
+                        let isPlugin = binaryPath.path.contains("/plugins/")
+                        let sizeLimit = isPlugin ? 15_000_000 : 30_000_000
+
+                        let urls = await scanBinaryForAppcastURLs(binaryPath: binaryPath, sizeLimit: sizeLimit)
+
+                        if !urls.isEmpty {
+                            logger.log(.sparkle, "    ✓ Found \(urls.count) URL(s) in \(binaryName):")
+                            for url in urls {
+                                logger.log(.sparkle, "      - \(url)")
+                                chunkResults.append((binaryName, url))
                             }
                         }
                     }
-
-                    // Remove duplicates while preserving order
-                    let uniqueURLs = Array(NSOrderedSet(array: urls)) as! [String]
-
-                    // Return all unique URLs (not just first)
-                    continuation.resume(returning: uniqueURLs)
-
-                } catch {
-                    // Process execution failed - return empty array
-                    continuation.resume(returning: [])
+                    return chunkResults
                 }
+            }
+
+            // Collect ALL URLs from ALL chunks
+            var allResults: [(String, String)] = []
+            for await chunkResults in group {
+                allResults.append(contentsOf: chunkResults)
+            }
+
+            guard !allResults.isEmpty else {
+                logger.log(.sparkle, "    ❌ No appcast URLs found in any binary")
+                return []
+            }
+
+            // Extract unique URLs (C function already sorted by priority)
+            let allURLs = Array(Set(allResults.map { $0.1 }))
+
+            // Filter by architecture if multiple URLs found
+            if allURLs.count > 1 {
+                #if arch(arm64)
+                let archKeywords = ["arm64", "apple"]  // Apple Silicon
+                #elseif arch(x86_64)
+                let archKeywords = ["intel", "x86_64", "x64"]  // Intel
+                #else
+                let archKeywords: [String] = []
+                #endif
+
+                // Find architecture-specific URLs
+                let archSpecificURLs = allURLs.filter { url in
+                    let lowercased = url.lowercased()
+                    return archKeywords.contains { lowercased.contains($0) }
+                }
+
+                // If we found arch-specific URLs, use only those
+                if !archSpecificURLs.isEmpty {
+                    return archSpecificURLs
+                }
+            }
+
+            return allURLs
+        }
+    }
+
+    /// Scan a single binary file for appcast URLs using C implementation
+    /// Returns array of found URLs from the binary (priority sorted: release URLs first)
+    /// - Parameters:
+    ///   - binaryPath: Path to binary file to scan
+    ///   - sizeLimit: Optional size limit in bytes (nil = no limit)
+    private static func scanBinaryForAppcastURLs(binaryPath: URL, sizeLimit: Int?) async -> [String] {
+        // Verify binary exists and get file size
+        guard FileManager.default.fileExists(atPath: binaryPath.path),
+              let attributes = try? FileManager.default.attributesOfItem(atPath: binaryPath.path),
+              let fileSize = attributes[.size] as? Int else {
+            return []
+        }
+
+        // Skip binaries larger than size limit (if specified)
+        if let maxFileSize = sizeLimit, fileSize > maxFileSize {
+            let sizeStr = ByteCountFormatter.string(fromByteCount: Int64(fileSize), countStyle: .file)
+            let limitStr = ByteCountFormatter.string(fromByteCount: Int64(maxFileSize), countStyle: .file)
+            logger.log(.sparkle, "        Skipped (file too large: \(sizeStr) > \(limitStr))")
+            return []
+        }
+
+        // Call C function to extract appcast URLs directly from binary
+        return await withCheckedContinuation { continuation in
+            Task.detached(priority: .utility) {
+                var output: UnsafeMutablePointer<CChar>? = nil
+                var outputLen: size_t = 0
+
+                let result = binaryPath.path.withCString { path in
+                    extract_appcast_urls(path, &output, &outputLen)
+                }
+
+                guard result == 0, let outputPtr = output, outputLen > 0 else {
+                    continuation.resume(returning: [])
+                    return
+                }
+
+                defer { free(outputPtr) }
+
+                // Convert C string to Swift String
+                // Create a Data object from the buffer, which will copy the bytes
+                let data = Data(bytes: outputPtr, count: outputLen)
+                let outputString = String(data: data, encoding: .utf8) ?? ""
+
+                // Split by newlines to get individual URLs
+                // URLs are already deduplicated and priority-sorted by C function
+                let urls = outputString
+                    .split(separator: "\n")
+                    .map { String($0) }
+                    .filter { !$0.isEmpty }
+
+                continuation.resume(returning: urls)
             }
         }
     }

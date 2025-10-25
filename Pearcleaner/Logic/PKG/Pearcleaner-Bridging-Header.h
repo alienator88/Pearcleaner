@@ -21,3 +21,6 @@
 #import "PKPackageInfo.h"
 #import "PKProductInfo.h"
 #import "PKReceipt.h"
+
+// String Extraction for Sparkle Updater
+#import "StringExtractor.h"
