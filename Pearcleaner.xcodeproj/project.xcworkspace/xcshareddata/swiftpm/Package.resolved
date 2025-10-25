@@ -1,5 +1,5 @@
 {
-  "originHash" : "68e5a0d238e433cf6057beb7cdef722bea919725ab76aaf5b6864487b598d7c5",
+  "originHash" : "878acce7c95e9774ee43b058d63510f4ad7a7a3a673f5600c415bcc68aad7c3f",
   "pins" : [
     {
       "identity" : "alinfoundation",
@@ -7,7 +7,7 @@
       "location" : "https://github.com/alienator88/AlinFoundation",
       "state" : {
         "branch" : "main",
-        "revision" : "b1b2a0d024d3126981ad73685ecbe015d2b6d12a"
+        "revision" : "f61241c2ea1856ef41cbfc965afe9d756121456f"
       }
     },
     {

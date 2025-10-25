@@ -25,12 +25,6 @@ struct PearcleanerApp: App {
         //MARK: GUI or CLI launch mode.
         handleLaunchMode()
 
-        //MARK: Check permissions
-        let permissionManager = PermissionManager.shared
-        permissionManager.checkPermissions(types: [.fullDiskAccess]) { results in
-            permissionManager.results = results
-        }
-
         //MARK: Pre-load apps data during app initialization
         let folderPaths = FolderSettingsManager.shared.folderPaths
         loadApps(folderPaths: folderPaths)
@@ -49,6 +43,12 @@ struct PearcleanerApp: App {
                 .environmentObject(fsm)
                 .environmentObject(updater)
                 .environmentObject(permissionManager)
+                .onAppear {
+                    //MARK: Check permissions
+                    permissionManager.checkPermissions(types: [.fullDiskAccess]) { results in
+                        permissionManager.results = results
+                    }
+                }
 
         }
         .windowStyle(.hiddenTitleBar)
@@ -57,9 +57,6 @@ struct PearcleanerApp: App {
         .commands {
             AppCommands(appState: appState, locations: locations, fsm: fsm, updater: updater)
         }
-
-
-
     }
 }
 

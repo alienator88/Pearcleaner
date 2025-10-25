@@ -40,7 +40,7 @@ struct BadgeOverlay: View {
         }
 
         // Permissions: second priority
-        if permissionManager.results != nil && !permissionManager.allPermissionsGranted {
+        if permissionManager.shouldShowPermissionWarning {
             if !dismissedOverlays.contains(.permissions) {
                 return .permissions
             }

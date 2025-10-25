@@ -216,8 +216,7 @@ struct MainWindow: View {
                     .sheet(isPresented: $showFeatureView) {
                         updater.getAnnouncementView()
                     }
-                } else if permissionManager.results != nil, !permissionManager.allPermissionsGranted
-                {
+                } else if permissionManager.shouldShowPermissionWarning {
                     noticeButton(
                         image: "lock.slash.fill",
                         color: .red,
