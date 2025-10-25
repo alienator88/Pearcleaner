@@ -322,6 +322,26 @@ class UpdateManager: ObservableObject {
         }
     }
 
+    /// Update all selected apps across all sources (concurrent per-source)
+    func updateSelectedApps() async {
+        await withTaskGroup(of: Void.self) { group in
+            // Process each source's updates concurrently in separate Tasks
+            for source in UpdateSource.allCases {
+                if let apps = updatesBySource[source] {
+                    let selectedApps = apps.filter { $0.isSelectedForUpdate }
+                    if !selectedApps.isEmpty {
+                        group.addTask {
+                            // Within each source, process apps sequentially
+                            for app in selectedApps {
+                                await self.updateApp(app)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /// Update the status and progress of an app in the updates list
     private func updateStatus(for app: UpdateableApp, status: UpdateStatus, progress: Double) {
         if var apps = updatesBySource[app.source],

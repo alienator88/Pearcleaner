@@ -36,6 +36,21 @@ struct AppsUpdaterView: View {
         updateManager.updatesBySource.values.contains { !$0.isEmpty }
     }
 
+    // Collect all apps across all sources
+    private var allApps: [UpdateableApp] {
+        updateManager.updatesBySource.values.flatMap { $0 }
+    }
+
+    // Count selected apps across all sources
+    private var selectedAppsCount: Int {
+        allApps.filter { $0.isSelectedForUpdate }.count
+    }
+
+    // Check if any apps are selected
+    private var hasSelectedApps: Bool {
+        selectedAppsCount > 0
+    }
+
     @ViewBuilder
     private var resultsCountBar: some View {
         if updateManager.hasUpdates || updateManager.lastScanDate != nil {
@@ -137,9 +152,6 @@ struct AppsUpdaterView: View {
                                     isScanning: updateManager.scanningSources.contains(.appStore),
                                     collapsed: (updateManager.updatesBySource[.appStore]?.isEmpty ?? true) || collapsedCategories.contains("App Store"),
                                     onToggle: { toggleCategory("App Store") },
-                                    onUpdateAll: {
-                                        Task { await updateManager.updateAll(source: .appStore) }
-                                    },
                                     isFirst: true
                                 )
                             }
@@ -153,9 +165,6 @@ struct AppsUpdaterView: View {
                                     isScanning: updateManager.scanningSources.contains(.homebrew),
                                     collapsed: (updateManager.updatesBySource[.homebrew]?.isEmpty ?? true) || collapsedCategories.contains("Homebrew"),
                                     onToggle: { toggleCategory("Homebrew") },
-                                    onUpdateAll: {
-                                        Task { await updateManager.updateAll(source: .homebrew) }
-                                    },
                                     isFirst: !checkAppStore
                                 )
                             }
@@ -169,9 +178,6 @@ struct AppsUpdaterView: View {
                                     isScanning: updateManager.scanningSources.contains(.sparkle),
                                     collapsed: (updateManager.updatesBySource[.sparkle]?.isEmpty ?? true) || collapsedCategories.contains("Sparkle"),
                                     onToggle: { toggleCategory("Sparkle") },
-                                    onUpdateAll: {
-                                        Task { await updateManager.updateAll(source: .sparkle) }
-                                    },
                                     isFirst: !checkAppStore && !checkHomebrew
                                 )
                             }
@@ -202,6 +208,45 @@ struct AppsUpdaterView: View {
         .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("UpdaterViewShouldRefresh"))) { _ in
             Task {
                 await updateManager.scanForUpdates()
+            }
+        }
+        .safeAreaInset(edge: .bottom) {
+            if hasSelectedApps {
+                HStack {
+                    Spacer()
+
+                    HStack(spacing: 10) {
+                        Button(selectedAppsCount == allApps.count ? "Deselect All" : "Select All") {
+                            if selectedAppsCount == allApps.count {
+                                deselectAllApps()
+                            } else {
+                                selectAllApps()
+                            }
+                        }
+                        .buttonStyle(ControlGroupButtonStyle(
+                            foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                            shape: Capsule(style: .continuous),
+                            level: .primary,
+                            skipControlGroup: true
+                        ))
+
+                        Divider().frame(height: 10)
+
+                        Button("Update \(selectedAppsCount) Selected") {
+                            updateSelectedApps()
+                        }
+                        .buttonStyle(ControlGroupButtonStyle(
+                            foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                            shape: Capsule(style: .continuous),
+                            level: .primary,
+                            skipControlGroup: true
+                        ))
+                    }
+                    .controlGroup(Capsule(style: .continuous), level: .primary)
+
+                    Spacer()
+                }
+                .padding([.horizontal, .bottom])
             }
         }
         .toolbar {
@@ -259,6 +304,34 @@ struct AppsUpdaterView: View {
             collapsedCategories.insert(name)
         }
     }
+
+    private func selectAllApps() {
+        // Select all apps across all sources
+        for (source, apps) in updateManager.updatesBySource {
+            var updatedApps = apps
+            for index in updatedApps.indices {
+                updatedApps[index].isSelectedForUpdate = true
+            }
+            updateManager.updatesBySource[source] = updatedApps
+        }
+    }
+
+    private func deselectAllApps() {
+        // Deselect all apps across all sources
+        for (source, apps) in updateManager.updatesBySource {
+            var updatedApps = apps
+            for index in updatedApps.indices {
+                updatedApps[index].isSelectedForUpdate = false
+            }
+            updateManager.updatesBySource[source] = updatedApps
+        }
+    }
+
+    private func updateSelectedApps() {
+        Task {
+            await updateManager.updateSelectedApps()
+        }
+    }
 }
 
 // Category section component (matching Homebrew layout)
@@ -270,7 +343,6 @@ struct CategorySection<TrailingContent: View>: View {
     let isScanning: Bool
     let collapsed: Bool
     let onToggle: () -> Void
-    let onUpdateAll: (() -> Void)?
     let isFirst: Bool
     let trailingContent: (() -> TrailingContent)?
     @Environment(\.colorScheme) var colorScheme
@@ -286,7 +358,6 @@ struct CategorySection<TrailingContent: View>: View {
         isScanning: Bool,
         collapsed: Bool,
         onToggle: @escaping () -> Void,
-        onUpdateAll: (() -> Void)?,
         isFirst: Bool
     ) where TrailingContent == EmptyView {
         self.title = title
@@ -296,7 +367,6 @@ struct CategorySection<TrailingContent: View>: View {
         self.isScanning = isScanning
         self.collapsed = collapsed
         self.onToggle = onToggle
-        self.onUpdateAll = onUpdateAll
         self.isFirst = isFirst
         self.trailingContent = nil
     }
@@ -310,7 +380,6 @@ struct CategorySection<TrailingContent: View>: View {
         isScanning: Bool,
         collapsed: Bool,
         onToggle: @escaping () -> Void,
-        onUpdateAll: (() -> Void)?,
         isFirst: Bool,
         @ViewBuilder trailingContent: @escaping () -> TrailingContent
     ) {
@@ -321,7 +390,6 @@ struct CategorySection<TrailingContent: View>: View {
         self.isScanning = isScanning
         self.collapsed = collapsed
         self.onToggle = onToggle
-        self.onUpdateAll = onUpdateAll
         self.isFirst = isFirst
         self.trailingContent = trailingContent
     }
@@ -374,18 +442,6 @@ struct CategorySection<TrailingContent: View>: View {
                     // Optional trailing content (e.g., Sparkle pre-release toggle)
                     if let trailingContent = trailingContent {
                         trailingContent()
-                    }
-
-                    // Show "Update Selected" button if more than 1 app
-                    if let onUpdateAll = onUpdateAll, filteredApps.count > 1 {
-                        Button {
-                            onUpdateAll()
-                        } label: {
-                            Text("Update Selected")
-                                .font(.caption)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-                        }
-                        .buttonStyle(.plain)
                     }
                 }
             }

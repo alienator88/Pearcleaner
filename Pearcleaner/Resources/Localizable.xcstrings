@@ -70755,6 +70755,9 @@
         }
       }
     },
+    "Update %lld Selected" : {
+
+    },
     "Update All" : {
       "localizations" : {
         "de" : {
