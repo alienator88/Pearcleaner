@@ -75,19 +75,18 @@ struct UpdateRowView: View {
 
     @ViewBuilder
     private var secondaryActionButtons: some View {
-        // View Changes button for Sparkle and App Store apps (if metadata available)
-        if (app.source == .sparkle || app.source == .appStore), app.releaseDescription != nil || app.releaseTitle != nil {
-            Button {
-                withAnimation(.easeInOut(duration: 0.3)) {
-                    isExpanded.toggle()
-                }
-            } label: {
-                Text(isExpanded ? "Close" : "View Changes")
-                    .font(.caption)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+        // View Changes button (shown for all sources, disabled for Homebrew)
+        Button {
+            withAnimation(.easeInOut(duration: 0.3)) {
+                isExpanded.toggle()
             }
-            .buttonStyle(.plain)
+        } label: {
+            Text(isExpanded ? "Close" : "View Changes")
+                .font(.caption)
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
         }
+        .buttonStyle(.plain)
+        .disabled(app.source == .homebrew)
 
         // Hide button (always shown, positioned last - furthest trailing)
         Button {
