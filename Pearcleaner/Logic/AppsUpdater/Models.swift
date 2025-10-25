@@ -62,6 +62,7 @@ struct UpdateableApp: Identifiable {
     let appStoreURL: String?  // Store URL from iTunes API for "Open in App Store" button
     var status: UpdateStatus = .idle
     var progress: Double = 0.0
+    var isSelectedForUpdate: Bool = true  // Default to selected for "Update All" queue
 
     // Sparkle/App Store metadata (optional)
     let releaseTitle: String?

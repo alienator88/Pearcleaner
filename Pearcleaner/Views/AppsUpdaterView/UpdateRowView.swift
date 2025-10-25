@@ -105,6 +105,16 @@ struct UpdateRowView: View {
         VStack(spacing: 0) {
             // Main row
             HStack(alignment: .center, spacing: 12) {
+                // Selection checkbox
+                Button(action: {
+                    updateManager.toggleAppSelection(app)
+                }) {
+                    Image(systemName: app.isSelectedForUpdate ? "checkmark.circle.fill" : "circle")
+                        .foregroundStyle(app.isSelectedForUpdate ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
+                        .font(.title3)
+                }
+                .buttonStyle(.plain)
+
                 // App icon (use actual app icon if available, fallback to source icon)
                 if let appIcon = app.appInfo.appIcon {
                     Image(nsImage: appIcon)

@@ -96,6 +96,15 @@ class UpdateManager: ObservableObject {
         }
     }
 
+    /// Toggle selection state for an app in the update queue
+    func toggleAppSelection(_ app: UpdateableApp) {
+        guard var apps = updatesBySource[app.source],
+              let index = apps.firstIndex(where: { $0.id == app.id }) else { return }
+
+        apps[index].isSelectedForUpdate.toggle()
+        updatesBySource[app.source] = apps
+    }
+
     func scanForUpdates() async {
         isScanning = true
         defer { isScanning = false }
@@ -254,7 +263,7 @@ class UpdateManager: ObservableObject {
             }
 
         case .sparkle:
-            // Use Sparkle's updater to install directly (no need to open app)
+            // Use Sparkle's updater via UpdateQueue to prevent concurrent update conflicts
 
             // Get the feed URL from the app (prefer currentFeedURL if user switched)
             guard let feedURL = app.currentFeedURL ?? app.alternateSparkleURLs?.first else {
@@ -262,12 +271,18 @@ class UpdateManager: ObservableObject {
                 return
             }
 
+            // Check if update already queued/running for this app
+            if UpdateQueue.shared.containsOperation(for: app.appInfo.bundleIdentifier) {
+                printOS("Update already queued for \(app.appInfo.appName)")
+                return
+            }
+
             // Set initial downloading status
             updateStatus(for: app, status: .downloading, progress: 0.0)
 
-            // Create Sparkle update driver
-            let driver = SparkleUpdateDriver(
-                appInfo: app.appInfo,
+            // Create Sparkle update operation (blocks until completion)
+            let operation = SparkleUpdateOperation(
+                app: app,
                 feedURL: feedURL,
                 progressCallback: { [weak self] progress, status in
                     guard let self = self else { return }
@@ -291,15 +306,18 @@ class UpdateManager: ObservableObject {
                 }
             )
 
-            // Start the update process
-            driver.startUpdate()
+            // Add to queue (limits concurrent operations to prevent Sparkle conflicts)
+            UpdateQueue.shared.addOperation(operation)
         }
     }
 
     func updateAll(source: UpdateSource) async {
         guard let apps = updatesBySource[source] else { return }
 
-        for app in apps {
+        // Only update apps that are selected for update
+        let selectedApps = apps.filter { $0.isSelectedForUpdate }
+
+        for app in selectedApps {
             await updateApp(app)
         }
     }

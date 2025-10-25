@@ -376,12 +376,12 @@ struct CategorySection<TrailingContent: View>: View {
                         trailingContent()
                     }
 
-                    // Show "Update All" button if more than 1 app
+                    // Show "Update Selected" button if more than 1 app
                     if let onUpdateAll = onUpdateAll, filteredApps.count > 1 {
                         Button {
                             onUpdateAll()
                         } label: {
-                            Text("Update All")
+                            Text("Update Selected")
                                 .font(.caption)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
                         }
