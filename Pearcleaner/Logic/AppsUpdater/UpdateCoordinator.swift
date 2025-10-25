@@ -23,7 +23,7 @@ class UpdateCoordinator {
     }
 
     /// Check if an app is from the App Store by verifying receipt existence
-    private static func isAppStoreApp(_ app: AppInfo) -> Bool {
+    static func isAppStoreApp(_ app: AppInfo) -> Bool {
         // Check for wrapped iPad/iOS app first (use wrapped flag from AppInfo)
         if app.wrapped {
             // For wrapped apps, app.path points to the inner bundle (e.g., /Applications/X.app/Wrapper/Twitter.app/)

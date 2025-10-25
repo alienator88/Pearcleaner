@@ -100,23 +100,10 @@ struct AppsUpdaterView: View {
                 // Results count bar
                 resultsCountBar
 
-                // Category-based list
-                if updateManager.isScanning || updateManager.lastScanDate == nil {
-                    // Loading state - centered (shown when scanning OR before first scan)
-                    VStack(alignment: .center, spacing: 10) {
-                        Spacer()
-                        ProgressView()
-                            .scaleEffect(1.5)
-
-                        Text("Scanning for updates...")
-                            .font(.title2)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-
-                        Spacer()
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else if !hasVisibleUpdates || allSourcesDisabled {
-                    // Empty state - centered (shown when no visible updates OR all sources disabled)
+                // Category-based list - always show categories (even when scanning)
+                // Show empty state only when not scanning and no updates
+                if !updateManager.isScanning && !hasVisibleUpdates && !allSourcesDisabled && updateManager.lastScanDate != nil {
+                    // Empty state - centered (shown only when scan completed with no updates)
                     VStack(alignment: .center, spacing: 10) {
                         Spacer()
                         Image(systemName: "checkmark.circle")
@@ -147,6 +134,7 @@ struct AppsUpdaterView: View {
                                     icon: ifOSBelow(macOS: 14) ? "cart.fill" : "storefront.fill",
                                     apps: updateManager.updatesBySource[.appStore] ?? [],
                                     searchText: searchText,
+                                    isScanning: updateManager.scanningSources.contains(.appStore),
                                     collapsed: (updateManager.updatesBySource[.appStore]?.isEmpty ?? true) || collapsedCategories.contains("App Store"),
                                     onToggle: { toggleCategory("App Store") },
                                     onUpdateAll: {
@@ -162,6 +150,7 @@ struct AppsUpdaterView: View {
                                     icon: "mug",
                                     apps: updateManager.updatesBySource[.homebrew] ?? [],
                                     searchText: searchText,
+                                    isScanning: updateManager.scanningSources.contains(.homebrew),
                                     collapsed: (updateManager.updatesBySource[.homebrew]?.isEmpty ?? true) || collapsedCategories.contains("Homebrew"),
                                     onToggle: { toggleCategory("Homebrew") },
                                     onUpdateAll: {
@@ -177,9 +166,12 @@ struct AppsUpdaterView: View {
                                     icon: "sparkles",
                                     apps: updateManager.updatesBySource[.sparkle] ?? [],
                                     searchText: searchText,
+                                    isScanning: updateManager.scanningSources.contains(.sparkle),
                                     collapsed: (updateManager.updatesBySource[.sparkle]?.isEmpty ?? true) || collapsedCategories.contains("Sparkle"),
                                     onToggle: { toggleCategory("Sparkle") },
-                                    onUpdateAll: nil,  // No "Update All" for Sparkle
+                                    onUpdateAll: {
+                                        Task { await updateManager.updateAll(source: .sparkle) }
+                                    },
                                     isFirst: !checkAppStore && !checkHomebrew
                                 )
                             }
@@ -275,6 +267,7 @@ struct CategorySection<TrailingContent: View>: View {
     let icon: String
     let apps: [UpdateableApp]
     let searchText: String
+    let isScanning: Bool
     let collapsed: Bool
     let onToggle: () -> Void
     let onUpdateAll: (() -> Void)?
@@ -290,6 +283,7 @@ struct CategorySection<TrailingContent: View>: View {
         icon: String,
         apps: [UpdateableApp],
         searchText: String,
+        isScanning: Bool,
         collapsed: Bool,
         onToggle: @escaping () -> Void,
         onUpdateAll: (() -> Void)?,
@@ -299,6 +293,7 @@ struct CategorySection<TrailingContent: View>: View {
         self.icon = icon
         self.apps = apps
         self.searchText = searchText
+        self.isScanning = isScanning
         self.collapsed = collapsed
         self.onToggle = onToggle
         self.onUpdateAll = onUpdateAll
@@ -312,6 +307,7 @@ struct CategorySection<TrailingContent: View>: View {
         icon: String,
         apps: [UpdateableApp],
         searchText: String,
+        isScanning: Bool,
         collapsed: Bool,
         onToggle: @escaping () -> Void,
         onUpdateAll: (() -> Void)?,
@@ -322,6 +318,7 @@ struct CategorySection<TrailingContent: View>: View {
         self.icon = icon
         self.apps = apps
         self.searchText = searchText
+        self.isScanning = isScanning
         self.collapsed = collapsed
         self.onToggle = onToggle
         self.onUpdateAll = onUpdateAll
@@ -363,9 +360,14 @@ struct CategorySection<TrailingContent: View>: View {
                         .fontWeight(.semibold)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
-                    Text(verbatim: "(\(filteredApps.count))")
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    if isScanning {
+                        ProgressView()
+                            .controlSize(.small)
+                    } else {
+                        Text(verbatim: "(\(filteredApps.count))")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
 
                     Spacer()
 

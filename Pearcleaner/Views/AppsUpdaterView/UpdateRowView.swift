@@ -182,12 +182,15 @@ struct UpdateRowView: View {
                             } label: {
                                 Label("Select Appcast", systemImage: "link.circle")
                                     .labelStyle(.titleOnly)
-//                                Image(systemName: "link.circle")
-//                                    .font(.body)
-//                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
                             }
                             .buttonStyle(.bordered)
                             .help("Choose Sparkle feed URL")
+
+                            if let url = app.currentFeedURL ?? urls.first {
+                                Text(url)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                    .font(.footnote)
+                            }
                         }
 
                         // CLI tool indicator (Homebrew formulae only)

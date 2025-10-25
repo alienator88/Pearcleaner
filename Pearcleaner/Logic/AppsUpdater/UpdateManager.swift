@@ -17,6 +17,7 @@ class UpdateManager: ObservableObject {
     @Published var hiddenUpdates: [UpdateableApp] = []
     @Published var isScanning: Bool = false
     @Published var lastScanDate: Date?
+    @Published var scanningSources: Set<UpdateSource> = []
 
     // Track apps currently being verified to prevent duplicate verification tasks
     private var verifyingApps: Set<UUID> = []
@@ -99,6 +100,13 @@ class UpdateManager: ObservableObject {
         isScanning = true
         defer { isScanning = false }
 
+        // Clear previous results and mark all enabled sources as scanning
+        updatesBySource = [:]
+        scanningSources = []
+        if checkAppStore { scanningSources.insert(.appStore) }
+        if checkHomebrew { scanningSources.insert(.homebrew) }
+        if checkSparkle { scanningSources.insert(.sparkle) }
+
         // Reload apps to detect newly installed/uninstalled apps and version changes
         // This ensures we scan with current state, not cached AppState.shared.sortedApps
         let folderPaths = await MainActor.run {
@@ -112,34 +120,60 @@ class UpdateManager: ObservableObject {
         // Get freshly loaded apps from AppState
         let apps = AppState.shared.sortedApps
 
-        // Scan for updates using coordinator, passing checkbox states
-        let allUpdates = await UpdateCoordinator.scanForUpdates(
-            apps: apps,
-            checkAppStore: checkAppStore,
-            checkHomebrew: checkHomebrew,
-            checkSparkle: checkSparkle,
-            includeSparklePreReleases: includeSparklePreReleases,
-            includeHomebrewFormulae: includeHomebrewFormulae
-        )
-
-        // Separate hidden from visible updates
-        let hidden = hiddenApps
-        var visibleUpdates: [UpdateSource: [UpdateableApp]] = [:]
-        var hiddenUpdatesList: [UpdateableApp] = []
-
-        for (source, apps) in allUpdates {
-            let visible = apps.filter { !hidden.keys.contains($0.uniqueIdentifier) }
-            let hiddenApps = apps.filter { hidden.keys.contains($0.uniqueIdentifier) }
-
-            if !visible.isEmpty {
-                visibleUpdates[source] = visible
+        // Launch concurrent scans with progressive updates
+        await withTaskGroup(of: (UpdateSource, [UpdateableApp]).self) { group in
+            if checkHomebrew {
+                group.addTask {
+                    let results = await HomebrewUpdateChecker.checkForUpdates(apps: apps, includeFormulae: self.includeHomebrewFormulae)
+                    return (.homebrew, results)
+                }
             }
-            hiddenUpdatesList.append(contentsOf: hiddenApps)
+
+            if checkAppStore {
+                group.addTask {
+                    let appStoreApps = apps.filter { UpdateCoordinator.isAppStoreApp($0) }
+                    let results = await AppStoreUpdateChecker.checkForUpdates(apps: appStoreApps)
+                    return (.appStore, results)
+                }
+            }
+
+            if checkSparkle {
+                group.addTask {
+                    let results = await SparkleDetector.findSparkleApps(from: apps, includePreReleases: self.includeSparklePreReleases)
+                    return (.sparkle, results)
+                }
+            }
+
+            // Process results as they complete
+            for await (source, apps) in group {
+                await processSourceResults(source: source, apps: apps)
+            }
         }
 
-        updatesBySource = visibleUpdates
-        hiddenUpdates = hiddenUpdatesList
         lastScanDate = Date()
+    }
+
+    private func processSourceResults(source: UpdateSource, apps: [UpdateableApp]) async {
+        // Sort alphabetically
+        let sortedApps = apps.sorted { $0.appInfo.appName.localizedCaseInsensitiveCompare($1.appInfo.appName) == .orderedAscending }
+
+        // Filter hidden apps
+        let hidden = hiddenApps
+        let visible = sortedApps.filter { !hidden.keys.contains($0.uniqueIdentifier) }
+        let hiddenAppsFromSource = sortedApps.filter { hidden.keys.contains($0.uniqueIdentifier) }
+
+        // Update results (set to empty array even if no visible results to indicate "completed")
+        updatesBySource[source] = visible
+
+        // Add hidden apps to hidden list
+        for app in hiddenAppsFromSource {
+            if !hiddenUpdates.contains(where: { $0.id == app.id }) {
+                hiddenUpdates.append(app)
+            }
+        }
+
+        // Mark source as no longer scanning
+        scanningSources.remove(source)
     }
 
     func updateApp(_ app: UpdateableApp) async {
