@@ -993,6 +993,39 @@ func exportDebugInfo(appState: AppState) {
     }
 }
 
+func exportUpdaterDebugInfo() {
+    let panel = NSOpenPanel()
+    panel.canChooseFiles = false
+    panel.canChooseDirectories = true
+    panel.allowsMultipleSelection = false
+    panel.prompt = "Select Folder"
+
+    if panel.runModal() == .OK, let selectedFolder = panel.url {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd_HH-mm-ss"
+        let timestamp = dateFormatter.string(from: Date())
+        let filename = "UpdaterDebugLog-\(timestamp).txt"
+        let filePath = selectedFolder.appendingPathComponent(filename)
+
+        let debugContent = UpdaterDebugLogger.shared.generateDebugReport()
+
+        do {
+            try debugContent.write(to: filePath, atomically: true, encoding: .utf8)
+            printOS("Updater debug log saved successfully at \(filePath.path)")
+            // Open Finder and select the file
+            NSWorkspace.shared.selectFile(
+                filePath.path,
+                inFileViewerRootedAtPath: filePath.deletingLastPathComponent().path)
+            // Clear logs after successful export
+            UpdaterDebugLogger.shared.clearLogs()
+        } catch {
+            printOS("Error saving updater debug log: \(error)")
+        }
+    } else {
+        printOS("Folder selection was canceled.")
+    }
+}
+
 
 // Remove app from cache
 func removeApp(appState: AppState, withPath path: URL) {

@@ -16636,6 +16636,9 @@
         }
       }
     },
+    "Debug Logging" : {
+
+    },
     "Deep" : {
       "localizations" : {
         "de" : {
@@ -21571,6 +21574,9 @@
         }
       }
     },
+    "Enable verbose logging for update checker troubleshooting" : {
+
+    },
     "Enabled" : {
       "localizations" : {
         "de" : {
@@ -24038,6 +24044,9 @@
           }
         }
       }
+    },
+    "Export Updater Debug Log..." : {
+
     },
     "Extension" : {
       "localizations" : {

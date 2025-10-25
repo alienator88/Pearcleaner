@@ -66,6 +66,7 @@ class HomebrewController {
     static let shared = HomebrewController()
     private let brewPath: String
     private let brewPrefix: String
+    private let logger = UpdaterDebugLogger.shared
 
     private init() {
         // Determine paths based on architecture
@@ -1012,16 +1013,29 @@ class HomebrewController {
     /// Returns only packages that have updates available
     func getOutdatedPackagesHybrid(formulae: [InstalledPackage], casks: [InstalledPackage]) async -> [HomebrewOutdatedPackage] {
         let allPackages = formulae + casks
+        logger.log(.homebrew, "Starting Homebrew update check for \(allPackages.count) packages (\(formulae.count) formulae, \(casks.count) casks)")
 
         // Step 1: Try to check ALL packages via API first (fast path)
         // Assume packages with tap == nil are core packages (most common case)
+        logger.log(.homebrew, "Step 1: Checking packages via public API (fast path)")
         let (coreOutdated, apiFailedPackages) = await checkCorePackagesViaAPI(allPackages)
+
+        logger.log(.homebrew, "  API check complete: \(coreOutdated.count) outdated, \(apiFailedPackages.count) API failures (likely tap packages)")
 
         // Step 2: For packages where API failed, lazy-load tap info and check manually
         // This handles tap packages that don't exist in public API (typically 0-3 packages)
-        let tapOutdated = await checkTapPackagesManually(apiFailedPackages)
+        if !apiFailedPackages.isEmpty {
+            logger.log(.homebrew, "Step 2: Checking \(apiFailedPackages.count) tap packages manually")
+            let tapOutdated = await checkTapPackagesManually(apiFailedPackages)
+            logger.log(.homebrew, "  Manual tap check complete: \(tapOutdated.count) outdated")
 
-        return coreOutdated + tapOutdated
+            let totalOutdated = coreOutdated.count + tapOutdated.count
+            logger.log(.homebrew, "Found \(totalOutdated) Homebrew updates available")
+            return coreOutdated + tapOutdated
+        }
+
+        logger.log(.homebrew, "Found \(coreOutdated.count) Homebrew updates available")
+        return coreOutdated
     }
 
     /// Check core Homebrew packages using public API (fast)
@@ -1075,6 +1089,7 @@ class HomebrewController {
                 // API call succeeded - package exists in public API
                 // Check if versions differ
                 if installedVersion != latestVersion {
+                    logger.log(.homebrew, "  📦 UPDATE AVAILABLE: \(package.name) - \(installedVersion) → \(latestVersion) (\(package.isCask ? "cask" : "formula"))")
                     outdatedPackages.append(HomebrewOutdatedPackage(
                         name: package.name,
                         installedVersion: installedVersion,
@@ -1082,9 +1097,12 @@ class HomebrewController {
                         isPinned: package.isPinned,
                         isCask: package.isCask
                     ))
+                } else {
+                    logger.log(.homebrew, "  ✓ Up to date: \(package.name) (\(installedVersion))")
                 }
             } else {
                 // API call failed - likely a tap package
+                logger.log(.homebrew, "  ⚠️ API lookup failed for \(package.name) - will check manually")
                 apiFailedPackages.append(package)
             }
         }
@@ -1098,7 +1116,9 @@ class HomebrewController {
         var outdatedPackages: [HomebrewOutdatedPackage] = []
 
         for package in packages {
+            logger.log(.homebrew, "  Checking tap package: \(package.name)")
             guard let installedVersion = package.version else {
+                logger.log(.homebrew, "    ⚠️ Skipped - no installed version found")
                 continue  // Can't check without installed version
             }
 
@@ -1131,24 +1151,31 @@ class HomebrewController {
 
             // If we still don't have an rb path, skip this package
             guard let finalRbPath = rbPath else {
+                logger.log(.homebrew, "    ⚠️ Skipped - no .rb file path found")
                 continue
             }
 
+            logger.log(.homebrew, "    Reading .rb file: \(finalRbPath)")
+
             // Read the tap's .rb file
             guard let rbContent = try? String(contentsOfFile: finalRbPath) else {
+                logger.log(.homebrew, "    ❌ Failed to read .rb file")
                 continue  // Rb file not readable
             }
 
             // Parse version from .rb file using regex
             let versionRegex = /version "([^"]+)"/
             guard let match = rbContent.firstMatch(of: versionRegex) else {
+                logger.log(.homebrew, "    ⚠️ No version found in .rb file")
                 continue  // No version found in .rb file
             }
 
             let tapVersion = String(match.1).stripBrewRevisionSuffix()
+            logger.log(.homebrew, "    Comparing: Installed \(installedVersion) vs Tap \(tapVersion)")
 
             // Compare versions
             if installedVersion != tapVersion {
+                logger.log(.homebrew, "    📦 UPDATE AVAILABLE: \(installedVersion) → \(tapVersion)")
                 outdatedPackages.append(HomebrewOutdatedPackage(
                     name: package.name,
                     installedVersion: installedVersion,
@@ -1156,6 +1183,8 @@ class HomebrewController {
                     isPinned: package.isPinned,
                     isCask: package.isCask
                 ))
+            } else {
+                logger.log(.homebrew, "    ✓ Up to date")
             }
         }
 

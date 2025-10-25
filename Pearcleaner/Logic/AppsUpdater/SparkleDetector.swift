@@ -8,7 +8,11 @@
 import Foundation
 
 class SparkleDetector {
+    private static let logger = UpdaterDebugLogger.shared
+
     static func findSparkleApps(from apps: [AppInfo], includePreReleases: Bool = false) async -> [UpdateableApp] {
+        logger.log(.sparkle, "Starting Sparkle update check for \(apps.count) apps (includePreReleases: \(includePreReleases))")
+
         // Find all apps with Sparkle framework
         // Track extracted URLs for showing warning + URL picker UI
         var sparkleAppData: [(appInfo: AppInfo, feedURL: String, shortVersion: String, buildVersion: String, extractedURLs: [String]?)] = []
@@ -26,19 +30,29 @@ class SparkleDetector {
                 continue
             }
 
+            logger.log(.sparkle, "Checking: \(appInfo.appName)")
+
             // Step 2: Try traditional SUFeedURL first (covers ~95% of Sparkle apps)
             var feedURL: String? = infoDict["SUFeedURL"] as? String ?? infoDict["SUFeedUrl"] as? String
             var extractedURLs: [String]? = nil
 
+            if let plistURL = feedURL {
+                logger.log(.sparkle, "  ✓ Found SUFeedURL in Info.plist: \(plistURL)")
+            }
+
             // Step 3: If no SUFeedURL but has signature key, try binary extraction
             // This handles apps like Ghostty that use SPUUpdaterDelegate's feedURLString(for:)
             if feedURL == nil && hasSparkleSignatureKey(infoDict: infoDict) {
+                logger.log(.sparkle, "  ⚙️ No SUFeedURL but has signature key - extracting from binary...")
                 // Get executable name from Info.plist
                 if let executableName = infoDict["CFBundleExecutable"] as? String {
                     let urls = await extractFeedURLFromBinary(appPath: appInfo.path, executable: executableName)
                     if let firstURL = urls.first {
                         feedURL = firstURL
                         extractedURLs = urls  // Store all URLs for picker
+                        logger.log(.sparkle, "  ✓ Extracted \(urls.count) URL(s) from binary: \(firstURL)")
+                    } else {
+                        logger.log(.sparkle, "  ❌ Binary extraction failed")
                     }
                 }
             }
@@ -72,6 +86,7 @@ class SparkleDetector {
                 allUpdates.append(contentsOf: chunkUpdates)
             }
 
+            logger.log(.sparkle, "Found \(allUpdates.count) Sparkle updates available")
             return allUpdates
         }
     }
@@ -125,7 +140,11 @@ class SparkleDetector {
 
     /// Check a single Sparkle app for updates
     private static func checkSingleApp(appInfo: AppInfo, feedURL: String, shortVersion: String, buildVersion: String, extractedURLs: [String]?, currentFeedURL: String, includePreReleases: Bool) async -> UpdateableApp? {
-        guard let url = URL(string: feedURL) else { return nil }
+        logger.log(.sparkle, "  Fetching appcast: \(feedURL)")
+        guard let url = URL(string: feedURL) else {
+            logger.log(.sparkle, "  ❌ Invalid feed URL")
+            return nil
+        }
 
         do {
             // Fetch appcast XML with timeout
@@ -133,7 +152,12 @@ class SparkleDetector {
 
             // Parse ALL items from the appcast
             var items = parseAppcastMetadata(from: data)
-            guard !items.isEmpty else { return nil }
+            guard !items.isEmpty else {
+                logger.log(.sparkle, "  ❌ No items found in appcast")
+                return nil
+            }
+
+            logger.log(.sparkle, "  Parsed \(items.count) item(s) from appcast")
 
             // Filter pre-releases BEFORE finding best item (not after!)
             if !includePreReleases {
@@ -219,8 +243,12 @@ class SparkleDetector {
                 return nil
             }
 
+            logger.log(.sparkle, "  Comparing versions - Installed: \(appVersionToCompare), Available: \(appcastVersionToCompare)")
+
             // Only show update if available > installed
             if availableVer > installedVer {
+                logger.log(.sparkle, "  📦 UPDATE AVAILABLE: \(appVersionToCompare) → \(appcastVersionToCompare)")
+
                 // Check minimum OS version compatibility
                 if let minimumOS = candidateItem.minimumSystemVersion {
                     // Parse minimum OS version (e.g., "13.0", "14.5")
@@ -228,6 +256,7 @@ class SparkleDetector {
                         // Check if current system meets the requirement
                         if !ProcessInfo.processInfo.isOperatingSystemAtLeast(minOSVersion) {
                             // Update requires newer macOS - skip this update
+                            logger.log(.sparkle, "  ⚠️ Skipped - requires macOS \(minimumOS)")
                             return nil
                         }
                     }
@@ -265,8 +294,11 @@ class SparkleDetector {
                     currentFeedURL: currentFeedURL
                 )
             }
+
+            logger.log(.sparkle, "  ✓ Up to date")
         } catch {
             // Network error or parsing failure - silently skip this app
+            logger.log(.sparkle, "  ❌ Error fetching/parsing appcast: \(error.localizedDescription)")
             return nil
         }
 

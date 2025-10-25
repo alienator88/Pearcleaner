@@ -17,6 +17,7 @@ struct AppCommands: Commands {
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.general.selectedTab") private var selectedTab: CurrentTabView = .general
     @State private var windowController = WindowManager()
+    @ObservedObject private var debugLogger = UpdaterDebugLogger.shared
 
     init(appState: AppState, locations: Locations, fsm: FolderSettingsManager, updater: Updater) {
         self.appState = appState
@@ -315,6 +316,17 @@ struct AppCommands: Commands {
                 Label("Export Debug Info...", systemImage: "info.circle")
             }
             .keyboardShortcut("i", modifiers: [.command, .shift])
+
+            // Updater debug log export (only visible on Updater page)
+            if appState.currentPage == .updater {
+                Button {
+                    exportUpdaterDebugInfo()
+                } label: {
+                    Label("Export Updater Debug Log...", systemImage: "arrow.triangle.2.circlepath.circle")
+                }
+                .keyboardShortcut("u", modifiers: [.command, .shift])
+                .disabled(!debugLogger.hasLogs)
+            }
 
             Divider()
 

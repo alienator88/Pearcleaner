@@ -292,6 +292,9 @@ struct AppsUpdaterView: View {
         .task {
             await updateManager.scanForUpdates()
         }
+        .onDisappear {
+            UpdaterDebugLogger.shared.clearLogs()
+        }
     }
 
     private func toggleCategory(_ name: String) {

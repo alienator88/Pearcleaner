@@ -64,6 +64,7 @@ struct UpdaterSourceCheckboxSection: View {
     @Binding var includeHomebrewFormulae: Bool
     @StateObject private var updateManager = UpdateManager.shared
     @Environment(\.colorScheme) var colorScheme
+    @AppStorage("settings.updater.debugLogging") private var debugLogging: Bool = true
 
     private var selectedSourcesCount: Int {
         [checkAppStore, checkHomebrew, checkSparkle].filter { $0 }.count
@@ -188,6 +189,35 @@ struct UpdaterSourceCheckboxSection: View {
                 .buttonStyle(.plain)
                 .help(includeSparklePreReleases ? "Disable pre-releases" : "Enable pre-releases")
             }
+
+            // Debug logging toggle
+            Divider()
+                .padding(.vertical, 4)
+
+            Toggle(isOn: Binding(
+                get: { debugLogging },
+                set: { newValue in
+                    debugLogging = newValue
+                    if !newValue {
+                        UpdaterDebugLogger.shared.clearLogs()
+                    } else {
+                        Task { await updateManager.scanForUpdates() }
+                    }
+                }
+            )) {
+                HStack(spacing: 6) {
+                    Image(systemName: "ladybug.fill")
+                        .foregroundStyle(.orange)
+                        .font(.caption)
+                        .frame(width: 16)
+
+                    Text("Debug Logging")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                }
+            }
+            .toggleStyle(.checkbox)
+            .help("Enable verbose logging for update checker troubleshooting")
         }
     }
 }
