@@ -12,9 +12,47 @@ class HomebrewUpdateChecker {
         // Filter apps that have a cask identifier
         let brewApps = apps.filter { $0.cask != nil && !$0.cask!.isEmpty }
 
-        // Get outdated packages with versions in ONE command (no additional API calls needed)
-        guard let outdatedPackages = try? await HomebrewController.shared.getOutdatedPackagesWithVersions(),
-              !outdatedPackages.isEmpty else { return [] }
+        // Step 1: Build list of installed packages by scanning Cellar/Caskroom (~70ms)
+        // This enables the fast hybrid API approach instead of slow `brew outdated` command
+        var installedCasks: [InstalledPackage] = []
+        var installedFormulae: [InstalledPackage] = []
+
+        // Scan casks (always needed)
+        try? await HomebrewController.shared.streamInstalledPackages(cask: true) { name, desc, version, isPinned, tap, tapRbPath in
+            installedCasks.append(InstalledPackage(
+                name: name,
+                description: desc,
+                version: version,
+                isCask: true,
+                isPinned: isPinned,
+                tap: tap,
+                tapRbPath: tapRbPath
+            ))
+        }
+
+        // Scan formulae only if enabled
+        if includeFormulae {
+            try? await HomebrewController.shared.streamInstalledPackages(cask: false) { name, desc, version, isPinned, tap, tapRbPath in
+                installedFormulae.append(InstalledPackage(
+                    name: name,
+                    description: desc,
+                    version: version,
+                    isCask: false,
+                    isPinned: isPinned,
+                    tap: tap,
+                    tapRbPath: tapRbPath
+                ))
+            }
+        }
+
+        // Step 2: Check outdated using FAST hybrid API approach (~650ms)
+        // Much faster than `brew outdated` command (~2.3s) - uses parallel API calls + .rb fallback for taps
+        let outdatedPackages = await HomebrewController.shared.getOutdatedPackagesHybrid(
+            formulae: installedFormulae,
+            casks: installedCasks
+        )
+
+        guard !outdatedPackages.isEmpty else { return [] }
 
         var updateableApps: [UpdateableApp] = []
 
