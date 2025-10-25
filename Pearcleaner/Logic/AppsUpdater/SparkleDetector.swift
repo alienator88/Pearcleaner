@@ -362,10 +362,63 @@ class SparkleDetector {
     }
 
     /// Collect binaries to scan for appcast URLs
-    /// Returns array of binary paths to scan in priority order: main executable, top 5 frameworks, top 5 plugins
+    /// Returns array of binary paths to scan in priority order: main executable, top 10 frameworks, top 5 plugins
     private static func collectBinariesToScan(appPath: URL, executable: String) -> [URL] {
         var binaries: [URL] = []
         let fm = FileManager.default
+
+        // Unified exclusion patterns for ALL binaries (applies to frameworks, dylibs, bundles, plugins)
+        let binaryExcludePatterns = [
+            // Swift runtime
+            "libswift", "swift_concurrency",
+            // Multimedia - Codecs
+            "codec", "encoder", "decoder", "avcodec", "avformat",
+            "h264", "h265", "vp9", "vpx", "aac", "mp3", "flac", "opus", "vorbis", "mpeg",
+            "webrtc", "audio", "livekit",
+            // Multimedia - Images
+            "webp", "tiff", "png", "jpeg", "gif", "freetype", "harfbuzz", "graphite",
+            // Media processing
+            "filter", "video", "demux", "mux", "spu", "lottie",
+            // Hardware acceleration
+            "vaapi", "vdpau", "cuda", "nvenc", "videotoolbox",
+            // File formats
+            "avi", "mp4", "mkv", "ogg", "bluray",
+            // Network protocols
+            "access", "stream", "http", "ftp", "rtsp", "network", "socket",
+            // Compression/Crypto
+            "crypto", "ssl", "gnutls", "tls", "sodium", "brotli", "zstd",
+            // System libraries
+            "icu", "dbus", "glib", "gio", "gobject", "gthread", "kirigami", "libqt",
+            // Dev tools
+            "libclang", "liblto", "xcodebuildloader",
+            // Database/Text
+            "sqlite", "postgres", "xml", "hunspell",
+            // C++ runtime
+            "double-conversion", "cares", "c++", "stdc++",
+            // Monitoring/Recording
+            "sentry", "recording", "assettype"
+        ]
+
+        // Priority whitelist: ALWAYS scan these (overrides exclusions)
+        let binaryPriorityPatterns = [
+            "update", "sparkle", "autoupdate", "updater", "upgrade"
+        ]
+
+        // Helper function to determine if ANY binary should be scanned
+        // Works for frameworks, dylibs, bundles, and all executable binaries
+        func shouldScanBinary(_ binaryPath: URL, frameworkName: String? = nil) -> Bool {
+            // For .framework bundles, use framework name (e.g., "LiveKitWebRTC")
+            // For .dylib/.bundle/executables, use filename without extension
+            let nameToCheck = (frameworkName ?? binaryPath.deletingPathExtension().lastPathComponent).lowercased()
+
+            // Always scan if update-related (priority whitelist)
+            if binaryPriorityPatterns.contains(where: { nameToCheck.contains($0) }) {
+                return true
+            }
+
+            // Skip if matches exclusion patterns
+            return !binaryExcludePatterns.contains { nameToCheck.contains($0) }
+        }
 
         // 1. Main executable (highest priority)
         let mainBinary = appPath.appendingPathComponent("Contents/MacOS/\(executable)")
@@ -374,32 +427,71 @@ class SparkleDetector {
             logger.log(.sparkle, "    • Main executable: \(executable)")
         }
 
-        // 2. Custom frameworks (top 5 by size)
+        // 2. Custom frameworks (top 10 by size: .framework bundles, .dylib files, .bundle executables)
         let frameworksFolder = appPath.appendingPathComponent("Contents/Frameworks")
         if let frameworkContents = try? fm.contentsOfDirectory(at: frameworksFolder, includingPropertiesForKeys: [.fileSizeKey, .isDirectoryKey]) {
-            // Filter for .framework bundles, excluding Sparkle itself (it only contains Sparkle's own URLs, not the app's appcast)
-            let frameworks = frameworkContents.filter {
+            var allFrameworkBinaries: [(URL, Int)] = []
+
+            // 2a. Collect .framework bundles (exclude Sparkle.framework)
+            let frameworkBundles = frameworkContents.filter {
                 $0.pathExtension == "framework" &&
                 !$0.lastPathComponent.lowercased().hasPrefix("sparkle")
             }
 
-            // Sort by size (largest first) and take top 5
-            let sortedFrameworks = frameworks
-                .compactMap { frameworkBundle -> (URL, Int)? in
-                    // Find the actual binary inside: Versions/A/{FrameworkName}
-                    let frameworkName = frameworkBundle.deletingPathExtension().lastPathComponent
-                    let binaryPath = frameworkBundle.appendingPathComponent("Versions/A/\(frameworkName)")
+            for frameworkBundle in frameworkBundles {
+                let frameworkName = frameworkBundle.deletingPathExtension().lastPathComponent
+                let binaryPath = frameworkBundle.appendingPathComponent("Versions/A/\(frameworkName)")
 
-                    // Get file size
-                    guard let attributes = try? fm.attributesOfItem(atPath: binaryPath.path),
-                          let fileSize = attributes[.size] as? Int else {
-                        return nil
-                    }
-
-                    return (binaryPath, fileSize)
+                guard fm.fileExists(atPath: binaryPath.path),
+                      let attributes = try? fm.attributesOfItem(atPath: binaryPath.path),
+                      let fileSize = attributes[.size] as? Int else {
+                    continue
                 }
-                .sorted { $0.1 > $1.1 }  // Sort by size descending
-                .prefix(5)               // Take top 5
+                allFrameworkBinaries.append((binaryPath, fileSize))
+            }
+
+            // 2b. Collect standalone .dylib files
+            let dylibFiles = frameworkContents.filter { $0.pathExtension == "dylib" }
+            for dylibPath in dylibFiles {
+                guard let attributes = try? fm.attributesOfItem(atPath: dylibPath.path),
+                      let fileSize = attributes[.size] as? Int else {
+                    continue
+                }
+                allFrameworkBinaries.append((dylibPath, fileSize))
+            }
+
+            // 2c. Collect .bundle executables (e.g., Zoom's zAutoUpdate.bundle)
+            let bundleFiles = frameworkContents.filter { $0.pathExtension == "bundle" }
+            for bundle in bundleFiles {
+                let bundleName = bundle.deletingPathExtension().lastPathComponent
+                let executable = bundle.appendingPathComponent("Contents/MacOS/\(bundleName)")
+
+                guard fm.fileExists(atPath: executable.path),
+                      let attributes = try? fm.attributesOfItem(atPath: executable.path),
+                      let fileSize = attributes[.size] as? Int else {
+                    continue
+                }
+                allFrameworkBinaries.append((executable, fileSize))
+            }
+
+            // Apply unified filtering to all collected binaries
+            let filteredFrameworks = allFrameworkBinaries.filter { (binaryPath, _) in
+                // For framework bundles, extract framework name from path
+                let frameworkName: String?
+                if binaryPath.pathComponents.contains(where: { $0.hasSuffix(".framework") }) {
+                    frameworkName = binaryPath.pathComponents
+                        .first { $0.hasSuffix(".framework") }?
+                        .replacingOccurrences(of: ".framework", with: "")
+                } else {
+                    frameworkName = nil
+                }
+                return shouldScanBinary(binaryPath, frameworkName: frameworkName)
+            }
+
+            // Sort by size and take top 10
+            let sortedFrameworks = filteredFrameworks
+                .sorted { $0.1 > $1.1 }
+                .prefix(10)
 
             for (frameworkBinary, size) in sortedFrameworks {
                 binaries.append(frameworkBinary)
@@ -410,37 +502,43 @@ class SparkleDetector {
 
         // 3. Plugins (smart filtering: UI-related names first, then by size)
         let pluginsFolder = appPath.appendingPathComponent("Contents/MacOS/plugins")
-        if let pluginContents = try? fm.contentsOfDirectory(at: pluginsFolder, includingPropertiesForKeys: [.fileSizeKey]) {
-            // Filter for .dylib files
-            let plugins = pluginContents.filter { $0.pathExtension == "dylib" }
+        if let pluginContents = try? fm.contentsOfDirectory(at: pluginsFolder, includingPropertiesForKeys: [.fileSizeKey, .isExecutableKey]) {
+            var allPlugins: [(URL, Int)] = []
 
-            // Get all plugins with size info
-            let pluginsWithSize = plugins.compactMap { pluginPath -> (URL, Int)? in
-                guard let attributes = try? fm.attributesOfItem(atPath: pluginPath.path),
-                      let fileSize = attributes[.size] as? Int else {
-                    return nil
+            // Collect ALL executable binaries (not just .dylib files)
+            for pluginPath in pluginContents {
+                guard let resourceValues = try? pluginPath.resourceValues(forKeys: [.isExecutableKey, .fileSizeKey]),
+                      let isExecutable = resourceValues.isExecutable,
+                      isExecutable,
+                      let fileSize = resourceValues.fileSize else {
+                    continue
                 }
-                return (pluginPath, fileSize)
+                allPlugins.append((pluginPath, fileSize))
+            }
+
+            // Apply unified filtering to all collected binaries
+            let filteredPlugins = allPlugins.filter { (pluginPath, _) in
+                shouldScanBinary(pluginPath)
             }
 
             // UI-related name patterns (likely to contain appcast URLs)
             let uiPatterns = ["macosx", "cocoa", "ui", "qt", "update", "sparkle"]
 
             // Priority tier: Plugins with UI-related names (sorted by size)
-            let priorityPlugins = pluginsWithSize
+            let priorityPlugins = filteredPlugins
                 .filter { (url, _) in
                     let name = url.lastPathComponent.lowercased()
                     return uiPatterns.contains { name.contains($0) }
                 }
-                .sorted { $0.1 > $1.1 }  // Sort by size descending
+                .sorted { $0.1 > $1.1 }
 
             // Fallback tier: Remaining plugins by size
-            let remainingPlugins = pluginsWithSize
+            let remainingPlugins = filteredPlugins
                 .filter { (url, _) in
                     let name = url.lastPathComponent.lowercased()
                     return !uiPatterns.contains { name.contains($0) }
                 }
-                .sorted { $0.1 > $1.1 }  // Sort by size descending
+                .sorted { $0.1 > $1.1 }
 
             // Combine: priority first, then fallback (total limit: 5)
             let selectedPlugins = (priorityPlugins + remainingPlugins).prefix(5)
@@ -455,6 +553,37 @@ class SparkleDetector {
         }
 
         return binaries
+    }
+
+    /// Calculate URL priority (matches C function logic)
+    /// Priority: 0 = XML+release, 1 = XML, 2 = XML+prerelease,
+    ///           3 = non-XML+release, 4 = non-XML, 5 = non-XML+prerelease
+    private static func getURLPriority(_ url: String) -> Int {
+        let lowercased = url.lowercased()
+
+        // Check if URL path ends with .xml or .appcast (before query params/fragments)
+        let pathEnd = url.firstIndex(of: "?") ?? url.firstIndex(of: "#") ?? url.endIndex
+        let path = String(url[..<pathEnd])
+        let isXML = path.hasSuffix(".xml") || path.hasSuffix(".appcast")
+
+        // Check for release/prod/stable keywords
+        let releaseKeywords = ["release", "prod", "stable"]
+        let hasRelease = releaseKeywords.contains { lowercased.contains($0) }
+
+        // Check for pre-release keywords
+        let prereleaseKeywords = ["beta", "alpha", "nightly", "dev", "tip", "test", "rc", "preview"]
+        let hasPrerelease = prereleaseKeywords.contains { lowercased.contains($0) }
+
+        // Assign priority based on XML status and keywords
+        if isXML {
+            if hasRelease { return 0 }           // XML + release = highest priority
+            if hasPrerelease { return 2 }        // XML + pre-release
+            return 1                             // XML without special keywords
+        } else {
+            if hasRelease { return 3 }           // Non-XML + release
+            if hasPrerelease { return 5 }        // Non-XML + pre-release = lowest priority
+            return 4                             // Non-XML without special keywords
+        }
     }
 
     /// Extract Sparkle feed URL from app binaries (main executable, frameworks, plugins)
@@ -504,10 +633,10 @@ class SparkleDetector {
         logger.log(.sparkle, "    Scanning \(otherBinaries.count) frameworks/plugins concurrently...")
 
         // Scan chunks concurrently and collect ALL URLs from ALL binaries
-        return await withTaskGroup(of: [(String, String)].self) { group in
+        return await withTaskGroup(of: [String].self) { group in
             for chunk in chunks {
                 group.addTask {
-                    var chunkResults: [(String, String)] = []  // (binaryName, url) pairs
+                    var chunkResults: [String] = []
 
                     // Scan each binary in chunk sequentially
                     for binaryPath in chunk {
@@ -525,7 +654,7 @@ class SparkleDetector {
                             logger.log(.sparkle, "    ✓ Found \(urls.count) URL(s) in \(binaryName):")
                             for url in urls {
                                 logger.log(.sparkle, "      - \(url)")
-                                chunkResults.append((binaryName, url))
+                                chunkResults.append(url)
                             }
                         }
                     }
@@ -534,7 +663,7 @@ class SparkleDetector {
             }
 
             // Collect ALL URLs from ALL chunks
-            var allResults: [(String, String)] = []
+            var allResults: [String] = []
             for await chunkResults in group {
                 allResults.append(contentsOf: chunkResults)
             }
@@ -544,8 +673,20 @@ class SparkleDetector {
                 return []
             }
 
-            // Extract unique URLs (C function already sorted by priority)
-            let allURLs = Array(Set(allResults.map { $0.1 }))
+            // Sort all URLs by priority (0 = highest, 5 = lowest)
+            let sortedResults = allResults.sorted { getURLPriority($0) < getURLPriority($1) }
+
+            // Ordered deduplication: keep first occurrence (highest priority)
+            var seenURLs = Set<String>()
+            var orderedURLs: [String] = []
+
+            for url in sortedResults {
+                if !seenURLs.contains(url) {
+                    seenURLs.insert(url)
+                    orderedURLs.append(url)
+                }
+            }
+            let allURLs = orderedURLs
 
             // Filter by architecture if multiple URLs found
             if allURLs.count > 1 {

@@ -87,6 +87,30 @@ static int starts_with(const char *str, int str_len, const char *prefix) {
     return memcmp(str, prefix, prefix_len) == 0;
 }
 
+// Check if this is a GitHub releases page URL (not an appcast)
+static int is_github_releases_page(const char *str, int str_len) {
+    char lowercase[MAX_URL_LENGTH];
+    to_lower(lowercase, str, str_len);
+
+    // Must contain "github" domain
+    if (strstr(lowercase, "github") == NULL) {
+        return 0;
+    }
+
+    // Check for GitHub releases page patterns (HTML pages, not appcast feeds)
+    // Pattern 1: /releases/latest - Latest release page
+    if (strstr(lowercase, "/releases/latest") != NULL) {
+        return 1;
+    }
+
+    // Pattern 2: /releases/download/* - Direct binary download links
+    if (strstr(lowercase, "/releases/download") != NULL) {
+        return 1;
+    }
+
+    return 0;
+}
+
 // Check if URL contains any appcast-related keywords
 static int contains_appcast_keyword(const char *str, int str_len) {
     char lowercase[MAX_URL_LENGTH];
@@ -177,6 +201,11 @@ static int is_appcast_url(const char *str, int str_len) {
             path_end = i;
             break;
         }
+    }
+
+    // BLACKLIST: Reject known non-appcast URLs (GitHub releases pages, direct downloads)
+    if (is_github_releases_page(str, url_end)) {
+        return 0;  // Not an appcast URL
     }
 
     // TIER 1: Check for explicit appcast file extensions (before query/fragment)
@@ -277,12 +306,8 @@ int extract_appcast_urls(const char *filepath, char **output, size_t *output_len
 
     fclose(fp);
 
-    // Sort URLs by priority (release/prod first, pre-release last)
-    if (url_count > 1) {
-        qsort(urls, url_count, sizeof(URLEntry), compare_urls);
-    }
-
     // Build output string (newline-separated URLs)
+    // Note: URLs are NOT sorted here - sorting happens in Swift after collecting from all binaries
     char *buffer = malloc(10240);
     if (!buffer) return -1;
 
