@@ -202,6 +202,11 @@ struct HomebrewAnalytics {
 }
 
 // Lightweight model for installed packages list (only name + description + version displayed)
+struct OutdatedVersionInfo: Equatable, Hashable {
+    let installed: String
+    let available: String
+}
+
 struct InstalledPackage: Identifiable, Equatable, Hashable {
     let id = UUID()
     let name: String

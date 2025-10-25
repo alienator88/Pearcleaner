@@ -8,12 +8,43 @@
 import Foundation
 import AlinFoundation
 
+enum InstalledCategory: String, CaseIterable {
+    case outdated = "Outdated"
+    case formulae = "Formulae"
+    case casks = "Casks"
+
+    var icon: String {
+        switch self {
+        case .outdated: return "arrow.triangle.2.circlepath"
+        case .formulae: return "terminal"
+        case .casks: return "shippingbox"
+        }
+    }
+}
+
+enum AvailableCategory: String, CaseIterable {
+    case formulae = "Formulae"
+    case casks = "Casks"
+
+    var icon: String {
+        switch self {
+        case .formulae: return "terminal"
+        case .casks: return "shippingbox"
+        }
+    }
+}
+
 @MainActor
 class HomebrewManager: ObservableObject {
     // Lightweight models for Browse tab Installed section (fast streaming)
     @Published var installedFormulae: [InstalledPackage] = []
     @Published var installedCasks: [InstalledPackage] = []
-    @Published var outdatedPackageNames: Set<String> = []
+    @Published var outdatedPackagesMap: [String: OutdatedVersionInfo] = [:]
+    @Published var isLoadingOutdated: Bool = false
+
+    // Organized categories for Browse tab (matches UpdateManager pattern)
+    @Published var installedByCategory: [InstalledCategory: [HomebrewSearchResult]] = [:]
+    @Published var availableByCategory: [AvailableCategory: [HomebrewSearchResult]] = [:]
 
     @Published var availableTaps: [HomebrewTapInfo] = []
     @Published var isLoadingPackages: Bool = false
@@ -45,8 +76,21 @@ class HomebrewManager: ObservableObject {
     var outdatedPackages: [InstalledPackage] {
         return allPackages.filter { package in
             // Use brew outdated as source of truth
-            return outdatedPackageNames.contains(package.name)
+            return outdatedPackagesMap.keys.contains(package.name)
         }
+    }
+
+    /// Get version information for an outdated package
+    /// Returns version info or nil if not outdated
+    func getOutdatedVersions(for packageName: String) -> OutdatedVersionInfo? {
+        // Try exact name first
+        if let versions = outdatedPackagesMap[packageName] {
+            return versions
+        }
+
+        // Try short name fallback (e.g., "homebrew/cask/name" -> "name")
+        let shortName = packageName.components(separatedBy: "/").last ?? packageName
+        return outdatedPackagesMap[shortName]
     }
 
     func refreshAll() async {
@@ -116,17 +160,118 @@ class HomebrewManager: ObservableObject {
             // Mark as loaded for this session
             hasLoadedInstalledPackages = true
 
+            // Populate installedByCategory immediately with initial data (empty outdated for now)
+            updateInstalledCategories()
+
             // Load outdated packages from brew outdated in background (don't block UI)
             Task {
-                if let outdated = try? await HomebrewController.shared.getOutdatedPackages() {
+                await MainActor.run { isLoadingOutdated = true }
+
+                if let packages = try? await HomebrewController.shared.getOutdatedPackagesWithVersions() {
                     await MainActor.run {
-                        outdatedPackageNames = outdated
+                        outdatedPackagesMap = Dictionary(uniqueKeysWithValues: packages.map {
+                            ($0.name, OutdatedVersionInfo(installed: $0.installedVersion, available: $0.availableVersion))
+                        })
+                        isLoadingOutdated = false
+                        // Update categories now that we have outdated info
+                        updateInstalledCategories()
                     }
+                } else {
+                    await MainActor.run { isLoadingOutdated = false }
                 }
             }
         } catch {
             printOS("Error loading packages: \(error)")
         }
+    }
+
+    // Update the installedByCategory dictionary (matches UpdateManager pattern)
+    func updateInstalledCategories() {
+        let allPackages = installedFormulae + installedCasks
+        let allConverted = allPackages.map { convertToSearchResult($0) }
+
+        // Separate into categories
+        var outdated: [HomebrewSearchResult] = []
+        var formulae: [HomebrewSearchResult] = []
+        var casks: [HomebrewSearchResult] = []
+
+        for result in allConverted {
+            let isCask = installedCasks.contains(where: { $0.name == result.name })
+
+            // Add to type-based category
+            if isCask {
+                casks.append(result)
+            } else {
+                formulae.append(result)
+            }
+
+            // Also add to Outdated if outdated
+            if isPackageOutdated(result) {
+                outdated.append(result)
+            }
+        }
+
+        // Sort and update dictionary
+        installedByCategory[.outdated] = outdated.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+        installedByCategory[.formulae] = formulae.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+        installedByCategory[.casks] = casks.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+    }
+
+    private func isPackageOutdated(_ result: HomebrewSearchResult) -> Bool {
+        let shortName = result.name.components(separatedBy: "/").last ?? result.name
+        return outdatedPackagesMap.keys.contains(result.name) ||
+               outdatedPackagesMap.keys.contains(shortName)
+    }
+
+    private func convertToSearchResult(_ package: InstalledPackage) -> HomebrewSearchResult {
+        // Look up tap info from available packages
+        let availablePackages = package.isCask ? allAvailableCasks : allAvailableFormulae
+        let shortName = package.name.components(separatedBy: "/").last ?? package.name
+
+        // Try multiple matching strategies
+        let matchingPackage = availablePackages.first(where: {
+            if $0.name == package.name { return true }
+            if $0.name == shortName { return true }
+            let availableShortName = $0.name.components(separatedBy: "/").last ?? $0.name
+            return availableShortName == shortName
+        })
+
+        let tap = matchingPackage?.tap
+
+        return HomebrewSearchResult(
+            name: package.name,
+            description: package.description,
+            homepage: nil,
+            license: nil,
+            version: package.version,
+            dependencies: nil,
+            caveats: nil,
+            tap: tap,
+            fullName: nil,
+            isDeprecated: false,
+            deprecationReason: nil,
+            deprecationDate: nil,
+            isDisabled: false,
+            disableDate: nil,
+            disableReason: nil,
+            conflictsWith: nil,
+            conflictsWithReasons: nil,
+            isBottled: nil,
+            isKegOnly: nil,
+            kegOnlyReason: nil,
+            buildDependencies: nil,
+            optionalDependencies: nil,
+            recommendedDependencies: nil,
+            usesFromMacos: nil,
+            aliases: nil,
+            versionedFormulae: nil,
+            requirements: nil,
+            caskName: nil,
+            autoUpdates: nil,
+            artifacts: nil,
+            url: nil,
+            appcast: nil
+        )
     }
 
     func loadTaps() async {
@@ -276,6 +421,10 @@ class HomebrewManager: ObservableObject {
                     appcast: nil
                 )
             }.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+
+            // Populate availableByCategory dictionary
+            availableByCategory[.formulae] = allAvailableFormulae
+            availableByCategory[.casks] = allAvailableCasks
 
             hasLoadedAvailablePackages = true
         } catch {

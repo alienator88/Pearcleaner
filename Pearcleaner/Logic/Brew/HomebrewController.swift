@@ -974,41 +974,66 @@ class HomebrewController {
         }
     }
 
-    /// Get list of outdated package names from brew outdated
-    func getOutdatedPackages() async throws -> Set<String> {
-        var outdatedNames = Set<String>()
+    /// Outdated package information with versions
+    struct HomebrewOutdatedPackage {
+        let name: String
+        let installedVersion: String
+        let availableVersion: String
+        let isPinned: Bool
+        let isCask: Bool
+    }
 
-        // Get outdated formulae (without --greedy to avoid false positives on rebuilds)
-        let formulaeArgs = ["outdated", "--quiet", "--formula"]
-        let formulaeResult = try await runBrewCommand(formulaeArgs)
+    /// Get outdated packages with version information from brew outdated --json=v2
+    /// Returns both formulae and casks with installed and available versions in a single call
+    func getOutdatedPackagesWithVersions() async throws -> [HomebrewOutdatedPackage] {
+        // Single command for both formulae and casks with version info
+        let args = ["outdated", "--json=v2", "--greedy"]
+        let result = try await runBrewCommand(args)
 
-        if formulaeResult.error.contains("Error") {
-            throw HomebrewError.commandFailed(formulaeResult.error)
+        guard let jsonData = result.output.data(using: .utf8),
+              let json = try JSONSerialization.jsonObject(with: jsonData) as? [String: Any] else {
+            throw HomebrewError.jsonParseError
         }
 
-        let formulaeNames = formulaeResult.output
-            .components(separatedBy: "\n")
-            .filter { !$0.isEmpty }
-            .map { $0.trimmingCharacters(in: .whitespaces) }
+        var packages: [HomebrewOutdatedPackage] = []
 
-        outdatedNames.formUnion(formulaeNames)
+        // Parse formulae
+        if let formulae = json["formulae"] as? [[String: Any]] {
+            for formula in formulae {
+                guard let name = formula["name"] as? String,
+                      let installedVersions = formula["installed_versions"] as? [String],
+                      let currentVersion = formula["current_version"] as? String,
+                      let firstInstalled = installedVersions.first else { continue }
 
-        // Get outdated casks (with --greedy to include auto-updating casks)
-        let caskArgs = ["outdated", "--quiet", "--cask", "--greedy"]
-        let caskResult = try await runBrewCommand(caskArgs)
-
-        if caskResult.error.contains("Error") {
-            throw HomebrewError.commandFailed(caskResult.error)
+                packages.append(HomebrewOutdatedPackage(
+                    name: name,
+                    installedVersion: firstInstalled,
+                    availableVersion: currentVersion,
+                    isPinned: formula["pinned"] as? Bool ?? false,
+                    isCask: false
+                ))
+            }
         }
 
-        let caskNames = caskResult.output
-            .components(separatedBy: "\n")
-            .filter { !$0.isEmpty }
-            .map { $0.trimmingCharacters(in: .whitespaces) }
+        // Parse casks
+        if let casks = json["casks"] as? [[String: Any]] {
+            for cask in casks {
+                guard let name = cask["name"] as? String,
+                      let installedVersions = cask["installed_versions"] as? [String],
+                      let currentVersion = cask["current_version"] as? String,
+                      let firstInstalled = installedVersions.first else { continue }
 
-        outdatedNames.formUnion(caskNames)
+                packages.append(HomebrewOutdatedPackage(
+                    name: name,
+                    installedVersion: firstInstalled,
+                    availableVersion: currentVersion,
+                    isPinned: false,  // Casks don't support pinning
+                    isCask: true
+                ))
+            }
+        }
 
-        return outdatedNames
+        return packages
     }
 
     // MARK: - Tap Management

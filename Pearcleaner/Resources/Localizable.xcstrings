@@ -35487,6 +35487,7 @@
       }
     },
     "Loading available packages..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -35711,6 +35712,7 @@
       }
     },
     "Loading installed packages..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

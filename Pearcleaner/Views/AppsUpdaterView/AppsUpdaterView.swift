@@ -51,37 +51,34 @@ struct AppsUpdaterView: View {
         selectedAppsCount > 0
     }
 
-    @ViewBuilder
     private var resultsCountBar: some View {
-        if updateManager.hasUpdates || updateManager.lastScanDate != nil {
-            HStack(spacing: 12) {
-                // Update count
-                Text("\(totalUpdateCount) update\(totalUpdateCount == 1 ? "" : "s")")
-                    .font(.caption)
-                    .monospacedDigit()
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+        HStack(spacing: 12) {
+            // Update count
+            Text("\(totalUpdateCount) update\(totalUpdateCount == 1 ? "" : "s")")
+                .font(.caption)
+                .monospacedDigit()
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
-                if updateManager.isScanning {
-                    Text("Loading...")
+            if updateManager.isScanning {
+                Text("Loading...")
+                    .font(.caption)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+            }
+
+            Spacer()
+
+            // Timeline - only show if we have a lastScanDate
+            if let lastScan = updateManager.lastScanDate {
+                TimelineView(.periodic(from: lastScan, by: 1.0)) { _ in
+                    Text("Updated \(formatRelativeTime(lastScan))")
                         .font(.caption)
+                        .monospacedDigit()
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
-
-                Spacer()
-
-                // Timeline
-                if let lastScan = updateManager.lastScanDate {
-                    TimelineView(.periodic(from: lastScan, by: 1.0)) { _ in
-                        Text("Updated \(formatRelativeTime(lastScan))")
-                            .font(.caption)
-                            .monospacedDigit()
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    }
-                }
             }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 10)
         }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 10)
     }
 
     var body: some View {
