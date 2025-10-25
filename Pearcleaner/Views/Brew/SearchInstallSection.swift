@@ -462,6 +462,17 @@ struct SearchResultRowView: View {
         return brewManager.installedFormulae.first(where: { $0.name == result.name || $0.name == shortName })?.isPinned ?? false
     }
 
+    private var appIcon: NSImage? {
+        guard isCask else { return nil }
+
+        let shortName = result.name.components(separatedBy: "/").last ?? result.name
+
+        // Find matching app in AppState.shared.sortedApps by cask name
+        return AppState.shared.sortedApps.first(where: { appInfo in
+            appInfo.cask == result.name || appInfo.cask == shortName
+        })?.appIcon
+    }
+
     @ViewBuilder
     private var actionButtons: some View {
         if isInstalling || updatingPackages.contains(result.name) {
@@ -578,14 +589,23 @@ struct SearchResultRowView: View {
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
             // Package icon
-            ZStack {
-                Circle()
-                    .fill((isCask ? Color.purple : Color.green).opacity(0.2))
+            if let icon = appIcon {
+                // Show actual app icon for casks
+                Image(nsImage: icon)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
                     .frame(width: 40, height: 40)
+            } else {
+                // Fallback to SF Symbol
+                ZStack {
+                    Circle()
+                        .fill((isCask ? Color.purple : Color.green).opacity(0.2))
+                        .frame(width: 40, height: 40)
 
-                Image(systemName: isCask ? "macwindow" : "terminal")
-                    .font(.system(size: 18, weight: .medium))
-                    .foregroundStyle(isCask ? .purple : .green)
+                    Image(systemName: isCask ? "macwindow" : "terminal")
+                        .font(.system(size: 18, weight: .medium))
+                        .foregroundStyle(isCask ? .purple : .green)
+                }
             }
 
             // Package name and description
