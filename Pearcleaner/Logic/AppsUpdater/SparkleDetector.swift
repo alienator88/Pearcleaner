@@ -558,21 +558,36 @@ class SparkleDetector {
     /// Calculate URL priority (matches C function logic)
     /// Priority: 0 = XML+release, 1 = XML, 2 = XML+prerelease,
     ///           3 = non-XML+release, 4 = non-XML, 5 = non-XML+prerelease
+    /// Optimized to avoid String allocations during sorting
     private static func getURLPriority(_ url: String) -> Int {
-        let lowercased = url.lowercased()
+        // Find path end (before query params/fragments) without creating substring
+        var pathEnd = url.endIndex
+        if let queryIndex = url.firstIndex(of: "?") {
+            pathEnd = queryIndex
+        } else if let fragmentIndex = url.firstIndex(of: "#") {
+            pathEnd = fragmentIndex
+        }
 
-        // Check if URL path ends with .xml or .appcast (before query params/fragments)
-        let pathEnd = url.firstIndex(of: "?") ?? url.firstIndex(of: "#") ?? url.endIndex
-        let path = String(url[..<pathEnd])
-        let isXML = path.hasSuffix(".xml") || path.hasSuffix(".appcast")
+        // Check if URL path ends with .xml or .appcast (case-insensitive, no allocations)
+        let isXML = url[..<pathEnd].hasSuffix(".xml") ||
+                    url[..<pathEnd].hasSuffix(".appcast") ||
+                    url[..<pathEnd].hasSuffix(".XML") ||
+                    url[..<pathEnd].hasSuffix(".Appcast")
 
-        // Check for release/prod/stable keywords
-        let releaseKeywords = ["release", "prod", "stable"]
-        let hasRelease = releaseKeywords.contains { lowercased.contains($0) }
+        // Check for release/prod/stable keywords (case-insensitive, no lowercased() allocation)
+        let hasRelease = url.range(of: "release", options: .caseInsensitive) != nil ||
+                         url.range(of: "prod", options: .caseInsensitive) != nil ||
+                         url.range(of: "stable", options: .caseInsensitive) != nil
 
-        // Check for pre-release keywords
-        let prereleaseKeywords = ["beta", "alpha", "nightly", "dev", "tip", "test", "rc", "preview"]
-        let hasPrerelease = prereleaseKeywords.contains { lowercased.contains($0) }
+        // Check for pre-release keywords (case-insensitive, no lowercased() allocation)
+        let hasPrerelease = url.range(of: "beta", options: .caseInsensitive) != nil ||
+                            url.range(of: "alpha", options: .caseInsensitive) != nil ||
+                            url.range(of: "nightly", options: .caseInsensitive) != nil ||
+                            url.range(of: "dev", options: .caseInsensitive) != nil ||
+                            url.range(of: "tip", options: .caseInsensitive) != nil ||
+                            url.range(of: "test", options: .caseInsensitive) != nil ||
+                            url.range(of: "rc", options: .caseInsensitive) != nil ||
+                            url.range(of: "preview", options: .caseInsensitive) != nil
 
         // Assign priority based on XML status and keywords
         if isXML {
