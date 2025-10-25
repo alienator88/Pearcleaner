@@ -65,6 +65,8 @@ struct UpdaterSourceCheckboxSection: View {
     @StateObject private var updateManager = UpdateManager.shared
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.updater.debugLogging") private var debugLogging: Bool = true
+    @State private var isResetting = false
+    @State private var showResetConfirmation = false
 
     private var selectedSourcesCount: Int {
         [checkAppStore, checkHomebrew, checkSparkle].filter { $0 }.count
@@ -84,29 +86,63 @@ struct UpdaterSourceCheckboxSection: View {
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
             }
 
-            // App Store checkbox
-            Button(action: {
-                checkAppStore.toggle()
-                if checkAppStore {
-                    Task { await updateManager.scanForUpdates() }
+            // App Store checkbox with reset button
+            HStack(spacing: 8) {
+                Button(action: {
+                    checkAppStore.toggle()
+                    if checkAppStore {
+                        Task { await updateManager.scanForUpdates() }
+                    }
+                }) {
+                    HStack(spacing: 8) {
+                        Image(systemName: checkAppStore ? "checkmark.circle.fill" : "circle")
+                            .foregroundStyle(checkAppStore ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
+                            .font(.title3)
+
+                        Image(systemName: ifOSBelow(macOS: 14) ? "cart.fill" : "storefront.fill")
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            .font(.caption)
+                            .frame(width: 16)
+
+                        Text("App Store")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
                 }
-            }) {
-                HStack(spacing: 8) {
-                    Image(systemName: checkAppStore ? "checkmark.circle.fill" : "circle")
-                        .foregroundStyle(checkAppStore ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
-                        .font(.title3)
+                .buttonStyle(.plain)
 
-                    Image(systemName: ifOSBelow(macOS: 14) ? "cart.fill" : "storefront.fill")
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        .font(.caption)
-                        .frame(width: 16)
+                Spacer()
 
-                    Text("App Store")
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                // Reset button
+                Button(action: {
+                    showResetConfirmation = true
+                }) {
+                    if isResetting {
+                        ProgressView()
+                            .controlSize(.small)
+                    } else {
+                        Image(systemName: "arrow.clockwise")
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                }
+                .buttonStyle(.plain)
+                .disabled(isResetting)
+                .help("Reset App Store (fixes stuck downloads)")
+                .confirmationDialog(
+                    "Reset App Store?",
+                    isPresented: $showResetConfirmation,
+                    titleVisibility: .visible
+                ) {
+                    Button("Reset", role: .destructive) {
+                        Task {
+                            await performReset()
+                        }
+                    }
+                    Button("Cancel", role: .cancel) {}
+                } message: {
+                    Text("This will:\n• Quit App Store and related processes\n• Clear download cache\n• Fix stuck or failed downloads\n\nYou may need to sign in again.")
                 }
             }
-            .buttonStyle(.plain)
 
             // Homebrew checkbox with formulae toggle
             HStack(spacing: 8) {
@@ -219,6 +255,51 @@ struct UpdaterSourceCheckboxSection: View {
             .toggleStyle(.checkbox)
             .help("Enable verbose logging for update checker troubleshooting")
         }
+    }
+
+    // MARK: - Private Methods
+
+    /// Performs App Store reset operation
+    private func performReset() async {
+        isResetting = true
+
+        let result = await AppStoreReset.reset()
+
+        await MainActor.run {
+            isResetting = false
+
+            switch result {
+            case .success:
+                // Show success notification
+                showToast("App Store reset successfully", type: .success)
+
+                // Optionally rescan for updates after reset
+                Task {
+                    try? await Task.sleep(nanoseconds: 1_000_000_000) // Wait 1 second
+                    await updateManager.scanForUpdates()
+                }
+
+            case .failure(let error):
+                // Show error notification
+                showToast("Reset failed: \(error)", type: .error)
+            }
+        }
+    }
+
+    /// Shows a toast notification
+    private func showToast(_ message: String, type: ToastType) {
+        // Use AppState's toast system if available
+        NotificationCenter.default.post(
+            name: NSNotification.Name("ToastNotification"),
+            object: nil,
+            userInfo: ["message": message, "type": type.rawValue]
+        )
+    }
+
+    /// Toast notification types
+    private enum ToastType: String {
+        case success
+        case error
     }
 }
 

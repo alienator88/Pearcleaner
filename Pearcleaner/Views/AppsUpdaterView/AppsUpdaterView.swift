@@ -187,6 +187,45 @@ struct AppsUpdaterView: View {
                 }
 
             }
+            .safeAreaInset(edge: .bottom) {
+                if hasSelectedApps {
+                    HStack {
+                        Spacer()
+
+                        HStack(spacing: 10) {
+                            Button(selectedAppsCount == allApps.count ? "Deselect All" : "Select All") {
+                                if selectedAppsCount == allApps.count {
+                                    deselectAllApps()
+                                } else {
+                                    selectAllApps()
+                                }
+                            }
+                            .buttonStyle(ControlGroupButtonStyle(
+                                foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                                shape: Capsule(style: .continuous),
+                                level: .primary,
+                                skipControlGroup: true
+                            ))
+
+                            Divider().frame(height: 10)
+
+                            Button("Update \(selectedAppsCount) Selected") {
+                                updateSelectedApps()
+                            }
+                            .buttonStyle(ControlGroupButtonStyle(
+                                foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                                shape: Capsule(style: .continuous),
+                                level: .primary,
+                                skipControlGroup: true
+                            ))
+                        }
+                        .controlGroup(Capsule(style: .continuous), level: .primary)
+
+                        Spacer()
+                    }
+                    .padding([.horizontal, .bottom])
+                }
+            }
             .opacity(hiddenSidebar ? 0.5 : 1)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
@@ -205,45 +244,6 @@ struct AppsUpdaterView: View {
         .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("UpdaterViewShouldRefresh"))) { _ in
             Task {
                 await updateManager.scanForUpdates()
-            }
-        }
-        .safeAreaInset(edge: .bottom) {
-            if hasSelectedApps {
-                HStack {
-                    Spacer()
-
-                    HStack(spacing: 10) {
-                        Button(selectedAppsCount == allApps.count ? "Deselect All" : "Select All") {
-                            if selectedAppsCount == allApps.count {
-                                deselectAllApps()
-                            } else {
-                                selectAllApps()
-                            }
-                        }
-                        .buttonStyle(ControlGroupButtonStyle(
-                            foregroundColor: ThemeColors.shared(for: colorScheme).accent,
-                            shape: Capsule(style: .continuous),
-                            level: .primary,
-                            skipControlGroup: true
-                        ))
-
-                        Divider().frame(height: 10)
-
-                        Button("Update \(selectedAppsCount) Selected") {
-                            updateSelectedApps()
-                        }
-                        .buttonStyle(ControlGroupButtonStyle(
-                            foregroundColor: ThemeColors.shared(for: colorScheme).accent,
-                            shape: Capsule(style: .continuous),
-                            level: .primary,
-                            skipControlGroup: true
-                        ))
-                    }
-                    .controlGroup(Capsule(style: .continuous), level: .primary)
-
-                    Spacer()
-                }
-                .padding([.horizontal, .bottom])
             }
         }
         .toolbar {

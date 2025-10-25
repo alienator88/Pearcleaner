@@ -210,4 +210,12 @@ class AppStoreUpdateChecker {
 
         return nil
     }
+
+    // MARK: - Private Helpers
+
+    /// Get the user's App Store region (2-letter ISO 3166-1 alpha-2 code)
+    /// Locale.region.identifier already returns alpha-2 codes (e.g., "US", "GB", "FR")
+    private static func getAppStoreRegion() async -> String {
+        return Locale.autoupdatingCurrent.region?.identifier ?? "US"
+    }
 }

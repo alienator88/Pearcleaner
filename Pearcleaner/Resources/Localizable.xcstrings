@@ -53462,6 +53462,12 @@
         }
       }
     },
+    "Reset App Store (fixes stuck downloads)" : {
+
+    },
+    "Reset App Store?" : {
+
+    },
     "Reset Settings" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -66727,6 +66733,9 @@
           }
         }
       }
+    },
+    "This will:\n• Quit App Store and related processes\n• Clear download cache\n• Fix stuck or failed downloads\n\nYou may need to sign in again." : {
+
     },
     "Tools" : {
       "extractionState" : "manual",

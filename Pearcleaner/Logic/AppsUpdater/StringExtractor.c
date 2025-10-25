@@ -222,20 +222,6 @@ static int is_appcast_url(const char *str, int str_len) {
     return 0;
 }
 
-// Compare function for qsort (sort by priority ascending)
-static int compare_urls(const void *a, const void *b) {
-    const URLEntry *url_a = (const URLEntry *)a;
-    const URLEntry *url_b = (const URLEntry *)b;
-
-    // Sort by priority (0 = highest, 5 = lowest)
-    if (url_a->priority != url_b->priority) {
-        return url_a->priority - url_b->priority;
-    }
-
-    // If same priority, maintain original order (stable sort by comparing strings)
-    return strcmp(url_a->url, url_b->url);
-}
-
 // Check if URL already exists in array (for deduplication)
 static int url_exists(URLEntry *urls, int count, const char *url) {
     for (int i = 0; i < count; i++) {
