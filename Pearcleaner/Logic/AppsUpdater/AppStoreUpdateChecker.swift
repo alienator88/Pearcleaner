@@ -158,12 +158,13 @@ class AppStoreUpdateChecker {
             return nil
         }
 
-        let languageCode = Locale.current.region?.identifier ?? "US"
+        // Get user's actual App Store region (uses Storefront API > StoreKit > Locale)
+        let region = await getAppStoreRegion()
         var components = URLComponents(url: endpoint, resolvingAgainstBaseURL: false)
 
         var queryItems = [
             URLQueryItem(name: "bundleId", value: bundleID),
-            URLQueryItem(name: "country", value: languageCode),
+            URLQueryItem(name: "country", value: region),
             URLQueryItem(name: "limit", value: "1")
         ]
 
