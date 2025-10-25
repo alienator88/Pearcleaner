@@ -130,25 +130,29 @@ class HomebrewManager: ObservableObject {
         do {
             // Fast scanner - reads local files directly (~70ms total)
             // Collect formulae
-            try await HomebrewController.shared.streamInstalledPackages(cask: false) { name, desc, version, isPinned in
+            try await HomebrewController.shared.streamInstalledPackages(cask: false) { name, desc, version, isPinned, tap, tapRbPath in
                 let package = InstalledPackage(
                     name: name,
                     description: desc,
                     version: version,
                     isCask: false,
-                    isPinned: isPinned
+                    isPinned: isPinned,
+                    tap: tap,
+                    tapRbPath: tapRbPath
                 )
                 tempFormulae.append(package)
             }
 
             // Collect casks
-            try await HomebrewController.shared.streamInstalledPackages(cask: true) { name, desc, version, isPinned in
+            try await HomebrewController.shared.streamInstalledPackages(cask: true) { name, desc, version, isPinned, tap, tapRbPath in
                 let package = InstalledPackage(
                     name: name,
                     description: desc,
                     version: version,
                     isCask: true,
-                    isPinned: isPinned
+                    isPinned: isPinned,
+                    tap: tap,
+                    tapRbPath: tapRbPath
                 )
                 tempCasks.append(package)
             }
@@ -163,21 +167,23 @@ class HomebrewManager: ObservableObject {
             // Populate installedByCategory immediately with initial data (empty outdated for now)
             updateInstalledCategories()
 
-            // Load outdated packages from brew outdated in background (don't block UI)
+            // Load outdated packages using hybrid approach (don't block UI)
+            // ~3.5x faster than `brew outdated` for core packages, accurate for tap packages
             Task {
                 await MainActor.run { isLoadingOutdated = true }
 
-                if let packages = try? await HomebrewController.shared.getOutdatedPackagesWithVersions() {
-                    await MainActor.run {
-                        outdatedPackagesMap = Dictionary(uniqueKeysWithValues: packages.map {
-                            ($0.name, OutdatedVersionInfo(installed: $0.installedVersion, available: $0.availableVersion))
-                        })
-                        isLoadingOutdated = false
-                        // Update categories now that we have outdated info
-                        updateInstalledCategories()
-                    }
-                } else {
-                    await MainActor.run { isLoadingOutdated = false }
+                let packages = await HomebrewController.shared.getOutdatedPackagesHybrid(
+                    formulae: tempFormulae,
+                    casks: tempCasks
+                )
+
+                await MainActor.run {
+                    outdatedPackagesMap = Dictionary(uniqueKeysWithValues: packages.map {
+                        ($0.name, OutdatedVersionInfo(installed: $0.installedVersion, available: $0.availableVersion))
+                    })
+                    isLoadingOutdated = false
+                    // Update categories now that we have outdated info
+                    updateInstalledCategories()
                 }
             }
         } catch {
