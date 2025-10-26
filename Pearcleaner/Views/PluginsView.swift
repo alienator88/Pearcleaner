@@ -766,11 +766,9 @@ struct PluginRowView: View {
 
             // Selection checkbox
             Button(action: onToggleSelection) {
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .foregroundStyle(isSelected ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
-                    .font(.title3)
+                EmptyView()
             }
-            .buttonStyle(.plain)
+            .buttonStyle(CircleCheckboxButtonStyle(isSelected: isSelected))
 
             // Plugin icon and type indicator
             VStack(spacing: 4) {
@@ -995,11 +993,9 @@ struct AudioPluginRowView: View {
                     }
                     onToggleSelection()
                 }) {
-                    Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                        .foregroundStyle(isSelected ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
-                        .font(.title3)
+                    EmptyView()
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(CircleCheckboxButtonStyle(isSelected: isSelected))
 
                 // Plugin icon and type indicator
                 VStack(spacing: 4) {
@@ -1153,7 +1149,7 @@ struct AudioPluginRowView: View {
                                         toggleRelatedFileSelection(result)
                                     }) {
                                         Image(systemName: selectedRelatedFiles.contains(result.id) ? "checkmark.circle.fill" : "circle")
-                                            .foregroundStyle(selectedRelatedFiles.contains(result.id) ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
+                                            .foregroundStyle(selectedRelatedFiles.contains(result.id) ? ThemeColors.shared(for: colorScheme).accent : ThemeColors.shared(for: colorScheme).secondaryText)
                                             .font(.caption)
                                     }
                                     .buttonStyle(.plain)

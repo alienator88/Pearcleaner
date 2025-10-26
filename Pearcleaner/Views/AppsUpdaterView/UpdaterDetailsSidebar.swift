@@ -88,17 +88,16 @@ struct UpdaterSourceCheckboxSection: View {
 
             // App Store checkbox with reset button
             HStack(spacing: 8) {
-                Button(action: {
-                    checkAppStore.toggle()
-                    if checkAppStore {
-                        Task { await updateManager.scanForUpdates() }
+                Toggle(isOn: Binding(
+                    get: { checkAppStore },
+                    set: { newValue in
+                        checkAppStore = newValue
+                        if newValue {
+                            Task { await updateManager.scanForUpdates() }
+                        }
                     }
-                }) {
+                )) {
                     HStack(spacing: 8) {
-                        Image(systemName: checkAppStore ? "checkmark.circle.fill" : "circle")
-                            .foregroundStyle(checkAppStore ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
-                            .font(.title3)
-
                         Image(systemName: ifOSBelow(macOS: 14) ? "cart.fill" : "storefront.fill")
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                             .font(.caption)
@@ -109,7 +108,7 @@ struct UpdaterSourceCheckboxSection: View {
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }
                 }
-                .buttonStyle(.plain)
+                .toggleStyle(CircleCheckboxToggleStyle())
 
                 Spacer()
 
@@ -146,17 +145,16 @@ struct UpdaterSourceCheckboxSection: View {
 
             // Homebrew checkbox with formulae toggle
             HStack(spacing: 8) {
-                Button(action: {
-                    checkHomebrew.toggle()
-                    if checkHomebrew {
-                        Task { await updateManager.scanForUpdates() }
+                Toggle(isOn: Binding(
+                    get: { checkHomebrew },
+                    set: { newValue in
+                        checkHomebrew = newValue
+                        if newValue {
+                            Task { await updateManager.scanForUpdates() }
+                        }
                     }
-                }) {
+                )) {
                     HStack(spacing: 8) {
-                        Image(systemName: checkHomebrew ? "checkmark.circle.fill" : "circle")
-                            .foregroundStyle(checkHomebrew ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
-                            .font(.title3)
-
                         Image(systemName: "mug")
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                             .font(.caption)
@@ -167,7 +165,7 @@ struct UpdaterSourceCheckboxSection: View {
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }
                 }
-                .buttonStyle(.plain)
+                .toggleStyle(CircleCheckboxToggleStyle())
 
                 Spacer()
 
@@ -184,17 +182,16 @@ struct UpdaterSourceCheckboxSection: View {
             }
 
             HStack(spacing: 8) {
-                Button(action: {
-                    checkSparkle.toggle()
-                    if checkSparkle {
-                        Task { await updateManager.scanForUpdates() }
+                Toggle(isOn: Binding(
+                    get: { checkSparkle },
+                    set: { newValue in
+                        checkSparkle = newValue
+                        if newValue {
+                            Task { await updateManager.scanForUpdates() }
+                        }
                     }
-                }) {
+                )) {
                     HStack(spacing: 8) {
-                        Image(systemName: checkSparkle ? "checkmark.circle.fill" : "circle")
-                            .foregroundStyle(checkSparkle ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
-                            .font(.title3)
-
                         Image(systemName: "sparkles")
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                             .font(.caption)
@@ -205,7 +202,7 @@ struct UpdaterSourceCheckboxSection: View {
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }
                 }
-                .buttonStyle(.plain)
+                .toggleStyle(CircleCheckboxToggleStyle())
 
                 Spacer()
 

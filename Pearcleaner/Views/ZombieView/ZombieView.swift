@@ -599,11 +599,9 @@ struct ZombieFileDetailsItem: View {
 
         HStack(alignment: .center, spacing: 15) {
             Button(action: { isSelected.toggle() }) {
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .foregroundStyle(isSelected ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
-                    .font(.title3)
+                EmptyView()
             }
-            .buttonStyle(.plain)
+            .buttonStyle(CircleCheckboxButtonStyle(isSelected: isSelected))
 
             if let appIcon = icon {
                 appIcon

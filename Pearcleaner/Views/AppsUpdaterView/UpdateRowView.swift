@@ -108,11 +108,9 @@ struct UpdateRowView: View {
                 Button(action: {
                     updateManager.toggleAppSelection(app)
                 }) {
-                    Image(systemName: app.isSelectedForUpdate ? "checkmark.circle.fill" : "circle")
-                        .foregroundStyle(app.isSelectedForUpdate ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
-                        .font(.title3)
+                    EmptyView()
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(CircleCheckboxButtonStyle(isSelected: app.isSelectedForUpdate))
 
                 // App icon (use actual app icon if available, fallback to source icon)
                 if let appIcon = app.appInfo.appIcon {

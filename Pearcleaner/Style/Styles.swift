@@ -321,13 +321,29 @@ struct CircleCheckboxToggleStyle: ToggleStyle {
         Button(action: { configuration.isOn.toggle() }) {
             HStack(spacing: 8) {
                 Image(systemName: configuration.isOn ? "checkmark.circle.fill" : "circle")
-                    .foregroundStyle(configuration.isOn ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
+                    .foregroundStyle(configuration.isOn ? ThemeColors.shared(for: colorScheme).accent : ThemeColors.shared(for: colorScheme).secondaryText)
                     .font(.title3)
 
                 configuration.label
             }
         }
         .buttonStyle(.plain)
+    }
+}
+
+struct CircleCheckboxButtonStyle: ButtonStyle {
+    let isSelected: Bool
+    @Environment(\.colorScheme) var colorScheme
+
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: 8) {
+            Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                .foregroundStyle(isSelected ? ThemeColors.shared(for: colorScheme).accent : ThemeColors.shared(for: colorScheme).secondaryText)
+                .font(.title3)
+
+            configuration.label
+        }
+        .opacity(configuration.isPressed ? 0.7 : 1.0)
     }
 }
 

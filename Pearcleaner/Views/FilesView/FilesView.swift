@@ -510,11 +510,9 @@ struct FileDetailsItem: View {
                     isSelected.toggle()
                 }
             }) {
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .foregroundStyle(isSelected ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
-                    .font(.title3)
+                EmptyView()
             }
-            .buttonStyle(.plain)
+            .buttonStyle(CircleCheckboxButtonStyle(isSelected: isSelected))
             .disabled(self.path.path.contains(".Trash"))
 
             if let appIcon = iconImage {

@@ -581,11 +581,9 @@ struct LipoAppRowView: View {
                 selectedApps.insert(app.path.path)
             }
         }) {
-            Image(systemName: selectedApps.contains(app.path.path) ? "checkmark.circle.fill" : "circle")
-                .foregroundStyle(selectedApps.contains(app.path.path) ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
-                .font(.title3)
+            EmptyView()
         }
-        .buttonStyle(.plain)
+        .buttonStyle(CircleCheckboxButtonStyle(isSelected: selectedApps.contains(app.path.path)))
     }
 
     private var appContentView: some View {
