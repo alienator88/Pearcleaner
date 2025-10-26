@@ -11,6 +11,7 @@ import AlinFoundation
 enum HomebrewViewSection: String, CaseIterable {
     case browse = "Browse"
     case taps = "Taps"
+    case autoUpdate = "Auto Update"
     case maintenance = "Maintenance"
 
     var icon: String {
@@ -19,6 +20,8 @@ enum HomebrewViewSection: String, CaseIterable {
             return "magnifyingglass"
         case .taps:
             return "point.3.filled.connected.trianglepath.dotted"
+        case .autoUpdate:
+            return "clock.arrow.2.circlepath"
         case .maintenance:
             return "wrench.and.screwdriver.fill"
         }
@@ -110,6 +113,8 @@ struct HomebrewView: View {
                                 )
                             case .taps:
                                 TapManagementSection()
+                            case .autoUpdate:
+                                AutoUpdateSection()
                             case .maintenance:
                                 MaintenanceSection()
                             }
@@ -155,6 +160,8 @@ struct HomebrewView: View {
                     await brewManager.loadAvailablePackages(appState: appState, forceRefresh: true)
                 case .taps:
                     await brewManager.loadTaps()
+                case .autoUpdate:
+                    break  // No refresh needed - managed by AutoUpdateSection
                 case .maintenance:
                     await brewManager.refreshMaintenance()
                 }
@@ -188,6 +195,8 @@ struct HomebrewView: View {
                             await brewManager.loadAvailablePackages(appState: appState, forceRefresh: true)
                         case .taps:
                             await brewManager.loadTaps()
+                        case .autoUpdate:
+                            break  // No refresh needed - managed by AutoUpdateSection
                         case .maintenance:
                             await brewManager.refreshMaintenance()
                         }

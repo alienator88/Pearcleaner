@@ -5,6 +5,9 @@
       "comment" : "Do not translate",
       "shouldTranslate" : false
     },
+    ":" : {
+
+    },
     "(Build %@)" : {
       "localizations" : {
         "de" : {
@@ -796,6 +799,9 @@
           }
         }
       }
+    },
+    "%lld" : {
+
     },
     "%lld app%@" : {
       "localizations" : {
@@ -4736,6 +4742,19 @@
         }
       }
     },
+    "Actions (applied to all schedules)" : {
+
+    },
+    "Active - %lld schedule%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Active - %1$lld schedule%2$@"
+          }
+        }
+      }
+    },
     "Add" : {
       "localizations" : {
         "de" : {
@@ -4847,6 +4866,9 @@
           }
         }
       }
+    },
+    "Add a new schedule occurrence" : {
+
     },
     "Add a tap to get started" : {
       "localizations" : {
@@ -6195,6 +6217,9 @@
         }
       }
     },
+    "Add Schedule" : {
+
+    },
     "Add Size Filter" : {
       "localizations" : {
         "de" : {
@@ -7428,6 +7453,9 @@
           }
         }
       }
+    },
+    "AM" : {
+
     },
     "Analytics" : {
       "localizations" : {
@@ -9115,6 +9143,9 @@
         }
       }
     },
+    "Apply" : {
+
+    },
     "Approximate Savings" : {
       "localizations" : {
         "de" : {
@@ -10234,6 +10265,9 @@
           }
         }
       }
+    },
+    "Auto Update Status" : {
+
     },
     "Automation" : {
       "extractionState" : "manual",
@@ -18543,6 +18577,9 @@
         }
       }
     },
+    "Delete this schedule" : {
+
+    },
     "DELETED" : {
       "localizations" : {
         "de" : {
@@ -19663,6 +19700,9 @@
           }
         }
       }
+    },
+    "Disable automatic updates (preserves schedule)" : {
+
     },
     "Disable CLI tools (formulae)" : {
       "localizations" : {
@@ -21012,6 +21052,12 @@
           }
         }
       }
+    },
+    "Enable Auto Update" : {
+
+    },
+    "Enable automatic updates" : {
+
     },
     "Enable CLI tools (formulae)" : {
       "localizations" : {
@@ -22473,6 +22519,9 @@
           }
         }
       }
+    },
+    "Error" : {
+
     },
     "Everything in Enhanced plus adds company name and team identifier. Searches file contents, metadata, Finder comments, and files created by the app. Most comprehensive cleanup, finds all resources associated with the app and the developer, even other apps they create." : {
       "localizations" : {
@@ -30446,6 +30495,9 @@
         }
       }
     },
+    "Inactive" : {
+
+    },
     "Include hidden files" : {
       "localizations" : {
         "de" : {
@@ -34260,6 +34312,12 @@
           }
         }
       }
+    },
+    "LaunchAgent is active" : {
+
+    },
+    "LaunchAgent is inactive" : {
+
     },
     "Layout" : {
       "localizations" : {
@@ -42454,6 +42512,9 @@
         }
       }
     },
+    "No schedules configured" : {
+
+    },
     "No taps found" : {
       "localizations" : {
         "de" : {
@@ -43353,6 +43414,9 @@
         }
       }
     },
+    "OK" : {
+
+    },
     "Okay" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -43802,6 +43866,9 @@
           }
         }
       }
+    },
+    "Open homebrew-autoupdate.log in text editor" : {
+
     },
     "Open in Finder" : {
       "localizations" : {
@@ -47957,6 +48024,9 @@
           }
         }
       }
+    },
+    "PM" : {
+
     },
     "Potential savings from bundle thinning" : {
       "localizations" : {
@@ -54258,6 +54328,15 @@
         }
       }
     },
+    "Run 'brew autoremove' and 'brew cleanup --prune=all' to remove old versions" : {
+
+    },
+    "Run 'brew update' to update Homebrew itself" : {
+
+    },
+    "Run 'brew upgrade --greedy' to upgrade installed packages" : {
+
+    },
     "Run Cleanup" : {
       "localizations" : {
         "de" : {
@@ -55155,6 +55234,9 @@
         }
       }
     },
+    "Save schedule and register LaunchAgent" : {
+
+    },
     "Saved: %@ (%lld%%)" : {
       "localizations" : {
         "de" : {
@@ -55608,6 +55690,12 @@
           }
         }
       }
+    },
+    "Schedule is disabled" : {
+
+    },
+    "Schedule is enabled" : {
+
     },
     "Scrollbar is hidden in lists" : {
       "localizations" : {
@@ -71902,6 +71990,9 @@
         }
       }
     },
+    "Update Schedule" : {
+
+    },
     "Updated %@" : {
       "localizations" : {
         "de" : {
@@ -72463,6 +72554,9 @@
           }
         }
       }
+    },
+    "Upgrade Packages" : {
+
     },
     "User" : {
       "localizations" : {
@@ -74145,6 +74239,9 @@
           }
         }
       }
+    },
+    "View Log" : {
+
     },
     "View packages in this tap" : {
       "localizations" : {
