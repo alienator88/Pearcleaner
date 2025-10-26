@@ -299,22 +299,24 @@ class HomebrewAutoUpdateManager: ObservableObject {
         // Update section
         if runUpdate {
             scriptLines.append("echo \"[ Updating Homebrew ]\"")
-            scriptLines.append("\(brewPath) update 2>&1")
+            scriptLines.append("OUTPUT=$(\(brewPath) update 2>&1)")
+            scriptLines.append("if [ -z \"$OUTPUT\" ]; then echo \"No action needed\"; else echo \"$OUTPUT\"; fi")
             scriptLines.append("echo \"\"")
         }
 
         // Upgrade section
         if runUpgrade {
             scriptLines.append("echo \"[ Upgrading Packages ]\"")
-            scriptLines.append("\(brewPath) upgrade --greedy 2>&1")
+            scriptLines.append("OUTPUT=$(\(brewPath) upgrade --greedy 2>&1)")
+            scriptLines.append("if [ -z \"$OUTPUT\" ]; then echo \"No action needed\"; else echo \"$OUTPUT\"; fi")
             scriptLines.append("echo \"\"")
         }
 
         // Cleanup section
         if runCleanup {
             scriptLines.append("echo \"[ Cleaning Up ]\"")
-            scriptLines.append("\(brewPath) autoremove 2>&1")
-            scriptLines.append("\(brewPath) cleanup --prune=all 2>&1")
+            scriptLines.append("OUTPUT=$(\(brewPath) autoremove 2>&1; \(brewPath) cleanup --prune=all 2>&1)")
+            scriptLines.append("if [ -z \"$OUTPUT\" ]; then echo \"No action needed\"; else echo \"$OUTPUT\"; fi")
             scriptLines.append("echo \"\"")
         }
 
@@ -323,8 +325,8 @@ class HomebrewAutoUpdateManager: ObservableObject {
         scriptLines.append("echo \"Completed at $(date)\"")
         scriptLines.append("echo \"================================\"")
 
-        // Wrap in braces for single execution block
-        let scriptBlock = "{ " + scriptLines.joined(separator: "; ") + "; } 2>&1"
+        // Wrap in braces for single execution block and redirect to overwrite log file
+        let scriptBlock = "{ " + scriptLines.joined(separator: "; ") + "; } > /tmp/homebrew-autoupdate.log 2>&1"
 
         // Escape XML special characters for plist
         let escapedCommand = scriptBlock
@@ -367,10 +369,6 @@ class HomebrewAutoUpdateManager: ObservableObject {
             </dict>
             <key>RunAtLoad</key>
             <false/>
-            <key>StandardOutPath</key>
-            <string>/tmp/homebrew-autoupdate.log</string>
-            <key>StandardErrorPath</key>
-            <string>/tmp/homebrew-autoupdate.log</string>
             <key>StartCalendarInterval</key>
             <array>
         \(calendarIntervals)
