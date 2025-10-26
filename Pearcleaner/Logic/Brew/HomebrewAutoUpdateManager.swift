@@ -39,6 +39,8 @@ struct ScheduleOccurrence: Identifiable, Codable, Hashable {
 // MARK: - AutoUpdate Manager
 
 class HomebrewAutoUpdateManager: ObservableObject {
+    static let shared = HomebrewAutoUpdateManager()
+
     @Published var schedules: [ScheduleOccurrence] = []
     @Published var isAgentLoaded: Bool = false
     @Published var isEnabled: Bool = false  // Master toggle for entire schedule
@@ -49,12 +51,18 @@ class HomebrewAutoUpdateManager: ObservableObject {
     @Published var runUpgrade: Bool = true
     @Published var runCleanup: Bool = false
 
+    // Store original state for comparison (to detect edit mode)
+    @Published var originalSchedules: [ScheduleOccurrence] = []
+    var originalRunUpdate: Bool = true
+    var originalRunUpgrade: Bool = false
+    var originalRunCleanup: Bool = false
+
     private let plistPath = "\(NSHomeDirectory())/Library/LaunchAgents/com.alienator88.Pearcleaner.homebrew-autoupdate.plist"
     private let plistPathDisabled = "\(NSHomeDirectory())/Library/LaunchAgents/com.alienator88.Pearcleaner.homebrew-autoupdate.plist.disabled"
     private let label = "com.alienator88.Pearcleaner.homebrew-autoupdate"
-    private let logPath = "/tmp/homebrew-autoupdate.log"
+    let logPath = "/tmp/homebrew-autoupdate.log"
 
-    init() {
+    private init() {
         loadSchedule()
         checkAgentStatus()
         checkLogFiles()
@@ -102,6 +110,74 @@ class HomebrewAutoUpdateManager: ObservableObject {
         isEnabled = fileManager.fileExists(atPath: plistPath) && !fileManager.fileExists(atPath: plistPathDisabled)
     }
 
+    /// Check if a schedule is in "edit mode" (new or modified)
+    /// Note: isEnabled is excluded - it auto-saves immediately and doesn't trigger edit mode
+    func isInEditMode(_ schedule: ScheduleOccurrence) -> Bool {
+        // New schedule not in originals = edit mode
+        if !originalSchedules.contains(where: { $0.id == schedule.id }) {
+            return true
+        }
+
+        // Check if any property changed from original (excluding isEnabled)
+        guard let original = originalSchedules.first(where: { $0.id == schedule.id }) else {
+            return true
+        }
+
+        return original.weekday != schedule.weekday ||
+               original.hour != schedule.hour ||
+               original.minute != schedule.minute
+    }
+
+    /// Save a single schedule to plist
+    func saveSchedule(_ schedule: ScheduleOccurrence) throws {
+        guard isEnabled else { return }
+
+        // Update original state
+        if let index = originalSchedules.firstIndex(where: { $0.id == schedule.id }) {
+            originalSchedules[index] = schedule
+        } else {
+            originalSchedules.append(schedule)
+        }
+
+        // Also update action originals
+        originalRunUpdate = runUpdate
+        originalRunUpgrade = runUpgrade
+        originalRunCleanup = runCleanup
+
+        // Apply to plist and register LaunchAgent
+        try applySchedule()
+    }
+
+    /// Revert schedule to original state (exit edit mode without saving)
+    func revertSchedule(_ schedule: ScheduleOccurrence) {
+        // Find original schedule
+        guard let original = originalSchedules.first(where: { $0.id == schedule.id }) else {
+            return
+        }
+
+        // Find index in current schedules
+        guard let index = schedules.firstIndex(where: { $0.id == schedule.id }) else {
+            return
+        }
+
+        // Revert to original values (only weekday, hour, minute - isEnabled is instant-save)
+        schedules[index].weekday = original.weekday
+        schedules[index].hour = original.hour
+        schedules[index].minute = original.minute
+    }
+
+    /// Delete schedule and save to plist
+    func deleteSchedule(_ schedule: ScheduleOccurrence) throws {
+        // Remove from current schedules
+        schedules.removeAll { $0.id == schedule.id }
+
+        // Remove from originals
+        originalSchedules.removeAll { $0.id == schedule.id }
+
+        // Apply to plist (saves deletion)
+        try applySchedule()
+    }
+
     /// Apply current schedules by generating plist and registering LaunchAgent
     func applySchedule() throws {
         // Check if we have any enabled schedules
@@ -145,7 +221,7 @@ class HomebrewAutoUpdateManager: ObservableObject {
         }
 
         // Unregister old service (if exists) then register new one
-        try? unregisterAgent()  // Ignore error if not registered
+        try? unregisterAgent(updateStatus: false)  // Don't update UI during re-registration
 
         // Register with launchctl
         let uid = getuid()
@@ -162,7 +238,8 @@ class HomebrewAutoUpdateManager: ObservableObject {
     }
 
     /// Unregister LaunchAgent
-    func unregisterAgent() throws {
+    /// - Parameter updateStatus: Whether to update isAgentLoaded state (default: true)
+    func unregisterAgent(updateStatus: Bool = true) throws {
         let uid = getuid()
         let bootoutCommand = "launchctl bootout gui/\(uid)/\(label)"
 
@@ -172,7 +249,10 @@ class HomebrewAutoUpdateManager: ObservableObject {
             throw HomebrewAutoUpdateError.registrationFailed(result.stderr)
         }
 
-        checkAgentStatus()
+        // Only update status if requested (prevents UI flash during re-registration)
+        if updateStatus {
+            checkAgentStatus()
+        }
     }
 
     /// Check if LaunchAgent is currently loaded
@@ -189,6 +269,22 @@ class HomebrewAutoUpdateManager: ObservableObject {
     func checkLogFiles() {
         let fileManager = FileManager.default
         logFileExists = fileManager.fileExists(atPath: logPath)
+    }
+
+    /// Refresh state by reloading schedule from plist and checking agent status
+    func refreshState() {
+        loadSchedule()
+        checkAgentStatus()
+        checkLogFiles()
+        updateEnabledState()
+    }
+
+    /// Remove all new schedules that haven't been saved to plist
+    func removeUnsavedSchedules() {
+        schedules.removeAll { schedule in
+            // Remove if this schedule is NOT in originalSchedules (meaning it's new and unsaved)
+            !originalSchedules.contains(where: { $0.id == schedule.id })
+        }
     }
 
     /// Open log file in default text editor
@@ -250,6 +346,12 @@ class HomebrewAutoUpdateManager: ObservableObject {
                 isEnabled: true  // All schedules in plist are enabled
             )
         }
+
+        // Store as original state after loading
+        originalSchedules = schedules
+        originalRunUpdate = runUpdate
+        originalRunUpgrade = runUpgrade
+        originalRunCleanup = runCleanup
     }
 
     // MARK: - Private Methods

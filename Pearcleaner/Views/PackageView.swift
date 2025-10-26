@@ -1682,6 +1682,7 @@ struct PackageUninstallSheet: View {
             .padding()
         }
         .frame(width: 600, height: 500)
+        .background(ThemeColors.shared(for: colorScheme).primaryBG)
     }
 
     private func toggleSelection(_ file: String) {

@@ -415,6 +415,7 @@ struct AddTapSheet: View {
         }
         .padding(20)
         .frame(width: 450, height: 400)
+        .background(ThemeColors.shared(for: colorScheme).primaryBG)
     }
 
     private func addTap() {

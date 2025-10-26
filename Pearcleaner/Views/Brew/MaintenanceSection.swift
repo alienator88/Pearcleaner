@@ -512,6 +512,7 @@ struct DoctorOutputSheet: View {
         }
         .padding(20)
         .frame(width: 700, height: 500)
+        .background(ThemeColors.shared(for: colorScheme).primaryBG)
     }
 }
 

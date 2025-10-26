@@ -5,9 +5,6 @@
       "comment" : "Do not translate",
       "shouldTranslate" : false
     },
-    ":" : {
-
-    },
     "(Build %@)" : {
       "localizations" : {
         "de" : {
@@ -799,9 +796,6 @@
           }
         }
       }
-    },
-    "%lld" : {
-
     },
     "%lld app%@" : {
       "localizations" : {
@@ -9142,9 +9136,6 @@
           }
         }
       }
-    },
-    "Apply" : {
-
     },
     "Approximate Savings" : {
       "localizations" : {
@@ -29031,6 +29022,9 @@
         }
       }
     },
+    "Homebrew Auto-Update Log" : {
+
+    },
     "Homebrew cleanup after uninstall" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -43861,9 +43855,6 @@
         }
       }
     },
-    "Open homebrew-autoupdate.log in text editor" : {
-
-    },
     "Open in Finder" : {
       "localizations" : {
         "de" : {
@@ -52065,6 +52056,9 @@
         }
       }
     },
+    "Remove orphaned dependencies, old package versions and scrub download cache" : {
+
+    },
     "Remove package from system records (does not delete files)" : {
       "localizations" : {
         "de" : {
@@ -54209,6 +54203,9 @@
         }
       }
     },
+    "Revert to original schedule" : {
+
+    },
     "Right click to reset size" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -54321,15 +54318,6 @@
           }
         }
       }
-    },
-    "Run 'brew autoremove' and 'brew cleanup --prune=all' to remove old versions" : {
-
-    },
-    "Run 'brew update' to update Homebrew itself" : {
-
-    },
-    "Run 'brew upgrade --greedy' to upgrade installed packages" : {
-
     },
     "Run Cleanup" : {
       "localizations" : {
@@ -55228,7 +55216,7 @@
         }
       }
     },
-    "Save schedule and register LaunchAgent" : {
+    "Save this schedule" : {
 
     },
     "Saved: %@ (%lld%%)" : {
@@ -55684,6 +55672,9 @@
           }
         }
       }
+    },
+    "Schedule" : {
+
     },
     "Schedule is disabled" : {
 
@@ -71650,6 +71641,9 @@
         }
       }
     },
+    "Update Homebrew itself" : {
+
+    },
     "Update Homebrew to the latest version using brew update" : {
       "localizations" : {
         "de" : {
@@ -71986,9 +71980,6 @@
           }
         }
       }
-    },
-    "Update Schedule" : {
-
     },
     "Updated %@" : {
       "localizations" : {
@@ -72551,6 +72542,9 @@
           }
         }
       }
+    },
+    "Upgrade currently installed packages" : {
+
     },
     "Upgrade Packages" : {
 
@@ -73898,6 +73892,9 @@
           }
         }
       }
+    },
+    "View homebrew-autoupdate.log" : {
+
     },
     "View in App Store" : {
       "localizations" : {

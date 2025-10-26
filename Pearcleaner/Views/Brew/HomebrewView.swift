@@ -161,7 +161,7 @@ struct HomebrewView: View {
                 case .taps:
                     await brewManager.loadTaps()
                 case .autoUpdate:
-                    break  // No refresh needed - managed by AutoUpdateSection
+                    HomebrewAutoUpdateManager.shared.refreshState()
                 case .maintenance:
                     await brewManager.refreshMaintenance()
                 }
@@ -196,7 +196,7 @@ struct HomebrewView: View {
                         case .taps:
                             await brewManager.loadTaps()
                         case .autoUpdate:
-                            break  // No refresh needed - managed by AutoUpdateSection
+                            HomebrewAutoUpdateManager.shared.refreshState()
                         case .maintenance:
                             await brewManager.refreshMaintenance()
                         }
