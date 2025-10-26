@@ -2271,6 +2271,16 @@
         }
       }
     },
+    "%lld schedule%@ active" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld schedule%2$@ active"
+          }
+        }
+      }
+    },
     "%lld service%@" : {
       "localizations" : {
         "de" : {
@@ -4744,16 +4754,6 @@
     },
     "Actions (applied to all schedules)" : {
 
-    },
-    "Active - %lld schedule%@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Active - %1$lld schedule%2$@"
-          }
-        }
-      }
     },
     "Add" : {
       "localizations" : {
@@ -10265,9 +10265,6 @@
           }
         }
       }
-    },
-    "Auto Update Status" : {
-
     },
     "Automation" : {
       "extractionState" : "manual",
@@ -21052,9 +21049,6 @@
           }
         }
       }
-    },
-    "Enable Auto Update" : {
-
     },
     "Enable automatic updates" : {
 
@@ -62995,6 +62989,9 @@
           }
         }
       }
+    },
+    "Status" : {
+
     },
     "Status:" : {
       "localizations" : {

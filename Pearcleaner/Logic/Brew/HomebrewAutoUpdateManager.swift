@@ -14,7 +14,7 @@ import AlinFoundation
 struct ScheduleOccurrence: Identifiable, Codable, Hashable {
     let id: UUID
     var weekday: Int      // 0=Sunday, 1=Monday, ... 6=Saturday
-    var hour: Int         // 0-23
+    var hour: Int         // 0-12
     var minute: Int       // 0-59
     var isEnabled: Bool
 
@@ -46,7 +46,7 @@ class HomebrewAutoUpdateManager: ObservableObject {
 
     // Global actions that apply to ALL schedules
     @Published var runUpdate: Bool = true
-    @Published var runUpgrade: Bool = false
+    @Published var runUpgrade: Bool = true
     @Published var runCleanup: Bool = false
 
     private let plistPath = "\(NSHomeDirectory())/Library/LaunchAgents/com.alienator88.Pearcleaner.homebrew-autoupdate.plist"
@@ -315,7 +315,7 @@ class HomebrewAutoUpdateManager: ObservableObject {
         // Cleanup section
         if runCleanup {
             scriptLines.append("echo \"[ Cleaning Up ]\"")
-            scriptLines.append("OUTPUT=$(\(brewPath) autoremove 2>&1; \(brewPath) cleanup --prune=all 2>&1)")
+            scriptLines.append("OUTPUT=$(\(brewPath) autoremove 2>&1; \(brewPath) cleanup --scrub --prune=all 2>&1)")
             scriptLines.append("if [ -z \"$OUTPUT\" ]; then echo \"No action needed\"; else echo \"$OUTPUT\"; fi")
             scriptLines.append("echo \"\"")
         }

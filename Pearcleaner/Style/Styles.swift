@@ -314,6 +314,23 @@ struct SimpleCheckboxToggleStyle: ToggleStyle {
     }
 }
 
+struct CircleCheckboxToggleStyle: ToggleStyle {
+    @Environment(\.colorScheme) var colorScheme
+
+    func makeBody(configuration: Configuration) -> some View {
+        Button(action: { configuration.isOn.toggle() }) {
+            HStack(spacing: 8) {
+                Image(systemName: configuration.isOn ? "checkmark.circle.fill" : "circle")
+                    .foregroundStyle(configuration.isOn ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
+                    .font(.title3)
+
+                configuration.label
+            }
+        }
+        .buttonStyle(.plain)
+    }
+}
+
 
 
 public struct SlideableDivider: View {

@@ -26,7 +26,7 @@ struct AutoUpdateSection: View {
                             HStack {
                                 VStack(alignment: .leading, spacing: 4) {
                                     HStack(spacing: 6) {
-                                        Text("Auto Update Status")
+                                        Text("Status")
                                             .font(.headline)
                                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
@@ -44,7 +44,7 @@ struct AutoUpdateSection: View {
                                     }
 
                                     let enabledCount = manager.schedules.filter { $0.isEnabled }.count
-                                    Text(manager.isAgentLoaded ? "Active - \(enabledCount) schedule\(enabledCount == 1 ? "" : "s")" : "Inactive")
+                                    Text(manager.isAgentLoaded ? "\(enabledCount) schedule\(enabledCount == 1 ? "" : "s") active" : "Inactive")
                                         .font(.callout)
                                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                                 }
@@ -52,7 +52,7 @@ struct AutoUpdateSection: View {
                                 Spacer()
 
                                 // Master enable/disable toggle
-                                Toggle("Enable Auto Update", isOn: Binding(
+                                Toggle("", isOn: Binding(
                                     get: { manager.isEnabled },
                                     set: { newValue in
                                         do {
@@ -63,20 +63,9 @@ struct AutoUpdateSection: View {
                                         }
                                     }
                                 ))
+                                .toggleStyle(.switch)
+                                .controlSize(.large)
                                 .help(manager.isEnabled ? "Disable automatic updates (preserves schedule)" : "Enable automatic updates")
-
-                                Spacer()
-
-                                // Log file button
-                                if manager.logFileExists {
-                                    Button {
-                                        manager.openLogFile()
-                                    } label: {
-                                        Label("View Log", systemImage: "doc.text")
-                                            .font(.callout)
-                                    }
-                                    .help("Open homebrew-autoupdate.log in text editor")
-                                }
                             }
 
                             Divider()
@@ -89,19 +78,23 @@ struct AutoUpdateSection: View {
 
                                 HStack(spacing: 20) {
                                     Toggle("Update Homebrew", isOn: $manager.runUpdate)
+                                        .toggleStyle(CircleCheckboxToggleStyle())
                                         .help("Run 'brew update' to update Homebrew itself")
                                         .disabled(!manager.isEnabled)
 
                                     Toggle("Upgrade Packages", isOn: $manager.runUpgrade)
+                                        .toggleStyle(CircleCheckboxToggleStyle())
                                         .help("Run 'brew upgrade --greedy' to upgrade installed packages")
                                         .disabled(!manager.isEnabled)
 
                                     Toggle("Cleanup", isOn: $manager.runCleanup)
+                                        .toggleStyle(CircleCheckboxToggleStyle())
                                         .help("Run 'brew autoremove' and 'brew cleanup --prune=all' to remove old versions")
                                         .disabled(!manager.isEnabled)
                                 }
                             }
                         }
+                        .padding()
                     }
 
                     // Schedule Section
@@ -146,6 +139,7 @@ struct AutoUpdateSection: View {
                                 }
                             }
                         }
+                        .padding()
                     }
                 }
                 .padding()
@@ -157,6 +151,19 @@ struct AutoUpdateSection: View {
                 Divider()
 
                 HStack(spacing: 12) {
+
+                    // Log file button
+                    if manager.logFileExists {
+                        Button {
+                            manager.openLogFile()
+                        } label: {
+                            Label("View Log", systemImage: "doc.text")
+//                                .font(.callout)
+                        }
+                        .buttonStyle(.bordered)
+                        .help("Open homebrew-autoupdate.log in text editor")
+                    }
+                    
                     Spacer()
 
                     if isApplying {
@@ -301,11 +308,11 @@ struct ScheduleRow: View {
             } label: {
                 ZStack {
                     Circle()
-                        .fill(Color.red.opacity(0.5))
-                        .frame(width: 24, height: 24)
+                        .fill(Color.red.opacity(0.3))
+                        .frame(width: 16, height: 16)
 
-                    Image(systemName: "xmark")
-                        .font(.system(size: 12, weight: .semibold))
+                    Image(systemName: "xmark.circle")
+                        .font(.system(size: 16, weight: .light))
                         .foregroundStyle(.red)
                 }
             }
