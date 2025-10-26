@@ -436,32 +436,13 @@ struct DoctorOutputSheet: View {
     }
 
     var body: some View {
-        VStack(spacing: 20) {
-            // Header
-            HStack {
-                HStack(spacing: 8) {
-                    Text("Homebrew Doctor")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-
-                    Image(systemName: isHealthy ? "checkmark" : "exclamationmark.octagon")
-                        .foregroundStyle(isHealthy ? .green : .red)
-                        .font(.title3)
-                }
-
-                Spacer()
-
-                Button {
-                    isPresented = false
-                } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                }
-                .buttonStyle(.plain)
-            }
-
-            // Output
+        StandardSheetView(
+            title: "Homebrew Doctor",
+            width: 700,
+            height: 500,
+            onClose: { isPresented = false }
+        ) {
+            // Content
             ScrollView {
                 if isHealthy {
                     VStack(spacing: 12) {
@@ -478,7 +459,6 @@ struct DoctorOutputSheet: View {
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .padding()
                 } else {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Issues detected:")
@@ -498,8 +478,7 @@ struct DoctorOutputSheet: View {
                     )
                 }
             }
-
-            // Close button
+        } actionButtons: {
             Button("Close") {
                 isPresented = false
             }
@@ -510,9 +489,6 @@ struct DoctorOutputSheet: View {
                 skipControlGroup: true
             ))
         }
-        .padding(20)
-        .frame(width: 700, height: 500)
-        .background(ThemeColors.shared(for: colorScheme).primaryBG)
     }
 }
 

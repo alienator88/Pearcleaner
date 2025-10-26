@@ -13,43 +13,25 @@ struct LogViewerSheet: View {
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
-        VStack(spacing: 0) {
-            // Header
-            HStack {
-                Text("Homebrew Auto-Update Log")
-                    .font(.headline)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-
-                Spacer()
-            }
-            .padding()
-
-            Divider()
-
-            // Log content in ScrollView
+        StandardSheetView(
+            title: "Homebrew Auto-Update Log",
+            width: 700,
+            height: 500,
+            onClose: onClose
+        ) {
+            // Content
             ScrollView {
                 Text(logContent)
                     .font(.system(.body, design: .monospaced))
                     .textSelection(.enabled)
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
             }
-
-            Divider()
-
-            // Bottom button
-            HStack {
-                Spacer()
-
-                Button("Close") {
-                    onClose()
-                }
-                .keyboardShortcut(.cancelAction)
+        } actionButtons: {
+            Button("Close") {
+                onClose()
             }
-            .padding()
+            .keyboardShortcut(.cancelAction)
         }
-        .frame(width: 700, height: 500)
-        .background(ThemeColors.shared(for: colorScheme).primaryBG)
     }
 }

@@ -1567,122 +1567,113 @@ struct PackageUninstallSheet: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            // Header
-            VStack(spacing: 8) {
-                Text("Uninstall Package")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+        StandardSheetView(
+            title: "Uninstall Package",
+            width: 600,
+            height: 500,
+            onClose: onCancel
+        ) {
+            // Content
+            VStack(spacing: 0) {
+                // Subtitle with package name
+                VStack(spacing: 8) {
+                    Text(package.displayName)
+                        .font(.headline)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
-                Text(package.displayName)
-                    .font(.headline)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-
-                Text("\(selectedFiles.count) of \(files.count) file\(files.count == 1 ? "" : "s") selected")
-                    .font(.caption)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-            }
-            .padding()
-
-            Divider()
-
-            // Search bar
-            HStack {
-                Image(systemName: "magnifyingglass")
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-
-                TextField("Filter files...", text: $searchText)
-                    .textFieldStyle(.plain)
-
-                if !searchText.isEmpty {
-                    Button {
-                        searchText = ""
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    }
-                    .buttonStyle(.plain)
-                }
-            }
-            .padding()
-
-            Divider()
-
-            // File list or loading state
-            if files.isEmpty {
-                // Loading state
-                VStack(spacing: 12) {
-                    ProgressView()
-                        .scaleEffect(1.5)
-                    Text("Loading package files...")
-                        .font(.callout)
+                    Text("\(selectedFiles.count) of \(files.count) file\(files.count == 1 ? "" : "s") selected")
+                        .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
-                .frame(maxWidth: .infinity, maxHeight: 400)
-                .frame(minHeight: 200)
-            } else {
-                ScrollView {
-                    LazyVStack(alignment: .leading, spacing: 2) {
-                        ForEach(filteredFiles, id: \.self) { file in
-                            HStack(spacing: 8) {
-                                Button {
-                                    toggleSelection(file)
-                                } label: {
-                                    Image(systemName: selectedFiles.contains(file) ? "checkmark.square.fill" : "square")
-                                        .foregroundStyle(selectedFiles.contains(file) ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
-                                }
-                                .buttonStyle(.plain)
 
-                                Text(file)
-                                    .font(.caption)
-                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                                    .lineLimit(1)
-                                    .truncationMode(.middle)
+                // Search bar
+                HStack {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
-                                Spacer()
-                            }
-                            .padding(.horizontal)
-                            .padding(.vertical, 4)
-                            .background(filteredFiles.firstIndex(of: file).map { $0 % 2 == 0 } == true ? Color.clear : ThemeColors.shared(for: colorScheme).secondaryText.opacity(0.05))
+                    TextField("Filter files...", text: $searchText)
+                        .textFieldStyle(.plain)
+
+                    if !searchText.isEmpty {
+                        Button {
+                            searchText = ""
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                         }
-                    }
-                    .padding(.vertical, 8)
-                }
-                .frame(maxHeight: 400)
-            }
-
-            Divider()
-
-            // Bottom controls
-            HStack {
-                Button(selectedFiles.count == files.count ? "Deselect All" : "Select All") {
-                    if selectedFiles.count == files.count {
-                        selectedFiles.removeAll()
-                    } else {
-                        selectedFiles = Set(files)
+                        .buttonStyle(.plain)
                     }
                 }
-                .buttonStyle(.borderless)
-                .disabled(files.isEmpty)
+                .padding(.top, 12)
 
-                Spacer()
+                Divider()
+                    .padding(.top, 12)
 
-                Button("Cancel") {
-                    onCancel()
+                // File list or loading state
+                if files.isEmpty {
+                    // Loading state
+                    VStack(spacing: 12) {
+                        ProgressView()
+                            .scaleEffect(1.5)
+                        Text("Loading package files...")
+                            .font(.callout)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: 400)
+                    .frame(minHeight: 200)
+                } else {
+                    ScrollView {
+                        LazyVStack(alignment: .leading, spacing: 2) {
+                            ForEach(filteredFiles, id: \.self) { file in
+                                HStack(spacing: 8) {
+                                    Button {
+                                        toggleSelection(file)
+                                    } label: {
+                                        Image(systemName: selectedFiles.contains(file) ? "checkmark.square.fill" : "square")
+                                            .foregroundStyle(selectedFiles.contains(file) ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
+                                    }
+                                    .buttonStyle(.plain)
+
+                                    Text(file)
+                                        .font(.caption)
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                                        .lineLimit(1)
+                                        .truncationMode(.middle)
+
+                                    Spacer()
+                                }
+                                .padding(.horizontal)
+                                .padding(.vertical, 4)
+                                .background(filteredFiles.firstIndex(of: file).map { $0 % 2 == 0 } == true ? Color.clear : ThemeColors.shared(for: colorScheme).secondaryText.opacity(0.05))
+                            }
+                        }
+                        .padding(.vertical, 8)
+                    }
+                    .frame(maxHeight: 400)
                 }
-                .keyboardShortcut(.cancelAction)
-
-                Button("Move to Trash") {
-                    onConfirm()
-                }
-                .keyboardShortcut(.defaultAction)
-                .disabled(selectedFiles.isEmpty || files.isEmpty)
             }
-            .padding()
+        } selectionControls: {
+            Button(selectedFiles.count == files.count ? "Deselect All" : "Select All") {
+                if selectedFiles.count == files.count {
+                    selectedFiles.removeAll()
+                } else {
+                    selectedFiles = Set(files)
+                }
+            }
+            .buttonStyle(.borderless)
+            .disabled(files.isEmpty)
+        } actionButtons: {
+            Button("Cancel") {
+                onCancel()
+            }
+            .keyboardShortcut(.cancelAction)
+
+            Button("Move to Trash") {
+                onConfirm()
+            }
+            .keyboardShortcut(.defaultAction)
+            .disabled(selectedFiles.isEmpty || files.isEmpty)
         }
-        .frame(width: 600, height: 500)
-        .background(ThemeColors.shared(for: colorScheme).primaryBG)
     }
 
     private func toggleSelection(_ file: String) {

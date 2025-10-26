@@ -315,26 +315,13 @@ struct AddTapSheet: View {
     @State private var errorMessage: String = ""
 
     var body: some View {
-        VStack(spacing: 20) {
-            // Header
-            HStack {
-                Text("Add Tap")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-
-                Spacer()
-
-                Button {
-                    isPresented = false
-                } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                }
-                .buttonStyle(.plain)
-            }
-
-            // Description
+        StandardSheetView(
+            title: "Add Tap",
+            width: 450,
+            height: 400,
+            onClose: { isPresented = false }
+        ) {
+            // Content
             VStack(alignment: .leading, spacing: 8) {
                 Text("Enter the tap name to add")
                     .font(.subheadline)
@@ -369,7 +356,6 @@ struct AddTapSheet: View {
                     .fill(ThemeColors.shared(for: colorScheme).secondaryBG)
             )
 
-            // Input field
             TextField("user/tap", text: $tapName)
                 .textFieldStyle(.plain)
                 .padding(.horizontal, 12)
@@ -379,17 +365,13 @@ struct AddTapSheet: View {
                         .fill(ThemeColors.shared(for: colorScheme).secondaryBG)
                 )
 
-            // Error message
             if !errorMessage.isEmpty {
                 Text(errorMessage)
                     .font(.caption)
                     .foregroundStyle(.red)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
-
-            Spacer()
-
-            // Buttons
+        } actionButtons: {
             HStack(spacing: 12) {
                 Button("Cancel") {
                     isPresented = false
@@ -413,9 +395,6 @@ struct AddTapSheet: View {
                 .disabled(tapName.isEmpty || isAdding)
             }
         }
-        .padding(20)
-        .frame(width: 450, height: 400)
-        .background(ThemeColors.shared(for: colorScheme).primaryBG)
     }
 
     private func addTap() {

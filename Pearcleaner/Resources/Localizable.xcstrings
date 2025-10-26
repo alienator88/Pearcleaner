@@ -13511,6 +13511,7 @@
       }
     },
     "Choose Translations to Remove" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -17105,6 +17106,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "刪除 %lld 個已選取項目"
+          }
+        }
+      }
+    },
+    "Delete %lld Selected (%@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Delete %1$lld Selected (%2$@)"
           }
         }
       }
@@ -29021,9 +29032,6 @@
           }
         }
       }
-    },
-    "Homebrew Auto-Update Log" : {
-
     },
     "Homebrew cleanup after uninstall" : {
       "extractionState" : "manual",
@@ -69171,6 +69179,7 @@
       }
     },
     "Uninstall Package" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

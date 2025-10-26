@@ -35,134 +35,133 @@ struct TranslationSelectionSheet: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            // Header
-            VStack(spacing: 8) {
-                Text("Choose Translations to Remove")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-
-                Text(appName)
-                    .font(.headline)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-
-                if isLoading {
-                    Text("Loading languages...")
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                } else if languages.isEmpty {
-                    Text("No translations found")
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                } else {
-                    Text("\(selectedLanguages.count) of \(languages.count) language\(languages.count == 1 ? "" : "s") selected for removal")
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                }
-            }
-            .padding()
-
-            Divider()
-
-            // Search bar (only show if not loading and has languages)
-            if !isLoading && !languages.isEmpty {
-                HStack {
-                    Image(systemName: "magnifyingglass")
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-
-                    TextField("Filter languages...", text: $searchText)
-                        .textFieldStyle(.plain)
-
-                    if !searchText.isEmpty {
-                        Button {
-                            searchText = ""
-                        } label: {
-                            Image(systemName: "xmark.circle.fill")
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-                .padding()
-
-                Divider()
-            }
-
-            // Language list, loading state, or empty state
-            if isLoading {
-                // Loading state
-                VStack(spacing: 12) {
-                    ProgressView()
-                        .scaleEffect(1.5)
-                    Text("Finding available languages...")
-                        .font(.callout)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                }
-                .frame(maxWidth: .infinity, maxHeight: 400)
-                .frame(minHeight: 200)
-            } else if languages.isEmpty {
-                // Empty state - no languages found
-                VStack(spacing: 12) {
-                    Image(systemName: "exclamationmark.triangle")
-                        .font(.system(size: 48))
-                        .foregroundStyle(.orange)
-                    Text("No translations found")
-                        .font(.title3)
-                        .fontWeight(.semibold)
+        StandardSheetView(
+            title: "Choose Translations to Remove",
+            width: 600,
+            height: 500,
+            onClose: onCancel
+        ) {
+            // Content
+            VStack(spacing: 0) {
+                // Subtitle with app name
+                VStack(spacing: 8) {
+                    Text(appName)
+                        .font(.headline)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                    Text("This app has no removable language translation files.")
-                        .font(.callout)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 40)
+
+                    if isLoading {
+                        Text("Loading languages...")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    } else if languages.isEmpty {
+                        Text("No translations found")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    } else {
+                        Text("\(selectedLanguages.count) of \(languages.count) language\(languages.count == 1 ? "" : "s") selected for removal")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
                 }
-                .frame(maxWidth: .infinity, maxHeight: 400)
-                .frame(minHeight: 200)
-            } else {
-                ScrollView {
-                    LazyVStack(alignment: .leading, spacing: 2) {
-                        ForEach(filteredLanguages) { language in
-                            HStack(spacing: 8) {
-                                Button {
-                                    toggleSelection(language.code)
-                                } label: {
-                                    Image(systemName: selectedLanguages.contains(language.code) ? "checkmark.square.fill" : "square")
-                                        .foregroundStyle(selectedLanguages.contains(language.code) ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
-                                }
-                                .buttonStyle(.plain)
 
-                                HStack(spacing: 6) {
-                                    Text(language.displayName)
-                                        .font(.callout)
-                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                // Search bar (only show if not loading and has languages)
+                if !isLoading && !languages.isEmpty {
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
-                                    Text(verbatim: "(\(language.code))")
-                                        .font(.caption2)
-                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        TextField("Filter languages...", text: $searchText)
+                            .textFieldStyle(.plain)
 
-                                    if language.isPreferred {
-                                        Image(systemName: "star.fill")
-                                            .font(.caption2)
-                                            .foregroundStyle(.orange)
-                                            .help("Preferred language")
-                                    }
-                                }
-
-                                Spacer()
+                        if !searchText.isEmpty {
+                            Button {
+                                searchText = ""
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                             }
-                            .padding(.horizontal)
-                            .padding(.vertical, 6)
-                            .background(filteredLanguages.firstIndex(of: language).map { $0 % 2 == 0 } == true ? Color.clear : ThemeColors.shared(for: colorScheme).secondaryText.opacity(0.05))
+                            .buttonStyle(.plain)
                         }
                     }
-                    .padding(.vertical, 8)
+                    .padding(.top, 12)
+
+                    Divider()
+                        .padding(.top, 12)
                 }
-                .frame(maxHeight: 400)
+
+                // Language list, loading state, or empty state
+                if isLoading {
+                    // Loading state
+                    VStack(spacing: 12) {
+                        ProgressView()
+                            .scaleEffect(1.5)
+                        Text("Finding available languages...")
+                            .font(.callout)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: 400)
+                    .frame(minHeight: 200)
+                } else if languages.isEmpty {
+                    // Empty state - no languages found
+                    VStack(spacing: 12) {
+                        Image(systemName: "exclamationmark.triangle")
+                            .font(.system(size: 48))
+                            .foregroundStyle(.orange)
+                        Text("No translations found")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                        Text("This app has no removable language translation files.")
+                            .font(.callout)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 40)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: 400)
+                    .frame(minHeight: 200)
+                } else {
+                    ScrollView {
+                        LazyVStack(alignment: .leading, spacing: 2) {
+                            ForEach(filteredLanguages) { language in
+                                HStack(spacing: 8) {
+                                    Button {
+                                        toggleSelection(language.code)
+                                    } label: {
+                                        Image(systemName: selectedLanguages.contains(language.code) ? "checkmark.square.fill" : "square")
+                                            .foregroundStyle(selectedLanguages.contains(language.code) ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
+                                    }
+                                    .buttonStyle(.plain)
+
+                                    HStack(spacing: 6) {
+                                        Text(language.displayName)
+                                            .font(.callout)
+                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                                        Text(verbatim: "(\(language.code))")
+                                            .font(.caption2)
+                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                                        if language.isPreferred {
+                                            Image(systemName: "star.fill")
+                                                .font(.caption2)
+                                                .foregroundStyle(.orange)
+                                                .help("Preferred language")
+                                        }
+                                    }
+
+                                    Spacer()
+                                }
+                                .padding(.horizontal)
+                                .padding(.vertical, 6)
+                                .background(filteredLanguages.firstIndex(of: language).map { $0 % 2 == 0 } == true ? Color.clear : ThemeColors.shared(for: colorScheme).secondaryText.opacity(0.05))
+                            }
+                        }
+                        .padding(.vertical, 8)
+                    }
+                    .frame(maxHeight: 400)
+                }
             }
-
-            Divider()
-
+        } selectionControls: {
             // Selection controls (only show if not loading and has languages)
             if !isLoading && !languages.isEmpty {
                 HStack(spacing: 12) {
@@ -183,34 +182,20 @@ struct TranslationSelectionSheet: View {
                     }
                     .buttonStyle(.borderless)
                     .disabled(selectedLanguages.isEmpty)
-
-                    Spacer()
                 }
-                .padding(.horizontal)
-                .padding(.vertical, 8)
-
-                Divider()
             }
-
-            // Bottom buttons
-            HStack {
-                Spacer()
-
-                Button("Cancel") {
-                    onCancel()
-                }
-                .keyboardShortcut(.cancelAction)
-
-                Button("Remove Selected") {
-                    onConfirm()
-                }
-                .keyboardShortcut(.defaultAction)
-                .disabled(isLoading || selectedLanguages.isEmpty)
+        } actionButtons: {
+            Button("Cancel") {
+                onCancel()
             }
-            .padding()
+            .keyboardShortcut(.cancelAction)
+
+            Button("Remove Selected") {
+                onConfirm()
+            }
+            .keyboardShortcut(.defaultAction)
+            .disabled(isLoading || selectedLanguages.isEmpty)
         }
-        .frame(width: 600, height: 500)
-        .background(ThemeColors.shared(for: colorScheme).primaryBG)
     }
 
     private func toggleSelection(_ languageCode: String) {

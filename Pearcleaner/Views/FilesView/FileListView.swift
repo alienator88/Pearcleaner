@@ -205,7 +205,7 @@ struct FileListView: View {
                                     handleUninstallAction()
                                 } label: {
                                     Label {
-                                        Text("Delete \(selectedFileItemsLocal.count) Selected")
+                                        Text("Delete \(selectedFileItemsLocal.count) Selected (\(totalSelectedSize))")
                                     } icon: {
                                         Image(systemName: "trash")
                                     }
