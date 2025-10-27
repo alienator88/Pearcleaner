@@ -105,7 +105,7 @@ If you are able to contribute to translations for the app, please see this discu
 - Much appreciation to [Freemacsoft's AppCleaner](https://freemacsoft.net/appcleaner/) and [Sun Knudsen's app-cleaner script](https://sunknudsen.com/privacy-guides/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative)
 - [DharsanB](https://github.com/dharsanb) for sponsoring my Apple Developer account
 
-## Other Apps
+## Some of my apps
 
 [Pearcleaner](https://github.com/alienator88/Pearcleaner) - An opensource app cleaner with privacy in mind
 
