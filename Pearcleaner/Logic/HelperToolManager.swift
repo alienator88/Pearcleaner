@@ -285,7 +285,6 @@ class HelperToolManager: ObservableObject {
 
                 if !isRoot {
                     // Desync detected - automatically attempt to fix
-                    printOS("Helper desync detected, attempting auto-recovery...")
                     updateOnMain {
                         self.message = String(localized: "Service desynced, attempting recovery...")
                     }

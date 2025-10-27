@@ -17,6 +17,7 @@ struct PearCLI: ParsableCommand {
             Uninstall.self,
             UninstallAll.self,
             RemoveOrphaned.self,
+            Helper.self,
         ]
     )
 
@@ -255,6 +256,110 @@ struct PearCLI: ParsableCommand {
                 printOS("Failed to delete some orphaned files.\n")
                 Foundation.exit(1)
             }
+        }
+    }
+
+    struct Helper: ParsableCommand {
+        static var configuration = CommandConfiguration(
+            commandName: "helper",
+            abstract: "Manage privileged helper tool status"
+        )
+
+        @Argument(help: "Action: 'enable' or 'disable'. Omit to check status.")
+        var action: String?
+
+        func run() throws {
+            // If no action provided, return status
+            guard let action = action else {
+                let semaphore = DispatchSemaphore(value: 0)
+                var isEnabled = false
+
+                Task {
+                    isEnabled = await isHelperEnabled()
+                    semaphore.signal()
+                }
+
+                semaphore.wait()
+
+                let status = isEnabled ? "Enabled" : "Disabled"
+                printOS(status)
+                Foundation.exit(0)
+            }
+
+            // Validate action
+            guard ["enable", "disable"].contains(action.lowercased()) else {
+                printOS("Error: Invalid action. Use 'enable', 'disable', or omit for status.\n")
+                Foundation.exit(1)
+            }
+
+            // Check current status first
+            let semaphore1 = DispatchSemaphore(value: 0)
+            var currentlyEnabled = false
+
+            Task {
+                currentlyEnabled = await isHelperEnabled()
+                semaphore1.signal()
+            }
+
+            semaphore1.wait()
+
+            // Pre-check before attempting operation
+            if action.lowercased() == "enable" {
+                if currentlyEnabled {
+                    printOS("Privileged helper is already enabled.\n")
+                    Foundation.exit(0)
+                }
+            } else {
+                if !currentlyEnabled {
+                    printOS("Privileged helper is already disabled.\n")
+                    Foundation.exit(0)
+                }
+            }
+
+            // Proceed with enable/disable operation
+            let semaphore2 = DispatchSemaphore(value: 0)
+            var operationSuccess = false
+            var errorMessage: String?
+
+            Task {
+                if action.lowercased() == "enable" {
+                    await HelperToolManager.shared.manageHelperTool(action: .install)
+                    operationSuccess = await isHelperEnabled()
+
+                    if !operationSuccess {
+                        errorMessage = "Failed to enable privileged helper"
+                    }
+                } else {
+                    await HelperToolManager.shared.manageHelperTool(action: .uninstall)
+                    operationSuccess = !(await isHelperEnabled())
+
+                    if !operationSuccess {
+                        errorMessage = "Failed to disable privileged helper"
+                    }
+                }
+                semaphore2.signal()
+            }
+
+            // Wait for async operation to complete
+            semaphore2.wait()
+
+            if operationSuccess {
+                if action.lowercased() == "enable" {
+                    printOS("Privileged helper enabled successfully.\n")
+                } else {
+                    printOS("Privileged helper disabled successfully.\n")
+                }
+                Foundation.exit(0)
+            } else {
+                printOS("Error: \(errorMessage ?? "Unknown error occurred")\n")
+                Foundation.exit(1)
+            }
+        }
+
+        // Helper function to check if privileged helper is enabled
+        private func isHelperEnabled() async -> Bool {
+            let result = await HelperToolManager.shared.runCommand("whoami", skipHelperCheck: true)
+            return result.0 && result.1.trimmingCharacters(in: .whitespacesAndNewlines) == "root"
         }
     }
 }

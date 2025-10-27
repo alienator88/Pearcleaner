@@ -99,7 +99,10 @@ func manageSymlink(install: Bool, symlinkName: String = "pear") {
     if HelperToolManager.shared.isHelperToolInstalled {
         let semaphore = DispatchSemaphore(value: 0)
         Task {
-            let _ = await HelperToolManager.shared.runCommand(command)
+            let result = await HelperToolManager.shared.runCommand(command)
+            if !result.0 {
+                printOS("Symlink: \(result.1)")
+            }
             semaphore.signal()
         }
         semaphore.wait()
@@ -111,11 +114,11 @@ func manageSymlink(install: Bool, symlinkName: String = "pear") {
 
     updateOnMain {
         isCLISymlinked = checkCLISymlink()
-        if install {
-            printOS("Symlink created successfully at \(symlinkPath).")
-        } else {
-            printOS("Symlink removed successfully from \(symlinkPath).")
-        }
+//        if install {
+//            printOS("Symlink created successfully at \(symlinkPath).")
+//        } else {
+//            printOS("Symlink removed successfully from \(symlinkPath).")
+//        }
     }
 }
 

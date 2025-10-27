@@ -1716,7 +1716,7 @@ struct InstalledInfoSection: View {
                 .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
             if let path = packageInfo.installedPath, let count = packageInfo.fileCount {
-                Text("\(path) (\(count) file\(count == 1 ? "" : "s"), \(sizeText))")
+                Text(verbatim: "\(path) (\(count) file\(count == 1 ? "" : "s"), \(sizeText))")
                     .font(.caption2)
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                     .textSelection(.enabled)

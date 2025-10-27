@@ -196,7 +196,7 @@ struct AutoUpdateSection: View {
             .scrollIndicators(scrollIndicators ? .automatic : .never)
         }
         .alert("Error", isPresented: $showError) {
-            Button("OK", role: .cancel) {}
+            Button("Okay", role: .cancel) {}
         } message: {
             Text(errorMessage ?? "Unknown error")
         }
@@ -369,8 +369,8 @@ struct ScheduleRow: View {
                         }
                     }
                 )) {
-                    Text("AM").tag(false)
-                    Text("PM").tag(true)
+                    Text(verbatim: "AM").tag(false)
+                    Text(verbatim: "PM").tag(true)
                 }
                 .labelsHidden()
                 .minimalistPicker()
@@ -471,7 +471,7 @@ struct ScheduleRow: View {
         .opacity(isDisabled ? 0.4 : 1.0)
         .disabled(isDisabled)
         .alert("Error", isPresented: $showError) {
-            Button("OK", role: .cancel) {}
+            Button("Okay", role: .cancel) {}
         } message: {
             Text(errorMessage ?? "Unknown error")
         }

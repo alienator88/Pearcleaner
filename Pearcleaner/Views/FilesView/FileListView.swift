@@ -96,7 +96,7 @@ struct FileListView: View {
 
                     // Stats header
                     HStack {
-                        Text("\(filteredFiles.count) file\(filteredFiles.count == 1 ? "" : "s")")
+                        Text("\(selectedFileItemsLocal.count)/\(filteredFiles.count) file\(filteredFiles.count == 1 ? "" : "s")")
                             .font(.caption)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
@@ -205,7 +205,7 @@ struct FileListView: View {
                                     handleUninstallAction()
                                 } label: {
                                     Label {
-                                        Text("Delete \(selectedFileItemsLocal.count) Selected (\(totalSelectedSize))")
+                                        Text("Delete \(totalSelectedSize)")
                                     } icon: {
                                         Image(systemName: "trash")
                                     }
