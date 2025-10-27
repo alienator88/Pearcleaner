@@ -6,5 +6,25 @@
 	<string>mac-application</string>
 	<key>teamID</key>
 	<string>BK8443AXLU</string>
+	<key>signingCertificate</key>
+	<string>Developer ID Application: Marius Lupascu (BK8443AXLU)</string>
+	<key>signingStyle</key>
+	<string>manual</string>
+	<key>stripSwiftSymbols</key>
+	<true/>
+	<key>destination</key>
+	<string>export</string>
+	<key>uploadSymbols</key>
+	<true/>
+	<key>manageAppVersionAndBuildNumber</key>
+	<true/>
+	<key>thinning</key>
+	<string>&lt;none&gt;</string>
+	<key>embedOnDemandResourcesAssetPacksInBundle</key>
+	<true/>
+	<key>generateAppStoreInformation</key>
+	<false/>
+	<key>testFlightInternalTestingOnly</key>
+	<false/>
 </dict>
 </plist>
