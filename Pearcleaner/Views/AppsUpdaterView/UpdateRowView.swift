@@ -201,7 +201,9 @@ struct UpdateRowView: View {
                         }
 
                         // CLI tool indicator (Homebrew formulae only)
-                        if app.source == .homebrew && app.appInfo.bundleIdentifier.hasPrefix("com.homebrew.formula.") {
+                        if app.source == .homebrew
+                           && app.appInfo.bundleIdentifier.hasPrefix("com.homebrew.formula.")
+                           && app.appInfo.appIcon == nil {
                             ZStack {
                                 Image(systemName: "terminal.fill")
                                     .font(.body)

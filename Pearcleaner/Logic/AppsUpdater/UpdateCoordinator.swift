@@ -78,8 +78,8 @@ class UpdateCoordinator {
         // Wait for all results
         let (brew, store, sparkle) = await (homebrewApps, appStoreApps, sparkleApps)
 
-        // Filter out Pearcleaner from all sources (has dedicated banner in UI)
-        let filteredBrew = brew.filter { !isPearcleaner($0.appInfo) }
+        // Filter out Pearcleaner from App Store and Sparkle sources (has dedicated banner in UI)
+        // Note: Homebrew filtering happens in HomebrewController.getOutdatedPackagesHybrid()
         let filteredStore = store.filter { !isPearcleaner($0.appInfo) }
         let filteredSparkle = sparkle.filter { !isPearcleaner($0.appInfo) }
 
@@ -100,8 +100,8 @@ class UpdateCoordinator {
             finalResults[.sparkle]?.append(app)
         }
 
-        // Add Homebrew apps if not already added
-        for app in filteredBrew {
+        // Add Homebrew apps if not already added (Pearcleaner already filtered at source)
+        for app in brew {
             if !addedPaths.contains(app.appInfo.path) {
                 addedPaths.insert(app.appInfo.path)
                 finalResults[.homebrew]?.append(app)

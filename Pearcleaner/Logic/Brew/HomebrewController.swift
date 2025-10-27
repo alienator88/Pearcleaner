@@ -827,11 +827,16 @@ class HomebrewController {
 
             let totalOutdated = coreOutdated.count + tapOutdated.count
             logger.log(.homebrew, "Found \(totalOutdated) Homebrew updates available")
-            return coreOutdated + tapOutdated
+
+            // Filter out Pearcleaner (has dedicated UI banner in Updater view)
+            let allOutdated = coreOutdated + tapOutdated
+            return allOutdated.filter { $0.name != "pearcleaner" }
         }
 
         logger.log(.homebrew, "Found \(coreOutdated.count) Homebrew updates available")
-        return coreOutdated
+
+        // Filter out Pearcleaner (has dedicated UI banner in Updater view)
+        return coreOutdated.filter { $0.name != "pearcleaner" }
     }
 
     /// Check core Homebrew packages using public API (fast)

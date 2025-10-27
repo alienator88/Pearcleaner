@@ -224,7 +224,7 @@ class DeeplinkManager {
             }
             break
         case DeepLinkActions.openPermissions:
-            windowController.open(with: PermissionsListView().ignoresSafeArea(), width: 300, height: 250, material: .hudWindow)
+            windowController.open(with: PermissionsSheetView().ignoresSafeArea(), width: 300, height: 250, material: .hudWindow)
             break
         case DeepLinkActions.checkOrphanedFiles:
             appState.currentPage = .orphans

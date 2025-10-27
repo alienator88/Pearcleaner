@@ -61,16 +61,17 @@ class HomebrewUpdateChecker {
             // Find matching app by cask name
             guard let appInfo = brewApps.first(where: { $0.cask == outdatedPkg.name }) else { continue }
 
-            // Clean versions (remove commit hash) for accurate comparison
-            let installedClean = outdatedPkg.installedVersion.cleanBrewVersionForDisplay()
+            // Use app's ACTUAL version from Info.plist (ground truth) instead of Homebrew's stale record
+            // This eliminates false positives for auto-updating apps (Sparkle, direct downloads)
+            let installedClean = appInfo.appVersion.cleanBrewVersionForDisplay()
             let availableClean = outdatedPkg.availableVersion.cleanBrewVersionForDisplay()
 
-            // Compare versions using Version struct (supports 4+ components)
+            // Compare ACTUAL app version vs latest Homebrew version
             let installed = Version(versionNumber: installedClean, buildNumber: nil)
             let available = Version(versionNumber: availableClean, buildNumber: nil)
 
             // Only add if truly outdated (available > installed)
-            // This filters out false positives from --greedy flag on auto-updating apps
+            // Homebrew's .metadata/ record is ignored for comparison (can be stale if app auto-updated)
             guard !installed.isEmpty && !available.isEmpty && available > installed else {
                 continue  // Skip if versions are equal, invalid, or installed is newer
             }
@@ -148,7 +149,7 @@ class HomebrewUpdateChecker {
                 // Create a minimal AppInfo for the formula (CLI tool)
                 let formulaAppInfo = AppInfo(
                     id: UUID(),
-                    path: URL(fileURLWithPath: "/usr/local/bin/\(outdatedPkg.name)"), // Placeholder path
+                    path: URL(fileURLWithPath: "\(HomebrewController.shared.brewPrefix)/bin/\(outdatedPkg.name)"), // Placeholder path
                     bundleIdentifier: "com.homebrew.formula.\(outdatedPkg.name)",
                     appName: outdatedPkg.name,
                     appVersion: outdatedPkg.installedVersion,

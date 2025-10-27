@@ -16,7 +16,7 @@ struct MainWindow: View {
     @EnvironmentObject var locations: Locations
     @EnvironmentObject var fsm: FolderSettingsManager
     @EnvironmentObject var updater: Updater
-    @EnvironmentObject var permissionManager: PermissionManager
+    @EnvironmentObject var permissionManager: PermissionManagerLocal
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.general.glass") private var glass: Bool = false
     @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 265
@@ -225,7 +225,7 @@ struct MainWindow: View {
                         showPermissionList.toggle()
                     }
                     .sheet(isPresented: $showPermissionList) {
-                        PermissionsListView()
+                        PermissionsSheetView()
                     }
                 } else if HelperToolManager.shared.shouldShowHelperBadge {
                     noticeButton(

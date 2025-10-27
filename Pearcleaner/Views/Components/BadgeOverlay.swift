@@ -19,7 +19,7 @@ enum OverlayType {
 struct BadgeOverlay: View {
     @EnvironmentObject var updater: Updater
     @ObservedObject var helperManager = HelperToolManager.shared
-    @ObservedObject var permissionManager = PermissionManager.shared
+    @ObservedObject var permissionManager = PermissionManagerLocal.shared
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.interface.badgeOverlaysEnabled") private var badgeOverlaysEnabled: Bool = true
@@ -505,14 +505,10 @@ struct BadgeOverlay: View {
         }
     }
 
-    private func permissionName(for permission: PermissionManager.PermissionType) -> String {
+    private func permissionName(for permission: PermissionManagerLocal.PermissionType) -> String {
         switch permission {
         case .fullDiskAccess:
             return "Full Disk Access".localized()
-        case .accessibility:
-            return "Accessibility".localized()
-        case .automation:
-            return "Automation".localized()
         }
     }
 }

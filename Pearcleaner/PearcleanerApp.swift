@@ -14,7 +14,7 @@ struct PearcleanerApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     //MARK: ObservedObjects
     @ObservedObject var appState = AppState.shared
-    @ObservedObject private var permissionManager = PermissionManager.shared
+    @ObservedObject private var permissionManager = PermissionManagerLocal.shared
     @ObservedObject private var helperToolManager = HelperToolManager.shared
     //MARK: StateObjects
     @StateObject var locations = Locations()
