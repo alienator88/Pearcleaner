@@ -249,7 +249,7 @@ struct UpdaterSourceCheckboxSection: View {
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
             }
-            .toggleStyle(.checkbox)
+            .toggleStyle(CircleCheckboxToggleStyle())
             .help("Enable verbose logging for update checker troubleshooting")
         }
     }
