@@ -520,6 +520,8 @@ class HomebrewAutoUpdateManager: ObservableObject {
             <dict>
                 <key>PATH</key>
                 <string>\(HomebrewController.shared.getBrewPrefix())/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+                <key>SUDO_ASKPASS</key>
+                <string>\(Bundle.main.bundlePath)/Contents/Resources/askpass.sh</string>
             </dict>
             <key>RunAtLoad</key>
             <false/>

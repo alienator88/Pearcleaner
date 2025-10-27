@@ -18,6 +18,7 @@ struct PearCLI: ParsableCommand {
             UninstallAll.self,
             RemoveOrphaned.self,
             Helper.self,
+            AskPassword.self,
         ]
     )
 
@@ -360,6 +361,56 @@ struct PearCLI: ParsableCommand {
         private func isHelperEnabled() async -> Bool {
             let result = await HelperToolManager.shared.runCommand("whoami", skipHelperCheck: true)
             return result.0 && result.1.trimmingCharacters(in: .whitespacesAndNewlines) == "root"
+        }
+    }
+
+    struct AskPassword: ParsableCommand {
+        static var configuration = CommandConfiguration(
+            commandName: "ask-password",
+            abstract: "Display password prompt for sudo operations"
+        )
+
+        @Option(name: .long, help: "Message to display")
+        var message: String = "Enter your password to continue"
+
+        func run() throws {
+            // Initialize NSApplication
+            _ = NSApplication.shared
+
+            // Show dialog directly
+            let password = Self.showPasswordDialog(message: message)
+
+            if let password = password, !password.isEmpty {
+                print(password)
+                Darwin.exit(0)
+            } else {
+                Darwin.exit(1)
+            }
+        }
+
+        private static func showPasswordDialog(message: String) -> String? {
+            let alert = NSAlert()
+            alert.messageText = "Pearcleaner"
+            alert.informativeText = message
+            alert.alertStyle = .informational
+            alert.addButton(withTitle: "OK")
+            alert.addButton(withTitle: "Cancel")
+
+            let secureTextField = NSSecureTextField(frame: NSRect(x: 0, y: 0, width: 300, height: 24))
+            secureTextField.placeholderString = "Password"
+            alert.accessoryView = secureTextField
+            alert.window.initialFirstResponder = secureTextField
+
+            NSApp.activate(ignoringOtherApps: true)
+
+            let response = alert.runModal()
+
+            if response == .alertFirstButtonReturn {
+                let password = secureTextField.stringValue
+                return password.isEmpty ? nil : password
+            }
+
+            return nil
         }
     }
 }
