@@ -8,6 +8,14 @@
 import SwiftUI
 import AlinFoundation
 
+// MARK: - Auto Update Status
+
+enum AutoUpdateStatus {
+    case disabled      // Master toggle OFF
+    case pending       // Master toggle ON, but no active schedules
+    case active(Int)   // Master toggle ON, LaunchAgent running with X schedules
+}
+
 struct AutoUpdateSection: View {
     @ObservedObject private var manager = HomebrewAutoUpdateManager.shared
     @Environment(\.colorScheme) var colorScheme
@@ -15,6 +23,24 @@ struct AutoUpdateSection: View {
     @State private var showError: Bool = false
     @State private var logSheetWindow: NSWindow?
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
+
+    // Computed status based on master toggle, plist state, schedules, and agent
+    private var currentStatus: AutoUpdateStatus {
+        // Primary check: Master toggle state
+        if !manager.isEnabled {
+            return .disabled
+        }
+
+        // Secondary check: Count enabled schedules
+        let enabledCount = manager.schedules.filter { $0.isEnabled }.count
+
+        if enabledCount > 0 && manager.isAgentLoaded {
+            return .active(enabledCount)
+        }
+
+        // Tertiary check: Enabled but no active schedules or agent not loaded
+        return .pending
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -30,23 +56,45 @@ struct AutoUpdateSection: View {
                                             .font(.headline)
                                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
-                                        if manager.isAgentLoaded {
+                                        // Status icon based on current state
+                                        switch currentStatus {
+                                        case .disabled:
+                                            Image(systemName: "xmark.circle.fill")
+                                                .foregroundStyle(.red)
+                                                .font(.callout)
+                                                .help("Automatic updates are disabled")
+
+                                        case .pending:
+                                            Image(systemName: "clock.fill")
+                                                .foregroundStyle(.orange)
+                                                .font(.callout)
+                                                .help("Waiting for schedules to be configured")
+
+                                        case .active(_):
                                             Image(systemName: "checkmark.circle.fill")
                                                 .foregroundStyle(.green)
                                                 .font(.callout)
                                                 .help("LaunchAgent is active")
-                                        } else {
-                                            Image(systemName: "xmark.circle.fill")
-                                                .foregroundStyle(.red)
-                                                .font(.callout)
-                                                .help("LaunchAgent is inactive")
                                         }
                                     }
 
-                                    let enabledCount = manager.schedules.filter { $0.isEnabled }.count
-                                    Text(manager.isAgentLoaded ? "\(enabledCount) schedule\(enabledCount == 1 ? "" : "s") active" : "Inactive")
-                                        .font(.callout)
-                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                    // Status text based on current state
+                                    switch currentStatus {
+                                    case .disabled:
+                                        Text("Disabled")
+                                            .font(.callout)
+                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                                    case .pending:
+                                        Text("Pending schedules")
+                                            .font(.callout)
+                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                                    case .active(let count):
+                                        Text("\(count) schedule\(count == 1 ? "" : "s") active")
+                                            .font(.callout)
+                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                    }
                                 }
 
                                 Spacer()
@@ -168,11 +216,19 @@ struct AutoUpdateSection: View {
                             }
 
                             if manager.schedules.isEmpty {
-                                Text("No schedules configured")
-                                    .font(.callout)
-                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                                    .frame(maxWidth: .infinity, alignment: .center)
-                                    .padding(.vertical, 20)
+                                VStack(spacing: 8) {
+                                    Text("No schedules configured")
+                                        .font(.callout)
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                                    if manager.isEnabled {
+                                        Text("Add a schedule to activate automatic updates")
+                                            .font(.caption)
+                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                    }
+                                }
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .padding(.vertical, 20)
                             } else {
                                 Divider()
 

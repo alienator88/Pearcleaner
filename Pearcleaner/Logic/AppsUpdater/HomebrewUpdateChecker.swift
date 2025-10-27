@@ -75,8 +75,34 @@ class HomebrewUpdateChecker {
                 continue  // Skip if versions are equal, invalid, or installed is newer
             }
 
+            // Override appVersion with Homebrew's version for consistent display
+            // Info.plist may have different version format
+            let correctedAppInfo = AppInfo(
+                id: appInfo.id,
+                path: appInfo.path,
+                bundleIdentifier: appInfo.bundleIdentifier,
+                appName: appInfo.appName,
+                appVersion: outdatedPkg.installedVersion,  // Use Homebrew version instead of Info.plist
+                appIcon: appInfo.appIcon,
+                webApp: appInfo.webApp,
+                wrapped: appInfo.wrapped,
+                system: appInfo.system,
+                arch: appInfo.arch,
+                cask: appInfo.cask,
+                steam: appInfo.steam,
+                bundleSize: appInfo.bundleSize,
+                lipoSavings: appInfo.lipoSavings,
+                fileSize: appInfo.fileSize,
+                fileIcon: appInfo.fileIcon,
+                creationDate: appInfo.creationDate,
+                contentChangeDate: appInfo.contentChangeDate,
+                lastUsedDate: appInfo.lastUsedDate,
+                entitlements: appInfo.entitlements,
+                teamIdentifier: appInfo.teamIdentifier
+            )
+
             let updateableApp = UpdateableApp(
-                appInfo: appInfo,
+                appInfo: correctedAppInfo,  // Use version from Homebrew metadata
                 availableVersion: outdatedPkg.availableVersion,  // Available version from brew outdated
                 source: .homebrew,
                 adamID: nil,

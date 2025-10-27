@@ -44,6 +44,11 @@ class UpdateCoordinator {
         return FileManager.default.fileExists(atPath: receiptPath)
     }
 
+    /// Check if app is Pearcleaner (to exclude from update lists - has dedicated UI banner)
+    private static func isPearcleaner(_ app: AppInfo) -> Bool {
+        return app.bundleIdentifier == "com.alienator88.Pearcleaner"
+    }
+
     static func scanForUpdates(
         apps: [AppInfo],
         checkAppStore: Bool,
@@ -73,7 +78,13 @@ class UpdateCoordinator {
         // Wait for all results
         let (brew, store, sparkle) = await (homebrewApps, appStoreApps, sparkleApps)
 
-        // Deduplicate: prioritize Homebrew > App Store > Sparkle
+        // Filter out Pearcleaner from all sources (has dedicated banner in UI)
+        let filteredBrew = brew.filter { !isPearcleaner($0.appInfo) }
+        let filteredStore = store.filter { !isPearcleaner($0.appInfo) }
+        let filteredSparkle = sparkle.filter { !isPearcleaner($0.appInfo) }
+
+        // Deduplicate: prioritize Sparkle > Homebrew > App Store
+        // Rationale: Sparkle = direct from developer (most up-to-date), Homebrew = community-maintained (lag time), App Store = review lag
         var finalResults: [UpdateSource: [UpdateableApp]] = [
             .homebrew: [],
             .appStore: [],
@@ -83,25 +94,25 @@ class UpdateCoordinator {
         // Track which apps have been added
         var addedPaths = Set<URL>()
 
-        // Add Homebrew apps first (highest priority)
-        for app in brew {
+        // Add Sparkle apps first (highest priority - direct from developer)
+        for app in filteredSparkle {
             addedPaths.insert(app.appInfo.path)
-            finalResults[.homebrew]?.append(app)
+            finalResults[.sparkle]?.append(app)
         }
 
-        // Add App Store apps if not already added
-        for app in store {
+        // Add Homebrew apps if not already added
+        for app in filteredBrew {
             if !addedPaths.contains(app.appInfo.path) {
                 addedPaths.insert(app.appInfo.path)
-                finalResults[.appStore]?.append(app)
+                finalResults[.homebrew]?.append(app)
             }
         }
 
-        // Add Sparkle apps if not already added
-        for app in sparkle {
+        // Add App Store apps if not already added (lowest priority)
+        for app in filteredStore {
             if !addedPaths.contains(app.appInfo.path) {
                 addedPaths.insert(app.appInfo.path)
-                finalResults[.sparkle]?.append(app)
+                finalResults[.appStore]?.append(app)
             }
         }
 

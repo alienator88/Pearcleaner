@@ -8,6 +8,14 @@
 import Foundation
 import AppKit
 import AlinFoundation
+import SwiftUI
+
+// MARK: - Plist State
+
+enum PlistState {
+    case none      // No plist file exists
+    case active    // Regular .plist exists
+}
 
 // MARK: - Schedule Model
 
@@ -43,8 +51,26 @@ class HomebrewAutoUpdateManager: ObservableObject {
 
     @Published var schedules: [ScheduleOccurrence] = []
     @Published var isAgentLoaded: Bool = false
-    @Published var isEnabled: Bool = false  // Master toggle for entire schedule
     @Published var logFileExists: Bool = false
+
+    // Master toggle stored in UserDefaults (independent of schedule existence)
+    @AppStorage("settings.brew.autoUpdateEnabled") var isEnabled: Bool = false
+
+    // Store schedules when disabled (for restoration when re-enabled)
+    @AppStorage("settings.brew.autoUpdatePreservedSchedules") private var preservedSchedulesData: Data = Data()
+
+    // Computed property to access preserved schedules
+    private var preservedSchedules: [ScheduleOccurrence] {
+        get {
+            guard let decoded = try? JSONDecoder().decode([ScheduleOccurrence].self, from: preservedSchedulesData) else {
+                return []
+            }
+            return decoded
+        }
+        set {
+            preservedSchedulesData = (try? JSONEncoder().encode(newValue)) ?? Data()
+        }
+    }
 
     // Global actions that apply to ALL schedules
     @Published var runUpdate: Bool = true
@@ -58,7 +84,6 @@ class HomebrewAutoUpdateManager: ObservableObject {
     var originalRunCleanup: Bool = false
 
     private let plistPath = "\(NSHomeDirectory())/Library/LaunchAgents/com.alienator88.Pearcleaner.homebrew-autoupdate.plist"
-    private let plistPathDisabled = "\(NSHomeDirectory())/Library/LaunchAgents/com.alienator88.Pearcleaner.homebrew-autoupdate.plist.disabled"
     private let label = "com.alienator88.Pearcleaner.homebrew-autoupdate"
     let logPath = "/tmp/homebrew-autoupdate.log"
 
@@ -66,48 +91,77 @@ class HomebrewAutoUpdateManager: ObservableObject {
         loadSchedule()
         checkAgentStatus()
         checkLogFiles()
-        updateEnabledState()
+
+        // Restore preserved schedules if disabled and no schedules loaded
+        if !isEnabled && schedules.isEmpty && !preservedSchedules.isEmpty {
+            schedules = preservedSchedules
+            originalSchedules = preservedSchedules
+        }
+
+        // Auto-register agent if enabled with schedules but not running
+        if isEnabled && !schedules.isEmpty && !isAgentLoaded {
+            Task {
+                do {
+                    try applySchedule()
+                } catch {
+                    printOS("Failed to auto-register LaunchAgent on launch: \(error)")
+                }
+            }
+        }
     }
 
     // MARK: - Public Methods
+
+    /// Check which plist file exists (if any)
+    var plistState: PlistState {
+        let fileManager = FileManager.default
+
+        if fileManager.fileExists(atPath: plistPath) {
+            return .active
+        } else {
+            return .none
+        }
+    }
 
     /// Toggle the entire schedule on/off
     func toggleEnabled(_ enabled: Bool) throws {
         let fileManager = FileManager.default
 
         if enabled {
-            // Enable: Rename .disabled -> regular, then bootstrap
-            if fileManager.fileExists(atPath: plistPathDisabled) {
-                try fileManager.moveItem(atPath: plistPathDisabled, toPath: plistPath)
+            // Enable: Restore preserved schedules if available
+            isEnabled = true
 
-                // Bootstrap the agent
-                let uid = getuid()
-                let bootstrapCommand = "launchctl bootstrap gui/\(uid) \(plistPath)"
-                let result = shell(bootstrapCommand)
+            if schedules.isEmpty && !preservedSchedules.isEmpty {
+                schedules = preservedSchedules
+                originalSchedules = preservedSchedules
+            }
 
-                if result.exitCode != 0 {
-                    // Rollback rename on failure
-                    try? fileManager.moveItem(atPath: plistPath, toPath: plistPathDisabled)
-                    throw HomebrewAutoUpdateError.registrationFailed(result.stderr)
-                }
+            // Apply schedules immediately if we have at least one enabled schedule
+            let enabledCount = schedules.filter { $0.isEnabled }.count
+            if enabledCount > 0 {
+                try applySchedule()
             }
         } else {
-            // Disable: Bootout agent, then rename regular -> .disabled
+            // Disable: Preserve schedules but clean up plist
+            isEnabled = false
+
+            // Save current schedules to AppStorage before cleanup
+            if !schedules.isEmpty {
+                preservedSchedules = schedules
+            }
+
+            // Unregister agent if running
             try? unregisterAgent()
 
+            // Delete plist entirely (don't rename to .disabled)
             if fileManager.fileExists(atPath: plistPath) {
-                try fileManager.moveItem(atPath: plistPath, toPath: plistPathDisabled)
+                try fileManager.removeItem(atPath: plistPath)
             }
+
+            // Keep schedules in memory (they'll show dimmed in UI)
         }
 
-        updateEnabledState()
         checkAgentStatus()
-    }
-
-    /// Update isEnabled state based on file existence
-    private func updateEnabledState() {
-        let fileManager = FileManager.default
-        isEnabled = fileManager.fileExists(atPath: plistPath) && !fileManager.fileExists(atPath: plistPathDisabled)
     }
 
     /// Check if a schedule is in "edit mode" (new or modified)
@@ -180,14 +234,19 @@ class HomebrewAutoUpdateManager: ObservableObject {
 
     /// Apply current schedules by generating plist and registering LaunchAgent
     func applySchedule() throws {
+        // Don't apply if master toggle is disabled
+        guard isEnabled else {
+            return
+        }
+
         // Check if we have any enabled schedules
         let enabledSchedules = schedules.filter { $0.isEnabled }
 
         guard !enabledSchedules.isEmpty else {
-            // No enabled schedules - clean up
+            // No enabled schedules - clean up completely
             try unregisterAgent()
 
-            // Delete plist file
+            // Delete plist file (no schedules = no file needed)
             let fileManager = FileManager.default
             if fileManager.fileExists(atPath: plistPath) {
                 try fileManager.removeItem(atPath: plistPath)
@@ -233,7 +292,6 @@ class HomebrewAutoUpdateManager: ObservableObject {
         }
 
         // Update state
-        updateEnabledState()
         checkAgentStatus()
     }
 
@@ -276,7 +334,6 @@ class HomebrewAutoUpdateManager: ObservableObject {
         loadSchedule()
         checkAgentStatus()
         checkLogFiles()
-        updateEnabledState()
     }
 
     /// Remove all new schedules that haven't been saved to plist
@@ -297,21 +354,16 @@ class HomebrewAutoUpdateManager: ObservableObject {
     func loadSchedule() {
         let fileManager = FileManager.default
 
-        // Check both regular and disabled plist paths
-        let pathToLoad: String?
-        if fileManager.fileExists(atPath: plistPath) {
-            pathToLoad = plistPath
-        } else if fileManager.fileExists(atPath: plistPathDisabled) {
-            pathToLoad = plistPathDisabled
-        } else {
+        // Only check regular plist path
+        guard fileManager.fileExists(atPath: plistPath) else {
             schedules = []
             return
         }
 
         // Read and parse plist
-        guard let data = try? Data(contentsOf: URL(fileURLWithPath: pathToLoad!)),
+        guard let data = try? Data(contentsOf: URL(fileURLWithPath: plistPath)),
               let plist = try? PropertyListSerialization.propertyList(from: data, options: [], format: nil) as? [String: Any] else {
-            printOS("Failed to read plist at \(pathToLoad!)")
+            printOS("Failed to read plist at \(plistPath)")
             schedules = []
             return
         }

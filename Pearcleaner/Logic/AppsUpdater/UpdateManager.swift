@@ -267,15 +267,22 @@ class UpdateManager: ObservableObject {
 
             // Get the feed URL from the app (prefer currentFeedURL if user switched)
             guard let feedURL = app.currentFeedURL ?? app.alternateSparkleURLs?.first else {
+                UpdaterDebugLogger.shared.log(.sparkle, "❌ No feed URL available for \(app.appInfo.appName)")
                 printOS("No feed URL available for \(app.appInfo.appName)")
                 return
             }
 
             // Check if update already queued/running for this app
             if UpdateQueue.shared.containsOperation(for: app.appInfo.bundleIdentifier) {
+                UpdaterDebugLogger.shared.log(.sparkle, "⚠️ Update already queued for \(app.appInfo.appName)")
                 printOS("Update already queued for \(app.appInfo.appName)")
                 return
             }
+
+            UpdaterDebugLogger.shared.log(.sparkle, "═══ Initiating update for \(app.appInfo.appName)")
+            UpdaterDebugLogger.shared.log(.sparkle, "  Bundle ID: \(app.appInfo.bundleIdentifier)")
+            UpdaterDebugLogger.shared.log(.sparkle, "  Current version: \(app.appInfo.appVersion)")
+            UpdaterDebugLogger.shared.log(.sparkle, "  Target version: \(app.availableVersion ?? "unknown")")
 
             // Set initial downloading status
             updateStatus(for: app, status: .downloading, progress: 0.0)
@@ -294,12 +301,14 @@ class UpdateManager: ObservableObject {
                     guard let self = self else { return }
                     Task { @MainActor in
                         if success {
+                            UpdaterDebugLogger.shared.log(.sparkle, "═══ Update completed successfully for \(app.appInfo.appName)")
                             // Update completed - remove from list and refresh
                             await self.removeFromUpdatesList(appID: app.id, source: .sparkle)
                             await self.refreshApps()
                         } else {
                             // Update failed - show error
                             let message = error?.localizedDescription ?? "Unknown error"
+                            UpdaterDebugLogger.shared.log(.sparkle, "═══ Update failed for \(app.appInfo.appName): \(message)")
                             self.updateStatus(for: app, status: .failed(message), progress: 0.0)
                         }
                     }

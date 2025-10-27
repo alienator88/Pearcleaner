@@ -18,15 +18,15 @@ class SparkleDetector {
         var sparkleAppData: [(appInfo: AppInfo, feedURL: String, shortVersion: String, buildVersion: String, extractedURLs: [String]?)] = []
 
         for appInfo in apps {
-            // Step 1: Check for Sparkle.framework
-            guard hasSparkleFramework(appPath: appInfo.path) else {
-                continue
-            }
-
             // Read the app's Info.plist
             let infoPlistURL = appInfo.path.appendingPathComponent("Contents/Info.plist")
 
             guard let infoDict = NSDictionary(contentsOf: infoPlistURL) as? [String: Any] else {
+                continue
+            }
+
+            // Step 1: Check for Sparkle configuration in Info.plist
+            guard hasSparkleConfiguration(infoDict: infoDict) else {
                 continue
             }
 
@@ -38,31 +38,59 @@ class SparkleDetector {
 
             if let plistURL = feedURL {
                 logger.log(.sparkle, "  ✓ Found SUFeedURL in Info.plist: \(plistURL)")
+
+                // Extract versions and add to queue (no binary scanning needed)
+                let shortVersion = infoDict["CFBundleShortVersionString"] as? String ?? ""
+                let buildVersion = infoDict["CFBundleVersion"] as? String ?? ""
+                sparkleAppData.append((appInfo, plistURL.unquoted, shortVersion, buildVersion, nil))
+                continue  // Early exit - no binary scanning needed
             }
 
-            // Step 3: If no SUFeedURL but has signature key, try binary extraction
-            // This handles apps like Ghostty that use SPUUpdaterDelegate's feedURLString(for:)
-            if feedURL == nil && hasSparkleSignatureKey(infoDict: infoDict) {
-                logger.log(.sparkle, "  ⚙️ No SUFeedURL but has signature key - extracting from binary...")
-                // Get executable name from Info.plist
+            // Step 3: No SUFeedURL - check if Sparkle is at standard location
+            if hasSparkleFramework(appPath: appInfo.path) {
+                // Standard location - use normal binary extraction
+                logger.log(.sparkle, "  ⚙️ No SUFeedURL but has Sparkle.framework - extracting from binary...")
+
                 if let executableName = infoDict["CFBundleExecutable"] as? String {
                     let urls = await extractFeedURLFromBinary(appPath: appInfo.path, executable: executableName)
-                    if let firstURL = urls.first {
+                    // Clean incomplete query parameters from extracted URLs
+                    let cleanedURLs = urls.map { cleanIncompleteQueryParams(url: $0) }
+                    if let firstURL = cleanedURLs.first {
                         feedURL = firstURL
-                        extractedURLs = urls  // Store all URLs for picker
-                        logger.log(.sparkle, "  ✓ Extracted \(urls.count) URL(s) from binary: \(firstURL)")
+                        extractedURLs = cleanedURLs
+                        logger.log(.sparkle, "  ✓ Extracted \(cleanedURLs.count) URL(s) from binary: \(firstURL)")
                     } else {
                         logger.log(.sparkle, "  ❌ Binary extraction failed")
                     }
                 }
+            } else {
+                // No standard framework - search nested bundles (WhatsApp case)
+                logger.log(.sparkle, "  ⚠️ Sparkle not at standard location, searching nested bundles...")
+
+                let nestedBundles = findNestedPluginBundles(appPath: appInfo.path)
+
+                if !nestedBundles.isEmpty {
+                    logger.log(.sparkle, "  🔍 Found \(nestedBundles.count) nested bundle(s), scanning for URLs...")
+                    let urls = await scanNestedBundles(nestedBundles)
+                    // Clean incomplete query parameters from extracted URLs
+                    let cleanedURLs = urls.map { cleanIncompleteQueryParams(url: $0) }
+
+                    if let firstURL = cleanedURLs.first {
+                        feedURL = firstURL
+                        extractedURLs = cleanedURLs
+                        logger.log(.sparkle, "  ✓ Extracted \(cleanedURLs.count) URL(s) from nested bundle: \(firstURL)")
+                    } else {
+                        logger.log(.sparkle, "  ❌ No URLs found in nested bundles")
+                    }
+                } else {
+                    logger.log(.sparkle, "  ❌ No nested bundles found")
+                }
             }
 
-            // Step 4: If we have a feed URL (from either method), add to processing queue
+            // Step 4: If we have a feed URL (from any method), add to processing queue
             if let feedURL = feedURL?.unquoted, !feedURL.isEmpty {
-                // Extract both version types from Info.plist
                 let shortVersion = infoDict["CFBundleShortVersionString"] as? String ?? ""
                 let buildVersion = infoDict["CFBundleVersion"] as? String ?? ""
-
                 sparkleAppData.append((appInfo, feedURL, shortVersion, buildVersion, extractedURLs))
             }
         }
@@ -350,7 +378,17 @@ class SparkleDetector {
         return formatter.date(from: dateString)
     }
 
-    /// Check if app has Sparkle.framework in Contents/Frameworks
+    /// Check if app has Sparkle configuration in Info.plist
+    /// This detects Sparkle regardless of where the framework is located (standard location or nested in plugins/bundles)
+    private static func hasSparkleConfiguration(infoDict: [String: Any]) -> Bool {
+        return infoDict["SUFeedURL"] != nil ||
+               infoDict["SUFeedUrl"] != nil ||
+               infoDict["SUPublicEDKey"] != nil ||
+               infoDict["SUPublicDSAKeyFile"] != nil ||
+               infoDict["SUEnableAutomaticChecks"] != nil
+    }
+
+    /// Check if app has Sparkle.framework at standard location
     private static func hasSparkleFramework(appPath: URL) -> Bool {
         let frameworkPath = appPath.appendingPathComponent("Contents/Frameworks/Sparkle.framework")
         return FileManager.default.fileExists(atPath: frameworkPath.path)
@@ -782,6 +820,91 @@ class SparkleDetector {
                 continuation.resume(returning: urls)
             }
         }
+    }
+
+    /// Find nested plugin bundles for a specific app (WhatsApp case)
+    /// Only called when Sparkle keys exist but framework not at standard location
+    private static func findNestedPluginBundles(appPath: URL) -> [URL] {
+        var bundles: [URL] = []
+
+        // Pattern: Contents/Frameworks/*/Versions/A/PlugIns/*.bundle
+        let nestedPluginPattern = "\(appPath.path)/Contents/Frameworks/*/Versions/A/PlugIns/*.bundle"
+
+        var nestedGlobResult = glob_t()
+        defer { globfree(&nestedGlobResult) }
+
+        if glob(nestedPluginPattern, 0, nil, &nestedGlobResult) == 0 {
+            for i in 0..<Int(nestedGlobResult.gl_pathc) {
+                guard let bundlePathCString = nestedGlobResult.gl_pathv[i],
+                      let bundlePathString = String(validatingUTF8: bundlePathCString) else {
+                    continue
+                }
+                bundles.append(URL(fileURLWithPath: bundlePathString))
+            }
+        }
+
+        return bundles
+    }
+
+    /// Scan nested bundles for appcast URLs
+    /// Only scans the specific nested bundles found for this app
+    private static func scanNestedBundles(_ bundles: [URL]) async -> [String] {
+        let fm = FileManager.default
+        var allURLs: [String] = []
+
+        for bundleURL in bundles {
+            let bundleName = bundleURL.deletingPathExtension().lastPathComponent
+            let executable = bundleURL.appendingPathComponent("Contents/MacOS/\(bundleName)")
+
+            guard fm.fileExists(atPath: executable.path) else { continue }
+
+            logger.log(.sparkle, "      Scanning nested bundle: \(bundleName)")
+
+            // Scan with 15 MB limit (same as plugins in collectBinariesToScan)
+            let urls = await scanBinaryForAppcastURLs(binaryPath: executable, sizeLimit: 15_000_000)
+
+            if !urls.isEmpty {
+                logger.log(.sparkle, "      ✓ Found \(urls.count) URL(s) in \(bundleName)")
+                allURLs.append(contentsOf: urls)
+            }
+        }
+
+        // Sort by priority (XML release URLs first)
+        let sortedURLs = allURLs.sorted { getURLPriority($0) < getURLPriority($1) }
+
+        // Deduplicate while preserving order
+        var seenURLs = Set<String>()
+        var dedupedURLs: [String] = []
+        for url in sortedURLs {
+            if !seenURLs.contains(url) {
+                seenURLs.insert(url)
+                dedupedURLs.append(url)
+            }
+        }
+
+        return dedupedURLs
+    }
+
+    /// Clean URLs by removing incomplete query parameters
+    /// Example: "https://example.com/updates?configuration=" → "https://example.com/updates"
+    private static func cleanIncompleteQueryParams(url: String) -> String {
+        // Remove trailing ? or &
+        var cleaned = url.trimmingCharacters(in: CharacterSet(charactersIn: "?&"))
+
+        // Remove incomplete parameters: ?key= or &key= at the end
+        // Pattern: (?:\?|&)[a-zA-Z_][a-zA-Z0-9_]*=$ (query param with empty value at end)
+        if let regex = try? NSRegularExpression(pattern: "(?:\\?|&)[a-zA-Z_][a-zA-Z0-9_]*=$", options: []) {
+            let range = NSRange(cleaned.startIndex..., in: cleaned)
+            if let match = regex.firstMatch(in: cleaned, options: [], range: range) {
+                if let matchRange = Range(match.range, in: cleaned) {
+                    // Remove the matched incomplete parameter
+                    let beforeParam = String(cleaned[..<matchRange.lowerBound])
+                    cleaned = beforeParam
+                }
+            }
+        }
+
+        return cleaned
     }
 }
 
