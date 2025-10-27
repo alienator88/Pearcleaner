@@ -22,28 +22,6 @@ class UpdateCoordinator {
         return FileManager.default.fileExists(atPath: wrappedBundlePath.path)
     }
 
-    /// Check if an app is from the App Store by verifying receipt existence
-    static func isAppStoreApp(_ app: AppInfo) -> Bool {
-        // Check for wrapped iPad/iOS app first (use wrapped flag from AppInfo)
-        if app.wrapped {
-            // For wrapped apps, app.path points to the inner bundle (e.g., /Applications/X.app/Wrapper/Twitter.app/)
-            // We need to go up 2 levels to get to the outer wrapper (e.g., /Applications/X.app/)
-            let outerWrapperPath = app.path.deletingLastPathComponent().deletingLastPathComponent()
-            let iTunesMetadataPath = outerWrapperPath.appendingPathComponent("Wrapper/iTunesMetadata.plist").path
-            if FileManager.default.fileExists(atPath: iTunesMetadataPath) {
-                return true
-            }
-        }
-
-        // Check for traditional Mac app receipt
-        guard let bundle = Bundle(url: app.path),
-              let receiptPath = bundle.appStoreReceiptURL?.path else {
-            return false
-        }
-
-        return FileManager.default.fileExists(atPath: receiptPath)
-    }
-
     /// Check if app is Pearcleaner (to exclude from update lists - has dedicated UI banner)
     private static func isPearcleaner(_ app: AppInfo) -> Bool {
         return app.bundleIdentifier == "com.alienator88.Pearcleaner"
@@ -55,24 +33,48 @@ class UpdateCoordinator {
         checkHomebrew: Bool,
         checkSparkle: Bool,
         includeSparklePreReleases: Bool,
-        includeHomebrewFormulae: Bool
+        includeHomebrewFormulae: Bool,
+        showAutoUpdatesInHomebrew: Bool = true
     ) async -> [UpdateSource: [UpdateableApp]] {
 
         // Run detectors concurrently (only if enabled)
+        // Apps are pre-categorized during load (hasSparkle, isAppStore flags in AppInfo)
         async let homebrewApps: [UpdateableApp] = {
             guard checkHomebrew else { return [] }
-            return await HomebrewUpdateChecker.checkForUpdates(apps: apps, includeFormulae: includeHomebrewFormulae)
+            return await HomebrewUpdateChecker.checkForUpdates(apps: apps, includeFormulae: includeHomebrewFormulae, showAutoUpdatesInHomebrew: showAutoUpdatesInHomebrew)
         }()
 
         async let appStoreApps: [UpdateableApp] = {
             guard checkAppStore else { return [] }
-            let appStoreApps = apps.filter { isAppStoreApp($0) }
+            // Filter to App Store apps using pre-detected flag (instant check vs expensive receipt verification)
+            let appStoreApps = apps.filter { $0.isAppStore }
             return await AppStoreUpdateChecker.checkForUpdates(apps: appStoreApps)
         }()
 
         async let sparkleApps: [UpdateableApp] = {
             guard checkSparkle else { return [] }
-            return await SparkleDetector.findSparkleApps(from: apps, includePreReleases: includeSparklePreReleases)
+
+            // Smart source filtering based on app origin and auto-update capability
+            let sparkleApps = apps.filter { app in
+                // Skip App Store apps (can't have Sparkle - App Store enforces its own updates)
+                guard !app.isAppStore else { return false }
+
+                // Skip apps without Sparkle
+                guard app.hasSparkle else { return false }
+
+                // Homebrew cask smart filtering:
+                // - auto_updates=false → Skip Sparkle (app can't self-update, only Homebrew should check)
+                // - auto_updates=true → Check Sparkle (app CAN self-update via Sparkle)
+                // - auto_updates=nil → Check Sparkle (unknown state or not a Homebrew cask, be safe)
+                if app.cask != nil, let autoUpdates = app.autoUpdates {
+                    return autoUpdates  // Only check if explicitly true
+                }
+
+                // Non-Homebrew app with Sparkle, or unknown auto_updates state
+                return true
+            }
+
+            return await SparkleDetector.findSparkleApps(from: sparkleApps, includePreReleases: includeSparklePreReleases)
         }()
 
         // Wait for all results

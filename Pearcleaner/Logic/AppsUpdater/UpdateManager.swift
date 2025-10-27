@@ -27,6 +27,7 @@ class UpdateManager: ObservableObject {
     @AppStorage("settings.updater.checkSparkle") private var checkSparkle: Bool = true
     @AppStorage("settings.updater.includeSparklePreReleases") private var includeSparklePreReleases: Bool = false
     @AppStorage("settings.updater.includeHomebrewFormulae") private var includeHomebrewFormulae: Bool = false
+    @AppStorage("settings.updater.showAutoUpdatesInHomebrew") private var showAutoUpdatesInHomebrew: Bool = true
     @AppStorage("settings.updater.hiddenAppsData") private var hiddenAppsData: Data = Data()
 
     private init() {}
@@ -133,14 +134,15 @@ class UpdateManager: ObservableObject {
         await withTaskGroup(of: (UpdateSource, [UpdateableApp]).self) { group in
             if checkHomebrew {
                 group.addTask {
-                    let results = await HomebrewUpdateChecker.checkForUpdates(apps: apps, includeFormulae: self.includeHomebrewFormulae)
+                    let results = await HomebrewUpdateChecker.checkForUpdates(apps: apps, includeFormulae: self.includeHomebrewFormulae, showAutoUpdatesInHomebrew: self.showAutoUpdatesInHomebrew)
                     return (.homebrew, results)
                 }
             }
 
             if checkAppStore {
                 group.addTask {
-                    let appStoreApps = apps.filter { UpdateCoordinator.isAppStoreApp($0) }
+                    // Use pre-categorized flag (instant check vs expensive receipt verification)
+                    let appStoreApps = apps.filter { $0.isAppStore }
                     let results = await AppStoreUpdateChecker.checkForUpdates(apps: appStoreApps)
                     return (.appStore, results)
                 }
@@ -148,7 +150,27 @@ class UpdateManager: ObservableObject {
 
             if checkSparkle {
                 group.addTask {
-                    let results = await SparkleDetector.findSparkleApps(from: apps, includePreReleases: self.includeSparklePreReleases)
+                    // Smart source filtering based on app origin and auto-update capability
+                    let sparkleApps = apps.filter { app in
+                        // Skip App Store apps (can't have Sparkle - App Store enforces its own updates)
+                        guard !app.isAppStore else { return false }
+
+                        // Skip apps without Sparkle
+                        guard app.hasSparkle else { return false }
+
+                        // Homebrew cask smart filtering:
+                        // - auto_updates=false → Skip Sparkle (app can't self-update, only Homebrew should check)
+                        // - auto_updates=true → Check Sparkle (app CAN self-update via Sparkle)
+                        // - auto_updates=nil → Check Sparkle (unknown state or not a Homebrew cask, be safe)
+                        if app.cask != nil, let autoUpdates = app.autoUpdates {
+                            return autoUpdates  // Only check if explicitly true
+                        }
+
+                        // Non-Homebrew app with Sparkle, or unknown auto_updates state
+                        return true
+                    }
+
+                    let results = await SparkleDetector.findSparkleApps(from: sparkleApps, includePreReleases: self.includeSparklePreReleases)
                     return (.sparkle, results)
                 }
             }

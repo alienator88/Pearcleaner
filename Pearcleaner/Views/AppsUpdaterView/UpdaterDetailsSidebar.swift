@@ -65,6 +65,7 @@ struct UpdaterSourceCheckboxSection: View {
     @StateObject private var updateManager = UpdateManager.shared
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.updater.debugLogging") private var debugLogging: Bool = true
+    @AppStorage("settings.updater.showAutoUpdatesInHomebrew") private var showAutoUpdatesInHomebrew: Bool = true
     @State private var isResetting = false
     @State private var showResetConfirmation = false
 
@@ -251,6 +252,28 @@ struct UpdaterSourceCheckboxSection: View {
             }
             .toggleStyle(CircleCheckboxToggleStyle())
             .help("Enable verbose logging for update checker troubleshooting")
+
+            // Auto-updates in Homebrew toggle
+            Toggle(isOn: Binding(
+                get: { showAutoUpdatesInHomebrew },
+                set: { newValue in
+                    showAutoUpdatesInHomebrew = newValue
+                    Task { await updateManager.scanForUpdates() }
+                }
+            )) {
+                HStack(spacing: 6) {
+                    Image(systemName: "arrow.triangle.2.circlepath")
+                        .foregroundStyle(.blue)
+                        .font(.caption)
+                        .frame(width: 16)
+
+                    Text("Auto-updates in Homebrew")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                }
+            }
+            .toggleStyle(CircleCheckboxToggleStyle())
+            .help("Show auto-updating casks in Homebrew section (when disabled, they only appear in Sparkle)")
         }
     }
 

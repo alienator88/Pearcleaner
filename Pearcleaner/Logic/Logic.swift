@@ -738,10 +738,20 @@ func getBrewCleanupCommand(for caskName: String) -> String {
     return "\(brewPath) uninstall --cask \(caskName) --zap --force && \(brewPath) cleanup && clear; echo '\nHomebrew cleanup was successful, you may close this window..\n'"
 }
 
-private var caskLookupTable: [String: String]?
+// MARK: - Cask Lookup Cache
+
+/// Metadata extracted from Homebrew cask JSON files
+struct CaskMetadata {
+    let caskName: String      // from "full_token" field in cask JSON
+    let autoUpdates: Bool?    // from "auto_updates" field in cask JSON
+}
+
+private var caskLookupTable: [String: CaskMetadata]?  // appName → CaskMetadata
 private let caskLookupQueue = DispatchQueue(label: "com.pearcleaner.cask.lookup", attributes: .concurrent)
 
-func getCaskIdentifier(for appName: String) -> String? {
+/// Get full cask metadata including auto_updates flag
+/// Returns CaskMetadata with cask name and auto_updates flag from Homebrew cask JSON
+func getCaskInfo(for appName: String) -> CaskMetadata? {
     // First, try a read-only access
     let existingTable = caskLookupQueue.sync {
         return caskLookupTable
@@ -763,81 +773,79 @@ func getCaskIdentifier(for appName: String) -> String? {
     }
 }
 
-private func buildCaskLookupTable() -> [String: String] {
+/// Get cask identifier (name) for an app
+/// Legacy function for backward compatibility - returns only cask name
+func getCaskIdentifier(for appName: String) -> String? {
+    return getCaskInfo(for: appName)?.caskName
+}
+
+/// Build lookup table mapping app names to cask metadata
+/// Uses glob pattern to find all cask JSON files and extracts full_token, artifacts, and auto_updates
+private func buildCaskLookupTable() -> [String: CaskMetadata] {
     let caskroomPath = isOSArm() ? "/opt/homebrew/Caskroom/" : "/usr/local/Caskroom/"
     let fileManager = FileManager.default
-    var appToCask: [String: String] = [:]
+    var appToCask: [String: CaskMetadata] = [:]
 
-    // Add safety checks
+    // Safety check
     guard fileManager.fileExists(atPath: caskroomPath) else {
         printOS("Caskroom not found at: \(caskroomPath)")
         return [:]
     }
 
-    do {
-        let casks = try fileManager.contentsOfDirectory(atPath: caskroomPath).filter { !$0.hasPrefix(".") }
+    // Single glob pattern to find ALL cask JSON files at once
+    // Pattern: /opt/homebrew/Caskroom/*/.metadata/*/*/Casks/*.json
+    let globPattern = "\(caskroomPath)*/.metadata/*/*/Casks/*.json"
 
-        for cask in casks {
-            let caskSubPath = caskroomPath + cask
-            let receiptPath = "\(caskSubPath)/.metadata/INSTALL_RECEIPT.json"
+    var globResult = glob_t()
+    defer { globfree(&globResult) }
 
-            // Try to read INSTALL_RECEIPT.json for fast lookup
-            if let receiptData = try? Data(contentsOf: URL(fileURLWithPath: receiptPath)) {
-                do {
-                    guard let json = try JSONSerialization.jsonObject(with: receiptData) as? [String: Any] else {
-                        throw NSError(domain: "JSONParse", code: 1, userInfo: nil)
-                    }
+    guard glob(globPattern, 0, nil, &globResult) == 0 else {
+        printOS("Glob pattern failed: \(globPattern)")
+        return [:]
+    }
 
-                    // Find "app" artifact in uninstall_artifacts array
-                    if let artifacts = json["uninstall_artifacts"] as? [[String: Any]] {
-                        for artifact in artifacts {
-                            if let apps = artifact["app"] as? [String] {
-                                for appStr in apps {
-                                    let realAppName = appStr.replacingOccurrences(of: ".app", with: "").lowercased()
-                                    appToCask[realAppName] = cask
-                                }
-                            }
-                        }
-                    }
-                } catch {
-                    printOS("Error parsing INSTALL_RECEIPT.json for \(cask): \(error)")
-                    // Fall through to directory scanning fallback
-                }
-            } else {
-                // Fallback: If INSTALL_RECEIPT.json doesn't exist or can't be read, scan directories
-                // (This handles older casks or edge cases)
-                guard fileManager.fileExists(atPath: caskSubPath) else { continue }
+    // Process each found JSON file
+    let pathCount = Int(globResult.gl_pathc)
+    for i in 0..<pathCount {
+        guard let cPath = globResult.gl_pathv[i],
+              let jsonPath = String(validatingUTF8: cPath) else {
+            continue
+        }
 
-                do {
-                    let versions = try fileManager.contentsOfDirectory(atPath: caskSubPath).filter { !$0.hasPrefix(".") }
+        // Read and parse JSON
+        guard let data = try? Data(contentsOf: URL(fileURLWithPath: jsonPath)),
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            continue
+        }
 
-                    if let latestVersion = versions.first {
-                        let appDirectory = "\(caskSubPath)/\(latestVersion)/"
+        // Extract cask ID from "full_token" field (authoritative cask identifier)
+        guard let caskName = json["full_token"] as? String else {
+            continue
+        }
 
-                        guard fileManager.fileExists(atPath: appDirectory) else { continue }
+        // Extract auto_updates flag (for smart Sparkle filtering)
+        let autoUpdates = json["auto_updates"] as? Bool
 
-                        do {
-                            let appsInDir = try fileManager.contentsOfDirectory(atPath: appDirectory).filter {
-                                !$0.hasPrefix(".") && $0.hasSuffix(".app") && !$0.lowercased().contains("uninstall")
-                            }
+        // Extract app artifacts (array of dictionaries, each may have "app" key)
+        guard let artifacts = json["artifacts"] as? [[String: Any]] else {
+            continue
+        }
 
-                            for appFile in appsInDir {
-                                let realAppName = appFile.replacingOccurrences(of: ".app", with: "").lowercased()
-                                appToCask[realAppName] = cask
-                            }
-                        } catch {
-                            printOS("Error reading app directory \(appDirectory): \(error)")
-                            continue
-                        }
-                    }
-                } catch {
-                    printOS("Error reading cask directory \(caskSubPath): \(error)")
-                    continue
+        // Find "app" artifacts and build appName → CaskMetadata mapping
+        for artifact in artifacts {
+            if let apps = artifact["app"] as? [String] {
+                for appStr in apps {
+                    let realAppName = appStr
+                        .replacingOccurrences(of: ".app", with: "")
+                        .lowercased()
+
+                    appToCask[realAppName] = CaskMetadata(
+                        caskName: caskName,
+                        autoUpdates: autoUpdates
+                    )
                 }
             }
         }
-    } catch {
-        printOS("Error reading Caskroom: \(error)")
     }
 
     return appToCask

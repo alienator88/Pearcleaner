@@ -65,7 +65,7 @@ extension String {
 class HomebrewController {
     static let shared = HomebrewController()
     private let brewPath: String
-    private let brewPrefix: String
+    let brewPrefix: String  // Public for use in HomebrewUpdateChecker placeholder paths
     private let logger = UpdaterDebugLogger.shared
 
     private init() {

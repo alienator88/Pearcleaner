@@ -8,9 +8,19 @@
 import Foundation
 
 class HomebrewUpdateChecker {
-    static func checkForUpdates(apps: [AppInfo], includeFormulae: Bool) async -> [UpdateableApp] {
+    static func checkForUpdates(apps: [AppInfo], includeFormulae: Bool, showAutoUpdatesInHomebrew: Bool = true) async -> [UpdateableApp] {
         // Filter apps that have a cask identifier
-        let brewApps = apps.filter { $0.cask != nil && !$0.cask!.isEmpty }
+        // When showAutoUpdatesInHomebrew=false: exclude casks with auto_updates=true (they'll only appear in Sparkle)
+        let brewApps = apps.filter { app in
+            guard let cask = app.cask, !cask.isEmpty else { return false }
+
+            // If user disabled auto-updating apps in Homebrew section, filter them out
+            if !showAutoUpdatesInHomebrew, let autoUpdates = app.autoUpdates, autoUpdates {
+                return false  // Skip apps with auto_updates=true
+            }
+
+            return true
+        }
 
         // Step 1: Build list of installed packages by scanning Cellar/Caskroom (~70ms)
         // This enables the fast hybrid API approach instead of slow `brew outdated` command
@@ -76,14 +86,14 @@ class HomebrewUpdateChecker {
                 continue  // Skip if versions are equal, invalid, or installed is newer
             }
 
-            // Override appVersion with Homebrew's version for consistent display
-            // Info.plist may have different version format
+            // Keep actual version from Info.plist for accurate UI display
+            // (Comparison above already used this version, so UI should match)
             let correctedAppInfo = AppInfo(
                 id: appInfo.id,
                 path: appInfo.path,
                 bundleIdentifier: appInfo.bundleIdentifier,
                 appName: appInfo.appName,
-                appVersion: outdatedPkg.installedVersion,  // Use Homebrew version instead of Info.plist
+                appVersion: appInfo.appVersion,  // Use ACTUAL version from Info.plist (ground truth)
                 appIcon: appInfo.appIcon,
                 webApp: appInfo.webApp,
                 wrapped: appInfo.wrapped,
@@ -91,6 +101,9 @@ class HomebrewUpdateChecker {
                 arch: appInfo.arch,
                 cask: appInfo.cask,
                 steam: appInfo.steam,
+                hasSparkle: appInfo.hasSparkle,
+                isAppStore: appInfo.isAppStore,
+                autoUpdates: appInfo.autoUpdates,
                 bundleSize: appInfo.bundleSize,
                 lipoSavings: appInfo.lipoSavings,
                 fileSize: appInfo.fileSize,
@@ -160,6 +173,9 @@ class HomebrewUpdateChecker {
                     arch: .universal,
                     cask: outdatedPkg.name, // Store formula name in cask field for update/uninstall operations
                     steam: false,
+                    hasSparkle: false,  // Formulae (CLI tools) don't have Sparkle
+                    isAppStore: false,  // Formulae are not from App Store
+                    autoUpdates: nil,  // Formulae don't have auto_updates (cask-only property)
                     bundleSize: 0,
                     lipoSavings: nil,
                     fileSize: [:],

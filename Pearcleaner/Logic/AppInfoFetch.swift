@@ -53,20 +53,62 @@ class MetadataAppInfoFetcher {
         let appIcon = AppInfoUtils.fetchAppIcon(for: path, wrapped: wrapped, md: true)
         let webApp = AppInfoUtils.isWebApp(appPath: path)
         let system = !path.path.contains(NSHomeDirectory())
-        let cask = getCaskIdentifier(for: appName)
+
+        // Get cask metadata (includes cask name and auto_updates flag)
+        let caskInfo = getCaskInfo(for: appName)
+        let cask = caskInfo?.caskName
+        let autoUpdates = caskInfo?.autoUpdates
 
         // Get entitlements for the app
         let entitlements = getEntitlements(for: path.path)
         let teamIdentifier = getTeamIdentifier(for: path.path)
 
+        // Detect update sources (done at load time for performance)
+        let bundle = Bundle(url: path)
+        let hasSparkle = AppCategoryDetector.checkForSparkle(bundle: bundle, infoDict: bundle?.infoDictionary)
+        let isAppStore = AppCategoryDetector.checkForAppStore(bundle: bundle, path: path, wrapped: wrapped)
+
         return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName,
                        appVersion: version, appIcon: appIcon, webApp: webApp, wrapped: wrapped, system: system,
-                       arch: arch, cask: cask, steam: false, bundleSize: logicalSize, fileSize: [:],
+                       arch: arch, cask: cask, steam: false, hasSparkle: hasSparkle, isAppStore: isAppStore, autoUpdates: autoUpdates, bundleSize: logicalSize, fileSize: [:],
                        fileIcon: [:], creationDate: creationDate, contentChangeDate: contentChangeDate, lastUsedDate: lastUsedDate, entitlements: entitlements, teamIdentifier: teamIdentifier)
     }
 }
 
 
+// MARK: - Update Source Detection Helpers
+
+class AppCategoryDetector {
+    /// Check if app has Sparkle update framework
+    /// Detects Sparkle by checking for common Info.plist keys (same logic as SparkleDetector)
+    static func checkForSparkle(bundle: Bundle?, infoDict: [String: Any]?) -> Bool {
+        guard let dict = infoDict ?? bundle?.infoDictionary else { return false }
+
+        // Check for common Sparkle keys (matches SparkleDetector.hasSparkleConfiguration)
+        return dict["SUFeedURL"] != nil ||
+               dict["SUFeedUrl"] != nil ||
+               dict["SUPublicEDKey"] != nil ||
+               dict["SUPublicDSAKeyFile"] != nil ||
+               dict["SUEnableAutomaticChecks"] != nil
+    }
+
+    /// Check if app is from App Store
+    /// Detects by checking for receipt or iTunes metadata (matches UpdateCoordinator.isAppStoreApp)
+    static func checkForAppStore(bundle: Bundle?, path: URL, wrapped: Bool) -> Bool {
+        // Check for wrapped iPad/iOS app first
+        if wrapped {
+            let outerWrapperPath = path.deletingLastPathComponent().deletingLastPathComponent()
+            let iTunesMetadataPath = outerWrapperPath.appendingPathComponent("Wrapper/iTunesMetadata.plist").path
+            if FileManager.default.fileExists(atPath: iTunesMetadataPath) {
+                return true
+            }
+        }
+
+        // Check for traditional Mac app receipt
+        guard let receiptPath = bundle?.appStoreReceiptURL?.path else { return false }
+        return FileManager.default.fileExists(atPath: receiptPath)
+    }
+}
 
 
 class AppInfoUtils {
@@ -232,17 +274,25 @@ class AppInfoFetcher {
         let appIcon = AppInfoUtils.fetchAppIcon(for: path, wrapped: wrapped)
         let webApp = AppInfoUtils.isWebApp(bundle: bundle)
 
-
         let system = !path.path.contains(NSHomeDirectory())
-        let cask = getCaskIdentifier(for: appName)
+
+        // Get cask metadata (includes cask name and auto_updates flag)
+        let caskInfo = getCaskInfo(for: appName)
+        let cask = caskInfo?.caskName
+        let autoUpdates = caskInfo?.autoUpdates
+
         let arch = checkAppBundleArchitecture(at: path.path)
 
         // Get entitlements for the app
         let entitlements = getEntitlements(for: path.path)
         let teamIdentifier = getTeamIdentifier(for: path.path)
 
+        // Detect update sources (done at load time for performance)
+        let hasSparkle = AppCategoryDetector.checkForSparkle(bundle: bundle, infoDict: bundle.infoDictionary)
+        let isAppStore = AppCategoryDetector.checkForAppStore(bundle: bundle, path: path, wrapped: wrapped)
+
         return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName, appVersion: appVersion, appIcon: appIcon,
-                       webApp: webApp, wrapped: wrapped, system: system, arch: arch, cask: cask, steam: false, bundleSize: 0, fileSize: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, entitlements: entitlements, teamIdentifier: teamIdentifier)
+                       webApp: webApp, wrapped: wrapped, system: system, arch: arch, cask: cask, steam: false, hasSparkle: hasSparkle, isAppStore: isAppStore, autoUpdates: autoUpdates, bundleSize: 0, fileSize: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, entitlements: entitlements, teamIdentifier: teamIdentifier)
     }
 
 }
@@ -327,9 +377,14 @@ class SteamAppInfoFetcher {
         let entitlements = getEntitlements(for: actualBundlePath.path)
         let teamIdentifier = getTeamIdentifier(for: actualBundlePath.path)
 
+        // Steam games: typically no Sparkle or App Store (distributed via Steam)
+        let hasSparkle = AppCategoryDetector.checkForSparkle(bundle: bundle, infoDict: bundle.infoDictionary)
+        let isAppStore = false  // Steam games are never from App Store
+        let autoUpdates: Bool? = nil  // Steam games don't use Homebrew
+
         return AppInfo(id: UUID(), path: launcherPath, bundleIdentifier: bundleIdentifier, appName: appName,
                        appVersion: appVersion, appIcon: appIcon, webApp: webApp, wrapped: false,
-                       system: system, arch: arch, cask: nil, steam: true, bundleSize: 0, fileSize: [:],
+                       system: system, arch: arch, cask: nil, steam: true, hasSparkle: hasSparkle, isAppStore: isAppStore, autoUpdates: autoUpdates, bundleSize: 0, fileSize: [:],
                        fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, entitlements: entitlements, teamIdentifier: teamIdentifier)
     }
 }

@@ -115,6 +115,9 @@ class AppState: ObservableObject {
             arch: .empty,
             cask: nil,
             steam: false,
+            hasSparkle: false,
+            isAppStore: false,
+            autoUpdates: nil,
             bundleSize: 0,
             fileSize: [:],
             fileIcon: [:],
@@ -354,6 +357,9 @@ struct AppInfo: Identifiable, Equatable, Hashable {
     var arch: Arch
     let cask: String?
     let steam: Bool  // New property to mark Steam games
+    let hasSparkle: Bool  // Has Sparkle framework or Sparkle keys in Info.plist (detected at load time)
+    let isAppStore: Bool  // Has App Store receipt or iTunes metadata (detected at load time)
+    let autoUpdates: Bool?  // Homebrew cask auto_updates flag from cask JSON (nil if not Homebrew or unknown)
     var bundleSize: Int64  // Only used in the app list view
     var lipoSavings: Int64?  // Cached lipo savings (nil=not calculated, 0=no savings, >0=savings available)
     var fileSize: [URL: Int64]  // Logical file sizes (matches Finder)
@@ -389,7 +395,7 @@ struct AppInfo: Identifiable, Equatable, Hashable {
     static let empty = AppInfo(
         id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "",
         appVersion: "", appIcon: nil, webApp: false, wrapped: false, system: false, arch: .empty,
-        cask: nil, steam: false, bundleSize: 0, lipoSavings: 0, fileSize: [:], fileIcon: [:],
+        cask: nil, steam: false, hasSparkle: false, isAppStore: false, autoUpdates: nil, bundleSize: 0, lipoSavings: 0, fileSize: [:], fileIcon: [:],
         creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, entitlements: nil, teamIdentifier: nil)
 
 }
