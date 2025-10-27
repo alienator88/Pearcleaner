@@ -27,7 +27,7 @@ class UpdateManager: ObservableObject {
     @AppStorage("settings.updater.checkSparkle") private var checkSparkle: Bool = true
     @AppStorage("settings.updater.includeSparklePreReleases") private var includeSparklePreReleases: Bool = false
     @AppStorage("settings.updater.includeHomebrewFormulae") private var includeHomebrewFormulae: Bool = false
-    @AppStorage("settings.updater.showAutoUpdatesInHomebrew") private var showAutoUpdatesInHomebrew: Bool = true
+    @AppStorage("settings.updater.showAutoUpdatesInHomebrew") private var showAutoUpdatesInHomebrew: Bool = false
     @AppStorage("settings.updater.hiddenAppsData") private var hiddenAppsData: Data = Data()
 
     private init() {}

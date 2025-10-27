@@ -65,7 +65,7 @@ struct UpdaterSourceCheckboxSection: View {
     @StateObject private var updateManager = UpdateManager.shared
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.updater.debugLogging") private var debugLogging: Bool = true
-    @AppStorage("settings.updater.showAutoUpdatesInHomebrew") private var showAutoUpdatesInHomebrew: Bool = true
+    @AppStorage("settings.updater.showAutoUpdatesInHomebrew") private var showAutoUpdatesInHomebrew: Bool = false
     @State private var isResetting = false
     @State private var showResetConfirmation = false
 

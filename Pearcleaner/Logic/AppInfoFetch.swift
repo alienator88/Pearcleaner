@@ -93,7 +93,7 @@ class AppCategoryDetector {
     }
 
     /// Check if app is from App Store
-    /// Detects by checking for receipt or iTunes metadata (matches UpdateCoordinator.isAppStoreApp)
+    /// Detects by checking for receipt or iTunes metadata
     static func checkForAppStore(bundle: Bundle?, path: URL, wrapped: Bool) -> Bool {
         // Check for wrapped iPad/iOS app first
         if wrapped {
