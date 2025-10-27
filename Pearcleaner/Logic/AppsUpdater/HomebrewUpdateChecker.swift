@@ -36,7 +36,8 @@ class HomebrewUpdateChecker {
                 isCask: true,
                 isPinned: isPinned,
                 tap: tap,
-                tapRbPath: tapRbPath
+                tapRbPath: tapRbPath,
+                isLeaf: true  // Casks don't have dependency tracking
             ))
         }
 
@@ -50,7 +51,8 @@ class HomebrewUpdateChecker {
                     isCask: false,
                     isPinned: isPinned,
                     tap: tap,
-                    tapRbPath: tapRbPath
+                    tapRbPath: tapRbPath,
+                    isLeaf: false  // Leaf status not needed for update checking
                 ))
             }
         }

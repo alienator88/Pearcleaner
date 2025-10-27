@@ -62775,6 +62775,9 @@
         }
       }
     },
+    "Show only leaves: packages you installed directly, not dependencies" : {
+
+    },
     "Show sidebar on view load" : {
       "localizations" : {
         "de" : {

@@ -773,6 +773,14 @@ func getCaskInfo(for appName: String) -> CaskMetadata? {
     }
 }
 
+/// Invalidate cask lookup cache (call after installing/uninstalling casks)
+/// Next call to getCaskInfo will rebuild the table with updated cask metadata
+func invalidateCaskLookupCache() {
+    caskLookupQueue.sync(flags: .barrier) {
+        caskLookupTable = nil
+    }
+}
+
 /// Get cask identifier (name) for an app
 /// Legacy function for backward compatibility - returns only cask name
 func getCaskIdentifier(for appName: String) -> String? {

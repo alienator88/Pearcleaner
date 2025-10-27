@@ -234,6 +234,32 @@ class HomebrewController {
         return (name, desc, cleanedVersion, isPinned, tap, tapRbPath)
     }
 
+    /// Get runtime dependencies for a formula from INSTALL_RECEIPT.json
+    func getRuntimeDependencies(formulaName: String) -> [String] {
+        let cellarPath = "\(brewPrefix)/Cellar/\(formulaName)"
+
+        guard let versions = try? FileManager.default.contentsOfDirectory(atPath: cellarPath)
+                .filter({ !$0.hasPrefix(".") }),
+              let latestVersion = versions.sorted().last else {
+            return []
+        }
+
+        let receiptPath = "\(cellarPath)/\(latestVersion)/INSTALL_RECEIPT.json"
+        guard let receiptData = try? Data(contentsOf: URL(fileURLWithPath: receiptPath)),
+              let receipt = try? JSONSerialization.jsonObject(with: receiptData) as? [String: Any],
+              let runtimeDeps = receipt["runtime_dependencies"] as? [[String: Any]] else {
+            return []
+        }
+
+        var deps: [String] = []
+        for dep in runtimeDeps {
+            if let fullName = dep["full_name"] as? String {
+                deps.append(fullName)
+            }
+        }
+        return deps
+    }
+
     /// Extract name, description, version, and pin status from cask
     private func getCaskNameDescVersionPin(name: String) async -> (String, String, String, Bool, String?, String?)? {
         let caskroomPath = "\(brewPrefix)/Caskroom/\(name)"

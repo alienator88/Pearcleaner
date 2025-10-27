@@ -216,6 +216,7 @@ struct InstalledPackage: Identifiable, Equatable, Hashable {
     var isPinned: Bool
     let tap: String?        // e.g., "homebrew/core", "mhaeuser/mhaeuser"
     let tapRbPath: String?  // Cached path to tap's .rb file for version checking
+    let isLeaf: Bool        // True if package is not a dependency of another package (formulae only)
 
     static func == (lhs: InstalledPackage, rhs: InstalledPackage) -> Bool {
         return lhs.name == rhs.name && lhs.isCask == rhs.isCask

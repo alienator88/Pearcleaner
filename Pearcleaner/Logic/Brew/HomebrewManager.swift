@@ -68,6 +68,9 @@ class HomebrewManager: ObservableObject {
     // Maintenance tab refresh trigger
     @Published var maintenanceRefreshTrigger: Bool = false
 
+    // Leaf formulae tracking (formulae not dependencies of others)
+    @Published var leafFormulae: Set<String> = []
+
     var allPackages: [InstalledPackage] {
         return installedFormulae + installedCasks
     }
@@ -129,7 +132,7 @@ class HomebrewManager: ObservableObject {
 
         do {
             // Fast scanner - reads local files directly (~70ms total)
-            // Collect formulae
+            // Collect formulae (without isLeaf yet)
             try await HomebrewController.shared.streamInstalledPackages(cask: false) { name, desc, version, isPinned, tap, tapRbPath in
                 let package = InstalledPackage(
                     name: name,
@@ -138,12 +141,13 @@ class HomebrewManager: ObservableObject {
                     isCask: false,
                     isPinned: isPinned,
                     tap: tap,
-                    tapRbPath: tapRbPath
+                    tapRbPath: tapRbPath,
+                    isLeaf: false  // Will be calculated after
                 )
                 tempFormulae.append(package)
             }
 
-            // Collect casks
+            // Collect casks (casks are always "leaves" - no dependency tracking)
             try await HomebrewController.shared.streamInstalledPackages(cask: true) { name, desc, version, isPinned, tap, tapRbPath in
                 let package = InstalledPackage(
                     name: name,
@@ -152,9 +156,33 @@ class HomebrewManager: ObservableObject {
                     isCask: true,
                     isPinned: isPinned,
                     tap: tap,
-                    tapRbPath: tapRbPath
+                    tapRbPath: tapRbPath,
+                    isLeaf: true  // Casks don't have dependency tracking
                 )
                 tempCasks.append(package)
+            }
+
+            // Calculate leaf formulae (packages not dependencies of others)
+            let allDeps = Set(tempFormulae.flatMap { formula in
+                HomebrewController.shared.getRuntimeDependencies(formulaName: formula.name)
+            })
+
+            // A formula is a leaf if it's NOT in the allDeps set
+            let calculatedLeaves = Set(tempFormulae.map { $0.name }.filter { !allDeps.contains($0) })
+            leafFormulae = calculatedLeaves
+
+            // Recreate formulae array with correct isLeaf values
+            tempFormulae = tempFormulae.map { formula in
+                InstalledPackage(
+                    name: formula.name,
+                    description: formula.description,
+                    version: formula.version,
+                    isCask: formula.isCask,
+                    isPinned: formula.isPinned,
+                    tap: formula.tap,
+                    tapRbPath: formula.tapRbPath,
+                    isLeaf: calculatedLeaves.contains(formula.name)
+                )
             }
 
             // Update @Published properties once with all packages

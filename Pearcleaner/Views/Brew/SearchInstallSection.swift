@@ -26,6 +26,7 @@ struct SearchInstallSection: View {
     @State private var isUpdatingAll: Bool = false
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+    @AppStorage("settings.brew.showOnlyLeaves") private var showOnlyLeaves: Bool = false
 
     private var displayedResults: [HomebrewSearchResult] {
         if searchType == .available {
@@ -275,12 +276,14 @@ struct SearchInstallSection: View {
                                             onUpdateAll: filteredOutdated.count > 1 ? {
                                                 updateAllOutdated(packages: filteredOutdated)
                                             } : nil,
-                                            colorScheme: colorScheme
+                                            colorScheme: colorScheme,
+                                            showOnlyLeaves: $showOnlyLeaves
                                         )
 
                                         // Formulae category
                                         let formulaePackages = brewManager.installedByCategory[.formulae] ?? []
-                                        let filteredFormulae = searchQuery.isEmpty ? formulaePackages : formulaePackages.filter { $0.name.localizedCaseInsensitiveContains(searchQuery) }
+                                        let searchFiltered = searchQuery.isEmpty ? formulaePackages : formulaePackages.filter { $0.name.localizedCaseInsensitiveContains(searchQuery) }
+                                        let filteredFormulae = showOnlyLeaves ? searchFiltered.filter { brewManager.leafFormulae.contains($0.name) } : searchFiltered
 
                                         InstalledCategoryView(
                                             category: .formulae,
@@ -298,7 +301,8 @@ struct SearchInstallSection: View {
                                             updatingPackages: updatingPackages,
                                             brewManager: brewManager,
                                             onUpdateAll: nil,
-                                            colorScheme: colorScheme
+                                            colorScheme: colorScheme,
+                                            showOnlyLeaves: $showOnlyLeaves
                                         )
 
                                         // Casks category
@@ -321,7 +325,8 @@ struct SearchInstallSection: View {
                                             updatingPackages: updatingPackages,
                                             brewManager: brewManager,
                                             onUpdateAll: nil,
-                                            colorScheme: colorScheme
+                                            colorScheme: colorScheme,
+                                            showOnlyLeaves: $showOnlyLeaves
                                         )
                                     } else {
                                         // Show categorized view for Available tab (matches Installed/Updater view pattern)
@@ -467,10 +472,30 @@ struct SearchResultRowView: View {
 
         let shortName = result.name.components(separatedBy: "/").last ?? result.name
 
-        // Find matching app in AppState.shared.sortedApps by cask name
-        return AppState.shared.sortedApps.first(where: { appInfo in
+        // Try 1: Find matching app in AppState.shared.sortedApps by cask name (preferred)
+        if let app = AppState.shared.sortedApps.first(where: { appInfo in
             appInfo.cask == result.name || appInfo.cask == shortName
-        })?.appIcon
+        }) {
+            return app.appIcon
+        }
+
+        // Try 2: Fallback - manually fetch icon from likely bundle path
+        // This handles newly installed casks that haven't been added to sortedApps yet
+        let capitalizedName = shortName.prefix(1).uppercased() + shortName.dropFirst()
+        let possiblePaths = [
+            URL(fileURLWithPath: "/Applications/\(capitalizedName).app"),
+            URL(fileURLWithPath: "/Applications/\(shortName).app"),
+            URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Applications/\(capitalizedName).app"),
+            URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Applications/\(shortName).app")
+        ]
+
+        for path in possiblePaths where FileManager.default.fileExists(atPath: path.path) {
+            if let icon = AppInfoUtils.fetchAppIcon(for: path, wrapped: false) {
+                return icon
+            }
+        }
+
+        return nil
     }
 
     @ViewBuilder
@@ -677,6 +702,7 @@ struct SearchResultRowView: View {
                         if isCask {
                             let folderPaths = FolderSettingsManager.shared.folderPaths
                             flushBundleCaches(for: AppState.shared.sortedApps)
+                            invalidateCaskLookupCache()
                             await loadAppsAsync(folderPaths: folderPaths)
                         }
                     } catch {
@@ -736,12 +762,22 @@ struct SearchResultRowView: View {
                             // Refresh AppState.sortedApps to remove uninstalled app (casks only)
                             let folderPaths = FolderSettingsManager.shared.folderPaths
                             flushBundleCaches(for: AppState.shared.sortedApps)
+                            invalidateCaskLookupCache()
                             await loadAppsAsync(folderPaths: folderPaths)
                         } else {
                             brewManager.installedFormulae.removeAll { $0.name == result.name || $0.name == shortName }
+
+                            // Recalculate leaves after formula removal (dependencies may have changed)
+                            let allDeps = Set(brewManager.installedFormulae.flatMap { formula in
+                                HomebrewController.shared.getRuntimeDependencies(formulaName: formula.name)
+                            })
+                            brewManager.leafFormulae = Set(brewManager.installedFormulae.map { $0.name }.filter { !allDeps.contains($0) })
                         }
                         brewManager.outdatedPackagesMap.removeValue(forKey: result.name)
                         brewManager.outdatedPackagesMap.removeValue(forKey: shortName)
+
+                        // Refresh categorized view to update UI (for both casks and formulae)
+                        brewManager.updateInstalledCategories()
                     } catch {
                         printOS("Error uninstalling package \(result.name): \(error)")
                     }
@@ -2369,6 +2405,7 @@ struct InstallButtonSection: View {
                         if isCask {
                             let folderPaths = FolderSettingsManager.shared.folderPaths
                             flushBundleCaches(for: AppState.shared.sortedApps)
+                            invalidateCaskLookupCache()
                             await loadAppsAsync(folderPaths: folderPaths)
                         }
                     } catch {
@@ -2395,6 +2432,7 @@ struct InstalledCategoryView: View {
     let brewManager: HomebrewManager
     let onUpdateAll: (() -> Void)?
     let colorScheme: ColorScheme
+    @Binding var showOnlyLeaves: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -2425,6 +2463,19 @@ struct InstalledCategoryView: View {
                         Text(verbatim: "(\(packages.count))")
                             .font(.caption)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+
+                    // Show leaf filter toggle only for Formulae category
+                    if category == .formulae {
+                        Button {
+                            showOnlyLeaves.toggle()
+                        } label: {
+                            Image(systemName: showOnlyLeaves ? "leaf.fill" : "leaf")
+//                                .font(.caption)
+                                .foregroundStyle(showOnlyLeaves ? .green : ThemeColors.shared(for: colorScheme).secondaryText)
+                        }
+                        .buttonStyle(.plain)
+                        .help("Show only leaves: packages you installed directly, not dependencies")
                     }
 
                     Spacer()
