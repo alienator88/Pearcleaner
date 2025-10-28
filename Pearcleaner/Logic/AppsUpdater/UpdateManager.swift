@@ -78,8 +78,8 @@ class UpdateManager: ObservableObject {
         // Remove from source category
         updatesBySource[app.source]?.removeAll { $0.id == app.id }
 
-        // Add to hidden
-        if !hiddenUpdates.contains(where: { $0.id == app.id }) {
+        // Add to hidden (check by bundle ID to prevent duplicates)
+        if !hiddenUpdates.contains(where: { $0.uniqueIdentifier == app.uniqueIdentifier }) {
             hiddenUpdates.append(app)
         }
     }
@@ -113,6 +113,7 @@ class UpdateManager: ObservableObject {
 
         // Clear previous results and mark all enabled sources as scanning
         updatesBySource = [:]
+        hiddenUpdates = []  // Clear to prevent stale entries (will be rebuilt from persistent storage)
         scanningSources = []
         if checkAppStore { scanningSources.insert(.appStore) }
         if checkHomebrew { scanningSources.insert(.homebrew) }
@@ -185,6 +186,8 @@ class UpdateManager: ObservableObject {
         // Calculate unsupported apps (only if toggle is enabled - resource optimization)
         if showUnsupported {
             let unsupportedApps = apps.filter { app in
+                // Not a web app (web apps update with browser)
+                !app.webApp &&
                 // Not an App Store app
                 !app.isAppStore &&
                 // Not a Homebrew cask/formula
@@ -234,7 +237,7 @@ class UpdateManager: ObservableObject {
 
         // Add hidden apps to hidden list
         for app in hiddenAppsFromSource {
-            if !hiddenUpdates.contains(where: { $0.id == app.id }) {
+            if !hiddenUpdates.contains(where: { $0.uniqueIdentifier == app.uniqueIdentifier }) {
                 hiddenUpdates.append(app)
             }
         }

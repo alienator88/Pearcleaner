@@ -68,9 +68,6 @@ class HomebrewManager: ObservableObject {
     // Maintenance tab refresh trigger
     @Published var maintenanceRefreshTrigger: Bool = false
 
-    // Leaf formulae tracking (formulae not dependencies of others)
-    @Published var leafFormulae: Set<String> = []
-
     var allPackages: [InstalledPackage] {
         return installedFormulae + installedCasks
     }
@@ -132,8 +129,8 @@ class HomebrewManager: ObservableObject {
 
         do {
             // Fast scanner - reads local files directly (~70ms total)
-            // Collect formulae (without isLeaf yet)
-            try await HomebrewController.shared.streamInstalledPackages(cask: false) { name, displayName, desc, version, isPinned, tap, tapRbPath in
+            // Collect formulae with installedOnRequest from INSTALL_RECEIPT.json
+            try await HomebrewController.shared.streamInstalledPackages(cask: false) { name, displayName, desc, version, isPinned, tap, tapRbPath, installedOnRequest in
                 let package = InstalledPackage(
                     name: name,
                     displayName: displayName,
@@ -143,13 +140,13 @@ class HomebrewManager: ObservableObject {
                     isPinned: isPinned,
                     tap: tap,
                     tapRbPath: tapRbPath,
-                    isLeaf: false  // Will be calculated after
+                    installedOnRequest: installedOnRequest
                 )
                 tempFormulae.append(package)
             }
 
-            // Collect casks (casks are always "leaves" - no dependency tracking)
-            try await HomebrewController.shared.streamInstalledPackages(cask: true) { name, displayName, desc, version, isPinned, tap, tapRbPath in
+            // Collect casks (casks are always installed on request)
+            try await HomebrewController.shared.streamInstalledPackages(cask: true) { name, displayName, desc, version, isPinned, tap, tapRbPath, installedOnRequest in
                 let package = InstalledPackage(
                     name: name,
                     displayName: displayName,
@@ -159,33 +156,9 @@ class HomebrewManager: ObservableObject {
                     isPinned: isPinned,
                     tap: tap,
                     tapRbPath: tapRbPath,
-                    isLeaf: true  // Casks don't have dependency tracking
+                    installedOnRequest: installedOnRequest  // Always true for casks
                 )
                 tempCasks.append(package)
-            }
-
-            // Calculate leaf formulae (packages not dependencies of others)
-            let allDeps = Set(tempFormulae.flatMap { formula in
-                HomebrewController.shared.getRuntimeDependencies(formulaName: formula.name)
-            })
-
-            // A formula is a leaf if it's NOT in the allDeps set
-            let calculatedLeaves = Set(tempFormulae.map { $0.name }.filter { !allDeps.contains($0) })
-            leafFormulae = calculatedLeaves
-
-            // Recreate formulae array with correct isLeaf values
-            tempFormulae = tempFormulae.map { formula in
-                InstalledPackage(
-                    name: formula.name,
-                    displayName: formula.displayName,
-                    description: formula.description,
-                    version: formula.version,
-                    isCask: formula.isCask,
-                    isPinned: formula.isPinned,
-                    tap: formula.tap,
-                    tapRbPath: formula.tapRbPath,
-                    isLeaf: calculatedLeaves.contains(formula.name)
-                )
             }
 
             // Update @Published properties once with all packages

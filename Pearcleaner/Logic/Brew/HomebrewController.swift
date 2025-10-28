@@ -129,7 +129,7 @@ class HomebrewController {
     /// Returns minimal info: name + displayName + description + version + isPinned + tap + tapRbPath
     func streamInstalledPackages(
         cask: Bool,
-        onPackageFound: @escaping (String, String?, String, String, Bool, String?, String?) -> Void  // (name, displayName, description, version, isPinned, tap, tapRbPath)
+        onPackageFound: @escaping (String, String?, String, String, Bool, String?, String?, Bool) -> Void  // (name, displayName, description, version, isPinned, tap, tapRbPath, installedOnRequest)
     ) async throws {
         let baseDir = cask ? "\(brewPrefix)/Caskroom" : "\(brewPrefix)/Cellar"
 
@@ -138,12 +138,16 @@ class HomebrewController {
         }
 
         // Process concurrently, stream results as they complete
-        await withTaskGroup(of: (String, String?, String, String, Bool, String?, String?)?.self) { group in
+        await withTaskGroup(of: (String, String?, String, String, Bool, String?, String?, Bool)?.self) { group in
             // Add all tasks
             for packageName in packageDirs where !packageName.hasPrefix(".") {
                 group.addTask {
                     if cask {
-                        return await self.getCaskNameDescVersionPin(name: packageName)
+                        // Casks are always considered installed on request
+                        if let result = await self.getCaskNameDescVersionPin(name: packageName) {
+                            return (result.0, result.1, result.2, result.3, result.4, result.5, result.6, true)
+                        }
+                        return nil
                     } else {
                         return await self.getFormulaNameDescVersionPin(name: packageName)
                     }
@@ -152,8 +156,8 @@ class HomebrewController {
 
             // Collect results as they complete
             for await result in group {
-                if let (name, displayName, desc, version, isPinned, tap, tapRbPath) = result {
-                    onPackageFound(name, displayName, desc, version, isPinned, tap, tapRbPath)
+                if let (name, displayName, desc, version, isPinned, tap, tapRbPath, installedOnRequest) = result {
+                    onPackageFound(name, displayName, desc, version, isPinned, tap, tapRbPath, installedOnRequest)
                 }
             }
         }
@@ -254,7 +258,7 @@ class HomebrewController {
     }
 
     /// Extract name, displayName, description, version, and pin status from formula
-    func getFormulaNameDescVersionPin(name: String) async -> (String, String?, String, String, Bool, String?, String?)? {
+    func getFormulaNameDescVersionPin(name: String) async -> (String, String?, String, String, Bool, String?, String?, Bool)? {
         let cellarPath = "\(brewPrefix)/Cellar/\(name)"
 
         // Find latest version directory
@@ -271,6 +275,14 @@ class HomebrewController {
         // Check if pinned (pin file exists)
         let pinPath = "\(brewPrefix)/var/homebrew/pinned/\(name)"
         let isPinned = FileManager.default.fileExists(atPath: pinPath)
+
+        // Read INSTALL_RECEIPT.json for installed_on_request field
+        let receiptPath = "\(cellarPath)/\(latestVersion)/INSTALL_RECEIPT.json"
+        var installedOnRequest = false  // Default to false if field missing
+        if let receiptData = try? Data(contentsOf: URL(fileURLWithPath: receiptPath)),
+           let receipt = try? JSONSerialization.jsonObject(with: receiptData) as? [String: Any] {
+            installedOnRequest = receipt["installed_on_request"] as? Bool ?? false
+        }
 
         // Read .rb file for description
         let rbPath = "\(cellarPath)/\(latestVersion)/.brew/\(name).rb"
@@ -290,7 +302,7 @@ class HomebrewController {
         // Formulae don't have separate display names
         let displayName: String? = nil
 
-        return (name, displayName, desc, cleanedVersion, isPinned, tap, tapRbPath)
+        return (name, displayName, desc, cleanedVersion, isPinned, tap, tapRbPath, installedOnRequest)
     }
 
     /// Get runtime dependencies for a formula from INSTALL_RECEIPT.json

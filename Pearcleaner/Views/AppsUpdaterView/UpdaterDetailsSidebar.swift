@@ -124,7 +124,7 @@ struct UpdaterSourceCheckboxSection: View {
                         ProgressView()
                             .controlSize(.small)
                     } else {
-                        Image(systemName: "arrow.clockwise")
+                        Image(systemName: "gear")
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }
                 }

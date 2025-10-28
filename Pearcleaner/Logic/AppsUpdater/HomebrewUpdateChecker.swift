@@ -28,7 +28,7 @@ class HomebrewUpdateChecker {
         var installedFormulae: [InstalledPackage] = []
 
         // Scan casks (always needed)
-        try? await HomebrewController.shared.streamInstalledPackages(cask: true) { name, displayName, desc, version, isPinned, tap, tapRbPath in
+        try? await HomebrewController.shared.streamInstalledPackages(cask: true) { name, displayName, desc, version, isPinned, tap, tapRbPath, installedOnRequest in
             installedCasks.append(InstalledPackage(
                 name: name,
                 displayName: displayName,
@@ -38,13 +38,13 @@ class HomebrewUpdateChecker {
                 isPinned: isPinned,
                 tap: tap,
                 tapRbPath: tapRbPath,
-                isLeaf: true  // Casks don't have dependency tracking
+                installedOnRequest: installedOnRequest  // Always true for casks
             ))
         }
 
         // Scan formulae only if enabled
         if includeFormulae {
-            try? await HomebrewController.shared.streamInstalledPackages(cask: false) { name, displayName, desc, version, isPinned, tap, tapRbPath in
+            try? await HomebrewController.shared.streamInstalledPackages(cask: false) { name, displayName, desc, version, isPinned, tap, tapRbPath, installedOnRequest in
                 installedFormulae.append(InstalledPackage(
                     name: name,
                     displayName: displayName,
@@ -54,7 +54,7 @@ class HomebrewUpdateChecker {
                     isPinned: isPinned,
                     tap: tap,
                     tapRbPath: tapRbPath,
-                    isLeaf: false  // Leaf status not needed for update checking
+                    installedOnRequest: installedOnRequest
                 ))
             }
         }

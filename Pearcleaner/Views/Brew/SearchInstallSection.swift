@@ -26,7 +26,7 @@ struct SearchInstallSection: View {
     @State private var isUpdatingAll: Bool = false
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
-    @AppStorage("settings.brew.showOnlyLeaves") private var showOnlyLeaves: Bool = false
+    @AppStorage("settings.brew.showOnlyInstalledOnRequest") private var showOnlyInstalledOnRequest: Bool = false
 
     /// Helper to match search query against package name, displayName, and description
     private func matchesSearchQuery(_ package: HomebrewSearchResult, query: String) -> Bool {
@@ -295,13 +295,15 @@ struct SearchInstallSection: View {
                                                 updateAllOutdated(packages: filteredOutdated)
                                             } : nil,
                                             colorScheme: colorScheme,
-                                            showOnlyLeaves: $showOnlyLeaves
+                                            showOnlyInstalledOnRequest: $showOnlyInstalledOnRequest
                                         )
 
                                         // Formulae category
                                         let formulaePackages = brewManager.installedByCategory[.formulae] ?? []
                                         let searchFiltered = searchQuery.isEmpty ? formulaePackages : formulaePackages.filter { matchesSearchQuery($0, query: searchQuery) }
-                                        let filteredFormulae = showOnlyLeaves ? searchFiltered.filter { brewManager.leafFormulae.contains($0.name) } : searchFiltered
+                                        let filteredFormulae = showOnlyInstalledOnRequest ? searchFiltered.filter { package in
+                                            brewManager.installedFormulae.first(where: { $0.name == package.name })?.installedOnRequest == true
+                                        } : searchFiltered
 
                                         InstalledCategoryView(
                                             category: .formulae,
@@ -320,7 +322,7 @@ struct SearchInstallSection: View {
                                             brewManager: brewManager,
                                             onUpdateAll: nil,
                                             colorScheme: colorScheme,
-                                            showOnlyLeaves: $showOnlyLeaves
+                                            showOnlyInstalledOnRequest: $showOnlyInstalledOnRequest
                                         )
 
                                         // Casks category
@@ -344,7 +346,7 @@ struct SearchInstallSection: View {
                                             brewManager: brewManager,
                                             onUpdateAll: nil,
                                             colorScheme: colorScheme,
-                                            showOnlyLeaves: $showOnlyLeaves
+                                            showOnlyInstalledOnRequest: $showOnlyInstalledOnRequest
                                         )
                                     } else {
                                         // Show categorized view for Available tab (matches Installed/Updater view pattern)
@@ -791,12 +793,6 @@ struct SearchResultRowView: View {
                             await loadAppsAsync(folderPaths: folderPaths)
                         } else {
                             brewManager.installedFormulae.removeAll { $0.name == result.name || $0.name == shortName }
-
-                            // Recalculate leaves after formula removal (dependencies may have changed)
-                            let allDeps = Set(brewManager.installedFormulae.flatMap { formula in
-                                HomebrewController.shared.getRuntimeDependencies(formulaName: formula.name)
-                            })
-                            brewManager.leafFormulae = Set(brewManager.installedFormulae.map { $0.name }.filter { !allDeps.contains($0) })
                         }
                         brewManager.outdatedPackagesMap.removeValue(forKey: result.name)
                         brewManager.outdatedPackagesMap.removeValue(forKey: shortName)
@@ -2457,7 +2453,7 @@ struct InstalledCategoryView: View {
     let brewManager: HomebrewManager
     let onUpdateAll: (() -> Void)?
     let colorScheme: ColorScheme
-    @Binding var showOnlyLeaves: Bool
+    @Binding var showOnlyInstalledOnRequest: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -2490,17 +2486,17 @@ struct InstalledCategoryView: View {
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     }
 
-                    // Show leaf filter toggle only for Formulae category
+                    // Show "installed on request" filter toggle only for Formulae category
                     if category == .formulae {
                         Button {
-                            showOnlyLeaves.toggle()
+                            showOnlyInstalledOnRequest.toggle()
                         } label: {
-                            Image(systemName: showOnlyLeaves ? "leaf.fill" : "leaf")
+                            Image(systemName: showOnlyInstalledOnRequest ? "leaf.fill" : "leaf")
 //                                .font(.caption)
-                                .foregroundStyle(showOnlyLeaves ? .green : ThemeColors.shared(for: colorScheme).secondaryText)
+                                .foregroundStyle(showOnlyInstalledOnRequest ? .green : ThemeColors.shared(for: colorScheme).secondaryText)
                         }
                         .buttonStyle(.plain)
-                        .help("Show only leaves: packages you installed directly, not dependencies")
+                        .help("Show only formulae installed on request (not as dependencies)")
                     }
 
                     Spacer()

@@ -63219,7 +63219,11 @@
         }
       }
     },
+    "Show only formulae installed on request (not as dependencies)" : {
+
+    },
     "Show only leaves: packages you installed directly, not dependencies" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
