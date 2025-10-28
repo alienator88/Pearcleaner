@@ -27,7 +27,7 @@ class AppState: ObservableObject {
     @Published var sortedApps: [AppInfo] = []
     @Published var selectedItems = Set<URL>()
     @Published var currentView = CurrentDetailsView.empty
-    @Published var currentPage = CurrentPage.applications
+    @Published var currentPage: CurrentPage  // Initialized from stored preference in init()
     @Published var showAlert: Bool = false
     @Published var sidebar: Bool = true
     @Published var reload: Bool = false
@@ -102,6 +102,10 @@ class AppState: ObservableObject {
     }
 
     init() {
+        // Initialize currentPage from stored startup view preference
+        let storedStartupView = UserDefaults.standard.integer(forKey: "settings.interface.startupView")
+        self.currentPage = CurrentPage(rawValue: storedStartupView) ?? .applications
+
         self.appInfo = AppInfo(
             id: UUID(),
             path: URL(fileURLWithPath: ""),

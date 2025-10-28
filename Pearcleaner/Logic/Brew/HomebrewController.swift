@@ -1003,20 +1003,46 @@ class HomebrewController {
                 continue  // No installed version
             }
 
+            // For casks, use ACTUAL app version from AppState.sortedApps instead of stale Homebrew metadata
+            // This eliminates false positives when apps auto-update via Sparkle but Homebrew record isn't synced
+            let actualVersion: String
+            if package.isCask {
+                // Find matching app in sortedApps by cask name
+                if let appInfo = await MainActor.run(body: { AppState.shared.sortedApps.first(where: { $0.cask == package.name }) }) {
+                    actualVersion = appInfo.appVersion  // Use actual version from Info.plist (ground truth)
+                    logger.log(.homebrew, "  🔍 Using actual app version for \(package.name): \(actualVersion) (Homebrew metadata: \(installedVersion))")
+                } else {
+                    actualVersion = installedVersion  // Fallback to Homebrew metadata if app not found
+                    logger.log(.homebrew, "  ⚠️ App not found in sortedApps for cask \(package.name), using Homebrew metadata")
+                }
+            } else {
+                actualVersion = installedVersion  // For formulae, use Homebrew metadata (no Info.plist)
+            }
+
             if let (latestVersion, _) = latestVersions[package.name] {
                 // API call succeeded - package exists in public API
-                // Check if versions differ
-                if installedVersion != latestVersion {
-                    logger.log(.homebrew, "  📦 UPDATE AVAILABLE: \(package.name) - \(installedVersion) → \(latestVersion) (\(package.isCask ? "cask" : "formula"))")
+
+                // Clean versions for semantic comparison (strip build numbers, "latest", etc.)
+                let installedClean = actualVersion.cleanBrewVersionForDisplay()
+                let availableClean = latestVersion.cleanBrewVersionForDisplay()
+
+                // Use Version struct for semantic comparison (same logic as HomebrewUpdateChecker)
+                let installed = Version(versionNumber: installedClean, buildNumber: nil)
+                let available = Version(versionNumber: availableClean, buildNumber: nil)
+
+                // Only mark outdated if available > installed (not just !=)
+                // This prevents false positives where app is actually newer than API (Sparkle updated ahead)
+                if !installed.isEmpty && !available.isEmpty && available > installed {
+                    logger.log(.homebrew, "  📦 UPDATE AVAILABLE: \(package.name) - \(actualVersion) → \(latestVersion) (\(package.isCask ? "cask" : "formula"))")
                     outdatedPackages.append(HomebrewOutdatedPackage(
                         name: package.name,
-                        installedVersion: installedVersion,
+                        installedVersion: actualVersion,  // Use actual version for display
                         availableVersion: latestVersion,
                         isPinned: package.isPinned,
                         isCask: package.isCask
                     ))
                 } else {
-                    logger.log(.homebrew, "  ✓ Up to date: \(package.name) (\(installedVersion))")
+                    logger.log(.homebrew, "  ✓ Up to date: \(package.name) (actual: \(actualVersion), available: \(latestVersion))")
                 }
             } else {
                 // API call failed - likely a tap package

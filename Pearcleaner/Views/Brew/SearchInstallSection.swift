@@ -285,7 +285,10 @@ struct SearchInstallSection: View {
                                         let outdatedPackages = brewManager.installedByCategory[.outdated] ?? []
                                         let filteredOutdated = searchQuery.isEmpty ? outdatedPackages : outdatedPackages.filter { matchesSearchQuery($0, query: searchQuery) }
 
-                                        if !filteredOutdated.isEmpty {
+                                        // Calculate which category is actually first (visible)
+                                        let isOutdatedVisible = !filteredOutdated.isEmpty
+
+                                        if isOutdatedVisible {
                                             InstalledCategoryView(
                                                 category: .outdated,
                                                 packages: filteredOutdated,
@@ -327,7 +330,7 @@ struct SearchInstallSection: View {
                                                     toggleCategoryCollapse(for: "Formulae", tab: .installed)
                                                 }
                                             },
-                                            isFirst: false,
+                                            isFirst: !isOutdatedVisible,
                                             onPackageSelected: onPackageSelected,
                                             updatingPackages: updatingPackages,
                                             brewManager: brewManager,
@@ -2534,6 +2537,7 @@ struct InstalledCategoryView: View {
                                 .foregroundStyle(showOnlyInstalledOnRequest ? .green : ThemeColors.shared(for: colorScheme).secondaryText)
                         }
                         .buttonStyle(.plain)
+                        .contentShape(Rectangle())
                         .help("Show only formulae installed on request (not as dependencies)")
                     }
 

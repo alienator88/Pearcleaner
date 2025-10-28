@@ -26,6 +26,7 @@ struct InterfaceSettingsTab: View {
     @AppStorage("settings.interface.multiSelect") private var multiSelect: Bool = false
     @AppStorage("settings.interface.greetingEnabled") private var greetingEnabled: Bool = true
     @AppStorage("settings.interface.badgeOverlaysEnabled") private var badgeOverlaysEnabled: Bool = true
+    @AppStorage("settings.interface.startupView") private var startupView: Int = CurrentPage.applications.rawValue
 
     var body: some View {
 
@@ -199,6 +200,36 @@ struct InterfaceSettingsTab: View {
                         Toggle(isOn: $badgeOverlaysEnabled, label: {
                         })
                         .toggleStyle(SettingsToggle())
+                    }
+                    .padding(5)
+
+
+                    HStack(spacing: 0) {
+                        Image(systemName: "arrow.uturn.forward")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 15, height: 15)
+                            .padding(.trailing)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text("Startup view")
+                                .font(.callout)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            Text("Choose which view to open when launching the app")
+                                .font(.caption2)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        }
+                        Spacer()
+                        Picker(selection: $startupView) {
+                            ForEach(CurrentPage.availablePages, id: \.self) { page in
+                                HStack {
+                                    Image(systemName: page.icon)
+                                    Text(page.title)
+                                }
+                                .tag(page.rawValue)
+                            }
+                        } label: { EmptyView() }
+                            .buttonStyle(.borderless)
                     }
                     .padding(5)
 

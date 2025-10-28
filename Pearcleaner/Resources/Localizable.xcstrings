@@ -14281,6 +14281,9 @@
         }
       }
     },
+    "Choose which view to open when launching the app" : {
+
+    },
     "Clean stored files and cache for common IDEs" : {
       "localizations" : {
         "de" : {
@@ -66161,6 +66164,9 @@
           }
         }
       }
+    },
+    "Startup view" : {
+
     },
     "Statistics" : {
       "localizations" : {
