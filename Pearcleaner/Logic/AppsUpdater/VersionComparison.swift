@@ -152,6 +152,56 @@ struct Version: Hashable, Comparable {
 
         return .equal // Think "1.2" vs "1.2"
     }
+
+    // MARK: - Version Sanitization
+
+    /// Sanitizes version discrepancies between app version and remote version
+    /// Based on Latest's implementation to handle common edge cases
+    func sanitize(with appVersion: Version) -> Version {
+        // Case 1: The last component of the version number is actually the build number
+        // This can only be detected for equal build numbers to avoid false positives
+        // Example: App has 1.2 (40), Remote has 1.2.40
+        // Action: Extract build number from version string → Version: 1.2, Build: 40
+        if buildNumber == nil,
+           var components = versionNumber?.components(),
+           let lastRemoteComponent = components.last?.plainComponent,
+           lastRemoteComponent == appVersion.buildNumber {
+            // Remove build number segment from version number and store it separately
+            let buildNumber = components.removeLast()
+
+            // Remove separator as well
+            if !components.isEmpty {
+                components.removeLast()
+            }
+
+            return Version(versionNumber: components.joined(), buildNumber: buildNumber.plainComponent)
+        }
+
+        // Case 2: The entire version number equals the app version's build number
+        // We assume version number by default, but that may not be the case
+        // Example: App has 1.2 (123), Remote has 123
+        // Action: Switch to build number comparison
+        if let versionNumber, versionNumber == appVersion.buildNumber {
+            return Version(versionNumber: nil, buildNumber: versionNumber)
+        }
+
+        // Case 3: Handle specific edge case with 7-component versions
+        // (From Latest's code, handles obscure apps with unusual versioning)
+        if appVersion.buildNumber == appVersion.versionNumber,
+           var components = versionNumber?.components(),
+           components.last?.plainComponent != nil,
+           components.count == 7 {
+            components.removeLast()
+            components.removeLast()
+
+            if components.joined() == appVersion.buildNumber {
+                return Version(versionNumber: components.joined(), buildNumber: buildNumber)
+            }
+        }
+
+        // Nothing changed - no sanitization needed
+        return self
+    }
 }
 
 

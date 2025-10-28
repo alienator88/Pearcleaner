@@ -14,7 +14,7 @@ class SparkleUpdateDriver: NSObject, SPUUserDriver, SPUUpdaterDelegate, @uncheck
     // MARK: - Properties
 
     private let appBundle: Bundle
-    private let feedURL: String
+    private let includePreReleases: Bool
     private var updater: SPUUpdater?
     private let progressCallback: (Double, UpdateStatus) -> Void
     private let completionCallback: (Bool, Error?) -> Void
@@ -27,14 +27,14 @@ class SparkleUpdateDriver: NSObject, SPUUserDriver, SPUUpdaterDelegate, @uncheck
     // MARK: - Initialization
 
     init(appInfo: AppInfo,
-         feedURL: String,
+         includePreReleases: Bool,
          progressCallback: @escaping (Double, UpdateStatus) -> Void,
          completionCallback: @escaping (Bool, Error?) -> Void) {
         guard let bundle = Bundle(url: appInfo.path) else {
             fatalError("Could not create bundle for app at \(appInfo.path)")
         }
         self.appBundle = bundle
-        self.feedURL = feedURL
+        self.includePreReleases = includePreReleases
         self.progressCallback = progressCallback
         self.completionCallback = completionCallback
         super.init()
@@ -45,7 +45,6 @@ class SparkleUpdateDriver: NSObject, SPUUserDriver, SPUUpdaterDelegate, @uncheck
     func startUpdate() {
         logger.log(.sparkle, "━━━ Starting Sparkle update for \(appBundle.bundleIdentifier ?? "unknown")")
         logger.log(.sparkle, "  App path: \(appBundle.bundlePath)")
-        logger.log(.sparkle, "  Feed URL: \(feedURL)")
 
         // Check for public key
         if let publicKey = appBundle.object(forInfoDictionaryKey: "SUPublicEDKey") as? String {
@@ -217,7 +216,19 @@ class SparkleUpdateDriver: NSObject, SPUUserDriver, SPUUpdaterDelegate, @uncheck
     // MARK: - SPUUpdaterDelegate Protocol
 
     func feedURLString(for updater: SPUUpdater) -> String? {
-        // Provide the feed URL (handles apps without SUFeedURL in Info.plist)
-        return feedURL
+        // Provide DevMate fallback for apps without SUFeedURL in Info.plist
+        // SPUUpdater automatically reads SUFeedURL from Info.plist first, then calls this delegate
+        return SparkleUpdateChecker.feedURL(from: updater.hostBundle)?.absoluteString
+    }
+
+    func allowedChannels(for updater: SPUUpdater) -> Set<String> {
+        // If pre-releases are enabled, allow common pre-release channels
+        // If disabled, return empty set (only default/stable channel)
+        guard includePreReleases else {
+            return []
+        }
+
+        // Common pre-release channel names used by Sparkle apps
+        return ["beta", "alpha", "nightly", "rc", "dev"]
     }
 }

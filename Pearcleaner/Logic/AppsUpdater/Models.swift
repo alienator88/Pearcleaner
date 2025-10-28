@@ -75,11 +75,6 @@ struct UpdateableApp: Identifiable {
     let isPreRelease: Bool  // True for Sparkle pre-release updates (has channel tag or SemVer pre-release identifier)
     let isIOSApp: Bool  // True for wrapped iPad/iOS apps that must be updated via App Store app
 
-    // Binary extraction metadata (Sparkle only)
-    let extractedFromBinary: Bool  // True if feed URL was extracted from binary (not Info.plist)
-    let alternateSparkleURLs: [String]?  // All URLs found in binary (if multiple) for URL picker
-    let currentFeedURL: String?  // The feed URL currently being used (for checkmark in URL picker)
-
     var canUpdate: Bool {
         source == .homebrew || source == .appStore
     }

@@ -10,7 +10,7 @@ import Foundation
 
 class SparkleUpdateOperation: Operation, @unchecked Sendable {
     let app: UpdateableApp
-    let feedURL: String
+    let includePreReleases: Bool
     let progressCallback: (Double, UpdateStatus) -> Void
     let completionCallback: (Bool, Error?) -> Void
 
@@ -22,12 +22,12 @@ class SparkleUpdateOperation: Operation, @unchecked Sendable {
 
     init(
         app: UpdateableApp,
-        feedURL: String,
+        includePreReleases: Bool,
         progressCallback: @escaping (Double, UpdateStatus) -> Void,
         completionCallback: @escaping (Bool, Error?) -> Void
     ) {
         self.app = app
-        self.feedURL = feedURL
+        self.includePreReleases = includePreReleases
         self.progressCallback = progressCallback
         self.completionCallback = completionCallback
         super.init()
@@ -40,7 +40,7 @@ class SparkleUpdateOperation: Operation, @unchecked Sendable {
         DispatchQueue.main.sync {
             let driver = SparkleUpdateDriver(
                 appInfo: app.appInfo,
-                feedURL: feedURL,
+                includePreReleases: includePreReleases,
                 progressCallback: progressCallback,
                 completionCallback: { [weak self] success, error in
                     guard let self = self else { return }

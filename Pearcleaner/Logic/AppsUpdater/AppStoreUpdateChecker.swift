@@ -112,15 +112,13 @@ class AppStoreUpdateChecker {
                 appStoreURL: appStoreInfo.appStoreURL,
                 status: .idle,
                 progress: 0.0,
+                isSelectedForUpdate: true,
                 releaseTitle: nil,
                 releaseDescription: appStoreInfo.releaseNotes,
                 releaseNotesLink: nil,
                 releaseDate: appStoreInfo.releaseDate,
                 isPreRelease: false,  // App Store updates are not pre-releases
-                isIOSApp: isIOSApp,
-                extractedFromBinary: false,
-                alternateSparkleURLs: nil,
-                currentFeedURL: nil
+                isIOSApp: isIOSApp
             )
         }
 

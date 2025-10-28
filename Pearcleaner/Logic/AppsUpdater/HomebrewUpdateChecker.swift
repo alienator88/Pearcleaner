@@ -127,15 +127,13 @@ class HomebrewUpdateChecker {
                 appStoreURL: nil,
                 status: .idle,
                 progress: 0.0,
+                isSelectedForUpdate: true,
                 releaseTitle: nil,
                 releaseDescription: nil,
                 releaseNotesLink: nil,
                 releaseDate: nil,
                 isPreRelease: false,  // Homebrew updates are not pre-releases
-                isIOSApp: false,  // Homebrew apps are never iOS apps
-                extractedFromBinary: false,
-                alternateSparkleURLs: nil,
-                currentFeedURL: nil
+                isIOSApp: false  // Homebrew apps are never iOS apps
             )
             updateableApps.append(updateableApp)
         }
@@ -199,15 +197,13 @@ class HomebrewUpdateChecker {
                     appStoreURL: nil,
                     status: .idle,
                     progress: 0.0,
+                    isSelectedForUpdate: true,
                     releaseTitle: nil,
                     releaseDescription: nil,
                     releaseNotesLink: nil,
                     releaseDate: nil,
                     isPreRelease: false,
-                    isIOSApp: false,
-                    extractedFromBinary: false,
-                    alternateSparkleURLs: nil,
-                    currentFeedURL: nil
+                    isIOSApp: false
                 )
                 updateableApps.append(updateableApp)
             }
