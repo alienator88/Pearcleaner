@@ -21,7 +21,8 @@ struct SearchInstallSection: View {
     @Environment(\.colorScheme) var colorScheme
     @State private var searchQuery: String = ""
     @State private var searchType: HomebrewSearchType = .installed
-    @State private var collapsedCategories: Set<String> = []
+    @State private var installedCollapsedCategories: Set<String> = []
+    @State private var availableCollapsedCategories: Set<String> = []
     @State private var updatingPackages: Set<String> = []
     @State private var isUpdatingAll: Bool = false
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
@@ -155,11 +156,19 @@ struct SearchInstallSection: View {
     }
 
 
-    private func toggleCategoryCollapse(for category: String) {
-        if collapsedCategories.contains(category) {
-            collapsedCategories.remove(category)
+    private func toggleCategoryCollapse(for category: String, tab: HomebrewSearchType) {
+        if tab == .installed {
+            if installedCollapsedCategories.contains(category) {
+                installedCollapsedCategories.remove(category)
+            } else {
+                installedCollapsedCategories.insert(category)
+            }
         } else {
-            collapsedCategories.insert(category)
+            if availableCollapsedCategories.contains(category) {
+                availableCollapsedCategories.remove(category)
+            } else {
+                availableCollapsedCategories.insert(category)
+            }
         }
     }
 
@@ -276,27 +285,29 @@ struct SearchInstallSection: View {
                                         let outdatedPackages = brewManager.installedByCategory[.outdated] ?? []
                                         let filteredOutdated = searchQuery.isEmpty ? outdatedPackages : outdatedPackages.filter { matchesSearchQuery($0, query: searchQuery) }
 
-                                        InstalledCategoryView(
-                                            category: .outdated,
-                                            packages: filteredOutdated,
-                                            isLoading: brewManager.isLoadingOutdated,
-                                            collapsed: filteredOutdated.isEmpty || collapsedCategories.contains("Outdated"),
-                                            onToggle: {
-                                                guard !filteredOutdated.isEmpty && !brewManager.isLoadingOutdated else { return }
-                                                withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
-                                                    toggleCategoryCollapse(for: "Outdated")
-                                                }
-                                            },
-                                            isFirst: true,
-                                            onPackageSelected: onPackageSelected,
-                                            updatingPackages: updatingPackages,
-                                            brewManager: brewManager,
-                                            onUpdateAll: filteredOutdated.count > 1 ? {
-                                                updateAllOutdated(packages: filteredOutdated)
-                                            } : nil,
-                                            colorScheme: colorScheme,
-                                            showOnlyInstalledOnRequest: $showOnlyInstalledOnRequest
-                                        )
+                                        if !filteredOutdated.isEmpty {
+                                            InstalledCategoryView(
+                                                category: .outdated,
+                                                packages: filteredOutdated,
+                                                isLoading: brewManager.isLoadingOutdated,
+                                                collapsed: installedCollapsedCategories.contains("Outdated"),
+                                                onToggle: {
+                                                    guard !filteredOutdated.isEmpty && !brewManager.isLoadingOutdated else { return }
+                                                    withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
+                                                        toggleCategoryCollapse(for: "Outdated", tab: .installed)
+                                                    }
+                                                },
+                                                isFirst: true,
+                                                onPackageSelected: onPackageSelected,
+                                                updatingPackages: updatingPackages,
+                                                brewManager: brewManager,
+                                                onUpdateAll: filteredOutdated.count > 1 ? {
+                                                    updateAllOutdated(packages: filteredOutdated)
+                                                } : nil,
+                                                colorScheme: colorScheme,
+                                                showOnlyInstalledOnRequest: $showOnlyInstalledOnRequest
+                                            )
+                                        }
 
                                         // Formulae category
                                         let formulaePackages = brewManager.installedByCategory[.formulae] ?? []
@@ -309,11 +320,11 @@ struct SearchInstallSection: View {
                                             category: .formulae,
                                             packages: filteredFormulae,
                                             isLoading: brewManager.isLoadingPackages,
-                                            collapsed: filteredFormulae.isEmpty || collapsedCategories.contains("Formulae"),
+                                            collapsed: installedCollapsedCategories.contains("Formulae"),
                                             onToggle: {
                                                 guard !filteredFormulae.isEmpty && !brewManager.isLoadingPackages else { return }
                                                 withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
-                                                    toggleCategoryCollapse(for: "Formulae")
+                                                    toggleCategoryCollapse(for: "Formulae", tab: .installed)
                                                 }
                                             },
                                             isFirst: false,
@@ -333,11 +344,11 @@ struct SearchInstallSection: View {
                                             category: .casks,
                                             packages: filteredCasks,
                                             isLoading: brewManager.isLoadingPackages,
-                                            collapsed: filteredCasks.isEmpty || collapsedCategories.contains("Casks"),
+                                            collapsed: installedCollapsedCategories.contains("Casks"),
                                             onToggle: {
                                                 guard !filteredCasks.isEmpty && !brewManager.isLoadingPackages else { return }
                                                 withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
-                                                    toggleCategoryCollapse(for: "Casks")
+                                                    toggleCategoryCollapse(for: "Casks", tab: .installed)
                                                 }
                                             },
                                             isFirst: false,
@@ -358,10 +369,10 @@ struct SearchInstallSection: View {
                                             AvailableCategoryView(
                                                 category: .formulae,
                                                 packages: filteredFormulae,
-                                                collapsed: collapsedCategories.contains("Formulae"),
+                                                collapsed: availableCollapsedCategories.contains("Formulae"),
                                                 onToggle: {
                                                     withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
-                                                        toggleCategoryCollapse(for: "Formulae")
+                                                        toggleCategoryCollapse(for: "Formulae", tab: .available)
                                                     }
                                                 },
                                                 isFirst: true,
@@ -380,10 +391,10 @@ struct SearchInstallSection: View {
                                             AvailableCategoryView(
                                                 category: .casks,
                                                 packages: filteredCasks,
-                                                collapsed: collapsedCategories.contains("Casks"),
+                                                collapsed: availableCollapsedCategories.contains("Casks"),
                                                 onToggle: {
                                                     withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
-                                                        toggleCategoryCollapse(for: "Casks")
+                                                        toggleCategoryCollapse(for: "Casks", tab: .available)
                                                     }
                                                 },
                                                 isFirst: false,
@@ -730,9 +741,9 @@ struct SearchResultRowView: View {
         .alert("Install \(result.name)?", isPresented: $showInstallAlert) {
             Button("Cancel", role: .cancel) { }
             Button("Install") {
-                Task { @MainActor in
-                    isInstalling = true
-                    defer { isInstalling = false }
+                Task {
+                    await MainActor.run { isInstalling = true }
+                    defer { Task { @MainActor in isInstalling = false } }
 
                     do {
                         try await HomebrewController.shared.installPackage(name: result.name, cask: isCask)
@@ -753,17 +764,19 @@ struct SearchResultRowView: View {
         .alert("Update \(result.displayName ?? result.name)?", isPresented: $showUpdateAlert) {
             Button("Cancel", role: .cancel) { }
             Button("Update") {
-                Task { @MainActor in
-                    isInstalling = true
-                    defer { isInstalling = false }
+                Task {
+                    await MainActor.run { isInstalling = true }
+                    defer { Task { @MainActor in isInstalling = false } }
 
                     do {
                         try await HomebrewController.shared.upgradePackage(name: result.name)
 
                         // Remove from outdated map immediately after successful update
                         let shortName = result.name.components(separatedBy: "/").last ?? result.name
-                        brewManager.outdatedPackagesMap.removeValue(forKey: result.name)
-                        brewManager.outdatedPackagesMap.removeValue(forKey: shortName)
+                        await MainActor.run {
+                            brewManager.outdatedPackagesMap.removeValue(forKey: result.name)
+                            brewManager.outdatedPackagesMap.removeValue(forKey: shortName)
+                        }
 
                         await brewManager.loadInstalledPackages()
 
@@ -787,9 +800,9 @@ struct SearchResultRowView: View {
         .alert("Uninstall \(result.displayName ?? result.name)?", isPresented: $showUninstallAlert) {
             Button("Cancel", role: .cancel) { }
             Button("Uninstall", role: .destructive) {
-                Task { @MainActor in
-                    isUninstalling = true
-                    defer { isUninstalling = false }
+                Task {
+                    await MainActor.run { isUninstalling = true }
+                    defer { Task { @MainActor in isUninstalling = false } }
 
                     do {
                         try await HomebrewUninstaller.shared.uninstallPackage(name: result.name, cask: isCask, zap: true)
@@ -797,10 +810,12 @@ struct SearchResultRowView: View {
                         // Remove from installed lists instead of full refresh
                         let shortName = result.name.components(separatedBy: "/").last ?? result.name
                         if isCask {
-                            brewManager.installedCasks.removeAll { $0.name == result.name || $0.name == shortName }
+                            await MainActor.run {
+                                brewManager.installedCasks.removeAll { $0.name == result.name || $0.name == shortName }
+                            }
 
                             // Refresh AppState.sortedApps to remove uninstalled app (casks only)
-                            let folderPaths = FolderSettingsManager.shared.folderPaths
+                            let folderPaths = await MainActor.run { FolderSettingsManager.shared.folderPaths }
 
                             // Optimized: Only flush bundle for the uninstalled app (if still exists)
                             if let matchingApp = findAppByCask(result.name) {
@@ -812,13 +827,19 @@ struct SearchResultRowView: View {
                             invalidateCaskLookupCache()
                             await loadAppsAsync(folderPaths: folderPaths)
                         } else {
-                            brewManager.installedFormulae.removeAll { $0.name == result.name || $0.name == shortName }
+                            await MainActor.run {
+                                brewManager.installedFormulae.removeAll { $0.name == result.name || $0.name == shortName }
+                            }
                         }
-                        brewManager.outdatedPackagesMap.removeValue(forKey: result.name)
-                        brewManager.outdatedPackagesMap.removeValue(forKey: shortName)
+                        await MainActor.run {
+                            brewManager.outdatedPackagesMap.removeValue(forKey: result.name)
+                            brewManager.outdatedPackagesMap.removeValue(forKey: shortName)
+                        }
 
                         // Refresh categorized view to update UI (for both casks and formulae)
-                        brewManager.updateInstalledCategories()
+                        await MainActor.run {
+                            brewManager.updateInstalledCategories()
+                        }
                     } catch {
                         printOS("Error uninstalling package \(result.name): \(error)")
                     }
@@ -2434,9 +2455,9 @@ struct InstallButtonSection: View {
         .alert("Install \(packageName)?", isPresented: $showInstallAlert) {
             Button("Cancel", role: .cancel) { }
             Button("Install") {
-                Task { @MainActor in
-                    isInstalling = true
-                    defer { isInstalling = false }
+                Task {
+                    await MainActor.run { isInstalling = true }
+                    defer { Task { @MainActor in isInstalling = false } }
 
                     do {
                         try await HomebrewController.shared.installPackage(name: packageName, cask: isCask)
