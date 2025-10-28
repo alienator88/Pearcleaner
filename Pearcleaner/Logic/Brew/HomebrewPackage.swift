@@ -12,6 +12,7 @@ import Foundation
 struct HomebrewSearchResult: Identifiable, Hashable {
     let id = UUID()
     let name: String
+    let displayName: String?  // Human-readable app name (e.g., "FreeMacSoft AppCleaner" instead of "appcleaner")
     let description: String?
     let homepage: String?
     let license: String?

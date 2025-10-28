@@ -274,6 +274,7 @@ class HomebrewManager: ObservableObject {
 
         return HomebrewSearchResult(
             name: package.name,
+            displayName: matchingPackage?.displayName,
             description: package.description,
             homepage: nil,
             license: nil,
@@ -371,24 +372,27 @@ class HomebrewManager: ObservableObject {
         defer { isLoadingAvailablePackages = false }
 
         do {
-            // Update Homebrew first to ensure name files are up to date
+            // Update Homebrew first to ensure JWS files are up to date
             if forceRefresh {
                 try await HomebrewController.shared.updateBrew()
             }
 
-            // Load package names from tiny text files (172KB total vs 44MB JWS)
-            let formulaeNames = try await HomebrewController.shared.loadPackageNames(cask: false)
-            let caskNames = try await HomebrewController.shared.loadPackageNames(cask: true)
+            // Load both JWS files in parallel (~0.63s total from earlier test)
+            async let formulaeMetadata = HomebrewController.shared.loadMinimalPackageMetadata(cask: false)
+            async let casksMetadata = HomebrewController.shared.loadMinimalPackageMetadata(cask: true)
 
-            // Convert names to minimal SearchResult objects (name only, no description)
+            let (formulae, casks) = try await (formulaeMetadata, casksMetadata)
+
+            // Convert to SearchResult objects with displayName, description, and version
             // Sort once here to avoid sorting on every search keystroke
-            allAvailableFormulae = formulaeNames.map { name in
+            allAvailableFormulae = formulae.map { metadata in
                 HomebrewSearchResult(
-                    name: name,
-                    description: nil,  // No description - will fetch on demand when Info clicked
+                    name: metadata.name,
+                    displayName: metadata.displayName,
+                    description: metadata.description,
                     homepage: nil,
                     license: nil,
-                    version: nil,
+                    version: metadata.version,
                     dependencies: nil,
                     caveats: nil,
                     tap: nil,
@@ -419,13 +423,14 @@ class HomebrewManager: ObservableObject {
                 )
             }.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
 
-            allAvailableCasks = caskNames.map { name in
+            allAvailableCasks = casks.map { metadata in
                 HomebrewSearchResult(
-                    name: name,
-                    description: nil,  // No description - will fetch on demand when Info clicked
+                    name: metadata.name,
+                    displayName: metadata.displayName,
+                    description: metadata.description,
                     homepage: nil,
                     license: nil,
-                    version: nil,
+                    version: metadata.version,
                     dependencies: nil,
                     caveats: nil,
                     tap: nil,
@@ -462,7 +467,7 @@ class HomebrewManager: ObservableObject {
 
             hasLoadedAvailablePackages = true
         } catch {
-            printOS("Error loading package names: \(error)")
+            printOS("Error loading package metadata: \(error)")
         }
     }
 }

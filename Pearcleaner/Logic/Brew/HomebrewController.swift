@@ -159,6 +159,62 @@ class HomebrewController {
         }
     }
 
+    /// Load minimal package metadata (name, displayName, description, version) from local JWS files
+    /// Much faster than API calls and works offline
+    /// JWS files are already cached by Homebrew after `brew update`
+    func loadMinimalPackageMetadata(cask: Bool) async throws -> [(name: String, displayName: String?, description: String?, version: String?)] {
+        let fileName = cask ? "cask.jws.json" : "formula.jws.json"
+        let apiCachePath = FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent("Library/Caches/Homebrew/api")
+        let jwsFilePath = apiCachePath.appendingPathComponent(fileName).path
+
+        guard FileManager.default.fileExists(atPath: jwsFilePath) else {
+            throw HomebrewError.commandFailed("JWS file not found: \(fileName). Run 'brew update' first.")
+        }
+
+        // Read JWS file
+        let jwsContent = try String(contentsOfFile: jwsFilePath, encoding: .utf8)
+
+        // Parse JWS structure: {"payload": "json-string-array", "signatures": [...]}
+        // Note: payload is NOT base64-encoded, it's a plain JSON string
+        guard let jwsData = jwsContent.data(using: .utf8),
+              let jwsJson = try JSONSerialization.jsonObject(with: jwsData) as? [String: Any],
+              let payloadString = jwsJson["payload"] as? String,
+              let payloadData = payloadString.data(using: .utf8),
+              let payloadArray = try JSONSerialization.jsonObject(with: payloadData) as? [[String: Any]] else {
+            throw HomebrewError.jsonParseError
+        }
+
+        var results: [(name: String, displayName: String?, description: String?, version: String?)] = []
+
+        // Extract package metadata from array
+        for packageDict in payloadArray {
+            let name: String
+            let displayName: String?
+            let description = packageDict["desc"] as? String
+            let version: String?
+
+            if cask {
+                // Casks: token is brew ID, name is array with display name
+                guard let token = packageDict["token"] as? String else { continue }
+                name = token
+                let nameArray = packageDict["name"] as? [String]
+                displayName = nameArray?.first
+                version = packageDict["version"] as? String
+            } else {
+                // Formulae: name is brew ID (no separate display name)
+                guard let formulaName = packageDict["name"] as? String else { continue }
+                name = formulaName
+                displayName = nil  // Formulae don't have separate display names
+                version = (packageDict["versions"] as? [String: Any])?["stable"] as? String
+            }
+
+            results.append((name: name, displayName: displayName, description: description, version: version))
+        }
+
+        return results
+    }
+
     /// Load package names from text files (formula_names.txt or cask_names.txt)
     /// Returns array of package names only - no descriptions or other metadata
     /// Falls back to .before.txt files if current files don't exist (e.g., after brew update)
@@ -1468,6 +1524,7 @@ class HomebrewController {
 
         return HomebrewSearchResult(
             name: name,
+            displayName: nil,  // Not loaded for tap packages
             description: desc,
             homepage: homepage,
             license: license,

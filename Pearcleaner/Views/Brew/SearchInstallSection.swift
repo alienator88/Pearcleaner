@@ -28,6 +28,23 @@ struct SearchInstallSection: View {
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.brew.showOnlyLeaves") private var showOnlyLeaves: Bool = false
 
+    /// Helper to match search query against package name, displayName, and description
+    private func matchesSearchQuery(_ package: HomebrewSearchResult, query: String) -> Bool {
+        // Search in name (brew ID)
+        if package.name.localizedCaseInsensitiveContains(query) {
+            return true
+        }
+        // Search in displayName (human-readable app name)
+        if let displayName = package.displayName, displayName.localizedCaseInsensitiveContains(query) {
+            return true
+        }
+        // Search in description
+        if let description = package.description, description.localizedCaseInsensitiveContains(query) {
+            return true
+        }
+        return false
+    }
+
     private var displayedResults: [HomebrewSearchResult] {
         if searchType == .available {
             // Flat list for Available tab - all packages combined
@@ -36,7 +53,7 @@ struct SearchInstallSection: View {
             if searchQuery.isEmpty {
                 return allPackages
             } else {
-                return allPackages.filter { $0.name.localizedCaseInsensitiveContains(searchQuery) }
+                return allPackages.filter { matchesSearchQuery($0, query: searchQuery) }
             }
         } else {
             // Installed uses categorized view
@@ -70,6 +87,7 @@ struct SearchInstallSection: View {
 
         return HomebrewSearchResult(
             name: package.name,
+            displayName: matchingPackage?.displayName,
             description: package.description,
             homepage: nil,
             license: nil,
@@ -256,7 +274,7 @@ struct SearchInstallSection: View {
                                         // Show categorized view for installed packages (matches Updater view pattern)
                                         // Outdated category
                                         let outdatedPackages = brewManager.installedByCategory[.outdated] ?? []
-                                        let filteredOutdated = searchQuery.isEmpty ? outdatedPackages : outdatedPackages.filter { $0.name.localizedCaseInsensitiveContains(searchQuery) }
+                                        let filteredOutdated = searchQuery.isEmpty ? outdatedPackages : outdatedPackages.filter { matchesSearchQuery($0, query: searchQuery) }
 
                                         InstalledCategoryView(
                                             category: .outdated,
@@ -282,7 +300,7 @@ struct SearchInstallSection: View {
 
                                         // Formulae category
                                         let formulaePackages = brewManager.installedByCategory[.formulae] ?? []
-                                        let searchFiltered = searchQuery.isEmpty ? formulaePackages : formulaePackages.filter { $0.name.localizedCaseInsensitiveContains(searchQuery) }
+                                        let searchFiltered = searchQuery.isEmpty ? formulaePackages : formulaePackages.filter { matchesSearchQuery($0, query: searchQuery) }
                                         let filteredFormulae = showOnlyLeaves ? searchFiltered.filter { brewManager.leafFormulae.contains($0.name) } : searchFiltered
 
                                         InstalledCategoryView(
@@ -307,7 +325,7 @@ struct SearchInstallSection: View {
 
                                         // Casks category
                                         let casksPackages = brewManager.installedByCategory[.casks] ?? []
-                                        let filteredCasks = searchQuery.isEmpty ? casksPackages : casksPackages.filter { $0.name.localizedCaseInsensitiveContains(searchQuery) }
+                                        let filteredCasks = searchQuery.isEmpty ? casksPackages : casksPackages.filter { matchesSearchQuery($0, query: searchQuery) }
 
                                         InstalledCategoryView(
                                             category: .casks,
@@ -332,7 +350,7 @@ struct SearchInstallSection: View {
                                         // Show categorized view for Available tab (matches Installed/Updater view pattern)
                                         // Formulae category
                                         let formulaePackages = brewManager.availableByCategory[.formulae] ?? []
-                                        let filteredFormulae = searchQuery.isEmpty ? formulaePackages : formulaePackages.filter { $0.name.localizedCaseInsensitiveContains(searchQuery) }
+                                        let filteredFormulae = searchQuery.isEmpty ? formulaePackages : formulaePackages.filter { matchesSearchQuery($0, query: searchQuery) }
 
                                         if !filteredFormulae.isEmpty {
                                             AvailableCategoryView(
@@ -354,7 +372,7 @@ struct SearchInstallSection: View {
 
                                         // Casks category
                                         let casksPackages = brewManager.availableByCategory[.casks] ?? []
-                                        let filteredCasks = searchQuery.isEmpty ? casksPackages : casksPackages.filter { $0.name.localizedCaseInsensitiveContains(searchQuery) }
+                                        let filteredCasks = searchQuery.isEmpty ? casksPackages : casksPackages.filter { matchesSearchQuery($0, query: searchQuery) }
 
                                         if !filteredCasks.isEmpty {
                                             AvailableCategoryView(
@@ -636,7 +654,7 @@ struct SearchResultRowView: View {
             // Package name and description
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 4) {
-                    Text(result.name)
+                    Text(result.displayName ?? result.name)
                         .font(.headline)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
@@ -711,9 +729,9 @@ struct SearchResultRowView: View {
                 }
             }
         } message: {
-            Text("This will install \(result.name) using Homebrew. This may take several minutes.")
+            Text("This will install \(result.displayName ?? result.name) using Homebrew. This may take several minutes.")
         }
-        .alert("Update \(result.name)?", isPresented: $showUpdateAlert) {
+        .alert("Update \(result.displayName ?? result.name)?", isPresented: $showUpdateAlert) {
             Button("Cancel", role: .cancel) { }
             Button("Update") {
                 Task { @MainActor in
@@ -742,9 +760,9 @@ struct SearchResultRowView: View {
                 }
             }
         } message: {
-            Text("This will upgrade \(result.name) to the latest version using Homebrew. This may take several minutes.")
+            Text("This will upgrade \(result.displayName ?? result.name) to the latest version using Homebrew. This may take several minutes.")
         }
-        .alert("Uninstall \(result.name)?", isPresented: $showUninstallAlert) {
+        .alert("Uninstall \(result.displayName ?? result.name)?", isPresented: $showUninstallAlert) {
             Button("Cancel", role: .cancel) { }
             Button("Uninstall", role: .destructive) {
                 Task { @MainActor in
@@ -784,7 +802,7 @@ struct SearchResultRowView: View {
                 }
             }
         } message: {
-            Text("This will completely uninstall \(result.name) and remove all associated files. This action cannot be undone.")
+            Text("This will completely uninstall \(result.displayName ?? result.name) and remove all associated files. This action cannot be undone.")
         }
     }
 }
@@ -1218,8 +1236,8 @@ struct PackageHeaderSection: View {
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                 }
 
-                // Package token/name
-                Text(package.name)
+                // Package token/name (use displayName if available and no caskName, otherwise show brew ID)
+                Text(package.caskName == nil ? (package.displayName ?? package.name) : package.name)
                     .font(package.caskName != nil ? .callout : .title2)
                     .fontWeight(package.caskName != nil ? .medium : .bold)
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
