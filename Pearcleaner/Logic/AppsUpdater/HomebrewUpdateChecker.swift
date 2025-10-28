@@ -28,9 +28,10 @@ class HomebrewUpdateChecker {
         var installedFormulae: [InstalledPackage] = []
 
         // Scan casks (always needed)
-        try? await HomebrewController.shared.streamInstalledPackages(cask: true) { name, desc, version, isPinned, tap, tapRbPath in
+        try? await HomebrewController.shared.streamInstalledPackages(cask: true) { name, displayName, desc, version, isPinned, tap, tapRbPath in
             installedCasks.append(InstalledPackage(
                 name: name,
+                displayName: displayName,
                 description: desc,
                 version: version,
                 isCask: true,
@@ -43,9 +44,10 @@ class HomebrewUpdateChecker {
 
         // Scan formulae only if enabled
         if includeFormulae {
-            try? await HomebrewController.shared.streamInstalledPackages(cask: false) { name, desc, version, isPinned, tap, tapRbPath in
+            try? await HomebrewController.shared.streamInstalledPackages(cask: false) { name, displayName, desc, version, isPinned, tap, tapRbPath in
                 installedFormulae.append(InstalledPackage(
                     name: name,
+                    displayName: displayName,
                     description: desc,
                     version: version,
                     isCask: false,

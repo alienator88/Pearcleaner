@@ -24,6 +24,8 @@ struct UpdateRowView: View {
             return .purple
         case .sparkle:
             return .orange
+        case .unsupported:
+            return .gray
         }
     }
 
@@ -35,69 +37,81 @@ struct UpdateRowView: View {
             return "macwindow"
         case .sparkle:
             return "sparkles"
+        case .unsupported:
+            return "questionmark.circle"
         }
     }
 
     @ViewBuilder
     private var actionButtons: some View {
-        switch app.status {
-        case .idle:
-            Button {
-                if app.isIOSApp, let appStoreURL = app.appStoreURL {
-                    // iOS apps: Open App Store page
-                    openInAppStore(urlString: appStoreURL)
-                } else {
-                    // Regular apps: Use CommerceKit or open to update
-                    Task { await updateManager.updateApp(app) }
+        // For unsupported apps, show explanatory message instead of action buttons
+        if app.source == .unsupported {
+            Text("No update mechanism detected")
+                .font(.caption)
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+        } else {
+            switch app.status {
+            case .idle:
+                Button {
+                    if app.isIOSApp, let appStoreURL = app.appStoreURL {
+                        // iOS apps: Open App Store page
+                        openInAppStore(urlString: appStoreURL)
+                    } else {
+                        // Regular apps: Use CommerceKit or open to update
+                        Task { await updateManager.updateApp(app) }
+                    }
+                } label: {
+                    Text(app.isIOSApp ? "Update in App Store" : "Update")
                 }
-            } label: {
-                Text(app.isIOSApp ? "Update in App Store" : "Update")
-            }
-            .buttonStyle(.plain)
-            .foregroundStyle(.orange)
+                .buttonStyle(.plain)
+                .foregroundStyle(.orange)
 
-        case .checking, .downloading, .extracting, .installing, .verifying:
-            HStack(spacing: 6) {
-                ProgressView()
-                    .scaleEffect(0.8)
+            case .checking, .downloading, .extracting, .installing, .verifying:
+                HStack(spacing: 6) {
+                    ProgressView()
+                        .scaleEffect(0.8)
+                    Text(statusText(for: app.status))
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                }
+
+            case .completed, .failed:
+                // Show status text without spinner
                 Text(statusText(for: app.status))
                     .font(.caption)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    .foregroundStyle(app.status == .completed ? .green : .red)
             }
-
-        case .completed, .failed:
-            // Show status text without spinner
-            Text(statusText(for: app.status))
-                .font(.caption)
-                .foregroundStyle(app.status == .completed ? .green : .red)
         }
     }
 
     @ViewBuilder
     private var secondaryActionButtons: some View {
-        // View Changes button (shown for all sources, disabled for Homebrew)
-        Button {
-            withAnimation(.easeInOut(duration: 0.3)) {
-                isExpanded.toggle()
+        // No secondary actions for unsupported apps
+        if app.source != .unsupported {
+            // View Changes button (shown for all sources, disabled for Homebrew)
+            Button {
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    isExpanded.toggle()
+                }
+            } label: {
+                Text(isExpanded ? "Close" : "View Changes")
+                    .font(.caption)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
             }
-        } label: {
-            Text(isExpanded ? "Close" : "View Changes")
-                .font(.caption)
-                .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-        }
-        .buttonStyle(.plain)
-        .disabled(app.source == .homebrew)
+            .buttonStyle(.plain)
+            .disabled(app.source == .homebrew)
 
-        // Hide button (always shown, positioned last - furthest trailing)
-        Button {
-            onHideToggle(app)
-        } label: {
-            Image(systemName: "eye.slash")
-                .font(.system(size: 14))
-                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+            // Hide button (always shown, positioned last - furthest trailing)
+            Button {
+                onHideToggle(app)
+            } label: {
+                Image(systemName: "eye.slash")
+                    .font(.system(size: 14))
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+            }
+            .buttonStyle(.plain)
+            .help("Hide update")
         }
-        .buttonStyle(.plain)
-        .help("Hide update")
     }
 
     var body: some View {
@@ -111,6 +125,8 @@ struct UpdateRowView: View {
                     EmptyView()
                 }
                 .buttonStyle(CircleCheckboxButtonStyle(isSelected: app.isSelectedForUpdate))
+                .disabled(app.source == .unsupported)
+                .opacity(app.source == .unsupported ? 0.5 : 1.0)
 
                 // App icon (use actual app icon if available, fallback to source icon)
                 if let appIcon = app.appInfo.appIcon {

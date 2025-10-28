@@ -87,7 +87,7 @@ struct SearchInstallSection: View {
 
         return HomebrewSearchResult(
             name: package.name,
-            displayName: matchingPackage?.displayName,
+            displayName: package.displayName ?? matchingPackage?.displayName,  // Fallback: Ruby file → JWS lookup
             description: package.description,
             homepage: nil,
             license: nil,
@@ -658,17 +658,24 @@ struct SearchResultRowView: View {
                         .font(.headline)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
-                    // Show version for installed packages
-                    if isAlreadyInstalled, let version = result.version {
-                        // Check if package is outdated and show update arrow with versions
-                        if let versions = brewManager.getOutdatedVersions(for: result.name) {
-                            Text(verbatim: "(\(versions.installed.cleanBrewVersionForDisplay()) → \(versions.available.cleanBrewVersionForDisplay()))")
-                                .font(.footnote)
-                                .foregroundStyle(.orange)
+                    // Show version if available
+                    if let version = result.version {
+                        if isAlreadyInstalled {
+                            // Installed package - check if outdated and show update arrow
+                            if let versions = brewManager.getOutdatedVersions(for: result.name) {
+                                Text(verbatim: "(\(versions.installed.cleanBrewVersionForDisplay()) → \(versions.available.cleanBrewVersionForDisplay()))")
+                                    .font(.footnote)
+                                    .foregroundStyle(.orange)
+                            } else {
+                                Text(verbatim: "(\(version.cleanBrewVersionForDisplay()))")
+                                    .font(.footnote)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            }
                         } else {
-                            Text(verbatim: "(\(version))")
+                            // Not installed - show available version
+                            Text(verbatim: "(\(version.cleanBrewVersionForDisplay()))")
                                 .font(.footnote)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText.opacity(0.8))
                         }
                     }
                 }

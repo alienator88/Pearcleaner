@@ -18,6 +18,7 @@ struct UpdaterDetailsSidebar: View {
     @Binding var checkSparkle: Bool
     @Binding var includeSparklePreReleases: Bool
     @Binding var includeHomebrewFormulae: Bool
+    @Binding var showUnsupported: Bool
     @StateObject private var updateManager = UpdateManager.shared
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
@@ -33,7 +34,8 @@ struct UpdaterDetailsSidebar: View {
                         checkHomebrew: $checkHomebrew,
                         checkSparkle: $checkSparkle,
                         includeSparklePreReleases: $includeSparklePreReleases,
-                        includeHomebrewFormulae: $includeHomebrewFormulae
+                        includeHomebrewFormulae: $includeHomebrewFormulae,
+                        showUnsupported: $showUnsupported
                     )
                     Divider()
                     UpdaterHiddenHeaderSection(hiddenCount: updateManager.hiddenUpdates.count)
@@ -62,6 +64,7 @@ struct UpdaterSourceCheckboxSection: View {
     @Binding var checkSparkle: Bool
     @Binding var includeSparklePreReleases: Bool
     @Binding var includeHomebrewFormulae: Bool
+    @Binding var showUnsupported: Bool
     @StateObject private var updateManager = UpdateManager.shared
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.updater.debugLogging") private var debugLogging: Bool = true
@@ -274,6 +277,28 @@ struct UpdaterSourceCheckboxSection: View {
             }
             .toggleStyle(CircleCheckboxToggleStyle())
             .help("Show auto-updating casks in Homebrew section (when disabled, they only appear in Sparkle)")
+
+            // Show unsupported apps toggle
+            Toggle(isOn: Binding(
+                get: { showUnsupported },
+                set: { newValue in
+                    showUnsupported = newValue
+                    Task { await updateManager.scanForUpdates() }
+                }
+            )) {
+                HStack(spacing: 6) {
+                    Image(systemName: "questionmark.circle")
+                        .foregroundStyle(.gray)
+                        .font(.caption)
+                        .frame(width: 16)
+
+                    Text("Show Unsupported Apps")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                }
+            }
+            .toggleStyle(CircleCheckboxToggleStyle())
+            .help("Show apps without a supported update mechanism")
         }
     }
 
@@ -380,6 +405,7 @@ struct UpdaterHiddenAppRow: View {
         case .appStore: return ifOSBelow(macOS: 14) ? "cart.fill" : "storefront.fill"
         case .homebrew: return "mug"
         case .sparkle: return "sparkles"
+        case .unsupported: return "questionmark.circle"
         }
     }
 
@@ -388,6 +414,7 @@ struct UpdaterHiddenAppRow: View {
         case .appStore: return .blue
         case .homebrew: return .orange
         case .sparkle: return .purple
+        case .unsupported: return .gray
         }
     }
 

@@ -211,6 +211,7 @@ struct OutdatedVersionInfo: Equatable, Hashable {
 struct InstalledPackage: Identifiable, Equatable, Hashable {
     let id = UUID()
     let name: String
+    let displayName: String?  // Human-readable app name from Ruby file (e.g., "Battery Toolkit" for casks, nil for formulae)
     let description: String?
     let version: String?
     let isCask: Bool

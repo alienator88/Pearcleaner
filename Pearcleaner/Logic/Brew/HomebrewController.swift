@@ -126,10 +126,10 @@ class HomebrewController {
     // MARK: - Package Loading
 
     /// Stream installed packages by scanning Cellar/Caskroom directories
-    /// Returns minimal info: name + description + version + isPinned + tap + tapRbPath
+    /// Returns minimal info: name + displayName + description + version + isPinned + tap + tapRbPath
     func streamInstalledPackages(
         cask: Bool,
-        onPackageFound: @escaping (String, String, String, Bool, String?, String?) -> Void  // (name, description, version, isPinned, tap, tapRbPath)
+        onPackageFound: @escaping (String, String?, String, String, Bool, String?, String?) -> Void  // (name, displayName, description, version, isPinned, tap, tapRbPath)
     ) async throws {
         let baseDir = cask ? "\(brewPrefix)/Caskroom" : "\(brewPrefix)/Cellar"
 
@@ -138,7 +138,7 @@ class HomebrewController {
         }
 
         // Process concurrently, stream results as they complete
-        await withTaskGroup(of: (String, String, String, Bool, String?, String?)?.self) { group in
+        await withTaskGroup(of: (String, String?, String, String, Bool, String?, String?)?.self) { group in
             // Add all tasks
             for packageName in packageDirs where !packageName.hasPrefix(".") {
                 group.addTask {
@@ -152,8 +152,8 @@ class HomebrewController {
 
             // Collect results as they complete
             for await result in group {
-                if let (name, desc, version, isPinned, tap, tapRbPath) = result {
-                    onPackageFound(name, desc, version, isPinned, tap, tapRbPath)
+                if let (name, displayName, desc, version, isPinned, tap, tapRbPath) = result {
+                    onPackageFound(name, displayName, desc, version, isPinned, tap, tapRbPath)
                 }
             }
         }
@@ -253,8 +253,8 @@ class HomebrewController {
         return names
     }
 
-    /// Extract name, description, version, and pin status from formula
-    func getFormulaNameDescVersionPin(name: String) async -> (String, String, String, Bool, String?, String?)? {
+    /// Extract name, displayName, description, version, and pin status from formula
+    func getFormulaNameDescVersionPin(name: String) async -> (String, String?, String, String, Bool, String?, String?)? {
         let cellarPath = "\(brewPrefix)/Cellar/\(name)"
 
         // Find latest version directory
@@ -287,7 +287,10 @@ class HomebrewController {
         let tap: String? = nil
         let tapRbPath: String? = nil
 
-        return (name, desc, cleanedVersion, isPinned, tap, tapRbPath)
+        // Formulae don't have separate display names
+        let displayName: String? = nil
+
+        return (name, displayName, desc, cleanedVersion, isPinned, tap, tapRbPath)
     }
 
     /// Get runtime dependencies for a formula from INSTALL_RECEIPT.json
@@ -316,8 +319,8 @@ class HomebrewController {
         return deps
     }
 
-    /// Extract name, description, version, and pin status from cask
-    private func getCaskNameDescVersionPin(name: String) async -> (String, String, String, Bool, String?, String?)? {
+    /// Extract name, displayName, description, version, and pin status from cask
+    private func getCaskNameDescVersionPin(name: String) async -> (String, String?, String, String, Bool, String?, String?)? {
         let caskroomPath = "\(brewPrefix)/Caskroom/\(name)"
 
         // Skip symlinks (like xcodes -> xcodes-app)
@@ -359,9 +362,17 @@ class HomebrewController {
         // Casks don't support pinning
         let isPinned = false
 
-        // Read description from the cask file (.rb or .json)
+        // Read displayName and description from the cask file (.rb or .json)
+        var displayName: String? = nil
         var desc = "No description available"
         if let fileContent = try? String(contentsOfFile: caskFilePath) {
+            // Extract name (display name) - casks can have multiple names, take first
+            let nameRegex = /name "([^"]+)"/
+            if let match = fileContent.firstMatch(of: nameRegex) {
+                displayName = String(match.1)
+            }
+
+            // Extract description
             let descRegex = /desc "([^"]+)"/
             if let match = fileContent.firstMatch(of: descRegex) {
                 desc = String(match.1)
@@ -372,7 +383,7 @@ class HomebrewController {
         let tap: String? = nil
         let tapRbPath: String? = nil
 
-        return (name, desc, cleanedVersion, isPinned, tap, tapRbPath)
+        return (name, displayName, desc, cleanedVersion, isPinned, tap, tapRbPath)
     }
 
     func loadInstalledPackages() async throws -> (formulae: [HomebrewPackageInfo], casks: [HomebrewPackageInfo]) {

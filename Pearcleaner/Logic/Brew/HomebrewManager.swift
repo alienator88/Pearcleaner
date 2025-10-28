@@ -133,9 +133,10 @@ class HomebrewManager: ObservableObject {
         do {
             // Fast scanner - reads local files directly (~70ms total)
             // Collect formulae (without isLeaf yet)
-            try await HomebrewController.shared.streamInstalledPackages(cask: false) { name, desc, version, isPinned, tap, tapRbPath in
+            try await HomebrewController.shared.streamInstalledPackages(cask: false) { name, displayName, desc, version, isPinned, tap, tapRbPath in
                 let package = InstalledPackage(
                     name: name,
+                    displayName: displayName,
                     description: desc,
                     version: version,
                     isCask: false,
@@ -148,9 +149,10 @@ class HomebrewManager: ObservableObject {
             }
 
             // Collect casks (casks are always "leaves" - no dependency tracking)
-            try await HomebrewController.shared.streamInstalledPackages(cask: true) { name, desc, version, isPinned, tap, tapRbPath in
+            try await HomebrewController.shared.streamInstalledPackages(cask: true) { name, displayName, desc, version, isPinned, tap, tapRbPath in
                 let package = InstalledPackage(
                     name: name,
+                    displayName: displayName,
                     description: desc,
                     version: version,
                     isCask: true,
@@ -175,6 +177,7 @@ class HomebrewManager: ObservableObject {
             tempFormulae = tempFormulae.map { formula in
                 InstalledPackage(
                     name: formula.name,
+                    displayName: formula.displayName,
                     description: formula.description,
                     version: formula.version,
                     isCask: formula.isCask,
@@ -274,7 +277,7 @@ class HomebrewManager: ObservableObject {
 
         return HomebrewSearchResult(
             name: package.name,
-            displayName: matchingPackage?.displayName,
+            displayName: package.displayName ?? matchingPackage?.displayName,  // Fallback: Ruby file → JWS lookup
             description: package.description,
             homepage: nil,
             license: nil,

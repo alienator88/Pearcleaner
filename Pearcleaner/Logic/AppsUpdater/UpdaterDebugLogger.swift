@@ -40,6 +40,9 @@ class UpdaterDebugLogger: ObservableObject {
                 self?.sparkleLogs.append(logLine)
             case .homebrew:
                 self?.homebrewLogs.append(logLine)
+            case .unsupported:
+                // No logs for unsupported apps (they don't have updates to debug)
+                break
             }
         }
     }

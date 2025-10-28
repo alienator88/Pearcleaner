@@ -14,7 +14,7 @@ struct AppsUpdaterView: View {
     @EnvironmentObject var updater: Updater
     @Environment(\.colorScheme) var colorScheme
     @State private var searchText = ""
-    @State private var collapsedCategories: Set<String> = []
+    @State private var collapsedCategories: Set<String> = ["Unsupported"]
     @State private var hiddenSidebar: Bool = false
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
@@ -23,6 +23,7 @@ struct AppsUpdaterView: View {
     @AppStorage("settings.updater.checkSparkle") private var checkSparkle: Bool = true
     @AppStorage("settings.updater.includeSparklePreReleases") private var includeSparklePreReleases: Bool = false
     @AppStorage("settings.updater.includeHomebrewFormulae") private var includeHomebrewFormulae: Bool = false
+    @AppStorage("settings.updater.showUnsupported") private var showUnsupported: Bool = true
 
     private var totalUpdateCount: Int {
         updateManager.updatesBySource.values.reduce(0) { $0 + $1.count }
@@ -36,9 +37,9 @@ struct AppsUpdaterView: View {
         updateManager.updatesBySource.values.contains { !$0.isEmpty }
     }
 
-    // Collect all apps across all sources
+    // Collect all apps across all sources (exclude unsupported apps - they can't be updated)
     private var allApps: [UpdateableApp] {
-        updateManager.updatesBySource.values.flatMap { $0 }
+        updateManager.updatesBySource.values.flatMap { $0 }.filter { $0.source != .unsupported }
     }
 
     // Count selected apps across all sources
@@ -178,6 +179,19 @@ struct AppsUpdaterView: View {
                                     isFirst: !checkAppStore && !checkHomebrew
                                 )
                             }
+
+                            if showUnsupported {
+                                CategorySection(
+                                    title: "Unsupported",
+                                    icon: "questionmark.circle",
+                                    apps: updateManager.updatesBySource[.unsupported] ?? [],
+                                    searchText: searchText,
+                                    isScanning: false,  // Unsupported apps are calculated instantly, not scanned
+                                    collapsed: (updateManager.updatesBySource[.unsupported]?.isEmpty ?? true) || collapsedCategories.contains("Unsupported"),
+                                    onToggle: { toggleCategory("Unsupported") },
+                                    isFirst: !checkAppStore && !checkHomebrew && !checkSparkle
+                                )
+                            }
                         }
                         .padding(.horizontal, 20)
                         .padding(.top, 10)
@@ -235,7 +249,8 @@ struct AppsUpdaterView: View {
                 checkHomebrew: $checkHomebrew,
                 checkSparkle: $checkSparkle,
                 includeSparklePreReleases: $includeSparklePreReleases,
-                includeHomebrewFormulae: $includeHomebrewFormulae
+                includeHomebrewFormulae: $includeHomebrewFormulae,
+                showUnsupported: $showUnsupported
             )
         }
         .animation(animationEnabled ? .spring(response: 0.35, dampingFraction: 0.8) : .none, value: hiddenSidebar)
@@ -306,8 +321,9 @@ struct AppsUpdaterView: View {
     }
 
     private func selectAllApps() {
-        // Select all apps across all sources
+        // Select all apps across all sources (skip unsupported - they can't be updated)
         for (source, apps) in updateManager.updatesBySource {
+            guard source != .unsupported else { continue }
             var updatedApps = apps
             for index in updatedApps.indices {
                 updatedApps[index].isSelectedForUpdate = true
@@ -317,8 +333,9 @@ struct AppsUpdaterView: View {
     }
 
     private func deselectAllApps() {
-        // Deselect all apps across all sources
+        // Deselect all apps across all sources (skip unsupported - they can't be updated)
         for (source, apps) in updateManager.updatesBySource {
+            guard source != .unsupported else { continue }
             var updatedApps = apps
             for index in updatedApps.indices {
                 updatedApps[index].isSelectedForUpdate = false

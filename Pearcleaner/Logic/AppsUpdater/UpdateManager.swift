@@ -28,6 +28,7 @@ class UpdateManager: ObservableObject {
     @AppStorage("settings.updater.includeSparklePreReleases") private var includeSparklePreReleases: Bool = false
     @AppStorage("settings.updater.includeHomebrewFormulae") private var includeHomebrewFormulae: Bool = false
     @AppStorage("settings.updater.showAutoUpdatesInHomebrew") private var showAutoUpdatesInHomebrew: Bool = false
+    @AppStorage("settings.updater.showUnsupported") private var showUnsupported: Bool = true
     @AppStorage("settings.updater.hiddenAppsData") private var hiddenAppsData: Data = Data()
 
     private init() {}
@@ -179,6 +180,41 @@ class UpdateManager: ObservableObject {
             for await (source, apps) in group {
                 await processSourceResults(source: source, apps: apps)
             }
+        }
+
+        // Calculate unsupported apps (only if toggle is enabled - resource optimization)
+        if showUnsupported {
+            let unsupportedApps = apps.filter { app in
+                // Not an App Store app
+                !app.isAppStore &&
+                // Not a Homebrew cask/formula
+                app.cask == nil &&
+                // Doesn't have Sparkle
+                !app.hasSparkle
+            }.map { app in
+                // Create UpdateableApp with unsupported source
+                UpdateableApp(
+                    appInfo: app,
+                    availableVersion: nil,  // Can't check updates
+                    source: .unsupported,
+                    adamID: nil,
+                    appStoreURL: nil,
+                    status: .idle,
+                    progress: 0.0,
+                    isSelectedForUpdate: false,  // Can't update unsupported apps
+                    releaseTitle: nil,
+                    releaseDescription: nil,
+                    releaseNotesLink: nil,
+                    releaseDate: nil,
+                    isPreRelease: false,
+                    isIOSApp: false,
+                    extractedFromBinary: false,
+                    alternateSparkleURLs: nil,
+                    currentFeedURL: nil
+                )
+            }
+
+            await processSourceResults(source: .unsupported, apps: unsupportedApps)
         }
 
         lastScanDate = Date()
@@ -339,6 +375,11 @@ class UpdateManager: ObservableObject {
 
             // Add to queue (limits concurrent operations to prevent Sparkle conflicts)
             UpdateQueue.shared.addOperation(operation)
+
+        case .unsupported:
+            // Unsupported apps cannot be updated - do nothing
+            UpdaterDebugLogger.shared.log(.sparkle, "⚠️ Cannot update unsupported app: \(app.appInfo.appName)")
+            break
         }
     }
 

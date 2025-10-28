@@ -87,35 +87,35 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         ensureApplicationSupportFolderExists()
 
         //MARK: Auto-slim size calculations on launch
-        if autoSlim {
-            DispatchQueue.global(qos: .utility).async {
-                let bundleURL = URL(fileURLWithPath: Bundle.main.bundlePath)
-
-                // Calculate current size if slimming has been run before but size not yet recorded
-                if !AppState.shared.autoSlimStats.lastRunVersion.isEmpty && AppState.shared.autoSlimStats.currentSize == 0 {
-                    let currentSize = totalSizeOnDisk(for: bundleURL)
-                    DispatchQueue.main.async {
-                        var stats = AppState.shared.autoSlimStats
-                        stats.currentSize = currentSize
-                        AppState.shared.autoSlimStats = stats
-                    }
-                }
-            }
-        }
+//        if autoSlim {
+//            DispatchQueue.global(qos: .utility).async {
+//                let bundleURL = URL(fileURLWithPath: Bundle.main.bundlePath)
+//
+//                // Calculate current size if slimming has been run before but size not yet recorded
+//                if !AppState.shared.autoSlimStats.lastRunVersion.isEmpty && AppState.shared.autoSlimStats.currentSize == 0 {
+//                    let currentSize = totalSizeOnDisk(for: bundleURL)
+//                    DispatchQueue.main.async {
+//                        var stats = AppState.shared.autoSlimStats
+//                        stats.currentSize = currentSize
+//                        AppState.shared.autoSlimStats = stats
+//                    }
+//                }
+//            }
+//        }
 
     }
 
     func applicationWillTerminate(_ notification: Notification) {
         //MARK: Auto-slim on termination if needed (universal or version changed)
-        if autoSlim {
-            let arch = checkAppBundleArchitecture(at: Bundle.main.bundlePath)
-            let currentVersion = Bundle.main.version
-            let needsSlim = (arch == .universal) || (AppState.shared.autoSlimStats.lastRunVersion != currentVersion)
-
-            if needsSlim {
-                performAutoSlim()
-            }
-        }
+//        if autoSlim {
+//            let arch = checkAppBundleArchitecture(at: Bundle.main.bundlePath)
+//            let currentVersion = Bundle.main.version
+//            let needsSlim = (arch == .universal) || (AppState.shared.autoSlimStats.lastRunVersion != currentVersion)
+//
+//            if needsSlim {
+//                performAutoSlim()
+//            }
+//        }
     }
 
     func applicationShouldRestoreApplicationState(_ app: NSApplication) -> Bool {
