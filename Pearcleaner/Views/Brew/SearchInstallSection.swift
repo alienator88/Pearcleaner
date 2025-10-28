@@ -740,10 +740,7 @@ struct SearchResultRowView: View {
 
                         // Refresh AppState.sortedApps to include newly installed GUI app (casks only)
                         if isCask {
-                            let folderPaths = FolderSettingsManager.shared.folderPaths
-                            flushBundleCaches(for: AppState.shared.sortedApps)
-                            invalidateCaskLookupCache()
-                            await loadAppsAsync(folderPaths: folderPaths)
+                            await loadAndAddCaskApp(caskName: result.name)
                         }
                     } catch {
                         printOS("Error installing package \(result.name): \(error)")
@@ -772,9 +769,12 @@ struct SearchResultRowView: View {
 
                         // Refresh AppState.sortedApps to reflect updated version (casks only)
                         if isCask {
-                            let folderPaths = FolderSettingsManager.shared.folderPaths
-                            flushBundleCaches(for: AppState.shared.sortedApps)
-                            await loadAppsAsync(folderPaths: folderPaths)
+                            // Flush bundle cache for the app before reloading (version changed)
+                            if let matchingApp = findAppByCask(result.name) {
+                                flushBundleCaches(for: [matchingApp])
+                            }
+
+                            await loadAndUpdateCaskApp(caskName: result.name)
                         }
                     } catch {
                         printOS("Error updating package \(result.name): \(error)")
@@ -801,7 +801,14 @@ struct SearchResultRowView: View {
 
                             // Refresh AppState.sortedApps to remove uninstalled app (casks only)
                             let folderPaths = FolderSettingsManager.shared.folderPaths
-                            flushBundleCaches(for: AppState.shared.sortedApps)
+
+                            // Optimized: Only flush bundle for the uninstalled app (if still exists)
+                            if let matchingApp = findAppByCask(result.name) {
+                                flushBundleCaches(for: [matchingApp])
+                            } else {
+                                flushBundleCaches(for: AppState.shared.sortedApps)  // Fallback
+                            }
+
                             invalidateCaskLookupCache()
                             await loadAppsAsync(folderPaths: folderPaths)
                         } else {
@@ -2437,10 +2444,7 @@ struct InstallButtonSection: View {
 
                         // Refresh AppState.sortedApps to include newly installed GUI app (casks only)
                         if isCask {
-                            let folderPaths = FolderSettingsManager.shared.folderPaths
-                            flushBundleCaches(for: AppState.shared.sortedApps)
-                            invalidateCaskLookupCache()
-                            await loadAppsAsync(folderPaths: folderPaths)
+                            await loadAndAddCaskApp(caskName: packageName)
                         }
                     } catch {
                         printOS("Error installing package \(packageName): \(error)")
@@ -2610,5 +2614,108 @@ struct AvailableCategoryView: View {
                 }
             }
         }
+    }
+}
+
+// MARK: - Helper Functions
+
+/// Find AppInfo matching the given cask identifier
+/// Used for optimized bundle flushing after Homebrew operations
+fileprivate func findAppByCask(_ caskName: String) -> AppInfo? {
+    let shortName = caskName.components(separatedBy: "/").last ?? caskName
+
+    return AppState.shared.sortedApps.first(where: { appInfo in
+        appInfo.cask == caskName || appInfo.cask == shortName
+    })
+}
+
+/// Load a newly installed cask app from Caskroom and add it to sortedApps
+/// Used after installing new casks to sync AppState without full rescan
+fileprivate func loadAndAddCaskApp(caskName: String) async {
+    let brewPrefix = "/opt/homebrew"
+    let caskroomPath = "\(brewPrefix)/Caskroom/\(caskName)"
+    let globPattern = "\(caskroomPath)/*/*.app"
+
+    // Find the app symlink in Caskroom using glob
+    var globResult = glob_t()
+    defer { globfree(&globResult) }
+
+    guard glob(globPattern, 0, nil, &globResult) == 0 else {
+        printOS("No app found in Caskroom for cask: \(caskName)")
+        return
+    }
+
+    guard globResult.gl_pathc > 0,
+          let cPath = globResult.gl_pathv[0],
+          let symlinkPath = String(validatingUTF8: cPath) else {
+        printOS("No valid app path found for cask: \(caskName)")
+        return
+    }
+
+    // Resolve symlink to get real path in /Applications
+    let realPath = URL(fileURLWithPath: symlinkPath).resolvingSymlinksInPath()
+
+    // Flush bundle cache to avoid stale cached data (important for reinstalls)
+    flushBundleCache(for: realPath)
+
+    // Load app info from real path
+    guard let appInfo = AppInfoFetcher.getAppInfo(atPath: realPath) else {
+        printOS("Failed to load app info for: \(realPath.path)")
+        return
+    }
+
+    // Add to sortedApps array and re-sort
+    await MainActor.run {
+        AppState.shared.sortedApps.append(appInfo)
+        AppState.shared.sortedApps.sort { $0.appName < $1.appName }
+        invalidateCaskLookupCache()
+    }
+}
+
+/// Load an upgraded cask app from Caskroom and update it in sortedApps
+/// Used after upgrading existing casks to sync AppState with new version
+fileprivate func loadAndUpdateCaskApp(caskName: String) async {
+    let brewPrefix = "/opt/homebrew"
+    let caskroomPath = "\(brewPrefix)/Caskroom/\(caskName)"
+    let globPattern = "\(caskroomPath)/*/*.app"
+
+    // Find the app symlink in Caskroom using glob
+    var globResult = glob_t()
+    defer { globfree(&globResult) }
+
+    guard glob(globPattern, 0, nil, &globResult) == 0 else {
+        printOS("No app found in Caskroom for cask: \(caskName)")
+        return
+    }
+
+    guard globResult.gl_pathc > 0,
+          let cPath = globResult.gl_pathv[0],
+          let symlinkPath = String(validatingUTF8: cPath) else {
+        printOS("No valid app path found for cask: \(caskName)")
+        return
+    }
+
+    // Resolve symlink to get real path in /Applications
+    let realPath = URL(fileURLWithPath: symlinkPath).resolvingSymlinksInPath()
+
+    // Flush bundle cache to ensure we get updated version info
+    flushBundleCache(for: realPath)
+
+    // Load app info from real path with updated version
+    guard let newAppInfo = AppInfoFetcher.getAppInfo(atPath: realPath) else {
+        printOS("Failed to load app info for: \(realPath.path)")
+        return
+    }
+
+    // Replace existing entry in sortedApps array and re-sort
+    await MainActor.run {
+        if let index = AppState.shared.sortedApps.firstIndex(where: { $0.bundleIdentifier == newAppInfo.bundleIdentifier }) {
+            AppState.shared.sortedApps[index] = newAppInfo
+        } else {
+            // Fallback: if not found, just append (shouldn't happen for upgrades)
+            AppState.shared.sortedApps.append(newAppInfo)
+        }
+        AppState.shared.sortedApps.sort { $0.appName < $1.appName }
+        invalidateCaskLookupCache()
     }
 }

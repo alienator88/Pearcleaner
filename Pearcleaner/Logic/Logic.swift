@@ -39,6 +39,16 @@ func flushBundleCaches(for apps: [AppInfo]) {
     }
 }
 
+/// Flush bundle cache for a specific path (without requiring AppInfo object)
+/// Used when loading newly installed apps where bundle cache might be stale
+func flushBundleCache(for path: URL) {
+    autoreleasepool {
+        if let bundleRef = CFBundleCreate(nil, path as CFURL) {
+            _CFBundleFlushBundleCaches(bundleRef)
+        }
+    }
+}
+
 /// Load apps from specified folder paths and update AppState
 /// This is the main entry point for loading/refreshing apps
 func loadApps(folderPaths: [String]) {
