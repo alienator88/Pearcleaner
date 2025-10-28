@@ -24,6 +24,7 @@ struct AppsUpdaterView: View {
     @AppStorage("settings.updater.includeSparklePreReleases") private var includeSparklePreReleases: Bool = false
     @AppStorage("settings.updater.includeHomebrewFormulae") private var includeHomebrewFormulae: Bool = false
     @AppStorage("settings.updater.showUnsupported") private var showUnsupported: Bool = true
+    @AppStorage("settings.updater.flushBundleCaches") private var flushBundleCaches: Bool = false
 
     private var totalUpdateCount: Int {
         updateManager.updatesBySource.values.reduce(0) { $0 + $1.count }
@@ -250,7 +251,8 @@ struct AppsUpdaterView: View {
                 checkSparkle: $checkSparkle,
                 includeSparklePreReleases: $includeSparklePreReleases,
                 includeHomebrewFormulae: $includeHomebrewFormulae,
-                showUnsupported: $showUnsupported
+                showUnsupported: $showUnsupported,
+                flushBundleCaches: $flushBundleCaches
             )
         }
         .animation(animationEnabled ? .spring(response: 0.35, dampingFraction: 0.8) : .none, value: hiddenSidebar)
@@ -258,7 +260,7 @@ struct AppsUpdaterView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("UpdaterViewShouldRefresh"))) { _ in
             Task {
-                await updateManager.scanForUpdates()
+                await updateManager.scanForUpdates(forceReload: true)
             }
         }
         .toolbar {
@@ -289,7 +291,7 @@ struct AppsUpdaterView: View {
                 .help("While in beta, report issues with missing or incorrect updates here")
 
                 Button {
-                    Task { await updateManager.scanForUpdates() }
+                    Task { await updateManager.scanForUpdates(forceReload: true) }
                 } label: {
                     Label("Refresh", systemImage: "arrow.counterclockwise")
                 }

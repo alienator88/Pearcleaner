@@ -19,6 +19,7 @@ struct UpdaterDetailsSidebar: View {
     @Binding var includeSparklePreReleases: Bool
     @Binding var includeHomebrewFormulae: Bool
     @Binding var showUnsupported: Bool
+    @Binding var flushBundleCaches: Bool
     @StateObject private var updateManager = UpdateManager.shared
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
@@ -35,7 +36,8 @@ struct UpdaterDetailsSidebar: View {
                         checkSparkle: $checkSparkle,
                         includeSparklePreReleases: $includeSparklePreReleases,
                         includeHomebrewFormulae: $includeHomebrewFormulae,
-                        showUnsupported: $showUnsupported
+                        showUnsupported: $showUnsupported,
+                        flushBundleCaches: $flushBundleCaches
                     )
                     Divider()
                     UpdaterHiddenHeaderSection(hiddenCount: updateManager.hiddenUpdates.count)
@@ -65,6 +67,7 @@ struct UpdaterSourceCheckboxSection: View {
     @Binding var includeSparklePreReleases: Bool
     @Binding var includeHomebrewFormulae: Bool
     @Binding var showUnsupported: Bool
+    @Binding var flushBundleCaches: Bool
     @StateObject private var updateManager = UpdateManager.shared
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.updater.debugLogging") private var debugLogging: Bool = true
@@ -256,6 +259,24 @@ struct UpdaterSourceCheckboxSection: View {
             .toggleStyle(CircleCheckboxToggleStyle())
             .help("Enable verbose logging for update checker troubleshooting")
 
+            // Flush bundle caches toggle (debug feature)
+            if debugLogging {
+                Toggle(isOn: $flushBundleCaches) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "arrow.triangle.2.circlepath")
+                            .foregroundStyle(.purple)
+                            .font(.caption)
+                            .frame(width: 16)
+
+                        Text("Flush Bundle Caches")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                }
+                .toggleStyle(CircleCheckboxToggleStyle())
+                .help("Flush bundle caches before each scan (for testing with fake versions)")
+            }
+
             // Auto-updates in Homebrew toggle
             Toggle(isOn: Binding(
                 get: { showAutoUpdatesInHomebrew },
@@ -321,7 +342,7 @@ struct UpdaterSourceCheckboxSection: View {
                 // Optionally rescan for updates after reset
                 Task {
                     try? await Task.sleep(nanoseconds: 1_000_000_000) // Wait 1 second
-                    await updateManager.scanForUpdates()
+                    await updateManager.scanForUpdates(forceReload: true)
                 }
 
             case .failure(let error):

@@ -27187,6 +27187,12 @@
         }
       }
     },
+    "Flush Bundle Caches" : {
+
+    },
+    "Flush bundle caches before each scan (for testing with fake versions)" : {
+
+    },
     "Folders" : {
       "extractionState" : "manual",
       "localizations" : {

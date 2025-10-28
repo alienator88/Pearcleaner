@@ -29,6 +29,7 @@ class UpdateManager: ObservableObject {
     @AppStorage("settings.updater.includeHomebrewFormulae") private var includeHomebrewFormulae: Bool = false
     @AppStorage("settings.updater.showAutoUpdatesInHomebrew") private var showAutoUpdatesInHomebrew: Bool = false
     @AppStorage("settings.updater.showUnsupported") private var showUnsupported: Bool = true
+    @AppStorage("settings.updater.flushBundleCaches") private var flushBundleCaches: Bool = false
     @AppStorage("settings.updater.hiddenAppsData") private var hiddenAppsData: Data = Data()
 
     private init() {}
@@ -107,7 +108,7 @@ class UpdateManager: ObservableObject {
         updatesBySource[app.source] = apps
     }
 
-    func scanForUpdates() async {
+    func scanForUpdates(forceReload: Bool = false) async {
         isScanning = true
         defer { isScanning = false }
 
@@ -119,17 +120,20 @@ class UpdateManager: ObservableObject {
         if checkHomebrew { scanningSources.insert(.homebrew) }
         if checkSparkle { scanningSources.insert(.sparkle) }
 
-        // Reload apps to detect newly installed/uninstalled apps and version changes
-        // This ensures we scan with current state, not cached AppState.shared.sortedApps
-        let folderPaths = await MainActor.run {
-            FolderSettingsManager.shared.folderPaths
+        // Only flush caches and reload apps if explicitly requested or debug setting enabled
+        // This significantly improves performance for regular update checks
+        if forceReload || flushBundleCaches {
+            // Flush bundle caches (useful for testing with fake versions)
+            Pearcleaner.flushBundleCaches(for: AppState.shared.sortedApps)
+
+            // Reload apps from disk to detect newly installed/uninstalled apps
+            let folderPaths = await MainActor.run {
+                FolderSettingsManager.shared.folderPaths
+            }
+            await loadAppsAsync(folderPaths: folderPaths)
         }
 
-        // Flush bundle caches and reload apps from disk
-        flushBundleCaches(for: AppState.shared.sortedApps)
-        await loadAppsAsync(folderPaths: folderPaths)
-
-        // Get freshly loaded apps from AppState
+        // Use apps from AppState (either freshly loaded or existing)
         let apps = AppState.shared.sortedApps
 
         // Launch concurrent scans with progressive updates
@@ -524,7 +528,7 @@ class UpdateManager: ObservableObject {
         }
 
         // Flush bundle caches before reloading to ensure fresh version info
-        flushBundleCaches(for: AppState.shared.sortedApps)
+        Pearcleaner.flushBundleCaches(for: AppState.shared.sortedApps)
         await loadAppsAsync(folderPaths: folderPaths)
     }
 }

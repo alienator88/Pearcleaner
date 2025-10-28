@@ -156,7 +156,6 @@ struct Version: Hashable, Comparable {
     // MARK: - Version Sanitization
 
     /// Sanitizes version discrepancies between app version and remote version
-    /// Based on Latest's implementation to handle common edge cases
     func sanitize(with appVersion: Version) -> Version {
         // Case 1: The last component of the version number is actually the build number
         // This can only be detected for equal build numbers to avoid false positives
@@ -186,7 +185,6 @@ struct Version: Hashable, Comparable {
         }
 
         // Case 3: Handle specific edge case with 7-component versions
-        // (From Latest's code, handles obscure apps with unusual versioning)
         if appVersion.buildNumber == appVersion.versionNumber,
            var components = versionNumber?.components(),
            components.last?.plainComponent != nil,

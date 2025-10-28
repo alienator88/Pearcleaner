@@ -5,7 +5,6 @@
 //  Created by Alin Lupascu on 10/28/25.
 //
 //  Simplified Sparkle update checker using SPUUpdater directly
-//  Based on Latest's approach: https://github.com/mangerlahn/Latest
 //
 
 import Foundation
@@ -25,7 +24,6 @@ class SparkleUpdateChecker {
         for appInfo in apps {
             guard let bundle = Bundle(url: appInfo.path) else { continue }
 
-            // Get feed URL using Latest's simple approach (SUFeedURL + DevMate fallback)
             guard let feedURL = Self.feedURL(from: bundle) else { continue }
 
             logger.log(.sparkle, "Checking: \(appInfo.appName) - \(feedURL.absoluteString)")
@@ -37,25 +35,36 @@ class SparkleUpdateChecker {
             return []
         }
 
-        // Check apps concurrently using SPUUpdater
-        return await withTaskGroup(of: UpdateableApp?.self) { group in
-            for (appInfo, bundle, feedURL) in sparkleApps {
-                group.addTask {
-                    await Self.checkSingleApp(appInfo: appInfo, bundle: bundle, feedURL: feedURL, includePreReleases: includePreReleases)
+        // Check apps in batches to prevent system resource exhaustion
+        // Batch size adapts to CPU core count (min: 5, max: 50)
+        // Lower minimum helps Intel Macs complete scans faster while still being safe
+        var updates: [UpdateableApp] = []
+        let batches = createOptimalChunks(from: sparkleApps, minChunkSize: 5, maxChunkSize: 50)
+
+        // Process each batch concurrently
+        for batch in batches {
+            let batchResults = await withTaskGroup(of: UpdateableApp?.self) { group in
+                for (appInfo, bundle, feedURL) in batch {
+                    group.addTask {
+                        await Self.checkSingleApp(appInfo: appInfo, bundle: bundle, feedURL: feedURL, includePreReleases: includePreReleases)
+                    }
                 }
+
+                // Collect non-nil results from this batch
+                var batchUpdates: [UpdateableApp] = []
+                for await update in group {
+                    if let update = update {
+                        batchUpdates.append(update)
+                    }
+                }
+                return batchUpdates
             }
 
-            // Collect non-nil results
-            var updates: [UpdateableApp] = []
-            for await update in group {
-                if let update = update {
-                    updates.append(update)
-                }
-            }
-
-            logger.log(.sparkle, "Found \(updates.count) Sparkle updates available")
-            return updates
+            updates.append(contentsOf: batchResults)
         }
+
+        logger.log(.sparkle, "Found \(updates.count) Sparkle updates available")
+        return updates
     }
 
     /// Check a single app for updates using SPUUpdater
@@ -75,7 +84,7 @@ class SparkleUpdateChecker {
         }
     }
 
-    /// Get Sparkle feed URL from app bundle (Latest's approach)
+    /// Get Sparkle feed URL from app bundle
     /// Checks SUFeedURL in Info.plist, falls back to DevMate if framework is present
     static func feedURL(from bundle: Bundle) -> URL? {
         guard let information = bundle.infoDictionary else { return nil }
