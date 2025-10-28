@@ -963,9 +963,21 @@ class HomebrewController {
                     }
 
                     // Extract version based on package type
-                    let version: String? = package.isCask
+                    let rawVersion: String? = package.isCask
                         ? json["version"] as? String
                         : (json["versions"] as? [String: Any])?["stable"] as? String
+
+                    // Strip revision suffix from cask versions for consistent comparison
+                    // Cask revisions are packaging-only changes (URL/checksum/metadata), not app updates
+                    // (Installed versions already have revision suffix stripped during scan - line 372)
+                    // Formulae revisions are kept - those indicate actual binary changes (patches, security fixes)
+                    let version: String?
+                    if package.isCask {
+                        version = rawVersion?.stripBrewRevisionSuffix()
+                    } else {
+                        // Keep revision suffix for formulae - those matter for compiled binaries
+                        version = rawVersion
+                    }
 
                     return (package.name, version, package.isCask)
                 }
