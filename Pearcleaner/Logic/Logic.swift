@@ -856,6 +856,43 @@ private func buildCaskLookupTable() -> [String: CaskMetadata] {
         }
     }
 
+    // Fallback for tap casks without .json files (only .rb files)
+    // Use directory name as cask identifier
+    let allCaskDirs = (try? fileManager.contentsOfDirectory(atPath: caskroomPath)) ?? []
+
+    for caskDirName in allCaskDirs where !caskDirName.hasPrefix(".") {
+        let receiptPath = "\(caskroomPath)\(caskDirName)/.metadata/INSTALL_RECEIPT.json"
+
+        guard let data = try? Data(contentsOf: URL(fileURLWithPath: receiptPath)),
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let artifacts = json["uninstall_artifacts"] as? [[String: Any]] else {
+            continue
+        }
+
+        // Extract auto_updates flag
+        let autoUpdates = json["auto_updates"] as? Bool
+
+        // Extract app names from uninstall_artifacts
+        for artifact in artifacts {
+            if let apps = artifact["app"] as? [String] {
+                for appStr in apps {
+                    let realAppName = appStr
+                        .replacingOccurrences(of: ".app", with: "")
+                        .lowercased()
+
+                    // Only add if not already in lookup table (JSON takes precedence)
+                    if appToCask[realAppName] == nil {
+                        // Use directory name as cask identifier
+                        appToCask[realAppName] = CaskMetadata(
+                            caskName: caskDirName,  // e.g., "battery-toolkit"
+                            autoUpdates: autoUpdates
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     return appToCask
 }
 

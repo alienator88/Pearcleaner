@@ -407,16 +407,29 @@ struct SearchInstallSection: View {
             }
             .onAppear {
             Task {
-                // Load installed packages if not already loaded
-                if !brewManager.hasLoadedInstalledPackages {
-                    await brewManager.loadInstalledPackages()
+                // Start loading installed packages immediately
+                let loadInstalledTask = Task {
+                    if !brewManager.hasLoadedInstalledPackages {
+                        await brewManager.loadInstalledPackages()
+                    }
                 }
-            }
 
-            // Load available packages in separate background task (doesn't block UI)
-            Task {
-                if !brewManager.hasLoadedAvailablePackages {
-                    await brewManager.loadAvailablePackages(appState: appState, forceRefresh: false)
+                // Debounce JWS loading by 0.5s to let installed scan run uncontested first
+                let loadAvailableTask = Task {
+                    try? await Task.sleep(nanoseconds: 500_000_000)  // 0.5 second delay
+                    if !brewManager.hasLoadedAvailablePackages {
+                        await brewManager.loadAvailablePackages(appState: appState, forceRefresh: false)
+                    }
+                }
+
+                // Wait for both to complete
+                _ = await loadInstalledTask.value
+                _ = await loadAvailableTask.value
+
+                // Re-enrich installed packages now that JWS data is available
+                // This is very fast (~10-50ms) - just re-runs convertToSearchResult() with new JWS data
+                await MainActor.run {
+                    brewManager.updateInstalledCategories()
                 }
             }
         }
