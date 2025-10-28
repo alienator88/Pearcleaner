@@ -22,9 +22,7 @@ struct AppsUpdaterView: View {
     @AppStorage("settings.updater.checkHomebrew") private var checkHomebrew: Bool = true
     @AppStorage("settings.updater.checkSparkle") private var checkSparkle: Bool = true
     @AppStorage("settings.updater.includeSparklePreReleases") private var includeSparklePreReleases: Bool = false
-    @AppStorage("settings.updater.includeHomebrewFormulae") private var includeHomebrewFormulae: Bool = false
     @AppStorage("settings.updater.showUnsupported") private var showUnsupported: Bool = true
-    @AppStorage("settings.updater.flushBundleCaches") private var flushBundleCaches: Bool = false
 
     private var totalUpdateCount: Int {
         updateManager.updatesBySource.values.reduce(0) { $0 + $1.count }
@@ -250,9 +248,7 @@ struct AppsUpdaterView: View {
                 checkHomebrew: $checkHomebrew,
                 checkSparkle: $checkSparkle,
                 includeSparklePreReleases: $includeSparklePreReleases,
-                includeHomebrewFormulae: $includeHomebrewFormulae,
-                showUnsupported: $showUnsupported,
-                flushBundleCaches: $flushBundleCaches
+                showUnsupported: $showUnsupported
             )
         }
         .animation(animationEnabled ? .spring(response: 0.35, dampingFraction: 0.8) : .none, value: hiddenSidebar)

@@ -17,9 +17,7 @@ struct UpdaterDetailsSidebar: View {
     @Binding var checkHomebrew: Bool
     @Binding var checkSparkle: Bool
     @Binding var includeSparklePreReleases: Bool
-    @Binding var includeHomebrewFormulae: Bool
     @Binding var showUnsupported: Bool
-    @Binding var flushBundleCaches: Bool
     @StateObject private var updateManager = UpdateManager.shared
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
@@ -35,9 +33,7 @@ struct UpdaterDetailsSidebar: View {
                         checkHomebrew: $checkHomebrew,
                         checkSparkle: $checkSparkle,
                         includeSparklePreReleases: $includeSparklePreReleases,
-                        includeHomebrewFormulae: $includeHomebrewFormulae,
-                        showUnsupported: $showUnsupported,
-                        flushBundleCaches: $flushBundleCaches
+                        showUnsupported: $showUnsupported
                     )
                     Divider()
                     UpdaterHiddenHeaderSection(hiddenCount: updateManager.hiddenUpdates.count)
@@ -65,9 +61,7 @@ struct UpdaterSourceCheckboxSection: View {
     @Binding var checkHomebrew: Bool
     @Binding var checkSparkle: Bool
     @Binding var includeSparklePreReleases: Bool
-    @Binding var includeHomebrewFormulae: Bool
     @Binding var showUnsupported: Bool
-    @Binding var flushBundleCaches: Bool
     @StateObject private var updateManager = UpdateManager.shared
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.updater.debugLogging") private var debugLogging: Bool = true
@@ -150,7 +144,7 @@ struct UpdaterSourceCheckboxSection: View {
                 }
             }
 
-            // Homebrew checkbox with formulae toggle
+            // Homebrew checkbox with auto-updates toggle
             HStack(spacing: 8) {
                 Toggle(isOn: Binding(
                     get: { checkHomebrew },
@@ -176,16 +170,16 @@ struct UpdaterSourceCheckboxSection: View {
 
                 Spacer()
 
-                // Formulae toggle button
+                // Auto-updates button
                 Button(action: {
-                    includeHomebrewFormulae.toggle()
+                    showAutoUpdatesInHomebrew.toggle()
                     Task { await updateManager.scanForUpdates() }
                 }) {
-                    Image(systemName: includeHomebrewFormulae ? "terminal.fill" : "terminal")
-                        .foregroundStyle(includeHomebrewFormulae ? .orange : ThemeColors.shared(for: colorScheme).secondaryText)
+                    Image(systemName: "arrow.triangle.2.circlepath")
+                        .foregroundStyle(showAutoUpdatesInHomebrew ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
                 }
                 .buttonStyle(.plain)
-                .help(includeHomebrewFormulae ? "Disable CLI tools (formulae)" : "Enable CLI tools (formulae)")
+                .help(showAutoUpdatesInHomebrew ? "Hide auto-updating apps from Homebrew" : "Show auto-updating apps in Homebrew")
             }
 
             HStack(spacing: 8) {
@@ -257,54 +251,13 @@ struct UpdaterSourceCheckboxSection: View {
                 }
             }
             .toggleStyle(CircleCheckboxToggleStyle())
-            .help("Enable verbose logging for update checker troubleshooting")
-
-            // Flush bundle caches toggle (debug feature)
-            if debugLogging {
-                Toggle(isOn: $flushBundleCaches) {
-                    HStack(spacing: 6) {
-                        Image(systemName: "arrow.triangle.2.circlepath")
-                            .foregroundStyle(.purple)
-                            .font(.caption)
-                            .frame(width: 16)
-
-                        Text("Flush Bundle Caches")
-                            .font(.caption)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    }
-                }
-                .toggleStyle(CircleCheckboxToggleStyle())
-                .help("Flush bundle caches before each scan (for testing with fake versions)")
-            }
-
-            // Auto-updates in Homebrew toggle
-            Toggle(isOn: Binding(
-                get: { showAutoUpdatesInHomebrew },
-                set: { newValue in
-                    showAutoUpdatesInHomebrew = newValue
-                    Task { await updateManager.scanForUpdates() }
-                }
-            )) {
-                HStack(spacing: 6) {
-                    Image(systemName: "arrow.triangle.2.circlepath")
-                        .foregroundStyle(.blue)
-                        .font(.caption)
-                        .frame(width: 16)
-
-                    Text("Auto-updates in Homebrew")
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                }
-            }
-            .toggleStyle(CircleCheckboxToggleStyle())
-            .help("Show auto-updating casks in Homebrew section (when disabled, they only appear in Sparkle)")
+            .help("Enable verbose logging and bundle cache flushing for troubleshooting")
 
             // Show unsupported apps toggle
             Toggle(isOn: Binding(
                 get: { showUnsupported },
                 set: { newValue in
                     showUnsupported = newValue
-                    Task { await updateManager.scanForUpdates() }
                 }
             )) {
                 HStack(spacing: 6) {

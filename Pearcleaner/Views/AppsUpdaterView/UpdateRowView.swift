@@ -176,19 +176,6 @@ struct UpdateRowView: View {
                             }
                         }
 
-                        // CLI tool indicator (Homebrew formulae only)
-                        if app.source == .homebrew
-                           && app.appInfo.bundleIdentifier.hasPrefix("com.homebrew.formula.")
-                           && app.appInfo.appIcon == nil {
-                            ZStack {
-                                Image(systemName: "terminal.fill")
-                                    .font(.body)
-                                    .foregroundStyle(.orange)
-                            }
-                            .frame(width: 20)
-                            .help("CLI Tool (Formula)")
-                        }
-
                         // Info button for App Store apps
                         if app.source == .appStore, let appStoreURL = app.appStoreURL {
                             Button {

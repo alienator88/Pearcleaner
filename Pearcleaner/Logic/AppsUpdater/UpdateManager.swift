@@ -26,10 +26,9 @@ class UpdateManager: ObservableObject {
     @AppStorage("settings.updater.checkHomebrew") private var checkHomebrew: Bool = true
     @AppStorage("settings.updater.checkSparkle") private var checkSparkle: Bool = true
     @AppStorage("settings.updater.includeSparklePreReleases") private var includeSparklePreReleases: Bool = false
-    @AppStorage("settings.updater.includeHomebrewFormulae") private var includeHomebrewFormulae: Bool = false
     @AppStorage("settings.updater.showAutoUpdatesInHomebrew") private var showAutoUpdatesInHomebrew: Bool = false
     @AppStorage("settings.updater.showUnsupported") private var showUnsupported: Bool = true
-    @AppStorage("settings.updater.flushBundleCaches") private var flushBundleCaches: Bool = false
+    @AppStorage("settings.updater.debugLogging") private var debugLogging: Bool = true
     @AppStorage("settings.updater.hiddenAppsData") private var hiddenAppsData: Data = Data()
 
     private init() {}
@@ -120,10 +119,10 @@ class UpdateManager: ObservableObject {
         if checkHomebrew { scanningSources.insert(.homebrew) }
         if checkSparkle { scanningSources.insert(.sparkle) }
 
-        // Only flush caches and reload apps if explicitly requested or debug setting enabled
+        // Only flush caches and reload apps if explicitly requested or debug mode enabled
         // This significantly improves performance for regular update checks
-        if forceReload || flushBundleCaches {
-            // Flush bundle caches (useful for testing with fake versions)
+        if forceReload || debugLogging {
+            // Flush bundle caches (useful for testing with fake versions in debug mode)
             Pearcleaner.flushBundleCaches(for: AppState.shared.sortedApps)
 
             // Reload apps from disk to detect newly installed/uninstalled apps
@@ -140,7 +139,7 @@ class UpdateManager: ObservableObject {
         await withTaskGroup(of: (UpdateSource, [UpdateableApp]).self) { group in
             if checkHomebrew {
                 group.addTask {
-                    let results = await HomebrewUpdateChecker.checkForUpdates(apps: apps, includeFormulae: self.includeHomebrewFormulae, showAutoUpdatesInHomebrew: self.showAutoUpdatesInHomebrew)
+                    let results = await HomebrewUpdateChecker.checkForUpdates(apps: apps, includeFormulae: false, showAutoUpdatesInHomebrew: self.showAutoUpdatesInHomebrew)
                     return (.homebrew, results)
                 }
             }
@@ -187,39 +186,37 @@ class UpdateManager: ObservableObject {
             }
         }
 
-        // Calculate unsupported apps (only if toggle is enabled - resource optimization)
-        if showUnsupported {
-            let unsupportedApps = apps.filter { app in
-                // Not a web app (web apps update with browser)
-                !app.webApp &&
-                // Not an App Store app
-                !app.isAppStore &&
-                // Not a Homebrew cask/formula
-                app.cask == nil &&
-                // Doesn't have Sparkle
-                !app.hasSparkle
-            }.map { app in
-                // Create UpdateableApp with unsupported source
-                UpdateableApp(
-                    appInfo: app,
-                    availableVersion: nil,  // Can't check updates
-                    source: .unsupported,
-                    adamID: nil,
-                    appStoreURL: nil,
-                    status: .idle,
-                    progress: 0.0,
-                    isSelectedForUpdate: false,  // Can't update unsupported apps
-                    releaseTitle: nil,
-                    releaseDescription: nil,
-                    releaseNotesLink: nil,
-                    releaseDate: nil,
-                    isPreRelease: false,
-                    isIOSApp: false
-                )
-            }
-
-            await processSourceResults(source: .unsupported, apps: unsupportedApps)
+        // Calculate unsupported apps (always calculate - it's instant, toggle only controls UI visibility)
+        let unsupportedApps = apps.filter { app in
+            // Not a web app (web apps update with browser)
+            !app.webApp &&
+            // Not an App Store app
+            !app.isAppStore &&
+            // Not a Homebrew cask/formula
+            app.cask == nil &&
+            // Doesn't have Sparkle
+            !app.hasSparkle
+        }.map { app in
+            // Create UpdateableApp with unsupported source
+            UpdateableApp(
+                appInfo: app,
+                availableVersion: nil,  // Can't check updates
+                source: .unsupported,
+                adamID: nil,
+                appStoreURL: nil,
+                status: .idle,
+                progress: 0.0,
+                isSelectedForUpdate: false,  // Can't update unsupported apps
+                releaseTitle: nil,
+                releaseDescription: nil,
+                releaseNotesLink: nil,
+                releaseDate: nil,
+                isPreRelease: false,
+                isIOSApp: false
+            )
         }
+
+        await processSourceResults(source: .unsupported, apps: unsupportedApps)
 
         lastScanDate = Date()
     }
@@ -265,8 +262,8 @@ class UpdateManager: ObservableObject {
                     // Only remove from list if upgrade succeeded
                     updatesBySource[.homebrew]?.removeAll { $0.id == app.id }
 
-                    // Refresh apps
-                    await refreshApps()
+                    // Refresh apps (only flush updated app's bundle for performance)
+                    await refreshApps(updatedApp: app.appInfo)
                 } catch {
                     // Update status to failed on error
                     if var apps = updatesBySource[.homebrew],
@@ -358,9 +355,9 @@ class UpdateManager: ObservableObject {
                     Task { @MainActor in
                         if success {
                             UpdaterDebugLogger.shared.log(.sparkle, "═══ Update completed successfully for \(app.appInfo.appName)")
-                            // Update completed - remove from list and refresh
+                            // Update completed - remove from list and refresh (only flush updated app's bundle)
                             await self.removeFromUpdatesList(appID: app.id, source: .sparkle)
-                            await self.refreshApps()
+                            await self.refreshApps(updatedApp: app.appInfo)
                         } else {
                             // Update failed - show error
                             let message = error?.localizedDescription ?? "Unknown error"
@@ -446,12 +443,12 @@ class UpdateManager: ObservableObject {
                 if bundleWasRemoved {
                     // Bundle was removed and now exists again - App Store finished!
                     await removeFromUpdatesList(appID: app.id, source: .appStore)
-                    await refreshApps()
+                    await refreshApps(updatedApp: app.appInfo)
                     return
                 } else if diskVersion != currentVersion {
                     // Version changed without bundle removal - also a success
                     await removeFromUpdatesList(appID: app.id, source: .appStore)
-                    await refreshApps()
+                    await refreshApps(updatedApp: app.appInfo)
                     return
                 }
             } else {
@@ -522,13 +519,19 @@ class UpdateManager: ObservableObject {
     }
 
     /// Refresh all apps after an update
-    private func refreshApps() async {
+    /// - Parameter updatedApp: Optional specific app that was updated (only flushes that bundle for performance)
+    private func refreshApps(updatedApp: AppInfo? = nil) async {
         let folderPaths = await MainActor.run {
             FolderSettingsManager.shared.folderPaths
         }
 
-        // Flush bundle caches before reloading to ensure fresh version info
-        Pearcleaner.flushBundleCaches(for: AppState.shared.sortedApps)
+        // Only flush cache for the app that was just updated (or all if none specified)
+        if let app = updatedApp {
+            Pearcleaner.flushBundleCaches(for: [app])
+        } else {
+            Pearcleaner.flushBundleCaches(for: AppState.shared.sortedApps)
+        }
+
         await loadAppsAsync(folderPaths: folderPaths)
     }
 }

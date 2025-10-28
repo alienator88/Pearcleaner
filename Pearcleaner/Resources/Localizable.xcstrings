@@ -10803,6 +10803,7 @@
       }
     },
     "Auto-updates in Homebrew" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -14843,6 +14844,7 @@
       }
     },
     "CLI Tool (Formula)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -20790,6 +20792,7 @@
       }
     },
     "Disable CLI tools (formulae)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -22251,6 +22254,7 @@
       }
     },
     "Enable CLI tools (formulae)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -22811,7 +22815,11 @@
         }
       }
     },
+    "Enable verbose logging and bundle cache flushing for troubleshooting" : {
+
+    },
     "Enable verbose logging for update checker troubleshooting" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -27187,12 +27195,6 @@
         }
       }
     },
-    "Flush Bundle Caches" : {
-
-    },
-    "Flush bundle caches before each scan (for testing with fake versions)" : {
-
-    },
     "Folders" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -30000,6 +30002,9 @@
           }
         }
       }
+    },
+    "Hide auto-updating apps from Homebrew" : {
+
     },
     "Hide details" : {
       "localizations" : {
@@ -62555,7 +62560,11 @@
         }
       }
     },
+    "Show auto-updating apps in Homebrew" : {
+
+    },
     "Show auto-updating casks in Homebrew section (when disabled, they only appear in Sparkle)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
