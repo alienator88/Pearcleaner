@@ -358,18 +358,54 @@ struct ScheduleRow: View {
             // Rest of row - with background
             HStack(spacing: 5) {
 
-                // Weekday picker
-                Picker("", selection: $schedule.weekday) {
-                    ForEach(0..<7) { day in
-                        Text(weekdayNames[day]).tag(day)
-                    }
+                // Frequency picker
+                Picker("", selection: $schedule.frequency) {
+                    Text("Daily").tag(ScheduleFrequency.daily)
+                    Text("Weekly").tag(ScheduleFrequency.weekly)
+                    Text("Monthly").tag(ScheduleFrequency.monthly)
                 }
                 .labelsHidden()
                 .minimalistPicker()
-                .frame(width: 60, alignment: .center)
+                .frame(width: 70, alignment: .center)
 
                 Divider()
                     .padding(.trailing, 12)
+
+                // Weekday picker (only for weekly schedules)
+                if schedule.frequency == .weekly {
+                    Picker("", selection: Binding(
+                        get: { schedule.weekday ?? 0 },
+                        set: { schedule.weekday = $0 }
+                    )) {
+                        ForEach(0..<7) { day in
+                            Text(weekdayNames[day]).tag(day)
+                        }
+                    }
+                    .labelsHidden()
+                    .minimalistPicker()
+                    .frame(width: 75, alignment: .center)
+
+                    Divider()
+                        .padding(.trailing, 12)
+                }
+
+                // Day of month picker (only for monthly schedules)
+                if schedule.frequency == .monthly {
+                    Picker("", selection: Binding(
+                        get: { schedule.dayOfMonth ?? 1 },
+                        set: { schedule.dayOfMonth = $0 }
+                    )) {
+                        ForEach(1...28, id: \.self) { day in
+                            Text(String(day)).tag(day)
+                        }
+                    }
+                    .labelsHidden()
+                    .minimalistPicker()
+                    .frame(width: 60, alignment: .center)
+
+                    Divider()
+                        .padding(.trailing, 12)
+                }
 
                 HStack(spacing: 2) {
                     // Hour picker (12-hour format)

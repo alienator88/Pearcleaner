@@ -19,25 +19,45 @@ enum PlistState {
 
 // MARK: - Schedule Model
 
+enum ScheduleFrequency: String, Codable, Hashable {
+    case daily = "Daily"
+    case weekly = "Weekly"
+    case monthly = "Monthly"
+}
+
 struct ScheduleOccurrence: Identifiable, Codable, Hashable {
     let id: UUID
-    var weekday: Int      // 0=Sunday, 1=Monday, ... 6=Saturday
-    var hour: Int         // 0-12
-    var minute: Int       // 0-59
+    var frequency: ScheduleFrequency
+    var weekday: Int?      // 0=Sunday, 1=Monday, ... 6=Saturday (used for weekly)
+    var dayOfMonth: Int?   // 1-28 (used for monthly)
+    var hour: Int          // 0-23
+    var minute: Int        // 0-59
     var isEnabled: Bool
 
-    init(weekday: Int? = nil, hour: Int? = nil, minute: Int? = nil, isEnabled: Bool = true) {
+    init(frequency: ScheduleFrequency = .weekly, weekday: Int? = nil, dayOfMonth: Int? = nil, hour: Int? = nil, minute: Int? = nil, isEnabled: Bool = true) {
         self.id = UUID()
+        self.frequency = frequency
 
         // Use current date/time as defaults
         let now = Date()
         let calendar = Calendar.current
-        let components = calendar.dateComponents([.weekday, .hour, .minute], from: now)
+        let components = calendar.dateComponents([.weekday, .hour, .minute, .day], from: now)
 
-        // Convert Calendar.weekday (1=Sunday...7=Saturday) to our format (0=Sunday...6=Saturday)
-        let currentWeekday = (components.weekday ?? 1) - 1
+        // Set defaults based on frequency
+        switch frequency {
+        case .daily:
+            self.weekday = nil
+            self.dayOfMonth = nil
+        case .weekly:
+            // Convert Calendar.weekday (1=Sunday...7=Saturday) to our format (0=Sunday...6=Saturday)
+            let currentWeekday = (components.weekday ?? 1) - 1
+            self.weekday = weekday ?? currentWeekday
+            self.dayOfMonth = nil
+        case .monthly:
+            self.weekday = nil
+            self.dayOfMonth = dayOfMonth ?? min(components.day ?? 1, 28)  // Cap at 28 for safety
+        }
 
-        self.weekday = weekday ?? currentWeekday
         self.hour = hour ?? (components.hour ?? 9)
         self.minute = minute ?? (components.minute ?? 0)
         self.isEnabled = isEnabled
@@ -177,7 +197,9 @@ class HomebrewAutoUpdateManager: ObservableObject {
             return true
         }
 
-        return original.weekday != schedule.weekday ||
+        return original.frequency != schedule.frequency ||
+               original.weekday != schedule.weekday ||
+               original.dayOfMonth != schedule.dayOfMonth ||
                original.hour != schedule.hour ||
                original.minute != schedule.minute
     }
@@ -214,8 +236,10 @@ class HomebrewAutoUpdateManager: ObservableObject {
             return
         }
 
-        // Revert to original values (only weekday, hour, minute - isEnabled is instant-save)
+        // Revert to original values (excluding isEnabled which is instant-save)
+        schedules[index].frequency = original.frequency
         schedules[index].weekday = original.weekday
+        schedules[index].dayOfMonth = original.dayOfMonth
         schedules[index].hour = original.hour
         schedules[index].minute = original.minute
     }
@@ -385,18 +409,41 @@ class HomebrewAutoUpdateManager: ObservableObject {
 
         // Parse each interval into ScheduleOccurrence
         schedules = calendarIntervals.compactMap { interval in
-            guard let weekday = interval["Weekday"],
-                  let hour = interval["Hour"],
-                  let minute = interval["Minute"] else {
+            let hour = interval["Hour"]
+            let minute = interval["Minute"]
+
+            guard let hour = hour, let minute = minute else {
                 return nil
             }
 
-            return ScheduleOccurrence(
-                weekday: weekday,
-                hour: hour,
-                minute: minute,
-                isEnabled: true  // All schedules in plist are enabled
-            )
+            // Determine frequency by which keys exist
+            if let day = interval["Day"] {
+                // Monthly (has Day key)
+                return ScheduleOccurrence(
+                    frequency: .monthly,
+                    dayOfMonth: day,
+                    hour: hour,
+                    minute: minute,
+                    isEnabled: true
+                )
+            } else if let weekday = interval["Weekday"] {
+                // Weekly (has Weekday key)
+                return ScheduleOccurrence(
+                    frequency: .weekly,
+                    weekday: weekday,
+                    hour: hour,
+                    minute: minute,
+                    isEnabled: true
+                )
+            } else {
+                // Daily (only Hour and Minute, no Weekday or Day)
+                return ScheduleOccurrence(
+                    frequency: .daily,
+                    hour: hour,
+                    minute: minute,
+                    isEnabled: true
+                )
+            }
         }
 
         // Store as original state after loading
@@ -491,16 +538,50 @@ class HomebrewAutoUpdateManager: ObservableObject {
 
         // Generate StartCalendarInterval entries
         let calendarIntervals = enabledSchedules.map { schedule in
-            """
+            var dict = """
                     <dict>
-                        <key>Weekday</key>
-                        <integer>\(schedule.weekday)</integer>
+
+            """
+
+            // Add keys based on frequency
+            switch schedule.frequency {
+            case .daily:
+                // Only Hour and Minute
+                dict += """
                         <key>Hour</key>
                         <integer>\(schedule.hour)</integer>
                         <key>Minute</key>
                         <integer>\(schedule.minute)</integer>
+
+                """
+            case .weekly:
+                // Weekday, Hour, Minute
+                dict += """
+                        <key>Weekday</key>
+                        <integer>\(schedule.weekday ?? 0)</integer>
+                        <key>Hour</key>
+                        <integer>\(schedule.hour)</integer>
+                        <key>Minute</key>
+                        <integer>\(schedule.minute)</integer>
+
+                """
+            case .monthly:
+                // Day, Hour, Minute
+                dict += """
+                        <key>Day</key>
+                        <integer>\(schedule.dayOfMonth ?? 1)</integer>
+                        <key>Hour</key>
+                        <integer>\(schedule.hour)</integer>
+                        <key>Minute</key>
+                        <integer>\(schedule.minute)</integer>
+
+                """
+            }
+
+            dict += """
                     </dict>
             """
+            return dict
         }.joined(separator: "\n")
 
         return """
