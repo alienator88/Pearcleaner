@@ -29,12 +29,14 @@ enum PluginSortOption: String, CaseIterable {
 }
 
 struct PluginInfo: Identifiable, Hashable, Equatable {
-    let id = UUID()
     let name: String
     let path: String
+
+    // Use path as stable ID for proper SwiftUI row reuse
+    var id: String { path }
     let category: String
     let isDirectory: Bool
-    let size: Int64
+    var size: Int64?  // Optional - calculated lazily on row appear
     let dateModified: Date
     let bundleId: String?
     let customIcon: NSImage?
@@ -70,9 +72,10 @@ struct PluginsView: View {
     @State private var lastRefreshDate: Date?
     @State private var searchText: String = ""
     @State private var sortOption: PluginSortOption = .name
-    @State private var selectedPlugins: Set<UUID> = []
+    @State private var selectedPlugins: Set<String> = []  // Changed to String since ID is now path
     @State private var selectedPluginPaths: [String] = []
     @State private var collapsedCategories: Set<String> = []
+    @State private var cachedSizes: [String: Int64] = [:]  // Cache for lazily calculated sizes, keyed by plugin path
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.general.permanentDelete") private var permanentDelete: Bool = false
     @AppStorage("settings.plugins.collapsedCategories") private var persistedCollapsedCategories: Data = Data()
@@ -102,7 +105,7 @@ struct PluginsView: View {
                 return first.name.localizedCaseInsensitiveCompare(second.name) == .orderedAscending
             }
         case .size:
-            filteredList = filteredList.sorted { $0.size > $1.size }
+            filteredList = filteredList.sorted { ($0.size ?? 0) > ($1.size ?? 0) }
         case .dateModified:
             filteredList = filteredList.sorted { $0.dateModified > $1.dateModified }
         }
@@ -200,6 +203,7 @@ struct PluginsView: View {
                                     isCollapsed: collapsedCategories.contains(category),
                                     selectedPlugins: $selectedPlugins,
                                     selectedPluginPaths: $selectedPluginPaths,
+                                    cachedSizes: $cachedSizes,
                                     permanentDelete: permanentDelete,
                                     sortOption: sortOption,
                                     onRemove: removePlugin,
@@ -343,6 +347,7 @@ struct PluginsView: View {
             allPlugins = []
             selectedPlugins = []
             selectedPluginPaths = []
+            cachedSizes = [:]  // Clear size cache on refresh
         }
 
         // Load plugins with incremental updates
@@ -401,14 +406,8 @@ struct PluginsView: View {
                         )
 
                         let isDirectory = resourceValues.isDirectory ?? false
-                        let size: Int64
-                        if isDirectory {
-                            // Use totalSizeOnDisk for directories/bundles
-                            size = totalSizeOnDisk(for: itemURL)
-                        } else {
-                            // Use regular fileSize for individual files
-                            size = resourceValues.fileSize.map { Int64($0) } ?? 0
-                        }
+                        // Don't calculate size during initial load - will be lazily calculated on row appear
+                        let size: Int64? = nil
                         let dateModified = resourceValues.contentModificationDate ?? Date()
                         let name = itemURL.lastPathComponent
 
@@ -447,6 +446,25 @@ struct PluginsView: View {
                 continue
             }
         }
+
+        #if DEBUG
+        // Duplicate ZoomAudioDevice.driver 599 more times for performance testing
+        if let zoomPlugin = categoryPlugins.first(where: { $0.name == "ZoomAudioDevice.driver" }) {
+            for i in 1...599 {
+                let duplicatedPlugin = PluginInfo(
+                    name: "\(zoomPlugin.name) (Copy \(i))",
+                    path: "\(zoomPlugin.path)_copy\(i)",  // Fake path
+                    category: zoomPlugin.category,
+                    isDirectory: zoomPlugin.isDirectory,
+                    size: zoomPlugin.size,
+                    dateModified: zoomPlugin.dateModified,
+                    bundleId: zoomPlugin.bundleId.map { "\($0).copy\(i)" },
+                    customIcon: zoomPlugin.customIcon
+                )
+                categoryPlugins.append(duplicatedPlugin)
+            }
+        }
+        #endif
 
         return (category, categoryPlugins)
     }
@@ -663,8 +681,9 @@ struct PluginCategorySection: View {
     let category: String
     let plugins: [PluginInfo]
     let isCollapsed: Bool
-    @Binding var selectedPlugins: Set<UUID>
+    @Binding var selectedPlugins: Set<String>  // Changed to String since ID is now path
     @Binding var selectedPluginPaths: [String]
+    @Binding var cachedSizes: [String: Int64]  // Add binding for cached sizes
     let permanentDelete: Bool
     let sortOption: PluginSortOption
     let onRemove: (PluginInfo) -> Void
@@ -708,7 +727,11 @@ struct PluginCategorySection: View {
                             plugin: plugin,
                             isSelected: selectedPlugins.contains(plugin.id),
                             permanentDelete: permanentDelete,
-                            sortOption: sortOption
+                            sortOption: sortOption,
+                            cachedSize: cachedSizes[plugin.path],
+                            onSizeCalculated: { size in
+                                cachedSizes[plugin.path] = size
+                            }
                         ) {
                             onRemove(plugin)
                         } onRefresh: {
@@ -721,7 +744,11 @@ struct PluginCategorySection: View {
                             plugin: plugin,
                             isSelected: selectedPlugins.contains(plugin.id),
                             permanentDelete: permanentDelete,
-                            sortOption: sortOption
+                            sortOption: sortOption,
+                            cachedSize: cachedSizes[plugin.path],
+                            onSizeCalculated: { size in
+                                cachedSizes[plugin.path] = size
+                            }
                         ) {
                             onRemove(plugin)
                         } onRefresh: {
@@ -754,6 +781,8 @@ struct PluginRowView: View {
     let isSelected: Bool
     let permanentDelete: Bool
     let sortOption: PluginSortOption
+    let cachedSize: Int64?  // Size from cache, nil if not yet calculated
+    let onSizeCalculated: (Int64) -> Void  // Callback to update cache
     let onRemove: () -> Void
     let onRefresh: () -> Void
     let onToggleSelection: () -> Void
@@ -814,7 +843,7 @@ struct PluginRowView: View {
                         .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
-                    Text("Size: \(formatFileSize(plugin.size))")
+                    Text("Size: \(formatFileSize(cachedSize ?? plugin.size ?? 0))")
                         .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
@@ -881,6 +910,25 @@ struct PluginRowView: View {
         .onHover { hovering in
             withAnimation(.easeInOut(duration: 0.2)) {
                 isHovered = hovering
+            }
+        }
+        .onAppear {
+            // Lazy size calculation - only compute when row appears
+            if cachedSize == nil {
+                Task.detached(priority: .utility) {
+                    let url = URL(fileURLWithPath: plugin.path)
+                    let calculatedSize: Int64
+
+                    if plugin.isDirectory {
+                        calculatedSize = totalSizeOnDisk(for: url)
+                    } else {
+                        calculatedSize = (try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize.map { Int64($0) }) ?? 0
+                    }
+
+                    await MainActor.run {
+                        onSizeCalculated(calculatedSize)
+                    }
+                }
             }
         }
     }
@@ -963,6 +1011,8 @@ struct AudioPluginRowView: View {
     let isSelected: Bool
     let permanentDelete: Bool
     let sortOption: PluginSortOption
+    let cachedSize: Int64?  // Size from cache, nil if not yet calculated
+    let onSizeCalculated: (Int64) -> Void  // Callback to update cache
     let onRemove: () -> Void
     let onRefresh: () -> Void
     let onToggleSelection: () -> Void
@@ -1041,7 +1091,7 @@ struct AudioPluginRowView: View {
                             .font(.caption)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
-                        Text("Size: \(formatFileSize(plugin.size))")
+                        Text("Size: \(formatFileSize(cachedSize ?? plugin.size ?? 0))")
                             .font(.caption)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
@@ -1213,6 +1263,25 @@ struct AudioPluginRowView: View {
         .onHover { hovering in
             withAnimation(.easeInOut(duration: 0.2)) {
                 isHovered = hovering
+            }
+        }
+        .onAppear {
+            // Lazy size calculation - only compute when row appears
+            if cachedSize == nil {
+                Task.detached(priority: .utility) {
+                    let url = URL(fileURLWithPath: plugin.path)
+                    let calculatedSize: Int64
+
+                    if plugin.isDirectory {
+                        calculatedSize = totalSizeOnDisk(for: url)
+                    } else {
+                        calculatedSize = (try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize.map { Int64($0) }) ?? 0
+                    }
+
+                    await MainActor.run {
+                        onSizeCalculated(calculatedSize)
+                    }
+                }
             }
         }
         .onChange(of: isExpanded) { expanded in

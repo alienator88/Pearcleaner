@@ -144,7 +144,7 @@ struct AppListItems: View {
                         if minimalEnabled && !isSelected {
                             Text(
                                 appInfo.bundleSize == 0
-                                    ? "v\(appInfo.appVersion)"
+                                    ? ""
                                     : formatByte(size: appInfo.bundleSize).human
                             )
                             .font(.system(size: 10))
