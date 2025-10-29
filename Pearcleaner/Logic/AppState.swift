@@ -112,6 +112,7 @@ class AppState: ObservableObject {
             bundleIdentifier: "",
             appName: "",
             appVersion: "",
+            appBuildNumber: nil,
             appIcon: nil,
             webApp: false,
             wrapped: false,
@@ -354,6 +355,7 @@ struct AppInfo: Identifiable, Equatable, Hashable {
     let bundleIdentifier: String
     let appName: String
     let appVersion: String
+    let appBuildNumber: String?
     let appIcon: NSImage?
     let webApp: Bool
     let wrapped: Bool
@@ -398,7 +400,7 @@ struct AppInfo: Identifiable, Equatable, Hashable {
 
     static let empty = AppInfo(
         id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "",
-        appVersion: "", appIcon: nil, webApp: false, wrapped: false, system: false, arch: .empty,
+        appVersion: "", appBuildNumber: nil, appIcon: nil, webApp: false, wrapped: false, system: false, arch: .empty,
         cask: nil, steam: false, hasSparkle: false, isAppStore: false, autoUpdates: nil, bundleSize: 0, lipoSavings: 0, fileSize: [:], fileIcon: [:],
         creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, entitlements: nil, teamIdentifier: nil)
 

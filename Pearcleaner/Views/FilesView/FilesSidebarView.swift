@@ -50,7 +50,12 @@ struct AppDetailsHeaderView: View {
 
             headerMain()
 
-            headerDetailRow(label: "Version", value: appState.appInfo.appVersion)
+
+            if let buildNumber = appState.appInfo.appBuildNumber {
+                headerDetailRow(label: "Version", value: "\(appState.appInfo.appVersion) (\(buildNumber))")
+            } else {
+                headerDetailRow(label: "Version", value: appState.appInfo.appVersion)
+            }
             headerDetailRow(label: "Bundle", value: appState.appInfo.bundleIdentifier)
             headerDetailRow(label: "Total size of all files", value: displaySizeTotal)
 

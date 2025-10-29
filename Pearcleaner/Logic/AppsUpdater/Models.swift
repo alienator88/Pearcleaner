@@ -60,6 +60,7 @@ struct UpdateableApp: Identifiable {
     let id = UUID()
     let appInfo: AppInfo
     var availableVersion: String?
+    var availableBuildNumber: String?  // Remote build number (CFBundleVersion) for smart version display
     let source: UpdateSource
     let adamID: UInt64?
     let appStoreURL: String?  // Store URL from iTunes API for "Open in App Store" button

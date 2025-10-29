@@ -191,21 +191,52 @@ struct UpdateRowView: View {
                     }
 
                     // Version info (larger font)
-                    if let availableVersion = app.availableVersion {
+                    Text(verbatim: {
+                        guard let availableVersion = app.availableVersion else {
+                            // Sparkle without available version (shouldn't happen, but handle gracefully)
+                            if app.source == .sparkle {
+                                let installedBuildPart = app.appInfo.appBuildNumber.map { " (\($0))" } ?? ""
+                                return "\(app.appInfo.appVersion)\(installedBuildPart)"
+                            }
+                            return app.appInfo.appVersion
+                        }
+
                         // Clean Homebrew versions for display (strip commit hash)
                         let displayInstalledVersion = app.source == .homebrew ?
                             app.appInfo.appVersion.cleanBrewVersionForDisplay() : app.appInfo.appVersion
                         let displayAvailableVersion = app.source == .homebrew ?
                             availableVersion.cleanBrewVersionForDisplay() : availableVersion
 
-                        Text(verbatim: "\(displayInstalledVersion) → \(displayAvailableVersion)\(app.isIOSApp ? " (iOS apps have to be updated in the App Store)" : "")")
-                            .font(.callout)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    } else if app.source == .sparkle {
-                        Text(verbatim: "\(app.appInfo.appVersion)")
-                            .font(.callout)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    }
+                        // Smart version display with build numbers (Sparkle only)
+                        let versionText: String
+                        if app.source == .sparkle {
+                            // Build smart version display
+                            let installedBuildPart = app.appInfo.appBuildNumber.map { " (\($0))" } ?? ""
+
+                            // Check if marketing versions match (both present and equal)
+                            if !displayInstalledVersion.isEmpty && !displayAvailableVersion.isEmpty &&
+                               displayInstalledVersion == displayAvailableVersion {
+                                // Scenario 1: Marketing versions match → "6.7 (6134) → 6.7 (6135)"
+                                // Show build numbers to distinguish them
+                                let availableBuildPart = app.availableBuildNumber.map { " (\($0))" } ?? ""
+                                versionText = "\(displayInstalledVersion)\(installedBuildPart) → \(displayAvailableVersion)\(availableBuildPart)"
+                            } else if displayAvailableVersion.isEmpty, let availableBuild = app.availableBuildNumber {
+                                // Scenario 2: Remote lacks marketing version → "6.7 (6134) → build 6135"
+                                versionText = "\(displayInstalledVersion)\(installedBuildPart) → build \(availableBuild)"
+                            } else {
+                                // Scenario 3: Normal case → "6.7 (6134) → 6.8 (6135)"
+                                let availableBuildPart = app.availableBuildNumber.map { " (\($0))" } ?? ""
+                                versionText = "\(displayInstalledVersion)\(installedBuildPart) → \(displayAvailableVersion)\(availableBuildPart)"
+                            }
+                        } else {
+                            // Non-Sparkle sources: show marketing versions only
+                            versionText = "\(displayInstalledVersion) → \(displayAvailableVersion)"
+                        }
+
+                        return "\(versionText)\(app.isIOSApp ? " (iOS apps have to be updated in the App Store)" : "")"
+                    }())
+                        .font(.callout)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
 
                 Spacer()

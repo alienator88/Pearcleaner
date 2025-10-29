@@ -10,6 +10,24 @@
 import Foundation
 import Sparkle
 
+/// Result of Sparkle update check - makes Sparkle's decision explicit
+private enum SparkleUpdateResult {
+    /// Sparkle found a valid update (always trust this)
+    case updateFound(
+        appcastItem: SUAppcastItem,
+        state: SPUUserUpdateState
+    )
+
+    /// Sparkle says no update needed
+    case noUpdate(
+        reason: SPUNoUpdateFoundReason,
+        latestItem: SUAppcastItem?  // May be nil if feed is empty
+    )
+
+    /// Sparkle encountered an error
+    case error(Error)
+}
+
 class SparkleUpdateChecker {
     fileprivate static let logger = UpdaterDebugLogger.shared
 
@@ -152,43 +170,34 @@ private class SparkleCheckerOperation: NSObject, SPUUserDriver, SPUUpdaterDelega
     }
 
     private func createUpdate(from appcastItem: SUAppcastItem, includePreReleases: Bool) -> UpdateableApp? {
-        // Get versions from appcast item
+        // Get versions from appcast item for display
         let availableVersionString = appcastItem.displayVersionString
         let buildVersionString = appcastItem.versionString
 
-        // Create Version objects for comparison
-        let installedVer = Version(versionNumber: appInfo.appVersion, buildNumber: nil)
-        let availableVer = Version(versionNumber: availableVersionString, buildNumber: buildVersionString)
+        // Note: Sparkle has already determined this is an update
+        // We only filter for pre-releases if the toggle is off
 
-        // Sanitize available version (handle edge cases like 1.2 vs 1.2.0)
-        let sanitizedAvailableVer = availableVer.sanitize(with: installedVer)
+        // Check if this is a pre-release
+        var isPreRelease = false
 
-        // Only show update if available > installed
-        guard !installedVer.isEmpty && !sanitizedAvailableVer.isEmpty && sanitizedAvailableVer > installedVer else {
-            SparkleUpdateChecker.logger.log(.sparkle, "  ✓ Up to date")
-            return nil
-        }
-
-        SparkleUpdateChecker.logger.log(.sparkle, "  📦 UPDATE AVAILABLE: \(appInfo.appVersion) → \(availableVersionString)")
-
-        // Check if this is a pre-release (only if toggle is ON)
-        let isPreRelease: Bool
-        if includePreReleases {
-            // Method 1: Sparkle 2.0+ channels (modern apps)
-            // Method 2: Version string analysis (legacy apps like Transmission)
-            isPreRelease = appcastItem.channel != nil ||
-                           isPreReleaseVersion(availableVersionString)
-        } else {
-            // Toggle OFF - filter out ALL pre-releases
-            // Check both channel and version string to reject them
-            let hasChannel = appcastItem.channel != nil
-            let hasPreReleaseVersion = isPreReleaseVersion(availableVersionString)
-
-            if hasChannel || hasPreReleaseVersion {
-                SparkleUpdateChecker.logger.log(.sparkle, "  ⚠️ Skipped pre-release: \(availableVersionString)")
+        // Method 1: Sparkle 2.0+ channels (modern apps)
+        if let channel = appcastItem.channel, channel.lowercased() != "release" {
+            if !includePreReleases {
+                SparkleUpdateChecker.logger.log(.sparkle, "     Filtering: Pre-release channel '\(channel)' (toggle off)")
                 return nil
             }
-            isPreRelease = false
+            isPreRelease = true
+            SparkleUpdateChecker.logger.log(.sparkle, "     Detected pre-release channel: \(channel)")
+        }
+
+        // Method 2: Version string analysis (legacy apps like Transmission)
+        if isPreReleaseVersion(availableVersionString) {
+            if !includePreReleases {
+                SparkleUpdateChecker.logger.log(.sparkle, "     Filtering: Pre-release version name '\(availableVersionString)' (toggle off)")
+                return nil
+            }
+            isPreRelease = true
+            SparkleUpdateChecker.logger.log(.sparkle, "     Detected pre-release version name: \(availableVersionString)")
         }
 
         // Extract release notes
@@ -209,6 +218,7 @@ private class SparkleCheckerOperation: NSObject, SPUUserDriver, SPUUpdaterDelega
         return UpdateableApp(
             appInfo: appInfo,
             availableVersion: availableVersionString,
+            availableBuildNumber: buildVersionString,
             source: .sparkle,
             adamID: nil,
             appStoreURL: nil,
@@ -232,33 +242,159 @@ private class SparkleCheckerOperation: NSObject, SPUUserDriver, SPUUpdaterDelega
     }
 
     func showUpdateFound(with appcastItem: SUAppcastItem, state: SPUUserUpdateState, reply: @escaping (SPUUserUpdateChoice) -> Void) {
-        // Sparkle has already filtered channel-based pre-releases
-        // createUpdate will handle version-based pre-release filtering
-        let update = createUpdate(from: appcastItem, includePreReleases: includePreReleases)
-        finish(with: update)
+        let result = SparkleUpdateResult.updateFound(appcastItem: appcastItem, state: state)
+        processResult(result, reply: reply, acknowledgement: nil)
     }
 
     func showUpdateNotFoundWithError(_ error: Error, acknowledgement: @escaping () -> Void) {
-        // Check if Sparkle found the latest item but determined no update is needed
-        let nsError = error as NSError
-        if nsError.domain == SUSparkleErrorDomain &&
-           nsError.code == SUError.noUpdateError.rawValue,
-           let appcastItem = nsError.userInfo[SPULatestAppcastItemFoundKey] as? SUAppcastItem {
-            // We have the latest appcast item, check if it's actually newer
-            let update = createUpdate(from: appcastItem, includePreReleases: includePreReleases)
-            finish(with: update)
-        } else {
-            // Genuine error or no update available
-            SparkleUpdateChecker.logger.log(.sparkle, "  ✓ No update available")
-            finish(with: nil)
-        }
-        acknowledgement()
+        let result = extractResultFromNoUpdateError(error)
+        processResult(result, reply: nil, acknowledgement: acknowledgement)
     }
 
     func showUpdaterError(_ error: Error, acknowledgement: @escaping () -> Void) {
-        SparkleUpdateChecker.logger.log(.sparkle, "  ❌ Updater error: \(error.localizedDescription)")
-        finish(with: nil)
-        acknowledgement()
+        let result = SparkleUpdateResult.error(error)
+        processResult(result, reply: nil, acknowledgement: acknowledgement)
+    }
+
+    // MARK: - Helper Methods
+
+    /// Extract structured result from Sparkle's "no update" error
+    private func extractResultFromNoUpdateError(_ error: Error) -> SparkleUpdateResult {
+        let nsError = error as NSError
+
+        // Verify this is actually a "no update" error from Sparkle
+        guard nsError.domain == SUSparkleErrorDomain,
+              nsError.code == SUError.noUpdateError.rawValue else {
+            // Some other error - treat as genuine error
+            return .error(error)
+        }
+
+        // Extract latest appcast item (may be nil if feed is empty)
+        let latestItem = nsError.userInfo[SPULatestAppcastItemFoundKey] as? SUAppcastItem
+
+        // Extract Sparkle's reason for no update
+        let reasonRawValue = (nsError.userInfo[SPUNoUpdateFoundReasonKey] as? NSNumber)?.int32Value ?? 0
+        let sparkleReason = SPUNoUpdateFoundReason(rawValue: reasonRawValue) ?? .unknown
+
+        return .noUpdate(reason: sparkleReason, latestItem: latestItem)
+    }
+
+    /// Format SPUNoUpdateFoundReason as human-readable string
+    private func formatNoUpdateReason(_ reason: SPUNoUpdateFoundReason) -> String {
+        switch reason {
+        case .onLatestVersion:
+            return "Already on latest version"
+        case .onNewerThanLatestVersion:
+            return "Newer than latest (ahead of feed)"
+        case .systemIsTooOld:
+            return "System too old for update"
+        case .systemIsTooNew:
+            return "System too new for update"
+        default:
+            return "Unknown reason"
+        }
+    }
+
+    /// Log comprehensive details about what Sparkle's callback told us
+    private func logSparkleCallback(_ result: SparkleUpdateResult) {
+        switch result {
+        case .updateFound(let appcastItem, let state):
+            SparkleUpdateChecker.logger.log(.sparkle, "  📥 CALLBACK: showUpdateFound")
+            SparkleUpdateChecker.logger.log(.sparkle, "     App: \(appInfo.appName)")
+            SparkleUpdateChecker.logger.log(.sparkle, "     Installed: \(appInfo.appVersion)")
+            SparkleUpdateChecker.logger.log(.sparkle, "     Available: \(appcastItem.displayVersionString) (build: \(appcastItem.versionString))")
+
+            if let channel = appcastItem.channel {
+                SparkleUpdateChecker.logger.log(.sparkle, "     Channel: \(channel)")
+            }
+
+            if let date = appcastItem.dateString {
+                SparkleUpdateChecker.logger.log(.sparkle, "     Release date: \(date)")
+            }
+
+            let stageDesc = state.stage == .notDownloaded ? "not downloaded" :
+                           state.stage == .downloaded ? "downloaded" : "installing"
+            let initiatedDesc = state.userInitiated ? "user-initiated" : "automatic"
+            SparkleUpdateChecker.logger.log(.sparkle, "     State: \(stageDesc), \(initiatedDesc)")
+
+        case .noUpdate(let reason, let latestItem):
+            SparkleUpdateChecker.logger.log(.sparkle, "  📥 CALLBACK: showUpdateNotFoundWithError")
+            SparkleUpdateChecker.logger.log(.sparkle, "     App: \(appInfo.appName)")
+            SparkleUpdateChecker.logger.log(.sparkle, "     Installed: \(appInfo.appVersion)")
+
+            if let item = latestItem {
+                SparkleUpdateChecker.logger.log(.sparkle, "     Latest: \(item.displayVersionString) (build: \(item.versionString))")
+                if let title = item.title {
+                    SparkleUpdateChecker.logger.log(.sparkle, "     Title: \(title)")
+                }
+            } else {
+                SparkleUpdateChecker.logger.log(.sparkle, "     Latest: (none in feed)")
+            }
+
+            let reasonDesc = formatNoUpdateReason(reason)
+            SparkleUpdateChecker.logger.log(.sparkle, "     Reason: \(reasonDesc)")
+
+        case .error(let error):
+            SparkleUpdateChecker.logger.log(.sparkle, "  📥 CALLBACK: showUpdaterError")
+            SparkleUpdateChecker.logger.log(.sparkle, "     App: \(appInfo.appName)")
+            SparkleUpdateChecker.logger.log(.sparkle, "     Error: \(error.localizedDescription)")
+
+            let nsError = error as NSError
+            SparkleUpdateChecker.logger.log(.sparkle, "     Domain: \(nsError.domain), Code: \(nsError.code)")
+        }
+    }
+
+    /// Process Sparkle's result with comprehensive logging and decision-making
+    private func processResult(
+        _ result: SparkleUpdateResult,
+        reply: ((SPUUserUpdateChoice) -> Void)?,
+        acknowledgement: (() -> Void)?
+    ) {
+        // Log what Sparkle told us (comprehensive callback details)
+        logSparkleCallback(result)
+
+        // Process based on result type
+        switch result {
+        case .updateFound(let appcastItem, _):
+            // Trust Sparkle - it says update is available
+            SparkleUpdateChecker.logger.log(.sparkle, "  → Processing update found callback")
+
+            // Apply our pre-release filtering if toggle is OFF
+            let update = createUpdate(from: appcastItem, includePreReleases: includePreReleases)
+
+            if let update = update {
+                SparkleUpdateChecker.logger.log(.sparkle, "  ✅ Showing update: \(update.appInfo.appName) \(appInfo.appVersion) → \(update.availableVersion ?? "unknown")")
+                if update.isPreRelease {
+                    SparkleUpdateChecker.logger.log(.sparkle, "     🔵 Marked as pre-release")
+                }
+            } else {
+                // Our filtering rejected it (pre-release filtered or version not newer)
+                SparkleUpdateChecker.logger.log(.sparkle, "  ⚠️ Update filtered out by Pearcleaner logic")
+            }
+
+            finish(with: update)
+
+        case .noUpdate(let reason, let latestItem):
+            // Sparkle says no update - trust it completely!
+            let reasonDesc = formatNoUpdateReason(reason)
+            SparkleUpdateChecker.logger.log(.sparkle, "  → No update needed: \(reasonDesc)")
+
+            if let item = latestItem {
+                let latestVersion = item.displayVersionString
+                let latestBuild = item.versionString
+                SparkleUpdateChecker.logger.log(.sparkle, "     Latest in feed: \(latestVersion) (build: \(latestBuild))")
+            } else {
+                SparkleUpdateChecker.logger.log(.sparkle, "     Latest in feed: (none)")
+            }
+
+            finish(with: nil)
+            acknowledgement?()
+
+        case .error(let error):
+            SparkleUpdateChecker.logger.log(.sparkle, "  ❌ Sparkle error: \(error.localizedDescription)")
+            finish(with: nil)
+            acknowledgement?()
+        }
     }
 
     func showUpdateInstalledAndRelaunched(_ relaunched: Bool, acknowledgement: @escaping () -> Void) {

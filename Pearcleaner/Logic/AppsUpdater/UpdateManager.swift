@@ -155,25 +155,10 @@ class UpdateManager: ObservableObject {
 
             if checkSparkle {
                 group.addTask {
-                    // Smart source filtering based on app origin and auto-update capability
-                    let sparkleApps = apps.filter { app in
-                        // Skip App Store apps (can't have Sparkle - App Store enforces its own updates)
-                        guard !app.isAppStore else { return false }
-
-                        // Skip apps without Sparkle
-                        guard app.hasSparkle else { return false }
-
-                        // Homebrew cask smart filtering:
-                        // - auto_updates=false → Skip Sparkle (app can't self-update, only Homebrew should check)
-                        // - auto_updates=true → Check Sparkle (app CAN self-update via Sparkle)
-                        // - auto_updates=nil → Check Sparkle (unknown state or not a Homebrew cask, be safe)
-                        if app.cask != nil, let autoUpdates = app.autoUpdates {
-                            return autoUpdates  // Only check if explicitly true
-                        }
-
-                        // Non-Homebrew app with Sparkle, or unknown auto_updates state
-                        return true
-                    }
+                    // Show all apps with Sparkle, regardless of other update sources
+                    // This allows users to see version differences across App Store/Homebrew/Sparkle
+                    // and choose which source to update from
+                    let sparkleApps = apps.filter { $0.hasSparkle }
 
                     let results = await SparkleUpdateChecker.checkForUpdates(apps: sparkleApps, includePreReleases: self.includeSparklePreReleases)
                     return (.sparkle, results)
@@ -201,6 +186,7 @@ class UpdateManager: ObservableObject {
             UpdateableApp(
                 appInfo: app,
                 availableVersion: nil,  // Can't check updates
+                availableBuildNumber: nil,
                 source: .unsupported,
                 adamID: nil,
                 appStoreURL: nil,

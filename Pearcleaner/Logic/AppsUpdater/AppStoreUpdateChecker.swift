@@ -107,6 +107,7 @@ class AppStoreUpdateChecker {
             return UpdateableApp(
                 appInfo: app,
                 availableVersion: appStoreInfo.version,
+                availableBuildNumber: nil,  // App Store doesn't provide separate build numbers
                 source: .appStore,
                 adamID: appStoreInfo.adamID,
                 appStoreURL: appStoreInfo.appStoreURL,

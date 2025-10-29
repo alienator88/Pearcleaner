@@ -20,14 +20,15 @@ class MetadataAppInfoFetcher {
 
         let bundleIdentifier = metadata["kMDItemCFBundleIdentifier"] as? String ?? ""
 
-        // Get version directly from bundle Info.plist instead of metadata (always up-to-date)
-        let version: String = {
-            guard let bundle = Bundle(url: path) else { return "" }
+        // Get version and build number directly from bundle Info.plist instead of metadata (always up-to-date)
+        let (version, buildNumber): (String, String?) = {
+            guard let bundle = Bundle(url: path) else { return ("", nil) }
+            // Extract marketing version (CFBundleShortVersionString) - no fallback to build number
             let shortVersion = bundle.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
-            if !shortVersion.isEmpty {
-                return shortVersion
-            }
-            return bundle.infoDictionary?["CFBundleVersion"] as? String ?? ""
+            let marketingVersion = shortVersion.isEmpty ? "" : shortVersion
+            // Extract build number (CFBundleVersion) separately
+            let build = bundle.infoDictionary?["CFBundleVersion"] as? String
+            return (marketingVersion, build)
         }()
 
         // Sizes
@@ -69,7 +70,7 @@ class MetadataAppInfoFetcher {
         let isAppStore = AppCategoryDetector.checkForAppStore(bundle: bundle, path: path, wrapped: wrapped)
 
         return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName,
-                       appVersion: version, appIcon: appIcon, webApp: webApp, wrapped: wrapped, system: system,
+                       appVersion: version, appBuildNumber: buildNumber, appIcon: appIcon, webApp: webApp, wrapped: wrapped, system: system,
                        arch: arch, cask: cask, steam: false, hasSparkle: hasSparkle, isAppStore: isAppStore, autoUpdates: autoUpdates, bundleSize: logicalSize, fileSize: [:],
                        fileIcon: [:], creationDate: creationDate, contentChangeDate: contentChangeDate, lastUsedDate: lastUsedDate, entitlements: entitlements, teamIdentifier: teamIdentifier)
     }
@@ -267,9 +268,13 @@ class AppInfoFetcher {
 
         let appName = wrapped ? path.deletingLastPathComponent().deletingLastPathComponent().deletingPathExtension().lastPathComponent.capitalizingFirstLetter() : path.localizedName().capitalizingFirstLetter()
 
+        // Extract marketing version (CFBundleShortVersionString) - no fallback to build number
         let appVersion = (bundle.infoDictionary?["CFBundleShortVersionString"] as? String)?.isEmpty ?? true
-        ? bundle.infoDictionary?["CFBundleVersion"] as? String ?? ""
-        : bundle.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+            ? ""
+            : bundle.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+
+        // Extract build number (CFBundleVersion) separately
+        let appBuildNumber = bundle.infoDictionary?["CFBundleVersion"] as? String
 
         let appIcon = AppInfoUtils.fetchAppIcon(for: path, wrapped: wrapped)
         let webApp = AppInfoUtils.isWebApp(bundle: bundle)
@@ -291,7 +296,7 @@ class AppInfoFetcher {
         let hasSparkle = AppCategoryDetector.checkForSparkle(bundle: bundle, infoDict: bundle.infoDictionary)
         let isAppStore = AppCategoryDetector.checkForAppStore(bundle: bundle, path: path, wrapped: wrapped)
 
-        return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName, appVersion: appVersion, appIcon: appIcon,
+        return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName, appVersion: appVersion, appBuildNumber: appBuildNumber, appIcon: appIcon,
                        webApp: webApp, wrapped: wrapped, system: system, arch: arch, cask: cask, steam: false, hasSparkle: hasSparkle, isAppStore: isAppStore, autoUpdates: autoUpdates, bundleSize: 0, fileSize: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, entitlements: entitlements, teamIdentifier: teamIdentifier)
     }
 
@@ -360,11 +365,15 @@ class SteamAppInfoFetcher {
         
         // Use the game folder name as the app name
         let appName = gameFolderName.capitalizingFirstLetter()
-        
+
+        // Extract marketing version (CFBundleShortVersionString) - no fallback to build number
         let appVersion = (bundle.infoDictionary?["CFBundleShortVersionString"] as? String)?.isEmpty ?? true
-        ? bundle.infoDictionary?["CFBundleVersion"] as? String ?? ""
-        : bundle.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
-        
+            ? ""
+            : bundle.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+
+        // Extract build number (CFBundleVersion) separately
+        let appBuildNumber = bundle.infoDictionary?["CFBundleVersion"] as? String
+
         // Use the actual bundle path for the icon (proper game icon) instead of launcher
         let appIcon = AppInfoUtils.fetchAppIcon(for: actualBundlePath, wrapped: false)
         let webApp = false
@@ -383,7 +392,7 @@ class SteamAppInfoFetcher {
         let autoUpdates: Bool? = nil  // Steam games don't use Homebrew
 
         return AppInfo(id: UUID(), path: launcherPath, bundleIdentifier: bundleIdentifier, appName: appName,
-                       appVersion: appVersion, appIcon: appIcon, webApp: webApp, wrapped: false,
+                       appVersion: appVersion, appBuildNumber: appBuildNumber, appIcon: appIcon, webApp: webApp, wrapped: false,
                        system: system, arch: arch, cask: nil, steam: true, hasSparkle: hasSparkle, isAppStore: isAppStore, autoUpdates: autoUpdates, bundleSize: 0, fileSize: [:],
                        fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, entitlements: entitlements, teamIdentifier: teamIdentifier)
     }

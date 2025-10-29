@@ -98,6 +98,7 @@ class HomebrewUpdateChecker {
                 bundleIdentifier: appInfo.bundleIdentifier,
                 appName: appInfo.appName,
                 appVersion: appInfo.appVersion,  // Use ACTUAL version from Info.plist (ground truth)
+                appBuildNumber: appInfo.appBuildNumber,
                 appIcon: appInfo.appIcon,
                 webApp: appInfo.webApp,
                 wrapped: appInfo.wrapped,
@@ -122,6 +123,7 @@ class HomebrewUpdateChecker {
             let updateableApp = UpdateableApp(
                 appInfo: correctedAppInfo,  // Use version from Homebrew metadata
                 availableVersion: outdatedPkg.availableVersion,  // Available version from brew outdated
+                availableBuildNumber: nil,  // Homebrew doesn't provide separate build numbers
                 source: .homebrew,
                 adamID: nil,
                 appStoreURL: nil,
@@ -168,6 +170,7 @@ class HomebrewUpdateChecker {
                     bundleIdentifier: "com.homebrew.formula.\(outdatedPkg.name)",
                     appName: outdatedPkg.name,
                     appVersion: outdatedPkg.installedVersion,
+                    appBuildNumber: nil,  // Formulae don't have build numbers
                     appIcon: nil,
                     webApp: false,
                     wrapped: false,
@@ -192,6 +195,7 @@ class HomebrewUpdateChecker {
                 let updateableApp = UpdateableApp(
                     appInfo: formulaAppInfo,
                     availableVersion: outdatedPkg.availableVersion,
+                    availableBuildNumber: nil,  // Homebrew doesn't provide separate build numbers
                     source: .homebrew,
                     adamID: nil,
                     appStoreURL: nil,

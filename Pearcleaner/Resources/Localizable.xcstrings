@@ -3692,7 +3692,7 @@
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "🚫 Disabled"
+            "value" : "🚫 Onemogočeno"
           }
         },
         "tr" : {
@@ -10689,232 +10689,6 @@
         }
       }
     },
-    "Auto slim Pearcleaner" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto slim Pearcleaner"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto slim Pearcleaner"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto slim Pearcleaner"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto slim Pearcleaner"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto slim Pearcleaner"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自動スリムPearcleaner"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "자동 슬림 Pearcleaner"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto slim Pearcleaner"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto slim Pearcleaner"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto slim Pearcleaner"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatické zoštíhlenie Pearcleaner"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto slim Pearcleaner"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto slim Pearcleaner"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto slim Pearcleaner"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto slim Pearcleaner"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto slim Pearcleaner"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto slim Pearcleaner"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto slim Pearcleaner"
-          }
-        }
-      }
-    },
-    "Auto-updates in Homebrew" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatische Updates in Homebrew"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Actualizaciones automáticas en Homebrew"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mises à jour automatiques dans Homebrew"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pembaruan otomatis di Homebrew"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aggiornamenti automatici in Homebrew"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Homebrewの自動更新"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Homebrew의 자동 업데이트"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatyczne aktualizacje w Homebrew"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Atualizações automáticas no Homebrew"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Автообновления в Homebrew"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatické aktualizácie v Homebrew"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Samodejne posodobitve v Homebrew"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Homebrew'de otomatik güncellemeler"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Автоматичні оновлення в Homebrew"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tự động cập nhật trong Homebrew"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Homebrew 中的自动更新"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Homebrew 中的自動更新"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Homebrew 中的自動更新"
-          }
-        }
-      }
-    },
     "Automatic updates are disabled" : {
       "localizations" : {
         "de" : {
@@ -14168,121 +13942,15 @@
         }
       }
     },
-    "Choose Sparkle feed URL" : {
-      "extractionState" : "stale",
+    "Choose which view to open when launching the app" : {
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wählen Sie die Sparkle-Feed-URL"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Elija la URL del feed de Sparkle"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Choisissez l'URL du flux Sparkle"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pilih URL umpan Sparkle"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scegli l'URL del feed Sparkle"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sparkle フィード URL を選択"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sparkle 피드 URL 선택"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wybierz adres URL kanału Sparkle"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Escolha o URL do feed Sparkle"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Выберите URL-адрес ленты Sparkle"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vyberte URL kanála Sparkle"
-          }
-        },
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Izberite URL vira Sparkle"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sparkle besleme URL'sini seçin"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Виберіть URL-адресу каналу Sparkle"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chọn URL nguồn cấp dữ liệu Sparkle"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "选择 Sparkle 提要 URL"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選擇 Sparkle 提要 URL"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選擇 Sparkle 資訊來源 URL"
+            "value" : "Izberite, kateri pogled se odpre ob zagonu aplikacije"
           }
         }
       }
-    },
-    "Choose which view to open when launching the app" : {
-
     },
     "Clean stored files and cache for common IDEs" : {
       "localizations" : {
@@ -14842,119 +14510,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "清除文字"
-          }
-        }
-      }
-    },
-    "CLI Tool (Formula)" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CLI-Werkzeug (Formel)"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Herramienta CLI (Fórmula)"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Outil CLI (Formule)"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alat CLI (Formula)"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Strumento CLI (Formula)"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CLIツール（式）"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CLI 도구 (공식)"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Narzędzie CLI (Formuła)"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ferramenta CLI (Fórmula)"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Инструмент CLI (Формула)"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nástroj CLI (Vzorec)"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CLI orodje (Formula)"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CLI Aracı (Formül)"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Інструмент CLI (Формула)"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Công cụ CLI (Công thức)"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CLI 工具（公式）"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CLI 工具（公式）"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CLI 工具（公式）"
           }
         }
       }
@@ -20794,119 +20349,6 @@
         }
       }
     },
-    "Disable CLI tools (formulae)" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CLI-Tools (Formeln) deaktivieren"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Desactivar herramientas CLI (fórmulas)"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Désactiver les outils CLI (formules)"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nonaktifkan alat CLI (rumus)"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Disabilita strumenti CLI (formule)"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CLIツールを無効にする（数式）"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CLI 도구 비활성화 (공식)"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wyłącz narzędzia CLI (formuły)"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Desativar ferramentas CLI (fórmulas)"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Отключить инструменты CLI (формулы)"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zakázať nástroje CLI (vzorce)"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Onemogoči orodja CLI (formule)"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CLI araçlarını devre dışı bırak (formüller)"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Вимкнути інструменти CLI (формули)"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tắt công cụ CLI (công thức)"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "禁用 CLI 工具（公式）"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "停用 CLI 工具（公式）"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "停用 CLI 工具（公式）"
-          }
-        }
-      }
-    },
     "Disable pre-releases" : {
       "localizations" : {
         "de" : {
@@ -22256,119 +21698,6 @@
         }
       }
     },
-    "Enable CLI tools (formulae)" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CLI-Tools aktivieren (Formeln)"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Habilitar herramientas CLI (fórmulas)"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activer les outils CLI (formules)"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aktifkan alat CLI (rumus)"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abilita strumenti CLI (formule)"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CLIツールを有効にする（式）"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CLI 도구(공식) 활성화"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Włącz narzędzia CLI (formuły)"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Habilitar ferramentas CLI (fórmulas)"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Включить инструменты CLI (формулы)"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Povoliť nástroje CLI (vzorce)"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Omogoči orodja CLI (formule)"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CLI araçlarını etkinleştir (formüller)"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Увімкнути інструменти CLI (формули)"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kích hoạt công cụ CLI (công thức)"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "启用 CLI 工具（公式）"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "啟用 CLI 工具（公式）"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "啟用 CLI 工具（公式）"
-          }
-        }
-      }
-    },
     "Enable context menu extension for Finder" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -22819,117 +22148,11 @@
       }
     },
     "Enable verbose logging and bundle cache flushing for troubleshooting" : {
-
-    },
-    "Enable verbose logging for update checker troubleshooting" : {
-      "extractionState" : "stale",
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aktivieren Sie die ausführliche Protokollierung zur Fehlerbehebung beim Update-Checker"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Habilitar el registro detallado para la resolución de problemas del comprobador de actualizaciones"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activer la journalisation détaillée pour le dépannage du vérificateur de mise à jour"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aktifkan pencatatan rinci untuk pemecahan masalah pemeriksa pembaruan"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abilita la registrazione dettagliata per la risoluzione dei problemi del controllo aggiornamenti"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "アップデートチェッカーのトラブルシューティングのために詳細なログを有効にする"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "업데이트 검사기 문제 해결을 위한 자세한 로깅 활성화"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Włącz szczegółowe logowanie do rozwiązywania problemów z aktualizacjami"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Habilitar registro detalhado para solução de problemas do verificador de atualizações"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Включить подробное ведение журнала для устранения неполадок проверки обновлений"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Povoliť podrobné zaznamenávanie pre riešenie problémov s kontrolou aktualizácií"
-          }
-        },
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Omogoči podrobno beleženje za odpravljanje težav s preverjanjem posodobitev"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Güncelleme denetleyicisi sorun giderme için ayrıntılı günlüğü etkinleştir"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Увімкнути детальне ведення журналу для усунення неполадок перевірки оновлень"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bật ghi nhật ký chi tiết để khắc phục sự cố kiểm tra cập nhật"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "启用详细日志记录以排查更新检查器问题"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "啟用詳細日誌記錄以排查更新檢查器問題"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "啟用詳細日誌記錄以排查更新檢查器問題"
+            "value" : "Omogočite podrobno beleženje in izpraznitev predpomnilnika paketa za odpravljanje težav"
           }
         }
       }
@@ -30007,7 +29230,14 @@
       }
     },
     "Hide auto-updating apps from Homebrew" : {
-
+      "localizations" : {
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skrij samodejno posodabljanje aplikacij iz Homebrewa"
+          }
+        }
+      }
     },
     "Hide details" : {
       "localizations" : {
@@ -38830,7 +38060,7 @@
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Narejeno z ❤️ avtor Alin Lupascu"
+            "value" : "Narejeno z ❤️ , avtor Alin Lupascu"
           }
         },
         "tr" : {
@@ -57621,125 +56851,6 @@
         }
       }
     },
-    "Saved: %@ (%lld%%)" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gespeichert: %1$@ (%2$lld%%)"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Saved: %1$@ (%2$lld%%)"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Guardado: %1$@ (%2$lld%%)"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enregistré : %1$@ (%2$lld%%)"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tersimpan: %1$@ (%2$lld%%)"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Salvato: %1$@ (%2$lld%%)"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "保存済み: %1$@ (%2$lld%%)"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "저장됨: %1$@ (%2$lld%%)"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zapisano: %1$@ (%2$lld%%)"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Salvo: %1$@ (%2$lld%%)"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Сохранено: %1$@ (%2$lld%%)"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uložené: %1$@ (%2$lld%%)"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Shranjeno: %1$@ (%2$lld%%)"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kaydedildi: %1$@ (%2$lld%%)"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Збережено: %1$@ (%2$lld%%)"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đã lưu: %1$@ (%2$lld%%)"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已保存：%1$@（%2$lld%%）"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已儲存：%1$@（%2$lld%%）"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已儲存：%1$@（%2$lld%%）"
-          }
-        }
-      }
-    },
     "Scan" : {
       "localizations" : {
         "de" : {
@@ -60653,119 +59764,6 @@
         }
       }
     },
-    "Select Appcast" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Appcast auswählen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seleccionar Appcast"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sélectionner Appcast"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pilih Appcast"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seleziona Appcast"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Appcastを選択"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Appcast 선택"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wybierz Appcast"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Selecionar Appcast"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Выбрать Appcast"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vyberte Appcast"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Izberi Appcast"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Appcast Seç"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Вибрати Appcast"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chọn Appcast"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "选择 Appcast"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選擇 Appcast"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選擇 Appcast"
-          }
-        }
-      }
-    },
     "Selected Items:" : {
       "localizations" : {
         "de" : {
@@ -62564,117 +61562,11 @@
       }
     },
     "Show auto-updating apps in Homebrew" : {
-
-    },
-    "Show auto-updating casks in Homebrew section (when disabled, they only appear in Sparkle)" : {
-      "extractionState" : "stale",
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatisch aktualisierende Casks im Homebrew-Bereich anzeigen (wenn deaktiviert, erscheinen sie nur in Sparkle)"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostrar casks que se actualizan automáticamente en la sección Homebrew (cuando están desactivados, solo aparecen en Sparkle)"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Afficher les casks se mettant à jour automatiquement dans la section Homebrew (lorsqu'ils sont désactivés, ils apparaissent uniquement dans Sparkle)"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tampilkan casks yang memperbarui otomatis di bagian Homebrew (ketika dinonaktifkan, mereka hanya muncul di Sparkle)"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostra i cask che si aggiornano automaticamente nella sezione Homebrew (quando disabilitato, appaiono solo in Sparkle)"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Homebrew セクションで自動更新される cask を表示 (無効化されると Sparkle にのみ表示されます)"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Homebrew 섹션에서 자동 업데이트 casks 표시 (비활성화 시 Sparkle에만 표시됨)"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pokaż automatycznie aktualizujące się beczki w sekcji Homebrew (gdy wyłączone, pojawiają się tylko w Sparkle)"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostrar casks de atualização automática na seção Homebrew (quando desativado, eles aparecem apenas no Sparkle)"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Показывать автоматически обновляемые бочки в разделе Homebrew (когда отключено, они появляются только в Sparkle)"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zobraziť automaticky aktualizované casks v sekcii Homebrew (keď sú vypnuté, zobrazujú sa iba v Sparkle)"
-          }
-        },
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prikaži samodejno posodabljajoče se casks v razdelku Homebrew (ko je onemogočeno, se pojavijo samo v Sparkle)"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Homebrew bölümünde otomatik güncellenen cask'leri göster (devre dışı bırakıldığında, yalnızca Sparkle'da görünürler)"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Показувати автоматично оновлювані бочки в розділі Homebrew (коли вимкнено, вони з'являються лише в Sparkle)"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hiển thị các cask tự động cập nhật trong phần Homebrew (khi bị vô hiệu hóa, chúng chỉ xuất hiện trong Sparkle)"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在 Homebrew 部分显示自动更新的 casks（禁用时，它们仅显示在 Sparkle）"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在 Homebrew 區段顯示自動更新的 casks（停用時，它們僅顯示在 Sparkle）"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在 Homebrew 區段顯示自動更新的 casks（停用時，它們僅顯示在 Sparkle）"
+            "value" : "Prikaži aplikacije s samodejnim posodabljanjem v Homebrewu"
           }
         }
       }
@@ -63240,117 +62132,11 @@
       }
     },
     "Show only formulae installed on request (not as dependencies)" : {
-
-    },
-    "Show only leaves: packages you installed directly, not dependencies" : {
-      "extractionState" : "stale",
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nur direkt installierte Pakete anzeigen, keine Abhängigkeiten"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostrar solo hojas: paquetes que instalaste directamente, no dependencias"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Afficher uniquement les feuilles : les paquets que vous avez installés directement, pas les dépendances"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tampilkan hanya daun: paket yang Anda instal langsung, bukan dependensi"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostra solo le foglie: pacchetti installati direttamente, non dipendenze"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "直接インストールしたパッケージのみ表示: 依存関係は含まない"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "직접 설치한 패키지만 표시: 종속성은 제외"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pokaż tylko liście: pakiety zainstalowane bezpośrednio, nie zależności"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostrar apenas folhas: pacotes que você instalou diretamente, não dependências"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Показывать только установленные вами пакеты, не зависимости"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zobraziť iba listy: balíky, ktoré ste nainštalovali priamo, nie závislosti"
-          }
-        },
         "sl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prikaži samo liste: paketi, ki ste jih namestili neposredno, ne pa odvisnosti"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yalnızca doğrudan yüklediğiniz paketleri gösterin, bağımlılıkları değil"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Показати лише листя: пакунки, які ви встановили безпосередньо, а не залежності"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chỉ hiển thị các gói bạn đã cài đặt trực tiếp, không bao gồm phụ thuộc"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "仅显示叶子：仅显示您直接安装的软件包，而非依赖项"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "僅顯示葉子：您直接安裝的套件，而非依賴項"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "只顯示葉子：僅顯示您直接安裝的套件，而非依賴項"
+            "value" : "Prikaži samo formule, nameščene na zahtevo (ne kot odvisnosti)"
           }
         }
       }
@@ -66166,7 +64952,14 @@
       }
     },
     "Startup view" : {
-
+      "localizations" : {
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Začetni pogled"
+          }
+        }
+      }
     },
     "Statistics" : {
       "localizations" : {

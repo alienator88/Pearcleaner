@@ -97,7 +97,12 @@ class HomebrewController {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: brewPath)
         process.arguments = arguments
-        process.environment = ProcessInfo.processInfo.userEnvironment
+
+        // Set up environment with SUDO_ASKPASS for password prompts during install/update
+        var environment = ProcessInfo.processInfo.userEnvironment
+        let askpassPath = "\(Bundle.main.bundlePath)/Contents/Resources/askpass.sh"
+        environment["SUDO_ASKPASS"] = askpassPath
+        process.environment = environment
 
         let outputPipe = Pipe()
         let errorPipe = Pipe()
