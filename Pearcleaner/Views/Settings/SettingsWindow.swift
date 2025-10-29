@@ -17,6 +17,7 @@ struct SettingsView: View {
     @AppStorage("settings.general.selectedTab") private var selectedTab: CurrentTabView = .general
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @State private var showPerms = false
+    @State private var toolbarRefreshTrigger = false
     @ObservedObject private var helperToolManager = HelperToolManager.shared
 
     var body: some View {
@@ -30,66 +31,75 @@ struct SettingsView: View {
         .ignoresSafeArea(edges: .top)
         .background(backgroundView(color: ThemeColors.shared(for: colorScheme).primaryBG))
         .toolbarBackground(.hidden, for: .windowToolbar)
+        .onAppear {
+            // Force toolbar refresh by toggling state
+            DispatchQueue.main.async {
+                toolbarRefreshTrigger.toggle()
+            }
+        }
         .toolbar {
             ToolbarItem { Spacer() }
 
             // Conditional toolbar items based on selected tab
             ToolbarItemGroup {
-                switch selectedTab {
-                case .helper:
-                    // Helper tab toolbar items
-                    Button {
-                        helperToolManager.openSMSettings()
-                    } label: {
-                        Label("Login Items", systemImage: "gear")
-                            .labelStyle(.iconOnly)
-                            .help("Login Items")
-                    }
-
-                    Button {
-                        Task {
-                            await helperToolManager.manageHelperTool(action: .uninstall)
+                Group {
+                    switch selectedTab {
+                    case .helper:
+                        // Helper tab toolbar items
+                        Button {
+                            helperToolManager.openSMSettings()
+                        } label: {
+                            Label("Login Items", systemImage: "gear")
+                                .labelStyle(.iconOnly)
+                                .help("Login Items")
                         }
-                    } label: {
-                        Label("Unregister Service", systemImage: "scissors")
-                            .labelStyle(.iconOnly)
-                            .help("Unregister Service")
-                    }
 
-                    Button {
-                        Task {
-                            await helperToolManager.manageHelperTool(action: .reinstall)
+                        Button {
+                            Task {
+                                await helperToolManager.manageHelperTool(action: .uninstall)
+                            }
+                        } label: {
+                            Label("Unregister Service", systemImage: "scissors")
+                                .labelStyle(.iconOnly)
+                                .help("Unregister Service")
                         }
-                    } label: {
-                        Label("Reinstall Service", systemImage: "arrow.clockwise")
-                            .labelStyle(.iconOnly)
-                            .help("Force Reinstall Service (fixes desync)")
-                    }
 
-                case .about:
-                    // About tab toolbar item
-                    Button(action: {
-                        NSWorkspace.shared.open(URL(string: "https://github.com/sponsors/alienator88")!)
-                    }, label: {
-                        Label {
-                            Text("Sponsor")
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                                .font(.body)
-                                .bold()
-                        } icon: {
-                            Image(systemName: "heart")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 16, height: 16)
-                                .foregroundStyle(.pink)
+                        Button {
+                            Task {
+                                await helperToolManager.manageHelperTool(action: .reinstall)
+                            }
+                        } label: {
+                            Label("Reinstall Service", systemImage: "arrow.clockwise")
+                                .labelStyle(.iconOnly)
+                                .help("Force Reinstall Service (fixes desync)")
                         }
-                        .labelStyle(.titleAndIcon)
-                    })
 
-                default:
-                    // No toolbar items for other tabs
-                    EmptyView()
+                    case .about:
+                        // About tab toolbar item
+                        Button(action: {
+                            NSWorkspace.shared.open(URL(string: "https://github.com/sponsors/alienator88")!)
+                        }, label: {
+                            Label {
+                                Text("Sponsor")
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                                    .font(.body)
+                                    .bold()
+                            } icon: {
+                                Image(systemName: "heart")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 16, height: 16)
+                                    .foregroundStyle(.pink)
+                            }
+                            .labelStyle(.titleAndIcon)
+                        })
+
+                    default:
+                        // No toolbar items for other tabs
+                        EmptyView()
+                    }
                 }
+                .id(toolbarRefreshTrigger)
             }
         }
     }
