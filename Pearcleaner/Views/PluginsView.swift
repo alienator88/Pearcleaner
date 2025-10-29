@@ -66,7 +66,6 @@ struct PluginsView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
     @Environment(\.colorScheme) var colorScheme
-    @State private var plugins: [String: [PluginInfo]] = [:]
     @State private var allPlugins: [PluginInfo] = []
     @State private var isLoading: Bool = false
     @State private var lastRefreshDate: Date?
@@ -343,7 +342,6 @@ struct PluginsView: View {
     private func refreshPluginsAsync() async {
         await MainActor.run {
             isLoading = true
-            plugins = [:]
             allPlugins = []
             selectedPlugins = []
             selectedPluginPaths = []
@@ -363,30 +361,24 @@ struct PluginsView: View {
         let fileManager = FileManager.default
         let pluginCategories = locations.plugins.subcategories
 
-        // Process categories concurrently but update UI incrementally
-        await withTaskGroup(of: (String, [PluginInfo]).self) { group in
+        // Process categories concurrently with incremental UI updates
+        await withTaskGroup(of: Void.self) { group in
 
             // Add tasks for each category
             for (category, paths) in pluginCategories {
                 group.addTask {
-                    return await self.processCategory(category: category, paths: paths, fileManager: fileManager)
+                    await self.processCategory(category: category, paths: paths, fileManager: fileManager)
                 }
             }
 
-            // Collect results and update UI incrementally
-            for await (category, categoryPlugins) in group {
-                if !categoryPlugins.isEmpty {
-                    await MainActor.run {
-                        self.plugins[category] = categoryPlugins
-                        self.allPlugins.append(contentsOf: categoryPlugins)
-                    }
-                }
-            }
+            // Wait for all categories to complete (no results to collect - processCategory updates UI directly)
+            await group.waitForAll()
         }
     }
 
-    private func processCategory(category: String, paths: [String], fileManager: FileManager) async -> (String, [PluginInfo]) {
-        var categoryPlugins: [PluginInfo] = []
+    private func processCategory(category: String, paths: [String], fileManager: FileManager) async {
+        var batchBuffer: [PluginInfo] = []
+        let batchSize = 20  // Update UI every 20 plugins for smooth incremental loading
 
         for path in paths {
             // Check if path exists before trying to read it
@@ -415,13 +407,8 @@ struct PluginsView: View {
                         if !name.hasPrefix(".") && !name.hasPrefix("~") {
                             // Check if file matches the expected types for this category
                             if shouldIncludeFile(name: name, isDirectory: isDirectory, category: category) {
-                                // Extract bundle info for Audio .driver bundles
-                                let bundleId = await extractBundleId(from: itemURL.path, category: category, isDirectory: isDirectory)
-
-                                // Skip Apple system plugins for Audio category
-                                if category == "Audio", let bundleId = bundleId, bundleId.contains("com.apple") {
-                                    continue
-                                }
+                                // Bundle ID will be loaded lazily when needed for search
+                                let bundleId: String? = nil
 
                                 let plugin = PluginInfo(
                                     name: name,
@@ -433,7 +420,17 @@ struct PluginsView: View {
                                     bundleId: bundleId,
                                     customIcon: nil
                                 )
-                                categoryPlugins.append(plugin)
+                                batchBuffer.append(plugin)
+
+                                // Update UI every batchSize plugins for incremental loading
+                                if batchBuffer.count >= batchSize {
+                                    let pluginsToAdd = batchBuffer
+                                    batchBuffer = []
+
+                                    await MainActor.run {
+                                        self.allPlugins.append(contentsOf: pluginsToAdd)
+                                    }
+                                }
                             }
                         }
                     } catch {
@@ -447,26 +444,40 @@ struct PluginsView: View {
             }
         }
 
-//        #if DEBUG
-//        // Duplicate ZoomAudioDevice.driver 599 more times for performance testing
-//        if let zoomPlugin = categoryPlugins.first(where: { $0.name == "ZoomAudioDevice.driver" }) {
-//            for i in 1...599 {
-//                let duplicatedPlugin = PluginInfo(
-//                    name: "\(zoomPlugin.name) (Copy \(i))",
-//                    path: "\(zoomPlugin.path)_copy\(i)",  // Fake path
-//                    category: zoomPlugin.category,
-//                    isDirectory: zoomPlugin.isDirectory,
-//                    size: zoomPlugin.size,
-//                    dateModified: zoomPlugin.dateModified,
-//                    bundleId: zoomPlugin.bundleId.map { "\($0).copy\(i)" },
-//                    customIcon: zoomPlugin.customIcon
-//                )
-//                categoryPlugins.append(duplicatedPlugin)
-//            }
-//        }
-//        #endif
+        // Flush any remaining plugins in the batch buffer
+        if !batchBuffer.isEmpty {
+            await MainActor.run {
+                self.allPlugins.append(contentsOf: batchBuffer)
+            }
+        }
 
-        return (category, categoryPlugins)
+        #if DEBUG
+        // Duplicate ZoomAudioDevice.driver 599 more times for performance testing
+        if let zoomPlugin = self.allPlugins.first(where: { $0.name == "ZoomAudioDevice.driver" && $0.category == category }) {
+            var debugPlugins: [PluginInfo] = []
+            for i in 1...599 {
+                let duplicatedPlugin = PluginInfo(
+                    name: "\(zoomPlugin.name) (Copy \(i))",
+                    path: "\(zoomPlugin.path)_copy\(i)",  // Fake path
+                    category: zoomPlugin.category,
+                    isDirectory: zoomPlugin.isDirectory,
+                    size: zoomPlugin.size,
+                    dateModified: zoomPlugin.dateModified,
+                    bundleId: zoomPlugin.bundleId.map { "\($0).copy\(i)" },
+                    customIcon: zoomPlugin.customIcon
+                )
+                debugPlugins.append(duplicatedPlugin)
+            }
+
+            // Add debug plugins in batches for smooth UI
+            let debugBatches = debugPlugins.chunked(into: batchSize)
+            for batch in debugBatches {
+                await MainActor.run {
+                    self.allPlugins.append(contentsOf: batch)
+                }
+            }
+        }
+        #endif
     }
 
 
@@ -759,7 +770,8 @@ struct PluginCategorySection: View {
                         }
                     }
                 }
-                .transition(.opacity.combined(with: .slide))
+                .transition(plugins.count > 50 ? .identity : .opacity)
+
             }
         }
     }
@@ -1246,7 +1258,7 @@ struct AudioPluginRowView: View {
                         .padding(.vertical, 4)
                     }
                 }
-                .transition(pluginsCount > 50 ? .identity : .opacity.combined(with: .slide))
+                .transition(pluginsCount > 50 ? .identity : .opacity)
             }
         }
         .background(
@@ -1303,8 +1315,17 @@ struct AudioPluginRowView: View {
         // Build search filters - search for plugin name
         let filters: [FilterType] = [.name(.contains, pluginName)]
 
+        // Lazily extract bundle ID only when search is clicked (if not already loaded)
+        var bundleIdToSearch: String? = plugin.bundleId
+        if bundleIdToSearch == nil && plugin.isDirectory && plugin.path.hasSuffix(".driver") {
+            let infoPlistPath = plugin.path + "/Contents/Info.plist"
+            if let plistData = NSDictionary(contentsOfFile: infoPlistPath) {
+                bundleIdToSearch = plistData["CFBundleIdentifier"] as? String
+            }
+        }
+
         // If bundle ID exists, also search for that
-        if let bundleId = plugin.bundleId, !bundleId.isEmpty {
+        if let bundleId = bundleIdToSearch, !bundleId.isEmpty {
             // Don't add bundle ID as a filter since we can only search for name
             // Instead, we'll do two searches - one for plugin name, one for bundle ID
             let bundleIdEngine = FileSearchEngine()
