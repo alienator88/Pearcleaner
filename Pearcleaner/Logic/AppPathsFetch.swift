@@ -333,7 +333,10 @@ class AppPathFinder {
     // Check for associated zombie files
     private func fetchAssociatedZombieFiles() -> [URL] {
         let storedFiles = ZombieFileStorage.shared.getAssociatedFiles(for: self.appInfo.path)
-        return storedFiles
+
+        // Only return files that actually exist on disk
+        // Keep associations in storage so they can be restored if file comes back
+        return storedFiles.filter { FileManager.default.fileExists(atPath: $0.path) }
     }
 
     // Helper method to check bundle identifier validity - now static

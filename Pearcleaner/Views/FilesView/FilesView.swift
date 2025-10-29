@@ -193,19 +193,22 @@ struct FilesView: View {
                     killApp(appId: appState.appInfo.bundleIdentifier) {
 
                         let result = moveFilesToTrash(appState: appState, at: selectedItemsArray)
-                        if result {
-                            // Update the app's file list by removing the deleted files
-                            updateOnMain {
-                                appState.appInfo.fileSize = appState.appInfo.fileSize.filter {
-                                    !selectedItemsArray.contains($0.key)
-                                }
-                                appState.appInfo.fileIcon = appState.appInfo.fileIcon.filter {
-                                    !selectedItemsArray.contains($0.key)
-                                }
-                                appState.selectedItems.removeAll()
-                                updateSortedFiles()
-                            }
 
+                        // Always cleanup UI, regardless of whether files physically existed
+                        updateOnMain {
+                            // Remove selected items from app's file list
+                            appState.appInfo.fileSize = appState.appInfo.fileSize.filter {
+                                !selectedItemsArray.contains($0.key)
+                            }
+                            appState.appInfo.fileIcon = appState.appInfo.fileIcon.filter {
+                                !selectedItemsArray.contains($0.key)
+                            }
+                            appState.selectedItems.removeAll()
+                            updateSortedFiles()
+                        }
+
+                        // Only proceed with additional deletion logic if files were actually moved to trash
+                        if result {
                             // Determine if it's a full delete
                             let appPath = appState.appInfo.path.absoluteString
                             let appRemoved = selectedItemsArray.contains(where: {
