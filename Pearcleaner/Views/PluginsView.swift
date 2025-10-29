@@ -725,6 +725,7 @@ struct PluginCategorySection: View {
                     if category == "Audio" {
                         AudioPluginRowView(
                             plugin: plugin,
+                            pluginsCount: plugins.count,
                             isSelected: selectedPlugins.contains(plugin.id),
                             permanentDelete: permanentDelete,
                             sortOption: sortOption,
@@ -1008,6 +1009,7 @@ struct PluginRowView: View {
 
 struct AudioPluginRowView: View {
     let plugin: PluginInfo
+    let pluginsCount: Int
     let isSelected: Bool
     let permanentDelete: Bool
     let sortOption: PluginSortOption
@@ -1118,47 +1120,41 @@ struct AudioPluginRowView: View {
                 Spacer()
 
                 // Action buttons
-                VStack(spacing: 6) {
-                    HStack(spacing: 10) {
-                        Button(isExpanded ? "Close" : "Search") {
-                            withAnimation(.easeInOut(duration: 0.2)) {
-                                isExpanded.toggle()
-                            }
-                        }
-                        .buttonStyle(.borderless)
-                        .controlSize(.mini)
-                        .foregroundStyle(.blue)
-                        .disabled(isPerformingAction)
-                        .help(isExpanded ? "Close related files search" : "Search for related files")
+                if isPerformingAction {
+                    ProgressView()
+                        .scaleEffect(0.7)
+                }
 
-                        Divider().frame(height: 10)
-
-                        Button("View") {
-                            openInFinder(plugin.path)
-                        }
-                        .buttonStyle(.borderless)
-                        .controlSize(.mini)
-                        .foregroundStyle(.blue)
-                        .disabled(isPerformingAction)
-                        .help("Show in Finder")
-
-                        Divider().frame(height: 10)
-
-                        Button("Delete") {
-                            deletePluginAndRelatedFiles()
-                        }
-                        .buttonStyle(.borderless)
-                        .controlSize(.mini)
-                        .foregroundStyle(.red)
-                        .disabled(isPerformingAction)
-                        .help("Delete plugin and selected related files")
-                    }
-
-                    if isPerformingAction {
-                        ProgressView()
-                            .scaleEffect(0.7)
+                Button(isExpanded ? "Close" : "Search") {
+                    withAnimation(.easeInOut(duration: pluginsCount > 50 ? 0 : 0.2)) {
+                        isExpanded.toggle()
                     }
                 }
+                .buttonStyle(.borderless)
+                .controlSize(.mini)
+                .foregroundStyle(.blue)
+                .disabled(isPerformingAction)
+                .help(isExpanded ? "Close related files search" : "Search for related files")
+
+                
+                Button("View") {
+                    openInFinder(plugin.path)
+                }
+                .buttonStyle(.borderless)
+                .controlSize(.mini)
+                .foregroundStyle(.blue)
+                .disabled(isPerformingAction)
+                .help("Show in Finder")
+
+
+                Button("Delete") {
+                    deletePluginAndRelatedFiles()
+                }
+                .buttonStyle(.borderless)
+                .controlSize(.mini)
+                .foregroundStyle(.red)
+                .disabled(isPerformingAction)
+                .help("Delete plugin and selected related files")
             }
             .padding()
 
@@ -1250,18 +1246,18 @@ struct AudioPluginRowView: View {
                         .padding(.vertical, 4)
                     }
                 }
-                .transition(.opacity.combined(with: .slide))
+                .transition(pluginsCount > 50 ? .identity : .opacity.combined(with: .slide))
             }
         }
         .background(
             RoundedRectangle(cornerRadius: 8)
-                .fill(isHovered ?
+                .fill(isHovered && pluginsCount < 50 ?
                     ThemeColors.shared(for: colorScheme).secondaryBG.opacity(0.8) :
                     ThemeColors.shared(for: colorScheme).secondaryBG
                 )
         )
         .onHover { hovering in
-            withAnimation(.easeInOut(duration: 0.2)) {
+            withAnimation(.easeInOut(duration: pluginsCount > 50 ? 0 : 0.2)) {
                 isHovered = hovering
             }
         }
