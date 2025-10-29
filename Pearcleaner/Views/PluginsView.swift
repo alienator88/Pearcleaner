@@ -447,24 +447,24 @@ struct PluginsView: View {
             }
         }
 
-        #if DEBUG
-        // Duplicate ZoomAudioDevice.driver 599 more times for performance testing
-        if let zoomPlugin = categoryPlugins.first(where: { $0.name == "ZoomAudioDevice.driver" }) {
-            for i in 1...599 {
-                let duplicatedPlugin = PluginInfo(
-                    name: "\(zoomPlugin.name) (Copy \(i))",
-                    path: "\(zoomPlugin.path)_copy\(i)",  // Fake path
-                    category: zoomPlugin.category,
-                    isDirectory: zoomPlugin.isDirectory,
-                    size: zoomPlugin.size,
-                    dateModified: zoomPlugin.dateModified,
-                    bundleId: zoomPlugin.bundleId.map { "\($0).copy\(i)" },
-                    customIcon: zoomPlugin.customIcon
-                )
-                categoryPlugins.append(duplicatedPlugin)
-            }
-        }
-        #endif
+//        #if DEBUG
+//        // Duplicate ZoomAudioDevice.driver 599 more times for performance testing
+//        if let zoomPlugin = categoryPlugins.first(where: { $0.name == "ZoomAudioDevice.driver" }) {
+//            for i in 1...599 {
+//                let duplicatedPlugin = PluginInfo(
+//                    name: "\(zoomPlugin.name) (Copy \(i))",
+//                    path: "\(zoomPlugin.path)_copy\(i)",  // Fake path
+//                    category: zoomPlugin.category,
+//                    isDirectory: zoomPlugin.isDirectory,
+//                    size: zoomPlugin.size,
+//                    dateModified: zoomPlugin.dateModified,
+//                    bundleId: zoomPlugin.bundleId.map { "\($0).copy\(i)" },
+//                    customIcon: zoomPlugin.customIcon
+//                )
+//                categoryPlugins.append(duplicatedPlugin)
+//            }
+//        }
+//        #endif
 
         return (category, categoryPlugins)
     }
