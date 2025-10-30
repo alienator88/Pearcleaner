@@ -33,7 +33,7 @@ struct BadgeOverlay: View {
     // Determine which overlay to show based on priority (helper → permissions → update → announcement)
     private var currentOverlay: OverlayType? {
         // Helper: highest priority
-        if !helperManager.isHelperToolInstalled {
+        if helperManager.shouldShowHelperBadge {
             if !dismissedOverlays.contains(.helper) {
                 return .helper
             }

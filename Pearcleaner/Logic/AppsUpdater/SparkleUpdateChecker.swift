@@ -151,6 +151,14 @@ private class SparkleCheckerOperation: NSObject, SPUUserDriver, SPUUpdaterDelega
     }
 
     func start() {
+        // Log what we're passing to Sparkle for diagnostics
+        SparkleUpdateChecker.logger.log(.sparkle, "  🔍 Creating SPUUpdater:")
+        SparkleUpdateChecker.logger.log(.sparkle, "     Bundle path: \(bundle.bundlePath)")
+        SparkleUpdateChecker.logger.log(.sparkle, "     CFBundleVersion: \(bundle.infoDictionary?["CFBundleVersion"] as? String ?? "nil")")
+        SparkleUpdateChecker.logger.log(.sparkle, "     CFBundleShortVersionString: \(bundle.infoDictionary?["CFBundleShortVersionString"] as? String ?? "nil")")
+        SparkleUpdateChecker.logger.log(.sparkle, "     Feed URL: \(feedURL.absoluteString)")
+        SparkleUpdateChecker.logger.log(.sparkle, "     Include pre-releases: \(includePreReleases)")
+
         // Create SPUUpdater with this operation as both user driver and delegate
         let updater = SPUUpdater(hostBundle: bundle, applicationBundle: bundle, userDriver: self, delegate: self)
 
@@ -174,8 +182,30 @@ private class SparkleCheckerOperation: NSObject, SPUUserDriver, SPUUpdaterDelega
         let availableVersionString = appcastItem.displayVersionString
         let buildVersionString = appcastItem.versionString
 
-        // Note: Sparkle has already determined this is an update
-        // We only filter for pre-releases if the toggle is off
+        // Note: Sparkle has already determined this is an update based on CFBundleVersion (build number) comparison
+        // However, some apps have mismatched build number formats between versions (e.g., ProtonVPN)
+        // When formats differ (one has period, one doesn't), normalize and compare as integers
+
+        if let installedBuild = appInfo.appBuildNumber {
+            let installedHasPeriod = installedBuild.contains(".")
+            let availableHasPeriod = buildVersionString.contains(".")
+
+            // Only apply special handling when formats differ (one has period, one doesn't)
+            if installedHasPeriod != availableHasPeriod {
+                let installedNumeric = installedBuild.replacingOccurrences(of: ".", with: "")
+                let availableNumeric = buildVersionString.replacingOccurrences(of: ".", with: "")
+
+                if let installedInt = Int(installedNumeric),
+                   let availableInt = Int(availableNumeric),
+                   installedInt > availableInt {
+                    SparkleUpdateChecker.logger.log(.sparkle, "     ⚠️ DOWNGRADE REJECTED:")
+                    SparkleUpdateChecker.logger.log(.sparkle, "        Build (normalized): \(installedInt) → \(availableInt)")
+                    SparkleUpdateChecker.logger.log(.sparkle, "        Display: \(appInfo.appVersion) → \(availableVersionString)")
+                    SparkleUpdateChecker.logger.log(.sparkle, "        Reason: Mismatched build formats - installed build is numerically larger")
+                    return nil
+                }
+            }
+        }
 
         // Check if this is a pre-release
         var isPreRelease = false
@@ -301,8 +331,12 @@ private class SparkleCheckerOperation: NSObject, SPUUserDriver, SPUUpdaterDelega
         case .updateFound(let appcastItem, let state):
             SparkleUpdateChecker.logger.log(.sparkle, "  📥 CALLBACK: showUpdateFound")
             SparkleUpdateChecker.logger.log(.sparkle, "     App: \(appInfo.appName)")
-            SparkleUpdateChecker.logger.log(.sparkle, "     Installed: \(appInfo.appVersion)")
+            SparkleUpdateChecker.logger.log(.sparkle, "     Installed: \(appInfo.appVersion) (build: \(appInfo.appBuildNumber ?? "unknown"))")
             SparkleUpdateChecker.logger.log(.sparkle, "     Available: \(appcastItem.displayVersionString) (build: \(appcastItem.versionString))")
+
+            if let minOS = appcastItem.minimumSystemVersion {
+                SparkleUpdateChecker.logger.log(.sparkle, "     Min system version: \(minOS)")
+            }
 
             if let channel = appcastItem.channel {
                 SparkleUpdateChecker.logger.log(.sparkle, "     Channel: \(channel)")
