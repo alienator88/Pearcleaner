@@ -361,14 +361,14 @@ class HomebrewManager: ObservableObject {
 
             // Convert to SearchResult objects with displayName, description, and version
             // Sort once here to avoid sorting on every search keystroke
-            allAvailableFormulae = formulae.map { metadata in
+            allAvailableFormulae = formulae.map { (name, displayName, description, version, _) in
                 HomebrewSearchResult(
-                    name: metadata.name,
-                    displayName: metadata.displayName,
-                    description: metadata.description,
+                    name: name,
+                    displayName: displayName,
+                    description: description,
                     homepage: nil,
                     license: nil,
-                    version: metadata.version,
+                    version: version,
                     dependencies: nil,
                     caveats: nil,
                     tap: nil,
@@ -399,14 +399,14 @@ class HomebrewManager: ObservableObject {
                 )
             }.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
 
-            allAvailableCasks = casks.map { metadata in
+            allAvailableCasks = casks.map { (name, displayName, description, version, _) in
                 HomebrewSearchResult(
-                    name: metadata.name,
-                    displayName: metadata.displayName,
-                    description: metadata.description,
+                    name: name,
+                    displayName: displayName,
+                    description: description,
                     homepage: nil,
                     license: nil,
-                    version: metadata.version,
+                    version: version,
                     dependencies: nil,
                     caveats: nil,
                     tap: nil,
