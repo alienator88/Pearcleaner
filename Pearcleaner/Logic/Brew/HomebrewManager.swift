@@ -52,7 +52,7 @@ class HomebrewManager: ObservableObject {
     @Published var brewVersion: String = ""
     @Published var latestBrewVersion: String = ""
     @Published var updateAvailable: Bool = false
-    @Published var downloadsCacheSize: Int64 = 0
+    @Published var cacheSize: Int64 = 0 // Swift-calculated cache size (instant)
     @Published var analyticsEnabled: Bool = false
     @Published var isCheckingAnalytics: Bool = false
 
@@ -97,7 +97,7 @@ class HomebrewManager: ObservableObject {
         async let packages: Void = loadInstalledPackages()
         async let taps: Void = loadTaps()
         async let version: Void = loadBrewVersion()
-        async let cache: Void = loadDownloadsCacheSize()
+        async let cache: Void = loadCacheSize()
         async let analytics: Void = checkAnalyticsStatus()
 
         _ = await (packages, taps, version, cache, analytics)
@@ -108,7 +108,7 @@ class HomebrewManager: ObservableObject {
         maintenanceRefreshTrigger.toggle()
 
         async let version: Void = loadBrewVersion()
-        async let cache: Void = loadDownloadsCacheSize()
+        async let cache: Void = loadCacheSize()
         async let analytics: Void = checkAnalyticsStatus()
         async let update: Void = checkForUpdate()
 
@@ -319,12 +319,9 @@ class HomebrewManager: ObservableObject {
         }
     }
 
-    func loadDownloadsCacheSize() async {
-        do {
-            downloadsCacheSize = try await HomebrewController.shared.getDownloadsCacheSize()
-        } catch {
-            printOS("Error loading downloads cache size: \(error)")
-        }
+    func loadCacheSize() async {
+        let result = await HomebrewController.shared.calculateCacheSize()
+        cacheSize = result.bytes
     }
 
     func checkAnalyticsStatus() async {

@@ -1110,24 +1110,42 @@ class HomebrewController {
     // MARK: - Maintenance
 
     func getBrewVersion() async throws -> String {
+        // Use git directly for faster version check (avoids spawning brew process)
+        // --abbrev=0 returns clean semantic version (e.g., "4.6.19") for consistent display
+        // Works with both full clones and shallow clones
+        let gitCommand = "git -C \(brewPrefix) describe --tags --abbrev=0 2>/dev/null"
+
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/bin/sh")
+        process.arguments = ["-c", gitCommand]
+
+        let pipe = Pipe()
+        process.standardOutput = pipe
+        process.standardError = Pipe()
+
+        try process.run()
+        process.waitUntilExit()
+
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+
+        if process.terminationStatus == 0 && !output.isEmpty {
+            return output  // Returns "4.6.19"
+        }
+
+        // Fallback to brew command if git fails
         let arguments = ["-v"]
         let result = try await runBrewCommand(arguments)
-
-        // Extract version number from output like "Homebrew 4.0.15"
         let components = result.output.components(separatedBy: " ")
         if components.count >= 2 {
-            return components[1].trimmingCharacters(in: .whitespacesAndNewlines)
+            let version = components[1].trimmingCharacters(in: .whitespacesAndNewlines)
+            // Extract semantic version from potential full string (e.g., "4.6.19-22-ga6c4bc4" -> "4.6.19")
+            if let match = version.range(of: #"^\d+\.\d+\.\d+"#, options: .regularExpression) {
+                return String(version[match])
+            }
+            return version
         }
-        return result.output.trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-
-    func getSemanticBrewVersion() async throws -> String {
-        let fullVersion = try await getBrewVersion()
-        // Extract just the semantic version (e.g., "4.6.15" from "4.6.15-34-g01d792b")
-        if let match = fullVersion.range(of: #"^\d+\.\d+\.\d+"#, options: .regularExpression) {
-            return String(fullVersion[match])
-        }
-        return fullVersion
+        return "Unknown"
     }
 
     func getLatestBrewVersionFromGitHub() async throws -> String {
@@ -1141,112 +1159,16 @@ class HomebrewController {
     }
 
     func checkForBrewUpdate() async throws -> (current: String, latest: String, updateAvailable: Bool) {
+        // Get current semantic version (e.g., "4.6.19")
         let currentVersion = try await getBrewVersion()
 
-        // Check if version has commit hash suffix (e.g., "4.6.16-29-g20fa199")
-        // If not, skip git check even if git repo exists (portable installation)
-        let hasCommitSuffix = currentVersion.range(of: #"-\d+-g[a-f0-9]+"#, options: .regularExpression) != nil
+        // Get latest version from GitHub releases
+        let latestVersion = try await getLatestBrewVersionFromGitHub()
 
-        if hasCommitSuffix {
-            // Try git-based check for git installations with commit suffixes
-            do {
-                let updateAvailable = try await isBrewBehindRemote()
-                return (current: currentVersion, latest: "", updateAvailable: updateAvailable)
-            } catch {
-                printOS("Brew version check - Git-based check failed: \(error.localizedDescription). Falling back to semantic version comparison.")
-            }
-        }
+        // Compare semantic versions
+        let updateAvailable = compareSemanticVersions(current: currentVersion, latest: latestVersion)
 
-        // Fallback: semantic version comparison (for portable installations)
-        do {
-            let latestVersion = try await getLatestBrewVersionFromGitHub()
-            let currentSemantic = try await getSemanticBrewVersion()
-            let updateAvailable = compareSemanticVersions(current: currentSemantic, latest: latestVersion)
-            return (current: currentVersion, latest: latestVersion, updateAvailable: updateAvailable)
-        } catch {
-            printOS("Brew version check - Semantic version comparison failed: \(error.localizedDescription)")
-            throw error
-        }
-    }
-
-    private func isBrewBehindRemote() async throws -> Bool {
-        // Find the Homebrew git repository path
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: brewPath)
-        process.arguments = ["--repository"]
-
-        let outputPipe = Pipe()
-        process.standardOutput = outputPipe
-
-        try process.run()
-        process.waitUntilExit()
-
-        let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-        let repoPath = String(data: outputData, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-
-        guard !repoPath.isEmpty else {
-            printOS("Brew version check - Git check failed: brew --repository returned empty path")
-            throw HomebrewError.commandFailed("Not a git repository")
-        }
-
-        // Verify it's actually a git repo
-        let checkGitProcess = Process()
-        checkGitProcess.executableURL = URL(fileURLWithPath: "/usr/bin/git")
-        checkGitProcess.arguments = ["-C", repoPath, "rev-parse", "--git-dir"]
-        checkGitProcess.standardOutput = Pipe()
-        let checkGitErrorPipe = Pipe()
-        checkGitProcess.standardError = checkGitErrorPipe
-
-        try checkGitProcess.run()
-        checkGitProcess.waitUntilExit()
-
-        guard checkGitProcess.terminationStatus == 0 else {
-            let errorData = checkGitErrorPipe.fileHandleForReading.readDataToEndOfFile()
-            let errorOutput = String(data: errorData, encoding: .utf8) ?? "Unknown error"
-            printOS("Brew version check - Git check failed: git rev-parse failed with status \(checkGitProcess.terminationStatus), error: \(errorOutput)")
-            throw HomebrewError.commandFailed("Not a git repository")
-        }
-
-        // Fetch latest from remote (doesn't update local files, just refs)
-        let fetchProcess = Process()
-        fetchProcess.executableURL = URL(fileURLWithPath: "/usr/bin/git")
-        fetchProcess.arguments = ["-C", repoPath, "fetch", "--quiet", "origin"]
-        fetchProcess.standardOutput = Pipe()
-        let fetchErrorPipe = Pipe()
-        fetchProcess.standardError = fetchErrorPipe
-
-        try? fetchProcess.run()
-        fetchProcess.waitUntilExit()
-
-        if fetchProcess.terminationStatus != 0 {
-            let errorData = fetchErrorPipe.fileHandleForReading.readDataToEndOfFile()
-            let errorOutput = String(data: errorData, encoding: .utf8) ?? "Unknown error"
-            printOS("Brew version check - Git fetch warning: failed with status \(fetchProcess.terminationStatus), error: \(errorOutput)")
-        }
-
-        // Compare local HEAD with remote origin/master (or origin/HEAD)
-        let compareProcess = Process()
-        compareProcess.executableURL = URL(fileURLWithPath: "/usr/bin/git")
-        compareProcess.arguments = ["-C", repoPath, "rev-list", "--count", "HEAD..origin/master"]
-
-        let comparePipe = Pipe()
-        compareProcess.standardOutput = comparePipe
-        let compareErrorPipe = Pipe()
-        compareProcess.standardError = compareErrorPipe
-
-        try compareProcess.run()
-        compareProcess.waitUntilExit()
-
-        if compareProcess.terminationStatus != 0 {
-            let errorData = compareErrorPipe.fileHandleForReading.readDataToEndOfFile()
-            let errorOutput = String(data: errorData, encoding: .utf8) ?? "Unknown error"
-            printOS("Brew version check - Git compare failed: rev-list failed with status \(compareProcess.terminationStatus), error: \(errorOutput)")
-        }
-
-        let compareData = comparePipe.fileHandleForReading.readDataToEndOfFile()
-        let commitsBehind = String(data: compareData, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "0"
-
-        return Int(commitsBehind) ?? 0 > 0
+        return (current: currentVersion, latest: latestVersion, updateAvailable: updateAvailable)
     }
 
     private func compareSemanticVersions(current: String, latest: String) -> Bool {
@@ -1284,51 +1206,55 @@ class HomebrewController {
         return result.output + result.error
     }
 
-    func getDownloadsCacheSize() async throws -> Int64 {
-        // Run cleanup in dry-run mode to see what would be freed
-        let arguments = ["cleanup", "--dry-run", "--scrub", "--prune=all"]
-        let result = try await runBrewCommand(arguments)
+    func runCleanup() async throws {
+        // Collect all cleanable cache and log files
+        let homeDir = FileManager.default.homeDirectoryForCurrentUser
+        let cacheDir = homeDir.appendingPathComponent("Library/Caches/Homebrew")
+        let logsDir = homeDir.appendingPathComponent("Library/Logs/Homebrew")
+        let fileManager = FileManager.default
 
-        let output = result.output + result.error
+        var filesToDelete: [URL] = []
 
-        // Parse the output for "This operation would free approximately X"
-        // Example: "This operation would free approximately 5.1MB of disk space."
-        if let match = output.range(of: #"would free approximately ([0-9.]+)(MB|GB|KB)"#, options: .regularExpression) {
-            let matchString = String(output[match])
-
-            // Extract number and unit
-            let pattern = #"([0-9.]+)(MB|GB|KB)"#
-            if let valueMatch = matchString.range(of: pattern, options: .regularExpression) {
-                let valueString = String(matchString[valueMatch])
-                let components = valueString.components(separatedBy: CharacterSet.letters)
-
-                if let sizeValue = Double(components[0]) {
-                    let unit = valueString.replacingOccurrences(of: String(sizeValue), with: "")
-
-                    // Convert to bytes
-                    switch unit {
-                    case "KB":
-                        return Int64(sizeValue * 1024)
-                    case "MB":
-                        return Int64(sizeValue * 1024 * 1024)
-                    case "GB":
-                        return Int64(sizeValue * 1024 * 1024 * 1024)
-                    default:
-                        return 0
-                    }
-                }
+        // 1. Everything in downloads/ folder
+        let downloadsDir = cacheDir.appendingPathComponent("downloads")
+        if fileManager.fileExists(atPath: downloadsDir.path) {
+            do {
+                let downloadFiles = try fileManager.contentsOfDirectory(at: downloadsDir, includingPropertiesForKeys: nil, options: [])
+                filesToDelete.append(contentsOf: downloadFiles)
+            } catch {
+                // Continue if we can't read downloads directory
             }
         }
 
-        return 0
-    }
+        // 2. Non-directory files in root Homebrew cache folder
+        if fileManager.fileExists(atPath: cacheDir.path) {
+            do {
+                let contents = try fileManager.contentsOfDirectory(at: cacheDir, includingPropertiesForKeys: [.isDirectoryKey], options: [])
+                for itemURL in contents {
+                    let resourceValues = try itemURL.resourceValues(forKeys: [.isDirectoryKey])
+                    // Only include files (not directories like api/, bootsnap/, etc.)
+                    if resourceValues.isDirectory == false {
+                        filesToDelete.append(itemURL)
+                    }
+                }
+            } catch {
+                // Continue if we can't read cache directory
+            }
+        }
 
-    func runCleanup() async throws {
-        let arguments = ["cleanup"]
-        let result = try await runBrewCommand(arguments)
+        // 3. Everything in logs directory
+        if fileManager.fileExists(atPath: logsDir.path) {
+            do {
+                let logFiles = try fileManager.contentsOfDirectory(at: logsDir, includingPropertiesForKeys: nil, options: [])
+                filesToDelete.append(contentsOf: logFiles)
+            } catch {
+                // Continue if we can't read logs directory
+            }
+        }
 
-        if result.error.contains("Error") {
-            throw HomebrewError.commandFailed(result.error)
+        // Move all files to Trash in a bundle
+        if !filesToDelete.isEmpty {
+            let _ = FileManagerUndo.shared.deleteFiles(at: filesToDelete, bundleName: "BrewCleanup")
         }
     }
 
@@ -1337,31 +1263,106 @@ class HomebrewController {
         let autoremoveArgs = ["autoremove"]
         _ = try await runBrewCommand(autoremoveArgs)
 
-        // Then run cleanup with scrub to remove old versions and all cache files (including latest versions)
-        let cleanupArgs = ["cleanup", "--scrub", "--prune=all"]
-        let result = try await runBrewCommand(cleanupArgs)
-
-        if result.error.contains("Error") && !result.error.contains("Warning") {
-            throw HomebrewError.commandFailed(result.error)
-        }
+        // Then clean up cache and logs directly (same as runCleanup)
+        try await runCleanup()
     }
 
     func getAnalyticsStatus() async throws -> Bool {
-        let arguments = ["analytics"]
-        let result = try await runBrewCommand(arguments)
+        // Use git config directly for faster check (avoids spawning brew process)
+        let gitCommand = "git -C \(brewPrefix) config --get homebrew.analyticsdisabled 2>/dev/null"
 
-        // Check for both possible messages
-        return result.output.contains("analytics are enabled") ||
-               result.output.contains("Analytics are enabled")
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/bin/sh")
+        process.arguments = ["-c", gitCommand]
+
+        let pipe = Pipe()
+        process.standardOutput = pipe
+        process.standardError = Pipe()
+
+        try process.run()
+        process.waitUntilExit()
+
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+
+        // If config key doesn't exist or is empty, analytics are enabled by default
+        // If set to "true", analytics are disabled
+        // If set to "false", analytics are enabled
+        if output.isEmpty {
+            return true  // Analytics enabled by default
+        }
+        return output.lowercased() != "true"  // Return true if NOT disabled
     }
 
     func setAnalyticsStatus(enabled: Bool) async throws {
-        let arguments = ["analytics", enabled ? "on" : "off"]
-        let result = try await runBrewCommand(arguments)
+        // Use git config directly for faster toggle (avoids spawning brew process)
+        let value = enabled ? "false" : "true"  // Inverted: "false" means NOT disabled (i.e., enabled)
+        let gitCommand = "git -C \(brewPrefix) config --replace-all homebrew.analyticsdisabled \(value) 2>&1"
 
-        if result.error.contains("Error") {
-            throw HomebrewError.commandFailed(result.error)
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/bin/sh")
+        process.arguments = ["-c", gitCommand]
+
+        let pipe = Pipe()
+        process.standardOutput = pipe
+        process.standardError = pipe
+
+        try process.run()
+        process.waitUntilExit()
+
+        if process.terminationStatus != 0 {
+            let data = pipe.fileHandleForReading.readDataToEndOfFile()
+            let error = String(data: data, encoding: .utf8) ?? "Unknown error"
+            throw HomebrewError.commandFailed("Failed to set analytics status: \(error)")
         }
+    }
+
+    func calculateCacheSize() async -> (bytes: Int64, formatted: String) {
+        // Calculate cleanable Homebrew cache size to match brew cleanup --dry-run --scrub --prune=all
+        // This matches brew's cleanup logic:
+        // 1. Everything in downloads/ folder (cached formula/cask downloads)
+        // 2. Non-directory files in root Homebrew/ folder (loose files, symlinks, .txt files)
+        // 3. Everything in Logs/Homebrew/ folder
+        // Excludes: api/, bootsnap/, and other subdirectories (needed for Homebrew function)
+
+        let homeDir = FileManager.default.homeDirectoryForCurrentUser
+        let cacheDir = homeDir.appendingPathComponent("Library/Caches/Homebrew")
+        let logsDir = homeDir.appendingPathComponent("Library/Logs/Homebrew")
+        let fileManager = FileManager.default
+
+        var totalBytes: Int64 = 0
+
+        // 1. Calculate size of downloads/ folder (bulk of cleanable cache)
+        let downloadsDir = cacheDir.appendingPathComponent("downloads")
+        if fileManager.fileExists(atPath: downloadsDir.path) {
+            totalBytes += totalSizeOnDisk(for: downloadsDir)
+        }
+
+        // 2. Calculate size of non-directory files in root Homebrew cache folder
+        if fileManager.fileExists(atPath: cacheDir.path) {
+            do {
+                let contents = try fileManager.contentsOfDirectory(at: cacheDir, includingPropertiesForKeys: [.isDirectoryKey], options: [])
+                for itemURL in contents {
+                    let resourceValues = try itemURL.resourceValues(forKeys: [.isDirectoryKey])
+                    // Only count files (not directories)
+                    if resourceValues.isDirectory == false {
+                        totalBytes += totalSizeOnDisk(for: itemURL)
+                    }
+                }
+            } catch {
+                // Silently continue if we can't read the directory
+            }
+        }
+
+        // 3. Calculate logs directory size
+        if fileManager.fileExists(atPath: logsDir.path) {
+            totalBytes += totalSizeOnDisk(for: logsDir)
+        }
+
+        // Format as human-readable
+        let formatted = ByteCountFormatter.string(fromByteCount: totalBytes, countStyle: .file)
+
+        return (bytes: totalBytes, formatted: formatted)
     }
 
     // MARK: - Tap Package Loading

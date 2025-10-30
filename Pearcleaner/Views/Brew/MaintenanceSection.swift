@@ -19,7 +19,7 @@ struct MaintenanceSection: View {
     @State private var doctorHealthy: Bool? = nil // nil = not run, true = healthy, false = unhealthy
     @State private var isCheckingHealthOnAppear: Bool = false
     @State private var isCheckingVersionOnAppear: Bool = false
-    @State private var isCheckingCacheSizeOnAppear: Bool = false
+    @State private var isCheckingCacheSize: Bool = false
     @State private var refreshID = UUID()
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
 
@@ -56,10 +56,19 @@ struct MaintenanceSection: View {
                                 }
 
                                 if !brewManager.brewVersion.isEmpty {
-                                    Text(brewManager.brewVersion)
-                                        .font(.title3)
-                                        .fontWeight(.semibold)
-                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                                    if brewManager.updateAvailable && !brewManager.latestBrewVersion.isEmpty {
+                                        // Show current → latest when update available
+                                        Text("\(brewManager.brewVersion) → \(brewManager.latestBrewVersion)")
+                                            .font(.title3)
+                                            .fontWeight(.semibold)
+                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                                    } else {
+                                        // Show just current version when up to date
+                                        Text(brewManager.brewVersion)
+                                            .font(.title3)
+                                            .fontWeight(.semibold)
+                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                                    }
                                 } else {
                                     Text("Unknown")
                                         .font(.title3)
@@ -193,7 +202,7 @@ struct MaintenanceSection: View {
                                         .font(.headline)
                                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
-                                    if isCheckingCacheSizeOnAppear {
+                                    if isCheckingCacheSize {
                                         ProgressView()
                                             .controlSize(.small)
                                             .frame(width: 14, height: 14)
@@ -205,13 +214,13 @@ struct MaintenanceSection: View {
                                         .font(.caption)
                                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
-                                    if isCheckingCacheSizeOnAppear {
+                                    if isCheckingCacheSize {
                                         Text("Calculating...")
                                             .font(.caption)
                                             .fontWeight(.semibold)
                                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                                     } else {
-                                        Text(ByteCountFormatter.string(fromByteCount: brewManager.downloadsCacheSize, countStyle: .file))
+                                        Text(ByteCountFormatter.string(fromByteCount: brewManager.cacheSize, countStyle: .file))
                                             .font(.caption)
                                             .fontWeight(.semibold)
                                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
@@ -226,7 +235,7 @@ struct MaintenanceSection: View {
                                     isPurgingCache = true
                                     do {
                                         try await HomebrewController.shared.performFullCleanup()
-                                        await brewManager.loadDownloadsCacheSize()
+                                        await brewManager.loadCacheSize()
                                     } catch {
                                         printOS("Error performing cleanup: \(error)")
                                     }
@@ -249,8 +258,8 @@ struct MaintenanceSection: View {
                                 level: .primary,
                                 skipControlGroup: true
                             ))
-                            .disabled(isPurgingCache || brewManager.downloadsCacheSize == 0)
-                            .opacity((isPurgingCache || brewManager.downloadsCacheSize == 0) ? 0.5 : 1.0)
+                            .disabled(isPurgingCache || brewManager.cacheSize == 0)
+                            .opacity((isPurgingCache || brewManager.cacheSize == 0) ? 0.5 : 1.0)
                         }
 
                         Text("Removes old versions, orphaned dependencies, and all cache files including latest versions")
@@ -395,12 +404,12 @@ struct MaintenanceSection: View {
 
     private func runAllChecks() {
         // Run health check, version check, and cache size check in parallel
-        if !isCheckingHealthOnAppear && !isCheckingVersionOnAppear && !isCheckingCacheSizeOnAppear {
-            // Check cache size
+        if !isCheckingHealthOnAppear && !isCheckingVersionOnAppear && !isCheckingCacheSize {
+            // Check cache size (instant ~5-20ms with Swift calculation)
             Task {
-                isCheckingCacheSizeOnAppear = true
-                await brewManager.loadDownloadsCacheSize()
-                isCheckingCacheSizeOnAppear = false
+                isCheckingCacheSize = true
+                await brewManager.loadCacheSize()
+                isCheckingCacheSize = false
             }
             // Run both checks in parallel
             Task {
