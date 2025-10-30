@@ -29,51 +29,40 @@ enum HomebrewError: Error, LocalizedError {
 }
 
 extension String {
-    /// Strip Homebrew revision suffix from version string
-    /// Examples: "2.14.1_1" -> "2.14.1", "3.3.14_2" -> "3.3.14"
-    /// Used during directory scan to normalize versions for API comparison
+    /// Strip all Homebrew revision suffixes and metadata from version string
+    /// Used for both directory scan and API comparison to ensure consistent version matching
+    /// Handles all common patterns: underscores, hyphens, commas, plus signs
+    ///
+    /// Keeps only alphanumeric characters and periods - strips from first suffix marker onward
+    /// Then trims trailing non-alphanumeric characters (periods, etc.)
+    ///
+    /// Valid characters: digits (0-9), letters (a-z, A-Z), periods (.)
+    /// Suffix markers: anything else (comma, plus, underscore, hyphen, etc.)
+    ///
+    /// Examples:
+    ///   - "0.14.1,fc796f5b" → "0.14.1"
+    ///   - "4.1.0+8404-main" → "4.1.0"
+    ///   - "2.14.1_1" → "2.14.1"
+    ///   - "8.27.2-4" → "8.27.2"
+    ///   - "141.0.7390.122-1.1" → "141.0.7390.122"
+    ///   - "1.0b5" → "1.0b5" (letters preserved)
+    ///   - "1.2.3a" → "1.2.3a" (pre-release preserved)
+    ///   - "v1.2.3" → "v1.2.3" (prefix preserved)
+    ///   - "1.2." → "1.2" (trailing period removed)
     func stripBrewRevisionSuffix() -> String {
         var result = self
 
-        // Strip underscore revision suffix (e.g., "2.14.1_1" -> "2.14.1")
-        if let underscoreIndex = result.lastIndex(of: "_"),
-           let afterUnderscore = result[result.index(after: underscoreIndex)...].first,
-           afterUnderscore.isNumber {
-            result = String(result[..<underscoreIndex])
+        // Find first character that's not alphanumeric or period (suffix marker)
+        if let firstSuffixIndex = result.firstIndex(where: { !$0.isLetter && !$0.isNumber && $0 != "." }) {
+            result = String(result[..<firstSuffixIndex])
         }
 
-        // Strip hyphen revision suffix (e.g., "141.0.7390.122-1.1" -> "141.0.7390.122")
-        // Pattern: -x or -x.x or -x.x.x where x is numeric
-        if let hyphenIndex = result.lastIndex(of: "-") {
-            let afterHyphen = result[result.index(after: hyphenIndex)...]
-            // Check if everything after hyphen is numeric with optional dots
-            let isRevision = afterHyphen.allSatisfy { $0.isNumber || $0 == "." }
-            if isRevision && !afterHyphen.isEmpty {
-                result = String(result[..<hyphenIndex])
-            }
+        // Trim any trailing periods or other non-alphanumeric characters
+        while let last = result.last, !last.isLetter && !last.isNumber {
+            result.removeLast()
         }
 
         return result
-    }
-
-    /// Strip commit hash and revision suffix from Homebrew version for display purposes
-    /// Examples:
-    /// - "0.14.1,fc796f5b140d2dc2d21015e56b70c0c1567a2fd7" -> "0.14.1"
-    /// - "2.14.1_1" -> "2.14.1"
-    /// - "3.3.14_2" -> "3.3.14"
-    /// Note: Only use for UI display, not for logic/comparisons
-    func cleanBrewVersionForDisplay() -> String {
-        var cleaned = self
-
-        // Strip commit hash (after comma)
-        if let commaIndex = cleaned.firstIndex(of: ",") {
-            cleaned = String(cleaned[..<commaIndex])
-        }
-
-        // Strip revision suffix (e.g., _1, _2)
-        cleaned = cleaned.stripBrewRevisionSuffix()
-
-        return cleaned
     }
 }
 
@@ -999,17 +988,17 @@ class HomebrewController {
                         ? json["bundle_version"] as? String
                         : nil
 
-                    // Strip revision suffix from cask versions for consistent comparison
-                    // Cask revisions are packaging-only changes (URL/checksum/metadata), not app updates
-                    // (Installed versions already have revision suffix stripped during scan - line 372)
-                    // Formulae revisions are kept - those indicate actual binary changes (patches, security fixes)
-                    let version: String?
-                    if package.isCask {
-                        version = rawVersion?.stripBrewRevisionSuffix()
-                    } else {
-                        // Keep revision suffix for formulae - those matter for compiled binaries
-                        version = rawVersion
-                    }
+                    // Strip revision suffix from both formulae and cask API versions for consistent comparison
+                    // This is defensive - ensures consistency even if Homebrew API format changes in future
+                    // (Installed versions already have revision suffix stripped during scan - lines 296, 395)
+                    //
+                    // Background:
+                    // - Formulae API: Stores revision in separate "revision" field (never in version string currently)
+                    // - Cask API: Inconsistently includes/excludes revision in version string
+                    // - Local directories: Always include revision suffix in directory name (both types)
+                    //
+                    // By stripping universally, we ensure consistent comparison regardless of API format changes
+                    let version = rawVersion?.stripBrewRevisionSuffix()
 
                     return (package.name, version, bundleVersion, package.isCask)
                 }
@@ -1059,8 +1048,8 @@ class HomebrewController {
                 // API call succeeded - package exists in public API
 
                 // Clean versions for semantic comparison (strip build numbers, "latest", etc.)
-                let installedClean = actualVersion.cleanBrewVersionForDisplay()
-                let availableClean = latestVersion.cleanBrewVersionForDisplay()
+                let installedClean = actualVersion.stripBrewRevisionSuffix()
+                let availableClean = latestVersion.stripBrewRevisionSuffix()
 
                 // Use Version struct for semantic comparison (same logic as HomebrewUpdateChecker)
                 let installed = Version(versionNumber: installedClean, buildNumber: nil)

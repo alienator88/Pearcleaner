@@ -396,9 +396,9 @@ struct UpdateRowView: View {
 
         // Clean Homebrew versions for display (strip commit hash)
         let displayInstalledVersion = app.source == .homebrew ?
-            app.appInfo.appVersion.cleanBrewVersionForDisplay() : app.appInfo.appVersion
+            app.appInfo.appVersion.stripBrewRevisionSuffix() : app.appInfo.appVersion
         let displayAvailableVersion = app.source == .homebrew ?
-            availableVersion.cleanBrewVersionForDisplay() : availableVersion
+            availableVersion.stripBrewRevisionSuffix() : availableVersion
 
         // Smart version display with build numbers (Sparkle only)
         if app.source == .sparkle {
