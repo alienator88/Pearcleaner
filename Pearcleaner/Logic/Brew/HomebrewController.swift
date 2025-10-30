@@ -1259,12 +1259,14 @@ class HomebrewController {
     }
 
     func performFullCleanup() async throws {
-        // Run autoremove first to remove orphaned dependencies
-        let autoremoveArgs = ["autoremove"]
-        _ = try await runBrewCommand(autoremoveArgs)
-
-        // Then clean up cache and logs directly (same as runCleanup)
+        // Fast operation: delete cache and logs to Trash (blocks UI briefly ~50ms)
         try await runCleanup()
+
+        // Slow operation: run brew autoremove in background without blocking UI
+        Task.detached(priority: .background) {
+            let autoremoveArgs = ["autoremove"]
+            _ = try? await HomebrewController.shared.runBrewCommand(autoremoveArgs)
+        }
     }
 
     func getAnalyticsStatus() async throws -> Bool {
