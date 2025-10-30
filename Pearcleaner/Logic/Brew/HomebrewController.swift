@@ -410,144 +410,6 @@ class HomebrewController {
         return (name, displayName, desc, cleanedVersion, isPinned, tap, tapRbPath)
     }
 
-    func loadInstalledPackages() async throws -> (formulae: [HomebrewPackageInfo], casks: [HomebrewPackageInfo]) {
-        // Run a single command to get both formulae and casks
-        let arguments = ["info", "--json=v2", "--installed"]
-        let result = try await runBrewCommand(arguments)
-
-        guard let jsonData = result.output.data(using: .utf8),
-              let json = try JSONSerialization.jsonObject(with: jsonData) as? [String: Any] else {
-            throw HomebrewError.jsonParseError
-        }
-
-        var formulae: [HomebrewPackageInfo] = []
-        var casks: [HomebrewPackageInfo] = []
-
-        // Parse formulae
-        if let formulaeArray = json["formulae"] as? [[String: Any]] {
-            for packageJson in formulaeArray {
-                guard let name = packageJson["name"] as? String else { continue }
-
-                // Skip if no installed versions
-                guard let installedArray = packageJson["installed"] as? [[String: Any]],
-                      !installedArray.isEmpty else {
-                    continue
-                }
-
-                let versions = installedArray.compactMap { $0["version"] as? String }
-
-                // Get installation date from unix timestamp
-                var installedOn: Date? = nil
-                if let timeInterval = installedArray.first?["time"] as? Double {
-                    installedOn = Date(timeIntervalSince1970: timeInterval)
-                }
-
-                let sizeInBytes: Int64? = nil
-                let isPinned = (packageJson["pinned"] as? Bool) ?? false
-                let isOutdated = (packageJson["outdated"] as? Bool) ?? false
-                let description = packageJson["desc"] as? String
-                let homepage = packageJson["homepage"] as? String
-                let tap = packageJson["tap"] as? String
-
-                // Calculate Cellar path and file count
-                var installedPath: String? = nil
-                var fileCount: Int? = nil
-                if let firstVersion = versions.first {
-                    let cellarPath = "\(brewPrefix)/Cellar/\(name)/\(firstVersion)"
-                    installedPath = cellarPath
-
-                    // Count files in Cellar directory
-                    if let enumerator = FileManager.default.enumerator(atPath: cellarPath) {
-                        var count = 0
-                        while enumerator.nextObject() != nil {
-                            count += 1
-                        }
-                        fileCount = count
-                    }
-                }
-
-                let package = HomebrewPackageInfo(
-                    name: name,
-                    isCask: false,
-                    installedOn: installedOn,
-                    versions: versions,
-                    sizeInBytes: sizeInBytes,
-                    isPinned: isPinned,
-                    isOutdated: isOutdated,
-                    description: description,
-                    homepage: homepage,
-                    tap: tap,
-                    installedPath: installedPath,
-                    fileCount: fileCount
-                )
-                formulae.append(package)
-            }
-        }
-
-        // Parse casks
-        if let casksArray = json["casks"] as? [[String: Any]] {
-            for packageJson in casksArray {
-                guard let name = packageJson["token"] as? String else { continue }
-
-                // Check if installed (string field for casks)
-                guard let installed = packageJson["installed"] as? String, !installed.isEmpty else {
-                    continue
-                }
-
-                let version = installed
-                let versions = [version]
-
-                // Get installation date from unix timestamp
-                var installedOn: Date? = nil
-                if let timeInterval = packageJson["installed_time"] as? Double {
-                    installedOn = Date(timeIntervalSince1970: timeInterval)
-                }
-
-                let sizeInBytes: Int64? = nil
-                let isPinned = false  // Casks don't support pinning
-                let isOutdated = (packageJson["outdated"] as? Bool) ?? false
-                let description = packageJson["desc"] as? String
-                let homepage = packageJson["homepage"] as? String
-                let tap = packageJson["tap"] as? String
-
-                // Calculate Caskroom path and file count
-                var installedPath: String? = nil
-                var fileCount: Int? = nil
-                if let firstVersion = versions.first {
-                    let caskroomPath = "\(brewPrefix)/Caskroom/\(name)/\(firstVersion)"
-                    installedPath = caskroomPath
-
-                    // Count files in Caskroom directory
-                    if let enumerator = FileManager.default.enumerator(atPath: caskroomPath) {
-                        var count = 0
-                        while enumerator.nextObject() != nil {
-                            count += 1
-                        }
-                        fileCount = count
-                    }
-                }
-
-                let package = HomebrewPackageInfo(
-                    name: name,
-                    isCask: true,
-                    installedOn: installedOn,
-                    versions: versions,
-                    sizeInBytes: sizeInBytes,
-                    isPinned: isPinned,
-                    isOutdated: isOutdated,
-                    description: description,
-                    homepage: homepage,
-                    tap: tap,
-                    installedPath: installedPath,
-                    fileCount: fileCount
-                )
-                casks.append(package)
-            }
-        }
-
-        return (formulae: formulae, casks: casks)
-    }
-
     // MARK: - Search
 
     /// Fetch type-safe package details from Homebrew API
@@ -859,6 +721,8 @@ class HomebrewController {
         if cask {
             arguments.append("--cask")
             arguments.append("--no-quarantine")
+        } else {
+            arguments.append("--formula")
         }
         arguments.append(name)
 
@@ -1502,42 +1366,36 @@ class HomebrewController {
 
     // MARK: - Tap Package Loading
 
-    func getPackagesFromTap(_ tapName: String) async throws -> (formulae: [HomebrewSearchResult], casks: [HomebrewSearchResult]) {
+    func getPackagesFromTap(_ tapName: String) async throws -> (formulae: [String], casks: [String]) {
         let tapPath = "\(brewPrefix)/Library/Taps/\(tapName.replacingOccurrences(of: "/", with: "/homebrew-"))"
 
-        var formulae: [HomebrewSearchResult] = []
-        var casks: [HomebrewSearchResult] = []
+        var formulae: [String] = []
+        var casks: [String] = []
 
-        // Load formulae
+        // Load formulae - read directly from filesystem
         let formulaPath = "\(tapPath)/Formula"
         if FileManager.default.fileExists(atPath: formulaPath) {
             if let files = try? FileManager.default.contentsOfDirectory(atPath: formulaPath) {
                 for file in files where file.hasSuffix(".rb") {
                     let name = file.replacingOccurrences(of: ".rb", with: "")
-                    let fullName = "\(tapName)/\(name)"
-
-                    // Get details from brew info
-                    if let details = try? await getPackageDetailsFromBrew(fullName: fullName, cask: false) {
-                        formulae.append(details)
-                    }
+                    formulae.append(name)
                 }
             }
         }
 
-        // Load casks (recursively, since they're nested in letter directories)
+        // Load casks - read directly from filesystem (recursively, since they're nested in letter directories)
         let caskPath = "\(tapPath)/Casks"
         if FileManager.default.fileExists(atPath: caskPath) {
             let caskFiles = try recursivelyFindCasks(in: caskPath)
             for file in caskFiles {
                 let name = file.replacingOccurrences(of: ".rb", with: "")
-                let fullName = "\(tapName)/\(name)"
-
-                // Get details from brew info
-                if let details = try? await getPackageDetailsFromBrew(fullName: fullName, cask: true) {
-                    casks.append(details)
-                }
+                casks.append(name)
             }
         }
+
+        // Sort alphabetically
+        formulae.sort()
+        casks.sort()
 
         return (formulae, casks)
     }
