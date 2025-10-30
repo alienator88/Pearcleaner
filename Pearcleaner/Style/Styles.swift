@@ -840,3 +840,99 @@ extension View {
         }
     }
 }
+
+
+
+// MARK: - Collapsible GroupBox Style
+
+struct CollapsibleGroupBoxStyle: GroupBoxStyle {
+    let icon: String?
+    let title: String
+    let count: Int
+    let isCollapsed: Bool
+    let isLoading: Bool
+    let onToggle: () -> Void
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+    @Environment(\.colorScheme) var colorScheme
+
+    init(
+        icon: String? = nil,
+        title: String,
+        count: Int,
+        isCollapsed: Bool,
+        isLoading: Bool = false,
+        onToggle: @escaping () -> Void
+    ) {
+        self.icon = icon
+        self.title = title
+        self.count = count
+        self.isCollapsed = isCollapsed
+        self.isLoading = isLoading
+        self.onToggle = onToggle
+    }
+
+    func makeBody(configuration: Configuration) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Button(action: {
+                withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
+                    onToggle()
+                }
+            }) {
+                HStack {
+                    Image(systemName: isCollapsed ? "chevron.right" : "chevron.down")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        .frame(width: 10)
+
+                    if let icon = icon {
+                        Image(systemName: icon)
+                            .font(.headline)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                            .frame(width: 20)
+                    }
+
+                    Text(title)
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                    if isLoading {
+                        ProgressView()
+                            .controlSize(.small)
+                    } else {
+                        Text(verbatim: "(\(count))")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+
+                    Spacer()
+                }
+            }
+            .buttonStyle(.plain)
+
+            configuration.content
+        }
+        .frame(maxWidth: .infinity)
+        .background(Color.clear)
+    }
+}
+
+extension GroupBoxStyle where Self == CollapsibleGroupBoxStyle {
+    static func collapsible(
+        icon: String? = nil,
+        title: String,
+        count: Int,
+        isCollapsed: Bool,
+        isLoading: Bool = false,
+        onToggle: @escaping () -> Void
+    ) -> CollapsibleGroupBoxStyle {
+        CollapsibleGroupBoxStyle(
+            icon: icon,
+            title: title,
+            count: count,
+            isCollapsed: isCollapsed,
+            isLoading: isLoading,
+            onToggle: onToggle
+        )
+    }
+}

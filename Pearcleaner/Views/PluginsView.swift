@@ -77,7 +77,6 @@ struct PluginsView: View {
     @State private var cachedSizes: [String: Int64] = [:]  // Cache for lazily calculated sizes, keyed by plugin path
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.general.permanentDelete") private var permanentDelete: Bool = false
-    @AppStorage("settings.plugins.collapsedCategories") private var persistedCollapsedCategories: Data = Data()
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
     private var filteredPlugins: [PluginInfo] {
@@ -193,26 +192,72 @@ struct PluginsView: View {
                 .padding(.vertical)
 
                 ScrollView {
-                    LazyVStack(spacing: 8) {
+                    LazyVStack(spacing: 12) {
                         ForEach(Array(groupedPlugins.keys.sorted()), id: \.self) { category in
                             if let categoryPlugins = groupedPlugins[category] {
-                                PluginCategorySection(
-                                    category: category,
-                                    plugins: categoryPlugins,
-                                    isCollapsed: collapsedCategories.contains(category),
-                                    selectedPlugins: $selectedPlugins,
-                                    selectedPluginPaths: $selectedPluginPaths,
-                                    cachedSizes: $cachedSizes,
-                                    permanentDelete: permanentDelete,
-                                    sortOption: sortOption,
-                                    onRemove: removePlugin,
-                                    onRefresh: refreshPlugins,
-                                    onToggleCategoryCollapse: {
-                                        withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
-                                            toggleCategoryCollapse(for: category)
+                                GroupBox {
+                                    if !collapsedCategories.contains(category) {
+                                        LazyVStack(spacing: 8) {
+                                            ForEach(categoryPlugins, id: \.id) { plugin in
+                                                if category == "Audio" {
+                                                    AudioPluginRowView(
+                                                        plugin: plugin,
+                                                        isSelected: selectedPlugins.contains(plugin.id),
+                                                        permanentDelete: permanentDelete,
+                                                        sortOption: sortOption,
+                                                        cachedSize: cachedSizes[plugin.path],
+                                                        onSizeCalculated: { size in
+                                                            cachedSizes[plugin.path] = size
+                                                        }
+                                                    ) {
+                                                        removePlugin(plugin)
+                                                    } onRefresh: {
+                                                        refreshPlugins()
+                                                    } onToggleSelection: {
+                                                        if selectedPlugins.contains(plugin.id) {
+                                                            selectedPlugins.remove(plugin.id)
+                                                            selectedPluginPaths.removeAll { $0 == plugin.path }
+                                                        } else {
+                                                            selectedPlugins.insert(plugin.id)
+                                                            selectedPluginPaths.append(plugin.path)
+                                                        }
+                                                    }
+                                                } else {
+                                                    PluginRowView(
+                                                        plugin: plugin,
+                                                        isSelected: selectedPlugins.contains(plugin.id),
+                                                        permanentDelete: permanentDelete,
+                                                        sortOption: sortOption,
+                                                        cachedSize: cachedSizes[plugin.path],
+                                                        onSizeCalculated: { size in
+                                                            cachedSizes[plugin.path] = size
+                                                        }
+                                                    ) {
+                                                        removePlugin(plugin)
+                                                    } onRefresh: {
+                                                        refreshPlugins()
+                                                    } onToggleSelection: {
+                                                        if selectedPlugins.contains(plugin.id) {
+                                                            selectedPlugins.remove(plugin.id)
+                                                            selectedPluginPaths.removeAll { $0 == plugin.path }
+                                                        } else {
+                                                            selectedPlugins.insert(plugin.id)
+                                                            selectedPluginPaths.append(plugin.path)
+                                                        }
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
-                                )
+                                }
+                                .groupBoxStyle(.collapsible(
+                                    icon: iconForCategory(category),
+                                    title: category,
+                                    count: categoryPlugins.count,
+                                    isCollapsed: collapsedCategories.contains(category),
+                                    onToggle: { toggleCategoryCollapse(for: category) }
+                                ))
+
                             }
                         }
                     }
@@ -225,8 +270,6 @@ struct PluginsView: View {
         .padding(.horizontal, 20)
         .padding(.bottom, !selectedPlugins.isEmpty ? 10 : 20)
         .onAppear {
-            loadCollapsedCategories()
-
             // Start loading plugins immediately but non-blocking
             if allPlugins.isEmpty {
                 Task {
@@ -451,33 +494,33 @@ struct PluginsView: View {
             }
         }
 
-        #if DEBUG
-        // Duplicate ZoomAudioDevice.driver 599 more times for performance testing
-        if let zoomPlugin = self.allPlugins.first(where: { $0.name == "ZoomAudioDevice.driver" && $0.category == category }) {
-            var debugPlugins: [PluginInfo] = []
-            for i in 1...599 {
-                let duplicatedPlugin = PluginInfo(
-                    name: "\(zoomPlugin.name) (Copy \(i))",
-                    path: "\(zoomPlugin.path)_copy\(i)",  // Fake path
-                    category: zoomPlugin.category,
-                    isDirectory: zoomPlugin.isDirectory,
-                    size: zoomPlugin.size,
-                    dateModified: zoomPlugin.dateModified,
-                    bundleId: zoomPlugin.bundleId.map { "\($0).copy\(i)" },
-                    customIcon: zoomPlugin.customIcon
-                )
-                debugPlugins.append(duplicatedPlugin)
-            }
-
-            // Add debug plugins in batches for smooth UI
-            let debugBatches = debugPlugins.chunked(into: batchSize)
-            for batch in debugBatches {
-                await MainActor.run {
-                    self.allPlugins.append(contentsOf: batch)
-                }
-            }
-        }
-        #endif
+//        #if DEBUG
+//        // Duplicate ZoomAudioDevice.driver 599 more times for performance testing
+//        if let zoomPlugin = self.allPlugins.first(where: { $0.name == "ZoomAudioDevice.driver" && $0.category == category }) {
+//            var debugPlugins: [PluginInfo] = []
+//            for i in 1...599 {
+//                let duplicatedPlugin = PluginInfo(
+//                    name: "\(zoomPlugin.name) (Copy \(i))",
+//                    path: "\(zoomPlugin.path)_copy\(i)",  // Fake path
+//                    category: zoomPlugin.category,
+//                    isDirectory: zoomPlugin.isDirectory,
+//                    size: zoomPlugin.size,
+//                    dateModified: zoomPlugin.dateModified,
+//                    bundleId: zoomPlugin.bundleId.map { "\($0).copy\(i)" },
+//                    customIcon: zoomPlugin.customIcon
+//                )
+//                debugPlugins.append(duplicatedPlugin)
+//            }
+//
+//            // Add debug plugins in batches for smooth UI
+//            let debugBatches = debugPlugins.chunked(into: batchSize)
+//            for batch in debugBatches {
+//                await MainActor.run {
+//                    self.allPlugins.append(contentsOf: batch)
+//                }
+//            }
+//        }
+//        #endif
     }
 
 
@@ -562,18 +605,29 @@ struct PluginsView: View {
         } else {
             collapsedCategories.insert(category)
         }
-        saveCollapsedCategories()
     }
 
-    private func loadCollapsedCategories() {
-        if let categories = try? JSONDecoder().decode(Set<String>.self, from: persistedCollapsedCategories) {
-            collapsedCategories = categories
-        }
-    }
-
-    private func saveCollapsedCategories() {
-        if let encoded = try? JSONEncoder().encode(collapsedCategories) {
-            persistedCollapsedCategories = encoded
+    private func iconForCategory(_ category: String) -> String? {
+        switch category {
+        case "Audio": return "music.note"
+        case "PreferencePanes": return "gearshape.2"
+        case "QuickLook": return "eye"
+        case "Screen Savers": return "photo.on.rectangle.angled"
+        case "Internet Plug-Ins": return "network"
+        case "Core Image": return "camera.filters"
+        case "ColorPickers": return "paintpalette"
+        case "Fonts": return "textformat"
+        case "Dictionaries": return "book.closed"
+        case "Automator": return "gearshape.arrow.triangle.2.circlepath"
+        case "Safari Extensions": return "safari"
+        case "Motion Templates": return "film"
+        case "Spotlight": return "magnifyingglass"
+        case "Services": return "gear"
+        case "Address Book": return "person.crop.rectangle"
+        case "Contextual Menu": return "contextualmenu.and.cursorarrow"
+        case "Input Methods": return "keyboard"
+        case "Widgets": return "square.grid.2x2"
+        default: return nil
         }
     }
 
@@ -736,7 +790,6 @@ struct PluginCategorySection: View {
                     if category == "Audio" {
                         AudioPluginRowView(
                             plugin: plugin,
-                            pluginsCount: plugins.count,
                             isSelected: selectedPlugins.contains(plugin.id),
                             permanentDelete: permanentDelete,
                             sortOption: sortOption,
@@ -1021,7 +1074,6 @@ struct PluginRowView: View {
 
 struct AudioPluginRowView: View {
     let plugin: PluginInfo
-    let pluginsCount: Int
     let isSelected: Bool
     let permanentDelete: Bool
     let sortOption: PluginSortOption
@@ -1138,7 +1190,7 @@ struct AudioPluginRowView: View {
                 }
 
                 Button(isExpanded ? "Close" : "Search") {
-                    withAnimation(.easeInOut(duration: pluginsCount > 50 ? 0 : 0.2)) {
+                    withAnimation(.easeInOut(duration: 0.2)) {
                         isExpanded.toggle()
                     }
                 }
@@ -1258,18 +1310,18 @@ struct AudioPluginRowView: View {
                         .padding(.vertical, 4)
                     }
                 }
-                .transition(pluginsCount > 50 ? .identity : .opacity)
+                .transition(.opacity)
             }
         }
         .background(
             RoundedRectangle(cornerRadius: 8)
-                .fill(isHovered && pluginsCount < 50 ?
+                .fill(isHovered ?
                     ThemeColors.shared(for: colorScheme).secondaryBG.opacity(0.8) :
                     ThemeColors.shared(for: colorScheme).secondaryBG
                 )
         )
         .onHover { hovering in
-            withAnimation(.easeInOut(duration: pluginsCount > 50 ? 0 : 0.2)) {
+            withAnimation(.easeInOut(duration: 0.2)) {
                 isHovered = hovering
             }
         }
