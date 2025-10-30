@@ -1154,29 +1154,54 @@ class HomebrewController {
                 continue  // Rb file not readable
             }
 
-            // Parse version from .rb file using regex
-            let versionRegex = /version "([^"]+)"/
-            guard let match = rbContent.firstMatch(of: versionRegex) else {
-                logger.log(.homebrew, "    ⚠️ No version found in .rb file")
-                continue  // No version found in .rb file
+            // Parse version from .rb file using line-by-line search
+            // Look for lines that ONLY contain: version "X.Y.Z"
+            // This avoids matching comments or other occurrences
+            var tapVersion: String?
+            for line in rbContent.split(separator: "\n") {
+                let trimmed = line.trimmingCharacters(in: .whitespaces)
+
+                // Match standalone version declarations: version "X.Y.Z"
+                // Pattern ensures it's on its own line (Ruby requirement)
+                let versionRegex = /^version\s+"([^"]+)"$/
+                if let match = trimmed.firstMatch(of: versionRegex) {
+                    tapVersion = String(match.1).stripBrewRevisionSuffix()
+                    break  // Found it, stop searching
+                }
             }
 
-            let tapVersion = String(match.1).stripBrewRevisionSuffix()
-            logger.log(.homebrew, "    Comparing: Installed \(installedVersion) vs Tap \(tapVersion)")
-
-            // Compare versions
-            if installedVersion != tapVersion {
-                logger.log(.homebrew, "    📦 UPDATE AVAILABLE: \(installedVersion) → \(tapVersion)")
-                outdatedPackages.append(HomebrewOutdatedPackage(
-                    name: package.name,
-                    installedVersion: installedVersion,
-                    availableVersion: tapVersion,
-                    isPinned: package.isPinned,
-                    isCask: package.isCask
-                ))
-            } else {
-                logger.log(.homebrew, "    ✓ Up to date")
+            // If version not found, skip this package (don't show as outdated)
+            guard let availableVersion = tapVersion else {
+                logger.log(.homebrew, "    ⚠️ No standalone version line found - skipping")
+                continue
             }
+
+            logger.log(.homebrew, "    Tap version from .rb: \(availableVersion)")
+
+            // Compare using semantic Version (not string comparison)
+            let installedClean = installedVersion.stripBrewRevisionSuffix()
+            let availableClean = availableVersion.stripBrewRevisionSuffix()
+
+            logger.log(.homebrew, "    Comparing (cleaned): \(installedClean) vs \(availableClean)")
+
+            // Use Version struct for semantic comparison
+            let installed = Version(versionNumber: installedClean, buildNumber: nil)
+            let available = Version(versionNumber: availableClean, buildNumber: nil)
+
+            // Only add if truly outdated
+            guard !installed.isEmpty && !available.isEmpty && available > installed else {
+                logger.log(.homebrew, "    ✓ Up to date or invalid version")
+                continue
+            }
+
+            logger.log(.homebrew, "    📦 UPDATE AVAILABLE: \(installedVersion) → \(availableVersion)")
+            outdatedPackages.append(HomebrewOutdatedPackage(
+                name: package.name,
+                installedVersion: installedVersion,
+                availableVersion: availableVersion,
+                isPinned: package.isPinned,
+                isCask: package.isCask
+            ))
         }
 
         return outdatedPackages
