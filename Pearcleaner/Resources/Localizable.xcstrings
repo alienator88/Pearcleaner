@@ -160,8 +160,8 @@
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : ""
+            "state" : "translated",
+            "value" : "(%@)"
           }
         },
         "pl" : {
@@ -272,8 +272,8 @@
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : ""
+            "state" : "translated",
+            "value" : "(iOS 앱은 App Store 에서 업데이트 해야 합니다)"
           }
         },
         "pl" : {
@@ -384,8 +384,8 @@
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : ""
+            "state" : "translated",
+            "value" : " → %@"
           }
         },
         "pl" : {
@@ -608,8 +608,8 @@
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : ""
+            "state" : "translated",
+            "value" : " → build "
           }
         },
         "pl" : {
@@ -720,8 +720,8 @@
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : ""
+            "state" : "translated",
+            "value" : "%@"
           }
         },
         "pl" : {
@@ -832,8 +832,8 @@
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : ""
+            "state" : "translated",
+            "value" : "%@ (%@)"
           }
         },
         "pl" : {
@@ -1170,8 +1170,8 @@
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : ""
+            "state" : "translated",
+            "value" : "%@ → %@"
           }
         },
         "pl" : {
@@ -1619,7 +1619,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld 로드됨"
+            "value" : "%lld 개 불러옴"
           }
         },
         "pl" : {
@@ -1731,7 +1731,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld 로드되지 않음"
+            "value" : "%lld 개를 불러오지 않음"
           }
         },
         "pl" : {
@@ -2067,7 +2067,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld개 업데이트 필요"
+            "value" : "%lld개가 구 버전임"
           }
         },
         "pl" : {
@@ -3522,8 +3522,8 @@
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : ""
+            "state" : "translated",
+            "value" : ")"
           }
         },
         "pl" : {
@@ -4419,7 +4419,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pearcleaner 새 버전을 다운로드할 수 있습니다."
+            "value" : "Pearcleaner 새 버전을 다운로드 할 수 있습니다."
           }
         },
         "pl" : {
@@ -6212,7 +6212,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "새로운 일정 발생 추가"
+            "value" : "새로운 일정 사건 추가"
           }
         },
         "pl" : {
@@ -8797,7 +8797,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "앱 리포"
+            "value" : "App Lipo"
           }
         },
         "pl" : {
@@ -66705,7 +66705,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "모든 Lipo 를 한 앱의 총 공간 절약\n이전 크기: %@\n이후 크기: %@"
+            "value" : "Lipo를 한 전체 앱의 총 공간 절약\n이전 크기: %@\n이후 크기: %@"
           }
         },
         "pl" : {
@@ -81305,7 +81305,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "📦 추천 교체"
+            "value" : "📦 추천되는 교체품들"
           }
         },
         "pl" : {
