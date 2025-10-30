@@ -165,6 +165,8 @@ struct CaskDetails: HomebrewPackageDetails {
     let appcast: String?
     let minimumMacOSVersion: String?
     let architectureRequirement: ArchRequirement?
+    let bundleVersion: String?         // CFBundleVersion from API (e.g., "7390.122" or "446000104")
+    let bundleShortVersion: String?    // CFBundleShortVersionString from API
 
     // Replacement suggestions
     let deprecationReplacementFormula: String?

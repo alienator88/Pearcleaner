@@ -18,6 +18,7 @@ class UpdateManager: ObservableObject {
     @Published var isScanning: Bool = false
     @Published var lastScanDate: Date?
     @Published var scanningSources: Set<UpdateSource> = []
+    @Published var currentScanTask: Task<Void, Never>?
 
     // Track apps currently being verified to prevent duplicate verification tasks
     private var verifyingApps: Set<UUID> = []
@@ -132,6 +133,11 @@ class UpdateManager: ObservableObject {
             await loadAppsAsync(folderPaths: folderPaths)
         }
 
+        // Check for cancellation after loading apps
+        if Task.isCancelled {
+            return
+        }
+
         // Use apps from AppState (either freshly loaded or existing)
         let apps = AppState.shared.sortedApps
 
@@ -167,8 +173,17 @@ class UpdateManager: ObservableObject {
 
             // Process results as they complete
             for await (source, apps) in group {
+                // Check for cancellation between source results
+                if Task.isCancelled {
+                    break
+                }
                 await processSourceResults(source: source, apps: apps)
             }
+        }
+
+        // Check for cancellation before final processing
+        if Task.isCancelled {
+            return
         }
 
         // Calculate unsupported apps (always calculate - it's instant, toggle only controls UI visibility)
@@ -205,6 +220,14 @@ class UpdateManager: ObservableObject {
         await processSourceResults(source: .unsupported, apps: unsupportedApps)
 
         lastScanDate = Date()
+
+        // Print formatted debug report to console after scan completes
+        if debugLogging {
+            printOS("\n" + UpdaterDebugLogger.shared.generateDebugReport())
+        }
+
+        // Clear task reference on completion
+        currentScanTask = nil
     }
 
     private func processSourceResults(source: UpdateSource, apps: [UpdateableApp]) async {
@@ -228,6 +251,13 @@ class UpdateManager: ObservableObject {
 
         // Mark source as no longer scanning
         scanningSources.remove(source)
+    }
+
+    /// Cancel the current scan operation
+    func cancelScan() {
+        currentScanTask?.cancel()
+        currentScanTask = nil
+        scanningSources.removeAll()  // Clear scanning state for all sources
     }
 
     func updateApp(_ app: UpdateableApp) async {

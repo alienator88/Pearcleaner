@@ -191,50 +191,7 @@ struct UpdateRowView: View {
                     }
 
                     // Version info (larger font)
-                    Text(verbatim: {
-                        guard let availableVersion = app.availableVersion else {
-                            // Sparkle without available version (shouldn't happen, but handle gracefully)
-                            if app.source == .sparkle {
-                                let installedBuildPart = app.appInfo.appBuildNumber.map { " (\($0))" } ?? ""
-                                return "\(app.appInfo.appVersion)\(installedBuildPart)"
-                            }
-                            return app.appInfo.appVersion
-                        }
-
-                        // Clean Homebrew versions for display (strip commit hash)
-                        let displayInstalledVersion = app.source == .homebrew ?
-                            app.appInfo.appVersion.cleanBrewVersionForDisplay() : app.appInfo.appVersion
-                        let displayAvailableVersion = app.source == .homebrew ?
-                            availableVersion.cleanBrewVersionForDisplay() : availableVersion
-
-                        // Smart version display with build numbers (Sparkle only)
-                        let versionText: String
-                        if app.source == .sparkle {
-                            // Build smart version display
-                            let installedBuildPart = app.appInfo.appBuildNumber.map { " (\($0))" } ?? ""
-
-                            // Check if marketing versions match (both present and equal)
-                            if !displayInstalledVersion.isEmpty && !displayAvailableVersion.isEmpty &&
-                               displayInstalledVersion == displayAvailableVersion {
-                                // Scenario 1: Marketing versions match → "6.7 (6134) → 6.7 (6135)"
-                                // Show build numbers to distinguish them
-                                let availableBuildPart = app.availableBuildNumber.map { " (\($0))" } ?? ""
-                                versionText = "\(displayInstalledVersion)\(installedBuildPart) → \(displayAvailableVersion)\(availableBuildPart)"
-                            } else if displayAvailableVersion.isEmpty, let availableBuild = app.availableBuildNumber {
-                                // Scenario 2: Remote lacks marketing version → "6.7 (6134) → build 6135"
-                                versionText = "\(displayInstalledVersion)\(installedBuildPart) → build \(availableBuild)"
-                            } else {
-                                // Scenario 3: Normal case → "6.7 (6134) → 6.8 (6135)"
-                                let availableBuildPart = app.availableBuildNumber.map { " (\($0))" } ?? ""
-                                versionText = "\(displayInstalledVersion)\(installedBuildPart) → \(displayAvailableVersion)\(availableBuildPart)"
-                            }
-                        } else {
-                            // Non-Sparkle sources: show marketing versions only
-                            versionText = "\(displayInstalledVersion) → \(displayAvailableVersion)"
-                        }
-
-                        return "\(versionText)\(app.isIOSApp ? " (iOS apps have to be updated in the App Store)" : "")"
-                    }())
+                    buildVersionText(for: app, colorScheme: colorScheme)
                         .font(.callout)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
@@ -426,5 +383,84 @@ struct UpdateRowView: View {
 
         // Convert back to AttributedString for SwiftUI
         return (AttributedString(mutableString))
+    }
+
+    private func buildVersionText(for app: UpdateableApp, colorScheme: ColorScheme) -> Text {
+        guard let availableVersion = app.availableVersion else {
+            // No available version (shouldn't happen, but handle gracefully)
+            if app.source == .sparkle, let installedBuild = app.appInfo.appBuildNumber {
+                return Text("\(app.appInfo.appVersion) (\(installedBuild))")
+            }
+            return Text(app.appInfo.appVersion)
+        }
+
+        // Clean Homebrew versions for display (strip commit hash)
+        let displayInstalledVersion = app.source == .homebrew ?
+            app.appInfo.appVersion.stripBrewRevisionSuffix() : app.appInfo.appVersion
+        let displayAvailableVersion = app.source == .homebrew ?
+            availableVersion.stripBrewRevisionSuffix() : availableVersion
+
+        // Smart version display with build numbers (Sparkle only)
+        if app.source == .sparkle {
+            let installedBuild = app.appInfo.appBuildNumber
+            let availableBuild = app.availableBuildNumber
+
+            // Check if builds differ (for green highlighting)
+            let buildsDiffer = installedBuild != nil && availableBuild != nil && installedBuild != availableBuild
+
+            // Check if marketing versions match (both present and equal)
+            if !displayInstalledVersion.isEmpty && !displayAvailableVersion.isEmpty &&
+               displayInstalledVersion == displayAvailableVersion {
+                // Scenario 1: Marketing versions match → "6.7 (6134) → 6.7 (6135)"
+                var result = Text("\(displayInstalledVersion)")
+                if let build = installedBuild {
+                    result = result + Text(" (\(build))")
+                }
+                result = result + Text(" → \(displayAvailableVersion) (")
+                if let build = availableBuild {
+                    let buildText = Text(build)
+                    result = result + (buildsDiffer ? buildText.foregroundColor(.green) : buildText)
+                }
+                result = result + Text(")")
+                if app.isIOSApp {
+                    result = result + Text(" (iOS apps have to be updated in the App Store)")
+                }
+                return result
+            } else if displayAvailableVersion.isEmpty, let availableBuild = availableBuild {
+                // Scenario 2: Remote lacks marketing version → "6.7 (6134) → build 6135"
+                var result = Text("\(displayInstalledVersion)")
+                if let build = installedBuild {
+                    result = result + Text(" (\(build))")
+                }
+                result = result + Text(" → build ")
+                let buildText = Text(availableBuild)
+                result = result + (buildsDiffer ? buildText.foregroundColor(.green) : buildText)
+                if app.isIOSApp {
+                    result = result + Text(" (iOS apps have to be updated in the App Store)")
+                }
+                return result
+            } else {
+                // Scenario 3: Normal case → "6.7 (6134) → 6.8 (6135)"
+                var result = Text("\(displayInstalledVersion)")
+                if let build = installedBuild {
+                    result = result + Text(" (\(build))")
+                }
+                result = result + Text(" → \(displayAvailableVersion)")
+                if let build = availableBuild {
+                    result = result + Text(" (\(build))")
+                }
+                if app.isIOSApp {
+                    result = result + Text(" (iOS apps have to be updated in the App Store)")
+                }
+                return result
+            }
+        } else {
+            // Non-Sparkle sources: show marketing versions only
+            var result = Text("\(displayInstalledVersion) → \(displayAvailableVersion)")
+            if app.isIOSApp {
+                result = result + Text(" (iOS apps have to be updated in the App Store)")
+            }
+            return result
+        }
     }
 }

@@ -692,17 +692,17 @@ struct SearchResultRowView: View {
                         if isAlreadyInstalled {
                             // Installed package - check if outdated and show update arrow
                             if let versions = brewManager.getOutdatedVersions(for: result.name) {
-                                Text(verbatim: "(\(versions.installed.cleanBrewVersionForDisplay()) → \(versions.available.cleanBrewVersionForDisplay()))")
+                                Text(verbatim: "(\(versions.installed.stripBrewRevisionSuffix()) → \(versions.available.stripBrewRevisionSuffix()))")
                                     .font(.footnote)
                                     .foregroundStyle(.orange)
                             } else {
-                                Text(verbatim: "(\(version.cleanBrewVersionForDisplay()))")
+                                Text(verbatim: "(\(version.stripBrewRevisionSuffix()))")
                                     .font(.footnote)
                                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                             }
                         } else {
                             // Not installed - show available version
-                            Text(verbatim: "(\(version.cleanBrewVersionForDisplay()))")
+                            Text(verbatim: "(\(version.stripBrewRevisionSuffix()))")
                                 .font(.footnote)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText.opacity(0.8))
                         }

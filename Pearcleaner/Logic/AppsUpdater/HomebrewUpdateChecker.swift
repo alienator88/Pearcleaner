@@ -29,6 +29,10 @@ class HomebrewUpdateChecker {
 
         // Scan casks (always needed)
         try? await HomebrewController.shared.streamInstalledPackages(cask: true) { name, displayName, desc, version, isPinned, tap, tapRbPath, installedOnRequest in
+            // Check for cancellation during streaming
+            if Task.isCancelled {
+                return
+            }
             installedCasks.append(InstalledPackage(
                 name: name,
                 displayName: displayName,
@@ -42,9 +46,18 @@ class HomebrewUpdateChecker {
             ))
         }
 
+        // Check for cancellation before scanning formulae
+        if Task.isCancelled {
+            return []
+        }
+
         // Scan formulae only if enabled
         if includeFormulae {
             try? await HomebrewController.shared.streamInstalledPackages(cask: false) { name, displayName, desc, version, isPinned, tap, tapRbPath, installedOnRequest in
+                // Check for cancellation during streaming
+                if Task.isCancelled {
+                    return
+                }
                 installedFormulae.append(InstalledPackage(
                     name: name,
                     displayName: displayName,
@@ -77,8 +90,8 @@ class HomebrewUpdateChecker {
 
             // Use app's ACTUAL version from Info.plist (ground truth) instead of Homebrew's stale record
             // This eliminates false positives for auto-updating apps (Sparkle, direct downloads)
-            let installedClean = appInfo.appVersion.cleanBrewVersionForDisplay()
-            let availableClean = outdatedPkg.availableVersion.cleanBrewVersionForDisplay()
+            let installedClean = appInfo.appVersion.stripBrewRevisionSuffix()
+            let availableClean = outdatedPkg.availableVersion.stripBrewRevisionSuffix()
 
             // Compare ACTUAL app version vs latest Homebrew version
             let installed = Version(versionNumber: installedClean, buildNumber: nil)
@@ -150,8 +163,8 @@ class HomebrewUpdateChecker {
                 guard !processedCasks.contains(outdatedPkg.name) else { continue }
 
                 // Clean versions for comparison (same logic as casks)
-                let installedClean = outdatedPkg.installedVersion.cleanBrewVersionForDisplay()
-                let availableClean = outdatedPkg.availableVersion.cleanBrewVersionForDisplay()
+                let installedClean = outdatedPkg.installedVersion.stripBrewRevisionSuffix()
+                let availableClean = outdatedPkg.availableVersion.stripBrewRevisionSuffix()
 
                 // Compare versions using Version struct
                 let installed = Version(versionNumber: installedClean, buildNumber: nil)
