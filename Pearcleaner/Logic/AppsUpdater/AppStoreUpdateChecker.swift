@@ -45,6 +45,10 @@ class AppStoreUpdateChecker {
             // Collect results from all chunks
             var allUpdates: [UpdateableApp] = []
             for await chunkUpdates in group {
+                // Check for cancellation between chunks
+                if Task.isCancelled {
+                    break
+                }
                 allUpdates.append(contentsOf: chunkUpdates)
             }
 

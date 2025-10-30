@@ -61,6 +61,11 @@ class SparkleUpdateChecker {
 
         // Process each batch concurrently
         for batch in batches {
+            // Check for cancellation between batches
+            if Task.isCancelled {
+                break
+            }
+
             let batchResults = await withTaskGroup(of: UpdateableApp?.self) { group in
                 for (appInfo, bundle, feedURL) in batch {
                     group.addTask {

@@ -286,13 +286,24 @@ struct AppsUpdaterView: View {
                 .disabled(updateManager.isScanning)
                 .help("While in beta, report issues with missing or incorrect updates here")
 
-                Button {
-                    Task { await updateManager.scanForUpdates(forceReload: true) }
-                } label: {
-                    Label("Refresh", systemImage: "arrow.counterclockwise")
+                if updateManager.isScanning {
+                    // Show stop button during scan
+                    Button {
+                        updateManager.cancelScan()
+                    } label: {
+                        Label("Stop", systemImage: "stop.circle")
+                    }
+                    .help("Stop checking for updates")
+                } else {
+                    // Show refresh button when not scanning
+                    Button {
+                        let task = Task { await updateManager.scanForUpdates(forceReload: true) }
+                        updateManager.currentScanTask = task
+                    } label: {
+                        Label("Refresh", systemImage: "arrow.counterclockwise")
+                    }
+                    .help("Scan for app updates")
                 }
-                .disabled(updateManager.isScanning)
-                .help("Scan for app updates")
 
                 Button {
                     hiddenSidebar.toggle()
@@ -303,7 +314,9 @@ struct AppsUpdaterView: View {
             }
         }
         .task {
-            await updateManager.scanForUpdates()
+            let task = Task { await updateManager.scanForUpdates() }
+            updateManager.currentScanTask = task
+            await task.value
         }
         .onDisappear {
             UpdaterDebugLogger.shared.clearLogs()

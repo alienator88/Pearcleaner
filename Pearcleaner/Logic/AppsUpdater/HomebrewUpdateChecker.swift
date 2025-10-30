@@ -29,6 +29,10 @@ class HomebrewUpdateChecker {
 
         // Scan casks (always needed)
         try? await HomebrewController.shared.streamInstalledPackages(cask: true) { name, displayName, desc, version, isPinned, tap, tapRbPath, installedOnRequest in
+            // Check for cancellation during streaming
+            if Task.isCancelled {
+                return
+            }
             installedCasks.append(InstalledPackage(
                 name: name,
                 displayName: displayName,
@@ -42,9 +46,18 @@ class HomebrewUpdateChecker {
             ))
         }
 
+        // Check for cancellation before scanning formulae
+        if Task.isCancelled {
+            return []
+        }
+
         // Scan formulae only if enabled
         if includeFormulae {
             try? await HomebrewController.shared.streamInstalledPackages(cask: false) { name, displayName, desc, version, isPinned, tap, tapRbPath, installedOnRequest in
+                // Check for cancellation during streaming
+                if Task.isCancelled {
+                    return
+                }
                 installedFormulae.append(InstalledPackage(
                     name: name,
                     displayName: displayName,
