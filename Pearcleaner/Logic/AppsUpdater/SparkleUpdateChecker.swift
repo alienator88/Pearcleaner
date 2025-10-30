@@ -188,29 +188,35 @@ private class SparkleCheckerOperation: NSObject, SPUUserDriver, SPUUpdaterDelega
         let buildVersionString = appcastItem.versionString
 
         // Note: Sparkle has already determined this is an update based on CFBundleVersion (build number) comparison
-        // However, some apps have mismatched build number formats between versions (e.g., ProtonVPN)
-        // When formats differ (one has period, one doesn't), normalize and compare as integers
+        // However, Sparkle can produce false positives when build number formats differ (e.g., ProtonVPN)
+        // Validate using a two-stage approach: display version first, then build number fallback
 
-        if let installedBuild = appInfo.appBuildNumber {
-            let installedHasPeriod = installedBuild.contains(".")
-            let availableHasPeriod = buildVersionString.contains(".")
+        // Stage 1: Compare display versions (CFBundleShortVersionString)
+        let installedDisplayVer = Version(versionNumber: appInfo.appVersion, buildNumber: nil)
+        let availableDisplayVer = Version(versionNumber: availableVersionString, buildNumber: nil)
 
-            // Only apply special handling when formats differ (one has period, one doesn't)
-            if installedHasPeriod != availableHasPeriod {
-                let installedNumeric = installedBuild.replacingOccurrences(of: ".", with: "")
-                let availableNumeric = buildVersionString.replacingOccurrences(of: ".", with: "")
-
-                if let installedInt = Int(installedNumeric),
-                   let availableInt = Int(availableNumeric),
-                   installedInt > availableInt {
-                    SparkleUpdateChecker.logger.log(.sparkle, "     ⚠️ DOWNGRADE REJECTED:")
-                    SparkleUpdateChecker.logger.log(.sparkle, "        Build (normalized): \(installedInt) → \(availableInt)")
-                    SparkleUpdateChecker.logger.log(.sparkle, "        Display: \(appInfo.appVersion) → \(availableVersionString)")
-                    SparkleUpdateChecker.logger.log(.sparkle, "        Reason: Mismatched build formats - installed build is numerically larger")
+        if availableDisplayVer < installedDisplayVer {
+            // Display version is a downgrade - reject
+            SparkleUpdateChecker.logger.log(.sparkle, "     ⚠️ DOWNGRADE REJECTED:")
+            SparkleUpdateChecker.logger.log(.sparkle, "        Display version: \(appInfo.appVersion) → \(availableVersionString)")
+            SparkleUpdateChecker.logger.log(.sparkle, "        Reason: Available display version is older than installed")
+            return nil
+        } else if availableDisplayVer == installedDisplayVer {
+            // Stage 2: Display versions are equal - compare build numbers lexicographically
+            if let installedBuild = appInfo.appBuildNumber {
+                let comparison = buildVersionString.compare(installedBuild, options: .numeric)
+                if comparison != .orderedDescending {
+                    // Build number is not newer - reject
+                    SparkleUpdateChecker.logger.log(.sparkle, "     ⚠️ DOWNGRADE/SAME VERSION REJECTED:")
+                    SparkleUpdateChecker.logger.log(.sparkle, "        Display version: \(appInfo.appVersion) (equal)")
+                    SparkleUpdateChecker.logger.log(.sparkle, "        Build: \(installedBuild) → \(buildVersionString)")
+                    SparkleUpdateChecker.logger.log(.sparkle, "        Reason: Build number is not newer (lexicographical comparison)")
                     return nil
                 }
+                SparkleUpdateChecker.logger.log(.sparkle, "     ℹ️ Build-only update detected (same display version)")
             }
         }
+        // If availableDisplayVer > installedDisplayVer, allow the update (normal case)
 
         // Check if this is a pre-release
         var isPreRelease = false

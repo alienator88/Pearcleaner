@@ -5,6 +5,21 @@
       "comment" : "Do not translate",
       "shouldTranslate" : false
     },
+    " (%@)" : {
+
+    },
+    " (iOS apps have to be updated in the App Store)" : {
+
+    },
+    " → %@" : {
+
+    },
+    " → %@ (" : {
+
+    },
+    " → build " : {
+
+    },
     "(Build %@)" : {
       "localizations" : {
         "de" : {
@@ -229,6 +244,9 @@
         }
       }
     },
+    ")" : {
+
+    },
     "**%lld%%** savings" : {
       "localizations" : {
         "de" : {
@@ -449,6 +467,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "**whoami** 命令應返回 'root'，如果助手運行正常。"
+          }
+        }
+      }
+    },
+    "%@" : {
+
+    },
+    "%@ (%@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ (%2$@)"
+          }
+        }
+      }
+    },
+    "%@ → %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ → %2$@"
           }
         }
       }
