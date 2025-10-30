@@ -145,7 +145,7 @@ struct HomebrewView: View {
                     // Load other data in parallel (installed packages loaded in SearchInstallSection)
                     async let taps: Void = brewManager.loadTaps()
                     async let version: Void = brewManager.loadBrewVersion()
-                    async let cache: Void = brewManager.loadDownloadsCacheSize()
+                    async let cache: Void = brewManager.loadCacheSize()
                     async let analytics: Void = brewManager.checkAnalyticsStatus()
                     _ = await (taps, version, cache, analytics)
                 }

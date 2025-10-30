@@ -1,12 +1,12 @@
 ### What's New
 
-- [x] Add more Homebrew Auto Update schedule options (Daily, Weekly, Monthly) - #400 discussion
-- [x] Add SUDO_ASKPASS environment variable to shell Process() for all brew commands
+- [x] Optimize maintenance tab commands to bypass brew and read directly from filesystem
+- [x] Highlight the higher build numbers in Updater if short version is the same
+- [x] Add Stop scan button in Updater view toolbar
+- [x] Alter fallback version comparison in Sparkle Updater to catch some build number edge cases using lexicographical logic
+- [x] Output Updater log to debug window(CMD+D) when finished. Also still available via Help menu log file.
 
 ### Fixes
 
-- [x] Fix Settings Helper tab toolbar items not showing on initial load - #404
-- [x] Fix linked files buggy when files move/change - #407
-- [x] Fix sparkle version checking, stop checking version after the fact, trust sparkle
-- [x] Fix slow loading plugins list with large amount of plugins - #403
+- [x] Fix regex matching for tap package versions
 - [x] Translations

@@ -104,8 +104,8 @@ struct TapRowView: View {
     @State private var showRemoveAlert: Bool = false
     @State private var isExpanded: Bool = false
     @State private var isLoadingPackages: Bool = false
-    @State private var tapFormulae: [HomebrewSearchResult] = []
-    @State private var tapCasks: [HomebrewSearchResult] = []
+    @State private var tapFormulae: [String] = []
+    @State private var tapCasks: [String] = []
 
     var body: some View {
         VStack(spacing: 0) {
@@ -228,8 +228,8 @@ struct TapRowView: View {
                                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                                     .padding(.horizontal)
 
-                                ForEach(tapFormulae) { formula in
-                                    TapPackageRowView(package: formula, isCask: false)
+                                ForEach(tapFormulae, id: \.self) { formulaName in
+                                    TapPackageRowView(tapName: tap.name, packageName: formulaName, isCask: false)
                                 }
                             }
 
@@ -242,8 +242,8 @@ struct TapRowView: View {
                                     .padding(.horizontal)
                                     .padding(.top, tapFormulae.isEmpty ? 0 : 8)
 
-                                ForEach(tapCasks) { cask in
-                                    TapPackageRowView(package: cask, isCask: true)
+                                ForEach(tapCasks, id: \.self) { caskName in
+                                    TapPackageRowView(tapName: tap.name, packageName: caskName, isCask: true)
                                 }
                             }
                         }
@@ -419,7 +419,8 @@ struct AddTapSheet: View {
 // MARK: - Tap Package Row View
 
 struct TapPackageRowView: View {
-    let package: HomebrewSearchResult
+    let tapName: String
+    let packageName: String
     let isCask: Bool
     @EnvironmentObject var brewManager: HomebrewManager
     @Environment(\.colorScheme) var colorScheme
@@ -429,17 +430,19 @@ struct TapPackageRowView: View {
     @State private var showUninstallAlert: Bool = false
     @State private var isHovered: Bool = false
 
-    private var isAlreadyInstalled: Bool {
-        // Extract short name from full name (e.g., "mhaeuser/mhaeuser/battery-toolkit" -> "battery-toolkit")
-        let shortName = package.name.components(separatedBy: "/").last ?? package.name
+    // Fully-qualified name for installation (e.g., "powershell/tap/powershell")
+    private var fullPackageName: String {
+        "\(tapName)/\(packageName)"
+    }
 
+    private var isAlreadyInstalled: Bool {
         if isCask {
             return brewManager.installedCasks.contains { installedPackage in
-                installedPackage.name == package.name || installedPackage.name == shortName
+                installedPackage.name == packageName
             }
         } else {
             return brewManager.installedFormulae.contains { installedPackage in
-                installedPackage.name == package.name || installedPackage.name == shortName
+                installedPackage.name == packageName
             }
         }
     }
@@ -459,17 +462,10 @@ struct TapPackageRowView: View {
 
             // Package info
             VStack(alignment: .leading, spacing: 2) {
-                Text(package.name.components(separatedBy: "/").last ?? package.name)
+                Text(packageName)
                     .font(.caption)
                     .fontWeight(.medium)
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-
-                if let description = package.description {
-                    Text(description)
-                        .font(.caption2)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        .lineLimit(1)
-                }
             }
 
             Spacer()
@@ -540,7 +536,7 @@ struct TapPackageRowView: View {
                 isHovered = hovering
             }
         }
-        .alert("Install \(package.name)?", isPresented: $showInstallAlert) {
+        .alert("Install \(packageName)?", isPresented: $showInstallAlert) {
             Button("Cancel", role: .cancel) { }
             Button("Install") {
                 Task { @MainActor in
@@ -548,20 +544,20 @@ struct TapPackageRowView: View {
                     defer { isInstalling = false }
 
                     do {
-                        try await HomebrewController.shared.installPackage(name: package.name, cask: isCask)
+                        try await HomebrewController.shared.installPackage(name: fullPackageName, cask: isCask)
                         if isCask {
                             invalidateCaskLookupCache()
                         }
                         await brewManager.loadInstalledPackages()
                     } catch {
-                        printOS("Error installing package \(package.name): \(error)")
+                        printOS("Error installing package \(fullPackageName): \(error)")
                     }
                 }
             }
         } message: {
-            Text("This will install \(package.name) from the tapped repository.")
+            Text("This will install \(packageName) from the tapped repository.")
         }
-        .alert("Uninstall \(package.name)?", isPresented: $showUninstallAlert) {
+        .alert("Uninstall \(packageName)?", isPresented: $showUninstallAlert) {
             Button("Cancel", role: .cancel) { }
             Button("Uninstall", role: .destructive) {
                 Task { @MainActor in
@@ -569,20 +565,18 @@ struct TapPackageRowView: View {
                     defer { isUninstalling = false }
 
                     do {
-                        // Extract short name for uninstall command
-                        let shortName = package.name.components(separatedBy: "/").last ?? package.name
-                        try await HomebrewUninstaller.shared.uninstallPackage(name: shortName, cask: isCask)
+                        try await HomebrewUninstaller.shared.uninstallPackage(name: packageName, cask: isCask)
                         if isCask {
                             invalidateCaskLookupCache()
                         }
                         await brewManager.loadInstalledPackages()
                     } catch {
-                        printOS("Error uninstalling package \(package.name): \(error)")
+                        printOS("Error uninstalling package \(packageName): \(error)")
                     }
                 }
             }
         } message: {
-            Text("This will remove \(package.name) from your system.")
+            Text("This will remove \(packageName) from your system.")
         }
     }
 }
