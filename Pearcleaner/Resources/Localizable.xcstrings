@@ -167,8 +167,8 @@
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : ""
+            "state" : "translated",
+            "value" : " (%@)"
           }
         },
         "pl" : {
@@ -285,7 +285,7 @@
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "(iOS은 App Store에서 업데이트 할 수 있습니다)"
           }
         },
@@ -403,8 +403,8 @@
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : ""
+            "state" : "translated",
+            "value" : " → %@"
           }
         },
         "pl" : {
@@ -521,8 +521,8 @@
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : ""
+            "state" : "translated",
+            "value" : " → %@ ("
           }
         },
         "pl" : {
@@ -639,8 +639,8 @@
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : ""
+            "state" : "translated",
+            "value" : " → build "
           }
         },
         "pl" : {
@@ -757,7 +757,7 @@
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%@"
           }
         },
@@ -875,8 +875,8 @@
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : ""
+            "state" : "translated",
+            "value" : "%@ (%@)"
           }
         },
         "pl" : {
@@ -1231,8 +1231,8 @@
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : ""
+            "state" : "translated",
+            "value" : "%@ → %@"
           }
         },
         "pl" : {
@@ -3709,8 +3709,8 @@
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : ""
+            "state" : "translated",
+            "value" : ")"
           }
         },
         "pl" : {
@@ -14699,8 +14699,8 @@
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : ""
+            "state" : "translated",
+            "value" : "앱을 열때 처음으로 열 화면을 선택"
           }
         },
         "pl" : {
@@ -23450,8 +23450,8 @@
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : ""
+            "state" : "translated",
+            "value" : "문제 해결을 위해 자세한 로깅 및 번들 캐시 플러시 활성화"
           }
         },
         "pl" : {
@@ -31136,8 +31136,8 @@
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : ""
+            "state" : "translated",
+            "value" : "Homebrew로부터의 자동 업데이트 앱 숨기기"
           }
         },
         "pl" : {
@@ -64591,8 +64591,8 @@
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : ""
+            "state" : "translated",
+            "value" : "Homebrew로부터의 자동 업데이트 앱 보이기"
           }
         },
         "pl" : {
@@ -65299,8 +65299,8 @@
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : ""
+            "state" : "translated",
+            "value" : "요청 시 종속성으로 설치된게 아닌 Homebrew 설치된 공식들만 표시"
           }
         },
         "pl" : {
@@ -68259,8 +68259,8 @@
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : ""
+            "state" : "translated",
+            "value" : "시작 화면"
           }
         },
         "pl" : {
@@ -68849,8 +68849,8 @@
         },
         "ko" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : ""
+            "state" : "translated",
+            "value" : "업데이트 확인 멈춤"
           }
         },
         "pl" : {
