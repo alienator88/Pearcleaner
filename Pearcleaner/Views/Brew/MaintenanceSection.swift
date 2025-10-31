@@ -16,7 +16,7 @@ struct MaintenanceSection: View {
     @State private var isPurgingCache: Bool = false
     @State private var doctorOutput: String = ""
     @State private var showDoctorSheet: Bool = false
-    @State private var doctorHealthy: Bool? = nil // nil = not run, true = healthy, false = unhealthy
+    @State private var doctorHealthy: Bool? = true // Optimistic: assume healthy, update if issues found
     @State private var isCheckingHealthOnAppear: Bool = false
     @State private var isCheckingVersionOnAppear: Bool = false
     @State private var isCheckingCacheSize: Bool = false
@@ -127,11 +127,7 @@ struct MaintenanceSection: View {
                                         .font(.headline)
                                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
-                                    if isCheckingHealthOnAppear {
-                                        ProgressView()
-                                            .controlSize(.small)
-                                            .frame(width: 14, height: 14)
-                                    } else if let isHealthy = doctorHealthy {
+                                    if let isHealthy = doctorHealthy {
                                         Button {
                                             if !isHealthy {
                                                 showDoctorSheet = true
@@ -143,7 +139,6 @@ struct MaintenanceSection: View {
                                         }
                                         .buttonStyle(.plain)
                                         .help(isHealthy ? "Your Homebrew installation is healthy" : "Click to view issues")
-//                                        .disabled(isHealthy)
                                     }
                                 }
 
