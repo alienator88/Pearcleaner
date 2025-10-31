@@ -72401,7 +72401,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 작업은 macOS 언어를 제외한 모든 사용되지 않는 언어 번역 파일을 제거합니다"
+            "value" : "이 작업은 macOS 언어를 제외한 모든 사용되지 않는 언어 파일을 제거합니다"
           }
         },
         "pl" : {
