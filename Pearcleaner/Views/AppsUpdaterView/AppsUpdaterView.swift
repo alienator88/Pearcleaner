@@ -144,55 +144,167 @@ struct AppsUpdaterView: View {
 
                             // Show categories only if their checkbox is enabled
                             if checkAppStore {
-                                CategorySection(
-                                    title: "App Store",
+                                let appStoreApps = updateManager.updatesBySource[.appStore] ?? []
+                                let filteredApps = searchText.isEmpty ? appStoreApps : appStoreApps.filter {
+                                    $0.appInfo.appName.localizedCaseInsensitiveContains(searchText)
+                                }
+                                let isCollapsed = filteredApps.isEmpty || collapsedCategories.contains("App Store")
+
+                                GroupBox {
+                                    if !isCollapsed {
+                                        if filteredApps.isEmpty {
+                                            Text("No app store apps to update")
+                                                .font(.callout)
+                                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                                .padding(.vertical, 12)
+                                                .padding(.horizontal, 8)
+                                        } else {
+                                            LazyVStack(spacing: 8) {
+                                                ForEach(filteredApps) { app in
+                                                    UpdateRowView(
+                                                        app: app,
+                                                        onHideToggle: { app in
+                                                            updateManager.hideApp(app)
+                                                        }
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                .groupBoxStyle(.collapsible(
                                     icon: ifOSBelow(macOS: 14) ? "cart.fill" : "storefront.fill",
-                                    apps: updateManager.updatesBySource[.appStore] ?? [],
-                                    searchText: searchText,
-                                    isScanning: updateManager.scanningSources.contains(.appStore),
-                                    collapsed: (updateManager.updatesBySource[.appStore]?.isEmpty ?? true) || collapsedCategories.contains("App Store"),
-                                    onToggle: { toggleCategory("App Store") },
-                                    isFirst: true
-                                )
+                                    title: "App Store",
+                                    count: filteredApps.count,
+                                    isCollapsed: isCollapsed,
+                                    isLoading: updateManager.scanningSources.contains(.appStore),
+                                    onToggle: { toggleCategory("App Store") }
+                                ))
+                                .padding(.top, 0)
                             }
 
                             if checkHomebrew {
-                                CategorySection(
-                                    title: "Homebrew",
+                                let homebrewApps = updateManager.updatesBySource[.homebrew] ?? []
+                                let filteredApps = searchText.isEmpty ? homebrewApps : homebrewApps.filter {
+                                    $0.appInfo.appName.localizedCaseInsensitiveContains(searchText)
+                                }
+                                let isCollapsed = filteredApps.isEmpty || collapsedCategories.contains("Homebrew")
+
+                                GroupBox {
+                                    if !isCollapsed {
+                                        if filteredApps.isEmpty {
+                                            Text("No homebrew apps to update")
+                                                .font(.callout)
+                                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                                .padding(.vertical, 12)
+                                                .padding(.horizontal, 8)
+                                        } else {
+                                            LazyVStack(spacing: 8) {
+                                                ForEach(filteredApps) { app in
+                                                    UpdateRowView(
+                                                        app: app,
+                                                        onHideToggle: { app in
+                                                            updateManager.hideApp(app)
+                                                        }
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                .groupBoxStyle(.collapsible(
                                     icon: "mug",
-                                    apps: updateManager.updatesBySource[.homebrew] ?? [],
-                                    searchText: searchText,
-                                    isScanning: updateManager.scanningSources.contains(.homebrew),
-                                    collapsed: (updateManager.updatesBySource[.homebrew]?.isEmpty ?? true) || collapsedCategories.contains("Homebrew"),
-                                    onToggle: { toggleCategory("Homebrew") },
-                                    isFirst: !checkAppStore
-                                )
+                                    title: "Homebrew",
+                                    count: filteredApps.count,
+                                    isCollapsed: isCollapsed,
+                                    isLoading: updateManager.scanningSources.contains(.homebrew),
+                                    onToggle: { toggleCategory("Homebrew") }
+                                ))
+                                .padding(.top, checkAppStore ? 20 : 0)
                             }
 
                             if checkSparkle {
-                                CategorySection(
-                                    title: "Sparkle",
+                                let sparkleApps = updateManager.updatesBySource[.sparkle] ?? []
+                                let filteredApps = searchText.isEmpty ? sparkleApps : sparkleApps.filter {
+                                    $0.appInfo.appName.localizedCaseInsensitiveContains(searchText)
+                                }
+                                let isCollapsed = filteredApps.isEmpty || collapsedCategories.contains("Sparkle")
+
+                                GroupBox {
+                                    if !isCollapsed {
+                                        if filteredApps.isEmpty {
+                                            Text("No sparkle apps to update")
+                                                .font(.callout)
+                                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                                .padding(.vertical, 12)
+                                                .padding(.horizontal, 8)
+                                        } else {
+                                            LazyVStack(spacing: 8) {
+                                                ForEach(filteredApps) { app in
+                                                    UpdateRowView(
+                                                        app: app,
+                                                        onHideToggle: { app in
+                                                            updateManager.hideApp(app)
+                                                        }
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                .groupBoxStyle(.collapsible(
                                     icon: "sparkles",
-                                    apps: updateManager.updatesBySource[.sparkle] ?? [],
-                                    searchText: searchText,
-                                    isScanning: updateManager.scanningSources.contains(.sparkle),
-                                    collapsed: (updateManager.updatesBySource[.sparkle]?.isEmpty ?? true) || collapsedCategories.contains("Sparkle"),
-                                    onToggle: { toggleCategory("Sparkle") },
-                                    isFirst: !checkAppStore && !checkHomebrew
-                                )
+                                    title: "Sparkle",
+                                    count: filteredApps.count,
+                                    isCollapsed: isCollapsed,
+                                    isLoading: updateManager.scanningSources.contains(.sparkle),
+                                    onToggle: { toggleCategory("Sparkle") }
+                                ))
+                                .padding(.top, (checkAppStore || checkHomebrew) ? 20 : 0)
                             }
 
                             if showUnsupported {
-                                CategorySection(
-                                    title: "Unsupported",
+                                let unsupportedApps = updateManager.updatesBySource[.unsupported] ?? []
+                                let filteredApps = searchText.isEmpty ? unsupportedApps : unsupportedApps.filter {
+                                    $0.appInfo.appName.localizedCaseInsensitiveContains(searchText)
+                                }
+                                let isCollapsed = filteredApps.isEmpty || collapsedCategories.contains("Unsupported")
+
+                                GroupBox {
+                                    if !isCollapsed {
+                                        if filteredApps.isEmpty {
+                                            Text("No unsupported apps to update")
+                                                .font(.callout)
+                                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                                .padding(.vertical, 12)
+                                                .padding(.horizontal, 8)
+                                        } else {
+                                            LazyVStack(spacing: 8) {
+                                                ForEach(filteredApps) { app in
+                                                    UpdateRowView(
+                                                        app: app,
+                                                        onHideToggle: { app in
+                                                            updateManager.hideApp(app)
+                                                        }
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                .groupBoxStyle(.collapsible(
                                     icon: "questionmark.circle",
-                                    apps: updateManager.updatesBySource[.unsupported] ?? [],
-                                    searchText: searchText,
-                                    isScanning: false,  // Unsupported apps are calculated instantly, not scanned
-                                    collapsed: (updateManager.updatesBySource[.unsupported]?.isEmpty ?? true) || collapsedCategories.contains("Unsupported"),
-                                    onToggle: { toggleCategory("Unsupported") },
-                                    isFirst: !checkAppStore && !checkHomebrew && !checkSparkle
-                                )
+                                    title: "Unsupported",
+                                    count: filteredApps.count,
+                                    isCollapsed: isCollapsed,
+                                    isLoading: false,
+                                    onToggle: { toggleCategory("Unsupported") }
+                                ))
+                                .padding(.top, (checkAppStore || checkHomebrew || checkSparkle) ? 20 : 0)
                             }
                         }
                         .padding(.horizontal, 20)
@@ -366,148 +478,6 @@ struct AppsUpdaterView: View {
     private func updateSelectedApps() {
         Task {
             await updateManager.updateSelectedApps()
-        }
-    }
-}
-
-// Category section component (matching Homebrew layout)
-struct CategorySection<TrailingContent: View>: View {
-    let title: String
-    let icon: String
-    let apps: [UpdateableApp]
-    let searchText: String
-    let isScanning: Bool
-    let collapsed: Bool
-    let onToggle: () -> Void
-    let isFirst: Bool
-    let trailingContent: (() -> TrailingContent)?
-    @Environment(\.colorScheme) var colorScheme
-    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
-    @StateObject private var updateManager = UpdateManager.shared
-
-    // Initializer for categories without trailing content
-    init(
-        title: String,
-        icon: String,
-        apps: [UpdateableApp],
-        searchText: String,
-        isScanning: Bool,
-        collapsed: Bool,
-        onToggle: @escaping () -> Void,
-        isFirst: Bool
-    ) where TrailingContent == EmptyView {
-        self.title = title
-        self.icon = icon
-        self.apps = apps
-        self.searchText = searchText
-        self.isScanning = isScanning
-        self.collapsed = collapsed
-        self.onToggle = onToggle
-        self.isFirst = isFirst
-        self.trailingContent = nil
-    }
-
-    // Initializer for categories with trailing content
-    init(
-        title: String,
-        icon: String,
-        apps: [UpdateableApp],
-        searchText: String,
-        isScanning: Bool,
-        collapsed: Bool,
-        onToggle: @escaping () -> Void,
-        isFirst: Bool,
-        @ViewBuilder trailingContent: @escaping () -> TrailingContent
-    ) {
-        self.title = title
-        self.icon = icon
-        self.apps = apps
-        self.searchText = searchText
-        self.isScanning = isScanning
-        self.collapsed = collapsed
-        self.onToggle = onToggle
-        self.isFirst = isFirst
-        self.trailingContent = trailingContent
-    }
-
-    private var filteredApps: [UpdateableApp] {
-        if searchText.isEmpty {
-            return apps
-        }
-        return apps.filter {
-            $0.appInfo.appName.localizedCaseInsensitiveContains(searchText)
-        }
-    }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            // Category header (collapsible)
-            Button(action: {
-                withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
-                    onToggle()
-                }
-            }) {
-                HStack {
-                    Image(systemName: collapsed ? "chevron.right" : "chevron.down")
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        .opacity(filteredApps.isEmpty ? 0 : 1)
-                        .frame(width: 10)
-
-                    Image(systemName: icon)
-                        .font(.headline)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-                        .frame(width: 20)
-
-                    Text(title)
-                        .font(.headline)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-
-                    if isScanning {
-                        ProgressView()
-                            .controlSize(.small)
-                    } else {
-                        Text(verbatim: "(\(filteredApps.count))")
-                            .font(.caption)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    }
-
-                    Spacer()
-
-                    // Optional trailing content (e.g., Sparkle pre-release toggle)
-                    if let trailingContent = trailingContent {
-                        trailingContent()
-                    }
-                }
-            }
-            .buttonStyle(.plain)
-            .contentShape(Rectangle())
-            .padding(.top, isFirst ? 0 : 20)
-
-            // Packages in category (only if not collapsed)
-            if !collapsed {
-                if filteredApps.isEmpty {
-                    // Empty state
-                    Text("No \(title.lowercased()) apps to update")
-                        .font(.callout)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.vertical, 12)
-                        .padding(.horizontal, 8)
-                } else {
-                    LazyVStack(spacing: 8) {
-                        ForEach(searchText.isEmpty ? apps : filteredApps) { app in
-                            UpdateRowView(
-                                app: app,
-                                onHideToggle: { app in
-                                    updateManager.hideApp(app)
-                                }
-                            )
-                        }
-                    }
-                }
-            }
         }
     }
 }

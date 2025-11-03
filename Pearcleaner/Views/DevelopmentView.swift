@@ -21,6 +21,7 @@ struct EnvironmentCleanerView: View {
     @State private var searchText: String = ""
     @State private var lastRefreshDate: Date?
     @State private var isLoading: Bool = false
+    @State private var collapsedCategories: Set<String> = []
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
@@ -191,11 +192,43 @@ struct EnvironmentCleanerView: View {
                                 }
 
                                 if !environmentPaths.isEmpty {
-                                    EnvironmentCategorySection(
-                                        environment: PathEnv(name: environment.name, paths: environmentPaths),
-                                        selectedPaths: $selectedPaths,
-                                        onRefresh: refreshPaths
-                                    )
+                                    let isCollapsed = environmentPaths.isEmpty || collapsedCategories.contains(environment.name)
+
+                                    GroupBox {
+                                        if !isCollapsed {
+                                            ForEach(environmentPaths, id: \.self) { path in
+                                                PathRowView(
+                                                    path: path,
+                                                    isSelected: Binding(
+                                                        get: { selectedPaths.contains(path) },
+                                                        set: { isSelected in
+                                                            if isSelected {
+                                                                selectedPaths.insert(path)
+                                                            } else {
+                                                                selectedPaths.remove(path)
+                                                            }
+                                                        }
+                                                    )
+                                                ) {
+                                                    refreshPaths()
+                                                    selectedPaths.remove(path)
+                                                }
+                                            }
+                                            .transition(.opacity.combined(with: .slide))
+                                        }
+                                    }
+                                    .groupBoxStyle(.collapsible(
+                                        title: environment.name,
+                                        count: environmentPaths.count,
+                                        isCollapsed: isCollapsed,
+                                        onToggle: {
+                                            if isCollapsed {
+                                                collapsedCategories.remove(environment.name)
+                                            } else {
+                                                collapsedCategories.insert(environment.name)
+                                            }
+                                        }
+                                    ))
                                 }
                             }
                         } else {
@@ -389,72 +422,6 @@ struct EnvironmentCleanerView: View {
     }
 }
 
-// MARK: - Environment Category Section
-
-struct EnvironmentCategorySection: View {
-    let environment: PathEnv
-    @Binding var selectedPaths: Set<String>
-    let onRefresh: () -> Void
-    @Environment(\.colorScheme) var colorScheme
-    @State private var isCollapsed: Bool = false
-    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            // Category header
-            Button(action: {
-                withAnimation(.easeInOut(duration: animationEnabled ? 0.3 : 0)) {
-                    isCollapsed.toggle()
-                }
-            }) {
-                HStack {
-                    Image(systemName: isCollapsed ? "chevron.right" : "chevron.down")
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        .frame(width: 10)
-
-                    Text(environment.name)
-                        .font(.headline)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-
-                    Text(verbatim: "(\(environment.paths.count))")
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-
-                    Spacer()
-                }
-                .padding(.horizontal)
-                .padding(.vertical, 4)
-            }
-            .buttonStyle(.plain)
-            .contentShape(Rectangle())
-
-            // Path rows
-            if !isCollapsed {
-                ForEach(environment.paths, id: \.self) { path in
-                    PathRowView(
-                        path: path,
-                        isSelected: Binding(
-                            get: { selectedPaths.contains(path) },
-                            set: { isSelected in
-                                if isSelected {
-                                    selectedPaths.insert(path)
-                                } else {
-                                    selectedPaths.remove(path)
-                                }
-                            }
-                        )
-                    ) {
-                        onRefresh()
-                        selectedPaths.remove(path)
-                    }
-                }
-                .transition(.opacity.combined(with: .slide))
-            }
-        }
-    }
-}
 
 struct PathRowView: View {
     @Environment(\.colorScheme) var colorScheme

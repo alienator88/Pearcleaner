@@ -40963,6 +40963,7 @@
       }
     },
     "No %@ apps to update" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -41073,6 +41074,9 @@
           }
         }
       }
+    },
+    "No app store apps to update" : {
+
     },
     "No apps available for thinning" : {
       "localizations" : {
@@ -41522,6 +41526,9 @@
           }
         }
       }
+    },
+    "No homebrew apps to update" : {
+
     },
     "No issues detected" : {
       "localizations" : {
@@ -43317,6 +43324,9 @@
         }
       }
     },
+    "No sparkle apps to update" : {
+
+    },
     "No taps found" : {
       "localizations" : {
         "de" : {
@@ -43540,6 +43550,9 @@
           }
         }
       }
+    },
+    "No unsupported apps to update" : {
+
     },
     "No Update 😌" : {
       "extractionState" : "manual",
