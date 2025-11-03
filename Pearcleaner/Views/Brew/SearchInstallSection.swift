@@ -13,6 +13,18 @@ enum HomebrewSearchType: String, CaseIterable {
     case available = "Available"
 }
 
+enum BrewPackageSortOption: String, CaseIterable {
+    case name = "Name"
+    case size = "Size"
+
+    var systemImage: String {
+        switch self {
+        case .name: return "list.bullet"
+        case .size: return "arrow.up.arrow.down"
+        }
+    }
+}
+
 struct SearchInstallSection: View {
     let onPackageSelected: (HomebrewSearchResult, Bool) -> Void
 
@@ -28,6 +40,8 @@ struct SearchInstallSection: View {
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.brew.showOnlyInstalledOnRequest") private var showOnlyInstalledOnRequest: Bool = false
+    @State private var formulaeSortOption: BrewPackageSortOption = .name
+    @State private var casksSortOption: BrewPackageSortOption = .name
 
     /// Helper to match search query against package name, displayName, and description
     private func matchesSearchQuery(_ package: HomebrewSearchResult, query: String) -> Bool {
@@ -308,7 +322,8 @@ struct SearchInstallSection: View {
                                                     updateAllOutdated(packages: filteredOutdated)
                                                 } : nil,
                                                 colorScheme: colorScheme,
-                                                showOnlyInstalledOnRequest: $showOnlyInstalledOnRequest
+                                                showOnlyInstalledOnRequest: $showOnlyInstalledOnRequest,
+                                                sortOption: $formulaeSortOption
                                             )
                                         }
 
@@ -336,7 +351,8 @@ struct SearchInstallSection: View {
                                             brewManager: brewManager,
                                             onUpdateAll: nil,
                                             colorScheme: colorScheme,
-                                            showOnlyInstalledOnRequest: $showOnlyInstalledOnRequest
+                                            showOnlyInstalledOnRequest: $showOnlyInstalledOnRequest,
+                                            sortOption: $formulaeSortOption
                                         )
 
                                         // Casks category
@@ -360,7 +376,8 @@ struct SearchInstallSection: View {
                                             brewManager: brewManager,
                                             onUpdateAll: nil,
                                             colorScheme: colorScheme,
-                                            showOnlyInstalledOnRequest: $showOnlyInstalledOnRequest
+                                            showOnlyInstalledOnRequest: $showOnlyInstalledOnRequest,
+                                            sortOption: $casksSortOption
                                         )
                                     } else {
                                         // Show categorized view for Available tab (matches Installed/Updater view pattern)
@@ -545,6 +562,43 @@ struct SearchResultRowView: View {
         return nil
     }
 
+    private func getPackageSize() -> String? {
+        let shortName = result.name.components(separatedBy: "/").last ?? result.name
+
+        if isCask {
+            return brewManager.installedCasks.first(where: { $0.name == result.name || $0.name == shortName })?.size
+        } else {
+            return brewManager.installedFormulae.first(where: { $0.name == result.name || $0.name == shortName })?.size
+        }
+    }
+
+    private func calculateSize() async {
+        let shortName = result.name.components(separatedBy: "/").last ?? result.name
+
+        if isCask {
+            // Calculate cask size from AppState.sortedApps
+            let (sizeBytes, sizeFormatted) = await HomebrewController.shared.calculateCaskSize(name: result.name)
+
+            await MainActor.run {
+                if let index = brewManager.installedCasks.firstIndex(where: { $0.name == result.name || $0.name == shortName }) {
+                    brewManager.installedCasks[index].size = sizeFormatted
+                    brewManager.installedCasks[index].sizeBytes = sizeBytes
+                }
+            }
+        } else {
+            // Calculate formula size from Cellar directory
+            guard let version = result.version else { return }
+            let (sizeBytes, sizeFormatted) = await HomebrewController.shared.calculateFormulaSize(name: result.name, version: version)
+
+            await MainActor.run {
+                if let index = brewManager.installedFormulae.firstIndex(where: { $0.name == result.name || $0.name == shortName }) {
+                    brewManager.installedFormulae[index].size = sizeFormatted
+                    brewManager.installedFormulae[index].sizeBytes = sizeBytes
+                }
+            }
+        }
+    }
+
     @ViewBuilder
     private var actionButtons: some View {
         if isInstalling || updatingPackages.contains(result.name) {
@@ -718,6 +772,22 @@ struct SearchResultRowView: View {
             }
 
             Spacer()
+
+            // Package size (for installed packages)
+            if isAlreadyInstalled {
+                if let size = getPackageSize() {
+                    Text(size)
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                } else {
+                    Text("Calculating...")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        .task(id: result.name) {
+                            await calculateSize()
+                        }
+                }
+            }
 
             // Install/Uninstall/Update action buttons
             actionButtons
@@ -2495,6 +2565,24 @@ struct InstalledCategoryView: View {
     let onUpdateAll: (() -> Void)?
     let colorScheme: ColorScheme
     @Binding var showOnlyInstalledOnRequest: Bool
+    @Binding var sortOption: BrewPackageSortOption
+
+    private var sortedPackages: [HomebrewSearchResult] {
+        switch sortOption {
+        case .name:
+            return packages.sorted { ($0.displayName ?? $0.name).lowercased() < ($1.displayName ?? $1.name).lowercased() }
+        case .size:
+            // Sort by size bytes (largest first)
+            // Get size from InstalledPackage
+            return packages.sorted { pkg1, pkg2 in
+                let size1 = brewManager.installedFormulae.first(where: { $0.name == pkg1.name })?.sizeBytes ??
+                           brewManager.installedCasks.first(where: { $0.name == pkg1.name })?.sizeBytes ?? 0
+                let size2 = brewManager.installedFormulae.first(where: { $0.name == pkg2.name })?.sizeBytes ??
+                           brewManager.installedCasks.first(where: { $0.name == pkg2.name })?.sizeBytes ?? 0
+                return size1 > size2
+            }
+        }
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -2543,6 +2631,23 @@ struct InstalledCategoryView: View {
 
                     Spacer()
 
+                    // Sort menu
+                    Menu {
+                        ForEach(BrewPackageSortOption.allCases, id: \.self) { option in
+                            Button {
+                                sortOption = option
+                            } label: {
+                                Label(option.rawValue, systemImage: option.systemImage)
+                            }
+                        }
+                    } label: {
+                        Label(sortOption.rawValue, systemImage: sortOption.systemImage)
+                            .font(.caption)
+                    }
+                    .labelStyle(.titleAndIcon)
+                    .buttonStyle(.plain)
+                    .help("Sort by \(sortOption.rawValue)")
+
                     // Show "Update All" button if provided
                     if let onUpdateAll = onUpdateAll {
                         Button {
@@ -2563,7 +2668,7 @@ struct InstalledCategoryView: View {
             // Packages in category (only if not collapsed)
             if !collapsed {
                 LazyVStack(spacing: 8) {
-                    ForEach(packages) { result in
+                    ForEach(sortedPackages) { result in
                         SearchResultRowView(
                             result: result,
                             isCask: brewManager.installedCasks.contains(where: { $0.name == result.name }),

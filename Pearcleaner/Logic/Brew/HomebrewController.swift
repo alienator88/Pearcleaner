@@ -1367,6 +1367,35 @@ class HomebrewController {
         return (bytes: totalBytes, formatted: formatted)
     }
 
+    func calculateFormulaSize(name: String, version: String) async -> (Int64, String) {
+        // Calculate size of formula installation in Cellar directory
+        // Path format: /opt/homebrew/Cellar/<formula>/<version>
+        let cellarPath = "\(brewPrefix)/Cellar/\(name)/\(version)"
+        let cellarURL = URL(fileURLWithPath: cellarPath)
+
+        let fileManager = FileManager.default
+        guard fileManager.fileExists(atPath: cellarPath) else {
+            return (0, "0 KB")
+        }
+
+        let totalBytes = totalSizeOnDisk(for: cellarURL)
+        let formatted = ByteCountFormatter.string(fromByteCount: totalBytes, countStyle: .file)
+
+        return (totalBytes, formatted)
+    }
+
+    func calculateCaskSize(name: String) async -> (Int64, String) {
+        // For casks, get size from AppState.sortedApps (actual installed app)
+        if let appInfo = await MainActor.run(body: { AppState.shared.sortedApps.first(where: { $0.cask == name }) }) {
+            // bundleSize is already in bytes, just format it
+            let formatted = ByteCountFormatter.string(fromByteCount: appInfo.bundleSize, countStyle: .file)
+            return (appInfo.bundleSize, formatted)
+        }
+
+        // Fallback if app not found in sortedApps
+        return (0, "0 KB")
+    }
+
     // MARK: - Tap Package Loading
 
     func getPackagesFromTap(_ tapName: String) async throws -> (formulae: [String], casks: [String]) {

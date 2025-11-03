@@ -221,6 +221,8 @@ struct InstalledPackage: Identifiable, Equatable, Hashable {
     let tap: String?        // e.g., "homebrew/core", "mhaeuser/mhaeuser"
     let tapRbPath: String?  // Cached path to tap's .rb file for version checking
     let installedOnRequest: Bool  // True if user explicitly installed (not as dependency) - formulae only, always true for casks
+    var size: String?       // Human-readable size (e.g., "15 MB") - calculated lazily
+    var sizeBytes: Int64?   // Size in bytes for sorting - calculated lazily
 
     static func == (lhs: InstalledPackage, rhs: InstalledPackage) -> Bool {
         return lhs.name == rhs.name && lhs.isCask == rhs.isCask
