@@ -40,6 +40,11 @@ class AppPathFinder {
     // Change from lazy var to regular property initialized in init
     private let cachedIdentifiers: (formattedBundleId: String, bundleLastTwoComponents: String, formattedAppName: String, appNameLettersOnly: String, pathComponentName: String, useBundleIdentifier: Bool, formattedCompanyName: String?, formattedEntitlements: [String], formattedTeamIdentifier: String?)
 
+    // Cached exclusion list for app file search
+    private lazy var formattedAppExclusionList: [String] = {
+        return FolderSettingsManager.shared.fileFolderPathsApps.map { $0.pearFormat() }
+    }()
+
     // Computed property to get the effective sensitivity level
     private var effectiveSensitivityLevel: SearchSensitivityLevel {
         return overrideSensitivityLevel ?? sensitivityLevel
@@ -148,6 +153,14 @@ class AppPathFinder {
                 var isDirectory: ObjCBool = false
                 if FileManager.default.fileExists(atPath: scannedItemURL.path, isDirectory: &isDirectory) {
                     if shouldSkipItem(normalizedItemName, at: scannedItemURL) { continue }
+
+                    // Check app exclusion list
+                    let normalizedItemPath = scannedItemURL.path.pearFormat()
+                    if formattedAppExclusionList.contains(normalizedItemPath) ||
+                       formattedAppExclusionList.first(where: { normalizedItemPath.contains($0) }) != nil {
+                        continue
+                    }
+
                     if specificCondition(normalizedItemName: normalizedItemName, scannedItemURL: scannedItemURL) {
                         localResults.append(scannedItemURL)
                     }

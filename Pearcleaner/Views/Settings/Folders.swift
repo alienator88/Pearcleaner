@@ -37,36 +37,48 @@ struct FolderSettingsTab: View {
                 VStack {
                     ScrollView {
                         VStack(spacing: 5) {
+                            // Header row
+                            HStack(spacing: 8) {
+                                Text("Application Folder")
+                                    .font(.caption)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                    .padding(5)
+
+                                Spacer()
+                            }
+
+                            Divider().opacity(0.5)
+
                             ForEach(fsm.folderPaths.indices.sorted(by: {
                                 fsm.folderPaths[$0] < fsm.folderPaths[$1]
                             }), id: \.self) { index in
-                                HStack {
-
+                                HStack(spacing: 8) {
                                     Text(fsm.folderPaths[index])
                                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                                         .font(.callout)
                                         .lineLimit(1)
                                         .truncationMode(.tail)
-                                        .opacity(defaultPathsLocked && fsm.defaultPaths.contains(fsm.folderPaths[index]) ? 0.5 : 1)
                                         .padding(5)
+
                                     Spacer()
-                                }
-                                .disabled(defaultPathsLocked && fsm.defaultPaths.contains(fsm.folderPaths[index]))
-                                .onHover { hovering in
-                                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                                        isHovered = hovering
+
+                                    // Delete button
+                                    Button(action: {
+                                        if !(defaultPathsLocked && fsm.defaultPaths.contains(fsm.folderPaths[index])) {
+                                            fsm.removePath(at: index)
+                                        }
+                                    }) {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                            .font(.system(size: 14))
                                     }
-                                    if isHovered && !(defaultPathsLocked && fsm.defaultPaths.contains(fsm.folderPaths[index])) {
-                                        NSCursor.disappearingItem.push()
-                                    } else {
-                                        NSCursor.pop()
-                                    }
+                                    .buttonStyle(.plain)
+                                    .help("Remove folder")
+                                    .disabled(defaultPathsLocked && fsm.defaultPaths.contains(fsm.folderPaths[index]))
+                                    .opacity(defaultPathsLocked && fsm.defaultPaths.contains(fsm.folderPaths[index]) ? 0.3 : 1)
+                                    .frame(width: 24)
                                 }
-                                .onTapGesture {
-                                    if !(defaultPathsLocked && fsm.defaultPaths.contains(fsm.folderPaths[index])) {
-                                        fsm.removePath(at: index)
-                                    }
-                                }
+                                .background(Color.clear)
 
                                 if index != fsm.folderPaths.indices.last {
                                     Divider().opacity(0.5)
@@ -77,7 +89,6 @@ struct FolderSettingsTab: View {
 
                     }
                     .scrollIndicators(scrollIndicators ? .automatic : .never)
-                    .padding()
                     .frame(height: 200)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                     .onDrop(of: ["public.file-url"], isTargeted: nil) { providers -> Bool in
@@ -111,10 +122,10 @@ struct FolderSettingsTab: View {
                         } label: { EmptyView() }
                             .buttonStyle(SimpleButtonStyle(icon: "plus.circle", help: String(localized: "Add folder"), color: ThemeColors.shared(for: colorScheme).secondaryText, size: 16, rotate: true))
 
-                        Button {
-                            clipboardAdd()
-                        } label: { EmptyView() }
-                            .buttonStyle(SimpleButtonStyle(icon: "doc.on.clipboard", help: String(localized: "Add folder from clipboard"), color: ThemeColors.shared(for: colorScheme).secondaryText, size: 16, rotate: false))
+//                        Button {
+//                            clipboardAdd()
+//                        } label: { EmptyView() }
+//                            .buttonStyle(SimpleButtonStyle(icon: "doc.on.clipboard", help: String(localized: "Add folder from clipboard"), color: ThemeColors.shared(for: colorScheme).secondaryText, size: 16, rotate: false))
 
                         Button {
                             toggleDefaultPathsLock()
@@ -130,7 +141,7 @@ struct FolderSettingsTab: View {
 
             PearGroupBox(header: {
                 HStack(spacing: 0) {
-                    Text("Exclude these files and folders from orphaned file search").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2)
+                    Text("Exclude these files and folders").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2)
                         .padding(.leading, 5)
                     Spacer()
                 }
@@ -138,7 +149,10 @@ struct FolderSettingsTab: View {
                 VStack {
                     ScrollView {
                         VStack(spacing: 5) {
-                            if fsm.fileFolderPathsZ.count == 0 {
+                            // Compute combined list of all unique paths
+                            let allPaths = Array(Set(fsm.fileFolderPathsZ + fsm.fileFolderPathsApps)).sorted()
+
+                            if allPaths.isEmpty {
                                 HStack {
                                     Text("No files or folders added")
                                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
@@ -147,35 +161,92 @@ struct FolderSettingsTab: View {
                                     Spacer()
                                 }
                                 .disabled(true)
-                            }
-                            ForEach(fsm.fileFolderPathsZ.indices.sorted(by: {
-                                fsm.fileFolderPathsZ[$0] < fsm.fileFolderPathsZ[$1]
-                            }), id: \.self) { index in
-                                HStack {
+                            } else {
+                                // Header row with toggle labels
+                                HStack(spacing: 8) {
+                                    Text("Path / Keyword")
+                                        .font(.caption)
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                        .padding(5)
 
-                                    Text(fsm.fileFolderPathsZ[index])
+                                    Spacer()
+
+                                    Text("Orphans")
+                                        .font(.caption)
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                        .frame(width: 44, alignment: .center)
+
+                                    Text("Apps")
+                                        .font(.caption)
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                        .frame(width: 44, alignment: .center)
+
+                                    // Spacing for delete button
+                                    Color.clear.frame(width: 20)
+                                }
+
+                                Divider().opacity(0.5)
+                            }
+
+                            ForEach(allPaths, id: \.self) { path in
+                                HStack(spacing: 8) {
+                                    Text(path)
                                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                                         .font(.callout)
                                         .lineLimit(1)
                                         .truncationMode(.tail)
                                         .padding(5)
-                                    Spacer()
-                                }
-                                .onHover { hovering in
-                                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                                        isHovered = hovering
-                                    }
-                                    if isHovered {
-                                        NSCursor.disappearingItem.push()
-                                    } else {
-                                        NSCursor.pop()
-                                    }
-                                }
-                                .onTapGesture {
-                                    fsm.removePathZ(at: index)
-                                }
 
-                                if index != fsm.fileFolderPathsZ.indices.last {
+                                    Spacer()
+
+                                    // Orphans toggle
+                                    Toggle("", isOn: Binding(
+                                        get: { fsm.fileFolderPathsZ.contains(path) },
+                                        set: { enabled in
+                                            if enabled {
+                                                fsm.addPathZ(path)
+                                            } else {
+                                                fsm.removePathZ(path)
+                                            }
+                                        }
+                                    ))
+                                    .toggleStyle(.switch)
+                                    .controlSize(.mini)
+                                    .help("Exclude from orphaned file search")
+                                    .frame(width: 44, alignment: .center)
+
+                                    // Apps toggle
+                                    Toggle("", isOn: Binding(
+                                        get: { fsm.fileFolderPathsApps.contains(path) },
+                                        set: { enabled in
+                                            if enabled {
+                                                fsm.addPathApps(path)
+                                            } else {
+                                                fsm.removePathApps(path)
+                                            }
+                                        }
+                                    ))
+                                    .toggleStyle(.switch)
+                                    .controlSize(.mini)
+                                    .help("Exclude from app file search")
+                                    .frame(width: 44, alignment: .center)
+
+                                    // Delete button
+                                    Button(action: {
+                                        fsm.removePathZ(path)
+                                        fsm.removePathApps(path)
+                                    }) {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                            .font(.system(size: 14))
+                                    }
+                                    .buttonStyle(.plain)
+                                    .help("Remove from both lists")
+                                    .frame(width: 24)
+                                }
+                                .background(Color.clear)
+
+                                if path != allPaths.last {
                                     Divider().opacity(0.5)
                                 }
                             }
@@ -184,7 +255,6 @@ struct FolderSettingsTab: View {
 
                     }
                     .scrollIndicators(scrollIndicators ? .automatic : .never)
-                    .padding()
                     .frame(height: 200)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                     .onDrop(of: ["public.file-url"], isTargeted: nil) { providers -> Bool in
@@ -196,6 +266,7 @@ struct FolderSettingsTab: View {
                                     return
                                 }
                                 updateOnMain {
+                                    // Add to orphans by default
                                     fsm.addPathZ(url.path)
                                 }
                             }
@@ -207,6 +278,7 @@ struct FolderSettingsTab: View {
                         .textFieldStyle(RoundedTextFieldStyle())
                         .padding(.horizontal, 20)
                         .onSubmit {
+                            // Add to orphans by default
                             fsm.addKeywordZ(newKeyword)
                             newKeyword = ""
                         }
@@ -219,13 +291,14 @@ struct FolderSettingsTab: View {
                         } label: { EmptyView() }
                             .buttonStyle(SimpleButtonStyle(icon: "plus.circle", help: String(localized: "Add file/folder"), color: ThemeColors.shared(for: colorScheme).secondaryText, size: 16, rotate: true))
 
-                        Button {
-                            clipboardAdd(zombie: true)
-                        } label: { EmptyView() }
-                            .buttonStyle(SimpleButtonStyle(icon: "doc.on.clipboard", help: String(localized: "Add file/folder from clipboard"), color: ThemeColors.shared(for: colorScheme).secondaryText, size: 16, rotate: false))
+//                        Button {
+//                            clipboardAdd(zombie: true)
+//                        } label: { EmptyView() }
+//                            .buttonStyle(SimpleButtonStyle(icon: "doc.on.clipboard", help: String(localized: "Add file/folder from clipboard"), color: ThemeColors.shared(for: colorScheme).secondaryText, size: 16, rotate: false))
 
                         Button {
                             fsm.removeAllPathsZ()
+                            fsm.removeAllPathsApps()
                         } label: { EmptyView() }
                             .buttonStyle(SimpleButtonStyle(icon: "trash", help: String(localized: "Remove all files/folders"), color: ThemeColors.shared(for: colorScheme).secondaryText, size: 16, rotate: false))
 
@@ -278,37 +351,37 @@ struct FolderSettingsTab: View {
         }
     }
 
-    private func clipboardAdd(zombie: Bool = false) {
-        let pasteboard = NSPasteboard.general
-
-        // Check for file URL first
-        if let fileURL = pasteboard.propertyList(forType: .fileURL) as? String,
-           let folderURL = URL(string: fileURL) {
-            processClipboardPath(folderURL.path, zombie: zombie)
-        }
-        // Fallback to string-based path
-        else if let clipboardString = pasteboard.string(forType: .string) {
-            processClipboardPath(clipboardString, zombie: zombie)
-        } else {
-            printOS("FSM: Clipboard does not contain a valid path or file URL")
-        }
-    }
+//    private func clipboardAdd(zombie: Bool = false) {
+//        let pasteboard = NSPasteboard.general
+//
+//        // Check for file URL first
+//        if let fileURL = pasteboard.propertyList(forType: .fileURL) as? String,
+//           let folderURL = URL(string: fileURL) {
+//            processClipboardPath(folderURL.path, zombie: zombie)
+//        }
+//        // Fallback to string-based path
+//        else if let clipboardString = pasteboard.string(forType: .string) {
+//            processClipboardPath(clipboardString, zombie: zombie)
+//        } else {
+//            printOS("FSM: Clipboard does not contain a valid path or file URL")
+//        }
+//    }
 
     // Helper function to process the extracted path
-    private func processClipboardPath(_ path: String, zombie: Bool) {
-        let fileManager = FileManager.default
-        var isDir: ObjCBool = false
-
-        if fileManager.fileExists(atPath: path, isDirectory: &isDir) {
-            if zombie || isDir.boolValue {
-                zombie ? fsm.addPathZ(path) : fsm.addPath(path)
-            } else {
-                printOS("FSM: Clipboard content is not a directory and orphans mode is disabled")
-            }
-        } else {
-            printOS("FSM: Clipboard content is not a valid path")
-        }
-    }
+//    private func processClipboardPath(_ path: String, zombie: Bool) {
+//        let fileManager = FileManager.default
+//        var isDir: ObjCBool = false
+//
+//        if fileManager.fileExists(atPath: path, isDirectory: &isDir) {
+//            if zombie || isDir.boolValue {
+//                zombie ? fsm.addPathZ(path) : fsm.addPath(path)
+//            } else {
+//                printOS("FSM: Clipboard content is not a directory and orphans mode is disabled")
+//            }
+//        } else {
+//            printOS("FSM: Clipboard content is not a valid path")
+//        }
+//    }
 
     private func toggleDefaultPathsLock() {
         defaultPathsLocked.toggle()
@@ -339,8 +412,10 @@ class FolderSettingsManager: ObservableObject {
     
     @Published var folderPaths: [String] = []
     @Published var fileFolderPathsZ: [String] = []
+    @Published var fileFolderPathsApps: [String] = []
     private let appsKey = "settings.folders.apps"
     private let zombieKey = "settings.folders.zombie"
+    private let appsExclusionKey = "settings.folders.appsExclusion"
     let defaultPaths = ["/Applications", "\(NSHomeDirectory())/Applications"]
 
     init() {
@@ -353,12 +428,14 @@ class FolderSettingsManager: ObservableObject {
     private func loadDefaultPathsIfNeeded() {
         var appsPaths = UserDefaults.standard.stringArray(forKey: appsKey) ?? defaultPaths
         let zombiePaths = UserDefaults.standard.stringArray(forKey: zombieKey) ?? []
+        let appsExclusionPaths = UserDefaults.standard.stringArray(forKey: appsExclusionKey) ?? []
         if appsPaths.count < 2 {
             appsPaths = defaultPaths
         }
         UserDefaults.standard.set(appsPaths, forKey: appsKey)
         self.folderPaths = appsPaths
         self.fileFolderPathsZ = zombiePaths
+        self.fileFolderPathsApps = appsExclusionPaths
     }
 
     func addPath(_ path: String) {
@@ -432,6 +509,57 @@ class FolderSettingsManager: ObservableObject {
 
     func getPathsZ() -> [String] {
         return UserDefaults.standard.stringArray(forKey: zombieKey) ?? []
+    }
+
+
+
+    // App file exclusions //////////////////////////////////////////////////////////////////////////////////
+    func addPathApps(_ path: String) {
+        // Only standardize if it's an actual file path (starts with / or ~), not a keyword
+        let sanitizedPath: String
+        if path.hasPrefix("/") || path.hasPrefix("~") {
+            sanitizedPath = URL(fileURLWithPath: path).standardizedFileURL.path
+        } else {
+            sanitizedPath = path
+        }
+
+        if !self.fileFolderPathsApps.contains(sanitizedPath) {
+            self.fileFolderPathsApps.append(sanitizedPath)
+            UserDefaults.standard.set(self.fileFolderPathsApps, forKey: appsExclusionKey)
+        }
+    }
+
+    func addKeywordApps(_ keyword: String) {
+        if !self.fileFolderPathsApps.contains(keyword) {
+            self.fileFolderPathsApps.append(keyword)
+            UserDefaults.standard.set(self.fileFolderPathsApps, forKey: appsExclusionKey)
+        }
+    }
+
+    func removePathApps(at index: Int) {
+        guard self.fileFolderPathsApps.indices.contains(index) else { return }
+        self.fileFolderPathsApps.remove(at: index)
+        UserDefaults.standard.set(self.fileFolderPathsApps, forKey: appsExclusionKey)
+    }
+
+    func removePathApps(_ path: String) {
+        if let index = self.fileFolderPathsApps.firstIndex(of: path) {
+            self.fileFolderPathsApps.remove(at: index)
+            UserDefaults.standard.set(self.fileFolderPathsApps, forKey: appsExclusionKey)
+        }
+    }
+
+    func removeAllPathsApps() {
+        self.fileFolderPathsApps.removeAll()
+        UserDefaults.standard.set([], forKey: appsExclusionKey)
+    }
+
+    func refreshPathsApps() {
+        self.fileFolderPathsApps = UserDefaults.standard.stringArray(forKey: appsExclusionKey) ?? []
+    }
+
+    func getPathsApps() -> [String] {
+        return UserDefaults.standard.stringArray(forKey: appsExclusionKey) ?? []
     }
 
 

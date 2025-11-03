@@ -5915,6 +5915,7 @@
       }
     },
     "Add file/folder from clipboard" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -6477,6 +6478,7 @@
       }
     },
     "Add folder from clipboard" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -9506,6 +9508,9 @@
           }
         }
       }
+    },
+    "Application Folder" : {
+
     },
     "Application Script" : {
       "extractionState" : "manual",
@@ -24005,6 +24010,12 @@
         }
       }
     },
+    "Exclude from app file search" : {
+
+    },
+    "Exclude from orphaned file search" : {
+
+    },
     "Exclude system folders" : {
       "localizations" : {
         "de" : {
@@ -24116,6 +24127,9 @@
           }
         }
       }
+    },
+    "Exclude these files and folders" : {
+
     },
     "Exclude these files and folders from orphaned file search" : {
       "extractionState" : "manual",
@@ -46364,6 +46378,9 @@
         }
       }
     },
+    "Path / Keyword" : {
+
+    },
     "Path: %@" : {
       "localizations" : {
         "de" : {
@@ -52997,6 +53014,12 @@
           }
         }
       }
+    },
+    "Remove folder" : {
+
+    },
+    "Remove from both lists" : {
+
     },
     "Remove from exclusion list" : {
       "localizations" : {
