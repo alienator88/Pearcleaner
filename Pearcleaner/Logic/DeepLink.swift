@@ -20,6 +20,11 @@ class DeeplinkManager {
     init(updater: Updater, fsm: FolderSettingsManager) {
         self.updater = updater
         self.fsm = fsm
+        if AppState.shared.currentPage != .applications {
+            updateOnMain {
+                AppState.shared.currentPage = .applications
+            }
+        }
     }
 
     struct DeepLinkActions {

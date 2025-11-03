@@ -1740,6 +1740,16 @@
         }
       }
     },
+    "%lld package%@ installed" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld package%2$@ installed"
+          }
+        }
+      }
+    },
     "%lld path%@" : {
       "localizations" : {
         "de" : {
@@ -13197,6 +13207,9 @@
           }
         }
       }
+    },
+    "Change" : {
+
     },
     "Check for app updates from App Store, Homebrew and Sparkle" : {
       "localizations" : {
@@ -44315,6 +44328,9 @@
         }
       }
     },
+    "OK" : {
+
+    },
     "Okay" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -48471,6 +48487,9 @@
         }
       }
     },
+    "Pip Packages" : {
+
+    },
     "Please install the helper service" : {
       "localizations" : {
         "de" : {
@@ -49816,6 +49835,9 @@
           }
         }
       }
+    },
+    "Python:" : {
+
     },
     "Quit" : {
       "extractionState" : "manual",
@@ -57116,6 +57138,9 @@
         }
       }
     },
+    "Scan Packages" : {
+
+    },
     "Scanning..." : {
       "localizations" : {
         "de" : {
@@ -63416,6 +63441,9 @@
           }
         }
       }
+    },
+    "Sort by %@" : {
+
     },
     "Sorted by Name" : {
       "extractionState" : "manual",
@@ -71187,6 +71215,9 @@
         }
       }
     },
+    "Uninstall %@" : {
+
+    },
     "Uninstall %@?" : {
       "localizations" : {
         "de" : {
@@ -71298,6 +71329,9 @@
           }
         }
       }
+    },
+    "Uninstall All" : {
+
     },
     "Uninstall confirmation alerts" : {
       "extractionState" : "manual",
@@ -71636,6 +71670,9 @@
           }
         }
       }
+    },
+    "Uninstall Selected (%lld)" : {
+
     },
     "Uninstalling..." : {
       "localizations" : {
@@ -75674,6 +75711,9 @@
           }
         }
       }
+    },
+    "v%@" : {
+
     },
     "Value" : {
       "localizations" : {

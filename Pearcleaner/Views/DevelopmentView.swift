@@ -169,9 +169,14 @@ struct EnvironmentCleanerView: View {
 
                 // Add workspace storage cleaner for certain IDEs
                 let workspaceIDEs = ["VS Code", "Cursor", "Zed"]
+                let packageManagers = ["Pip"]
 
                 if workspaceIDEs.contains(selectedEnvironment.name) {
                     WorkspaceStorageCleanerView(ideName: selectedEnvironment.name)
+                        .id(selectedEnvironment.name)
+                        .padding(.bottom, 10)
+                } else if packageManagers.contains(selectedEnvironment.name) {
+                    PipPackageCleanerView()
                         .id(selectedEnvironment.name)
                         .padding(.bottom, 10)
                 }
@@ -936,6 +941,672 @@ struct WorkspaceStorageCleanerView: View {
         orphanedWorkspaces = []
         lastScanDate = nil
         isScanning = false
+    }
+}
+
+// MARK: - Pip Package Cleaner View
+
+struct PipPackageCleanerView: View {
+    @Environment(\.colorScheme) var colorScheme
+    @State private var packages: [PipPackage] = []
+    @State private var isScanning = false
+    @State private var selectedPackages = Set<UUID>()
+    @State private var lastScanDate: Date? = nil
+    @State private var showAlert = false
+    @State private var alertMessage = ""
+    @State private var pythonPath: String = "/usr/bin/python3"
+    @State private var sitePackages: [String] = []
+    @State private var showFileImporter: Bool = false
+    @State private var sortOption: PipSortOption = .name
+
+    struct PipPackage: Identifiable {
+        let id = UUID()
+        let name: String
+        let version: String
+        var size: String?
+        var sizeBytes: Int64?
+    }
+
+    enum PipSortOption: String, CaseIterable {
+        case name = "Name"
+        case size = "Size"
+
+        var systemImage: String {
+            switch self {
+            case .name: return "list.bullet"
+            case .size: return "arrow.up.arrow.down"
+            }
+        }
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Image(systemName: "shippingbox")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 30, height: 30)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Pip Packages")
+                        .font(.headline)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                    HStack(spacing: 6) {
+                        Text("Python:")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                        Text(pythonPath)
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+
+                        Button {
+                            showFileImporter = true
+                        } label: {
+                            Text("Change")
+                                .font(.caption)
+                        }
+                        .buttonStyle(.plain)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                        .controlSize(.small)
+                        .padding(.vertical, 4)
+                        .padding(.horizontal, 8)
+                        .controlGroup(Capsule(style: .continuous), level: .secondary)
+                    }
+                }
+
+                Spacer()
+
+                Button(action: {
+                    Task {
+                        await scanForInstalledPackages()
+                    }
+                }) {
+                    HStack(spacing: 6) {
+                        if isScanning {
+                            ProgressView()
+                                .scaleEffect(0.8)
+                        } else {
+                            Image(systemName: "arrow.clockwise")
+                        }
+                        Text(isScanning ? "Scanning..." : "Scan Packages")
+                    }
+                }
+                .disabled(isScanning)
+                .controlSize(.small)
+                .buttonStyle(.plain)
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                .padding(.vertical, 8)
+                .padding(.horizontal, 14)
+                .controlGroup(Capsule(style: .continuous), level: .primary)
+            }
+
+            if !packages.isEmpty {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Text("\(packages.count) package\(packages.count == 1 ? "" : "s") installed")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                        Spacer()
+
+                        Menu {
+                            ForEach(PipSortOption.allCases, id: \.self) { option in
+                                Button {
+                                    sortOption = option
+                                } label: {
+                                    Label(option.rawValue, systemImage: option.systemImage)
+                                }
+                            }
+                        } label: {
+                            Label(sortOption.rawValue, systemImage: sortOption.systemImage)
+                                .font(.caption)
+                        }
+                        .labelStyle(.titleAndIcon)
+                        .buttonStyle(.plain)
+                        .help("Sort by \(sortOption.rawValue)")
+
+                        if !selectedPackages.isEmpty {
+                            Button {
+                                Task {
+                                    await uninstallSelectedPackages()
+                                }
+                            } label: {
+                                Label("Uninstall Selected (\(selectedPackages.count))", systemImage: "trash")
+                                    .font(.caption)
+                            }
+                            .buttonStyle(ControlGroupButtonStyle(
+                                foregroundColor: .red,
+                                shape: Capsule(style: .continuous),
+                                level: .secondary,
+                                skipControlGroup: true
+                            ))
+                        }
+                    }
+
+                    ScrollView {
+                        VStack(spacing: 4) {
+                            ForEach(sortedPackages()) { package in
+                                HStack(spacing: 12) {
+                                    Button {
+                                        if selectedPackages.contains(package.id) {
+                                            selectedPackages.remove(package.id)
+                                        } else {
+                                            selectedPackages.insert(package.id)
+                                        }
+                                    } label: {
+                                        Image(systemName: selectedPackages.contains(package.id) ? "checkmark.square.fill" : "square")
+                                            .foregroundStyle(selectedPackages.contains(package.id) ? ThemeColors.shared(for: colorScheme).accent : ThemeColors.shared(for: colorScheme).secondaryText)
+                                    }
+                                    .buttonStyle(.plain)
+
+                                    HStack(spacing: 6) {
+                                        Text(package.name)
+                                            .font(.system(.body, design: .monospaced))
+                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                                        Text("v\(package.version)")
+                                            .font(.caption)
+                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                    }
+
+                                    Spacer()
+
+                                    if let size = package.size {
+                                        Text(size)
+                                            .font(.caption)
+                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                    } else {
+                                        Text("Calculating...")
+                                            .font(.caption)
+                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                    }
+
+                                    Button {
+                                        Task {
+                                            await uninstallPackage(package)
+                                        }
+                                    } label: {
+                                        Image(systemName: "trash")
+                                            .foregroundStyle(.red)
+                                    }
+                                    .buttonStyle(.plain)
+                                    .help("Uninstall \(package.name)")
+                                }
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 6)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 6)
+                                        .fill(Color.primary.opacity(0.05))
+                                )
+                                .task(id: package.id) {
+                                    // Calculate size lazily when row appears
+                                    if package.size == nil {
+                                        let packageId = package.id  // Capture ID before async
+                                        let packageName = package.name  // Capture name before async
+
+                                        let (sizeBytes, sizeFormatted) = await calculatePackageSize(packageName: packageName)
+
+                                        await MainActor.run {
+                                            if let index = packages.firstIndex(where: { $0.id == packageId }) {
+                                                packages[index].size = sizeFormatted
+                                                packages[index].sizeBytes = sizeBytes
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .frame(maxHeight: .infinity)
+
+                    HStack {
+                        Spacer()
+
+                        Button("Uninstall All") {
+                            Task {
+                                await uninstallAllPackages()
+                            }
+                        }
+                        .disabled(isScanning || packages.isEmpty)
+                        .controlSize(.small)
+                        .buttonStyle(.plain)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 14)
+                        .controlGroup(Capsule(style: .continuous), level: .primary)
+
+                        Button("Cancel") {
+                            cancelPackageScan()
+                        }
+                        .disabled(isScanning)
+                        .controlSize(.small)
+                        .buttonStyle(.plain)
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 14)
+                        .controlGroup(Capsule(style: .continuous), level: .primary)
+                    }
+                }
+                .frame(minHeight: 250, maxHeight: 300)
+            } else if lastScanDate != nil {
+                Text("No packages found")
+                    .font(.caption)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    .italic()
+            }
+        }
+        .padding()
+        .background(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.05))
+        .cornerRadius(10)
+        .alert("Error", isPresented: $showAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(alertMessage)
+        }
+        .fileImporter(
+            isPresented: $showFileImporter,
+            allowedContentTypes: [.executable, .unixExecutable],
+            allowsMultipleSelection: false
+        ) { result in
+            switch result {
+            case .success(let urls):
+                if let url = urls.first {
+                    pythonPath = url.path
+                }
+            case .failure(let error):
+                alertMessage = "Failed to select Python: \(error.localizedDescription)"
+                showAlert = true
+            }
+        }
+        .task {
+            // Detect active Python and site-packages on view appear
+            let detectedPath = await detectActivePython()
+            pythonPath = detectedPath
+            let detectedPackages = await detectSitePackages(pythonPath: pythonPath)
+            sitePackages = detectedPackages
+        }
+        .onChange(of: pythonPath) { newPath in
+            // When Python path changes, detect new site-packages
+            Task {
+                let detectedPackages = await detectSitePackages(pythonPath: newPath)
+                sitePackages = detectedPackages
+            }
+        }
+        .onChange(of: sortOption) { _ in
+            // When sort option changes, calculate sizes for packages that haven't been calculated yet
+            if sortOption == .size {
+                Task {
+                    // Trigger size calculation for all packages without sizes
+                    for package in packages where package.size == nil {
+                        let (sizeBytes, sizeFormatted) = await calculatePackageSize(packageName: package.name)
+
+                        await MainActor.run {
+                            if let index = packages.firstIndex(where: { $0.id == package.id }) {
+                                packages[index].size = sizeFormatted
+                                packages[index].sizeBytes = sizeBytes
+                            }
+                        }
+                    }
+
+                    // Sort after all sizes are calculated
+                    await MainActor.run {
+                        packages.sort { ($0.sizeBytes ?? 0) > ($1.sizeBytes ?? 0) }
+                    }
+                }
+            } else {
+                // Sort by name immediately
+                packages.sort { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+            }
+        }
+    }
+
+    // MARK: - Scan for Installed Packages
+
+    private func scanForInstalledPackages() async {
+        isScanning = true
+        selectedPackages.removeAll()
+
+        let packagesFound = await findInstalledPackages()
+        await MainActor.run {
+            // Sort packages based on selected sort option
+            switch sortOption {
+            case .name:
+                self.packages = packagesFound.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+            case .size:
+                self.packages = packagesFound.sorted { ($0.sizeBytes ?? 0) > ($1.sizeBytes ?? 0) } // Largest first
+            }
+            self.lastScanDate = Date()
+        }
+
+        isScanning = false
+    }
+
+    private func sortedPackages() -> [PipPackage] {
+        switch sortOption {
+        case .name:
+            return packages.sorted { $0.name.lowercased() < $1.name.lowercased() }
+        case .size:
+            return packages.sorted { ($0.sizeBytes ?? 0) > ($1.sizeBytes ?? 0) }
+        }
+    }
+
+    private func findInstalledPackages() async -> [PipPackage] {
+        var foundPackages: [PipPackage] = []
+
+        do {
+            // Run pip list --format=json
+            let listOutput = try await runPipCommand(["list", "--format=json"])
+
+            // Parse JSON
+            guard let data = listOutput.data(using: .utf8) else { return [] }
+
+            struct PipListItem: Codable {
+                let name: String
+                let version: String
+            }
+
+            let decoder = JSONDecoder()
+            let items = try decoder.decode([PipListItem].self, from: data)
+
+            // Create packages immediately without size (will be calculated lazily on row appear)
+            for item in items {
+                foundPackages.append(PipPackage(
+                    name: item.name,
+                    version: item.version,
+                    size: nil,
+                    sizeBytes: nil
+                ))
+            }
+
+        } catch {
+            // Silent error handling - return empty array
+        }
+
+        return foundPackages
+    }
+
+    private func calculatePackageSize(packageName: String) async -> (Int64, String) {
+        do {
+            // Use pip show (without -f) to get package location
+            let showOutput = try await runPipCommand(["show", packageName])
+
+            // Check if package not found
+            if showOutput.contains("WARNING: Package(s) not found") {
+                return (0, "0 KB")
+            }
+
+            // Parse Location line
+            var location = ""
+
+            for line in showOutput.components(separatedBy: "\n") {
+                let trimmed = line.trimmingCharacters(in: .whitespaces)
+
+                if trimmed.starts(with: "Location:") {
+                    location = trimmed.replacingOccurrences(of: "Location:", with: "")
+                        .trimmingCharacters(in: .whitespaces)
+                    break
+                }
+            }
+
+            guard !location.isEmpty else {
+                return (0, "0 KB")
+            }
+
+            // Find package directories using FileManager
+            let fileManager = FileManager.default
+            guard fileManager.fileExists(atPath: location) else {
+                return (0, "0 KB")
+            }
+
+            let normalizedName = packageName.replacingOccurrences(of: "-", with: "_").lowercased()
+            var packagePaths: [String] = []
+
+            do {
+                let contents = try fileManager.contentsOfDirectory(atPath: location)
+
+                for item in contents {
+                    let itemLower = item.lowercased()
+
+                    // Match package directory and dist-info directory
+                    if itemLower == normalizedName ||
+                       itemLower.starts(with: normalizedName + "-") ||
+                       itemLower.starts(with: packageName.lowercased() + "-") {
+
+                        let itemPath = (location as NSString).appendingPathComponent(item)
+                        packagePaths.append(itemPath)
+                    }
+                }
+            } catch {
+                return (0, "0 KB")
+            }
+
+            guard !packagePaths.isEmpty else {
+                return (0, "0 KB")
+            }
+
+            // Calculate total size using totalSizeOnDisk function
+            var totalSizeBytes: Int64 = 0
+            for path in packagePaths {
+                let url = URL(fileURLWithPath: path)
+                totalSizeBytes += totalSizeOnDisk(for: url)
+            }
+
+            let formatted = ByteCountFormatter.string(fromByteCount: totalSizeBytes, countStyle: .file)
+            return (totalSizeBytes, formatted)
+
+        } catch {
+            return (0, "0 KB")
+        }
+    }
+
+    // MARK: - Uninstall Methods
+
+    private func uninstallPackage(_ package: PipPackage) async {
+        do {
+            _ = try await runPipCommand(["uninstall", "-y", package.name])
+
+            await MainActor.run {
+                packages.removeAll { $0.id == package.id }
+                selectedPackages.remove(package.id)
+            }
+        } catch {
+            await MainActor.run {
+                alertMessage = "Failed to uninstall \(package.name): \(error.localizedDescription)"
+                showAlert = true
+            }
+        }
+    }
+
+    private func uninstallSelectedPackages() async {
+        let packagesToUninstall = packages.filter { selectedPackages.contains($0.id) }
+
+        for package in packagesToUninstall {
+            await uninstallPackage(package)
+        }
+    }
+
+    private func uninstallAllPackages() async {
+        for package in packages {
+            await uninstallPackage(package)
+        }
+    }
+
+    private func cancelPackageScan() {
+        packages = []
+        selectedPackages = []
+        lastScanDate = nil
+        isScanning = false
+    }
+
+    // MARK: - Helper Methods
+
+    private func runPipCommand(_ arguments: [String], attempt: Int = 1) async throws -> String {
+        return try await withCheckedThrowingContinuation { continuation in
+            DispatchQueue.global(qos: .userInitiated).async { [pythonPath] in
+                let process = Process()
+                process.executableURL = URL(fileURLWithPath: pythonPath)
+
+                // Add --disable-pip-version-check flag for faster execution
+                var pipArgs = ["-m", "pip"]
+                pipArgs.append(contentsOf: arguments)
+                if !arguments.contains("--disable-pip-version-check") {
+                    pipArgs.append("--disable-pip-version-check")
+                }
+                process.arguments = pipArgs
+
+                // Set environment, prioritizing the selected Python's directory
+                var env = ProcessInfo.processInfo.userEnvironment
+
+                // Extract the directory containing the Python executable
+                let pythonDir = (pythonPath as NSString).deletingLastPathComponent
+
+                // Prepend Python's directory to PATH to ensure we use the correct pip
+                let oldPath = env["PATH"] ?? ""
+                if !oldPath.isEmpty {
+                    env["PATH"] = "\(pythonDir):\(oldPath)"
+                } else {
+                    env["PATH"] = pythonDir
+                }
+
+                process.environment = env
+
+                // Close stdin to prevent any waiting
+                process.standardInput = nil
+
+                let pipe = Pipe()
+                let errorPipe = Pipe()
+                process.standardOutput = pipe
+                process.standardError = errorPipe
+
+                do {
+                    try process.run()
+
+                    // Read output asynchronously to prevent pipe buffer deadlock
+                    // (packages with large file lists like botocore, numpy, pip can exceed pipe buffer)
+                    var outputData = Data()
+                    var errorData = Data()
+
+                    let outputHandle = pipe.fileHandleForReading
+                    let errorHandle = errorPipe.fileHandleForReading
+
+                    // Set up non-blocking read handlers
+                    outputHandle.readabilityHandler = { handle in
+                        outputData.append(handle.availableData)
+                    }
+                    errorHandle.readabilityHandler = { handle in
+                        errorData.append(handle.availableData)
+                    }
+
+                    // Implement timeout (5 seconds) to prevent infinite hanging
+                    let timeoutTask = DispatchWorkItem {
+                        if process.isRunning {
+                            process.terminate()
+                        }
+                    }
+                    DispatchQueue.global().asyncAfter(deadline: .now() + 5.0, execute: timeoutTask)
+
+                    process.waitUntilExit()
+                    timeoutTask.cancel() // Cancel timeout if process finished normally
+
+                    // Clean up handlers and read any remaining data
+                    outputHandle.readabilityHandler = nil
+                    errorHandle.readabilityHandler = nil
+                    outputData.append(outputHandle.readDataToEndOfFile())
+                    errorData.append(errorHandle.readDataToEndOfFile())
+
+                    if process.terminationStatus == 0 {
+                        let output = String(data: outputData, encoding: .utf8) ?? ""
+                        continuation.resume(returning: output)
+                    } else if process.terminationStatus == 15 && attempt < 2 { // SIGTERM from timeout
+                        // Retry once if timed out
+                        Task {
+                            do {
+                                let result = try await self.runPipCommand(arguments, attempt: attempt + 1)
+                                continuation.resume(returning: result)
+                            } catch {
+                                continuation.resume(throwing: error)
+                            }
+                        }
+                    } else {
+                        let errorOutput = String(data: errorData, encoding: .utf8) ?? "Unknown error"
+                        continuation.resume(throwing: NSError(domain: "PipError", code: Int(process.terminationStatus), userInfo: [NSLocalizedDescriptionKey: errorOutput]))
+                    }
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+
+    // MARK: - Python Detection
+
+    private func detectActivePython() async -> String {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/which")
+        process.arguments = ["python3"]
+
+        // Use user's environment to respect their PATH (e.g., Homebrew Python)
+        process.environment = ProcessInfo.processInfo.userEnvironment
+
+        let pipe = Pipe()
+        process.standardOutput = pipe
+        process.standardError = Pipe()
+
+        do {
+            try process.run()
+            process.waitUntilExit()
+
+            if process.terminationStatus == 0 {
+                let data = pipe.fileHandleForReading.readDataToEndOfFile()
+                let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+                if !output.isEmpty {
+                    return output
+                }
+            }
+        } catch {
+            // Fallback to system Python on error
+        }
+
+        return "/usr/bin/python3" // Fallback
+    }
+
+    private func detectSitePackages(pythonPath: String) async -> [String] {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: pythonPath)
+        process.arguments = ["-c", "import site; print('\\n'.join(site.getsitepackages()))"]
+
+        // Set environment, prioritizing the selected Python's directory
+        var env = ProcessInfo.processInfo.userEnvironment
+        let pythonDir = (pythonPath as NSString).deletingLastPathComponent
+        if let currentPath = env["PATH"] {
+            env["PATH"] = "\(pythonDir):\(currentPath)"
+        } else {
+            env["PATH"] = pythonDir
+        }
+        process.environment = env
+
+        let pipe = Pipe()
+        process.standardOutput = pipe
+        process.standardError = Pipe()
+
+        do {
+            try process.run()
+            process.waitUntilExit()
+
+            if process.terminationStatus == 0 {
+                let data = pipe.fileHandleForReading.readDataToEndOfFile()
+                let output = String(data: data, encoding: .utf8) ?? ""
+                let paths = output.components(separatedBy: "\n")
+                    .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                    .filter { !$0.isEmpty }
+                return paths
+            }
+        } catch {
+            // Silent error handling - return empty array
+        }
+
+        return []
     }
 }
 
