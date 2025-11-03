@@ -25,7 +25,10 @@ struct AppsUpdaterView: View {
     @AppStorage("settings.updater.showUnsupported") private var showUnsupported: Bool = true
 
     private var totalUpdateCount: Int {
-        updateManager.updatesBySource.values.reduce(0) { $0 + $1.count }
+        updateManager.updatesBySource
+            .filter { $0.key != .unsupported }
+            .values
+            .reduce(0) { $0 + $1.count }
     }
 
     private var allSourcesDisabled: Bool {
@@ -256,7 +259,9 @@ struct AppsUpdaterView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("UpdaterViewShouldRefresh"))) { _ in
             Task {
-                await updateManager.scanForUpdates(forceReload: true)
+                let task = Task { await updateManager.scanForUpdates(forceReload: true) }
+                updateManager.currentScanTask = task
+                await task.value
             }
         }
         .toolbar {
@@ -297,8 +302,11 @@ struct AppsUpdaterView: View {
                 } else {
                     // Show refresh button when not scanning
                     Button {
-                        let task = Task { await updateManager.scanForUpdates(forceReload: true) }
-                        updateManager.currentScanTask = task
+                        Task {
+                            let task = Task { await updateManager.scanForUpdates(forceReload: true) }
+                            updateManager.currentScanTask = task
+                            await task.value
+                        }
                     } label: {
                         Label("Refresh", systemImage: "arrow.counterclockwise")
                     }
