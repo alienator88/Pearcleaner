@@ -13,6 +13,10 @@ import AlinFoundation
 class AppStoreUpdateChecker {
     private static let logger = UpdaterDebugLogger.shared
 
+    /// Fallback regions to check if app not found in primary region
+    /// Ordered by usage: CN, US, HK, JP, KR, SG
+    private static let fallbackRegions = ["CN", "US", "HK", "JP", "KR", "SG"]
+
     /// Check if an app is a wrapped iPad/iOS app
     private static func isIOSApp(_ app: AppInfo) -> Bool {
         if !app.wrapped { return false }
@@ -140,42 +144,62 @@ class AppStoreUpdateChecker {
     }
 
     private static func getAppStoreInfo(bundleID: String) async -> AppStoreInfo? {
+        // Get user's primary region
+        let primaryRegion = await getAppStoreRegion()
+        logger.log(.appStore, "    Primary region: \(primaryRegion)")
+
+        // Try primary region first with all entity types
+        if let info = await tryAllEntities(bundleID: bundleID, region: primaryRegion) {
+            return info
+        }
+
+        // If not found, try fallback regions
+        logger.log(.appStore, "    Not found in primary region, trying fallback regions...")
+        for region in fallbackRegions where region != primaryRegion {
+            logger.log(.appStore, "    Trying region: \(region)")
+            if let info = await tryAllEntities(bundleID: bundleID, region: region) {
+                logger.log(.appStore, "    ✓ Found in region: \(region)")
+                return info
+            }
+        }
+
+        logger.log(.appStore, "    ❌ Not found in any region")
+        return nil
+    }
+
+    /// Try all entity types for a given region
+    private static func tryAllEntities(bundleID: String, region: String) async -> AppStoreInfo? {
         // 1. Try desktopSoftware first (Mac-native apps - most accurate)
         // 2. Fallback to macSoftware (broader: includes Catalyst and iOS apps)
         // 3. Fallback to software (all platforms: catches iPad/iOS apps that run via "Designed for iPad")
 
-        logger.log(.appStore, "    Trying entity: desktopSoftware")
-        if let info = await fetchAppStoreInfo(bundleID: bundleID, entity: "desktopSoftware") {
-            logger.log(.appStore, "    ✓ Found with desktopSoftware")
+        logger.log(.appStore, "      Trying entity: desktopSoftware")
+        if let info = await fetchAppStoreInfo(bundleID: bundleID, region: region, entity: "desktopSoftware") {
+            logger.log(.appStore, "      ✓ Found with desktopSoftware")
             return info
         }
 
-        // Fallback to broader entity type
-        logger.log(.appStore, "    Trying entity: macSoftware")
-        if let info = await fetchAppStoreInfo(bundleID: bundleID, entity: "macSoftware") {
-            logger.log(.appStore, "    ✓ Found with macSoftware")
+        logger.log(.appStore, "      Trying entity: macSoftware")
+        if let info = await fetchAppStoreInfo(bundleID: bundleID, region: region, entity: "macSoftware") {
+            logger.log(.appStore, "      ✓ Found with macSoftware")
             return info
         }
 
-        // Final fallback for iPad/iOS apps
-        logger.log(.appStore, "    Trying entity: software")
-        if let info = await fetchAppStoreInfo(bundleID: bundleID, entity: "software") {
-            logger.log(.appStore, "    ✓ Found with software")
+        logger.log(.appStore, "      Trying entity: software")
+        if let info = await fetchAppStoreInfo(bundleID: bundleID, region: region, entity: "software") {
+            logger.log(.appStore, "      ✓ Found with software")
             return info
         }
 
-        logger.log(.appStore, "    ❌ Not found in any entity type")
         return nil
     }
 
-    private static func fetchAppStoreInfo(bundleID: String, entity: String?) async -> AppStoreInfo? {
+    private static func fetchAppStoreInfo(bundleID: String, region: String, entity: String?) async -> AppStoreInfo? {
         // Query iTunes Search API using bundle ID
         guard let endpoint = URL(string: "https://itunes.apple.com/lookup") else {
             return nil
         }
 
-        // Get user's actual App Store region (uses Storefront API > StoreKit > Locale)
-        let region = await getAppStoreRegion()
         var components = URLComponents(url: endpoint, resolvingAgainstBaseURL: false)
 
         var queryItems = [

@@ -88,16 +88,34 @@ class MetadataAppInfoFetcher {
 
 class AppCategoryDetector {
     /// Check if app has Sparkle update framework
-    /// Detects Sparkle by checking for common Info.plist keys (same logic as SparkleDetector)
+    /// Detects Sparkle by checking for common Info.plist keys
+    /// Excludes SetApp apps (they use Sparkle but are managed by SetApp)
     static func checkForSparkle(bundle: Bundle?, infoDict: [String: Any]?) -> Bool {
         guard let dict = infoDict ?? bundle?.infoDictionary else { return false }
 
-        // Check for common Sparkle keys (matches SparkleDetector.hasSparkleConfiguration)
-        return dict["SUFeedURL"] != nil ||
+        // Check for common Sparkle keys
+        let hasSparkleKeys = dict["SUFeedURL"] != nil ||
                dict["SUFeedUrl"] != nil ||
                dict["SUPublicEDKey"] != nil ||
                dict["SUPublicDSAKeyFile"] != nil ||
                dict["SUEnableAutomaticChecks"] != nil
+
+        // Exclude SetApp apps (they use Sparkle but are managed by SetApp)
+        if hasSparkleKeys && isSetAppApp(bundle: bundle, infoDict: dict) {
+            return false
+        }
+
+        return hasSparkleKeys
+    }
+
+    /// Check if app is a SetApp-managed app
+    /// SetApp requires all apps to use the "-setapp" bundle ID suffix
+    static func isSetAppApp(bundle: Bundle?, infoDict: [String: Any]?) -> Bool {
+        // Try to get bundle ID from bundle first, then from infoDict
+        if let bundleID = bundle?.bundleIdentifier ?? infoDict?["CFBundleIdentifier"] as? String {
+            return bundleID.hasSuffix("-setapp")
+        }
+        return false
     }
 
     /// Check if app is from App Store
