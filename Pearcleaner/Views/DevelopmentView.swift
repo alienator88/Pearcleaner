@@ -1070,10 +1070,10 @@ struct PipPackageCleanerView: View {
                                     .buttonStyle(.plain)
 
                                     HStack(spacing: 6) {
-                                        Text(package.name)
+                                        Text(verbatim: package.name)
                                             .font(.system(.body, design: .monospaced))
                                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                                        Text("v\(package.version)")
+                                        Text(verbatim: "v\(package.version)")
                                             .font(.caption)
                                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                                     }
@@ -1167,7 +1167,7 @@ struct PipPackageCleanerView: View {
         .background(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.05))
         .cornerRadius(10)
         .alert("Error", isPresented: $showAlert) {
-            Button("OK", role: .cancel) { }
+            Button("Okay", role: .cancel) { }
         } message: {
             Text(alertMessage)
         }

@@ -58,13 +58,13 @@ struct MaintenanceSection: View {
                                 if !brewManager.brewVersion.isEmpty {
                                     if brewManager.updateAvailable && !brewManager.latestBrewVersion.isEmpty {
                                         // Show current → latest when update available
-                                        Text("\(brewManager.brewVersion) → \(brewManager.latestBrewVersion)")
+                                        Text(verbatim: "\(brewManager.brewVersion) → \(brewManager.latestBrewVersion)")
                                             .font(.title3)
                                             .fontWeight(.semibold)
                                             .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
                                     } else {
                                         // Show just current version when up to date
-                                        Text(brewManager.brewVersion)
+                                        Text(verbatim: brewManager.brewVersion)
                                             .font(.title3)
                                             .fontWeight(.semibold)
                                             .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)

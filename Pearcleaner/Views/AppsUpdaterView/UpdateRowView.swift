@@ -389,9 +389,9 @@ struct UpdateRowView: View {
         guard let availableVersion = app.availableVersion else {
             // No available version (shouldn't happen, but handle gracefully)
             if app.source == .sparkle, let installedBuild = app.appInfo.appBuildNumber {
-                return Text("\(app.appInfo.appVersion) (\(installedBuild))")
+                return Text(verbatim: "\(app.appInfo.appVersion) (\(installedBuild))")
             }
-            return Text(app.appInfo.appVersion)
+            return Text(verbatim: app.appInfo.appVersion)
         }
 
         // Clean Homebrew versions for display (strip commit hash)
@@ -412,27 +412,27 @@ struct UpdateRowView: View {
             if !displayInstalledVersion.isEmpty && !displayAvailableVersion.isEmpty &&
                displayInstalledVersion == displayAvailableVersion {
                 // Scenario 1: Marketing versions match → "6.7 (6134) → 6.7 (6135)"
-                var result = Text("\(displayInstalledVersion)")
+                var result = Text(verbatim: "\(displayInstalledVersion)")
                 if let build = installedBuild {
-                    result = result + Text(" (\(build))")
+                    result = result + Text(verbatim: " (\(build))")
                 }
-                result = result + Text(" → \(displayAvailableVersion) (")
+                result = result + Text(verbatim: " → \(displayAvailableVersion) (")
                 if let build = availableBuild {
                     let buildText = Text(build)
                     result = result + (buildsDiffer ? buildText.foregroundColor(.green) : buildText)
                 }
-                result = result + Text(")")
+                result = result + Text(verbatim: ")")
                 if app.isIOSApp {
                     result = result + Text(" (iOS apps have to be updated in the App Store)")
                 }
                 return result
             } else if displayAvailableVersion.isEmpty, let availableBuild = availableBuild {
                 // Scenario 2: Remote lacks marketing version → "6.7 (6134) → build 6135"
-                var result = Text("\(displayInstalledVersion)")
+                var result = Text(verbatim: "\(displayInstalledVersion)")
                 if let build = installedBuild {
-                    result = result + Text(" (\(build))")
+                    result = result + Text(verbatim: " (\(build))")
                 }
-                result = result + Text(" → build ")
+                result = result + Text(verbatim: " → build ")
                 let buildText = Text(availableBuild)
                 result = result + (buildsDiffer ? buildText.foregroundColor(.green) : buildText)
                 if app.isIOSApp {
@@ -441,13 +441,13 @@ struct UpdateRowView: View {
                 return result
             } else {
                 // Scenario 3: Normal case → "6.7 (6134) → 6.8 (6135)"
-                var result = Text("\(displayInstalledVersion)")
+                var result = Text(verbatim: "\(displayInstalledVersion)")
                 if let build = installedBuild {
-                    result = result + Text(" (\(build))")
+                    result = result + Text(verbatim: " (\(build))")
                 }
-                result = result + Text(" → \(displayAvailableVersion)")
+                result = result + Text(verbatim: " → \(displayAvailableVersion)")
                 if let build = availableBuild {
-                    result = result + Text(" (\(build))")
+                    result = result + Text(verbatim: " (\(build))")
                 }
                 if app.isIOSApp {
                     result = result + Text(" (iOS apps have to be updated in the App Store)")
@@ -456,7 +456,7 @@ struct UpdateRowView: View {
             }
         } else {
             // Non-Sparkle sources: show marketing versions only
-            var result = Text("\(displayInstalledVersion) → \(displayAvailableVersion)")
+            var result = Text(verbatim: "\(displayInstalledVersion) → \(displayAvailableVersion)")
             if app.isIOSApp {
                 result = result + Text(" (iOS apps have to be updated in the App Store)")
             }

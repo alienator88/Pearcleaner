@@ -1070,7 +1070,9 @@ func exportUpdaterDebugInfo() {
         let filename = "UpdaterDebugLog-\(timestamp).txt"
         let filePath = selectedFolder.appendingPathComponent(filename)
 
-        let debugContent = UpdaterDebugLogger.shared.generateDebugReport()
+        let systemInfo = getSystemDebugString()
+        let updaterLogs = UpdaterDebugLogger.shared.generateDebugReport()
+        let debugContent = systemInfo + "\n\n" + updaterLogs
 
         do {
             try debugContent.write(to: filePath, atomically: true, encoding: .utf8)
