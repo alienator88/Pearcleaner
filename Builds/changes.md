@@ -1,12 +1,12 @@
 ### What's New
 
-- [x] Optimize maintenance tab commands to bypass brew and read directly from filesystem, should be instant now
-- [x] Highlight the bigger build numbers in Updater if short version is the same
-- [x] Add Stop scan button in Updater view toolbar
-- [x] Alter fallback version comparison in Sparkle Updater to catch some build number edge cases using lexicographical logic
-- [x] Output Updater log to debug window(CMD+D) when finished. Also still available via Help menu log file.
+- [x] Add app search exclusion toggle in Settings > Folders. This allows to exclude a folder/file/keyword during file searches - #422
+- [x] Add package size sorting to Homebrew installed list - #414
+- [x] Add pip packages view to Developer/Pip environment - #414
 
 ### Fixes
 
-- [x] Fix regex matching for tap package versions
+- [x] Fix Updater view refresh button showing blank page
+- [x] Fix Updater view update count not ignoring unsupported category
+- [x] Fix Finder extension launching in incorrect startup view when not set to Applications - #421
 - [x] Translations
