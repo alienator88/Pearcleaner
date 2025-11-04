@@ -459,6 +459,23 @@ private func getEntitlements(for appPath: String) -> [String]? {
             // Note: Path-based entitlements (like temporary-exception.files paths) are not extracted
             // as they cause false positives by matching generic folder names like "Desktop", "Documents"
 
+            // Scan Contents/MacOS folder for binary names
+            // App binaries often leave behind files/folders matching their names
+            let macosPath = URL(fileURLWithPath: appPath).appendingPathComponent("Contents/MacOS")
+            if FileManager.default.fileExists(atPath: macosPath.path) {
+                do {
+                    let files = try FileManager.default.contentsOfDirectory(atPath: macosPath.path)
+                    for file in files where !file.hasPrefix(".") {
+                        // Add binary name if not already present
+                        if !results.contains(file) {
+                            results.append(file)
+                        }
+                    }
+                } catch {
+                    // Silently ignore errors (e.g., permission denied, folder doesn't exist)
+                }
+            }
+
             return results.isEmpty ? nil : results
         }
 
