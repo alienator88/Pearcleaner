@@ -31,6 +31,10 @@ private enum SparkleUpdateResult {
 class SparkleUpdateChecker {
     fileprivate static let logger = UpdaterDebugLogger.shared
 
+    /// Timeout for individual Sparkle update checks
+    /// Prevents hanging on unreachable feeds (Sparkle's default is 60s with no override)
+    private static let sparkleCheckTimeout: TimeInterval = 5.0
+
     /// Check for Sparkle updates using SPUUpdater directly
     /// Only checks apps with SUFeedURL in Info.plist (no binary scanning)
     static func checkForUpdates(apps: [AppInfo], includePreReleases: Bool) async -> [UpdateableApp] {
@@ -92,18 +96,42 @@ class SparkleUpdateChecker {
 
     /// Check a single app for updates using SPUUpdater
     private static func checkSingleApp(appInfo: AppInfo, bundle: Bundle, feedURL: URL, includePreReleases: Bool) async -> UpdateableApp? {
-        return await withCheckedContinuation { continuation in
-            DispatchQueue.main.async {
-                let operation = SparkleCheckerOperation(
-                    appInfo: appInfo,
-                    bundle: bundle,
-                    feedURL: feedURL,
-                    includePreReleases: includePreReleases
-                ) { result in
-                    continuation.resume(returning: result)
-                }
-                operation.start()
+        return await withTaskGroup(of: UpdateableApp?.self) { group in
+            // Timeout task - completes after 5 seconds
+            group.addTask {
+                try? await Task.sleep(nanoseconds: UInt64(sparkleCheckTimeout * 1_000_000_000))
+                return nil  // Timeout result
             }
+
+            // Actual Sparkle check task
+            group.addTask {
+                await withCheckedContinuation { continuation in
+                    DispatchQueue.main.async {
+                        let operation = SparkleCheckerOperation(
+                            appInfo: appInfo,
+                            bundle: bundle,
+                            feedURL: feedURL,
+                            includePreReleases: includePreReleases
+                        ) { result in
+                            continuation.resume(returning: result)
+                        }
+                        operation.start()
+                    }
+                }
+            }
+
+            // Return first completed task, cancel the other
+            if let result = await group.next() {
+                group.cancelAll()
+
+                // Log timeout for debugging
+                if result == nil {
+                    logger.log(.sparkle, "  ⏱️ Timeout after \(Int(sparkleCheckTimeout))s: \(appInfo.appName)")
+                }
+
+                return result
+            }
+            return nil
         }
     }
 
