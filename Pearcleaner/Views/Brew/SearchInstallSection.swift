@@ -811,6 +811,52 @@ struct SearchResultRowView: View {
                 isHovered = hovering
             }
         }
+        .onAppear {
+            // Fallback: If package is installed but has 0 size, calculate directly from disk
+            guard isAlreadyInstalled else { return }
+
+            let shortName = result.name.components(separatedBy: "/").last ?? result.name
+            let sizeBytes: Int64?
+
+            if isCask {
+                sizeBytes = brewManager.installedCasks.first(where: { $0.name == result.name || $0.name == shortName })?.sizeBytes
+            } else {
+                sizeBytes = brewManager.installedFormulae.first(where: { $0.name == result.name || $0.name == shortName })?.sizeBytes
+            }
+
+            // If size is nil or 0, calculate it directly from disk
+            if sizeBytes == nil || sizeBytes == 0 {
+                Task {
+                    if isCask {
+                        // Calculate cask size directly from Caskroom directory
+                        guard let installedCask = brewManager.installedCasks.first(where: { $0.name == result.name || $0.name == shortName }),
+                              let version = installedCask.version else { return }
+
+                        let brewPrefix = HomebrewController.shared.getBrewPrefix()
+                        let caskroomPath = "\(brewPrefix)/Caskroom/\(result.name)/\(version)"
+                        let caskroomURL = URL(fileURLWithPath: caskroomPath)
+
+                        guard FileManager.default.fileExists(atPath: caskroomPath) else { return }
+
+                        let totalBytes = totalSizeOnDisk(for: caskroomURL)
+                        let bytesToFormat = totalBytes
+                        let formatted = await MainActor.run {
+                            ByteCountFormatter.string(fromByteCount: bytesToFormat, countStyle: .file)
+                        }
+
+                        await MainActor.run {
+                            if let index = brewManager.installedCasks.firstIndex(where: { $0.name == result.name || $0.name == shortName }) {
+                                brewManager.installedCasks[index].size = formatted
+                                brewManager.installedCasks[index].sizeBytes = totalBytes
+                            }
+                        }
+                    } else {
+                        // For formulae, use existing calculation logic
+                        await calculateSize()
+                    }
+                }
+            }
+        }
         .alert("Install \(result.name)?", isPresented: $showInstallAlert) {
             Button("Cancel", role: .cancel) { }
             Button("Install") {

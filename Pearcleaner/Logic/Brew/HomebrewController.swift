@@ -1361,8 +1361,11 @@ class HomebrewController {
             totalBytes += totalSizeOnDisk(for: logsDir)
         }
 
-        // Format as human-readable
-        let formatted = ByteCountFormatter.string(fromByteCount: totalBytes, countStyle: .file)
+        // Format as human-readable (must run on main thread - ByteCountFormatter is not thread-safe)
+        let bytesToFormat = totalBytes
+        let formatted = await MainActor.run {
+            ByteCountFormatter.string(fromByteCount: bytesToFormat, countStyle: .file)
+        }
 
         return (bytes: totalBytes, formatted: formatted)
     }
@@ -1374,21 +1377,59 @@ class HomebrewController {
         let cellarURL = URL(fileURLWithPath: cellarPath)
 
         let fileManager = FileManager.default
-        guard fileManager.fileExists(atPath: cellarPath) else {
-            return (0, "0 KB")
+
+        // Fast path: Try direct version match first (most formulae don't have revisions)
+        var actualCellarURL = cellarURL
+        if !fileManager.fileExists(atPath: cellarPath) {
+            // Fallback: Search for version with revision suffix (e.g., "25.1.0_1")
+            let formulaBasePath = "\(brewPrefix)/Cellar/\(name)"
+            if let versionDirs = try? fileManager.contentsOfDirectory(atPath: formulaBasePath) {
+                // Find directory whose sanitized version matches input version
+                if let matchingDir = versionDirs.first(where: { $0.stripBrewRevisionSuffix() == version }) {
+                    actualCellarURL = URL(fileURLWithPath: "\(formulaBasePath)/\(matchingDir)")
+                } else {
+                    return (0, "0 KB")
+                }
+            } else {
+                return (0, "0 KB")
+            }
         }
 
-        let totalBytes = totalSizeOnDisk(for: cellarURL)
-        let formatted = ByteCountFormatter.string(fromByteCount: totalBytes, countStyle: .file)
+        let totalBytes = totalSizeOnDisk(for: actualCellarURL)
+
+        // Format as human-readable (must run on main thread - ByteCountFormatter is not thread-safe)
+        let bytesToFormat = totalBytes
+        let formatted = await MainActor.run {
+            ByteCountFormatter.string(fromByteCount: bytesToFormat, countStyle: .file)
+        }
 
         return (totalBytes, formatted)
     }
 
     func calculateCaskSize(name: String) async -> (Int64, String) {
+        // Special case for Pearcleaner (running app, not in sortedApps)
+        if name == "pearcleaner" {
+            let pearcleanerPath = URL(fileURLWithPath: "/Applications/Pearcleaner.app")
+            guard FileManager.default.fileExists(atPath: pearcleanerPath.path) else {
+                return (0, "0 KB")
+            }
+
+            let totalBytes = totalSizeOnDisk(for: pearcleanerPath)
+            let bytesToFormat = totalBytes
+            let formatted = await MainActor.run {
+                ByteCountFormatter.string(fromByteCount: bytesToFormat, countStyle: .file)
+            }
+            return (totalBytes, formatted)
+        }
+
         // For casks, get size from AppState.sortedApps (actual installed app)
         if let appInfo = await MainActor.run(body: { AppState.shared.sortedApps.first(where: { $0.cask == name }) }) {
             // bundleSize is already in bytes, just format it
-            let formatted = ByteCountFormatter.string(fromByteCount: appInfo.bundleSize, countStyle: .file)
+            // Format as human-readable (must run on main thread - ByteCountFormatter is not thread-safe)
+            let bytesToFormat = appInfo.bundleSize
+            let formatted = await MainActor.run {
+                ByteCountFormatter.string(fromByteCount: bytesToFormat, countStyle: .file)
+            }
             return (appInfo.bundleSize, formatted)
         }
 
