@@ -221,7 +221,7 @@ struct AppDetails: View {
             .font(.subheadline)
             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
-            Text(value ?? "Metadata not available")
+            Text(value ?? "--")
         }
         .padding(.bottom, 5)
     }

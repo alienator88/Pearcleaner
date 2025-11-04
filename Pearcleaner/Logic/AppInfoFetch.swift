@@ -22,29 +22,36 @@ class MetadataAppInfoFetcher {
 
         // Get version and build number directly from bundle Info.plist instead of metadata (always up-to-date)
         let (version, buildNumber): (String, String?) = {
-            guard let bundle = Bundle(url: path) else { return ("", nil) }
-            // Extract marketing version (CFBundleShortVersionString) - no fallback to build number
+            guard let bundle = Bundle(url: path) else {
+                return ("", nil)
+            }
+
+            // Extract marketing version (CFBundleShortVersionString), fallback to CFBundleVersion if missing
             let shortVersion = bundle.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
-            let marketingVersion = shortVersion.isEmpty ? "" : shortVersion
-            // Extract build number (CFBundleVersion) separately
-            let build = bundle.infoDictionary?["CFBundleVersion"] as? String
+            let buildVer = bundle.infoDictionary?["CFBundleVersion"] as? String ?? ""
+
+            // Use shortVersion if available, otherwise use buildVersion
+            let marketingVersion = shortVersion.isEmpty ? buildVer : shortVersion
+
+            // Build number is CFBundleVersion (only set if different from marketing version)
+            let build = shortVersion.isEmpty ? nil : buildVer
             return (marketingVersion, build)
         }()
 
-        // Sizes
+        // Size
         let logicalSize = metadata["kMDItemLogicalSize"] as? Int64 ?? 0
-        let physicalSize = metadata["kMDItemPhysicalSize"] as? Int64 ?? 0
 
-        // Check if any of the critical fields are missing or invalid
-        if appName.isEmpty || bundleIdentifier.isEmpty || version.isEmpty || logicalSize == 0 || physicalSize == 0 {
-            // Fallback to the regular AppInfoFetcher for this app
-            return AppInfoFetcher.getAppInfo(atPath: path)
-        }
-
-        // Extract optional date fields
+        // Extract optional date fields early so we can pass them to fallback if needed
         let creationDate = metadata["kMDItemFSCreationDate"] as? Date
         let contentChangeDate = metadata["kMDItemFSContentChangeDate"] as? Date
         let lastUsedDate = metadata["kMDItemLastUsedDate"] as? Date
+
+        // Check if any of the critical fields are missing or invalid
+        // Note: Size can be 0 for some apps where Spotlight hasn't indexed size yet, so only require core identifiers
+        if appName.isEmpty || bundleIdentifier.isEmpty || version.isEmpty {
+            // Fallback to the regular AppInfoFetcher for this app, but preserve dates we extracted from metadata
+            return AppInfoFetcher.getAppInfo(atPath: path, dates: (creationDate, contentChangeDate, lastUsedDate))
+        }
 
         // Determine architecture type
         let arch = checkAppBundleArchitecture(at: path.path)
@@ -226,11 +233,11 @@ extension Array {
 class AppInfoFetcher {
     static let fileManager = FileManager.default
 
-    public static func getAppInfo(atPath path: URL, wrapped: Bool = false) -> AppInfo? {
+    public static func getAppInfo(atPath path: URL, wrapped: Bool = false, dates: (creation: Date?, contentChange: Date?, lastUsed: Date?)? = nil) -> AppInfo? {
         if isDirectoryWrapped(path: path) {
-            return handleWrappedDirectory(atPath: path)
+            return handleWrappedDirectory(atPath: path, dates: dates)
         } else {
-            return createAppInfoFromBundle(atPath: path, wrapped: wrapped)
+            return createAppInfoFromBundle(atPath: path, wrapped: wrapped, dates: dates)
         }
     }
 
@@ -239,7 +246,7 @@ class AppInfoFetcher {
         return fileManager.fileExists(atPath: wrapperURL.path)
     }
 
-    private static func handleWrappedDirectory(atPath path: URL) -> AppInfo? {
+    private static func handleWrappedDirectory(atPath path: URL, dates: (creation: Date?, contentChange: Date?, lastUsed: Date?)? = nil) -> AppInfo? {
         let wrapperURL = path.appendingPathComponent("Wrapper")
         do {
             let contents = try fileManager.contentsOfDirectory(at: wrapperURL, includingPropertiesForKeys: nil)
@@ -248,20 +255,20 @@ class AppInfoFetcher {
                 return nil
             }
             let fullPath = wrapperURL.appendingPathComponent(firstAppFile.lastPathComponent)
-            return getAppInfo(atPath: fullPath, wrapped: true)
+            return getAppInfo(atPath: fullPath, wrapped: true, dates: dates)
         } catch {
             printOS("Error reading contents of 'Wrapper' directory: \(error.localizedDescription)\n\(wrapperURL)")
             return nil
         }
     }
 
-    private static func createAppInfoFromBundle(atPath path: URL, wrapped: Bool) -> AppInfo? {
+    private static func createAppInfoFromBundle(atPath path: URL, wrapped: Bool, dates: (creation: Date?, contentChange: Date?, lastUsed: Date?)? = nil) -> AppInfo? {
         guard let bundle = Bundle(url: path), let bundleIdentifier = bundle.bundleIdentifier else {
             // Check if this might be a Steam game and try to find the actual bundle
             if let steamAppInfo = SteamAppInfoFetcher.checkForSteamGame(launcherPath: path) {
                 return steamAppInfo
             }
-            
+
             printOS("Bundle not found or missing bundle identifier at path: \(path)")
             return nil
         }
@@ -297,7 +304,7 @@ class AppInfoFetcher {
         let isAppStore = AppCategoryDetector.checkForAppStore(bundle: bundle, path: path, wrapped: wrapped)
 
         return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName, appVersion: appVersion, appBuildNumber: appBuildNumber, appIcon: appIcon,
-                       webApp: webApp, wrapped: wrapped, system: system, arch: arch, cask: cask, steam: false, hasSparkle: hasSparkle, isAppStore: isAppStore, autoUpdates: autoUpdates, bundleSize: 0, fileSize: [:], fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, entitlements: entitlements, teamIdentifier: teamIdentifier)
+                       webApp: webApp, wrapped: wrapped, system: system, arch: arch, cask: cask, steam: false, hasSparkle: hasSparkle, isAppStore: isAppStore, autoUpdates: autoUpdates, bundleSize: 0, fileSize: [:], fileIcon: [:], creationDate: dates?.creation, contentChangeDate: dates?.contentChange, lastUsedDate: dates?.lastUsed, entitlements: entitlements, teamIdentifier: teamIdentifier)
     }
 
 }
