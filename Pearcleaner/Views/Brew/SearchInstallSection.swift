@@ -890,13 +890,8 @@ struct SearchResultRowView: View {
                     do {
                         try await HomebrewController.shared.upgradePackage(name: result.name)
 
-                        // Remove from outdated map immediately after successful update
-                        let shortName = result.name.components(separatedBy: "/").last ?? result.name
-                        await MainActor.run {
-                            brewManager.outdatedPackagesMap.removeValue(forKey: result.name)
-                            brewManager.outdatedPackagesMap.removeValue(forKey: shortName)
-                        }
-
+                        // Let loadInstalledPackages() naturally update the outdated status
+                        // (premature removal causes race condition where background Task re-adds the package)
                         await brewManager.loadInstalledPackages()
 
                         // Refresh AppState.sortedApps to reflect updated version (casks only)

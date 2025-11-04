@@ -836,8 +836,15 @@ class HomebrewController {
                         ? "https://formulae.brew.sh/api/cask/\(package.name).json"
                         : "https://formulae.brew.sh/api/formula/\(package.name).json"
 
-                    guard let url = URL(string: urlString),
-                          let (data, _) = try? await URLSession.shared.data(from: url),
+                    guard let url = URL(string: urlString) else {
+                        return (package.name, nil, nil, package.isCask)
+                    }
+
+                    // Use cache policy to bypass HTTP cache (prevents stale API data after upgrades)
+                    // Homebrew API returns Cache-Control: max-age=600 (10 minutes)
+                    let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
+
+                    guard let (data, _) = try? await URLSession.shared.data(for: request),
                           let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
                         return (package.name, nil, nil, package.isCask)
                     }
