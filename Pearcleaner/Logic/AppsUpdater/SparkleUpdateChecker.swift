@@ -96,43 +96,39 @@ class SparkleUpdateChecker {
 
     /// Check a single app for updates using SPUUpdater
     private static func checkSingleApp(appInfo: AppInfo, bundle: Bundle, feedURL: URL, includePreReleases: Bool) async -> UpdateableApp? {
-        return await withTaskGroup(of: UpdateableApp?.self) { group in
-            // Timeout task - completes after 5 seconds
-            group.addTask {
-                try? await Task.sleep(nanoseconds: UInt64(sparkleCheckTimeout * 1_000_000_000))
-                return nil  // Timeout result
-            }
-
-            // Actual Sparkle check task
-            group.addTask {
-                await withCheckedContinuation { continuation in
-                    DispatchQueue.main.async {
-                        let operation = SparkleCheckerOperation(
-                            appInfo: appInfo,
-                            bundle: bundle,
-                            feedURL: feedURL,
-                            includePreReleases: includePreReleases
-                        ) { result in
-                            continuation.resume(returning: result)
-                        }
-                        operation.start()
+        // Create task for the actual Sparkle check
+        let checkTask = Task {
+            await withCheckedContinuation { continuation in
+                DispatchQueue.main.async {
+                    let operation = SparkleCheckerOperation(
+                        appInfo: appInfo,
+                        bundle: bundle,
+                        feedURL: feedURL,
+                        includePreReleases: includePreReleases
+                    ) { result in
+                        continuation.resume(returning: result)
                     }
+                    operation.start()
                 }
             }
+        }
 
-            // Return first completed task, cancel the other
-            if let result = await group.next() {
-                group.cancelAll()
+        // Start timeout timer that cancels the task after 5 seconds
+        Task {
+            try? await Task.sleep(nanoseconds: UInt64(sparkleCheckTimeout * 1_000_000_000))
+            checkTask.cancel()
+        }
 
-                // Log timeout for debugging
-                if result == nil {
-                    logger.log(.sparkle, "  ⏱️ Timeout after \(Int(sparkleCheckTimeout))s: \(appInfo.appName)")
-                }
+        // Wait for task to complete (or be cancelled)
+        let result = await checkTask.value
 
-                return result
-            }
+        // Log timeout if task was cancelled
+        if checkTask.isCancelled {
+            logger.log(.sparkle, "  ⏱️ Timeout after \(Int(sparkleCheckTimeout))s: \(appInfo.appName)")
             return nil
         }
+
+        return result
     }
 
     /// Get Sparkle feed URL from app bundle

@@ -424,6 +424,7 @@ extension AppInfo {
         Bundle ID: \(bundleIdentifier)
         Path: \(path.path)
         Version: \(appVersion)
+        Build Number: \(appBuildNumber ?? "nil")
         ====================================
         Architecture: \(arch)
         Web App: \(webApp)
@@ -431,6 +432,7 @@ extension AppInfo {
         System App: \(system)
         Steam Game: \(steam)
         Cask: \(cask ?? "nil")
+          Auto Updates: \(autoUpdates ?? false)
         ====================================
         Bundle Size: \(formatBytes(bundleSize))
         Total Size: \(formatBytes(totalSize))
@@ -440,9 +442,14 @@ extension AppInfo {
         Content Change: \(contentChangeDate?.description ?? "nil")
         Last Used: \(lastUsedDate?.description ?? "nil")
         ====================================
-        Entitlements: \(entitlements?.joined(separator: ", ") ?? "nil")
+        Entitlements/Binaries:
+        \(entitlements?.joined(separator: "\n") ?? "nil")
         ====================================
         Team ID: \(teamIdentifier ?? "nil")
+        ====================================
+        Update Sources:
+          Sparkle: \(hasSparkle)
+          App Store: \(isAppStore)
         ====================================
         Files (\(fileSize.count)):
         \(filePathsFormatted.isEmpty ? "  (none)" : filePathsFormatted)
