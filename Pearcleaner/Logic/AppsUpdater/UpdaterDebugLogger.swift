@@ -58,7 +58,7 @@ class UpdaterDebugLogger: ObservableObject {
 
         // App Store Section
         report += "━" + String(repeating: "━", count: 78) + "\n"
-        report += "APP STORE UPDATE CHECKER (\(appStoreLogs.count) entries)\n"
+        report += "APP STORE UPDATE CHECKER\n"
         report += "━" + String(repeating: "━", count: 78) + "\n"
         if appStoreLogs.isEmpty {
             report += "  (No logs recorded)\n"
@@ -71,7 +71,7 @@ class UpdaterDebugLogger: ObservableObject {
 
         // Sparkle Section
         report += "━" + String(repeating: "━", count: 78) + "\n"
-        report += "SPARKLE UPDATE DETECTOR (\(sparkleLogs.count) entries)\n"
+        report += "SPARKLE UPDATE DETECTOR\n"
         report += "━" + String(repeating: "━", count: 78) + "\n"
         if sparkleLogs.isEmpty {
             report += "  (No logs recorded)\n"
@@ -84,7 +84,7 @@ class UpdaterDebugLogger: ObservableObject {
 
         // Homebrew Section
         report += "━" + String(repeating: "━", count: 78) + "\n"
-        report += "HOMEBREW UPDATE CHECKER (\(homebrewLogs.count) entries)\n"
+        report += "HOMEBREW UPDATE CHECKER\n"
         report += "━" + String(repeating: "━", count: 78) + "\n"
         if homebrewLogs.isEmpty {
             report += "  (No logs recorded)\n"

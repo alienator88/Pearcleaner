@@ -123,8 +123,16 @@ class AppCategoryDetector {
     static func checkForAppStore(bundle: Bundle?, path: URL, wrapped: Bool) -> Bool {
         // Check for wrapped iPad/iOS app first
         if wrapped {
-            let outerWrapperPath = path.deletingLastPathComponent().deletingLastPathComponent()
+            // Determine if path is wrapped or not
+            // No wrapper: /Applications/App.app
+            // With wrapper: /Applications/App.app/Wrapper/App.app
+            let wrapperDir = path.appendingPathComponent("Wrapper")
+            let isOuterWrapper = FileManager.default.fileExists(atPath: wrapperDir.path)
+
+            // Use path directly if it's the outer wrapper, otherwise go up two levels to find it
+            let outerWrapperPath = isOuterWrapper ? path : path.deletingLastPathComponent().deletingLastPathComponent()
             let iTunesMetadataPath = outerWrapperPath.appendingPathComponent("Wrapper/iTunesMetadata.plist").path
+
             if FileManager.default.fileExists(atPath: iTunesMetadataPath) {
                 return true
             }
