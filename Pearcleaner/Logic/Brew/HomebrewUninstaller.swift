@@ -20,36 +20,48 @@ class HomebrewUninstaller {
     /// Uninstalls a Homebrew package directly without calling brew uninstall
     /// This replicates Homebrew's uninstall behavior using privileged helper for root operations
     func uninstallPackage(name: String, cask: Bool, zap: Bool = true) async throws {
-        if cask {
-            // Try loading from INSTALL_RECEIPT.json first (instant)
-            let caskInfo: [String: Any]
-            do {
-                caskInfo = try loadCaskInfoFromReceipt(name: name)
-            } catch {
-                // Fallback to brew info command (slower but works if receipt missing)
-                let arguments = ["info", "--json=v2", name]
-                let result = try await HomebrewController.shared.runBrewCommand(arguments)
+        UpdaterDebugLogger.shared.log(.homebrew, "🗑️ Starting uninstall for \(name) (type: \(cask ? "cask" : "formula"), zap: \(zap))")
 
-                guard let jsonData = result.output.data(using: String.Encoding.utf8) else {
-                    throw HomebrewError.jsonParseError
-                }
+        do {
+            if cask {
+                // Try loading from INSTALL_RECEIPT.json first (instant)
+                let caskInfo: [String: Any]
+                do {
+                    caskInfo = try loadCaskInfoFromReceipt(name: name)
+                    UpdaterDebugLogger.shared.log(.homebrew, "  Loaded cask info from INSTALL_RECEIPT.json")
+                } catch {
+                    // Fallback to brew info command (slower but works if receipt missing)
+                    UpdaterDebugLogger.shared.log(.homebrew, "  INSTALL_RECEIPT.json not found, falling back to brew info")
+                    let arguments = ["info", "--json=v2", name]
+                    let result = try await HomebrewController.shared.runBrewCommand(arguments)
 
-                guard let json = try JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
-                      let casks = json["casks"] as? [[String: Any]],
-                      let info = casks.first else {
-                    throw HomebrewError.commandFailed("Cask \(name) not found")
+                    guard let jsonData = result.output.data(using: String.Encoding.utf8) else {
+                        throw HomebrewError.jsonParseError
+                    }
+
+                    guard let json = try JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
+                          let casks = json["casks"] as? [[String: Any]],
+                          let info = casks.first else {
+                        throw HomebrewError.commandFailed("Cask \(name) not found")
+                    }
+                    caskInfo = info
                 }
-                caskInfo = info
+                try await uninstallCask(name: name, info: caskInfo, zap: zap)
+            } else {
+                // Formulae don't need info JSON - brew uninstall handles everything
+                try await uninstallFormula(name: name, info: [:])
             }
-            try await uninstallCask(name: name, info: caskInfo, zap: zap)
-        } else {
-            // Formulae don't need info JSON - brew uninstall handles everything
-            try await uninstallFormula(name: name, info: [:])
-        }
 
-        // Run brew cleanup in background without blocking
-        Task.detached(priority: .background) {
-            try? await HomebrewController.shared.runCleanup()
+            UpdaterDebugLogger.shared.log(.homebrew, "✓ Uninstalled \(name) successfully")
+
+            // Run brew cleanup in background without blocking
+            UpdaterDebugLogger.shared.log(.homebrew, "  Running background cleanup...")
+            Task.detached(priority: .background) {
+                try? await HomebrewController.shared.runCleanup()
+            }
+        } catch {
+            UpdaterDebugLogger.shared.log(.homebrew, "❌ Uninstall failed for \(name): \(error.localizedDescription)")
+            throw error
         }
     }
 

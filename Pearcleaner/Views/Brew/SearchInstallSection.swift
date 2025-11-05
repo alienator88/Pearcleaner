@@ -142,6 +142,8 @@ struct SearchInstallSection: View {
             isUpdatingAll = true
             defer { isUpdatingAll = false }
 
+            var updatedPackageNames: [String] = []
+
             for package in packages {
                 printOS("Starting update for: \(package.name)")
                 updatingPackages.insert(package.name)
@@ -149,6 +151,7 @@ struct SearchInstallSection: View {
                 do {
                     try await HomebrewController.shared.upgradePackage(name: package.name)
                     printOS("Successfully updated: \(package.name)")
+                    updatedPackageNames.append(package.name)
 
                     // Remove from outdated map and category immediately
                     let shortName = package.name.components(separatedBy: "/").last ?? package.name
@@ -163,9 +166,9 @@ struct SearchInstallSection: View {
                 printOS("Finished update for: \(package.name)")
             }
 
-            printOS("All updates complete. Reloading installed packages...")
-            // Reload installed packages after all updates complete to refresh everything
-            await brewManager.loadInstalledPackages()
+            printOS("All updates complete. Refreshing updated packages...")
+            // Targeted refresh - only update the packages that were upgraded (much faster than full scan)
+            await brewManager.refreshSpecificPackages(updatedPackageNames)
         }
     }
 
@@ -866,7 +869,9 @@ struct SearchResultRowView: View {
 
                     do {
                         try await HomebrewController.shared.installPackage(name: result.name, cask: isCask)
-                        await brewManager.loadInstalledPackages()
+
+                        // Targeted refresh - only update this newly installed package (much faster than full scan)
+                        await brewManager.refreshSpecificPackages([result.name])
 
                         // Refresh AppState.sortedApps to include newly installed GUI app (casks only)
                         if isCask {
@@ -890,9 +895,8 @@ struct SearchResultRowView: View {
                     do {
                         try await HomebrewController.shared.upgradePackage(name: result.name)
 
-                        // Let loadInstalledPackages() naturally update the outdated status
-                        // (premature removal causes race condition where background Task re-adds the package)
-                        await brewManager.loadInstalledPackages()
+                        // Targeted refresh - only update this specific package (much faster than full scan)
+                        await brewManager.refreshSpecificPackages([result.name])
 
                         // Refresh AppState.sortedApps to reflect updated version (casks only)
                         if isCask {
@@ -2085,7 +2089,9 @@ struct ReplacementButton: View {
 
                 do {
                     try await HomebrewController.shared.installPackage(name: name, cask: isCask)
-                    await brewManager.loadInstalledPackages()
+
+                    // Targeted refresh - only update this newly installed package (much faster than full scan)
+                    await brewManager.refreshSpecificPackages([name])
                 } catch {
                     printOS("Failed to install replacement \(name): \(error)")
                 }
@@ -2575,7 +2581,9 @@ struct InstallButtonSection: View {
 
                     do {
                         try await HomebrewController.shared.installPackage(name: packageName, cask: isCask)
-                        await brewManager.loadInstalledPackages()
+
+                        // Targeted refresh - only update this newly installed package (much faster than full scan)
+                        await brewManager.refreshSpecificPackages([packageName])
 
                         // Refresh AppState.sortedApps to include newly installed GUI app (casks only)
                         if isCask {

@@ -142,9 +142,15 @@ class HomebrewController {
     ) async throws {
         let baseDir = cask ? "\(brewPrefix)/Caskroom" : "\(brewPrefix)/Cellar"
 
+        logger.log(.homebrew, "🔍 Scanning for installed \(cask ? "casks" : "formulae") in \(baseDir)")
+
         guard let packageDirs = try? FileManager.default.contentsOfDirectory(atPath: baseDir) else {
+            logger.log(.homebrew, "⚠️ Could not read directory: \(baseDir)")
             return
         }
+
+        let packageCount = packageDirs.filter { !$0.hasPrefix(".") }.count
+        logger.log(.homebrew, "Found \(packageCount) \(cask ? "casks" : "formulae") to process")
 
         // Process concurrently, stream results as they complete
         await withTaskGroup(of: (String, String?, String, String, Bool, String?, String?, Bool)?.self) { group in
@@ -717,6 +723,8 @@ class HomebrewController {
     // MARK: - Package Management
 
     func installPackage(name: String, cask: Bool) async throws {
+        logger.log(.homebrew, "📦 Installing package: \(name) (type: \(cask ? "cask" : "formula"))")
+
         var arguments = ["install"]
         if cask {
             arguments.append("--cask")
@@ -726,21 +734,40 @@ class HomebrewController {
         }
         arguments.append(name)
 
-        let result = try await runBrewCommand(arguments)
+        do {
+            let result = try await runBrewCommand(arguments)
 
-        // Check for actual errors (not warnings)
-        let combinedOutput = result.output + result.error
-        if result.error.contains("Error:") && !combinedOutput.contains("was successfully installed") {
-            throw HomebrewError.commandFailed(result.error)
+            // Check for actual errors (not warnings)
+            let combinedOutput = result.output + result.error
+            if result.error.contains("Error:") && !combinedOutput.contains("was successfully installed") {
+                logger.log(.homebrew, "❌ Install failed for \(name): \(result.error)")
+                throw HomebrewError.commandFailed(result.error)
+            }
+
+            logger.log(.homebrew, "✓ Installed \(name) successfully")
+        } catch {
+            logger.log(.homebrew, "❌ Install failed for \(name): \(error.localizedDescription)")
+            throw error
         }
     }
 
     func uninstallPackage(name: String) async throws {
-        let arguments = ["uninstall", name]
-        let result = try await runBrewCommand(arguments)
+        logger.log(.homebrew, "🗑️ Uninstalling package: \(name)")
 
-        if result.error.contains("Error") || result.error.contains("because it is required by") {
-            throw HomebrewError.commandFailed(result.error)
+        let arguments = ["uninstall", name]
+
+        do {
+            let result = try await runBrewCommand(arguments)
+
+            if result.error.contains("Error") || result.error.contains("because it is required by") {
+                logger.log(.homebrew, "❌ Uninstall failed for \(name): \(result.error)")
+                throw HomebrewError.commandFailed(result.error)
+            }
+
+            logger.log(.homebrew, "✓ Uninstalled \(name) successfully")
+        } catch {
+            logger.log(.homebrew, "❌ Uninstall failed for \(name): \(error.localizedDescription)")
+            throw error
         }
     }
 
@@ -763,11 +790,22 @@ class HomebrewController {
     }
 
     func upgradePackage(name: String) async throws {
-        let arguments = ["upgrade", name]
-        let result = try await runBrewCommand(arguments)
+        logger.log(.homebrew, "⬆️ Upgrading package: \(name)")
 
-        if result.error.contains("Error") {
-            throw HomebrewError.commandFailed(result.error)
+        let arguments = ["upgrade", name]
+
+        do {
+            let result = try await runBrewCommand(arguments)
+
+            if result.error.contains("Error") {
+                logger.log(.homebrew, "❌ Upgrade failed for \(name): \(result.error)")
+                throw HomebrewError.commandFailed(result.error)
+            }
+
+            logger.log(.homebrew, "✓ Upgraded \(name) successfully")
+        } catch {
+            logger.log(.homebrew, "❌ Upgrade failed for \(name): \(error.localizedDescription)")
+            throw error
         }
     }
 

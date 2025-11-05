@@ -188,11 +188,129 @@ class HomebrewManager: ObservableObject {
                     isLoadingOutdated = false
                     // Update categories now that we have outdated info
                     updateInstalledCategories()
+
+                    // Print debug log report if debug logging is enabled
+                    if UserDefaults.standard.object(forKey: "settings.updater.debugLogging") as? Bool ?? true {
+                        printOS("\n" + UpdaterDebugLogger.shared.generateDebugReport())
+                    }
                 }
             }
         } catch {
             printOS("Error loading packages: \(error)")
         }
+    }
+
+    /// Refresh only specific packages after install/update/uninstall operations
+    /// Much faster than full loadInstalledPackages() scan - only checks specified packages
+    func refreshSpecificPackages(_ packageNames: [String]) async {
+        guard !packageNames.isEmpty else { return }
+
+        UpdaterDebugLogger.shared.log(.homebrew, "🔄 Refreshing \(packageNames.count) specific package(s): \(packageNames.joined(separator: ", "))")
+
+        isLoadingPackages = true
+        defer { isLoadingPackages = false }
+
+        for name in packageNames {
+            // Check both Cellar (formulae) and Caskroom (casks)
+            let cellarPath = "\(HomebrewController.shared.brewPrefix)/Cellar/\(name)"
+            let caskroomPath = "\(HomebrewController.shared.brewPrefix)/Caskroom/\(name)"
+
+            if FileManager.default.fileExists(atPath: cellarPath) {
+                // Formula still installed - update its info
+                UpdaterDebugLogger.shared.log(.homebrew, "  Updating formula: \(name)")
+                await refreshSinglePackage(name: name, isCask: false)
+            } else if FileManager.default.fileExists(atPath: caskroomPath) {
+                // Cask still installed - update its info
+                UpdaterDebugLogger.shared.log(.homebrew, "  Updating cask: \(name)")
+                await refreshSinglePackage(name: name, isCask: true)
+            } else {
+                // Package uninstalled - remove from lists
+                UpdaterDebugLogger.shared.log(.homebrew, "  Package removed: \(name)")
+                installedFormulae.removeAll { $0.name == name }
+                installedCasks.removeAll { $0.name == name }
+            }
+        }
+
+        // Update categories with refreshed data
+        updateInstalledCategories()
+
+        // Check outdated status for these specific packages only
+        await refreshOutdatedStatus(for: packageNames)
+
+        UpdaterDebugLogger.shared.log(.homebrew, "✓ Refresh complete for \(packageNames.count) package(s)")
+    }
+
+    /// Refresh a single package's information from Cellar/Caskroom
+    private func refreshSinglePackage(name: String, isCask: Bool) async {
+        do {
+            var updatedPackage: InstalledPackage?
+
+            // Stream only this specific package
+            try await HomebrewController.shared.streamInstalledPackages(cask: isCask) { pkgName, displayName, desc, version, isPinned, tap, tapRbPath, installedOnRequest in
+                if pkgName == name {
+                    updatedPackage = InstalledPackage(
+                        name: pkgName,
+                        displayName: displayName,
+                        description: desc,
+                        version: version,
+                        isCask: isCask,
+                        isPinned: isPinned,
+                        tap: tap,
+                        tapRbPath: tapRbPath,
+                        installedOnRequest: installedOnRequest
+                    )
+                }
+            }
+
+            // Update the appropriate array
+            if let updated = updatedPackage {
+                if isCask {
+                    if let index = installedCasks.firstIndex(where: { $0.name == name }) {
+                        installedCasks[index] = updated
+                    } else {
+                        installedCasks.append(updated)
+                    }
+                } else {
+                    if let index = installedFormulae.firstIndex(where: { $0.name == name }) {
+                        installedFormulae[index] = updated
+                    } else {
+                        installedFormulae.append(updated)
+                    }
+                }
+            }
+        } catch {
+            printOS("Error refreshing package \(name): \(error)")
+        }
+    }
+
+    /// Check outdated status for specific packages only (much faster than checking all)
+    private func refreshOutdatedStatus(for packageNames: [String]) async {
+        isLoadingOutdated = true
+        defer { isLoadingOutdated = false }
+
+        // Get packages to check
+        let packagesToCheck = allPackages.filter { packageNames.contains($0.name) }
+
+        // Check outdated status using hybrid approach (only for these specific packages)
+        let updatedOutdated = await HomebrewController.shared.getOutdatedPackagesHybrid(
+            formulae: packagesToCheck.filter { !$0.isCask },
+            casks: packagesToCheck.filter { $0.isCask }
+        )
+
+        // Update outdatedPackagesMap - remove old entries for these packages, add new ones if outdated
+        for name in packageNames {
+            outdatedPackagesMap.removeValue(forKey: name)
+        }
+
+        for package in updatedOutdated {
+            outdatedPackagesMap[package.name] = OutdatedVersionInfo(
+                installed: package.installedVersion,
+                available: package.availableVersion
+            )
+        }
+
+        // Update categories with new outdated status
+        updateInstalledCategories()
     }
 
     // Update the installedByCategory dictionary (matches UpdateManager pattern)
