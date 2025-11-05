@@ -31,10 +31,6 @@ private enum SparkleUpdateResult {
 class SparkleUpdateChecker {
     fileprivate static let logger = UpdaterDebugLogger.shared
 
-    /// Timeout for individual Sparkle update checks
-    /// Prevents hanging on unreachable feeds (Sparkle's default is 60s with no override)
-    private static let sparkleCheckTimeout: TimeInterval = 5.0
-
     /// Check for Sparkle updates using SPUUpdater directly
     /// Only checks apps with SUFeedURL in Info.plist (no binary scanning)
     static func checkForUpdates(apps: [AppInfo], includePreReleases: Bool) async -> [UpdateableApp] {
@@ -96,36 +92,20 @@ class SparkleUpdateChecker {
 
     /// Check a single app for updates using SPUUpdater
     private static func checkSingleApp(appInfo: AppInfo, bundle: Bundle, feedURL: URL, includePreReleases: Bool) async -> UpdateableApp? {
-        // Create task for the actual Sparkle check
-        let checkTask = Task {
-            await withCheckedContinuation { continuation in
-                DispatchQueue.main.async {
-                    let operation = SparkleCheckerOperation(
-                        appInfo: appInfo,
-                        bundle: bundle,
-                        feedURL: feedURL,
-                        includePreReleases: includePreReleases
-                    ) { result in
-                        continuation.resume(returning: result)
-                    }
-                    operation.start()
+        // Directly proceed with Sparkle check (no pre-flight URL check)
+        // Users can hide slow/problematic apps using the eye button to prevent future checks
+        let result = await withCheckedContinuation { continuation in
+            DispatchQueue.main.async {
+                let operation = SparkleCheckerOperation(
+                    appInfo: appInfo,
+                    bundle: bundle,
+                    feedURL: feedURL,
+                    includePreReleases: includePreReleases
+                ) { result in
+                    continuation.resume(returning: result)
                 }
+                operation.start()
             }
-        }
-
-        // Start timeout timer that cancels the task after 5 seconds
-        Task {
-            try? await Task.sleep(nanoseconds: UInt64(sparkleCheckTimeout * 1_000_000_000))
-            checkTask.cancel()
-        }
-
-        // Wait for task to complete (or be cancelled)
-        let result = await checkTask.value
-
-        // Log timeout if task was cancelled
-        if checkTask.isCancelled {
-            logger.log(.sparkle, "  ⏱️ Timeout after \(Int(sparkleCheckTimeout))s: \(appInfo.appName)")
-            return nil
         }
 
         return result

@@ -54,49 +54,37 @@ class UpdateManager: ObservableObject {
         }
     }
 
-    /// Hide an app (move to hidden category)
+    /// Hide an app (add to hidden filter, remove from visible lists, trigger rescan)
     func hideApp(_ app: UpdateableApp) {
+        // Add to persistent hidden storage
         var hidden = hiddenApps
         hidden[app.uniqueIdentifier] = app.source
         hiddenApps = hidden
 
-        // Move app from its source category to hidden
-        moveAppToHidden(app)
+        // Immediately remove from visible lists for instant UI feedback
+        updatesBySource[app.source]?.removeAll { $0.uniqueIdentifier == app.uniqueIdentifier }
+
+        // Add to hidden list for sidebar display
+        if !hiddenUpdates.contains(where: { $0.uniqueIdentifier == app.uniqueIdentifier }) {
+            hiddenUpdates.append(app)
+        }
+
+        // Rescan to ensure filtering is applied
+        Task { await scanForUpdates() }
     }
 
-    /// Unhide an app (restore to original category)
+    /// Unhide an app (remove from hidden filter, trigger rescan to check for updates)
     func unhideApp(_ app: UpdateableApp) {
+        // Remove from persistent hidden storage
         var hidden = hiddenApps
         hidden.removeValue(forKey: app.uniqueIdentifier)
         hiddenApps = hidden
 
-        // Move app from hidden back to its original source category
-        moveAppFromHidden(app)
-    }
+        // Immediately remove from hidden list for instant UI feedback
+        hiddenUpdates.removeAll { $0.uniqueIdentifier == app.uniqueIdentifier }
 
-    /// Move an app from its source category to hidden
-    private func moveAppToHidden(_ app: UpdateableApp) {
-        // Remove from source category
-        updatesBySource[app.source]?.removeAll { $0.id == app.id }
-
-        // Add to hidden (check by bundle ID to prevent duplicates)
-        if !hiddenUpdates.contains(where: { $0.uniqueIdentifier == app.uniqueIdentifier }) {
-            hiddenUpdates.append(app)
-        }
-    }
-
-    /// Move an app from hidden back to its original source category
-    private func moveAppFromHidden(_ app: UpdateableApp) {
-        // Remove from hidden
-        hiddenUpdates.removeAll { $0.id == app.id }
-
-        // Add back to source category
-        if updatesBySource[app.source] == nil {
-            updatesBySource[app.source] = []
-        }
-        if !updatesBySource[app.source]!.contains(where: { $0.id == app.id }) {
-            updatesBySource[app.source]!.append(app)
-        }
+        // Rescan to check for updates now that app is unhidden
+        Task { await scanForUpdates() }
     }
 
     /// Toggle selection state for an app in the update queue
@@ -141,11 +129,16 @@ class UpdateManager: ObservableObject {
         // Use apps from AppState (either freshly loaded or existing)
         let apps = AppState.shared.sortedApps
 
+        // Filter out hidden apps BEFORE checking for updates
+        // This prevents wasting time on HEAD requests and SPUUpdater calls for hidden apps
+        let hiddenAppIds = Set(hiddenApps.keys)
+        let visibleApps = apps.filter { !hiddenAppIds.contains($0.bundleIdentifier) }
+
         // Launch concurrent scans with progressive updates
         await withTaskGroup(of: (UpdateSource, [UpdateableApp]).self) { group in
             if checkHomebrew {
                 group.addTask {
-                    let results = await HomebrewUpdateChecker.checkForUpdates(apps: apps, includeFormulae: false, showAutoUpdatesInHomebrew: self.showAutoUpdatesInHomebrew)
+                    let results = await HomebrewUpdateChecker.checkForUpdates(apps: visibleApps, includeFormulae: false, showAutoUpdatesInHomebrew: self.showAutoUpdatesInHomebrew)
                     return (.homebrew, results)
                 }
             }
@@ -153,7 +146,7 @@ class UpdateManager: ObservableObject {
             if checkAppStore {
                 group.addTask {
                     // Use pre-categorized flag (instant check vs expensive receipt verification)
-                    let appStoreApps = apps.filter { $0.isAppStore }
+                    let appStoreApps = visibleApps.filter { $0.isAppStore }
                     let results = await AppStoreUpdateChecker.checkForUpdates(apps: appStoreApps)
                     return (.appStore, results)
                 }
@@ -164,7 +157,7 @@ class UpdateManager: ObservableObject {
                     // Show all apps with Sparkle, regardless of other update sources
                     // This allows users to see version differences across App Store/Homebrew/Sparkle
                     // and choose which source to update from
-                    let sparkleApps = apps.filter { $0.hasSparkle }
+                    let sparkleApps = visibleApps.filter { $0.hasSparkle }
 
                     let results = await SparkleUpdateChecker.checkForUpdates(apps: sparkleApps, includePreReleases: self.includeSparklePreReleases)
                     return (.sparkle, results)
@@ -219,6 +212,10 @@ class UpdateManager: ObservableObject {
 
         await processSourceResults(source: .unsupported, apps: unsupportedApps)
 
+        // Rebuild hidden apps list for display
+        // This ensures ALL hidden apps appear in the sidebar, even those without updates
+        await rebuildHiddenAppsList(allApps: apps)
+
         lastScanDate = Date()
 
         // Print formatted debug report to console after scan completes
@@ -228,6 +225,50 @@ class UpdateManager: ObservableObject {
 
         // Clear task reference on completion
         currentScanTask = nil
+    }
+
+    /// Rebuild hidden apps list from storage for display in sidebar
+    /// This populates hiddenUpdates with ALL hidden apps (even those without updates)
+    private func rebuildHiddenAppsList(allApps: [AppInfo]) async {
+        let hidden = hiddenApps
+
+        // For each hidden app in storage, create an UpdateableApp for display
+        for (bundleID, source) in hidden {
+            // Skip if already in hiddenUpdates (was found during update check)
+            if hiddenUpdates.contains(where: { $0.uniqueIdentifier == bundleID }) {
+                continue
+            }
+
+            // Find the app in sortedApps
+            guard let appInfo = allApps.first(where: { $0.bundleIdentifier == bundleID }) else {
+                // App no longer exists, remove from hidden storage
+                var mutableHidden = hidden
+                mutableHidden.removeValue(forKey: bundleID)
+                hiddenApps = mutableHidden
+                continue
+            }
+
+            // Create UpdateableApp without update info (just for display)
+            let updateableApp = UpdateableApp(
+                appInfo: appInfo,
+                availableVersion: nil,
+                availableBuildNumber: nil,
+                source: source,
+                adamID: nil,
+                appStoreURL: nil,
+                status: .idle,
+                progress: 0.0,
+                isSelectedForUpdate: false,
+                releaseTitle: nil,
+                releaseDescription: nil,
+                releaseNotesLink: nil,
+                releaseDate: nil,
+                isPreRelease: false,
+                isIOSApp: false
+            )
+
+            hiddenUpdates.append(updateableApp)
+        }
     }
 
     private func processSourceResults(source: UpdateSource, apps: [UpdateableApp]) async {
@@ -255,6 +296,7 @@ class UpdateManager: ObservableObject {
 
     /// Cancel the current scan operation
     func cancelScan() {
+        isScanning = false  // Immediately update UI state
         currentScanTask?.cancel()
         currentScanTask = nil
         scanningSources.removeAll()  // Clear scanning state for all sources

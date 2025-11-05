@@ -18,16 +18,9 @@ class AppStoreUpdateChecker {
     private static let fallbackRegions = ["CN", "US", "HK", "JP", "KR", "SG"]
 
     /// Check if an app is a wrapped iPad/iOS app
+    /// app.wrapped is already set correctly during app launch
     private static func isIOSApp(_ app: AppInfo) -> Bool {
-        if !app.wrapped { return false }
-
-        // For wrapped apps, app.path points to inner bundle (e.g., /Applications/X.app/Wrapper/Twitter.app/)
-        // Go up 2 levels to outer wrapper (e.g., /Applications/X.app/)
-        let outerWrapperPath = app.path.deletingLastPathComponent().deletingLastPathComponent()
-        let wrappedBundlePath = outerWrapperPath.appendingPathComponent("WrappedBundle")
-
-        // Check if WrappedBundle symlink exists (definitive sign of iOS app)
-        return FileManager.default.fileExists(atPath: wrappedBundlePath.path)
+        return app.wrapped
     }
 
     static func checkForUpdates(apps: [AppInfo]) async -> [UpdateableApp] {

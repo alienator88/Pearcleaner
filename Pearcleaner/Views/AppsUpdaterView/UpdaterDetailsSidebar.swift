@@ -36,8 +36,7 @@ struct UpdaterDetailsSidebar: View {
                         showUnsupported: $showUnsupported
                     )
                     Divider()
-                    UpdaterHiddenHeaderSection(hiddenCount: updateManager.hiddenUpdates.count)
-                    UpdaterHiddenAppsSection(hiddenApps: updateManager.hiddenUpdates)
+                    UpdaterHiddenAppsSection()
                     Spacer()
                     UpdaterHiddenSidebarFooter()
                 }
@@ -322,48 +321,116 @@ struct UpdaterSourceCheckboxSection: View {
     }
 }
 
-// Header info component
-struct UpdaterHiddenHeaderSection: View {
-    let hiddenCount: Int
-    @Environment(\.colorScheme) var colorScheme
-
-    var body: some View {
-        HStack(spacing: 8) {
-            Text("Hidden Updates")
-                .font(.headline)
-                .fontWeight(.semibold)
-                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-
-            Text(verbatim: "(\(hiddenCount))")
-                .font(.headline)
-                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-        }
-    }
-}
-
-// Hidden apps list component
+// Hidden apps section component (combines header, list, and manual hide)
 struct UpdaterHiddenAppsSection: View {
-    let hiddenApps: [UpdateableApp]
+    @StateObject private var appState = AppState.shared
     @StateObject private var updateManager = UpdateManager.shared
     @Environment(\.colorScheme) var colorScheme
 
+    private var availableApps: [AppInfo] {
+        let hiddenBundleIds = Set(updateManager.hiddenUpdates.map { $0.appInfo.bundleIdentifier })
+        return appState.sortedApps.filter { !hiddenBundleIds.contains($0.bundleIdentifier) }
+            .sorted { $0.appName.localizedCaseInsensitiveCompare($1.appName) == .orderedAscending }
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            if hiddenApps.isEmpty {
-                Text("No hidden updates")
+            // Header with count and plus button
+            HStack(spacing: 8) {
+                Text("Hidden Apps")
+                    .font(.headline)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                Text(verbatim: "(\(updateManager.hiddenUpdates.count))")
+                    .font(.headline)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                Spacer()
+
+                Menu {
+                    if availableApps.isEmpty {
+                        Text("All apps are hidden")
+                            .disabled(true)
+                    } else {
+                        ForEach(availableApps, id: \.bundleIdentifier) { app in
+                            Button {
+                                hideApp(app)
+                            } label: {
+                                HStack {
+                                    if let icon = app.appIcon {
+                                        Image(nsImage: icon)
+                                            .resizable()
+                                            .frame(width: 16, height: 16)
+                                    }
+                                    Text(app.appName)
+                                }
+                            }
+                        }
+                    }
+                } label: {
+                    Image(systemName: "plus.circle.fill")
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                        .font(.title3)
+                }
+                .menuStyle(.borderlessButton)
+                .menuIndicator(.hidden)
+                .help("Manually hide an app from update checks")
+            }
+
+            // List of hidden apps
+            if updateManager.hiddenUpdates.isEmpty {
+                Text("No hidden apps")
                     .font(.caption)
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     .italic()
+                    .padding(.top, 4)
             } else {
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 4) {
-                        ForEach(hiddenApps) { app in
+                        ForEach(updateManager.hiddenUpdates) { app in
                             UpdaterHiddenAppRow(app: app)
                         }
                     }
                 }
             }
         }
+    }
+
+    private func hideApp(_ appInfo: AppInfo) {
+        // Determine the update source for this app
+        let source: UpdateSource = {
+            if appInfo.hasSparkle {
+                return .sparkle
+            } else if appInfo.cask != nil {
+                return .homebrew
+            } else if appInfo.isAppStore {
+                return .appStore
+            } else {
+                return .unsupported
+            }
+        }()
+
+        // Create UpdateableApp instance
+        let updateableApp = UpdateableApp(
+            appInfo: appInfo,
+            availableVersion: nil,
+            availableBuildNumber: nil,
+            source: source,
+            adamID: nil,
+            appStoreURL: nil,
+            status: .idle,
+            progress: 0.0,
+            isSelectedForUpdate: false,
+            releaseTitle: nil,
+            releaseDescription: nil,
+            releaseNotesLink: nil,
+            releaseDate: nil,
+            isPreRelease: false,
+            isIOSApp: false
+        )
+
+        updateManager.hideApp(updateableApp)
     }
 }
 
