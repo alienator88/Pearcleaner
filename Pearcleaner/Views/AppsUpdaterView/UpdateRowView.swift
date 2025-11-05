@@ -416,21 +416,19 @@ struct UpdateRowView: View {
             let installedBuild = app.appInfo.appBuildNumber
             let availableBuild = app.availableBuildNumber
 
-            // Check if builds differ (for green highlighting)
-            let buildsDiffer = installedBuild != nil && availableBuild != nil && installedBuild != availableBuild
-
             // Check if marketing versions match (both present and equal)
             if !displayInstalledVersion.isEmpty && !displayAvailableVersion.isEmpty &&
                displayInstalledVersion == displayAvailableVersion {
                 // Scenario 1: Marketing versions match → "6.7 (6134) → 6.7 (6135)"
-                var result = Text(verbatim: "\(displayInstalledVersion)")
+                var result = Text(verbatim: displayInstalledVersion).foregroundColor(.orange)
                 if let build = installedBuild {
-                    result = result + Text(verbatim: " (\(build))")
+                    result = result + Text(verbatim: " (\(build))").foregroundColor(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
-                result = result + Text(verbatim: " → \(displayAvailableVersion) (")
+                result = result + Text(verbatim: " → ")
+                result = result + Text(verbatim: displayAvailableVersion).foregroundColor(.green)
+                result = result + Text(verbatim: " (")
                 if let build = availableBuild {
-                    let buildText = Text(build)
-                    result = result + (buildsDiffer ? buildText.foregroundColor(.green) : buildText)
+                    result = result + Text(build).foregroundColor(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
                 result = result + Text(verbatim: ")")
                 if app.isIOSApp {
@@ -441,13 +439,12 @@ struct UpdateRowView: View {
                 return result
             } else if displayAvailableVersion.isEmpty, let availableBuild = availableBuild {
                 // Scenario 2: Remote lacks marketing version → "6.7 (6134) → build 6135"
-                var result = Text(verbatim: "\(displayInstalledVersion)")
+                var result = Text(verbatim: displayInstalledVersion).foregroundColor(.orange)
                 if let build = installedBuild {
-                    result = result + Text(verbatim: " (\(build))")
+                    result = result + Text(verbatim: " (\(build))").foregroundColor(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
                 result = result + Text(verbatim: " → build ")
-                let buildText = Text(availableBuild)
-                result = result + (buildsDiffer ? buildText.foregroundColor(.green) : buildText)
+                result = result + Text(availableBuild).foregroundColor(.green)
                 if app.isIOSApp {
                     result = result + Text(" (iOS apps have to be updated in the App Store)")
                 } else if isNonPrimaryRegion, let region = app.foundInRegion {
@@ -456,13 +453,14 @@ struct UpdateRowView: View {
                 return result
             } else {
                 // Scenario 3: Normal case → "6.7 (6134) → 6.8 (6135)"
-                var result = Text(verbatim: "\(displayInstalledVersion)")
+                var result = Text(verbatim: displayInstalledVersion).foregroundColor(.orange)
                 if let build = installedBuild {
-                    result = result + Text(verbatim: " (\(build))")
+                    result = result + Text(verbatim: " (\(build))").foregroundColor(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
-                result = result + Text(verbatim: " → \(displayAvailableVersion)")
+                result = result + Text(verbatim: " → ")
+                result = result + Text(verbatim: displayAvailableVersion).foregroundColor(.green)
                 if let build = availableBuild {
-                    result = result + Text(verbatim: " (\(build))")
+                    result = result + Text(verbatim: " (\(build))").foregroundColor(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
                 if app.isIOSApp {
                     result = result + Text(" (iOS apps have to be updated in the App Store)")
@@ -472,8 +470,10 @@ struct UpdateRowView: View {
                 return result
             }
         } else {
-            // Non-Sparkle sources: show marketing versions only
-            var result = Text(verbatim: "\(displayInstalledVersion) → \(displayAvailableVersion)")
+            // Non-Sparkle sources (App Store, Homebrew): show marketing versions only with colors
+            var result = Text(verbatim: displayInstalledVersion).foregroundColor(.orange)
+            result = result + Text(verbatim: " → ")
+            result = result + Text(verbatim: displayAvailableVersion).foregroundColor(.green)
             if app.isIOSApp {
                 result = result + Text(" (iOS apps have to be updated in the App Store)")
             } else if isNonPrimaryRegion, let region = app.foundInRegion {
