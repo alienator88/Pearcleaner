@@ -868,8 +868,12 @@ private func buildCaskLookupTable() -> [String: CaskMetadata] {
 
         // Find "app" artifacts and build appName → CaskMetadata mapping
         for artifact in artifacts {
-            if let apps = artifact["app"] as? [String] {
-                for appStr in apps {
+            if let apps = artifact["app"] as? [Any] {
+                for app in apps {
+                    // Only process string entries, ignore objects/dictionaries
+                    // (e.g., qBittorrent has ["qbittorrent.app", { "target": "qBittorrent.app" }])
+                    guard let appStr = app as? String else { continue }
+
                     let realAppName = appStr
                         .replacingOccurrences(of: ".app", with: "")
                         .lowercased()

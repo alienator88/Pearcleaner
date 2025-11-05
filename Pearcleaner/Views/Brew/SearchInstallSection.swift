@@ -833,6 +833,8 @@ struct SearchResultRowView: View {
         }
         .onAppear {
             // Fallback: If package is installed but has 0 size, calculate directly from disk
+            // Note: Casks are handled by .task modifier via calculateSize() → calculateCaskSize()
+            // which correctly gets the app bundle size from AppInfo
             guard isAlreadyInstalled else { return }
 
             let shortName = result.name.components(separatedBy: "/").last ?? result.name
@@ -847,33 +849,10 @@ struct SearchResultRowView: View {
             // If size is nil or 0, calculate it directly from disk
             if sizeBytes == nil || sizeBytes == 0 {
                 Task {
-                    if isCask {
-                        // Calculate cask size directly from Caskroom directory
-                        guard let installedCask = brewManager.installedCasks.first(where: { $0.name == result.name || $0.name == shortName }),
-                              let version = installedCask.version else { return }
-
-                        let brewPrefix = HomebrewController.shared.getBrewPrefix()
-                        let caskroomPath = "\(brewPrefix)/Caskroom/\(result.name)/\(version)"
-                        let caskroomURL = URL(fileURLWithPath: caskroomPath)
-
-                        guard FileManager.default.fileExists(atPath: caskroomPath) else { return }
-
-                        let totalBytes = totalSizeOnDisk(for: caskroomURL)
-                        let bytesToFormat = totalBytes
-                        let formatted = await MainActor.run {
-                            ByteCountFormatter.string(fromByteCount: bytesToFormat, countStyle: .file)
-                        }
-
-                        await MainActor.run {
-                            if let index = brewManager.installedCasks.firstIndex(where: { $0.name == result.name || $0.name == shortName }) {
-                                brewManager.installedCasks[index].size = formatted
-                                brewManager.installedCasks[index].sizeBytes = totalBytes
-                            }
-                        }
-                    } else {
-                        // For formulae, use existing calculation logic
-                        await calculateSize()
-                    }
+                    // For both casks and formulae, use the existing calculation logic
+                    // Casks: calculateSize() → HomebrewController.calculateCaskSize() uses AppInfo
+                    // Formulae: calculateSize() → HomebrewController.calculateFormulaSize() uses Cellar
+                    await calculateSize()
                 }
             }
         }
