@@ -8,6 +8,7 @@
 import Foundation
 import CommerceKit
 import StoreFoundation
+import AlinFoundation
 
 class AppStoreUpdater: NSObject, @unchecked Sendable {
     static let shared = AppStoreUpdater()
@@ -56,7 +57,7 @@ extension AppStoreUpdater: CKDownloadQueueObserver {
     }
 
     nonisolated func downloadQueue(_ queue: CKDownloadQueue, changedWithRemoval download: SSDownload) {
-        // Download was removed from queue
+        // Download was removed from queue - cleanup
         if let adamID = download.metadata?.itemIdentifier {
             _ = callbackQueue.sync {
                 progressCallbacks.removeValue(forKey: adamID)
@@ -77,22 +78,34 @@ extension AppStoreUpdater: CKDownloadQueueObserver {
 
         let phaseType = activePhase.phaseType
 
+        // Read progress from status (statusChangedFor fires frequently during download)
+        let percentComplete = status.percentComplete  // Float: 0.0 to 1.0
+        let progress = max(0.0, min(1.0, Double(percentComplete)))
+
+        printOS("🔄 App Store status changed for adamID \(adamID) - phaseType: \(phaseType), progress: \(String(format: "%.1f", progress * 100))%")
+
         switch phaseType {
         case 0: // Downloading
-            let progress = Double(activePhase.progressValue) / Double(activePhase.totalProgressValue)
+            printOS("  📥 Downloading...")
             callback(progress, "Downloading...")
 
         case 1: // Installing
-            callback(0.9, "Installing...")
+            printOS("  📦 Installing...")
+            callback(progress, "Installing...")
 
         case 5: // Complete
-            callback(1.0, "Completed")
+            printOS("  ✅ Complete")
+
+            // Cleanup callback
             _ = callbackQueue.sync {
                 progressCallbacks.removeValue(forKey: adamID)
             }
 
+            callback(1.0, "Completed")
+
         default:
-            break
+            printOS("  ❓ Unknown phase type: \(phaseType)")
+            callback(progress, "Processing...")
         }
     }
 }

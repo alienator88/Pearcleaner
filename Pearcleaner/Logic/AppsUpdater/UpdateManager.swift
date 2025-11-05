@@ -20,9 +20,6 @@ class UpdateManager: ObservableObject {
     @Published var scanningSources: Set<UpdateSource> = []
     @Published var currentScanTask: Task<Void, Never>?
 
-    // Track apps currently being verified to prevent duplicate verification tasks
-    private var verifyingApps: Set<UUID> = []
-
     @AppStorage("settings.updater.checkAppStore") private var checkAppStore: Bool = true
     @AppStorage("settings.updater.checkHomebrew") private var checkHomebrew: Bool = true
     @AppStorage("settings.updater.checkSparkle") private var checkSparkle: Bool = true
@@ -359,18 +356,10 @@ class UpdateManager: ObservableObject {
                                 apps[index].status = .installing
                                 self.updatesBySource[.appStore] = apps
                             } else if status.contains("Completed") {
-                                // Phase 5: CommerceKit finished, transition to verifying
-                                // Only start verification once to prevent duplicate tasks
-                                if !self.verifyingApps.contains(app.id) {
-                                    self.verifyingApps.insert(app.id)
-                                    apps[index].status = .verifying
-                                    self.updatesBySource[.appStore] = apps
-
-                                    // Start monitoring the app bundle for version change
-                                    Task {
-                                        await self.waitForBundleUpdate(app: app)
-                                        self.verifyingApps.remove(app.id)
-                                    }
+                                // Phase 5: CommerceKit finished - remove from list and refresh
+                                Task {
+                                    await self.removeFromUpdatesList(appID: app.id, source: .appStore)
+                                    await self.refreshApps(updatedApp: app.appInfo)
                                 }
                             } else {
                                 // Phase 0 or other: Keep current status or set to downloading
@@ -481,97 +470,6 @@ class UpdateManager: ObservableObject {
 
     // REMOVED: refreshSparkleAppWithURL - no longer needed with simplified Sparkle approach
     // Alternate feed URLs are not supported when using SPUUpdater directly
-
-    /// Wait for the App Store to finish replacing the bundle on disk
-    /// This monitors the app bundle and removes it from the update list once the version changes
-    private func waitForBundleUpdate(app: UpdateableApp) async {
-        let appPath = app.appInfo.path
-        let currentVersion = app.appInfo.appVersion
-        let maxAttempts = 40 // 40 attempts = ~20 seconds max wait
-        let pollInterval: UInt64 = 1_000_000_000 // 1 second
-
-        var bundleWasRemoved = false
-
-        for _ in 0..<maxAttempts {
-            try? await Task.sleep(nanoseconds: pollInterval)
-
-            // Read version directly from Info.plist to avoid Bundle caching issues
-            if let diskVersion = readBundleVersionDirectly(at: appPath, wrapped: app.appInfo.wrapped) {
-                // Strategy: Detect when bundle was removed and then reappeared with any version
-                // This is more reliable than matching exact version strings since CommerceKit
-                // metadata may not always match what actually gets installed
-                if bundleWasRemoved {
-                    // Bundle was removed and now exists again - App Store finished!
-                    await removeFromUpdatesList(appID: app.id, source: .appStore)
-                    await refreshApps(updatedApp: app.appInfo)
-                    return
-                } else if diskVersion != currentVersion {
-                    // Version changed without bundle removal - also a success
-                    await removeFromUpdatesList(appID: app.id, source: .appStore)
-                    await refreshApps(updatedApp: app.appInfo)
-                    return
-                }
-            } else {
-                // Bundle doesn't exist - it's being replaced
-                if !bundleWasRemoved {
-                    bundleWasRemoved = true
-                }
-            }
-        }
-
-        // Timeout: remove from list anyway after max wait time
-        if let diskVersion = readBundleVersionDirectly(at: appPath, wrapped: app.appInfo.wrapped) {
-            printOS("⚠️ App Store update verification timed out for \(app.appInfo.appName): final version on disk is \(diskVersion)")
-        } else {
-            printOS("⚠️ App Store update verification timed out for \(app.appInfo.appName): bundle still missing")
-        }
-        await removeFromUpdatesList(appID: app.id, source: .appStore)
-        await refreshApps()
-    }
-
-    /// Read bundle version directly from Info.plist without Bundle caching
-    /// This ensures we always get fresh data from disk during verification
-    private func readBundleVersionDirectly(at path: URL, wrapped: Bool) -> String? {
-        if wrapped {
-            // iPad/iOS app: read version from iTunesMetadata.plist
-            // For wrapped apps, path points to the inner bundle (e.g., /Applications/X.app/Wrapper/Twitter.app/)
-            // We need to go up 2 levels to get to the outer wrapper (e.g., /Applications/X.app/)
-            let outerWrapperPath = path.deletingLastPathComponent().deletingLastPathComponent()
-            let iTunesMetadataPath = outerWrapperPath.appendingPathComponent("Wrapper/iTunesMetadata.plist")
-
-            guard let plistData = try? Data(contentsOf: iTunesMetadataPath),
-                  let plist = try? PropertyListSerialization.propertyList(from: plistData, format: nil) as? [String: Any] else {
-                return nil
-            }
-
-            // Read from iTunesMetadata.plist (uses different keys than Info.plist)
-            if let version = plist["bundleShortVersionString"] as? String, !version.isEmpty {
-                return version
-            } else if let version = plist["bundleVersion"] as? String, !version.isEmpty {
-                return version
-            }
-
-            return nil
-        } else {
-            // Standard Mac app: Contents/Info.plist
-            let plistPath = path.appendingPathComponent("Contents/Info.plist")
-
-            guard FileManager.default.fileExists(atPath: plistPath.path),
-                  let plistData = try? Data(contentsOf: plistPath),
-                  let plist = try? PropertyListSerialization.propertyList(from: plistData, format: nil) as? [String: Any] else {
-                return nil
-            }
-
-            // Prefer CFBundleShortVersionString, fallback to CFBundleVersion
-            if let shortVersion = plist["CFBundleShortVersionString"] as? String, !shortVersion.isEmpty {
-                return shortVersion
-            } else if let version = plist["CFBundleVersion"] as? String, !version.isEmpty {
-                return version
-            }
-
-            return nil
-        }
-    }
 
     /// Remove an app from the updates list
     private func removeFromUpdatesList(appID: UUID, source: UpdateSource) async {

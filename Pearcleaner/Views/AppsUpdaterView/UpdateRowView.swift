@@ -286,17 +286,18 @@ struct UpdateRowView: View {
             }
         }
         .background {
-            // Sparkle progress bar with twinkle effects (only for Sparkle apps)
+            // Sparkle progress bar with twinkle effects (for Sparkle and App Store apps)
             GeometryReader { geometry in
                 HStack(spacing: 0) {
-                    if app.source == .sparkle {
+                    if app.source == .sparkle || app.source == .appStore {
                         // Show progress fill for active update statuses
                         switch app.status {
                         case .downloading, .extracting, .installing, .verifying:
                             SparkleProgressBar(
                                 maxWidth: geometry.size.width,
                                 progress: app.progress,
-                                height: geometry.size.height
+                                height: geometry.size.height,
+                                source: app.source
                             )
                         default:
                             EmptyView()

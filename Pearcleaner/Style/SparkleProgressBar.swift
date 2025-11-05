@@ -12,9 +12,22 @@ struct SparkleProgressBar: View {
     let maxWidth: CGFloat
     let progress: Double
     let height: CGFloat
+    let source: UpdateSource
 
     @Environment(\.colorScheme) var colorScheme
     @State private var sparkles: [SparkleConfig] = []
+
+    /// Get icon names based on update source
+    private var iconNames: [String] {
+        switch source {
+        case .appStore:
+            return ["cart", "cart.fill", "storefront", "storefront.fill"]
+        case .sparkle:
+            return ["star", "star.fill", "sparkle", "sparkles", "sparkles.2"]
+        case .homebrew, .unsupported:
+            return ["star", "star.fill", "sparkle", "sparkles", "sparkles.2"]
+        }
+    }
 
     var body: some View {
         ZStack(alignment: .leading) {
@@ -53,7 +66,7 @@ struct SparkleProgressBar: View {
                         size: CGFloat.random(in: 5...15),
                         baseOpacity: Double.random(in: 0.15...0.4),
                         animationDelay: Double(index) * 0.15,
-                        iconName: ["star", "star.fill", "sparkle", "sparkles", "sparkles.2"].randomElement() ?? "star",
+                        iconName: iconNames.randomElement() ?? iconNames.first ?? "star",
                         movementRange: CGFloat.random(in: 3...8)
                     )
                 }
