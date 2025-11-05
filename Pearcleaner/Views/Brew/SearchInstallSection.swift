@@ -565,6 +565,23 @@ struct SearchResultRowView: View {
         return nil
     }
 
+    private var displayedName: String {
+        // For installed casks, prefer the actual app name over the cask display name
+        if isCask && isAlreadyInstalled {
+            let shortName = result.name.components(separatedBy: "/").last ?? result.name
+
+            // Find matching app in AppState.shared.sortedApps by cask name
+            if let app = AppState.shared.sortedApps.first(where: { appInfo in
+                appInfo.cask == result.name || appInfo.cask == shortName
+            }) {
+                return app.appName  // Use the actual app name (e.g., "Yandex Disk")
+            }
+        }
+
+        // Fallback to cask display name or name
+        return result.displayName ?? result.name
+    }
+
     private func getPackageSize() -> String? {
         let shortName = result.name.components(separatedBy: "/").last ?? result.name
 
@@ -740,7 +757,7 @@ struct SearchResultRowView: View {
             // Package name and description
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 4) {
-                    Text(result.displayName ?? result.name)
+                    Text(displayedName)
                         .font(.headline)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 

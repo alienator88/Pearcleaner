@@ -761,7 +761,10 @@ private let caskLookupQueue = DispatchQueue(label: "com.pearcleaner.cask.lookup"
 
 /// Get full cask metadata including auto_updates flag
 /// Returns CaskMetadata with cask name and auto_updates flag from Homebrew cask JSON
-func getCaskInfo(for appName: String) -> CaskMetadata? {
+/// - Parameters:
+///   - appName: The display name from kMDItemDisplayName (e.g., "Yandex Disk")
+///   - appPath: Optional app path URL to extract actual filename if display name doesn't match
+func getCaskInfo(for appName: String, appPath: URL? = nil) -> CaskMetadata? {
     // First, try a read-only access
     let existingTable = caskLookupQueue.sync {
         return caskLookupTable
@@ -779,7 +782,21 @@ func getCaskInfo(for appName: String) -> CaskMetadata? {
 
     // Now safely read the result
     return caskLookupQueue.sync {
-        return caskLookupTable?[appName.lowercased()]
+        // Try with display name first (from kMDItemDisplayName)
+        if let result = caskLookupTable?[appName.lowercased()] {
+            return result
+        }
+
+        // If not found, try with actual filename (handles localized names)
+        // Example: Display name "Yandex Disk" won't match, but filename "Yandex.Disk.2" will
+        if let appPath = appPath {
+            let filename = appPath.lastPathComponent.replacingOccurrences(of: ".app", with: "").lowercased()
+            if let result = caskLookupTable?[filename] {
+                return result
+            }
+        }
+
+        return nil
     }
 }
 
