@@ -206,7 +206,8 @@ class UpdateManager: ObservableObject {
                 releaseNotesLink: nil,
                 releaseDate: nil,
                 isPreRelease: false,
-                isIOSApp: false
+                isIOSApp: false,
+                foundInRegion: nil
             )
         }
 
@@ -264,7 +265,8 @@ class UpdateManager: ObservableObject {
                 releaseNotesLink: nil,
                 releaseDate: nil,
                 isPreRelease: false,
-                isIOSApp: false
+                isIOSApp: false,
+                foundInRegion: nil
             )
 
             hiddenUpdates.append(updateableApp)

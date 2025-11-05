@@ -5,6 +5,9 @@
       "comment" : "Do not translate",
       "shouldTranslate" : false
     },
+    " (Found in %@ App Store. Opening App Store to update.)" : {
+
+    },
     " (iOS apps have to be updated in the App Store)" : {
       "localizations" : {
         "de" : {

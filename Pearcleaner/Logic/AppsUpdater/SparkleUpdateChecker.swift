@@ -275,7 +275,8 @@ private class SparkleCheckerOperation: NSObject, SPUUserDriver, SPUUpdaterDelega
             releaseNotesLink: releaseNotesLink,
             releaseDate: appcastItem.dateString,
             isPreRelease: isPreRelease,
-            isIOSApp: false
+            isIOSApp: false,
+            foundInRegion: nil
         )
     }
 

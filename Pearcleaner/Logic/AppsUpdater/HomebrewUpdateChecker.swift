@@ -148,7 +148,8 @@ class HomebrewUpdateChecker {
                 releaseNotesLink: nil,
                 releaseDate: nil,
                 isPreRelease: false,  // Homebrew updates are not pre-releases
-                isIOSApp: false  // Homebrew apps are never iOS apps
+                isIOSApp: false,  // Homebrew apps are never iOS apps
+                foundInRegion: nil
             )
             updateableApps.append(updateableApp)
         }
@@ -220,7 +221,8 @@ class HomebrewUpdateChecker {
                     releaseNotesLink: nil,
                     releaseDate: nil,
                     isPreRelease: false,
-                    isIOSApp: false
+                    isIOSApp: false,
+                    foundInRegion: nil
                 )
                 updateableApps.append(updateableApp)
             }

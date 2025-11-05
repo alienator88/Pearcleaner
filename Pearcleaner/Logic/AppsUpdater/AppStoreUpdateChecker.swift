@@ -79,13 +79,14 @@ class AppStoreUpdateChecker {
     private static func checkSingleApp(app: AppInfo) async -> UpdateableApp? {
         logger.log(.appStore, "Checking: \(app.appName) (\(app.bundleIdentifier))")
 
-        // Query iTunes Search API using bundle ID to get app info (adamID, version, metadata)
-        guard let appStoreInfo = await getAppStoreInfo(bundleID: app.bundleIdentifier) else {
+        // Query iTunes Search API using bundle ID to get app info (adamID, version, metadata) and region
+        guard let result = await getAppStoreInfo(bundleID: app.bundleIdentifier) else {
             logger.log(.appStore, "  ❌ API lookup failed - not found in App Store")
             return nil
         }
 
-        logger.log(.appStore, "  ✅ Found in App Store: v\(appStoreInfo.version) (adamID: \(appStoreInfo.adamID))")
+        let (appStoreInfo, foundRegion) = result
+        logger.log(.appStore, "  ✅ Found in App Store: v\(appStoreInfo.version) (adamID: \(appStoreInfo.adamID)) in region: \(foundRegion)")
 
         // Use Version for robust comparison (handles 1, 2, 3+ component versions)
         let installedVer = Version(versionNumber: app.appVersion, buildNumber: nil)
@@ -120,7 +121,8 @@ class AppStoreUpdateChecker {
                 releaseNotesLink: nil,
                 releaseDate: appStoreInfo.releaseDate,
                 isPreRelease: false,  // App Store updates are not pre-releases
-                isIOSApp: isIOSApp
+                isIOSApp: isIOSApp,
+                foundInRegion: foundRegion
             )
         }
 
@@ -136,14 +138,14 @@ class AppStoreUpdateChecker {
         let releaseDate: String?
     }
 
-    private static func getAppStoreInfo(bundleID: String) async -> AppStoreInfo? {
+    private static func getAppStoreInfo(bundleID: String) async -> (info: AppStoreInfo, region: String)? {
         // Get user's primary region
         let primaryRegion = await getAppStoreRegion()
         logger.log(.appStore, "    Primary region: \(primaryRegion)")
 
         // Try primary region first with all entity types
         if let info = await tryAllEntities(bundleID: bundleID, region: primaryRegion) {
-            return info
+            return (info, primaryRegion)
         }
 
         // If not found, try fallback regions
@@ -152,7 +154,7 @@ class AppStoreUpdateChecker {
             logger.log(.appStore, "    Trying region: \(region)")
             if let info = await tryAllEntities(bundleID: bundleID, region: region) {
                 logger.log(.appStore, "    ✓ Found in region: \(region)")
-                return info
+                return (info, region)
             }
         }
 
