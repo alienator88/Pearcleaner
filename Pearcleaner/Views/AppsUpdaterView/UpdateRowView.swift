@@ -435,7 +435,7 @@ struct UpdateRowView: View {
                 if app.isIOSApp {
                     result = result + Text(" (iOS apps have to be updated in the App Store)")
                 } else if isNonPrimaryRegion, let region = app.foundInRegion {
-                    result = result + Text(" (Found in \(region) App Store. Opening App Store to update.)")
+                    result = result + Text(" (Found in \(region) App Store. Open in App Store to update.)")
                 }
                 return result
             } else if displayAvailableVersion.isEmpty, let availableBuild = availableBuild {
@@ -449,7 +449,7 @@ struct UpdateRowView: View {
                 if app.isIOSApp {
                     result = result + Text(" (iOS apps have to be updated in the App Store)")
                 } else if isNonPrimaryRegion, let region = app.foundInRegion {
-                    result = result + Text(" (Found in \(region) App Store. Opening App Store to update.)")
+                    result = result + Text(" (Found in \(region) App Store. Open in App Store to update.)")
                 }
                 return result
             } else {
@@ -466,7 +466,7 @@ struct UpdateRowView: View {
                 if app.isIOSApp {
                     result = result + Text(" (iOS apps have to be updated in the App Store)")
                 } else if isNonPrimaryRegion, let region = app.foundInRegion {
-                    result = result + Text(" (Found in \(region) App Store. Opening App Store to update.)")
+                    result = result + Text(" (Found in \(region) App Store. Open in App Store to update.)")
                 }
                 return result
             }
@@ -478,7 +478,7 @@ struct UpdateRowView: View {
             if app.isIOSApp {
                 result = result + Text(" (iOS apps have to be updated in the App Store)")
             } else if isNonPrimaryRegion, let region = app.foundInRegion {
-                result = result + Text(" (Found in \(region) App Store. Opening App Store to update.)")
+                result = result + Text(" (Found in \(region) App Store. Open in App Store to update.)")
             }
             return result
         }

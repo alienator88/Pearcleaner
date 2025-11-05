@@ -6,7 +6,7 @@
    <br />
    <strong>Status: </strong>Maintained
    <br />
-   <strong>Version: </strong>5.3.6
+   <strong>Version: </strong>5.3.7
    <br />
    <a href="https://github.com/alienator88/Pearcleaner/releases"><strong>Download</strong></a>
     · 

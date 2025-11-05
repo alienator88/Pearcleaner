@@ -1,9 +1,12 @@
 ### What's New
 
+- [x] Show App Store progress bar during updates - #430
 - [x] Add App Store region fallback when checking for updates
+- [x] Replace sparkle version check with custom implementation that checks both build and shortVersion strings, not just build
 - [x] Ignore SetApp sparkle apps as the signatures don't match the dev since SetApp signs them - #428
-- [x] Disable homebrew api call caching on network request
-- [x] Allow adding apps to Updater ignore list from sidebar
+- [x] Disable homebrew api call caching on network requests
+- [x] Allow adding apps to Updater ignore list from sidebar even if no update is available
+- [x] Add homebrew debug lines during loading/install/update/uninstall actions
 
 
 ### Fixes

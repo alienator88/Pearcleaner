@@ -375,7 +375,7 @@ class UpdateManager: ObservableObject {
                     }
 
                     // Update succeeded - refresh happens via completion callback above
-                    printOS("✅ App Store update completed for adamID \(adamID)")
+                    UpdaterDebugLogger.shared.log(.appStore, "✅ App Store update completed for adamID \(adamID)")
 
                 } catch {
                     // Handle errors from the new throwing API
