@@ -342,30 +342,52 @@ class UpdateManager: ObservableObject {
                     updatesBySource[.appStore] = apps
                 }
 
-                // Perform update
-                await AppStoreUpdater.shared.updateApp(adamID: adamID) { [weak self] progress, status in
-                    Task { @MainActor in
-                        guard let self = self else { return }
-                        if var apps = self.updatesBySource[.appStore],
-                           let index = apps.firstIndex(where: { $0.id == app.id }) {
-                            apps[index].progress = progress
+                // Perform update (new API throws errors)
+                do {
+                    try await AppStoreUpdater.shared.updateApp(adamID: adamID) { [weak self] progress, status in
+                        Task { @MainActor in
+                            guard let self = self else { return }
+                            if var apps = self.updatesBySource[.appStore],
+                               let index = apps.firstIndex(where: { $0.id == app.id }) {
+                                apps[index].progress = progress
 
-                            // Update status based on App Store phase
-                            if status.contains("Installing") {
-                                // Phase 1: App Store is removing old bundle and installing new one
-                                apps[index].status = .installing
-                                self.updatesBySource[.appStore] = apps
-                            } else if status.contains("Completed") {
-                                // Phase 5: CommerceKit finished - remove from list and refresh
-                                Task {
-                                    await self.removeFromUpdatesList(appID: app.id, source: .appStore)
-                                    await self.refreshApps(updatedApp: app.appInfo)
+                                // Update status based on App Store phase
+                                if status.contains("Downloading") || status.contains("Preparing") {
+                                    // Phase 0 or 4: Downloading or preparing
+                                    apps[index].status = .downloading
+                                    self.updatesBySource[.appStore] = apps
+                                } else if status.contains("Installing") {
+                                    // Phase 1: Installing
+                                    apps[index].status = .installing
+                                    self.updatesBySource[.appStore] = apps
+                                } else if status.contains("Completed") || status.contains("Already up to date") {
+                                    // Phase 5 or no download needed: Complete - remove from list and refresh
+                                    Task {
+                                        await self.removeFromUpdatesList(appID: app.id, source: .appStore)
+                                        await self.refreshApps(updatedApp: app.appInfo)
+                                    }
+                                } else {
+                                    // Other phases: Keep updating progress but maintain current status
+                                    self.updatesBySource[.appStore] = apps
                                 }
-                            } else {
-                                // Phase 0 or other: Keep current status or set to downloading
-                                self.updatesBySource[.appStore] = apps
                             }
                         }
+                    }
+
+                    // Update succeeded - refresh happens via completion callback above
+                    printOS("✅ App Store update completed for adamID \(adamID)")
+
+                } catch {
+                    // Handle errors from the new throwing API
+                    let message = error.localizedDescription
+                    printOS("❌ App Store update failed for adamID \(adamID): \(message)")
+
+                    // Update UI to show error (matching Sparkle's error display pattern)
+                    if var apps = updatesBySource[.appStore],
+                       let index = apps.firstIndex(where: { $0.id == app.id }) {
+                        apps[index].status = .failed(message)
+                        apps[index].progress = 0.0
+                        updatesBySource[.appStore] = apps
                     }
                 }
             }
