@@ -14,6 +14,7 @@ struct SidebarView: View {
     @Environment(\.colorScheme) var colorScheme
     @Binding var infoSidebar: Bool
     let displaySizeTotal: String
+    @Binding var localSensitivity: SearchSensitivityLevel
 
     var body: some View {
         if infoSidebar {
@@ -23,7 +24,7 @@ struct SidebarView: View {
                 VStack(spacing: 0) {
                     AppDetailsHeaderView(displaySizeTotal: displaySizeTotal)
                     Divider().padding(.vertical, 5)
-                    AppDetails()
+                    AppDetails(localSensitivity: $localSensitivity)
                     Spacer()
                     ExtraOptions()
                 }
@@ -129,8 +130,7 @@ struct AppDetails: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
     @Environment(\.colorScheme) var colorScheme
-    @AppStorage("settings.general.searchSensitivity") private var globalSensitivityLevel: SearchSensitivityLevel = .strict
-    @State private var localSensitivityLevel: SearchSensitivityLevel = .strict
+    @Binding var localSensitivity: SearchSensitivityLevel
     @State private var isSliderActive: Bool = false
 
     var body: some View {
@@ -150,10 +150,10 @@ struct AppDetails: View {
                         .font(.subheadline)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     Spacer()
-                    Text(localSensitivityLevel.title)
+                    Text(localSensitivity.title)
                         .font(.caption)
                         .fontWeight(.semibold)
-                        .foregroundStyle(localSensitivityLevel.color)
+                        .foregroundStyle(localSensitivity.color)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
                         .background {
@@ -165,42 +165,33 @@ struct AppDetails: View {
                 HStack {
                     Text("Fewer files").textCase(.uppercase).font(.caption2).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     Slider(value: Binding(
-                        get: { Double(localSensitivityLevel.rawValue) },
+                        get: { Double(localSensitivity.rawValue) },
                         set: { newValue in
                             let newLevel = SearchSensitivityLevel(rawValue: Int(newValue)) ?? .strict
-                            localSensitivityLevel = newLevel
+                            localSensitivity = newLevel
                         }
                     ), in: 0...Double(SearchSensitivityLevel.allCases.count - 1), step: 1,
                            onEditingChanged: { editing in
                         isSliderActive = editing
                         if !editing {
-                            // User finished adjusting the slider, now save and refresh
-                            appState.perAppSensitivity[appState.appInfo.bundleIdentifier] = localSensitivityLevel
+                            // User finished adjusting the slider, now refresh with new sensitivity
                             refreshFiles()
                         }
                     })
-                    .tint(localSensitivityLevel.color)
+                    .tint(localSensitivity.color)
                     Text("Most files").textCase(.uppercase).font(.caption2).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
             }
             .padding(.bottom, 8)
-            .onAppear {
-                // Initialize local sensitivity level from stored per-app setting or global setting
-                localSensitivityLevel = appState.perAppSensitivity[appState.appInfo.bundleIdentifier] ?? globalSensitivityLevel
-            }
-            .onChange(of: appState.appInfo.bundleIdentifier) { _ in
-                // Update when app changes
-                localSensitivityLevel = appState.perAppSensitivity[appState.appInfo.bundleIdentifier] ?? globalSensitivityLevel
-            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, 5)
     }
-    
+
+
     private func refreshFiles() {
-        // Refresh the file search with the new sensitivity level
-        let sensitivityOverride = appState.perAppSensitivity[appState.appInfo.bundleIdentifier]
-        showAppInFiles(appInfo: appState.appInfo, appState: appState, locations: locations, sensitivityOverride: sensitivityOverride)
+        // Refresh the file search with the current sensitivity level
+        showAppInFiles(appInfo: appState.appInfo, appState: appState, locations: locations, sensitivityOverride: localSensitivity)
     }
 
     @ViewBuilder
