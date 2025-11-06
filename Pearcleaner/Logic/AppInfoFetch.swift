@@ -9,6 +9,15 @@ import Foundation
 import SwiftUI
 import AlinFoundation
 
+// MARK: - Helper Functions
+
+/// Read Info.plist directly from disk without using Bundle cache
+/// This is useful when Bundle(url:) returns nil due to macOS not yet indexing a newly installed app
+private func readInfoPlistDirect(at appPath: URL) -> [String: Any]? {
+    let infoPlistURL = appPath.appendingPathComponent("Contents/Info.plist")
+    return NSDictionary(contentsOf: infoPlistURL) as? [String: Any]
+}
+
 // Metadata-based AppInfo Fetcher Class
 class MetadataAppInfoFetcher {
     static func getAppInfo(fromMetadata metadata: [String: Any], atPath path: URL) -> AppInfo? {
@@ -22,20 +31,31 @@ class MetadataAppInfoFetcher {
 
         // Get version and build number directly from bundle Info.plist instead of metadata (always up-to-date)
         let (version, buildNumber): (String, String?) = {
-            guard let bundle = Bundle(url: path) else {
-                return ("", nil)
+            // Try Bundle(url:) first
+            if let bundle = Bundle(url: path) {
+                // Extract marketing version (CFBundleShortVersionString), fallback to CFBundleVersion if missing
+                let shortVersion = bundle.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+                let buildVer = bundle.infoDictionary?["CFBundleVersion"] as? String ?? ""
+
+                // Use shortVersion if available, otherwise use buildVersion
+                let marketingVersion = shortVersion.isEmpty ? buildVer : shortVersion
+
+                // Build number is CFBundleVersion (only set if different from marketing version)
+                let build = shortVersion.isEmpty ? nil : buildVer
+                return (marketingVersion, build)
             }
 
-            // Extract marketing version (CFBundleShortVersionString), fallback to CFBundleVersion if missing
-            let shortVersion = bundle.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
-            let buildVer = bundle.infoDictionary?["CFBundleVersion"] as? String ?? ""
+            // Fallback: Read Info.plist directly from disk (useful for newly installed apps)
+            if let infoDict = readInfoPlistDirect(at: path) {
+                let shortVersion = infoDict["CFBundleShortVersionString"] as? String ?? ""
+                let buildVer = infoDict["CFBundleVersion"] as? String ?? ""
 
-            // Use shortVersion if available, otherwise use buildVersion
-            let marketingVersion = shortVersion.isEmpty ? buildVer : shortVersion
+                let marketingVersion = shortVersion.isEmpty ? buildVer : shortVersion
+                let build = shortVersion.isEmpty ? nil : buildVer
+                return (marketingVersion, build)
+            }
 
-            // Build number is CFBundleVersion (only set if different from marketing version)
-            let build = shortVersion.isEmpty ? nil : buildVer
-            return (marketingVersion, build)
+            return ("", nil)
         }()
 
         // Size
@@ -290,49 +310,87 @@ class AppInfoFetcher {
     }
 
     private static func createAppInfoFromBundle(atPath path: URL, wrapped: Bool, dates: (creation: Date?, contentChange: Date?, lastUsed: Date?)? = nil) -> AppInfo? {
-        guard let bundle = Bundle(url: path), let bundleIdentifier = bundle.bundleIdentifier else {
-            // Check if this might be a Steam game and try to find the actual bundle
-            if let steamAppInfo = SteamAppInfoFetcher.checkForSteamGame(launcherPath: path) {
-                return steamAppInfo
-            }
+        // Try Bundle(url:) first
+        if let bundle = Bundle(url: path), let bundleIdentifier = bundle.bundleIdentifier {
+            let appName = wrapped ? path.deletingLastPathComponent().deletingLastPathComponent().deletingPathExtension().lastPathComponent.capitalizingFirstLetter() : path.localizedName().capitalizingFirstLetter()
 
-            printOS("Bundle not found or missing bundle identifier at path: \(path)")
-            return nil
+            // Extract marketing version (CFBundleShortVersionString) - no fallback to build number
+            let appVersion = (bundle.infoDictionary?["CFBundleShortVersionString"] as? String)?.isEmpty ?? true
+                ? ""
+                : bundle.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+
+            // Extract build number (CFBundleVersion) separately
+            let appBuildNumber = bundle.infoDictionary?["CFBundleVersion"] as? String
+
+            let appIcon = AppInfoUtils.fetchAppIcon(for: path, wrapped: wrapped)
+            let webApp = AppInfoUtils.isWebApp(bundle: bundle)
+
+            let system = !path.path.contains(NSHomeDirectory())
+
+            // Get cask metadata (includes cask name and auto_updates flag)
+            // Pass both display name and actual path to handle localized names
+            let caskInfo = getCaskInfo(for: appName, appPath: path)
+            let cask = caskInfo?.caskName
+            let autoUpdates = caskInfo?.autoUpdates
+
+            let arch = checkAppBundleArchitecture(at: path.path)
+
+            // Get entitlements for the app
+            let entitlements = getEntitlements(for: path.path)
+            let teamIdentifier = getTeamIdentifier(for: path.path)
+
+            // Detect update sources (done at load time for performance)
+            let hasSparkle = AppCategoryDetector.checkForSparkle(bundle: bundle, infoDict: bundle.infoDictionary)
+            let isAppStore = AppCategoryDetector.checkForAppStore(bundle: bundle, path: path, wrapped: wrapped)
+
+            return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName, appVersion: appVersion, appBuildNumber: appBuildNumber, appIcon: appIcon,
+                           webApp: webApp, wrapped: wrapped, system: system, arch: arch, cask: cask, steam: false, hasSparkle: hasSparkle, isAppStore: isAppStore, autoUpdates: autoUpdates, bundleSize: 0, fileSize: [:], fileIcon: [:], creationDate: dates?.creation, contentChangeDate: dates?.contentChange, lastUsedDate: dates?.lastUsed, entitlements: entitlements, teamIdentifier: teamIdentifier)
         }
 
-        let appName = wrapped ? path.deletingLastPathComponent().deletingLastPathComponent().deletingPathExtension().lastPathComponent.capitalizingFirstLetter() : path.localizedName().capitalizingFirstLetter()
+        // Fallback: Read Info.plist directly from disk (useful for newly installed apps where Bundle cache isn't ready)
+        if let infoDict = readInfoPlistDirect(at: path), let bundleIdentifier = infoDict["CFBundleIdentifier"] as? String {
+            let appName = wrapped ? path.deletingLastPathComponent().deletingLastPathComponent().deletingPathExtension().lastPathComponent.capitalizingFirstLetter() : path.localizedName().capitalizingFirstLetter()
 
-        // Extract marketing version (CFBundleShortVersionString) - no fallback to build number
-        let appVersion = (bundle.infoDictionary?["CFBundleShortVersionString"] as? String)?.isEmpty ?? true
-            ? ""
-            : bundle.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+            // Extract marketing version (CFBundleShortVersionString) - no fallback to build number
+            let appVersion = (infoDict["CFBundleShortVersionString"] as? String)?.isEmpty ?? true
+                ? ""
+                : infoDict["CFBundleShortVersionString"] as? String ?? ""
 
-        // Extract build number (CFBundleVersion) separately
-        let appBuildNumber = bundle.infoDictionary?["CFBundleVersion"] as? String
+            // Extract build number (CFBundleVersion) separately
+            let appBuildNumber = infoDict["CFBundleVersion"] as? String
 
-        let appIcon = AppInfoUtils.fetchAppIcon(for: path, wrapped: wrapped)
-        let webApp = AppInfoUtils.isWebApp(bundle: bundle)
+            let appIcon = AppInfoUtils.fetchAppIcon(for: path, wrapped: wrapped)
+            let webApp = AppInfoUtils.isWebApp(appPath: path)  // Use path-based version since we don't have bundle
 
-        let system = !path.path.contains(NSHomeDirectory())
+            let system = !path.path.contains(NSHomeDirectory())
 
-        // Get cask metadata (includes cask name and auto_updates flag)
-        // Pass both display name and actual path to handle localized names
-        let caskInfo = getCaskInfo(for: appName, appPath: path)
-        let cask = caskInfo?.caskName
-        let autoUpdates = caskInfo?.autoUpdates
+            // Get cask metadata (includes cask name and auto_updates flag)
+            // Pass both display name and actual path to handle localized names
+            let caskInfo = getCaskInfo(for: appName, appPath: path)
+            let cask = caskInfo?.caskName
+            let autoUpdates = caskInfo?.autoUpdates
 
-        let arch = checkAppBundleArchitecture(at: path.path)
+            let arch = checkAppBundleArchitecture(at: path.path)
 
-        // Get entitlements for the app
-        let entitlements = getEntitlements(for: path.path)
-        let teamIdentifier = getTeamIdentifier(for: path.path)
+            // Get entitlements for the app
+            let entitlements = getEntitlements(for: path.path)
+            let teamIdentifier = getTeamIdentifier(for: path.path)
 
-        // Detect update sources (done at load time for performance)
-        let hasSparkle = AppCategoryDetector.checkForSparkle(bundle: bundle, infoDict: bundle.infoDictionary)
-        let isAppStore = AppCategoryDetector.checkForAppStore(bundle: bundle, path: path, wrapped: wrapped)
+            // Detect update sources (done at load time for performance)
+            let hasSparkle = AppCategoryDetector.checkForSparkle(bundle: nil, infoDict: infoDict)
+            let isAppStore = AppCategoryDetector.checkForAppStore(bundle: nil, path: path, wrapped: wrapped)
 
-        return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName, appVersion: appVersion, appBuildNumber: appBuildNumber, appIcon: appIcon,
-                       webApp: webApp, wrapped: wrapped, system: system, arch: arch, cask: cask, steam: false, hasSparkle: hasSparkle, isAppStore: isAppStore, autoUpdates: autoUpdates, bundleSize: 0, fileSize: [:], fileIcon: [:], creationDate: dates?.creation, contentChangeDate: dates?.contentChange, lastUsedDate: dates?.lastUsed, entitlements: entitlements, teamIdentifier: teamIdentifier)
+            return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName, appVersion: appVersion, appBuildNumber: appBuildNumber, appIcon: appIcon,
+                           webApp: webApp, wrapped: wrapped, system: system, arch: arch, cask: cask, steam: false, hasSparkle: hasSparkle, isAppStore: isAppStore, autoUpdates: autoUpdates, bundleSize: 0, fileSize: [:], fileIcon: [:], creationDate: dates?.creation, contentChangeDate: dates?.contentChange, lastUsedDate: dates?.lastUsed, entitlements: entitlements, teamIdentifier: teamIdentifier)
+        }
+
+        // If both Bundle and direct reading failed, check if this might be a Steam game
+        if let steamAppInfo = SteamAppInfoFetcher.checkForSteamGame(launcherPath: path) {
+            return steamAppInfo
+        }
+
+        printOS("Bundle not found or missing bundle identifier at path: \(path)")
+        return nil
     }
 
 }

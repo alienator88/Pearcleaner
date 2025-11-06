@@ -1469,17 +1469,57 @@ class HomebrewController {
 
         // For casks, get size from AppState.sortedApps (actual installed app)
         if let appInfo = await MainActor.run(body: { AppState.shared.sortedApps.first(where: { $0.cask == name }) }) {
-            // bundleSize is already in bytes, just format it
-            // Format as human-readable (must run on main thread - ByteCountFormatter is not thread-safe)
-            let bytesToFormat = appInfo.bundleSize
+            // If bundleSize is 0, calculate it now and update the AppInfo
+            if appInfo.bundleSize == 0 {
+                let calculatedSize = totalSizeOnDisk(for: appInfo.path)
+                let formatted = await MainActor.run {
+                    ByteCountFormatter.string(fromByteCount: calculatedSize, countStyle: .file)
+                }
+
+                // Update the AppInfo in sortedApps with calculated size
+                await MainActor.run {
+                    if let index = AppState.shared.sortedApps.firstIndex(where: { $0.path == appInfo.path }) {
+                        var updatedAppInfo = AppState.shared.sortedApps[index]
+                        updatedAppInfo.bundleSize = calculatedSize
+                        AppState.shared.sortedApps[index] = updatedAppInfo
+                    }
+                }
+
+                return (calculatedSize, formatted)
+            }
+
+            // bundleSize is already calculated, just format it
             let formatted = await MainActor.run {
-                ByteCountFormatter.string(fromByteCount: bytesToFormat, countStyle: .file)
+                ByteCountFormatter.string(fromByteCount: appInfo.bundleSize, countStyle: .file)
             }
             return (appInfo.bundleSize, formatted)
-        }
+        } else {
+            // Fallback if app not found in sortedApps - find and calculate from Caskroom path
+            let caskroomPath = "\(brewPrefix)/Caskroom/\(name)"
+            let globPattern = "\(caskroomPath)/*/*.app"
 
-        // Fallback if app not found in sortedApps
-        return (0, "0 KB")
+            // Find the app symlink in Caskroom using glob
+            var globResult = glob_t()
+            defer { globfree(&globResult) }
+
+            guard glob(globPattern, 0, nil, &globResult) == 0,
+                  globResult.gl_pathc > 0,
+                  let cPath = globResult.gl_pathv[0],
+                  let symlinkPath = String(validatingUTF8: cPath) else {
+                return (0, "0 KB")
+            }
+
+            // Resolve symlink to get real path in /Applications
+            let realPath = URL(fileURLWithPath: symlinkPath).resolvingSymlinksInPath()
+
+            // Calculate size from disk
+            let calculatedSize = totalSizeOnDisk(for: realPath)
+            let formatted = await MainActor.run {
+                ByteCountFormatter.string(fromByteCount: calculatedSize, countStyle: .file)
+            }
+
+            return (calculatedSize, formatted)
+        }
     }
 
     // MARK: - Tap Package Loading

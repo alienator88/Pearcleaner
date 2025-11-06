@@ -193,6 +193,13 @@ struct HomebrewView: View {
                         case .browse:
                             await brewManager.loadInstalledPackages()
                             await brewManager.loadAvailablePackages(appState: appState, forceRefresh: true)
+                            // Refresh sortedApps to pick up newly installed casks with proper size
+                            let folderPaths = await MainActor.run { FolderSettingsManager.shared.folderPaths }
+                            await loadAppsAsync(folderPaths: folderPaths)
+                            // Update categories to pick up latest app names from sortedApps and re-sort
+                            await MainActor.run {
+                                brewManager.updateInstalledCategories()
+                            }
                         case .taps:
                             await brewManager.loadTaps()
                         case .autoUpdate:

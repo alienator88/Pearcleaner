@@ -159,6 +159,11 @@ private class SparkleCheckerOperation: NSObject, SPUUserDriver, SPUUpdaterDelega
     private let completion: (UpdateableApp?) -> Void
     private var updater: SPUUpdater?
 
+    // Cache for bestValidUpdate result (Sparkle calls it 3 times during check phase)
+    private var cachedBestUpdate: SUAppcastItem?
+    private var hasCachedResult = false  // Track if we've cached anything (nil or item)
+    private var bestUpdateCallCount = 0
+
     init(appInfo: AppInfo, bundle: Bundle, feedURL: URL, includePreReleases: Bool, currentMacOSVersion: Version, completion: @escaping (UpdateableApp?) -> Void) {
         self.appInfo = appInfo
         self.bundle = bundle
@@ -473,7 +478,21 @@ private class SparkleCheckerOperation: NSObject, SPUUserDriver, SPUUpdaterDelega
     }
 
     func bestValidUpdate(in appcast: SUAppcast, for updater: SPUUpdater) -> SUAppcastItem? {
-        SparkleUpdateChecker.logger.log(.sparkle, "  🔍 bestValidUpdate called - finding newest valid version")
+        bestUpdateCallCount += 1
+
+        // Sparkle calls this 3 times during check phase with slightly different filtered appcasts
+        // Return cached result for calls 2 and 3 to avoid redundant work
+        if hasCachedResult {
+            SparkleUpdateChecker.logger.log(.sparkle, "  🔍 bestValidUpdate called (call #\(bestUpdateCallCount)) - returning cached result")
+            if let cached = cachedBestUpdate {
+                SparkleUpdateChecker.logger.log(.sparkle, "     Cached: \(cached.displayVersionString) (build: \(cached.versionString))")
+            } else {
+                SparkleUpdateChecker.logger.log(.sparkle, "     Cached: nil (no update available)")
+            }
+            return cachedBestUpdate
+        }
+
+        SparkleUpdateChecker.logger.log(.sparkle, "  🔍 bestValidUpdate called (call #\(bestUpdateCallCount)) - finding newest valid version")
         SparkleUpdateChecker.logger.log(.sparkle, "     Total items in appcast: \(appcast.items.count)")
 
         // Get installed version info for comparison
@@ -557,10 +576,18 @@ private class SparkleCheckerOperation: NSObject, SPUUserDriver, SPUUpdaterDelega
                 SparkleUpdateChecker.logger.log(.sparkle, "       ")
                 SparkleUpdateChecker.logger.log(.sparkle, "       ✅ SELECTED: \(item.displayVersionString) (build: \(item.versionString))")
                 SparkleUpdateChecker.logger.log(.sparkle, "       Reason: \(displayIsNewer ? "Display version is newer" : "Build number is newer")")
+
+                // Cache result for subsequent calls (Sparkle calls this 3 times)
+                cachedBestUpdate = item
+                hasCachedResult = true
                 return item
             } else {
                 SparkleUpdateChecker.logger.log(.sparkle, "       ⚠️ Candidate is not newer than installed version")
                 SparkleUpdateChecker.logger.log(.sparkle, "       No update available")
+
+                // Cache nil result for subsequent calls
+                cachedBestUpdate = nil
+                hasCachedResult = true
                 return nil
             }
         }
@@ -568,6 +595,10 @@ private class SparkleCheckerOperation: NSObject, SPUUserDriver, SPUUpdaterDelega
         // No valid candidate found after filtering
         SparkleUpdateChecker.logger.log(.sparkle, "     ")
         SparkleUpdateChecker.logger.log(.sparkle, "     ❌ No valid update found (all items filtered out)")
+
+        // Cache nil result for subsequent calls
+        cachedBestUpdate = nil
+        hasCachedResult = true
         return nil
     }
 }

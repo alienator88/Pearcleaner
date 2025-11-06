@@ -161,9 +161,9 @@ class HomebrewManager: ObservableObject {
                 tempCasks.append(package)
             }
 
-            // Update @Published properties once with all packages
-            installedFormulae = tempFormulae
-            installedCasks = tempCasks
+            // Update @Published properties once with all packages (sorted alphabetically by display name)
+            installedFormulae = tempFormulae.sorted { ($0.displayName ?? $0.name).localizedCaseInsensitiveCompare($1.displayName ?? $1.name) == .orderedAscending }
+            installedCasks = tempCasks.sorted { ($0.displayName ?? $0.name).localizedCaseInsensitiveCompare($1.displayName ?? $1.name) == .orderedAscending }
 
             // Mark as loaded for this session
             hasLoadedInstalledPackages = true
@@ -270,12 +270,16 @@ class HomebrewManager: ObservableObject {
                     } else {
                         installedCasks.append(updated)
                     }
+                    // Re-sort after adding/updating to maintain alphabetical order
+                    installedCasks.sort { ($0.displayName ?? $0.name).localizedCaseInsensitiveCompare($1.displayName ?? $1.name) == .orderedAscending }
                 } else {
                     if let index = installedFormulae.firstIndex(where: { $0.name == name }) {
                         installedFormulae[index] = updated
                     } else {
                         installedFormulae.append(updated)
                     }
+                    // Re-sort after adding/updating to maintain alphabetical order
+                    installedFormulae.sort { ($0.displayName ?? $0.name).localizedCaseInsensitiveCompare($1.displayName ?? $1.name) == .orderedAscending }
                 }
             }
         } catch {
@@ -339,10 +343,10 @@ class HomebrewManager: ObservableObject {
             }
         }
 
-        // Sort and update dictionary
-        installedByCategory[.outdated] = outdated.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
-        installedByCategory[.formulae] = formulae.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
-        installedByCategory[.casks] = casks.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+        // Sort and update dictionary (by displayName for consistent alphabetical ordering)
+        installedByCategory[.outdated] = outdated.sorted { ($0.displayName ?? $0.name).localizedCaseInsensitiveCompare($1.displayName ?? $1.name) == .orderedAscending }
+        installedByCategory[.formulae] = formulae.sorted { ($0.displayName ?? $0.name).localizedCaseInsensitiveCompare($1.displayName ?? $1.name) == .orderedAscending }
+        installedByCategory[.casks] = casks.sorted { ($0.displayName ?? $0.name).localizedCaseInsensitiveCompare($1.displayName ?? $1.name) == .orderedAscending }
     }
 
     private func isPackageOutdated(_ result: HomebrewSearchResult) -> Bool {
@@ -366,9 +370,21 @@ class HomebrewManager: ObservableObject {
 
         let tap = matchingPackage?.tap
 
+        // For installed casks, prefer AppInfo name over Homebrew displayName for consistent sorting
+        let finalDisplayName: String? = {
+            if package.isCask {
+                // Look up app in sortedApps to get actual app name
+                if let appInfo = AppState.shared.sortedApps.first(where: { $0.cask == package.name || $0.cask == shortName }) {
+                    return appInfo.appName  // Use AppInfo name (e.g., "AppCleaner")
+                }
+            }
+            // Fallback: Ruby file → JWS lookup
+            return package.displayName ?? matchingPackage?.displayName
+        }()
+
         return HomebrewSearchResult(
             name: package.name,
-            displayName: package.displayName ?? matchingPackage?.displayName,  // Fallback: Ruby file → JWS lookup
+            displayName: finalDisplayName,
             description: package.description,
             homepage: nil,
             license: nil,
