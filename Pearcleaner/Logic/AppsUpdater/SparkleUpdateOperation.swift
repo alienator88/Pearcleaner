@@ -36,11 +36,19 @@ class SparkleUpdateOperation: Operation, @unchecked Sendable {
     override func main() {
         guard !isCancelled else { return }
 
+        // Debug: Log cached appcast item status
+        if let cachedItem = app.appcastItem {
+            UpdaterDebugLogger.shared.log(.sparkle, "🔍 DEBUG: Cached appcast item found: \(cachedItem.displayVersionString) (build: \(cachedItem.versionString))")
+        } else {
+            UpdaterDebugLogger.shared.log(.sparkle, "⚠️ DEBUG: No cached appcast item - app.appcastItem is nil!")
+        }
+
         // Sparkle must be initialized and started on the main thread
         DispatchQueue.main.sync {
             let driver = SparkleUpdateDriver(
                 appInfo: app.appInfo,
                 includePreReleases: includePreReleases,
+                cachedAppcastItem: app.appcastItem,  // Pass cached item from check phase
                 progressCallback: progressCallback,
                 completionCallback: { [weak self] success, error in
                     guard let self = self else { return }

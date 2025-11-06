@@ -15,6 +15,7 @@ class SparkleUpdateDriver: NSObject, SPUUserDriver, SPUUpdaterDelegate, @uncheck
 
     private let appBundle: Bundle
     private let includePreReleases: Bool
+    private let cachedAppcastItem: SUAppcastItem?  // Pre-validated item from check phase
     private var updater: SPUUpdater?
     private let progressCallback: (Double, UpdateStatus) -> Void
     private let completionCallback: (Bool, Error?) -> Void
@@ -28,6 +29,7 @@ class SparkleUpdateDriver: NSObject, SPUUserDriver, SPUUpdaterDelegate, @uncheck
 
     init(appInfo: AppInfo,
          includePreReleases: Bool,
+         cachedAppcastItem: SUAppcastItem?,
          progressCallback: @escaping (Double, UpdateStatus) -> Void,
          completionCallback: @escaping (Bool, Error?) -> Void) {
         guard let bundle = Bundle(url: appInfo.path) else {
@@ -35,9 +37,17 @@ class SparkleUpdateDriver: NSObject, SPUUserDriver, SPUUpdaterDelegate, @uncheck
         }
         self.appBundle = bundle
         self.includePreReleases = includePreReleases
+        self.cachedAppcastItem = cachedAppcastItem
         self.progressCallback = progressCallback
         self.completionCallback = completionCallback
         super.init()
+
+        // Debug: Log cached item status in driver
+        if let cachedItem = cachedAppcastItem {
+            logger.log(.sparkle, "  🔍 DEBUG: SparkleUpdateDriver received cached item: \(cachedItem.displayVersionString) (build: \(cachedItem.versionString))")
+        } else {
+            logger.log(.sparkle, "  ⚠️ DEBUG: SparkleUpdateDriver received nil cached item")
+        }
     }
 
     // MARK: - Public Methods
@@ -230,5 +240,20 @@ class SparkleUpdateDriver: NSObject, SPUUserDriver, SPUUpdaterDelegate, @uncheck
 
         // Common pre-release channel names used by Sparkle apps
         return ["beta", "alpha", "nightly", "rc", "dev"]
+    }
+
+    func bestValidUpdate(in appcast: SUAppcast, for updater: SPUUpdater) -> SUAppcastItem? {
+        // If we have a cached appcast item from the check phase, use it
+        // This ensures consistent version selection between check and install
+        if let cachedItem = cachedAppcastItem {
+            logger.log(.sparkle, "  ✅ Using cached appcast item: \(cachedItem.displayVersionString) (build: \(cachedItem.versionString))")
+            logger.log(.sparkle, "     Skipping re-validation - item was already validated during check phase")
+            return cachedItem
+        }
+
+        // No cached item - shouldn't happen in normal flow, but fall back to nil
+        // Sparkle will use its own bestValidUpdate logic
+        logger.log(.sparkle, "  ⚠️ No cached appcast item - using Sparkle's default validation")
+        return nil
     }
 }

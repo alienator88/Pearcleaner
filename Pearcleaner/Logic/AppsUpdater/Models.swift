@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Sparkle
 
 enum UpdateSource: String, CaseIterable {
     case homebrew = "Homebrew"
@@ -76,6 +77,9 @@ struct UpdateableApp: Identifiable {
     let isPreRelease: Bool  // True for Sparkle pre-release updates (has channel tag or SemVer pre-release identifier)
     let isIOSApp: Bool  // True for wrapped iPad/iOS apps that must be updated via App Store app
     let foundInRegion: String?  // App Store region code where update was found (e.g., "US", "CN")
+
+    // Cached Sparkle appcast item (for consistent version selection between check and install)
+    let appcastItem: SUAppcastItem?
 
     var canUpdate: Bool {
         source == .homebrew || source == .appStore

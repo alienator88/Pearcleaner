@@ -428,7 +428,8 @@ struct UpdaterHiddenAppsSection: View {
             releaseDate: nil,
             isPreRelease: false,
             isIOSApp: false,
-            foundInRegion: nil
+            foundInRegion: nil,
+            appcastItem: nil
         )
 
         updateManager.hideApp(updateableApp)

@@ -149,7 +149,8 @@ class HomebrewUpdateChecker {
                 releaseDate: nil,
                 isPreRelease: false,  // Homebrew updates are not pre-releases
                 isIOSApp: false,  // Homebrew apps are never iOS apps
-                foundInRegion: nil
+                foundInRegion: nil,
+                appcastItem: nil  // Homebrew doesn't use Sparkle
             )
             updateableApps.append(updateableApp)
         }
@@ -222,7 +223,8 @@ class HomebrewUpdateChecker {
                     releaseDate: nil,
                     isPreRelease: false,
                     isIOSApp: false,
-                    foundInRegion: nil
+                    foundInRegion: nil,
+                    appcastItem: nil  // Homebrew doesn't use Sparkle
                 )
                 updateableApps.append(updateableApp)
             }
