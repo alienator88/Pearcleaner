@@ -26,6 +26,29 @@ class AppStoreUpdater {
 
     private init() {}
 
+    /// Check if running macOS version affected by installd bug
+    /// Affected: 14.8.2 (Darwin 24.6.2), 15.7.2 (Darwin 25.7.2), and 26.1+ (Darwin 26.1+)
+    private func needsInstalldWorkaround() -> Bool {
+        let version = ProcessInfo.processInfo.operatingSystemVersion
+
+        // macOS 26.1+ (all versions)
+        if version.majorVersion >= 26 && version.minorVersion >= 1 {
+            return true
+        }
+
+        // macOS 15.7.2 (Darwin 25.7.2)
+        if version.majorVersion == 25 && version.minorVersion == 7 && version.patchVersion >= 2 {
+            return true
+        }
+
+        // macOS 14.8.2 (Darwin 24.6.2)
+        if version.majorVersion == 24 && version.minorVersion == 6 && version.patchVersion >= 2 {
+            return true
+        }
+
+        return false
+    }
+
     /// Update an app from the App Store with progress tracking
     /// - Parameters:
     ///   - adamID: The App Store ID of the app
@@ -40,6 +63,9 @@ class AppStoreUpdater {
             // Create SSPurchase for downloading (purchasing: false = update existing app)
             let purchase = await SSPurchase(adamID: adamID, purchasing: false)
 
+            // Check if workaround is needed before entering @Sendable closure
+            let needsWorkaround = needsInstalldWorkaround()
+
             try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
                 CKPurchaseController.shared().perform(purchase, withOptions: 0) { _, _, error, response in
                     if let error = error {
@@ -48,8 +74,16 @@ class AppStoreUpdater {
                         // Download started - create observer to track it
                         Task {
                             do {
-                                let observer = AppStoreDownloadObserver(adamID: adamID, progress: progress)
-                                try await observer.observeDownloadQueue()
+                                if needsWorkaround {
+                                    // Use workaround observer for affected macOS versions
+                                    printOS("⚠️ Detected macOS version with installd bug - using workaround")
+                                    let observer = AppStoreDownloadObserverWithWorkaround(adamID: adamID, progress: progress)
+                                    try await observer.observeDownloadQueue()
+                                } else {
+                                    // Use standard observer for unaffected versions
+                                    let observer = AppStoreDownloadObserver(adamID: adamID, progress: progress)
+                                    try await observer.observeDownloadQueue()
+                                }
                                 continuation.resume()
                             } catch {
                                 continuation.resume(throwing: error)
@@ -176,6 +210,164 @@ private final class AppStoreDownloadObserver: NSObject, CKDownloadQueueObserver 
             default:
                 progressCallback(progress, "Processing...")
             }
+        }
+    }
+}
+
+// MARK: - AppStoreDownloadObserverWithWorkaround
+
+/// Special observer for macOS versions affected by installd bug
+/// Downloads PKG, hard links it, then manually installs via HelperToolManager
+private final class AppStoreDownloadObserverWithWorkaround: NSObject, CKDownloadQueueObserver {
+    private let adamID: UInt64
+    private let progressCallback: @Sendable (Double, String) -> Void
+    private var completionHandler: (() -> Void)?
+    private var errorHandler: ((Error) -> Void)?
+    private var hardLinkedPkgPath: String?
+    private var isManuallyInstalling = false
+
+    init(adamID: UInt64, progress: @escaping @Sendable (Double, String) -> Void) {
+        self.adamID = adamID
+        self.progressCallback = progress
+        super.init()
+    }
+
+    func observeDownloadQueue(_ queue: CKDownloadQueue = .shared()) async throws {
+        let observerID = queue.add(self)
+        defer {
+            queue.removeObserver(observerID)
+        }
+
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            completionHandler = { [weak self] in
+                self?.completionHandler = nil
+                self?.errorHandler = nil
+                continuation.resume()
+            }
+            errorHandler = { [weak self] error in
+                self?.completionHandler = nil
+                self?.errorHandler = nil
+                continuation.resume(throwing: error)
+            }
+        }
+    }
+
+    // MARK: - CKDownloadQueueObserver Delegate Methods
+
+    func downloadQueue(_ queue: CKDownloadQueue, changedWithAddition download: SSDownload) {
+        // Download was added to queue - no action needed
+    }
+
+    func downloadQueue(_ queue: CKDownloadQueue, changedWithRemoval download: SSDownload) {
+        guard let metadata = download.metadata,
+              metadata.itemIdentifier == adamID,
+              let status = download.status else {
+            return
+        }
+
+        // Download completed (installd will fail, but we have the PKG hard linked)
+        if status.isFailed || status.isCancelled {
+            // Expected failure on affected macOS versions - proceed with manual installation
+            if let pkgPath = hardLinkedPkgPath {
+                Task {
+                    await performManualInstallation(pkgPath: pkgPath)
+                }
+            } else {
+                errorHandler?(AppStoreUpdateError.downloadFailed("Failed to preserve PKG file"))
+            }
+        } else {
+            // Unexpected success (installd worked somehow)
+            if let pkgPath = hardLinkedPkgPath {
+                // Clean up hard link since installd succeeded
+                try? FileManager.default.removeItem(atPath: pkgPath)
+            }
+            progressCallback(1.0, "Completed")
+            completionHandler?()
+        }
+    }
+
+    func downloadQueue(_ queue: CKDownloadQueue, statusChangedFor download: SSDownload) {
+        guard let metadata = download.metadata,
+              metadata.itemIdentifier == adamID,
+              let status = download.status,
+              let activePhase = status.activePhase else {
+            return
+        }
+
+        let phaseType = activePhase.phaseType
+        let percentComplete = status.percentComplete
+        let progress = max(0.0, min(1.0, Double(percentComplete)))
+
+        // At 80% progress, create hard link to preserve PKG before installd fails
+        if progress >= 0.80 && progress < 1.0 && hardLinkedPkgPath == nil && !isManuallyInstalling {
+            createHardLinkToPKG()
+        }
+
+        // Report progress
+        if isManuallyInstalling {
+            progressCallback(progress, "Installing...")
+        } else if progress >= 1.0 {
+            progressCallback(progress, "Downloading...")
+        } else {
+            switch phaseType {
+            case 0: // Downloading
+                progressCallback(progress, "Downloading...")
+            case 4: // Initial/Preparing
+                progressCallback(progress, "Preparing...")
+            default:
+                progressCallback(progress, "Downloading...")
+            }
+        }
+    }
+
+    // MARK: - Helper Methods
+
+    private func createHardLinkToPKG() {
+        let downloadDir = "\(CKDownloadDirectory(nil))/\(adamID)"
+        let destPath = "/tmp/pearcleaner-appstore-\(adamID).pkg"
+
+        do {
+            let contents = try FileManager.default.contentsOfDirectory(atPath: downloadDir)
+            if let pkgFile = contents.first(where: { $0.hasSuffix(".pkg") }) {
+                let sourcePath = "\(downloadDir)/\(pkgFile)"
+
+                // Remove existing link if present
+                try? FileManager.default.removeItem(atPath: destPath)
+
+                // Create hard link (instant, survives source deletion)
+                try FileManager.default.linkItem(atPath: sourcePath, toPath: destPath)
+
+                hardLinkedPkgPath = destPath
+            } else {
+                printOS("⚠️ No PKG file found in \(downloadDir)")
+            }
+        } catch {
+            printOS("❌ Failed to create hard link: \(error.localizedDescription)")
+        }
+    }
+
+    private func performManualInstallation(pkgPath: String) async {
+        isManuallyInstalling = true
+
+        // 80-85%: Preparing installation
+        progressCallback(0.80, "Preparing installation...")
+        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 sec
+        progressCallback(0.85, "Installing...")
+
+        // 85-95%: Running installer
+        let result = await HelperToolManager.shared.runCommand("installer -pkg \(pkgPath) -target /")
+
+        progressCallback(0.95, "Cleaning up...")
+
+        // 95-100%: Clean up hard link
+        try? FileManager.default.removeItem(atPath: pkgPath)
+
+        if result.0 {
+            progressCallback(1.0, "Completed")
+            completionHandler?()
+        } else {
+            printOS("❌ Manual PKG installation failed: \(result.1)")
+            errorHandler?(AppStoreUpdateError.downloadFailed("Installation failed: \(result.1)"))
         }
     }
 }
