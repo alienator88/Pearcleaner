@@ -163,6 +163,10 @@ struct AppSearchView: View {
             return apps.sorted {
                 ($0.creationDate ?? Date.distantPast) > ($1.creationDate ?? Date.distantPast)
             }
+        case .dateAdded:
+            return apps.sorted {
+                ($0.dateAdded ?? Date.distantPast) > ($1.dateAdded ?? Date.distantPast)
+            }
         case .contentChangeDate:
             return apps.sorted {
                 ($0.contentChangeDate ?? Date.distantPast)

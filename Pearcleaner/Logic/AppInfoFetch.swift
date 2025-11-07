@@ -65,12 +65,13 @@ class MetadataAppInfoFetcher {
         let creationDate = metadata["kMDItemFSCreationDate"] as? Date
         let contentChangeDate = metadata["kMDItemFSContentChangeDate"] as? Date
         let lastUsedDate = metadata["kMDItemLastUsedDate"] as? Date
+        let dateAdded = metadata["kMDItemDateAdded"] as? Date
 
         // Check if any of the critical fields are missing or invalid
         // Note: Size can be 0 for some apps where Spotlight hasn't indexed size yet, so only require core identifiers
         if appName.isEmpty || bundleIdentifier.isEmpty || version.isEmpty {
             // Fallback to the regular AppInfoFetcher for this app, but preserve dates we extracted from metadata
-            return AppInfoFetcher.getAppInfo(atPath: path, dates: (creationDate, contentChangeDate, lastUsedDate))
+            return AppInfoFetcher.getAppInfo(atPath: path, dates: (creationDate, contentChangeDate, lastUsedDate, dateAdded))
         }
 
         // Determine architecture type
@@ -100,7 +101,7 @@ class MetadataAppInfoFetcher {
         return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName,
                        appVersion: version, appBuildNumber: buildNumber, appIcon: appIcon, webApp: webApp, wrapped: wrapped, system: system,
                        arch: arch, cask: cask, steam: false, hasSparkle: hasSparkle, isAppStore: isAppStore, autoUpdates: autoUpdates, bundleSize: logicalSize, fileSize: [:],
-                       fileIcon: [:], creationDate: creationDate, contentChangeDate: contentChangeDate, lastUsedDate: lastUsedDate, entitlements: entitlements, teamIdentifier: teamIdentifier)
+                       fileIcon: [:], creationDate: creationDate, contentChangeDate: contentChangeDate, lastUsedDate: lastUsedDate, dateAdded: dateAdded, entitlements: entitlements, teamIdentifier: teamIdentifier)
     }
 }
 
@@ -213,6 +214,7 @@ func getMDLSMetadata(for paths: [String]) -> [String: [String: Any]]? {
         kMDItemFSCreationDate,
         kMDItemFSContentChangeDate,
         kMDItemLastUsedDate,
+        kMDItemDateAdded,
         kMDItemDisplayName,
         kMDItemCFBundleIdentifier,
         kMDItemFSName,
@@ -280,7 +282,7 @@ extension Array {
 class AppInfoFetcher {
     static let fileManager = FileManager.default
 
-    public static func getAppInfo(atPath path: URL, wrapped: Bool = false, dates: (creation: Date?, contentChange: Date?, lastUsed: Date?)? = nil) -> AppInfo? {
+    public static func getAppInfo(atPath path: URL, wrapped: Bool = false, dates: (creation: Date?, contentChange: Date?, lastUsed: Date?, dateAdded: Date?)? = nil) -> AppInfo? {
         if isDirectoryWrapped(path: path) {
             return handleWrappedDirectory(atPath: path, dates: dates)
         } else {
@@ -293,7 +295,7 @@ class AppInfoFetcher {
         return fileManager.fileExists(atPath: wrapperURL.path)
     }
 
-    private static func handleWrappedDirectory(atPath path: URL, dates: (creation: Date?, contentChange: Date?, lastUsed: Date?)? = nil) -> AppInfo? {
+    private static func handleWrappedDirectory(atPath path: URL, dates: (creation: Date?, contentChange: Date?, lastUsed: Date?, dateAdded: Date?)? = nil) -> AppInfo? {
         let wrapperURL = path.appendingPathComponent("Wrapper")
         do {
             let contents = try fileManager.contentsOfDirectory(at: wrapperURL, includingPropertiesForKeys: nil)
@@ -309,7 +311,7 @@ class AppInfoFetcher {
         }
     }
 
-    private static func createAppInfoFromBundle(atPath path: URL, wrapped: Bool, dates: (creation: Date?, contentChange: Date?, lastUsed: Date?)? = nil) -> AppInfo? {
+    private static func createAppInfoFromBundle(atPath path: URL, wrapped: Bool, dates: (creation: Date?, contentChange: Date?, lastUsed: Date?, dateAdded: Date?)? = nil) -> AppInfo? {
         // Try Bundle(url:) first
         if let bundle = Bundle(url: path), let bundleIdentifier = bundle.bundleIdentifier {
             let appName = wrapped ? path.deletingLastPathComponent().deletingLastPathComponent().deletingPathExtension().lastPathComponent.capitalizingFirstLetter() : path.localizedName().capitalizingFirstLetter()
@@ -344,7 +346,7 @@ class AppInfoFetcher {
             let isAppStore = AppCategoryDetector.checkForAppStore(bundle: bundle, path: path, wrapped: wrapped)
 
             return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName, appVersion: appVersion, appBuildNumber: appBuildNumber, appIcon: appIcon,
-                           webApp: webApp, wrapped: wrapped, system: system, arch: arch, cask: cask, steam: false, hasSparkle: hasSparkle, isAppStore: isAppStore, autoUpdates: autoUpdates, bundleSize: 0, fileSize: [:], fileIcon: [:], creationDate: dates?.creation, contentChangeDate: dates?.contentChange, lastUsedDate: dates?.lastUsed, entitlements: entitlements, teamIdentifier: teamIdentifier)
+                           webApp: webApp, wrapped: wrapped, system: system, arch: arch, cask: cask, steam: false, hasSparkle: hasSparkle, isAppStore: isAppStore, autoUpdates: autoUpdates, bundleSize: 0, fileSize: [:], fileIcon: [:], creationDate: dates?.creation, contentChangeDate: dates?.contentChange, lastUsedDate: dates?.lastUsed, dateAdded: dates?.dateAdded, entitlements: entitlements, teamIdentifier: teamIdentifier)
         }
 
         // Fallback: Read Info.plist directly from disk (useful for newly installed apps where Bundle cache isn't ready)
@@ -381,7 +383,7 @@ class AppInfoFetcher {
             let isAppStore = AppCategoryDetector.checkForAppStore(bundle: nil, path: path, wrapped: wrapped)
 
             return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName, appVersion: appVersion, appBuildNumber: appBuildNumber, appIcon: appIcon,
-                           webApp: webApp, wrapped: wrapped, system: system, arch: arch, cask: cask, steam: false, hasSparkle: hasSparkle, isAppStore: isAppStore, autoUpdates: autoUpdates, bundleSize: 0, fileSize: [:], fileIcon: [:], creationDate: dates?.creation, contentChangeDate: dates?.contentChange, lastUsedDate: dates?.lastUsed, entitlements: entitlements, teamIdentifier: teamIdentifier)
+                           webApp: webApp, wrapped: wrapped, system: system, arch: arch, cask: cask, steam: false, hasSparkle: hasSparkle, isAppStore: isAppStore, autoUpdates: autoUpdates, bundleSize: 0, fileSize: [:], fileIcon: [:], creationDate: dates?.creation, contentChangeDate: dates?.contentChange, lastUsedDate: dates?.lastUsed, dateAdded: dates?.dateAdded, entitlements: entitlements, teamIdentifier: teamIdentifier)
         }
 
         // If both Bundle and direct reading failed, check if this might be a Steam game
@@ -487,7 +489,7 @@ class SteamAppInfoFetcher {
         return AppInfo(id: UUID(), path: launcherPath, bundleIdentifier: bundleIdentifier, appName: appName,
                        appVersion: appVersion, appBuildNumber: appBuildNumber, appIcon: appIcon, webApp: webApp, wrapped: false,
                        system: system, arch: arch, cask: nil, steam: true, hasSparkle: hasSparkle, isAppStore: isAppStore, autoUpdates: autoUpdates, bundleSize: 0, fileSize: [:],
-                       fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, entitlements: entitlements, teamIdentifier: teamIdentifier)
+                       fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, dateAdded: nil, entitlements: entitlements, teamIdentifier: teamIdentifier)
     }
 }
 

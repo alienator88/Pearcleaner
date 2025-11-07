@@ -137,7 +137,8 @@ struct AppDetails: View {
         VStack(alignment: .leading, spacing: 8) {
 
             detailRow(label: "Location", value: appState.appInfo.path.deletingLastPathComponent().path, location: true)
-            detailRow(label: "Install Date", value: appState.appInfo.creationDate.map { formattedMDDate(from: $0) })
+            detailRow(label: "Date Created", value: appState.appInfo.creationDate.map { formattedMDDate(from: $0) })
+            detailRow(label: "Date Added", value: appState.appInfo.dateAdded.map { formattedMDDate(from: $0) })
             detailRow(label: "Modified Date", value: appState.appInfo.contentChangeDate.map { formattedMDDate(from: $0) })
             detailRow(label: "Last Used Date".localized(), value: appState.appInfo.lastUsedDate.map { formattedMDDate(from: $0) })
 

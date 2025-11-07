@@ -109,7 +109,7 @@ class ReversePathsSearcher {
     }
 
     private func processItemStreaming(_ scannedItemName: String, scannedItemURL: URL, batch: inout [(url: URL, size: Int64, icon: NSImage?)], batchSize: Int) async {
-        let normalizedItemPath = scannedItemURL.path.pearFormat()
+        let normalizedItemPath = scannedItemURL.standardizedFileURL.path.pearFormat()
 
         if formattedExclusionList.contains(normalizedItemPath) || normalizedItemPath.contains("dsstore") || normalizedItemPath.contains("daemonnameoridentifierhere") || formattedExclusionList.first(where: { normalizedItemPath.contains($0) }) != nil {
             return
@@ -184,7 +184,7 @@ class ReversePathsSearcher {
     }
 
     private func processItem(_ scannedItemName: String, scannedItemURL: URL) {
-        let normalizedItemPath = scannedItemURL.path.pearFormat()
+        let normalizedItemPath = scannedItemURL.standardizedFileURL.path.pearFormat()
 
         if formattedExclusionList.contains(normalizedItemPath) || normalizedItemPath.contains("dsstore") || normalizedItemPath.contains("daemonnameoridentifierhere") || formattedExclusionList.first(where: { normalizedItemPath.contains($0) }) != nil {
             return
@@ -207,14 +207,17 @@ class ReversePathsSearcher {
         let normalizedItemPath = scannedItemURL.path.pearFormat()
 
         for (_, cached) in cachedAppIdentifiers.enumerated() {
-            if normalizedItemPath.contains(cached.formattedBundleId) ||
-                normalizedItemPath.contains(cached.formattedAppName) {
+            // Only match if bundle ID or app name is at least 5 characters (avoids false positives from short words like "test", "alin", etc.)
+            if !cached.formattedBundleId.isEmpty && cached.formattedBundleId.count >= 5 && normalizedItemPath.contains(cached.formattedBundleId) {
+                return true
+            }
+            if !cached.formattedAppName.isEmpty && cached.formattedAppName.count >= 5 && normalizedItemPath.contains(cached.formattedAppName) {
                 return true
             }
 
             // Check entitlements-based matching (using pre-formatted entitlements)
             for entitlementFormatted in cached.formattedEntitlements {
-                if normalizedItemPath.contains(entitlementFormatted) {
+                if !entitlementFormatted.isEmpty && entitlementFormatted.count >= 5 && normalizedItemPath.contains(entitlementFormatted) {
                     return true
                 }
             }
@@ -222,7 +225,7 @@ class ReversePathsSearcher {
             // Check if the path contains /Containers or /Group Containers
             if scannedItemURL.path.contains("/Containers/") {
                 let containerName = scannedItemURL.containerNameByUUID().pearFormat()
-                if containerName.contains(cached.formattedBundleId) {
+                if !cached.formattedBundleId.isEmpty && cached.formattedBundleId.count >= 5 && containerName.contains(cached.formattedBundleId) {
                     return true
                 }
             }

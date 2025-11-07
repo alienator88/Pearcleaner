@@ -126,6 +126,7 @@ class AppState: ObservableObject {
             creationDate: nil,
             contentChangeDate: nil,
             lastUsedDate: nil,
+            dateAdded: nil,
             entitlements: nil,
             teamIdentifier: nil
         )
@@ -370,6 +371,7 @@ struct AppInfo: Identifiable, Equatable, Hashable {
     let creationDate: Date?
     let contentChangeDate: Date?
     let lastUsedDate: Date?
+    let dateAdded: Date?
     let entitlements: [String]?
     let teamIdentifier: String?
 
@@ -399,7 +401,7 @@ struct AppInfo: Identifiable, Equatable, Hashable {
         id: UUID(), path: URL(fileURLWithPath: ""), bundleIdentifier: "", appName: "",
         appVersion: "", appBuildNumber: nil, appIcon: nil, webApp: false, wrapped: false, system: false, arch: .empty,
         cask: nil, steam: false, hasSparkle: false, isAppStore: false, autoUpdates: nil, bundleSize: 0, lipoSavings: 0, fileSize: [:], fileIcon: [:],
-        creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, entitlements: nil, teamIdentifier: nil)
+        creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, dateAdded: nil, entitlements: nil, teamIdentifier: nil)
 
 }
 
@@ -438,6 +440,7 @@ extension AppInfo {
         Creation Date: \(creationDate?.description ?? "nil")
         Content Change: \(contentChangeDate?.description ?? "nil")
         Last Used: \(lastUsedDate?.description ?? "nil")
+        Date Added: \(dateAdded?.description ?? "nil")
         ====================================
         Entitlements/Binaries:
         \(entitlements?.joined(separator: "\n") ?? "nil")
@@ -649,6 +652,7 @@ enum SortOption: Int, CaseIterable, Identifiable {
     case alphabetical
     case size
     case creationDate
+    case dateAdded
     case contentChangeDate
     case lastUsedDate
 
@@ -658,7 +662,8 @@ enum SortOption: Int, CaseIterable, Identifiable {
         let titles: [String] = [
             String(localized: "App Name"),
             String(localized: "App Size"),
-            String(localized: "Install Date"),
+            String(localized: "Date Created"),
+            String(localized: "Date Added"),
             String(localized: "Modified Date"),
             String(localized: "Last Used Date"),
         ]

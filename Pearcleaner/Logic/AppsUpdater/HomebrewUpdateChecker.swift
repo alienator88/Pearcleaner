@@ -129,6 +129,7 @@ class HomebrewUpdateChecker {
                 creationDate: appInfo.creationDate,
                 contentChangeDate: appInfo.contentChangeDate,
                 lastUsedDate: appInfo.lastUsedDate,
+                dateAdded: appInfo.dateAdded,
                 entitlements: appInfo.entitlements,
                 teamIdentifier: appInfo.teamIdentifier
             )
@@ -203,6 +204,7 @@ class HomebrewUpdateChecker {
                     creationDate: nil,
                     contentChangeDate: nil,
                     lastUsedDate: nil,
+                    dateAdded: nil,
                     entitlements: nil,
                     teamIdentifier: nil
                 )
