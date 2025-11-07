@@ -38,7 +38,7 @@ class AppPathFinder {
     }()
 
     // Change from lazy var to regular property initialized in init
-    private let cachedIdentifiers: (formattedBundleId: String, bundleLastTwoComponents: String, formattedAppName: String, appNameLettersOnly: String, pathComponentName: String, useBundleIdentifier: Bool, formattedCompanyName: String?, formattedEntitlements: [String], formattedTeamIdentifier: String?)
+    private let cachedIdentifiers: (formattedBundleId: String, bundleLastTwoComponents: String, formattedAppName: String, appNameLettersOnly: String, pathComponentName: String, useBundleIdentifier: Bool, formattedCompanyName: String?, formattedEntitlements: [String], formattedTeamIdentifier: String?, formattedBaseBundleId: String?)
 
     // Exclusion list for app file search (computed property to always get current list)
     private var formattedAppExclusionList: [String] {
@@ -88,7 +88,24 @@ class AppPathFinder {
         // Pre-format team identifier once
         let formattedTeamIdentifier = appInfo.teamIdentifier?.pearFormat()
 
-        self.cachedIdentifiers = (formattedBundleId, bundleLastTwoComponents, formattedAppName, appNameLettersOnly, pathComponentName, useBundleIdentifier, formattedCompanyName, formattedEntitlements, formattedTeamIdentifier)
+        // Create base bundle ID by stripping common suffixes (for matching launch daemons/agents)
+        // e.g., "com.objective-see.blockblock.helper" -> "com.objective-see.blockblock"
+        let formattedBaseBundleId: String?
+        let commonSuffixes = ["helper", "agent", "daemon", "service", "xpc", "launcher", "updater", "installer", "uninstaller", "login", "extension", "plugin"]
+        if rawComponents.count >= 4 {
+            let lastComponent = rawComponents.last?.lowercased() ?? ""
+            if commonSuffixes.contains(lastComponent) {
+                // Remove last component and format
+                let baseBundleId = rawComponents.dropLast().joined(separator: ".")
+                formattedBaseBundleId = baseBundleId.pearFormat()
+            } else {
+                formattedBaseBundleId = nil
+            }
+        } else {
+            formattedBaseBundleId = nil
+        }
+
+        self.cachedIdentifiers = (formattedBundleId, bundleLastTwoComponents, formattedAppName, appNameLettersOnly, pathComponentName, useBundleIdentifier, formattedCompanyName, formattedEntitlements, formattedTeamIdentifier, formattedBaseBundleId)
     }
 
     // Process the initial URL
@@ -298,7 +315,16 @@ class AppPathFinder {
             teamIdMatch = false
         }
 
-        return (cached.useBundleIdentifier && fullBundleMatch) || (appNameMatch || pathNameMatch || appNameLettersMatch) || twoComponentMatch || companyMatch || teamIdMatch
+        // Base bundle ID matching (for apps with .helper/.agent/etc. suffixes)
+        // Matches launch daemons/agents that use base bundle ID without suffix
+        let baseBundleIdMatch: Bool
+        if let baseBundleId = cached.formattedBaseBundleId, !baseBundleId.isEmpty {
+            baseBundleIdMatch = normalizedItemName.contains(baseBundleId)
+        } else {
+            baseBundleIdMatch = false
+        }
+
+        return (cached.useBundleIdentifier && fullBundleMatch) || (appNameMatch || pathNameMatch || appNameLettersMatch) || twoComponentMatch || companyMatch || teamIdMatch || baseBundleIdMatch
     }
     
     // Helper function to extract game ID from manifest filename
@@ -697,16 +723,22 @@ class AppPathFinder {
 
 // Get size using Spotlight metadata, fallback to manual calculation if needed
 private func spotlightSizeForURL(_ url: URL) -> Int64 {
-    let metadataItem = NSMetadataItem(url: url)
-    let logical = metadataItem?.value(forAttribute: "kMDItemLogicalSize") as? Int64
+    // Check if this is a directory (not a bundle like .app)
+    var isDirectory: ObjCBool = false
+    FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory)
 
-    if let logical = logical {
-        //        print("Found Spotlight size")
+    // For plain directories, Spotlight metadata is unreliable (reports wrong size)
+    // Skip to manual calculation for directories (Containers, regular folders, etc.)
+    if isDirectory.boolValue {
+        return totalSizeOnDisk(for: url)
+    }
+
+    // For files and bundles (.app, .framework), use Spotlight metadata
+    let metadataItem = NSMetadataItem(url: url)
+    if let logical = metadataItem?.value(forAttribute: "kMDItemLogicalSize") as? Int64 {
         return logical
     }
 
-    // Fallback to manual calculation using totalSizeOnDisk from Lipo.swift
-    let fallback = totalSizeOnDisk(for: url)
-    //    print("Fallback to manual calculation")
-    return logical ?? fallback
+    // Fallback to manual calculation if Spotlight has no data
+    return totalSizeOnDisk(for: url)
 }
