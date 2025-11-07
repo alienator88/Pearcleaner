@@ -14,7 +14,6 @@ struct SidebarView: View {
     @Environment(\.colorScheme) var colorScheme
     @Binding var infoSidebar: Bool
     let displaySizeTotal: String
-    @Binding var localSensitivity: SearchSensitivityLevel
 
     var body: some View {
         if infoSidebar {
@@ -24,7 +23,7 @@ struct SidebarView: View {
                 VStack(spacing: 0) {
                     AppDetailsHeaderView(displaySizeTotal: displaySizeTotal)
                     Divider().padding(.vertical, 5)
-                    AppDetails(localSensitivity: $localSensitivity)
+                    AppDetails()
                     Spacer()
                     ExtraOptions()
                 }
@@ -130,8 +129,17 @@ struct AppDetails: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
     @Environment(\.colorScheme) var colorScheme
-    @Binding var localSensitivity: SearchSensitivityLevel
+    @AppStorage("settings.general.searchSensitivity") private var globalSensitivityLevel: SearchSensitivityLevel = .strict
     @State private var isSliderActive: Bool = false
+
+    private var localSensitivity: SearchSensitivityLevel {
+        get {
+            appState.perAppSensitivity[appState.appInfo.path.path] ?? globalSensitivityLevel
+        }
+        nonmutating set {
+            appState.perAppSensitivity[appState.appInfo.path.path] = newValue
+        }
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -192,7 +200,7 @@ struct AppDetails: View {
 
     private func refreshFiles() {
         // Refresh the file search with the current sensitivity level
-        showAppInFiles(appInfo: appState.appInfo, appState: appState, locations: locations, sensitivityOverride: localSensitivity)
+        showAppInFiles(appInfo: appState.appInfo, appState: appState, locations: locations)
     }
 
     @ViewBuilder

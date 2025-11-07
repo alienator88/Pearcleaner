@@ -1,21 +1,15 @@
 ### What's New
 
-- [x] Show App Store progress bar during updates - #430
-- [x] Add App Store region fallback when checking for updates
-- [x] Replace sparkle version check with custom implementation that checks both build and shortVersion strings, not just build
-- [x] Ignore SetApp sparkle apps as the signatures don't match the dev since SetApp signs them - #428
-- [x] Disable homebrew api call caching on network requests
-- [x] Allow adding apps to Updater ignore list from sidebar even if no update is available
-- [x] Add homebrew debug lines during loading/install/update/uninstall actions
+- [x] Add manual install workaround for app store installd bug in 26.1 (Apple has blocked the private frameworks for MAS from being able to perform the install portion of the Update without private Apple entitlements. I haven't had a change to do a ton of QA on this workaround, so there could be some bugs. You can follow a more detailed discussion in the mas repo - https://github.com/mas-cli/mas/issues/1029)
+- [x] Include Date Added resource key for sorting and app sidebar metadata - #432
 
 
 ### Fixes
 
-- [x] Fix packages with 0 size from mismatched cellar version folder with revision number
-- [x] Fix apps showing size 0 KB in homebrew installed view
-- [x] Fix some casks missing icons/sizes in homebrew installed view
-- [x] Fix homebrew size calculation crash on main thread since byteformatter isn't thread-safe
-- [x] Fix iOS wrapped apps not being recognized sometimes by App Store update detection - #424
-- [x] Fix search engine Opera Air/ Opera files - #312
-- [x] Fix missing metadata dates on some apps - #423
+- [x] Fix Deep search level with app that returns thousands of results - #440
+- [x] Fix folder exclusion logic for apps - #433
+- [x] Fix orphan search not finding results via username exclusion bug
+- [x] Fix sensitivity slider per app not being respected - #434
+- [x] Fix cask sizes not loading for some apps
+- [x] Fix intermittent permissions bug - #436
 - [x] Translations

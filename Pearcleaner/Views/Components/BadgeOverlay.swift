@@ -310,6 +310,24 @@ struct BadgeOverlay: View {
             .buttonStyle(.plain)
             .help("Open System Settings to grant permissions")
 
+            Button {
+                permissionManager.checkPermissions(types: [.fullDiskAccess]) { results in
+                    permissionManager.results = results
+                }
+            } label: {
+                HStack {
+                    Image(systemName: "arrow.clockwise")
+                    Text("Retry")
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(ThemeColors.shared(for: colorScheme).secondaryText)
+                .foregroundColor(.white)
+                .cornerRadius(6)
+            }
+            .buttonStyle(.plain)
+            .help("Retry permission check")
+
             Spacer()
 
             Button {

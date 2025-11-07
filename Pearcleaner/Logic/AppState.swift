@@ -47,6 +47,9 @@ class AppState: ObservableObject {
     @Published var volumeInfos: [VolumeInfo] = []
     @Published var volumeAnimationShown: Bool = false
 
+    // Per-app sensitivity level (session-only, not persisted)
+    @Published var perAppSensitivity: [String: SearchSensitivityLevel] = [:]
+
     // Auto-slim stats storage
     @AppStorage("settings.app.autoSlim.stats") var autoSlimStatsData: Data = Data()
 

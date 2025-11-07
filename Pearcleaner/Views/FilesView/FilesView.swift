@@ -31,7 +31,6 @@ struct FilesView: View {
     @State private var sortedFiles: [URL] = []
     @State private var infoSidebar: Bool = false
     @AppStorage("settings.general.searchSensitivity") private var globalSensitivityLevel: SearchSensitivityLevel = .strict
-    @State private var localSensitivityLevel: SearchSensitivityLevel = .strict
 
     var body: some View {
 
@@ -76,7 +75,7 @@ struct FilesView: View {
                         removePath: removePath
                     )
 
-                    SidebarView(infoSidebar: $infoSidebar, displaySizeTotal: displaySizeTotal, localSensitivity: $localSensitivityLevel)
+                    SidebarView(infoSidebar: $infoSidebar, displaySizeTotal: displaySizeTotal)
                         .padding([.trailing, .bottom], 20)
 
                 }
@@ -115,9 +114,6 @@ struct FilesView: View {
             }
         )
         .onAppear {
-            // Initialize local sensitivity from global setting
-            localSensitivityLevel = globalSensitivityLevel
-
             if !warning {
                 showAlert = true
             }

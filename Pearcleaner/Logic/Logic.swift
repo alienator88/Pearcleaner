@@ -311,18 +311,24 @@ func reversePreloader(
 
 // Load item in Files view
 func showAppInFiles(
-    appInfo: AppInfo, appState: AppState, locations: Locations, sensitivityOverride: SearchSensitivityLevel? = nil) {
+    appInfo: AppInfo, appState: AppState, locations: Locations) {
     @AppStorage("settings.interface.animationEnabled") var animationEnabled: Bool = true
+    @AppStorage("settings.general.searchSensitivity") var globalSensitivityLevel: SearchSensitivityLevel = .strict
 
     updateOnMain {
         appState.appInfo = .empty
         appState.selectedItems = []
 
+        // Initialize per-app sensitivity from global setting if not already set
+        if appState.perAppSensitivity[appInfo.path.path] == nil {
+            appState.perAppSensitivity[appInfo.path.path] = globalSensitivityLevel
+        }
+
         // When the appInfo is not found, show progress, and search for paths.
         appState.showProgress = true
 
         // Initialize the path finder and execute its search.
-        AppPathFinder(appInfo: appInfo, locations: locations, appState: appState, sensitivityOverride: sensitivityOverride).findPaths()
+        AppPathFinder(appInfo: appInfo, locations: locations, appState: appState, sensitivityOverride: appState.perAppSensitivity[appInfo.path.path]).findPaths()
 
         appState.appInfo = appInfo
 

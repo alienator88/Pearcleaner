@@ -166,4 +166,4 @@ struct AboutSettingsTab: View {
 }
 
 
-let translators = "changanmoon, L1cardo, funsiyuan, megabitsenmzq, iFloneUEFN, matxpa, vogt65, AgiMaulana, kiwamizamurai, rokartur, MARCELOisME, exituser, Skro11-ru, Svec-Tomas, DrRoglaa, realkeremcam, Ihor-Khomenko, HungThinhIT"
+let translators = "changanmoon, L1cardo, funsiyuan, megabitsenmzq, iFloneUEFN, matxpa, vogt65, AgiMaulana, kiwamizamurai, readingsnail, rokartur, MARCELOisME, exituser, Skro11-ru, Svec-Tomas, DrRoglaa, realkeremcam, Ihor-Khomenko, HungThinhIT"

@@ -416,7 +416,9 @@ class AppPathFinder {
 
         query.searchScopes = [NSMetadataQueryUserHomeScope]
 
-        let finishedNotification = NotificationCenter.default.addObserver(forName: .NSMetadataQueryDidFinishGathering, object: query, queue: nil) { _ in
+        let currentRunLoop = CFRunLoopGetCurrent()
+
+        let finishedNotification = NotificationCenter.default.addObserver(forName: NSNotification.Name.NSMetadataQueryDidFinishGathering, object: query, queue: nil) { _ in
             query.disableUpdates()
             query.stop()
             results = query.results.compactMap {
@@ -434,18 +436,23 @@ class AppPathFinder {
                     return pathFormatted == nameFormatted || pathFormatted == bundleFormatted
                 }
             }
-            // Enhanced and Deep: No post-filter, trust the Spotlight query results
 
-            CFRunLoopStop(CFRunLoopGetCurrent())
+            CFRunLoopStop(currentRunLoop)
         }
 
         query.start()
 
+        // Timeout after 5 seconds
         DispatchQueue.global().asyncAfter(deadline: .now() + 5) {
-            CFRunLoopStop(CFRunLoopGetCurrent())
+            CFRunLoopStop(currentRunLoop)
         }
 
         CFRunLoopRun()
+
+        // Limit results to prevent excessive post-processing delays
+        if results.count > 500 {
+            results = Array(results.prefix(500))
+        }
 
         NotificationCenter.default.removeObserver(finishedNotification)
         return results

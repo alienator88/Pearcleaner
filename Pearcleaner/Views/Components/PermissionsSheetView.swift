@@ -67,24 +67,33 @@ class PermissionManagerLocal: ObservableObject {
         }
     }
 
-    /// Attempt FDA check with retries
+    /// Attempt FDA check with retries and multiple fallback paths
     /// First tries fast access() syscall, then falls back to directory listing
     private func attemptFDACheck(maxAttempts: Int, delayMs: Int) -> Bool {
-        let checkPath = "~/Library/Containers/com.apple.stocks"
-        let expandedPath = NSString(string: checkPath).expandingTildeInPath
+        // Multiple protected paths to check, in order of preference
+        let checkPaths = [
+            "~/Library/Containers/com.apple.stocks",  // Primary - good for macOS 12+
+            "~/Library/Safari",                        // Fallback 1 - more universal
+            "~/Library/Mail"                           // Fallback 2 - additional option
+        ]
 
         for attempt in 1...maxAttempts {
-            // Method 1: Try using access() syscall (fastest)
-            if let cPath = expandedPath.cString(using: .utf8) {
-                if access(cPath, R_OK) == 0 {
-                    return true  // Success - have FDA
-                }
-            }
+            // Try each path
+            for checkPath in checkPaths {
+                let expandedPath = NSString(string: checkPath).expandingTildeInPath
 
-            // Method 2: Fallback to directory listing (more reliable but slower)
-            let fileManager = FileManager.default
-            if let _ = try? fileManager.contentsOfDirectory(atPath: expandedPath) {
-                return true
+                // Method 1: Try using access() syscall (fastest)
+                if let cPath = expandedPath.cString(using: .utf8) {
+                    if access(cPath, R_OK) == 0 {
+                        return true  // Success - have FDA
+                    }
+                }
+
+                // Method 2: Fallback to directory listing (more reliable but slower)
+                let fileManager = FileManager.default
+                if let _ = try? fileManager.contentsOfDirectory(atPath: expandedPath) {
+                    return true
+                }
             }
 
             // If not last attempt, wait before retry
@@ -93,7 +102,7 @@ class PermissionManagerLocal: ObservableObject {
             }
         }
 
-        return false  // All attempts failed
+        return false  // All attempts and all paths failed
     }
 }
 
@@ -145,15 +154,12 @@ struct PermissionsSheetView: View {
 
             Divider()
 
-            // Restart notice - use secondaryText instead of opacity
-            Text("Restart \(Bundle.main.name) for changes to take effect")
-                .font(.footnote)
-                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-
             // Action buttons
             HStack {
-                Button("Restart") {
-                    relaunchApp()
+                Button("Retry") {
+                    permissionManager.checkPermissions(types: [.fullDiskAccess]) { results in
+                        permissionManager.results = results
+                    }
                 }
                 .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
