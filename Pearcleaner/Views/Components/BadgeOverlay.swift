@@ -87,11 +87,12 @@ struct BadgeOverlay: View {
                     }
                     .padding(10)
                     .frame(width: 410)
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(ThemeColors.shared(for: colorScheme).secondaryBG)
-                            .shadow(color: .black.opacity(0.3), radius: 15, x: 0, y: 5)
-                    )
+                    .ifGlassSidebar()
+//                    .background(
+//                        RoundedRectangle(cornerRadius: 12)
+//                            .fill(ThemeColors.shared(for: colorScheme).secondaryBG)
+//                            .shadow(color: .black.opacity(0.3), radius: 15, x: 0, y: 5)
+//                    )
                     .padding(.trailing, 20)
                     .padding(.bottom, 20)
                     .opacity(isVisible ? 1 : 0)
