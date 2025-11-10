@@ -461,7 +461,14 @@ func handleLaunchMode() {
     let termType = ProcessInfo.processInfo.environment["TERM"]
     let isRunningInTerminal = termType != nil && termType != "dumb"
 
-    if isRunningInTerminal {
+    // Check if any CLI command arguments are present (even if not in terminal)
+    // This handles cases like SUDO_ASKPASS where the app is launched without a terminal
+    let cliCommands = ["uninstall", "list", "search", "help", "ask-password"]
+    let hasCLICommand = arguments.dropFirst().contains { arg in
+        cliCommands.contains(arg) || arg.hasPrefix("--")
+    }
+
+    if isRunningInTerminal || hasCLICommand {
         let locations = Locations()
         let fsm = FolderSettingsManager()
         PearCLI.setupDependencies(locations: locations, fsm: fsm)

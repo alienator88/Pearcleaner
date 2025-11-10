@@ -36,6 +36,8 @@
 		C783F93A2E9039EB003450E7 /* PackageKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C783F9392E9039EB003450E7 /* PackageKit.framework */; };
 		C78733BF2E674510008615F2 /* FileWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78733BC2E674496008615F2 /* FileWatcher.swift */; };
 		C78D7B212D556F1A003DD49F /* AppPathsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78D7B202D556F16003DD49F /* AppPathsFetch.swift */; };
+		C78FF5E12EC1A3B400FC610A /* PasswordRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78FF5E02EC1A3B400FC610A /* PasswordRequestHandler.swift */; };
+		C78FF5E32EC1B1E100FC610A /* KeychainPasswordManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78FF5E22EC1B1E100FC610A /* KeychainPasswordManager.swift */; };
 		C7A2A4D62DDB957D006E05E4 /* CLI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A2A4D52DDB957D006E05E4 /* CLI.swift */; };
 		C7A2A4D92DDB95C4006E05E4 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = C7A2A4D82DDB95C4006E05E4 /* ArgumentParser */; };
 		C7A6DBF12C9DD27200CFA042 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7A6DBF02C9DD27200CFA042 /* Assets.xcassets */; };
@@ -157,6 +159,8 @@
 		C786F1A72C29E599001B3800 /* Builds */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Builds; sourceTree = SOURCE_ROOT; };
 		C78733BC2E674496008615F2 /* FileWatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileWatcher.swift; sourceTree = "<group>"; };
 		C78D7B202D556F16003DD49F /* AppPathsFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPathsFetch.swift; sourceTree = "<group>"; };
+		C78FF5E02EC1A3B400FC610A /* PasswordRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordRequestHandler.swift; sourceTree = "<group>"; };
+		C78FF5E22EC1B1E100FC610A /* KeychainPasswordManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainPasswordManager.swift; sourceTree = "<group>"; };
 		C7A2A4D52DDB957D006E05E4 /* CLI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLI.swift; sourceTree = "<group>"; };
 		C7A6DBF02C9DD27200CFA042 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C7B3AB072D83900B00D829C5 /* com.alienator88.PearcleanerSentinel.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = com.alienator88.PearcleanerSentinel.plist; sourceTree = "<group>"; };
@@ -290,9 +294,11 @@
 				C72893042AFD42E600C8C1CD /* DeepLink.swift */,
 				C77020282EA94D0A00240D58 /* FuzzySearch.swift */,
 				C73545EA2D8496DA00A3DC0C /* HelperToolManager.swift */,
+				C78FF5E22EC1B1E100FC610A /* KeychainPasswordManager.swift */,
 				C7C90DD22DA81C590056769A /* Lipo.swift */,
 				C7D31D502AFF00F300C7ED9E /* Locations.swift */,
 				C77B90192AF1938F009CC655 /* Logic.swift */,
+				C78FF5E02EC1A3B400FC610A /* PasswordRequestHandler.swift */,
 				C7CC10E32E9473480057B7E2 /* ProcessEnv.swift */,
 				C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */,
 				C72FDCB82D6D088A00DE7D56 /* UndoManager.swift */,
@@ -648,6 +654,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C78FF5E12EC1A3B400FC610A /* PasswordRequestHandler.swift in Sources */,
 				C7DD49EA2BAB4D8100CCBA16 /* AppInfoFetch.swift in Sources */,
 				C7CC10E42E94734E0057B7E2 /* ProcessEnv.swift in Sources */,
 				C74422432E494D830002D277 /* PackageView.swift in Sources */,
@@ -657,6 +664,7 @@
 				C77020292EA94D0A00240D58 /* FuzzySearch.swift in Sources */,
 				C7BB99292E8AF1CB007BBB81 /* PluginsView.swift in Sources */,
 				C7C90DD32DA81C5D0056769A /* Lipo.swift in Sources */,
+				C78FF5E32EC1B1E100FC610A /* KeychainPasswordManager.swift in Sources */,
 				C7A2A4D62DDB957D006E05E4 /* CLI.swift in Sources */,
 				C7D31D512AFF00F300C7ED9E /* Locations.swift in Sources */,
 				C77B901A2AF1938F009CC655 /* Logic.swift in Sources */,

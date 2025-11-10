@@ -97,6 +97,50 @@ class HomebrewController {
 
     // MARK: - Shell Command Execution
 
+    /// Checks if command output indicates authentication failure
+    private func isAuthenticationFailure(_ output: String) -> Bool {
+        let indicators = [
+            "Sorry, try again",
+            "incorrect password",
+            "Authentication failure",
+            "sudo: 3 incorrect password attempts",
+            "sudo: no password was provided",
+            "sudo: a password is required"
+        ]
+        return indicators.contains { output.lowercased().contains($0.lowercased()) }
+    }
+
+    /// Runs brew command with auto-retry on authentication failure
+    func runBrewCommandWithRetry(_ arguments: [String], maxRetries: Int = 2) async throws -> (output: String, error: String) {
+        var attemptCount = 0
+
+        while attemptCount < maxRetries {
+            let (output, error) = try await runBrewCommand(arguments)
+
+            // Check for authentication failure
+            let combinedOutput = output + error
+            if isAuthenticationFailure(combinedOutput) {
+                printOS("🔐 Authentication failed, invalidating cache and retrying (attempt \(attemptCount + 1)/\(maxRetries))")
+                KeychainPasswordManager.shared.invalidateCache()
+                attemptCount += 1
+
+                if attemptCount < maxRetries {
+                    continue  // Retry with fresh password
+                } else {
+                    // Max retries reached, return the failed output
+                    printOS("❌ Authentication failed after \(maxRetries) attempts")
+                    return (output, error)
+                }
+            }
+
+            // Success or non-auth error
+            return (output, error)
+        }
+
+        // This shouldn't be reached, but return empty as fallback
+        return ("", "Max retries reached")
+    }
+
     func runBrewCommand(_ arguments: [String]) async throws -> (output: String, error: String) {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: brewPath)

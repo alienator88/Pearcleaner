@@ -374,20 +374,84 @@ struct PearCLI: ParsableCommand {
         var message: String = "Enter your password to continue"
 
         func run() throws {
-            // Initialize NSApplication
-            _ = NSApplication.shared
-
-            // Show dialog directly
-            let password = Self.showPasswordDialog(message: message)
-
-            if let password = password, !password.isEmpty {
-                print(password)
+            // Check keychain first
+            if let cached = KeychainPasswordManager.shared.retrievePassword() {
+                print(cached)
                 Darwin.exit(0)
-            } else {
+            }
+
+            // Not cached, get fresh password
+            guard let password = obtainPassword() else {
                 Darwin.exit(1)
+            }
+
+            // Save to keychain
+            KeychainPasswordManager.shared.savePassword(password, expiryInterval: 300)
+
+            // Print and exit immediately
+            print(password)
+            Darwin.exit(0)
+        }
+
+        // MARK: - Obtain Password
+        private func obtainPassword() -> String? {
+            // Check if Pearcleaner main app is running
+            let runningApps = NSWorkspace.shared.runningApplications
+            let pearcleanerRunning = runningApps.contains { app in
+                app.bundleIdentifier == "com.alienator88.Pearcleaner" &&
+                app.processIdentifier != ProcessInfo.processInfo.processIdentifier
+            }
+
+            if pearcleanerRunning {
+                return requestPasswordFromMainApp()
+            } else {
+                _ = NSApplication.shared
+                return Self.showPasswordDialog(message: message)
             }
         }
 
+        // MARK: - Request Password from Main App
+        private func requestPasswordFromMainApp() -> String? {
+            let center = DistributedNotificationCenter.default()
+            let requestId = UUID().uuidString
+            var receivedPassword: String?
+            let semaphore = DispatchSemaphore(value: 0)
+
+            let observerQueue = OperationQueue()
+            let observer = center.addObserver(
+                forName: NSNotification.Name("com.alienator88.Pearcleaner.passwordResponse"),
+                object: nil,
+                queue: observerQueue
+            ) { notification in
+                if let userInfo = notification.userInfo,
+                   let responseId = userInfo["requestId"] as? String,
+                   responseId == requestId {
+                    receivedPassword = userInfo["password"] as? String
+                    semaphore.signal()
+                }
+            }
+
+            center.postNotificationName(
+                NSNotification.Name("com.alienator88.Pearcleaner.passwordRequest"),
+                object: nil,
+                userInfo: [
+                    "requestId": requestId,
+                    "message": message
+                ],
+                deliverImmediately: true
+            )
+
+            let timeout = DispatchTime.now() + .seconds(60)
+            if semaphore.wait(timeout: timeout) == .success {
+                center.removeObserver(observer)
+                return receivedPassword?.isEmpty == false ? receivedPassword : nil
+            } else {
+                center.removeObserver(observer)
+                return nil
+            }
+        }
+
+        // MARK: - Show Password Dialog
         private static func showPasswordDialog(message: String) -> String? {
             let alert = NSAlert()
             alert.messageText = "Pearcleaner"

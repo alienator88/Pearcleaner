@@ -25,6 +25,9 @@ struct PearcleanerApp: App {
         //MARK: GUI or CLI launch mode.
         handleLaunchMode()
 
+        //MARK: Initialize password request handler for SUDO_ASKPASS IPC
+        _ = PasswordRequestHandler.shared
+
         //MARK: Pre-load apps data during app initialization
         let folderPaths = FolderSettingsManager.shared.folderPaths
         loadApps(folderPaths: folderPaths)

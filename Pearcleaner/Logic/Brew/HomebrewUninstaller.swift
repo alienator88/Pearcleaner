@@ -23,17 +23,13 @@ class HomebrewUninstaller {
     /// Uninstalls a Homebrew package directly without calling brew uninstall
     /// This replicates Homebrew's uninstall behavior using privileged helper for root operations
     func uninstallPackage(name: String, cask: Bool, zap: Bool = true) async throws {
-        printOS("🔍 [DEBUG] uninstallPackage() ENTRY - name: \(name), cask: \(cask), useBrewUninstallZap: \(useBrewUninstallZap)")
         UpdaterDebugLogger.shared.log(.homebrew, "🗑️ Starting uninstall for \(name) (type: \(cask ? "cask" : "formula"), zap: \(zap))")
 
         do {
             if useBrewUninstallZap {
-                printOS("🔍 [DEBUG] Using brew uninstall command path")
                 // Use native brew uninstall command
                 try await uninstallViaBrewCommand(name: name, cask: cask)
-                printOS("🔍 [DEBUG] uninstallViaBrewCommand() completed without throwing")
             } else {
-                printOS("🔍 [DEBUG] Using manual uninstall path")
                 // Use manual uninstall method
                 if cask {
                     // Try loading from INSTALL_RECEIPT.json first (instant)
@@ -65,17 +61,12 @@ class HomebrewUninstaller {
                 }
             }
 
-            printOS("🔍 [DEBUG] Uninstall logic completed, starting cleanup")
             UpdaterDebugLogger.shared.log(.homebrew, "✓ Uninstalled \(name) successfully")
 
-            // Run brew cleanup in background without blocking
-            UpdaterDebugLogger.shared.log(.homebrew, "  Running background cleanup...")
-            Task.detached(priority: .background) {
-                try? await HomebrewController.shared.runCleanup()
-            }
-            printOS("🔍 [DEBUG] uninstallPackage() COMPLETED successfully")
+            // Run brew cleanup synchronously (FilesView manages the progress indicator)
+            UpdaterDebugLogger.shared.log(.homebrew, "  Running cleanup...")
+            try? await HomebrewController.shared.runCleanup()
         } catch {
-            printOS("🔍 [DEBUG] uninstallPackage() caught exception: \(error.localizedDescription)")
             UpdaterDebugLogger.shared.log(.homebrew, "❌ Uninstall failed for \(name): \(error.localizedDescription)")
             throw error
         }
@@ -85,8 +76,6 @@ class HomebrewUninstaller {
 
     /// Uninstalls a package using native brew uninstall command
     private func uninstallViaBrewCommand(name: String, cask: Bool) async throws {
-        printOS("🔍 [DEBUG] uninstallViaBrewCommand() ENTRY - name: \(name), cask: \(cask)")
-
         var arguments = ["uninstall"]
 
         // Add package type flag
@@ -105,21 +94,23 @@ class HomebrewUninstaller {
         // Add package name
         arguments.append(name)
 
-        printOS("🔍 [DEBUG] About to run: brew \(arguments.joined(separator: " "))")
         UpdaterDebugLogger.shared.log(.homebrew, "  Running: brew \(arguments.joined(separator: " "))")
 
         // Run command
-        printOS("🔍 [DEBUG] Calling HomebrewController.shared.runBrewCommand()")
         let result = try await HomebrewController.shared.runBrewCommand(arguments)
-        printOS("🔍 [DEBUG] runBrewCommand() returned - output length: \(result.output.count), error length: \(result.error.count)")
+
+        // Print full stdout and stderr
+//        if !result.output.isEmpty {
+//            printOS("📤 STDOUT:\n\(result.output)")
+//        }
+        if !result.error.isEmpty {
+            printOS("📤 Homebrew Uninstall Error:\n\(result.error)")
+        }
 
         // Check for errors
         if !result.error.isEmpty && result.error.contains("Error") {
-            printOS("🔍 [DEBUG] Error detected in result.error, throwing exception")
             throw HomebrewError.commandFailed(result.error)
         }
-
-        printOS("🔍 [DEBUG] uninstallViaBrewCommand() COMPLETED successfully")
     }
 
     // MARK: - INSTALL_RECEIPT Helper
