@@ -805,25 +805,33 @@ private func buildCaskLookupTable() -> [String: CaskMetadata] {
             if let apps = artifact["app"] as? [Any] {
                 foundAppArtifact = true
                 for app in apps {
-                    // Only process string entries, ignore objects/dictionaries
-                    // (e.g., qBittorrent has ["qbittorrent.app", { "target": "qBittorrent.app" }])
-                    guard let appStr = app as? String else { continue }
-
-                    let realAppName = appStr
-                        .replacingOccurrences(of: ".app", with: "")
-                        .lowercased()
-
-                    appToCask[realAppName] = CaskMetadata(
-                        caskName: caskName,
-                        autoUpdates: autoUpdates
-                    )
+                    if let appStr = app as? String {
+                        // Direct app name (e.g., "Telegram.app")
+                        let realAppName = appStr
+                            .replacingOccurrences(of: ".app", with: "")
+                            .lowercased()
+                        appToCask[realAppName] = CaskMetadata(
+                            caskName: caskName,
+                            autoUpdates: autoUpdates
+                        )
+                    } else if let appDict = app as? [String: Any],
+                              let targetName = appDict["target"] as? String {
+                        // Renamed app (e.g., {"target": "Telegram Desktop.app"})
+                        let realAppName = targetName
+                            .replacingOccurrences(of: ".app", with: "")
+                            .lowercased()
+                        appToCask[realAppName] = CaskMetadata(
+                            caskName: caskName,
+                            autoUpdates: autoUpdates
+                        )
+                    }
                 }
             }
         }
 
-        // Fallback: Match via "name" property for PKG-based casks without "app" artifacts
-        // (e.g., Google Drive, Adobe products installed via PKG)
-        if !foundAppArtifact, let names = json["name"] as? [String] {
+        // Also match via "name" property (handles renamed apps, localized names, PKG-based casks)
+        // Examples: Telegram Desktop (renamed), Yandex Disk (localized), Google Drive (PKG-based)
+        if let names = json["name"] as? [String] {
             for name in names {
                 let normalizedName = name.lowercased()
                 appToCask[normalizedName] = CaskMetadata(
