@@ -84,8 +84,8 @@ class MetadataAppInfoFetcher {
         let system = !path.path.contains(NSHomeDirectory())
 
         // Get cask metadata (includes cask name and auto_updates flag)
-        // Pass both display name and actual path to handle localized names
-        let caskInfo = getCaskInfo(for: appName, appPath: path)
+        // Pass both display name, path, and bundle ID to handle various matching scenarios
+        let caskInfo = getCaskInfo(for: appName, appPath: path, bundleId: bundleIdentifier)
         let cask = caskInfo?.caskName
         let autoUpdates = caskInfo?.autoUpdates
 
@@ -330,8 +330,8 @@ class AppInfoFetcher {
             let system = !path.path.contains(NSHomeDirectory())
 
             // Get cask metadata (includes cask name and auto_updates flag)
-            // Pass both display name and actual path to handle localized names
-            let caskInfo = getCaskInfo(for: appName, appPath: path)
+            // Pass both display name, path, and bundle ID to handle various matching scenarios
+            let caskInfo = getCaskInfo(for: appName, appPath: path, bundleId: bundleIdentifier)
             let cask = caskInfo?.caskName
             let autoUpdates = caskInfo?.autoUpdates
 
@@ -367,8 +367,8 @@ class AppInfoFetcher {
             let system = !path.path.contains(NSHomeDirectory())
 
             // Get cask metadata (includes cask name and auto_updates flag)
-            // Pass both display name and actual path to handle localized names
-            let caskInfo = getCaskInfo(for: appName, appPath: path)
+            // Pass both display name, path, and bundle ID to handle various matching scenarios
+            let caskInfo = getCaskInfo(for: appName, appPath: path, bundleId: bundleIdentifier)
             let cask = caskInfo?.caskName
             let autoUpdates = caskInfo?.autoUpdates
 

@@ -690,7 +690,7 @@ private let caskLookupQueue = DispatchQueue(label: "com.pearcleaner.cask.lookup"
 /// - Parameters:
 ///   - appName: The display name from kMDItemDisplayName (e.g., "Yandex Disk")
 ///   - appPath: Optional app path URL to extract actual filename if display name doesn't match
-func getCaskInfo(for appName: String, appPath: URL? = nil) -> CaskMetadata? {
+func getCaskInfo(for appName: String, appPath: URL? = nil, bundleId: String? = nil) -> CaskMetadata? {
     // First, try a read-only access
     let existingTable = caskLookupQueue.sync {
         return caskLookupTable
@@ -718,6 +718,13 @@ func getCaskInfo(for appName: String, appPath: URL? = nil) -> CaskMetadata? {
         if let appPath = appPath {
             let filename = appPath.lastPathComponent.replacingOccurrences(of: ".app", with: "").lowercased()
             if let result = caskLookupTable?[filename] {
+                return result
+            }
+        }
+
+        // Fallback: Try with bundle ID (for PKG-based casks like Google Drive)
+        if let bundleId = bundleId, !bundleId.isEmpty {
+            if let result = caskLookupTable?[bundleId.lowercased()] {
                 return result
             }
         }
@@ -793,8 +800,10 @@ private func buildCaskLookupTable() -> [String: CaskMetadata] {
         }
 
         // Find "app" artifacts and build appName → CaskMetadata mapping
+        var foundAppArtifact = false
         for artifact in artifacts {
             if let apps = artifact["app"] as? [Any] {
+                foundAppArtifact = true
                 for app in apps {
                     // Only process string entries, ignore objects/dictionaries
                     // (e.g., qBittorrent has ["qbittorrent.app", { "target": "qBittorrent.app" }])
@@ -808,6 +817,40 @@ private func buildCaskLookupTable() -> [String: CaskMetadata] {
                         caskName: caskName,
                         autoUpdates: autoUpdates
                     )
+                }
+            }
+        }
+
+        // Fallback: Match via "name" property for PKG-based casks without "app" artifacts
+        // (e.g., Google Drive, Adobe products installed via PKG)
+        if !foundAppArtifact, let names = json["name"] as? [String] {
+            for name in names {
+                let normalizedName = name.lowercased()
+                appToCask[normalizedName] = CaskMetadata(
+                    caskName: caskName,
+                    autoUpdates: autoUpdates
+                )
+            }
+        }
+
+        // Additional fallback: Match via "uninstall" → "quit" bundle IDs
+        // This helps match apps where the display name differs from cask name
+        if !foundAppArtifact {
+            for artifact in artifacts {
+                if let uninstalls = artifact["uninstall"] as? [[String: Any]] {
+                    for uninstall in uninstalls {
+                        // Extract bundle IDs from "quit" directive
+                        if let quitBundleIds = uninstall["quit"] as? [String] {
+                            for bundleId in quitBundleIds {
+                                // Store bundle ID → cask mapping for later matching
+                                let normalizedBundleId = bundleId.lowercased()
+                                appToCask[normalizedBundleId] = CaskMetadata(
+                                    caskName: caskName,
+                                    autoUpdates: autoUpdates
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
