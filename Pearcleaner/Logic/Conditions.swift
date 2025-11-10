@@ -45,11 +45,17 @@ var conditions: [Condition] = [
     Condition(
         bundle_id: "com.apple.dt.xcode",
         include: ["com.apple.dt", "xcode", "simulator"],
-        exclude: ["com.robotsandpencils.xcodesapp", "com.oneminutegames.xcodecleaner", "io.hyperapp.xcodecleaner", "xcodes.json"],
+        exclude: ["com.robotsandpencils.xcodesapp", "com.xcodesorg.xcodesapp", "com.oneminutegames.xcodecleaner", "io.hyperapp.xcodecleaner", "available-xcodes", "xcodes", "cleaner for xcode"],
         includeForce: ["\(home)/Library/Containers/com.apple.iphonesimulator.ShareExtension"]
     ),
     Condition(
         bundle_id: "com.robotsandpencils.xcodesapp",
+        include: [],
+        exclude: ["com.apple.dt.xcode", "com.oneminutegames.xcodecleaner", "io.hyperapp.xcodecleaner"],
+        includeForce: nil
+    ),
+    Condition(
+        bundle_id: "com.xcodesorg.xcodesapp",
         include: [],
         exclude: ["com.apple.dt.xcode", "com.oneminutegames.xcodecleaner", "io.hyperapp.xcodecleaner"],
         includeForce: nil

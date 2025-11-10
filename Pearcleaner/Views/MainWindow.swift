@@ -104,7 +104,7 @@ struct MainWindow: View {
 
         }
         .background(backgroundView(color: ThemeColors.shared(for: colorScheme).primaryBG))
-        .frame(minWidth: 900, minHeight: 610)
+        .frame(minWidth: 900, minHeight: 650)
         .handlesExternalEvents(preferring: Set(arrayLiteral: "pear"), allowing: Set(arrayLiteral: "*"))
         .handleFileDrop(
             updater: updater,
