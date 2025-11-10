@@ -116,69 +116,6 @@ struct GeneralSettingsTab: View {
                         .padding(5)
 
 
-//                        VStack(spacing: 0) {
-//                            HStack(spacing: 0) {
-//                                Image(systemName: "wand.and.stars")
-//                                    .resizable()
-//                                    .scaledToFit()
-//                                    .frame(width: 15, height: 15)
-//                                    .padding(.trailing)
-//                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-//                                VStack(alignment: .leading, spacing: 5) {
-//                                    Text("Auto slim Pearcleaner")
-//                                        .font(.callout)
-//                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-//                                }
-//
-//                                InfoButton(text: "Automatically removes unused architectures/translations to reduce bundle size after an update")
-//
-//                                Spacer()
-//                                Toggle(isOn: $autoSlim, label: {
-//                                })
-//                                .toggleStyle(SettingsToggle())
-//                                .onChange(of: autoSlim) { newValue in
-//                                    if newValue {
-//                                        // Capture original size when first enabled
-//                                        if AppState.shared.autoSlimStats.originalSize == 0 {
-//                                            DispatchQueue.global(qos: .utility).async {
-//                                                let bundleURL = URL(fileURLWithPath: Bundle.main.bundlePath)
-//                                                let originalSize = totalSizeOnDisk(for: bundleURL)
-//                                                DispatchQueue.main.async {
-//                                                    var stats = AppState.shared.autoSlimStats
-//                                                    stats.originalSize = originalSize
-//                                                    AppState.shared.autoSlimStats = stats
-//                                                }
-//                                            }
-//                                        }
-//                                    } else {
-//                                        // Wipe stats when disabled
-//                                        var stats = AppState.shared.autoSlimStats
-//                                        stats.originalSize = 0
-//                                        stats.currentSize = 0
-//                                        stats.lastRunVersion = ""
-//                                        AppState.shared.autoSlimStats = stats
-//                                    }
-//                                }
-//                            }
-//
-//                            if autoSlim && appState.autoSlimStats.originalSize > 0 && appState.autoSlimStats.currentSize > 0 {
-//                                HStack(spacing: 0) {
-//                                    Spacer()
-//                                        .frame(width: 15)
-//                                        .padding(.trailing)
-//                                    let savings = appState.autoSlimSavings
-//                                    let original = appState.autoSlimStats.originalSize
-//                                    let percentage = original > 0 ? Int((Double(savings) / Double(original)) * 100) : 0
-//                                    Text("Saved: \(ByteCountFormatter.string(fromByteCount: savings, countStyle: .file)) (\(percentage)%)")
-//                                        .font(.caption)
-//                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-//                                    Spacer()
-//                                }
-//                                .padding(.top, 5)
-//                            }
-//                        }
-//                        .padding(5)
-
 
                         HStack(spacing: 0) {
                             Image(systemName: "key.fill")
@@ -228,6 +165,17 @@ struct GeneralSettingsTab: View {
                             }
                             .pickerStyle(.menu)
                             .frame(width: 100)
+
+                            Button {
+                                KeychainPasswordManager.shared.invalidateCache()
+                            } label: {
+                                Image(systemName: "xmark.circle")
+                                    .font(.callout)
+                            }
+                            .buttonStyle(.plain)
+                            .padding(.leading, 5)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            .help("Clear cached credentials immediately")
                         }
                         .padding(5)
                         .onChange(of: sudoCacheTimeout) { newValue in

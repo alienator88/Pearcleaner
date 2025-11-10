@@ -371,7 +371,7 @@ struct PearCLI: ParsableCommand {
         )
 
         @Option(name: .long, help: "Message to display")
-        var message: String = "Enter your password to continue"
+        var message: String = "Homebrew is requesting your password to perform a privileged action"
 
         func run() throws {
             // Check keychain first
