@@ -46,7 +46,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (%@ App Store에서 찾았습니다. App Store에서 열어 업데이트하세요.)"
+            "value" : " (%@를 App Store에서 찾았습니다. App Store에서 업데이트하세요.)"
           }
         },
         "pl" : {
@@ -494,7 +494,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "**%lld%%** 절약"
+            "value" : "**%lld%%** 를 절약"
           }
         },
         "pl" : {
@@ -719,7 +719,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@은(는) 이미 사용 가능한 최신 릴리스입니다"
+            "value" : "%@은(는) 이미 사용 가능한 최신 릴리즈입니다"
           }
         },
         "pl" : {
@@ -944,7 +944,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld 앱%@"
+            "value" : "%lld 앱"
           }
         },
         "pl" : {
@@ -1056,7 +1056,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld 파일%@"
+            "value" : "%lld 파일"
           }
         },
         "pl" : {
@@ -1852,7 +1852,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld 패키지%@"
+            "value" : "%lld 패키지"
           }
         },
         "pl" : {
@@ -2082,7 +2082,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld 경로%@"
+            "value" : "%lld 경로"
           }
         },
         "pl" : {
@@ -2194,7 +2194,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld 플러그인%@"
+            "value" : "%lld 플러그인"
           }
         },
         "pl" : {
@@ -2306,7 +2306,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld개의 관련 파일%@ 발견됨"
+            "value" : "%lld개의 관련 파일 발견됨"
           }
         },
         "pl" : {
@@ -2418,7 +2418,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld 결과%@"
+            "value" : "%lld 결과"
           }
         },
         "pl" : {
@@ -2648,7 +2648,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld 서비스%@"
+            "value" : "%lld 서비스"
           }
         },
         "pl" : {
@@ -2766,7 +2766,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld 업데이트%@"
+            "value" : "%lld 업데이트"
           }
         },
         "pl" : {
@@ -4564,7 +4564,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "지금까지 기여해 주신 모든 분들께 **큰** 감사드립니다!"
+            "value" : "지금까지 기여해 주신 모든 분들께 **큰** 감사를 드립니다!"
           }
         },
         "pl" : {
@@ -6247,7 +6247,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "고아 파일을 검색할 때 무시할 파일이나 폴더를 추가합니다. 목록에서 제거하려면 경로를 클릭하세요."
+            "value" : "연결되지 않은 파일을 검색할 때 무시할 파일이나 폴더를 추가합니다. 목록에서 제거하려면 경로를 클릭하세요."
           }
         },
         "pl" : {
@@ -8154,7 +8154,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "제거 표시된 파일을 항상 확인하십시오. 드물게 앱 이름이 너무 비슷할 경우 관련 없는 파일이 발견될 수 있습니다.\n\n참고: Pearcleaner는 AppleScript를 사용하여 파일을 제거합니다. 현재 macOS는 지문 센서를 사용한 인증을 허용하지 않으며, 비밀번호 인증만 지원됩니다."
+            "value" : "제거 표시된 파일을 항상 확인하세요. 드물게 앱 이름이 너무 비슷할 경우 관련 없는 파일이 발견될 수 있습니다.\n\n참고: Pearcleaner는 AppleScript를 사용하여 파일을 제거합니다. 현재 macOS는 Touch ID를 사용한 인증을 허용하지 않으며, 비밀번호 인증만 지원됩니다."
           }
         },
         "pl" : {
@@ -8603,7 +8603,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "애니메이션 비활성화됨"
+            "value" : "애니메이션 비활성화"
           }
         },
         "pl" : {
@@ -8716,7 +8716,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "애니메이션 활성화됨"
+            "value" : "애니메이션 활성화"
           }
         },
         "pl" : {
@@ -8942,7 +8942,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "앱 리포"
+            "value" : "앱 Lipo"
           }
         },
         "pl" : {
@@ -9278,7 +9278,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "앱 스토어"
+            "value" : "App Store"
           }
         },
         "pl" : {
@@ -10848,7 +10848,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "설정 > 로그인 항목 > %@.app에서 권한이 필요합니다."
+            "value" : "설정 > 로그인 항목 > %@.app 의 권한이 필요합니다."
           }
         },
         "pl" : {
@@ -10960,7 +10960,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "자동 가지치기 (macOS 언어 유지)"
+            "value" : "자동 제거 (macOS 언어 유지)"
           }
         },
         "pl" : {
@@ -11409,7 +11409,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "배지 알림 오버레이 비활성화됨"
+            "value" : "배지 알림 오버레이 비활성화"
           }
         },
         "pl" : {
@@ -11521,7 +11521,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "배지 알림 오버레이가 활성화되었습니다"
+            "value" : "배지 알림 오버레이 활성화"
           }
         },
         "pl" : {
@@ -11633,7 +11633,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "자재 명세서"
+            "value" : "패키지 내용 명세서"
           }
         },
         "pl" : {
@@ -11745,7 +11745,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "병에 담긴 (사전 빌드된 바이너리)"
+            "value" : "병에 담김 (사전 빌드된 바이너리)"
           }
         },
         "pl" : {
@@ -12305,7 +12305,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "번들 슬리밍(lipo)은 사용하지 않는 아키텍처를 제거하여 앱 번들 내의 바이너리를 수정하는 공격적인 작업입니다. 일반적으로 안전하지만, 일부 애플리케이션은 이 과정 후에 문제가 발생하거나 실행되지 않을 수 있습니다. 특히 중요한 앱이나 자주 사용하는 앱의 경우 진행하기 전에 애플리케이션의 백업을 만드는 것이 강력히 권장됩니다."
+            "value" : "번들 축소(Lipo)은 사용하지 않는 아키텍처를 제거하여 앱 번들 내의 바이너리를 수정하는 매우 공격적인 작업입니다. 보통은 안전하지만, 일부 애플리케이션은 이 과정 후에 문제가 발생하거나 실행되지 않을 수 있습니다. 특히 중요한 앱이나 자주 사용하는 앱의 경우 진행하기 전에 애플리케이션 백업을 만드는 것이 강력히 권장됩니다."
           }
         },
         "pl" : {
@@ -12418,7 +12418,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "번들 얇게 만들기 완료.\n번들 내 모든 바이너리에서 절약된 총 공간."
+            "value" : "번들 축소 완료.\n번들 내 모든 바이너리에서 절약된 총 공간."
           }
         },
         "pl" : {
@@ -14549,7 +14549,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "일반적인 IDE의 저장된 파일 및 캐시 정리"
+            "value" : "대다수 IDE의 저장된 파일 및 캐시 정리"
           }
         },
         "pl" : {
@@ -15112,7 +15112,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "앱 목록 보려면 클릭"
+            "value" : "앱 목록을 보려면 클릭하세요"
           }
         },
         "pl" : {
@@ -17809,7 +17809,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "깊은"
+            "value" : "심층"
           }
         },
         "pl" : {
@@ -21170,7 +21170,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "사전 출시 비활성화"
+            "value" : "사전 릴리즈 비활성화"
           }
         },
         "pl" : {
@@ -21619,7 +21619,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "URL 다운로드"
+            "value" : "다운로드 URL"
           }
         },
         "pl" : {
@@ -22968,7 +22968,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "문제 해결을 위해 자세한 로깅 및 번들 캐시 플러시 활성화"
+            "value" : "문제 해결을 위해 자세한 로깅 및 번들 캐시 제거 활성화"
           }
         },
         "pl" : {
@@ -23080,7 +23080,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "활성화됨"
+            "value" : "활성화"
           }
         },
         "pl" : {
@@ -23529,7 +23529,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "향상된"
+            "value" : "항샹"
           }
         },
         "pl" : {
@@ -23641,7 +23641,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "위의 순서대로 쉼표로 구분하여 정확히 5개의 16진수 색상을 입력하세요"
+            "value" : "위의 순서대로 쉼표로 구분하여 정확히 5개의 16진수 색상을 입력해주세요"
           }
         },
         "pl" : {
@@ -24089,7 +24089,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enhanced의 모든 기능에 회사 이름과 팀 식별자를 추가합니다. 파일 내용, 메타데이터, Finder 댓글 및 앱에서 생성한 파일을 검색합니다. 가장 포괄적인 정리로, 앱 및 개발자와 관련된 모든 리소스를 찾고, 그들이 만든 다른 앱도 찾습니다."
+            "value" : "Enhanced의 모든 기능에 회사 이름과 팀 식별자를 추가합니다. 파일 내용, 메타데이터, Finder 각주 및 앱에서 생성한 파일을 검색합니다. 가장 포괄적인 정리로, 앱 및 개발자와 관련된 모든 리소스를 찾고, 그들이 만든 다른 앱들도 찾습니다."
           }
         },
         "pl" : {
@@ -24425,7 +24425,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "예제 권한 명령어"
+            "value" : "권한 상승 예제 명령어"
           }
         },
         "pl" : {
@@ -24986,7 +24986,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "고아 파일 검색에서 제외"
+            "value" : "연결되지 않은 파일 검색에서 제외"
           }
         },
         "pl" : {
@@ -25323,7 +25323,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "고아 파일 검색에서 이 파일 및 폴더 제외"
+            "value" : "연결되지 않은 파일 검색에서 이 파일 및 폴더 제외"
           }
         },
         "pl" : {
@@ -26333,7 +26333,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "릴리스 노트를 표시하지 못했습니다"
+            "value" : "릴리즈 노트를 표시하지 못했습니다"
           }
         },
         "pl" : {
@@ -27343,7 +27343,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "파인더 확장"
+            "value" : "Finder 확장"
           }
         },
         "pl" : {
@@ -27568,7 +27568,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "고아 파일을 찾는 중입니다. 잠시 기다려 주세요..."
+            "value" : "연결되지 않은 파일을 찾는 중입니다. 잠시 기다려 주세요..."
           }
         },
         "pl" : {
@@ -27906,7 +27906,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "서비스 재설치를 강제합니다 (비동기화 문제 해결)"
+            "value" : "강제 서비스 재설치 (비동기화 문제 해결)"
           }
         },
         "pl" : {
@@ -28130,7 +28130,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "공식"
+            "value" : "조제식"
           }
         },
         "pl" : {
@@ -28242,7 +28242,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "수식 (%lld)"
+            "value" : "조제식 (%lld)"
           }
         },
         "pl" : {
@@ -28354,7 +28354,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld개의 고아 워크스페이스%@를 찾았습니다"
+            "value" : "%lld개의 연결되지 않은 작업 공간%@을 찾았습니다"
           }
         },
         "pl" : {
@@ -31048,7 +31048,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "홈브루"
+            "value" : "Homebrew"
           }
         },
         "pl" : {
@@ -31721,7 +31721,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "홈브류 관리자"
+            "value" : "Homebrew 관리자"
           }
         },
         "pl" : {
@@ -31945,7 +31945,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "홈브류 업데이트 가능"
+            "value" : "Homebrew 업데이트 가능"
           }
         },
         "pl" : {
@@ -34594,119 +34594,6 @@
         }
       }
     },
-    "Instead of moving files to Trash folder, this will permanently remove them. With this setting enabled, the Undo function is also not active as there's no files in Trash folder to undo." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anstatt Dateien in den Papierkorb zu verschieben, werden sie dauerhaft entfernt. Mit dieser Einstellung ist die Rückgängig-Funktion ebenfalls nicht aktiv, da sich keine Dateien im Papierkorb befinden, die rückgängig gemacht werden könnten."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En lugar de mover los archivos a la carpeta de Papelera, esto los eliminará permanentemente. Con esta configuración habilitada, la función Deshacer tampoco está activa ya que no hay archivos en la carpeta de Papelera para deshacer."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Plutôt que déplacer les fichiers dans la corbeille ils sont supprimés de façon définitive. Cette option activée ne permet pas l’annulation des suppressions, aucun fichiers ne se trouvant dans la corbeille."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alih-alih memindahkan file ke folder Sampah, ini akan menghapusnya secara permanen. Dengan pengaturan ini diaktifkan, fungsi Undo juga tidak aktif karena tidak ada file di folder Sampah untuk dibatalkan."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Invece di spostare i file nel cestino, verranno rimossi definitivamente. Con questa impostazione attivata, la funzione Annulla non è attiva poiché non ci sono file nel cestino da annullare."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "これはファイルをゴミ箱フォルダーに移動する代わりに、永久に削除します。この設定が有効になっている場合、ゴミ箱フォルダーにファイルがないため、元に戻す機能も有効ではありません。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "파일을 휴지통 폴더로 이동하는 대신 영구적으로 삭제합니다. 이 설정이 활성화되면, 휴지통 폴더에 파일이 없으므로 실행 취소 기능도 활성화되지 않습니다."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zamiast przenosić pliki do Kosza, spowoduje to ich trwałe usunięcie. Po włączeniu tego ustawienia funkcja Cofnij również nie będzie aktywna, ponieważ w koszu nie ma plików, które można cofnąć."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Em vez de mover os arquivos para a pasta Lixeira, isso irá removê-los permanentemente. Com esta configuração ativada, a função Desfazer também não está ativa, pois não há arquivos na pasta Lixeira para desfazer."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Вместо перемещения файлов в корзину они будут удалены без возможности восстановления. При включении этой настройки функция отмены также неактивна, так как в корзине нет файлов для восстановления."
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Namiesto presunutia súborov do priečinka Koš, ich to natrvalo odstráni. S povoleným týmto nastavením nie je funkcia Vrátiť späť aktívna, pretože v priečinku Koš nie sú žiadne súbory na vrátenie."
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Namesto premikanja datotek v mapo Smeti, jih bo to trajno odstranilo. Ko je ta nastavitev omogočena, funkcija Razveljavi ni aktivna, saj v mapi Smeti ni datotek za razveljavitev."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bu ayar etkinleştirildiğinde dosyalar Çöp Kutusu klasörüne taşımak yerine kalıcı olarak silinecektir. Ayar etkin olduğunda Çöp Kutusu klasöründe geri alınacak dosya olmadığından Geri Alma işlevi de çalışmaz."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Замість переміщення файлів до кошика, це назавжди видалить їх. Якщо цей параметр увімкнено, функція скасування також не активна, оскільки в кошику немає файлів для скасування."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thay vì chuyển các tệp vào thư mục Thùng rác, tùy chọn này sẽ xóa chúng vĩnh viễn. Khi cài đặt này được bật, chức năng Hoàn tác cũng sẽ không hoạt động vì không có tệp nào trong thư mục Thùng rác để hoàn tác."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "启用此设置后，文件将被永久删除，而不是移动到废纸篓。同时，由于废纸篓中没有文件可撤销，因此撤销功能也不可用。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "啟用此設定後，將直接永久刪除檔案，而不是移至資源回收桶。由於資源回收桶中沒有檔案進行復原，復原功能也無法使用。"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "啟用此設定後，將永久刪除文件，而不是將其移至垃圾桶。由於垃圾桶中沒有文件可供還原，故還原功能亦無法使用。"
-          }
-        }
-      }
-    },
     "Instructions" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -35761,7 +35648,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "항상 활성 유지"
+            "value" : "항상 활성상태 유지"
           }
         },
         "pl" : {
@@ -36658,7 +36545,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "적게"
+            "value" : "적음"
           }
         },
         "pl" : {
@@ -36883,7 +36770,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "선택한 모든 항목을 선택한 앱에 연결하고 고아 스캔에서 제거합니다."
+            "value" : "선택한 모든 항목을 선택한 앱에 연결하고 연결되지 않은 항목 검색에서 제거합니다."
           }
         },
         "pl" : {
@@ -37220,7 +37107,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "리포"
+            "value" : "Lipo"
           }
         },
         "pl" : {
@@ -39463,7 +39350,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "런치 에이전트, 데몬 및 XPC 서비스 관리"
+            "value" : "LaunchAgent, 데몬 및 XPC 서비스 관리"
           }
         },
         "pl" : {
@@ -41258,7 +41145,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "사이드바 앱 목록에서 다중 선택 비활성화됨"
+            "value" : "사이드바 앱 목록에서 다중 선택 비활성화"
           }
         },
         "pl" : {
@@ -42270,7 +42157,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "업데이트할 앱 스토어 앱이 없습니다"
+            "value" : "업데이트할 App Store 앱이 없습니다"
           }
         },
         "pl" : {
@@ -43392,7 +43279,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "고아 파일을 찾을 수 없습니다"
+            "value" : "연결되지 않은 파일을 찾을 수 없습니다"
           }
         },
         "pl" : {
@@ -43504,7 +43391,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "고아 작업 공간이 없습니다"
+            "value" : "연결되지 않은 작업 공간이 없습니다"
           }
         },
         "pl" : {
@@ -44177,7 +44064,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "표시할 릴리스가 없습니다"
+            "value" : "표시할 릴리즈가 없습니다"
           }
         },
         "pl" : {
@@ -44513,7 +44400,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "번들 축소에서 절약할 수 없음"
+            "value" : "번들 축소로 줄일수 수 없음"
           }
         },
         "pl" : {
@@ -46422,7 +46309,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "파인더에서 열기"
+            "value" : "Finder에서 열기"
           }
         },
         "pl" : {
@@ -47207,7 +47094,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "고아 파일 검색은 파일 제외를 위한 제거된 앱 번들이 없기 때문에 100% 정확하지 않습니다. 이는 파일/폴더에 대한 최상의 추측 검색을 수행하며, 현재 설치된 애플리케이션과 겹치는 파일을 제외합니다. 삭제로 표시된 파일이 실제로 제거된 애플리케이션에 속하는지 확인해 주세요."
+            "value" : "연결되지 않은 파일 검색은 파일 제외를 위한 제거된 앱 번들이 없기 때문에 100% 정확하지 않습니다. 이 검색은 파일/폴더에 대한 최상의 추측된 검색을 하며, 현재 설치된 애플리케이션과 겹치는 파일을 제외합니다. 삭제로 표시된 파일이 실제로 제거된 애플리케이션에 속하는지 확인해 주세요."
           }
         },
         "pl" : {
@@ -47320,7 +47207,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "고아 파일"
+            "value" : "연결되지 않은 파일"
           }
         },
         "pl" : {
@@ -47432,7 +47319,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "고아"
+            "value" : "연결 안됨"
           }
         },
         "pl" : {
@@ -49300,119 +49187,6 @@
         }
       }
     },
-    "Permanently delete files" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dateien dauerhaft löschen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eliminar archivos permanentemente"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Supprimer définitivement les fichiers"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hapus file secara permanen"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Elimina file permanentemente"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ファイルを完全に削除"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "파일 영구 삭제"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trwale usuń pliki"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Excluir arquivos permanentemente"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Удалить файлы навсегда"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trvalo odstrániť súbory"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trajno izbriši datoteke"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dosyaları kalıcı olarak sil"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Назавжди видалити файли"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Xóa vĩnh viễn tệp"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "永久删除文件"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "永久刪除檔案"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "永久刪除檔案"
-          }
-        }
-      }
-    },
     "Permission required. Enable in System Settings > Login Items." : {
       "localizations" : {
         "de" : {
@@ -50914,7 +50688,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "번들 슬리밍으로 인한 잠재적 절약"
+            "value" : "번들 축소로 인한 잠재적인 절약"
           }
         },
         "pl" : {
@@ -51250,7 +51024,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "특권 도우미가 설치되지 않았습니다!"
+            "value" : "권한 상승 도우미가 설치되지 않았습니다!"
           }
         },
         "pl" : {
@@ -51363,7 +51137,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "번역 가지치기"
+            "value" : "언어 제거"
           }
         },
         "pl" : {
@@ -52263,7 +52037,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "실제 크기 유형은 파일이 디스크에 할당된 실제 공간의 크기를 보여줍니다.\n\n논리적 유형은 이진 크기를 보여줍니다. 파일 시스템은 디스크에서 섹터를 압축하고 중복 제거할 수 있으므로 실제 크기는 때때로 논리적 크기보다 작거나 큽니다.\n\nFinder 크기는 Finder에서 파일을 마우스 오른쪽 버튼으로 클릭하여 '정보 가져오기'를 선택했을 때와 유사하며, 논리적 크기와 실제 크기를 함께 보여줍니다."
+            "value" : "실제 크기 유형은 파일이 디스크에 할당된 실제 공간의 크기를 보여줍니다.\n\n논리적 유형은 이진 크기를 보여줍니다. 파일 시스템은 디스크에서 섹터를 압축하고 중복 제거할 수 있으므로 실제 크기는 때때로 논리적인 크기보다 작거나 큽니다.\n\nFinder 크기는 Finder에서 파일을 마우스 오른쪽 버튼으로 클릭하여 '정보 가져오기'를 선택했을 때와 유사하며, 논리적 크기와 실제 크기를 함께 보여줍니다."
           }
         },
         "pl" : {
@@ -54172,7 +53946,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "릴리스"
+            "value" : "릴리즈"
           }
         },
         "pl" : {
@@ -55293,7 +55067,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "고아가 된 종속성, 오래된 패키지 버전을 제거하고 다운로드 캐시를 정리합니다"
+            "value" : "연결되지 않은 종속성, 오래된 패키지 버전을 제거하고 다운로드 캐시를 정리합니다"
           }
         },
         "pl" : {
@@ -55853,7 +55627,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "앱 크기를 줄이기 위해 앱 바이너리에서 사용하지 않는 아키텍처를 제거하십시오"
+            "value" : "앱 크기를 줄이기 위해 앱 바이너리에서 사용하지 않는 아키텍처를 제거하세요"
           }
         },
         "pl" : {
@@ -55965,7 +55739,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "lipo 중 사용하지 않는 언어 제거"
+            "value" : "Lipo 중 사용하지 않는 언어 제거"
           }
         },
         "pl" : {
@@ -56189,7 +55963,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이전 버전, 고아 의존성 및 최신 버전을 포함한 모든 캐시 파일을 제거합니다"
+            "value" : "이전 버전, 연결되지 않은 의존성 및 최신 버전을 포함한 모든 캐시 파일을 제거합니다"
           }
         },
         "pl" : {
@@ -56638,7 +56412,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "다시 스캔"
+            "value" : "다시 검색"
           }
         },
         "pl" : {
@@ -56975,7 +56749,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "앱 스토어 재설정 (다운로드 중단 문제 해결)"
+            "value" : "App Store 재설정 (다운로드 중단 문제 해결)"
           }
         },
         "pl" : {
@@ -57087,7 +56861,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "앱 스토어 재설정?"
+            "value" : "App Store를 재설정 하시겠습니까?"
           }
         },
         "pl" : {
@@ -57539,7 +57313,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "변경 사항을 적용하려면 %@을(를) 다시 시작하십시오"
+            "value" : "변경 사항을 적용하려면 %@을(를) 다시 시작하세요"
           }
         },
         "pl" : {
@@ -57723,10 +57497,24 @@
       }
     },
     "Retry" : {
-
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "재시도"
+          }
+        }
+      }
     },
     "Retry permission check" : {
-
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "권한 확인 재시도"
+          }
+        }
+      }
     },
     "Reverse search completed successfully" : {
       "extractionState" : "manual",
@@ -58331,7 +58119,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "닥터 실행"
+            "value" : "검사기 실행"
           }
         },
         "pl" : {
@@ -58555,7 +58343,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "홈브류 정리 실행 중"
+            "value" : "Homebrew 정리 실행 중"
           }
         },
         "pl" : {
@@ -59340,7 +59128,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "패키지 스캔"
+            "value" : "패키지 검색"
           }
         },
         "pl" : {
@@ -59452,7 +59240,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "스캔 중..."
+            "value" : "검색 중..."
           }
         },
         "pl" : {
@@ -61469,7 +61257,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "lipo 세부정보 보기"
+            "value" : "Lipo 세부정보 보기"
           }
         },
         "pl" : {
@@ -62254,7 +62042,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "센티넬 모니터"
+            "value" : "Sentinel Monitor"
           }
         },
         "pl" : {
@@ -62366,7 +62154,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sentinel Monitor에서 고아 파일을 찾지 못했습니다"
+            "value" : "Sentinel Monitor에서 연결되지 않은 파일을 찾지 못했습니다"
           }
         },
         "pl" : {
@@ -62479,7 +62267,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sentinel Monitor가 제거할 다른 파일을 찾지 못했습니다"
+            "value" : "Sentinel Monitor found no other files to remove"
           }
         },
         "pl" : {
@@ -66971,7 +66759,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "스파클"
+            "value" : "Sparkle"
           }
         },
         "pl" : {
@@ -67084,7 +66872,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "스폰서"
+            "value" : "후원자"
           }
         },
         "pl" : {
@@ -67196,7 +66984,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "스포트라이트 인덱스"
+            "value" : "Spotlight 인덱스"
           }
         },
         "pl" : {
@@ -69671,7 +69459,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "모든 lipo'd 앱 간의 총 공간 절약\n이전 크기: %@\n이후 크기: %@"
+            "value" : "모든 번들 축소한 앱의 공간 절약\n이전 크기: %@\n이후 크기: %@"
           }
         },
         "pl" : {
@@ -72367,7 +72155,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "전환 애니메이션 비활성화됨"
+            "value" : "전환 애니메이션 비활성화"
           }
         },
         "pl" : {
@@ -72479,7 +72267,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "전환 애니메이션 활성화됨"
+            "value" : "전환 애니메이션 활성화"
           }
         },
         "pl" : {
@@ -73713,7 +73501,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "제거 취소"
+            "value" : "제거 돌리기"
           }
         },
         "pl" : {
@@ -74050,7 +73838,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "제거 %@ "
+            "value" : "%@ 제거"
           }
         },
         "pl" : {
@@ -74162,7 +73950,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 제거하시겠습니까?"
+            "value" : "%@를 제거하시겠습니까?"
           }
         },
         "pl" : {
@@ -75060,7 +74848,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "유니버설"
+            "value" : "Universal"
           }
         },
         "pl" : {
@@ -76180,7 +75968,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "업데이트 %@?"
+            "value" : "%@의 업데이트를 하시겠습니까?"
           }
         },
         "pl" : {
@@ -77415,7 +77203,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "앱 스토어에서 업데이트"
+            "value" : "App Store 에서 업데이트"
           }
         },
         "pl" : {
@@ -79882,7 +79670,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "앱 스토어에서 보기"
+            "value" : "App Store에서 보기"
           }
         },
         "pl" : {
@@ -80558,7 +80346,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "릴리스 보기"
+            "value" : "릴리즈 보기"
           }
         },
         "pl" : {
@@ -81911,7 +81699,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Homebrew 정리가 활성화되면 Pearcleaner는 제거하려는 앱이 Homebrew를 통해 설치되었는지 확인하고 Terminal.app을 실행하여 brew uninstall 및 cleanup 명령을 실행하여 Homebrew에 앱이 제거되었음을 알립니다. 이렇게 하면 Homebrew 목록이 올바르게 동기화되고 캐싱이 제거됩니다. 일부 앱은 시스템 폴더에 배치된 서비스 및 파일을 제거하기 위해 sudo 권한이 필요하므로 Terminal.app이 필요합니다. 다른 터미널 앱은 AppleScript 및/또는 'do script' 명령을 지원하지 않으므로 기본 macOS Terminal 앱을 사용하기로 했습니다.\n\n참고: CMD+Z로 파일 삭제를 실행 취소하면 파일이 복원되지만 Homebrew는 이를 인식하지 못합니다. Homebrew 목록을 다시 동기화하려면 다음을 실행해야 합니다:\n\n> brew install APPNAME --force"
+            "value" : "Homebrew 정리가 활성화되면 Pearcleaner는 제거하려는 앱이 Homebrew를 통해 설치되었는지 확인하고 Terminal.app을 실행하여 brew uninstall 및 cleanup 명령을 실행하여 Homebrew에서 앱이 되었음을 알립니다. 이렇게 하면 Homebrew 목록이 올바르게 동기화되고 캐싱이 제거됩니다. 일부 앱은 시스템 폴더에 배치된 서비스 및 파일을 제거하기 위해 sudo 권한이 필요하므로 Terminal.app이 필요합니다. 다른 터미널 앱은 AppleScript 및/또는 'do script' 명령을 지원하지 않으므로 기본 macOS Terminal 앱을 사용하게 되었습니다.\n\n참고: CMD+Z로 파일 삭제를 실행 취소하면 파일이 복원되지만 Homebrew는 이를 인식하지 못합니다. Homebrew 목록을 다시 동기화하려면 다음 명령어를 실행해야 합니다:\n\n> brew install APPNAME --force"
           }
         },
         "pl" : {
@@ -82135,7 +81923,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "도우미 도구가 2025년 3월에 도입되었을 때, AuthorizationExecuteWithPrivileges(비밀번호 프롬프트 팝업을 통한 인증 부여)가 결국 제거될 것이라고 했습니다. 이는 이미 Apple에 의해 사용 중단되었기 때문입니다. 도우미가 활성화되지 않으면 Pearcleaner의 일부 기능이 작동하지 않을 것입니다."
+            "value" : "도우미 도구가 2025년 3월에 도입되었을 때, Apple에 의해 사용 중단된 AuthorizationExecuteWithPrivileges(비밀번호 프롬프트 팝업을 통한 인증 부여)가 제거될 것이라 소개했습니다. 도우미가 활성화되지 않으면 Pearcleaner의 일부 기능이 작동하지 않을 것입니다."
           }
         },
         "pl" : {
@@ -82360,7 +82148,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "베타 버전에서는 누락되거나 잘못된 업데이트 문제를 여기에서 보고하세요"
+            "value" : "베타 버전에서는 누락되거나 잘못된 업데이트 문제를 여기서 보고하세요"
           }
         },
         "pl" : {
@@ -82472,7 +82260,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@에 비활성화됩니다"
+            "value" : "%@에서 비활성 될것입니다."
           }
         },
         "pl" : {
