@@ -385,8 +385,8 @@ struct PearCLI: ParsableCommand {
                 Darwin.exit(1)
             }
 
-            // Save to keychain
-            KeychainPasswordManager.shared.savePassword(password, expiryInterval: 300)
+            // Save to keychain (uses user-configured timeout from settings)
+            KeychainPasswordManager.shared.savePassword(password)
 
             // Print and exit immediately
             print(password)

@@ -25,8 +25,14 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.searchSensitivity") private var sensitivityLevel: SearchSensitivityLevel = .strict
     @AppStorage("settings.general.deepLevelAlertShown") private var deepLevelAlertShown: Bool = false
     @AppStorage("settings.app.autoSlim") private var autoSlim: Bool = false
+    @AppStorage("settings.general.sudoCacheTimeout") private var sudoCacheTimeoutData: Data = {
+        let defaultTimeout = SudoCacheTimeout()
+        return (try? JSONEncoder().encode(defaultTimeout)) ?? Data()
+    }()
     @State private var showAppIconInMenu = UserDefaults.showAppIconInMenu
     @State private var showDeepAlert: Bool = false
+    @State private var sudoCacheTimeout = SudoCacheTimeout()
+    @FocusState private var isTimeoutFieldFocused: Bool
 
     var body: some View {
         VStack(spacing: 20) {
@@ -172,6 +178,61 @@ struct GeneralSettingsTab: View {
 //                            }
 //                        }
 //                        .padding(5)
+
+
+                        HStack(spacing: 0) {
+                            Image(systemName: "key.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 15, height: 15)
+                                .padding(.trailing)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            VStack(alignment: .leading, spacing: 0) {
+                                HStack(spacing: 0) {
+                                    Text("Password cache timeout")
+                                        .font(.callout)
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                                    InfoButton(text: String(localized: "When running privileged Homebrew operations, Pearcleaner caches your password in the macOS Keychain for this duration to avoid repeated password prompts. Homebrew commands cannot be executed with the privileged helper tool Pearcleaner offers."))
+                                }
+                            }
+
+                            Spacer()
+
+                            HStack(spacing: 4) {
+                                TextField("", value: $sudoCacheTimeout.value, format: .number)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: 50)
+                                    .multilineTextAlignment(.center)
+                                    .focusable(false)
+                                    .focused($isTimeoutFieldFocused)
+
+                                Stepper {
+                                    Text("")
+                                } onIncrement: {
+                                    if sudoCacheTimeout.value < 999 {
+                                        sudoCacheTimeout.value += 1
+                                    }
+                                    isTimeoutFieldFocused = false
+                                } onDecrement: {
+                                    if sudoCacheTimeout.value > 1 {
+                                        sudoCacheTimeout.value -= 1
+                                    }
+                                    isTimeoutFieldFocused = false
+                                }
+                            }
+
+                            Picker("", selection: $sudoCacheTimeout.unit) {
+                                ForEach(SudoCacheTimeout.TimeUnit.allCases, id: \.self) { unit in
+                                    Text(unit.rawValue).tag(unit)
+                                }
+                            }
+                            .pickerStyle(.menu)
+                            .frame(width: 100)
+                        }
+                        .padding(5)
+                        .onChange(of: sudoCacheTimeout) { newValue in
+                            sudoCacheTimeoutData = (try? JSONEncoder().encode(newValue)) ?? Data()
+                        }
 
 
                     }
@@ -421,11 +482,38 @@ struct GeneralSettingsTab: View {
                 isCLISymlinked = checkCLISymlink()
             }
 
+            // Load sudo cache timeout from AppStorage
+            if let decoded = try? JSONDecoder().decode(SudoCacheTimeout.self, from: sudoCacheTimeoutData) {
+                sudoCacheTimeout = decoded
+            }
         }
 
     }
 
 
+}
+
+
+
+// MARK: - SudoCacheTimeout
+
+struct SudoCacheTimeout: Codable, Equatable {
+    var value: Int = 5
+    var unit: TimeUnit = .minutes
+
+    enum TimeUnit: String, Codable, CaseIterable {
+        case minutes = "Minutes"
+        case hours = "Hours"
+        case days = "Days"
+    }
+
+    var seconds: TimeInterval {
+        switch unit {
+        case .minutes: return TimeInterval(value * 60)
+        case .hours: return TimeInterval(value * 3600)
+        case .days: return TimeInterval(value * 86400)
+        }
+    }
 }
 
 

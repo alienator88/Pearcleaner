@@ -28,13 +28,23 @@ class KeychainPasswordManager {
 
     // MARK: - Public API
 
+    /// Reads user's configured cache timeout from UserDefaults
+    static func getCacheTimeout() -> TimeInterval {
+        guard let data = UserDefaults.standard.data(forKey: "settings.general.sudoCacheTimeout"),
+              let decoded = try? JSONDecoder().decode(SudoCacheTimeoutSetting.self, from: data) else {
+            return 300 // Default to 5 minutes
+        }
+        return decoded.seconds
+    }
+
     /// Saves password to keychain with expiry time stored in metadata
-    func savePassword(_ password: String, expiryInterval: TimeInterval = 300) {
+    func savePassword(_ password: String, expiryInterval: TimeInterval? = nil) {
+        let timeout = expiryInterval ?? KeychainPasswordManager.getCacheTimeout()
         // Delete existing item first
         deletePassword(service: service, account: account)
 
         // Calculate expiry timestamp and store as metadata
-        let expiryDate = Date().addingTimeInterval(expiryInterval)
+        let expiryDate = Date().addingTimeInterval(timeout)
         let expiryTimestamp = expiryDate.timeIntervalSince1970
         let expiryString = "\(expiryTimestamp)"
 
@@ -104,5 +114,27 @@ class KeychainPasswordManager {
         ]
 
         SecItemDelete(query as CFDictionary)
+    }
+}
+
+// MARK: - SudoCacheTimeoutSetting
+
+/// Mirrors the SudoCacheTimeout struct from General.swift for decoding
+struct SudoCacheTimeoutSetting: Codable {
+    var value: Int = 5
+    var unit: TimeUnit = .minutes
+
+    enum TimeUnit: String, Codable {
+        case minutes = "Minutes"
+        case hours = "Hours"
+        case days = "Days"
+    }
+
+    var seconds: TimeInterval {
+        switch unit {
+        case .minutes: return TimeInterval(value * 60)
+        case .hours: return TimeInterval(value * 3600)
+        case .days: return TimeInterval(value * 86400)
+        }
     }
 }
