@@ -87,6 +87,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             PermissionManagerLocal.shared.results = results
         }
 
+        // Load and cleanup undo history
+        Task { @MainActor in
+            UndoHistoryManager.shared.cleanupStaleEntries()
+        }
+
     }
 
     func applicationWillTerminate(_ notification: Notification) {}

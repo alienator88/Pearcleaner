@@ -144,6 +144,15 @@ class FileManagerUndo {
             }
             undoManager.setActionName("Delete File")
 
+            // Record in persistent history
+            Task { @MainActor in
+                UndoHistoryManager.shared.addRecord(
+                    appName: folderName,
+                    bundleFolderPath: bundleFolderPath,
+                    filePairs: filePairs.map { ($0.originalURL.path, $0.trashURL.path) }
+                )
+            }
+
             // Play trash sound after successful deletion
             if !isCLI {
                 playTrashSound()
@@ -196,6 +205,13 @@ class FileManagerUndo {
         }
 
         if executeFileCommands(finalCommands, isCLI: isCLI, hasProtectedFiles: hasProtectedFiles, isRestore: true) {
+            // Remove from persistent history after successful restore
+            if let bundleFolder = bundleFolderToRemove {
+                Task { @MainActor in
+                    UndoHistoryManager.shared.removeRecord(bundleFolderPath: bundleFolder)
+                }
+            }
+
             finalStatus = true
         } else {
             //            printOS("Trash Error: \(isCLI ? "Failed to run restore CLI commands" : "Failed to run restore privileged commands")")

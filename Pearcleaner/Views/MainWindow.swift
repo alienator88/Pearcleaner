@@ -121,6 +121,12 @@ struct MainWindow: View {
             /// This will show the update sheet based on the frequency check function only
             updater.getUpdateView()
         })
+        .sheet(isPresented: $appState.showDeleteHistory, content: {
+            DeleteHistoryView()
+                .environmentObject(appState)
+                .environmentObject(locations)
+                .environmentObject(fsm)
+        })
         .onReceive(
             NotificationCenter.default.publisher(for: NSWindow.didEnterFullScreenNotification)
         ) { _ in

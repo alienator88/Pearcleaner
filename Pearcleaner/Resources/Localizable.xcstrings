@@ -19224,6 +19224,9 @@
         }
       }
     },
+    "Delete History" : {
+
+    },
     "Delete plugin" : {
       "localizations" : {
         "de" : {
@@ -20007,6 +20010,9 @@
           }
         }
       }
+    },
+    "Deleted files will appear here" : {
+
     },
     "Dependencies" : {
       "localizations" : {
@@ -26852,6 +26858,9 @@
           }
         }
       }
+    },
+    "Files no longer in trash" : {
+
     },
     "Filter" : {
       "localizations" : {
@@ -42452,6 +42461,9 @@
         }
       }
     },
+    "No delete history" : {
+
+    },
     "No files or folders added" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -57495,6 +57507,15 @@
           }
         }
       }
+    },
+    "Restore %lld" : {
+
+    },
+    "Restore previously deleted files from trash (last 10 operations)" : {
+
+    },
+    "Restoring..." : {
+
     },
     "Retry" : {
       "localizations" : {

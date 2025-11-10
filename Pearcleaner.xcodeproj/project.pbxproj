@@ -23,6 +23,8 @@
 		C74422432E494D830002D277 /* PackageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74422422E494D7E0002D277 /* PackageView.swift */; };
 		C74FDC632BCD833D00B8960F /* Conditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74FDC622BCD833D00B8960F /* Conditions.swift */; };
 		C7575D392B0182DE006A600A /* PearcleanerSentinel in CopyFiles */ = {isa = PBXBuildFile; fileRef = C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		C75AED0E2EC259A900824CCD /* DeleteHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C75AED0D2EC259A900824CCD /* DeleteHistoryView.swift */; };
+		C75AED102EC259C800824CCD /* UndoHistoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C75AED0F2EC259C800824CCD /* UndoHistoryManager.swift */; };
 		C76EDCD62C45DC82000CF29D /* AlinFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = C76EDCD52C45DC82000CF29D /* AlinFoundation */; };
 		C77020292EA94D0A00240D58 /* FuzzySearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77020282EA94D0A00240D58 /* FuzzySearch.swift */; };
 		C770B6ED2E78DF9D005A0ABD /* Glass.icon in Resources */ = {isa = PBXBuildFile; fileRef = C770B6EC2E78DF9D005A0ABD /* Glass.icon */; };
@@ -141,6 +143,8 @@
 		C74422422E494D7E0002D277 /* PackageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageView.swift; sourceTree = "<group>"; };
 		C74451F62D93774700146AF8 /* announcements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = announcements.json; sourceTree = "<group>"; };
 		C74FDC622BCD833D00B8960F /* Conditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conditions.swift; sourceTree = "<group>"; };
+		C75AED0D2EC259A900824CCD /* DeleteHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteHistoryView.swift; sourceTree = "<group>"; };
+		C75AED0F2EC259C800824CCD /* UndoHistoryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoHistoryManager.swift; sourceTree = "<group>"; };
 		C77020282EA94D0A00240D58 /* FuzzySearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuzzySearch.swift; sourceTree = "<group>"; };
 		C770B6EC2E78DF9D005A0ABD /* Glass.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Glass.icon; sourceTree = "<group>"; };
 		C770D7DA2CE7C9A100B3492A /* DevelopmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevelopmentView.swift; sourceTree = "<group>"; };
@@ -301,6 +305,7 @@
 				C78FF5E02EC1A3B400FC610A /* PasswordRequestHandler.swift */,
 				C7CC10E32E9473480057B7E2 /* ProcessEnv.swift */,
 				C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */,
+				C75AED0F2EC259C800824CCD /* UndoHistoryManager.swift */,
 				C72FDCB82D6D088A00DE7D56 /* UndoManager.swift */,
 				C7F539372AF60865007DF1B2 /* Utilities.swift */,
 				C7C693E92E9D73DD0081CF25 /* AppsUpdater */,
@@ -384,6 +389,7 @@
 			isa = PBXGroup;
 			children = (
 				C74422402E4936700002D277 /* DaemonView.swift */,
+				C75AED0D2EC259A900824CCD /* DeleteHistoryView.swift */,
 				C770D7DA2CE7C9A100B3492A /* DevelopmentView.swift */,
 				C7BB992E2E8B225F007BBB81 /* FileSearchView.swift */,
 				C72D03B22E4D3FB900ADC1B4 /* MainWindow.swift */,
@@ -656,6 +662,7 @@
 			files = (
 				C78FF5E12EC1A3B400FC610A /* PasswordRequestHandler.swift in Sources */,
 				C7DD49EA2BAB4D8100CCBA16 /* AppInfoFetch.swift in Sources */,
+				C75AED102EC259C800824CCD /* UndoHistoryManager.swift in Sources */,
 				C7CC10E42E94734E0057B7E2 /* ProcessEnv.swift in Sources */,
 				C74422432E494D830002D277 /* PackageView.swift in Sources */,
 				C77B90162AF19377009CC655 /* AppState.swift in Sources */,
@@ -675,6 +682,7 @@
 				C73545EB2D8496E000A3DC0C /* HelperToolManager.swift in Sources */,
 				C72FDCB92D6D089100DE7D56 /* UndoManager.swift in Sources */,
 				C7BB992F2E8B225F007BBB81 /* FileSearchView.swift in Sources */,
+				C75AED0E2EC259A900824CCD /* DeleteHistoryView.swift in Sources */,
 				C77B90042AF18E2E009CC655 /* PearcleanerApp.swift in Sources */,
 				C77B90182AF19382009CC655 /* AppCommands.swift in Sources */,
 				C74FDC632BCD833D00B8960F /* Conditions.swift in Sources */,

@@ -109,6 +109,14 @@ struct AppCommands: Commands {
             }
             .keyboardShortcut("z", modifiers: .command)
 
+            Divider()
+
+            Button {
+                appState.showDeleteHistory = true
+            } label: {
+                Label("Delete History", systemImage: "clock.arrow.circlepath")
+            }
+            .keyboardShortcut("y", modifiers: [.command, .shift])
 
         }
 
