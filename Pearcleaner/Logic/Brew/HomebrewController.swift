@@ -330,21 +330,39 @@ class HomebrewController {
             return nil
         }
 
-        // Strip revision suffix from version (e.g., "2.14.1_1" -> "2.14.1")
-        // This ensures version matches what API returns
-        let cleanedVersion = latestVersion.stripBrewRevisionSuffix()
-
         // Check if pinned (pin file exists)
         let pinPath = "\(brewPrefix)/var/homebrew/pinned/\(name)"
         let isPinned = FileManager.default.fileExists(atPath: pinPath)
 
-        // Read INSTALL_RECEIPT.json for installed_on_request field
+        // Read INSTALL_RECEIPT.json for version and installed_on_request field
+        // Use receipt as source of truth for ALL formulae (HEAD and regular)
         let receiptPath = "\(cellarPath)/\(latestVersion)/INSTALL_RECEIPT.json"
         var installedOnRequest = false  // Default to false if field missing
+        var actualVersion = latestVersion  // Fallback to directory name
+
         if let receiptData = try? Data(contentsOf: URL(fileURLWithPath: receiptPath)),
            let receipt = try? JSONSerialization.jsonObject(with: receiptData) as? [String: Any] {
             installedOnRequest = receipt["installed_on_request"] as? Bool ?? false
+
+            // Extract version from receipt (unified for HEAD and regular formulae)
+            // Version is nested: source.versions.stable
+            if let source = receipt["source"] as? [String: Any],
+               let versions = source["versions"] as? [String: Any],
+               let stableVersion = versions["stable"] as? String,
+               !stableVersion.isEmpty {
+                // Use receipt version and apply cleanup as safety measure
+                actualVersion = stableVersion.stripBrewRevisionSuffix()
+            } else {
+                // Fallback: strip revision suffix from directory name
+                actualVersion = latestVersion.stripBrewRevisionSuffix()
+            }
+        } else {
+            // Fallback if receipt missing/corrupted: use directory name with cleanup
+            actualVersion = latestVersion.stripBrewRevisionSuffix()
         }
+
+        // actualVersion is now clean and ready to use (no additional stripping needed)
+        let cleanedVersion = actualVersion
 
         // Read .rb file for description
         let rbPath = "\(cellarPath)/\(latestVersion)/.brew/\(name).rb"
@@ -1471,10 +1489,14 @@ class HomebrewController {
         var actualCellarURL = cellarURL
         if !fileManager.fileExists(atPath: cellarPath) {
             // Fallback: Search for version with revision suffix (e.g., "25.1.0_1")
+            // Also handle HEAD installations (directory named "HEAD-abc1234" but version shows as "2025.10.22")
             let formulaBasePath = "\(brewPrefix)/Cellar/\(name)"
             if let versionDirs = try? fileManager.contentsOfDirectory(atPath: formulaBasePath) {
                 // Find directory whose sanitized version matches input version
-                if let matchingDir = versionDirs.first(where: { $0.stripBrewRevisionSuffix() == version }) {
+                // OR directory that starts with "HEAD" (for HEAD installations)
+                if let matchingDir = versionDirs.first(where: {
+                    $0.stripBrewRevisionSuffix() == version || $0.hasPrefix("HEAD")
+                }) {
                     actualCellarURL = URL(fileURLWithPath: "\(formulaBasePath)/\(matchingDir)")
                 } else {
                     return (0, "0 KB")
@@ -1550,7 +1572,8 @@ class HomebrewController {
                   globResult.gl_pathc > 0,
                   let cPath = globResult.gl_pathv[0],
                   let symlinkPath = String(validatingUTF8: cPath) else {
-                return (0, "0 KB")
+                // No .app found - try PKG-only cask fallback
+                return await calculatePKGOnlyCaskSize(caskName: name)
             }
 
             // Resolve symlink to get real path in /Applications
@@ -1564,6 +1587,72 @@ class HomebrewController {
 
             return (calculatedSize, formatted)
         }
+    }
+
+    /// Calculate size for PKG-only casks (no GUI app) by querying PKG receipts
+    /// Used for Java runtimes, drivers, CLI tools, etc.
+    private func calculatePKGOnlyCaskSize(caskName: String) async -> (Int64, String) {
+        let caskroomPath = "\(brewPrefix)/Caskroom/\(caskName)"
+
+        // Find cask JSON file in .metadata directory
+        let globPattern = "\(caskroomPath)/.metadata/*/*/Casks/\(caskName).json"
+        var globResult = glob_t()
+        defer { globfree(&globResult) }
+
+        guard glob(globPattern, 0, nil, &globResult) == 0,
+              globResult.gl_pathc > 0,
+              let cPath = globResult.gl_pathv[0],
+              let jsonPath = String(validatingUTF8: cPath) else {
+            return (0, "0 KB")
+        }
+
+        // Read and parse cask JSON
+        guard let data = try? Data(contentsOf: URL(fileURLWithPath: jsonPath)),
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let artifacts = json["artifacts"] as? [[String: Any]] else {
+            return (0, "0 KB")
+        }
+
+        // Extract pkgutil identifiers from uninstall directives
+        var pkgIdentifiers: [String] = []
+        for artifact in artifacts {
+            if let uninstalls = artifact["uninstall"] as? [[String: Any]] {
+                for uninstall in uninstalls {
+                    // Handle both string and array formats
+                    if let pkgutilString = uninstall["pkgutil"] as? String {
+                        pkgIdentifiers.append(pkgutilString)
+                    } else if let pkgutilArray = uninstall["pkgutil"] as? [String] {
+                        pkgIdentifiers.append(contentsOf: pkgutilArray)
+                    }
+                }
+            }
+        }
+
+        guard !pkgIdentifiers.isEmpty else {
+            return (0, "0 KB")
+        }
+
+        // Query PKG receipts and sum sizes
+        let receipts = PKGManager.getAllPackages()
+        var totalSize: Int64 = 0
+
+        for identifier in pkgIdentifiers {
+            if let receipt = receipts.first(where: { ($0.packageIdentifier() as? String) == identifier }),
+               let bomInfo = PKGManager.getBOMInfo(for: receipt) {
+                totalSize += bomInfo.totalSize
+            }
+        }
+
+        guard totalSize > 0 else {
+            return (0, "0 KB")
+        }
+
+        let bytesFormatted = totalSize
+        let formatted = await MainActor.run {
+            ByteCountFormatter.string(fromByteCount: bytesFormatted, countStyle: .file)
+        }
+
+        return (totalSize, formatted)
     }
 
     // MARK: - Tap Package Loading

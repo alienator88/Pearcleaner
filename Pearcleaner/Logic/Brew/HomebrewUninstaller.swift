@@ -81,12 +81,10 @@ class HomebrewUninstaller {
         // Add package type flag
         if cask {
             arguments.append("--cask")
+            arguments.append("--zap")
         } else {
             arguments.append("--formula")
         }
-
-        // Always zap (for casks - formulae ignore this flag)
-        arguments.append("--zap")
 
         // Force uninstall
         arguments.append("--force")
