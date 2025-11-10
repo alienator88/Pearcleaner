@@ -650,93 +650,6 @@ func pruneLanguages(in appBundlePath: String, showAlert: Bool = false) async thr
     }
 }
 
-// Auto-slim: Remove unused architectures and translations (synchronous, runs on app termination)
-func performAutoSlim() {
-    let currentVersion = Bundle.main.version
-    let bundlePath = Bundle.main.bundlePath
-    let bundleURL = URL(fileURLWithPath: bundlePath)
-
-    // Slim bundle based on architecture type
-    let arch = checkAppBundleArchitecture(at: bundlePath)
-
-    if arch == .universal {
-        // Universal: Use ditto copy-replace pattern (safe for binary modification)
-        let dittoArch = isOSArm() ? "arm64" : "x86_64"
-        let tempDir = FileManager.default.temporaryDirectory
-        let tempAppPath = tempDir.appendingPathComponent("Pearcleaner-slim.app")
-
-        do {
-            // Remove temp if exists
-            try? FileManager.default.removeItem(at: tempAppPath)
-
-            // Use ditto to thin during copy
-            let process = Process()
-            process.executableURL = URL(fileURLWithPath: "/usr/bin/ditto")
-            process.arguments = ["--arch", dittoArch, bundlePath, tempAppPath.path]
-            try process.run()
-            process.waitUntilExit()
-
-            if process.terminationStatus == 0 {
-                // Prune translations from temp copy (not running bundle!)
-                let semaphore = DispatchSemaphore(value: 0)
-                Task {
-                    do {
-                        try await pruneLanguages(in: tempAppPath.path)
-                    } catch {
-                        // Silent failure
-                    }
-                    semaphore.signal()
-                }
-                semaphore.wait()
-
-                // Replace original with fully-processed temp copy
-                // Always use helper to replace bundle (handles both user and root-owned)
-                if HelperToolManager.shared.isHelperToolInstalled {
-                    let command = "/bin/rm -rf \"\(bundleURL.path)\" && /bin/mv \"\(tempAppPath.path)\" \"\(bundleURL.path)\""
-                    let helperSemaphore = DispatchSemaphore(value: 0)
-                    var success = false
-                    Task {
-                        let result = await HelperToolManager.shared.runCommand(command)
-                        success = result.0
-                        helperSemaphore.signal()
-                    }
-                    helperSemaphore.wait()
-
-                    if !success {
-                        printOS("Auto-slim failed: Could not replace bundle")
-                    }
-                } else {
-                    // Helper required but not installed
-                    printOS("Auto-slim failed: Helper tool required. Authorization Services has been removed.")
-                    HelperToolManager.shared.triggerHelperRequiredAlert()
-                    return
-                }
-            }
-        } catch {
-            // Silent failure
-        }
-
-    } else {
-        // Arch-specific: Prune translations directly from running bundle (safe, no binary modification)
-        let semaphore = DispatchSemaphore(value: 0)
-        Task {
-            do {
-                try await pruneLanguages(in: bundlePath)
-            } catch {
-                // Silent failure
-            }
-            semaphore.signal()
-        }
-        semaphore.wait()
-    }
-
-    // Update version and reset current size (will be recalculated on next launch)
-    var stats = AppState.shared.autoSlimStats
-    stats.lastRunVersion = currentVersion
-    stats.currentSize = 0  // Reset so next launch recalculates the new size
-    AppState.shared.autoSlimStats = stats
-}
-
 // FinderExtension Sequoia Fix
 func manageFinderPlugin(install: Bool) {
     let task = Process()
@@ -749,10 +662,10 @@ func manageFinderPlugin(install: Bool) {
 }
 
 // Brew cleanup
-func getBrewCleanupCommand(for caskName: String) -> String {
-    let brewPath = isOSArm() ? "/opt/homebrew/bin/brew" : "/usr/local/bin/brew"
-    return "\(brewPath) uninstall --cask \(caskName) --zap --force && \(brewPath) cleanup && clear; echo '\nHomebrew cleanup was successful, you may close this window..\n'"
-}
+//func getBrewCleanupCommand(for caskName: String) -> String {
+//    let brewPath = isOSArm() ? "/opt/homebrew/bin/brew" : "/usr/local/bin/brew"
+//    return "\(brewPath) uninstall --cask \(caskName) --zap --force && \(brewPath) cleanup && clear; echo '\nHomebrew cleanup was successful, you may close this window..\n'"
+//}
 
 // MARK: - Cask Lookup Cache
 

@@ -76,7 +76,6 @@ struct PluginsView: View {
     @State private var collapsedCategories: Set<String> = []
     @State private var cachedSizes: [String: Int64] = [:]  // Cache for lazily calculated sizes, keyed by plugin path
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
-    @AppStorage("settings.general.permanentDelete") private var permanentDelete: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
     private var filteredPlugins: [PluginInfo] {
@@ -203,7 +202,6 @@ struct PluginsView: View {
                                                     AudioPluginRowView(
                                                         plugin: plugin,
                                                         isSelected: selectedPlugins.contains(plugin.id),
-                                                        permanentDelete: permanentDelete,
                                                         sortOption: sortOption,
                                                         cachedSize: cachedSizes[plugin.path],
                                                         onSizeCalculated: { size in
@@ -226,7 +224,6 @@ struct PluginsView: View {
                                                     PluginRowView(
                                                         plugin: plugin,
                                                         isSelected: selectedPlugins.contains(plugin.id),
-                                                        permanentDelete: permanentDelete,
                                                         sortOption: sortOption,
                                                         cachedSize: cachedSizes[plugin.path],
                                                         onSizeCalculated: { size in
@@ -749,7 +746,6 @@ struct PluginCategorySection: View {
     @Binding var selectedPlugins: Set<String>  // Changed to String since ID is now path
     @Binding var selectedPluginPaths: [String]
     @Binding var cachedSizes: [String: Int64]  // Add binding for cached sizes
-    let permanentDelete: Bool
     let sortOption: PluginSortOption
     let onRemove: (PluginInfo) -> Void
     let onRefresh: () -> Void
@@ -791,7 +787,6 @@ struct PluginCategorySection: View {
                         AudioPluginRowView(
                             plugin: plugin,
                             isSelected: selectedPlugins.contains(plugin.id),
-                            permanentDelete: permanentDelete,
                             sortOption: sortOption,
                             cachedSize: cachedSizes[plugin.path],
                             onSizeCalculated: { size in
@@ -808,7 +803,6 @@ struct PluginCategorySection: View {
                         PluginRowView(
                             plugin: plugin,
                             isSelected: selectedPlugins.contains(plugin.id),
-                            permanentDelete: permanentDelete,
                             sortOption: sortOption,
                             cachedSize: cachedSizes[plugin.path],
                             onSizeCalculated: { size in
@@ -845,7 +839,6 @@ struct PluginCategorySection: View {
 struct PluginRowView: View {
     let plugin: PluginInfo
     let isSelected: Bool
-    let permanentDelete: Bool
     let sortOption: PluginSortOption
     let cachedSize: Int64?  // Size from cache, nil if not yet calculated
     let onSizeCalculated: (Int64) -> Void  // Callback to update cache
@@ -1075,7 +1068,6 @@ struct PluginRowView: View {
 struct AudioPluginRowView: View {
     let plugin: PluginInfo
     let isSelected: Bool
-    let permanentDelete: Bool
     let sortOption: PluginSortOption
     let cachedSize: Int64?  // Size from cache, nil if not yet calculated
     let onSizeCalculated: (Int64) -> Void  // Callback to update cache

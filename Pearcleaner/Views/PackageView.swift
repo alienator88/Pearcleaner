@@ -71,7 +71,6 @@ struct PackageView: View {
     @State private var expandedPackages: Set<String> = []
     @State private var sortOption: PackageSortOption = .packageName
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
-    @AppStorage("settings.general.permanentDelete") private var permanentDelete: Bool = false
 
     // Uninstall sheet state
     @State private var uninstallSheetWindow: NSWindow?
@@ -199,7 +198,6 @@ struct PackageView: View {
                             PackageRowView(
                                 package: package,
                                 isExpanded: expandedPackages.contains(package.packageId),
-                                permanentDelete: permanentDelete,
                                 sortOption: sortOption
                             ) {
                                 toggleExpansion(for: package.packageId)
@@ -424,33 +422,18 @@ struct PackageView: View {
                 let receiptPaths = package.receiptStoragePaths
 
                 if receiptPaths.isEmpty {
-                    printOS("⚠️ No receipt paths found for package \(package.packageId)")
+//                    printOS("⚠️ No receipt paths found for package \(package.packageName)")
                     continuation.resume(returning: false)
                     return
                 }
 
-                // Build rm command to delete all receipt files
-                let quotedPaths = receiptPaths.map { "\"\($0)\"" }.joined(separator: " ")
-                let deleteCommand = "rm -f \(quotedPaths)"
+                // Use FileManagerUndo to safely delete receipt files to trash
+                let receiptURLs = receiptPaths.map { URL(fileURLWithPath: $0) }
+                let success = FileManagerUndo.shared.deleteFiles(at: receiptURLs, bundleName: "PKG-\(package.packageName)")
 
-                var success = false
-
-                // Use privileged command execution since receipts are in protected locations
-                if HelperToolManager.shared.isHelperToolInstalled {
-                    let semaphore = DispatchSemaphore(value: 0)
-                    Task {
-                        let result = await HelperToolManager.shared.runCommand(deleteCommand)
-                        success = result.0
-                        if !success {
-                            printOS("Package forget failed: \(result.1)")
-                        }
-                        semaphore.signal()
-                    }
-                    semaphore.wait()
-                } else {
+                if !success {
                     printOS("Helper tool required to forget package. Authorization Services has been removed.")
                     HelperToolManager.shared.triggerHelperRequiredAlert()
-                    success = false
                 }
 
                 continuation.resume(returning: success)
@@ -616,29 +599,9 @@ struct PackageView: View {
                     return
                 }
 
-                // Build command to delete receipt files
-                let quotedReceiptPaths = receiptPaths.map { "\"\($0)\"" }.joined(separator: " ")
-                let command = "rm -f \(quotedReceiptPaths)"
-
-                var success = false
-
-                // Use privileged command execution for receipts
-                if HelperToolManager.shared.isHelperToolInstalled {
-                    let semaphore = DispatchSemaphore(value: 0)
-                    Task {
-                        let result = await HelperToolManager.shared.runCommand(command)
-                        success = result.0
-                        if !success {
-                            printOS("Package receipt deletion failed: \(result.1)")
-                        }
-                        semaphore.signal()
-                    }
-                    semaphore.wait()
-                } else {
-                    printOS("Helper tool required to delete package receipt. Authorization Services has been removed.")
-                    HelperToolManager.shared.triggerHelperRequiredAlert()
-                    success = false
-                }
+                // Use FileManagerUndo to safely delete receipt files to trash
+                let receiptURLs = receiptPaths.map { URL(fileURLWithPath: $0) }
+                let success = FileManagerUndo.shared.deleteFiles(at: receiptURLs, bundleName: "PKG-\(package.packageId)")
 
                 continuation.resume(returning: success)
             }
@@ -692,7 +655,6 @@ struct PackageRowView: View {
     @Environment(\.colorScheme) var colorScheme
     let package: PackageInfo
     let isExpanded: Bool
-    let permanentDelete: Bool
     let sortOption: PackageSortOption
     let onToggleExpansion: () -> Void
     let onForget: () -> Void
@@ -1146,25 +1108,10 @@ struct PackageRowView: View {
     private func performFileRemoval(_ filePath: String, from package: PackageInfo) async {
         let success = await withCheckedContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
-                let command = "rm -rf \"\(filePath)\""
-                
-                if HelperToolManager.shared.isHelperToolInstalled {
-                    let semaphore = DispatchSemaphore(value: 0)
-                    Task {
-                        let result = await HelperToolManager.shared.runCommand(command)
-                        let success = result.0
-                        if !success {
-                            printOS("File removal failed: \(result.1)")
-                        }
-                        continuation.resume(returning: success)
-                        semaphore.signal()
-                    }
-                    semaphore.wait()
-                } else {
-                    printOS("Helper tool required to remove file. Authorization Services has been removed.")
-                    HelperToolManager.shared.triggerHelperRequiredAlert()
-                    continuation.resume(returning: false)
-                }
+                // Use FileManagerUndo to safely delete file to trash
+                let fileURL = URL(fileURLWithPath: filePath)
+                let success = FileManagerUndo.shared.deleteFiles(at: [fileURL], bundleName: "PKG-\(package.packageId)")
+                continuation.resume(returning: success)
             }
         }
         
@@ -1203,26 +1150,10 @@ struct PackageRowView: View {
     private func performBulkFileRemoval(_ filePaths: [String]) async {
         let success = await withCheckedContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
-                let quotedPaths = filePaths.map { "\"\($0)\"" }.joined(separator: " ")
-                let command = "rm -rf \(quotedPaths)"
-                
-                if HelperToolManager.shared.isHelperToolInstalled {
-                    let semaphore = DispatchSemaphore(value: 0)
-                    Task {
-                        let result = await HelperToolManager.shared.runCommand(command)
-                        let success = result.0
-                        if !success {
-                            printOS("Bulk file removal failed: \(result.1)")
-                        }
-                        continuation.resume(returning: success)
-                        semaphore.signal()
-                    }
-                    semaphore.wait()
-                } else {
-                    printOS("Helper tool required to remove files. Authorization Services has been removed.")
-                    HelperToolManager.shared.triggerHelperRequiredAlert()
-                    continuation.resume(returning: false)
-                }
+                // Use FileManagerUndo to safely delete files to trash
+                let fileURLs = filePaths.map { URL(fileURLWithPath: $0) }
+                let success = FileManagerUndo.shared.deleteFiles(at: fileURLs, bundleName: "PKG-\(package.packageId)")
+                continuation.resume(returning: success)
             }
         }
         

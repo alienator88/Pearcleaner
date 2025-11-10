@@ -10,8 +10,6 @@ import SwiftUI
 import AlinFoundation
 
 class FileManagerUndo {
-    @AppStorage("settings.general.permanentDelete") private var permanentDelete: Bool = false
-
     // MARK: - Singleton Instance
     static let shared = FileManagerUndo()
 
@@ -21,7 +19,60 @@ class FileManagerUndo {
     // NSUndoManager instance to handle undo/redo actions
     let undoManager = UndoManager()
 
+    // MARK: - Path Validation
+    /// Validates that a path is safe to delete (not a critical system path or app folder)
+    private func validatePath(_ path: String) -> Bool {
+        // Normalize path
+        let normalizedPath = URL(fileURLWithPath: path).standardizedFileURL.path
+
+        // Block empty paths
+        guard !normalizedPath.trimmingCharacters(in: .whitespaces).isEmpty else {
+            printOS("⚠️ Blocked deletion: Empty path")
+            return false
+        }
+
+        // Combine critical system paths + user app folder paths into single set
+        let criticalSystemPaths = [
+            "/",
+            "/Applications",
+            "/Library",
+            "/System",
+            "/usr",
+            "/bin",
+            "/sbin",
+            "/etc",
+            "/var",
+            "/private",
+            "/opt",
+            NSHomeDirectory()
+        ]
+
+        let userAppPaths = FolderSettingsManager.shared.folderPaths
+        let blockedPaths = Set(criticalSystemPaths + userAppPaths)
+
+        // Block if path exactly matches any blocked path
+        if blockedPaths.contains(normalizedPath) {
+            printOS("⚠️ Blocked deletion: Protected path '\(normalizedPath)'")
+            return false
+        }
+
+        return true
+    }
+
     func deleteFiles(at urls: [URL], isCLI: Bool = false, bundleName: String? = nil) -> Bool {
+        // Filter out invalid/dangerous paths before deletion
+        let validURLs = urls.filter { validatePath($0.path) }
+
+        // If no valid paths remain, return early
+        guard !validURLs.isEmpty else {
+            printOS("⚠️ All paths were blocked - no files deleted")
+            return false
+        }
+
+        // Log if any paths were filtered out
+        if validURLs.count < urls.count {
+            printOS("⚠️ Filtered out \(urls.count - validURLs.count) dangerous path(s)")
+        }
         let trashPath = (NSHomeDirectory() as NSString).appendingPathComponent(".Trash")
         let dispatchSemaphore = DispatchSemaphore(value: 0)  // Semaphore to make it synchronous
         var finalStatus = false  // Store the final success/failure status
@@ -29,7 +80,7 @@ class FileManagerUndo {
         var tempFilePairs: [(trashURL: URL, originalURL: URL)] = []
         var seenFileNames: [String: Int] = [:]
 
-        let hasProtectedFiles = urls.contains { $0.isProtected }
+        let hasProtectedFiles = validURLs.contains { $0.isProtected }
 
         // Create bundle folder name with app name and timestamp
         let dateFormatter = DateFormatter()
@@ -43,7 +94,7 @@ class FileManagerUndo {
             folderName = AppState.shared.appInfo.appName
         } else {
             // Fallback for plugins: use the first file's name or "Mixed Files"
-            if let firstFile = urls.first {
+            if let firstFile = validURLs.first {
                 folderName = firstFile.deletingPathExtension().lastPathComponent
             } else {
                 folderName = "Mixed Files"
@@ -57,12 +108,7 @@ class FileManagerUndo {
         // Create the bundle folder first
         let createFolderCommand = "/bin/mkdir -p \"\(bundleFolderPath)\""
 
-        let mvCommands = urls.map { file -> String in
-            if permanentDelete {
-                return "/bin/rm -rf \"\(file.path)\""
-            }
-            guard !permanentDelete else { return "" }
-            
+        let mvCommands = validURLs.map { file -> String in
             let baseName = file.lastPathComponent
             var count = seenFileNames[baseName] ?? 0
             var finalName = baseName
@@ -86,19 +132,17 @@ class FileManagerUndo {
         }.joined(separator: " ; ")
 
         // Combine folder creation and file moves
-        let finalCommands = permanentDelete ? mvCommands : "\(createFolderCommand) ; \(mvCommands)"
+        let finalCommands = "\(createFolderCommand) ; \(mvCommands)"
         let filePairs = tempFilePairs
 
         if executeFileCommands(finalCommands, isCLI: isCLI, hasProtectedFiles: hasProtectedFiles) {
-            if !permanentDelete {
-                undoManager.registerUndo(withTarget: self) { target in
-                    let result = target.restoreFiles(filePairs: filePairs)
-                    if !result {
-                        printOS("Trash Error: Could not restore files.")
-                    }
+            undoManager.registerUndo(withTarget: self) { target in
+                let result = target.restoreFiles(filePairs: filePairs)
+                if !result {
+                    printOS("Trash Error: Could not restore files.")
                 }
-                undoManager.setActionName("Delete File")
             }
+            undoManager.setActionName("Delete File")
 
             // Play trash sound after successful deletion
             if !isCLI {
@@ -121,7 +165,6 @@ class FileManagerUndo {
     }
 
     func restoreFiles(filePairs: [(trashURL: URL, originalURL: URL)], isCLI: Bool = false) -> Bool {
-        if permanentDelete { return false }
         let dispatchSemaphore = DispatchSemaphore(value: 0)
         var finalStatus = true
 

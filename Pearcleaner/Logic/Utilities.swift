@@ -91,11 +91,12 @@ func manageSymlink(install: Bool, symlinkName: String = "pear") {
         }
         command += "ln -s '\(appPath)' '\(symlinkPath)'"
     } else {
-        // Remove the symlink
-        command = "rm '\(symlinkPath)'"
+        // Remove the symlink using FileManagerUndo for safe trash deletion
+        let _ = FileManagerUndo.shared.deleteFiles(at: [URL(fileURLWithPath: symlinkPath)], bundleName: "CLI-Symlink")
+        return
     }
 
-    // Perform privileged commands
+    // Perform privileged commands (only for creating symlink)
     if HelperToolManager.shared.isHelperToolInstalled {
         let semaphore = DispatchSemaphore(value: 0)
         Task {

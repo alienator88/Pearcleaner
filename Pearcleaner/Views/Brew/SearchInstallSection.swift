@@ -1222,7 +1222,7 @@ struct FormulaDetailsView: View {
         guard isAlreadyInstalled else { return }
 
         Task {
-            let brewPrefix = "/opt/homebrew"
+            let brewPrefix = HomebrewController.shared.brewPrefix
 
             // Find the installed version from brewManager
             if let installedFormula = brewManager.installedFormulae.first(where: {
@@ -2807,7 +2807,7 @@ fileprivate func findAppByCask(_ caskName: String) -> AppInfo? {
 /// Load a newly installed cask app from Caskroom and add it to sortedApps
 /// Used after installing new casks to sync AppState without full rescan
 fileprivate func loadAndAddCaskApp(caskName: String) async {
-    let brewPrefix = "/opt/homebrew"
+    let brewPrefix = HomebrewController.shared.brewPrefix
     let caskroomPath = "\(brewPrefix)/Caskroom/\(caskName)"
     let globPattern = "\(caskroomPath)/*/*.app"
 
@@ -2850,7 +2850,7 @@ fileprivate func loadAndAddCaskApp(caskName: String) async {
 /// Load an upgraded cask app from Caskroom and update it in sortedApps
 /// Used after upgrading existing casks to sync AppState with new version
 fileprivate func loadAndUpdateCaskApp(caskName: String) async {
-    let brewPrefix = "/opt/homebrew"
+    let brewPrefix = HomebrewController.shared.brewPrefix
     let caskroomPath = "\(brewPrefix)/Caskroom/\(caskName)"
     let globPattern = "\(caskroomPath)/*/*.app"
 

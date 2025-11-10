@@ -22,7 +22,6 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.cli") private var isCLISymlinked = false
     @AppStorage("settings.general.namesearchstrict") private var nameSearchStrict = false
     @AppStorage("settings.general.spotlight") private var spotlight = false
-    @AppStorage("settings.general.permanentDelete") private var permanentDelete: Bool = false
     @AppStorage("settings.general.searchSensitivity") private var sensitivityLevel: SearchSensitivityLevel = .strict
     @AppStorage("settings.general.deepLevelAlertShown") private var deepLevelAlertShown: Bool = false
     @AppStorage("settings.app.autoSlim") private var autoSlim: Bool = false
@@ -62,30 +61,6 @@ struct GeneralSettingsTab: View {
                             .toggleStyle(SettingsToggle())
                         }
                         .padding(5)
-
-
-                        HStack(spacing: 0) {
-                            Image(systemName: permanentDelete ? "trash.slash" : "trash")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 15, height: 15)
-                                .padding(.trailing)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                            VStack(alignment: .leading, spacing: 5) {
-                                Text("Permanently delete files")
-                                    .font(.callout)
-                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                            }
-
-                            InfoButton(text: String(localized: "Instead of moving files to Trash folder, this will permanently remove them. With this setting enabled, the Undo function is also not active as there's no files in Trash folder to undo."))
-
-                            Spacer()
-                            Toggle(isOn: $permanentDelete, label: {
-                            })
-                            .toggleStyle(SettingsToggle())
-                        }
-                        .padding(5)
-
 
 
                         HStack(spacing: 0) {

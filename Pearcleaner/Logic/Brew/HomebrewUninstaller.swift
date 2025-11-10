@@ -11,7 +11,10 @@ import ServiceManagement
 
 class HomebrewUninstaller {
     static let shared = HomebrewUninstaller()
-    private let brewPrefix = "/opt/homebrew"
+    private var brewPrefix: String {
+        HomebrewController.shared.brewPrefix
+    }
+    private let useBrewUninstallZap = true  // Set to true to use brew command, false for manual method
 
     private init() {}
 
@@ -20,38 +23,49 @@ class HomebrewUninstaller {
     /// Uninstalls a Homebrew package directly without calling brew uninstall
     /// This replicates Homebrew's uninstall behavior using privileged helper for root operations
     func uninstallPackage(name: String, cask: Bool, zap: Bool = true) async throws {
+        printOS("🔍 [DEBUG] uninstallPackage() ENTRY - name: \(name), cask: \(cask), useBrewUninstallZap: \(useBrewUninstallZap)")
         UpdaterDebugLogger.shared.log(.homebrew, "🗑️ Starting uninstall for \(name) (type: \(cask ? "cask" : "formula"), zap: \(zap))")
 
         do {
-            if cask {
-                // Try loading from INSTALL_RECEIPT.json first (instant)
-                let caskInfo: [String: Any]
-                do {
-                    caskInfo = try loadCaskInfoFromReceipt(name: name)
-                    UpdaterDebugLogger.shared.log(.homebrew, "  Loaded cask info from INSTALL_RECEIPT.json")
-                } catch {
-                    // Fallback to brew info command (slower but works if receipt missing)
-                    UpdaterDebugLogger.shared.log(.homebrew, "  INSTALL_RECEIPT.json not found, falling back to brew info")
-                    let arguments = ["info", "--json=v2", name]
-                    let result = try await HomebrewController.shared.runBrewCommand(arguments)
-
-                    guard let jsonData = result.output.data(using: String.Encoding.utf8) else {
-                        throw HomebrewError.jsonParseError
-                    }
-
-                    guard let json = try JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
-                          let casks = json["casks"] as? [[String: Any]],
-                          let info = casks.first else {
-                        throw HomebrewError.commandFailed("Cask \(name) not found")
-                    }
-                    caskInfo = info
-                }
-                try await uninstallCask(name: name, info: caskInfo, zap: zap)
+            if useBrewUninstallZap {
+                printOS("🔍 [DEBUG] Using brew uninstall command path")
+                // Use native brew uninstall command
+                try await uninstallViaBrewCommand(name: name, cask: cask)
+                printOS("🔍 [DEBUG] uninstallViaBrewCommand() completed without throwing")
             } else {
-                // Formulae don't need info JSON - brew uninstall handles everything
-                try await uninstallFormula(name: name, info: [:])
+                printOS("🔍 [DEBUG] Using manual uninstall path")
+                // Use manual uninstall method
+                if cask {
+                    // Try loading from INSTALL_RECEIPT.json first (instant)
+                    let caskInfo: [String: Any]
+                    do {
+                        caskInfo = try loadCaskInfoFromReceipt(name: name)
+                        UpdaterDebugLogger.shared.log(.homebrew, "  Loaded cask info from INSTALL_RECEIPT.json")
+                    } catch {
+                        // Fallback to brew info command (slower but works if receipt missing)
+                        UpdaterDebugLogger.shared.log(.homebrew, "  INSTALL_RECEIPT.json not found, falling back to brew info")
+                        let arguments = ["info", "--json=v2", name]
+                        let result = try await HomebrewController.shared.runBrewCommand(arguments)
+
+                        guard let jsonData = result.output.data(using: String.Encoding.utf8) else {
+                            throw HomebrewError.jsonParseError
+                        }
+
+                        guard let json = try JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
+                              let casks = json["casks"] as? [[String: Any]],
+                              let info = casks.first else {
+                            throw HomebrewError.commandFailed("Cask \(name) not found")
+                        }
+                        caskInfo = info
+                    }
+                    try await uninstallCask(name: name, info: caskInfo, zap: zap)
+                } else {
+                    // Formulae don't need info JSON - brew uninstall handles everything
+                    try await uninstallFormula(name: name, info: [:])
+                }
             }
 
+            printOS("🔍 [DEBUG] Uninstall logic completed, starting cleanup")
             UpdaterDebugLogger.shared.log(.homebrew, "✓ Uninstalled \(name) successfully")
 
             // Run brew cleanup in background without blocking
@@ -59,10 +73,53 @@ class HomebrewUninstaller {
             Task.detached(priority: .background) {
                 try? await HomebrewController.shared.runCleanup()
             }
+            printOS("🔍 [DEBUG] uninstallPackage() COMPLETED successfully")
         } catch {
+            printOS("🔍 [DEBUG] uninstallPackage() caught exception: \(error.localizedDescription)")
             UpdaterDebugLogger.shared.log(.homebrew, "❌ Uninstall failed for \(name): \(error.localizedDescription)")
             throw error
         }
+    }
+
+    // MARK: - Brew Command Method
+
+    /// Uninstalls a package using native brew uninstall command
+    private func uninstallViaBrewCommand(name: String, cask: Bool) async throws {
+        printOS("🔍 [DEBUG] uninstallViaBrewCommand() ENTRY - name: \(name), cask: \(cask)")
+
+        var arguments = ["uninstall"]
+
+        // Add package type flag
+        if cask {
+            arguments.append("--cask")
+        } else {
+            arguments.append("--formula")
+        }
+
+        // Always zap (for casks - formulae ignore this flag)
+        arguments.append("--zap")
+
+        // Force uninstall
+        arguments.append("--force")
+
+        // Add package name
+        arguments.append(name)
+
+        printOS("🔍 [DEBUG] About to run: brew \(arguments.joined(separator: " "))")
+        UpdaterDebugLogger.shared.log(.homebrew, "  Running: brew \(arguments.joined(separator: " "))")
+
+        // Run command
+        printOS("🔍 [DEBUG] Calling HomebrewController.shared.runBrewCommand()")
+        let result = try await HomebrewController.shared.runBrewCommand(arguments)
+        printOS("🔍 [DEBUG] runBrewCommand() returned - output length: \(result.output.count), error length: \(result.error.count)")
+
+        // Check for errors
+        if !result.error.isEmpty && result.error.contains("Error") {
+            printOS("🔍 [DEBUG] Error detected in result.error, throwing exception")
+            throw HomebrewError.commandFailed(result.error)
+        }
+
+        printOS("🔍 [DEBUG] uninstallViaBrewCommand() COMPLETED successfully")
     }
 
     // MARK: - INSTALL_RECEIPT Helper
@@ -291,13 +348,26 @@ class HomebrewUninstaller {
 
             // Check if brew command failed due to permission error
             if result.error.contains("Could not remove") && result.error.contains("keg") {
-                // Permission error - fallback to privileged command
+                // Permission error - fallback to collecting paths for batch deletion
+                var pathsToDelete: [URL] = []
                 let cellarPath = "\(brewPrefix)/Cellar/\(name)"
                 if FileManager.default.fileExists(atPath: cellarPath) {
-                    try await runPrivilegedCommand("rm -rf \"\(cellarPath)\"")
-                    // Also clean up symlinks (ignore errors if they don't exist)
-                    _ = try? await runPrivilegedCommand("rm -f \"\(brewPrefix)/opt/\(name)\"")
-                    _ = try? await runPrivilegedCommand("rm -f \"\(brewPrefix)/var/homebrew/linked/\(name)\"")
+                    pathsToDelete.append(URL(fileURLWithPath: cellarPath))
+
+                    // Also collect symlink paths
+                    let optPath = "\(brewPrefix)/opt/\(name)"
+                    if FileManager.default.fileExists(atPath: optPath) {
+                        pathsToDelete.append(URL(fileURLWithPath: optPath))
+                    }
+                    let linkedPath = "\(brewPrefix)/var/homebrew/linked/\(name)"
+                    if FileManager.default.fileExists(atPath: linkedPath) {
+                        pathsToDelete.append(URL(fileURLWithPath: linkedPath))
+                    }
+
+                    // Batch delete collected paths
+                    if !pathsToDelete.isEmpty {
+                        let _ = FileManagerUndo.shared.deleteFiles(at: pathsToDelete, bundleName: "Homebrew-\(name)")
+                    }
                 }
             } else if !result.error.isEmpty && !result.error.contains("Warning") {
                 // Other error - throw it
@@ -305,12 +375,28 @@ class HomebrewUninstaller {
             }
             // Success - brew uninstall handled everything
         } catch {
-            // Fallback: If brew command itself fails, try direct deletion
+            // Fallback: If brew command itself fails, collect paths for batch deletion
+            var pathsToDelete: [URL] = []
             let cellarPath = "\(brewPrefix)/Cellar/\(name)"
             if FileManager.default.fileExists(atPath: cellarPath) {
-                try await runPrivilegedCommand("rm -rf \"\(cellarPath)\"")
-                _ = try? await runPrivilegedCommand("rm -f \"\(brewPrefix)/opt/\(name)\"")
-                _ = try? await runPrivilegedCommand("rm -f \"\(brewPrefix)/var/homebrew/linked/\(name)\"")
+                pathsToDelete.append(URL(fileURLWithPath: cellarPath))
+
+                // Collect symlinks
+                let optPath = "\(brewPrefix)/opt/\(name)"
+                if FileManager.default.fileExists(atPath: optPath) {
+                    pathsToDelete.append(URL(fileURLWithPath: optPath))
+                }
+                let linkedPath = "\(brewPrefix)/var/homebrew/linked/\(name)"
+                if FileManager.default.fileExists(atPath: linkedPath) {
+                    pathsToDelete.append(URL(fileURLWithPath: linkedPath))
+                }
+
+                // Batch delete collected paths
+                if !pathsToDelete.isEmpty {
+                    let _ = FileManagerUndo.shared.deleteFiles(at: pathsToDelete, bundleName: "Homebrew-\(name)")
+                } else {
+                    throw HomebrewError.commandFailed("Formula \(name) is not installed")
+                }
             } else {
                 throw HomebrewError.commandFailed("Formula \(name) is not installed")
             }
@@ -351,12 +437,16 @@ class HomebrewUninstaller {
             printOS("Failed to unload user service: \(error.localizedDescription)")
         }
 
-        // Delete the plist files
+        // Delete the plist files using trash
+        var plistPaths: [URL] = []
         if FileManager.default.fileExists(atPath: systemPlistPath) {
-            try await runPrivilegedCommand("rm -f \"\(systemPlistPath)\"")
+            plistPaths.append(URL(fileURLWithPath: systemPlistPath))
         }
         if FileManager.default.fileExists(atPath: userPlistPath) {
-            try FileManager.default.removeItem(atPath: userPlistPath)
+            plistPaths.append(URL(fileURLWithPath: userPlistPath))
+        }
+        if !plistPaths.isEmpty {
+            let _ = FileManagerUndo.shared.deleteFiles(at: plistPaths, bundleName: "Homebrew-LaunchAgent")
         }
     }
 
@@ -415,12 +505,18 @@ class HomebrewUninstaller {
         let filesResult = try await runPrivilegedCommand("pkgutil --files \(value) 2>/dev/null || echo ''")
         let files = filesResult.components(separatedBy: "\n").filter { !$0.isEmpty }
 
-        // Delete files (they're relative to /)
+        // Collect files for batch deletion (they're relative to /)
+        var pathsToDelete: [URL] = []
         for file in files {
             let fullPath = "/\(file)"
             if FileManager.default.fileExists(atPath: fullPath) {
-                try await runPrivilegedCommand("rm -rf \"\(fullPath)\"")
+                pathsToDelete.append(URL(fileURLWithPath: fullPath))
             }
+        }
+
+        // Batch delete collected paths
+        if !pathsToDelete.isEmpty {
+            let _ = FileManagerUndo.shared.deleteFiles(at: pathsToDelete, bundleName: "Homebrew-PKG-\(value)")
         }
 
         // Forget the package
@@ -431,12 +527,8 @@ class HomebrewUninstaller {
         let expandedPath = expandPath(path)
 
         if FileManager.default.fileExists(atPath: expandedPath) {
-            // Check if we need privileged access
-            if expandedPath.hasPrefix("/Library/") || expandedPath.hasPrefix("/private/") {
-                try await runPrivilegedCommand("rm -rf \"\(expandedPath)\"")
-            } else {
-                try FileManager.default.removeItem(atPath: expandedPath)
-            }
+            // Use trash for all deletions
+            let _ = FileManagerUndo.shared.deleteFiles(at: [URL(fileURLWithPath: expandedPath)], bundleName: "Homebrew-Delete")
         }
     }
 
@@ -444,10 +536,8 @@ class HomebrewUninstaller {
         let expandedPath = expandPath(path)
 
         if FileManager.default.fileExists(atPath: expandedPath) {
-            // Always use helper to move to trash (works for all file types)
-            let fileName = (expandedPath as NSString).lastPathComponent
-            let trashPath = NSHomeDirectory() + "/.Trash/" + fileName
-            try await runPrivilegedCommand("/bin/mv \"\(expandedPath)\" \"\(trashPath)\"")
+            // Use FileManagerUndo to properly move to trash
+            let _ = FileManagerUndo.shared.deleteFiles(at: [URL(fileURLWithPath: expandedPath)], bundleName: "Homebrew-Trash")
         }
     }
 
@@ -458,11 +548,8 @@ class HomebrewUninstaller {
             // Only remove if empty
             let contents = try FileManager.default.contentsOfDirectory(atPath: expandedPath)
             if contents.isEmpty {
-                if expandedPath.hasPrefix("/Library/") || expandedPath.hasPrefix("/private/") {
-                    try await runPrivilegedCommand("rmdir \"\(expandedPath)\"")
-                } else {
-                    try FileManager.default.removeItem(atPath: expandedPath)
-                }
+                // Use trash even for empty directories
+                let _ = FileManagerUndo.shared.deleteFiles(at: [URL(fileURLWithPath: expandedPath)], bundleName: "Homebrew-Rmdir")
             }
         }
     }
