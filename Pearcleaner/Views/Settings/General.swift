@@ -77,12 +77,12 @@ struct GeneralSettingsTab: View {
                                 .padding(.trailing)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                             VStack(alignment: .leading, spacing: 5) {
-                                Text("Uninstall confirmation alerts")
+                                Text("Confirmation alerts")
                                     .font(.callout)
                                     .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                             }
 
-                            InfoButton(text: String(localized: "When deleting files using the Trash button, you can prevent accidental deletions by showing an alert before proceeding with the action."))
+                            InfoButton(text: String(localized: "When executing certain write actions, show an alert before proceeding."))
 
                             Spacer()
                             Toggle(isOn: $confirmAlert, label: {

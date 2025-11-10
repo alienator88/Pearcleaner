@@ -487,6 +487,7 @@ struct SearchResultRowView: View {
     let updatingPackages: Set<String>
     @EnvironmentObject var brewManager: HomebrewManager
     @Environment(\.colorScheme) var colorScheme
+    @AppStorage("settings.general.confirmAlert") private var confirmAlert: Bool = false
     @State private var isHovered: Bool = false
     @State private var isInstalling: Bool = false
     @State private var isUninstalling: Bool = false
@@ -640,13 +641,21 @@ struct SearchResultRowView: View {
         } else if isOutdated {
             HStack(spacing: 8) {
                 Button("Update") {
-                    showUpdateAlert = true
+                    if confirmAlert {
+                        showUpdateAlert = true
+                    } else {
+                        performUpdate()
+                    }
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(.orange)
 
                 Button("Uninstall") {
-                    showUninstallAlert = true
+                    if confirmAlert {
+                        showUninstallAlert = true
+                    } else {
+                        performUninstall()
+                    }
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(.red)
@@ -654,13 +663,21 @@ struct SearchResultRowView: View {
             .frame(alignment: .trailing)
         } else if isAlreadyInstalled {
             Button("Uninstall") {
-                showUninstallAlert = true
+                if confirmAlert {
+                    showUninstallAlert = true
+                } else {
+                    performUninstall()
+                }
             }
             .buttonStyle(.plain)
             .foregroundStyle(.red)
         } else {
             Button("Install") {
-                showInstallAlert = true
+                if confirmAlert {
+                    showInstallAlert = true
+                } else {
+                    performInstall()
+                }
             }
             .buttonStyle(.plain)
             .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
@@ -961,6 +978,103 @@ struct SearchResultRowView: View {
             }
         } message: {
             Text("This will completely uninstall \(result.displayName ?? result.name) and remove all associated files. This action cannot be undone.")
+        }
+    }
+
+    // MARK: - Helper Functions
+
+    private func performInstall() {
+        Task {
+            await MainActor.run { isInstalling = true }
+            defer { Task { @MainActor in isInstalling = false } }
+
+            do {
+                try await HomebrewController.shared.installPackage(name: result.name, cask: isCask)
+
+                // Targeted refresh - only update this newly installed package (much faster than full scan)
+                await brewManager.refreshSpecificPackages([result.name])
+
+                // Refresh AppState.sortedApps to include newly installed GUI app (casks only)
+                if isCask {
+                    await loadAndAddCaskApp(caskName: result.name)
+                }
+            } catch {
+                printOS("Error installing package \(result.name): \(error)")
+            }
+        }
+    }
+
+    private func performUpdate() {
+        Task {
+            await MainActor.run { isInstalling = true }
+            defer { Task { @MainActor in isInstalling = false } }
+
+            do {
+                try await HomebrewController.shared.upgradePackage(name: result.name)
+
+                // Targeted refresh - only update this specific package (much faster than full scan)
+                await brewManager.refreshSpecificPackages([result.name])
+
+                // Refresh AppState.sortedApps to reflect updated version (casks only)
+                if isCask {
+                    // Flush bundle cache for the app before reloading (version changed)
+                    if let matchingApp = findAppByCask(result.name) {
+                        flushBundleCaches(for: [matchingApp])
+                    }
+
+                    await loadAndUpdateCaskApp(caskName: result.name)
+                }
+            } catch {
+                printOS("Error updating package \(result.name): \(error)")
+            }
+        }
+    }
+
+    private func performUninstall() {
+        Task {
+            await MainActor.run { isUninstalling = true }
+            defer { Task { @MainActor in isUninstalling = false } }
+
+            do {
+                try await HomebrewUninstaller.shared.uninstallPackage(name: result.name, cask: isCask, zap: true)
+
+                // Remove from installed lists instead of full refresh
+                let shortName = result.name.components(separatedBy: "/").last ?? result.name
+                if isCask {
+                    await MainActor.run {
+                        brewManager.installedCasks.removeAll { $0.name == result.name || $0.name == shortName }
+                    }
+
+                    // Refresh AppState.sortedApps to remove uninstalled app (casks only)
+                    let folderPaths = await MainActor.run { FolderSettingsManager.shared.folderPaths }
+
+                    // Optimized: Only flush bundle for the uninstalled app (if still exists)
+                    if let matchingApp = findAppByCask(result.name) {
+                        flushBundleCaches(for: [matchingApp])
+                    } else {
+                        flushBundleCaches(for: AppState.shared.sortedApps)  // Fallback
+                    }
+
+                    invalidateCaskLookupCache()
+
+                    await loadAppsAsync(folderPaths: folderPaths)
+                } else {
+                    await MainActor.run {
+                        brewManager.installedFormulae.removeAll { $0.name == result.name || $0.name == shortName }
+                    }
+                }
+                await MainActor.run {
+                    brewManager.outdatedPackagesMap.removeValue(forKey: result.name)
+                    brewManager.outdatedPackagesMap.removeValue(forKey: shortName)
+                }
+
+                // Refresh categorized view to update UI (for both casks and formulae)
+                await MainActor.run {
+                    brewManager.updateInstalledCategories()
+                }
+            } catch {
+                printOS("Error uninstalling package \(result.name): \(error)")
+            }
         }
     }
 }

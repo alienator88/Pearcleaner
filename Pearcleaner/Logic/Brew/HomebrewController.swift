@@ -66,11 +66,16 @@ extension String {
     }
 }
 
-class HomebrewController {
+class HomebrewController: ObservableObject {
     static let shared = HomebrewController()
     private let brewPath: String
     let brewPrefix: String  // Public for use in HomebrewUpdateChecker placeholder paths
     private let logger = UpdaterDebugLogger.shared
+
+    // Track running operations for cancellation
+    // Must be accessed/modified on main thread for SwiftUI observation
+    @MainActor @Published var isOperationRunning: Bool = false
+    @MainActor private var runningProcess: Process?
 
     private init() {
         // Determine paths based on architecture
@@ -142,6 +147,13 @@ class HomebrewController {
     }
 
     func runBrewCommand(_ arguments: [String]) async throws -> (output: String, error: String) {
+        // Mark operation as running - explicitly trigger SwiftUI update
+        await MainActor.run {
+            objectWillChange.send()
+            isOperationRunning = true
+            runningProcess = nil  // Clear any stale process reference
+        }
+
         let process = Process()
         process.executableURL = URL(fileURLWithPath: brewPath)
         process.arguments = arguments
@@ -157,6 +169,9 @@ class HomebrewController {
         process.standardOutput = outputPipe
         process.standardError = errorPipe
 
+        // Store process reference for cancellation
+        await MainActor.run { runningProcess = process }
+
         try process.run()
 
         // Read pipes on background thread to avoid deadlock with large output
@@ -170,10 +185,25 @@ class HomebrewController {
 
         process.waitUntilExit()
 
+        // Clear running state - explicitly trigger SwiftUI update
+        await MainActor.run {
+            objectWillChange.send()
+            isOperationRunning = false
+            runningProcess = nil
+        }
+
         let output = String(data: outputData, encoding: .utf8) ?? ""
         let error = String(data: errorData, encoding: .utf8) ?? ""
 
         return (output, error)
+    }
+
+    /// Cancel the currently running Homebrew operation
+    @MainActor func cancelOperation() {
+        guard let process = runningProcess else { return }
+        isOperationRunning = false
+        process.terminate()
+        runningProcess = nil
     }
 
     // MARK: - Package Loading

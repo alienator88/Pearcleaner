@@ -13051,6 +13051,9 @@
         }
       }
     },
+    "Cancel running Homebrew operation" : {
+
+    },
     "Case sensitive" : {
       "localizations" : {
         "de" : {

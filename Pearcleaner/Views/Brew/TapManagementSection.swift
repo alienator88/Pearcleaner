@@ -424,6 +424,7 @@ struct TapPackageRowView: View {
     let isCask: Bool
     @EnvironmentObject var brewManager: HomebrewManager
     @Environment(\.colorScheme) var colorScheme
+    @AppStorage("settings.general.confirmAlert") private var confirmAlert: Bool = false
     @State private var isInstalling: Bool = false
     @State private var isUninstalling: Bool = false
     @State private var showInstallAlert: Bool = false
@@ -500,7 +501,11 @@ struct TapPackageRowView: View {
 
                     // Uninstall button
                     Button {
-                        showUninstallAlert = true
+                        if confirmAlert {
+                            showUninstallAlert = true
+                        } else {
+                            performUninstall()
+                        }
                     } label: {
                         Image(systemName: "trash")
                             .font(.caption2)
@@ -511,7 +516,11 @@ struct TapPackageRowView: View {
                 }
             } else {
                 Button("Install") {
-                    showInstallAlert = true
+                    if confirmAlert {
+                        showInstallAlert = true
+                    } else {
+                        performInstall()
+                    }
                 }
                 .font(.caption2)
                 .buttonStyle(ControlGroupButtonStyle(
@@ -577,6 +586,42 @@ struct TapPackageRowView: View {
             }
         } message: {
             Text("This will remove \(packageName) from your system.")
+        }
+    }
+
+    // MARK: - Helper Functions
+
+    private func performInstall() {
+        Task { @MainActor in
+            isInstalling = true
+            defer { isInstalling = false }
+
+            do {
+                try await HomebrewController.shared.installPackage(name: fullPackageName, cask: isCask)
+                if isCask {
+                    invalidateCaskLookupCache()
+                }
+                await brewManager.loadInstalledPackages()
+            } catch {
+                printOS("Error installing package \(fullPackageName): \(error)")
+            }
+        }
+    }
+
+    private func performUninstall() {
+        Task { @MainActor in
+            isUninstalling = true
+            defer { isUninstalling = false }
+
+            do {
+                try await HomebrewUninstaller.shared.uninstallPackage(name: packageName, cask: isCask)
+                if isCask {
+                    invalidateCaskLookupCache()
+                }
+                await brewManager.loadInstalledPackages()
+            } catch {
+                printOS("Error uninstalling package \(packageName): \(error)")
+            }
         }
     }
 }

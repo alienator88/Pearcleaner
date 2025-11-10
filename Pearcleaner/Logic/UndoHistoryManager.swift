@@ -153,7 +153,6 @@ class UndoHistoryManager: ObservableObject {
         }
 
         if history.count < initialCount {
-            printOS("🧹 Cleaned up \(initialCount - history.count) stale undo history entries")
             saveHistory()
         }
     }

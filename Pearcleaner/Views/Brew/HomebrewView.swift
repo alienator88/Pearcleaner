@@ -30,6 +30,7 @@ enum HomebrewViewSection: String, CaseIterable {
 
 struct HomebrewView: View {
     @StateObject private var brewManager = HomebrewManager()
+    @ObservedObject private var brewController = HomebrewController.shared
     @EnvironmentObject var appState: AppState
     @Environment(\.colorScheme) var colorScheme
     @State private var selectedSection: HomebrewViewSection = .browse
@@ -187,31 +188,40 @@ struct HomebrewView: View {
             ToolbarItem { Spacer() }
 
             TahoeToolbarItem(isGroup: true) {
-                Button {
-                    Task {
-                        switch selectedSection {
-                        case .browse:
-                            await brewManager.loadInstalledPackages()
-                            await brewManager.loadAvailablePackages(appState: appState, forceRefresh: true)
-                            // Refresh sortedApps to pick up newly installed casks with proper size
-                            let folderPaths = await MainActor.run { FolderSettingsManager.shared.folderPaths }
-                            await loadAppsAsync(folderPaths: folderPaths)
-                            // Update categories to pick up latest app names from sortedApps and re-sort
-                            await MainActor.run {
-                                brewManager.updateInstalledCategories()
-                            }
-                        case .taps:
-                            await brewManager.loadTaps()
-                        case .autoUpdate:
-                            HomebrewAutoUpdateManager.shared.refreshState()
-                        case .maintenance:
-                            await brewManager.refreshMaintenance()
-                        }
+                if brewController.isOperationRunning {
+                    Button {
+                        brewController.cancelOperation()
+                    } label: {
+                        Label("Stop", systemImage: "stop.circle")
                     }
-                } label: {
-                    Label("Refresh", systemImage: "arrow.counterclockwise")
+                    .help("Cancel running Homebrew operation")
+                } else {
+                    Button {
+                        Task {
+                            switch selectedSection {
+                            case .browse:
+                                await brewManager.loadInstalledPackages()
+                                await brewManager.loadAvailablePackages(appState: appState, forceRefresh: true)
+                                // Refresh sortedApps to pick up newly installed casks with proper size
+                                let folderPaths = await MainActor.run { FolderSettingsManager.shared.folderPaths }
+                                await loadAppsAsync(folderPaths: folderPaths)
+                                // Update categories to pick up latest app names from sortedApps and re-sort
+                                await MainActor.run {
+                                    brewManager.updateInstalledCategories()
+                                }
+                            case .taps:
+                                await brewManager.loadTaps()
+                            case .autoUpdate:
+                                HomebrewAutoUpdateManager.shared.refreshState()
+                            case .maintenance:
+                                await brewManager.refreshMaintenance()
+                            }
+                        }
+                    } label: {
+                        Label("Refresh", systemImage: "arrow.counterclockwise")
+                    }
+                    .help("Refresh \(selectedSection.rawValue.lowercased()) data")
                 }
-                .help("Refresh \(selectedSection.rawValue.lowercased()) data")
             }
         }
     }
