@@ -346,7 +346,7 @@ class UpdateManager: ObservableObject {
 
                 // Perform update (new API throws errors)
                 do {
-                    try await AppStoreUpdater.shared.updateApp(adamID: adamID) { [weak self] progress, status in
+                    try await AppStoreUpdater.shared.updateApp(adamID: adamID, appPath: app.appInfo.path) { [weak self] progress, status in
                         Task { @MainActor in
                             guard let self = self else { return }
                             if var apps = self.updatesBySource[.appStore],

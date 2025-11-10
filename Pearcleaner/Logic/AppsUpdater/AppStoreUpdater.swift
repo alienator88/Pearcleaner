@@ -52,10 +52,12 @@ class AppStoreUpdater {
     /// Update an app from the App Store with progress tracking
     /// - Parameters:
     ///   - adamID: The App Store ID of the app
+    ///   - appPath: Path to the installed app (for receipt injection)
     ///   - progress: Progress callback (percent: 0.0-1.0, status message)
     ///   - attemptCount: Number of retry attempts for network errors (default: 3)
     func updateApp(
         adamID: UInt64,
+        appPath: URL,
         progress: @escaping @Sendable (Double, String) -> Void,
         attemptCount: UInt32 = 3
     ) async throws {
@@ -77,7 +79,7 @@ class AppStoreUpdater {
                                 if needsWorkaround {
                                     // Use workaround observer for affected macOS versions
                                     printOS("⚠️ Detected macOS version with installd bug - using workaround")
-                                    let observer = AppStoreDownloadObserverWithWorkaround(adamID: adamID, progress: progress)
+                                    let observer = AppStoreDownloadObserverWithWorkaround(adamID: adamID, appPath: appPath, progress: progress)
                                     try await observer.observeDownloadQueue()
                                 } else {
                                     // Use standard observer for unaffected versions
@@ -108,7 +110,7 @@ class AppStoreUpdater {
             }
 
             let remainingAttempts = attemptCount - 1
-            try await updateApp(adamID: adamID, progress: progress, attemptCount: remainingAttempts)
+            try await updateApp(adamID: adamID, appPath: appPath, progress: progress, attemptCount: remainingAttempts)
         }
     }
 }
@@ -220,14 +222,17 @@ private final class AppStoreDownloadObserver: NSObject, CKDownloadQueueObserver 
 /// Downloads PKG, hard links it, then manually installs via HelperToolManager
 private final class AppStoreDownloadObserverWithWorkaround: NSObject, CKDownloadQueueObserver {
     private let adamID: UInt64
+    private let appPath: URL
     private let progressCallback: @Sendable (Double, String) -> Void
     private var completionHandler: (() -> Void)?
     private var errorHandler: ((Error) -> Void)?
     private var hardLinkedPkgPath: String?
+    private var hardLinkedReceiptPath: String?
     private var isManuallyInstalling = false
 
-    init(adamID: UInt64, progress: @escaping @Sendable (Double, String) -> Void) {
+    init(adamID: UInt64, appPath: URL, progress: @escaping @Sendable (Double, String) -> Void) {
         self.adamID = adamID
+        self.appPath = appPath
         self.progressCallback = progress
         super.init()
     }
@@ -278,8 +283,11 @@ private final class AppStoreDownloadObserverWithWorkaround: NSObject, CKDownload
         } else {
             // Unexpected success (installd worked somehow)
             if let pkgPath = hardLinkedPkgPath {
-                // Clean up hard link since installd succeeded
-                try? FileManager.default.removeItem(atPath: pkgPath)
+                // Clean up temp directory since installd succeeded
+                let tempDir = (pkgPath as NSString).deletingLastPathComponent
+                try? FileManager.default.removeItem(atPath: tempDir)
+                hardLinkedPkgPath = nil
+                hardLinkedReceiptPath = nil
             }
             progressCallback(1.0, "Completed")
             completionHandler?()
@@ -324,25 +332,36 @@ private final class AppStoreDownloadObserverWithWorkaround: NSObject, CKDownload
 
     private func createHardLinkToPKG() {
         let downloadDir = "\(CKDownloadDirectory(nil))/\(adamID)"
-        let destPath = "/tmp/pearcleaner-appstore-\(adamID).pkg"
+        let tempDir = "/tmp/pearcleaner-appstore-\(adamID)"
 
         do {
+            // Create temp directory
+            try FileManager.default.createDirectory(atPath: tempDir, withIntermediateDirectories: true)
+
             let contents = try FileManager.default.contentsOfDirectory(atPath: downloadDir)
+
+            // Hard link PKG file
             if let pkgFile = contents.first(where: { $0.hasSuffix(".pkg") }) {
-                let sourcePath = "\(downloadDir)/\(pkgFile)"
+                let pkgSource = "\(downloadDir)/\(pkgFile)"
+                let pkgDest = "\(tempDir)/\(pkgFile)"
 
-                // Remove existing link if present
-                try? FileManager.default.removeItem(atPath: destPath)
-
-                // Create hard link (instant, survives source deletion)
-                try FileManager.default.linkItem(atPath: sourcePath, toPath: destPath)
-
-                hardLinkedPkgPath = destPath
+                try FileManager.default.linkItem(atPath: pkgSource, toPath: pkgDest)
+                hardLinkedPkgPath = pkgDest
             } else {
                 printOS("⚠️ No PKG file found in \(downloadDir)")
             }
+
+            // Hard link receipt file
+            let receiptSource = "\(downloadDir)/receipt"
+            let receiptDest = "\(tempDir)/receipt"
+            if FileManager.default.fileExists(atPath: receiptSource) {
+                try FileManager.default.linkItem(atPath: receiptSource, toPath: receiptDest)
+                hardLinkedReceiptPath = receiptDest
+            } else {
+                printOS("⚠️ No receipt file found in \(downloadDir)")
+            }
         } catch {
-            printOS("❌ Failed to create hard link: \(error.localizedDescription)")
+            printOS("❌ Failed to create hard links: \(error.localizedDescription)")
         }
     }
 
@@ -354,13 +373,50 @@ private final class AppStoreDownloadObserverWithWorkaround: NSObject, CKDownload
         try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 sec
         progressCallback(0.85, "Installing...")
 
-        // 85-95%: Running installer
+        // 85-90%: Running installer
         let result = await HelperToolManager.shared.runCommand("installer -pkg \(pkgPath) -target /")
+
+        progressCallback(0.90, "Configuring App Store receipt...")
+
+        // 90-95%: Inject receipt and refresh metadata
+        if result.0, let receiptPath = hardLinkedReceiptPath, FileManager.default.fileExists(atPath: receiptPath) {
+            let appPathString = appPath.path
+            let receiptDir = "\(appPathString)/Contents/_MASReceipt"
+            let receiptDestPath = "\(receiptDir)/receipt"
+
+            // Create _MASReceipt directory using privileged helper
+            let mkdirResult = await HelperToolManager.shared.runCommand("mkdir -p \"\(receiptDir)\"")
+            if !mkdirResult.0 {
+                printOS("⚠️ Failed to create _MASReceipt directory: \(mkdirResult.1)")
+            } else {
+                // Copy receipt file using privileged helper
+                let cpResult = await HelperToolManager.shared.runCommand("cp \"\(receiptPath)\" \"\(receiptDestPath)\"")
+                if !cpResult.0 {
+                    printOS("⚠️ Failed to copy receipt: \(cpResult.1)")
+                } else {
+                    // Set proper permissions using privileged helper
+                    let chmodResult = await HelperToolManager.shared.runCommand("chmod 644 \"\(receiptDestPath)\"")
+                    if !chmodResult.0 {
+                        printOS("⚠️ Failed to set receipt permissions: \(chmodResult.1)")
+                    }
+
+                    // Force immediate Spotlight re-indexing
+                    let mdimportProcess = Process()
+                    mdimportProcess.executableURL = URL(fileURLWithPath: "/usr/bin/mdimport")
+                    mdimportProcess.arguments = ["-i", appPathString]
+                    try? mdimportProcess.run()
+                    mdimportProcess.waitUntilExit()
+                }
+            }
+        }
 
         progressCallback(0.95, "Cleaning up...")
 
-        // 95-100%: Clean up hard link
-        try? FileManager.default.removeItem(atPath: pkgPath)
+        // 95-100%: Clean up temp directory
+        if let pkgPath = hardLinkedPkgPath {
+            let tempDir = (pkgPath as NSString).deletingLastPathComponent
+            try? FileManager.default.removeItem(atPath: tempDir)
+        }
 
         if result.0 {
             progressCallback(1.0, "Completed")
