@@ -81906,7 +81906,7 @@
         }
       }
     },
-    "When running privileged Homebrew operations, Pearcleaner caches your password in the macOS Keychain for this duration to avoid repeated password prompts." : {
+    "When running privileged Homebrew operations, Pearcleaner caches your password in the macOS Keychain for this duration to avoid repeated password prompts. Homebrew commands cannot be executed with the privileged helper tool Pearcleaner offers." : {
 
     },
     "When the helper tool was introduced March 2025, it was said that AuthorizationExecuteWithPrivileges (granting authentication via password prompt popup) would eventually be removed as it has already been deprecated by Apple. Some functionality will stop working in Pearcleaner if the helper isn't enabled going forward." : {

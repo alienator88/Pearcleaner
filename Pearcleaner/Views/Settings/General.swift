@@ -223,7 +223,7 @@ struct GeneralSettingsTab: View {
 
                             Picker("", selection: $sudoCacheTimeout.unit) {
                                 ForEach(SudoCacheTimeout.TimeUnit.allCases, id: \.self) { unit in
-                                    Text(unit.rawValue).tag(unit)
+                                    Text(unit.displayName(for: sudoCacheTimeout.value)).tag(unit)
                                 }
                             }
                             .pickerStyle(.menu)
@@ -505,6 +505,14 @@ struct SudoCacheTimeout: Codable, Equatable {
         case minutes = "Minutes"
         case hours = "Hours"
         case days = "Days"
+
+        func displayName(for value: Int) -> String {
+            switch self {
+            case .minutes: return value == 1 ? "Minute" : "Minutes"
+            case .hours: return value == 1 ? "Hour" : "Hours"
+            case .days: return value == 1 ? "Day" : "Days"
+            }
+        }
     }
 
     var seconds: TimeInterval {
