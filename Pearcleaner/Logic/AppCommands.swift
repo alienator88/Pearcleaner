@@ -108,6 +108,7 @@ struct AppCommands: Commands {
                 Label("Undo Removal", systemImage: "clear")
             }
             .keyboardShortcut("z", modifiers: .command)
+            .disabled(!FileManagerUndo.shared.undoManager.canUndo)
 
             Divider()
 
@@ -117,6 +118,7 @@ struct AppCommands: Commands {
                 Label("Delete History", systemImage: "clock.arrow.circlepath")
             }
             .keyboardShortcut("y", modifiers: [.command, .shift])
+            .disabled(UndoHistoryManager.shared.history.isEmpty)
 
         }
 

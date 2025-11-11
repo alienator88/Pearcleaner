@@ -1,17 +1,18 @@
 ### What's New
 
-- [x] Add manual install workaround for app store bug in 26.1+ (Apple has blocked the private frameworks for MAS from being able to perform the install portion of the Update without private Apple entitlements. I haven't had a chance to do a ton of QA on this workaround, so there could be some bugs. You can follow a more detailed discussion in the mas repo as well - https://github.com/mas-cli/mas/issues/1029)
-- [x] Include Date Added resource key for sorting and app sidebar metadata - #432
+- [x] Console button in Homebrew toolbar to show brew actions output in a bottom console view
+- [x] Add Stop button in Homebrew toolbar for certain brew actions
+- [x] Add receipt import into MAS app install process for affected macOS systems where `installd` is blocked
+- [x] Move brew install/update/uninstall actions to homebrew commands fully
+- [x] Add askpass credential expiry selector in settings > general (Related to item above this, when brew needs sudo permissions a popup will come up asking to input password and it will cache it securely in Keychain for as long as you have the cache setting set to.)
+- [x] Add path validation logic in UndoManager to prevent altering system paths, dropping empty paths and non-standard URLs
+- [x] Move every single delete action in the Pearcleaner codebase under the UndoManager. Everything (except brew as it's isolated) is safely moved to Trash folder and never permanently deleted
+- [x] Add UndoManager history in the Menubar > Edit > Delete History. This will persist app restart and allow you to undo up to 10 delete actions as long as the deletion bundle is still in the Trash
 
 
 ### Fixes
 
-- [x] Fix Deep search level with app that returns thousands of results - #440
-- [x] Fix folder exclusion logic for apps - #433
-- [x] Fix orphan search not finding results via username exclusion bug
-- [x] Fix sensitivity slider per app not being respected - #434
-- [x] Fix cask sizes not loading for some apps
-- [x] Fix intermittent permissions bug - #436
-- [x] Fix spotlight metadata size for some folders - #442
-- [x] Drop required minimum OS to 13.0 from 13.5 - #443
+- [x] Fix XcodesOrg app exception - #449
+- [x] Fix formulae version lookup for HEAD installs
+- [x] Fix cask lookup table failing for pkg installed casks and others with target names
 - [x] Translations

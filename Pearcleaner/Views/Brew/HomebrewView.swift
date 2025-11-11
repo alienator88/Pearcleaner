@@ -38,6 +38,8 @@ struct HomebrewView: View {
     @State private var drawerOpen: Bool = false
     @State private var selectedPackage: HomebrewSearchResult?
     @State private var selectedPackageIsCask: Bool = false
+    @State private var showConsole: Bool = false
+    @State private var consoleHeight: CGFloat = 200
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
     var body: some View {
@@ -122,6 +124,21 @@ struct HomebrewView: View {
                         }
                         .transition(.opacity)
                         .animation(animationEnabled ? .easeInOut(duration: 0.2) : .none, value: selectedSection)
+
+                        // Console View (inset at bottom of VStack)
+                        if showConsole {
+                            BrewConsoleView(
+                                output: brewController.consoleOutput,
+                                height: $consoleHeight,
+                                onClear: {
+                                    Task { @MainActor in
+                                        brewController.consoleOutput = ""
+                                    }
+                                }
+                            )
+                            .frame(height: consoleHeight)
+                            .transition(.move(edge: .bottom))
+                        }
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
 
@@ -141,6 +158,9 @@ struct HomebrewView: View {
                 .animation(
                     animationEnabled ? .spring(response: 0.35, dampingFraction: 0.8) : .none,
                     value: drawerOpen)
+                .animation(
+                    .spring(response: 0.4, dampingFraction: 0.8),
+                    value: showConsole)
                 .environmentObject(brewManager)
                 .task {
                     // Load other data in parallel (installed packages loaded in SearchInstallSection)
@@ -188,6 +208,15 @@ struct HomebrewView: View {
             ToolbarItem { Spacer() }
 
             TahoeToolbarItem(isGroup: true) {
+                Button {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                        showConsole.toggle()
+                    }
+                } label: {
+                    Label("Console", systemImage: showConsole ? "terminal.fill" : "terminal")
+                }
+                .help("Toggle console output")
+
                 if brewController.isOperationRunning {
                     Button {
                         brewController.cancelOperation()
@@ -224,5 +253,124 @@ struct HomebrewView: View {
                 }
             }
         }
+        .onChange(of: showConsole) { newValue in
+            Task { @MainActor in
+                brewController.consoleEnabled = newValue
+                if !newValue {
+                    // Clear console when hiding
+                    brewController.consoleOutput = ""
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Brew Console View
+
+struct BrewConsoleView: View {
+    let output: String
+    @Binding var height: CGFloat
+    let onClear: () -> Void
+    @Environment(\.colorScheme) var colorScheme
+    @State private var cursorState: CursorState = .normal
+    @State private var isHovering: Bool = false
+
+    enum CursorState {
+        case normal
+        case hovering
+        case dragging
+
+        var cursor: NSCursor {
+            switch self {
+            case .normal: return .arrow
+            case .hovering: return .openHand
+            case .dragging: return .closedHand
+            }
+        }
+
+        func apply() {
+            cursor.set()
+        }
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            // Header with grab handle and clear button
+            ZStack {
+                // Label on left
+                HStack {
+                    Text("Console Output")
+                        .font(.system(.caption, design: .monospaced))
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    Spacer()
+                }
+
+                // Centered resize handle
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(ThemeColors.shared(for: colorScheme).secondaryText)
+                    .frame(width: 30, height: 2)
+                    .contentShape(Rectangle())
+                    .onHover { hovering in
+                        isHovering = hovering
+                        if cursorState != .dragging {
+                            cursorState = hovering ? .hovering : .normal
+                            cursorState.apply()
+                        }
+                    }
+                    .gesture(
+                        DragGesture()
+                            .onChanged { value in
+                                if cursorState != .dragging {
+                                    cursorState = .dragging
+                                    cursorState.apply()
+                                }
+                                let newHeight = height - value.translation.height
+                                height = min(max(newHeight, 150), 400)
+                            }
+                            .onEnded { _ in
+                                // Restore cursor based on hover state
+                                cursorState = isHovering ? .hovering : .normal
+                                cursorState.apply()
+                            }
+                    )
+
+                // Trash button on right
+                HStack {
+                    Spacer()
+                    Button {
+                        onClear()
+                    } label: {
+                        Image(systemName: "trash")
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                    .buttonStyle(.plain)
+                    .help("Clear console output")
+                }
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+
+            Divider()
+
+            // Console output
+            ScrollView {
+                ScrollViewReader { proxy in
+                    Text(output.isEmpty ? "Ready.." : output)
+                        .font(.system(.caption, design: .monospaced))
+                        .foregroundStyle(.green)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .id("consoleBottom")
+                        .onChange(of: output) { _ in
+                            withAnimation {
+                                proxy.scrollTo("consoleBottom", anchor: .bottom)
+                            }
+                        }
+                }
+            }
+        }
+        .background(Color.black)
+        .shadow(color: Color.black.opacity(0.3), radius: 10, x: 0, y: -5)
     }
 }

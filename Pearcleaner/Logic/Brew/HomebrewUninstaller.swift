@@ -65,7 +65,7 @@ class HomebrewUninstaller {
 
             // Run brew cleanup synchronously (FilesView manages the progress indicator)
             UpdaterDebugLogger.shared.log(.homebrew, "  Running cleanup...")
-            try? await HomebrewController.shared.runCleanup()
+            _ = try? await HomebrewController.shared.runCleanup()
         } catch {
             UpdaterDebugLogger.shared.log(.homebrew, "❌ Uninstall failed for \(name): \(error.localizedDescription)")
             throw error

@@ -77,6 +77,10 @@ class HomebrewController: ObservableObject {
     @MainActor @Published var isOperationRunning: Bool = false
     @MainActor private var runningProcess: Process?
 
+    // Console output tracking
+    @MainActor @Published var consoleEnabled: Bool = false
+    @MainActor @Published var consoleOutput: String = ""
+
     private init() {
         // Determine paths based on architecture
         if isOSArm() {
@@ -174,12 +178,34 @@ class HomebrewController: ObservableObject {
 
         try process.run()
 
-        // Read pipes on background thread to avoid deadlock with large output
+        // Read pipes on background thread with console streaming
         let (outputData, errorData) = await withCheckedContinuation { continuation in
-            DispatchQueue.global(qos: .userInitiated).async {
-                let outData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-                let errData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-                continuation.resume(returning: (outData, errData))
+            Task.detached { [weak self] in
+                var outputData = Data()
+                var errorData = Data()
+
+                let outputHandle = outputPipe.fileHandleForReading
+                let errorHandle = errorPipe.fileHandleForReading
+
+                // Read output with streaming to console
+                while true {
+                    let chunk = outputHandle.availableData
+                    if chunk.isEmpty { break }
+                    outputData.append(chunk)
+
+                    // Stream to console if enabled - check dynamically to support mid-operation console opening
+                    if let text = String(data: chunk, encoding: .utf8) {
+                        await MainActor.run { [weak self] in
+                            guard let self = self, self.consoleEnabled else { return }
+                            self.consoleOutput += text
+                        }
+                    }
+                }
+
+                // Read error output
+                errorData = errorHandle.readDataToEndOfFile()
+
+                continuation.resume(returning: (outputData, errorData))
             }
         }
 
@@ -218,6 +244,11 @@ class HomebrewController: ObservableObject {
 
         logger.log(.homebrew, "🔍 Scanning for installed \(cask ? "casks" : "formulae") in \(baseDir)")
 
+        await MainActor.run { [weak self] in
+            guard let self = self, self.consoleEnabled else { return }
+            self.consoleOutput += "Loading installed \(cask ? "casks" : "formulae")...\n"
+        }
+
         guard let packageDirs = try? FileManager.default.contentsOfDirectory(atPath: baseDir) else {
             logger.log(.homebrew, "⚠️ Could not read directory: \(baseDir)")
             return
@@ -227,6 +258,7 @@ class HomebrewController: ObservableObject {
         logger.log(.homebrew, "Found \(packageCount) \(cask ? "casks" : "formulae") to process")
 
         // Process concurrently, stream results as they complete
+        var loadedCount = 0
         await withTaskGroup(of: (String, String?, String, String, Bool, String?, String?, Bool)?.self) { group in
             // Add all tasks
             for packageName in packageDirs where !packageName.hasPrefix(".") {
@@ -247,8 +279,14 @@ class HomebrewController: ObservableObject {
             for await result in group {
                 if let (name, displayName, desc, version, isPinned, tap, tapRbPath, installedOnRequest) = result {
                     onPackageFound(name, displayName, desc, version, isPinned, tap, tapRbPath, installedOnRequest)
+                    loadedCount += 1
                 }
             }
+        }
+
+        await MainActor.run { [weak self] in
+            guard let self = self, self.consoleEnabled else { return }
+            self.consoleOutput += "Loaded \(loadedCount) \(cask ? "casks" : "formulae")\n"
         }
     }
 
@@ -256,6 +294,11 @@ class HomebrewController: ObservableObject {
     /// Much faster than API calls and works offline
     /// JWS files are already cached by Homebrew after `brew update`
     func loadMinimalPackageMetadata(cask: Bool) async throws -> [(name: String, displayName: String?, description: String?, version: String?, bundleVersion: String?)] {
+        await MainActor.run { [weak self] in
+            guard let self = self, self.consoleEnabled else { return }
+            self.consoleOutput += "Loading available \(cask ? "casks" : "formulae") metadata...\n"
+        }
+
         let fileName = cask ? "cask.jws.json" : "formula.jws.json"
         let apiCachePath = FileManager.default.homeDirectoryForCurrentUser
             .appendingPathComponent("Library/Caches/Homebrew/api")
@@ -306,6 +349,11 @@ class HomebrewController: ObservableObject {
             }
 
             results.append((name: name, displayName: displayName, description: description, version: version, bundleVersion: bundleVersion))
+        }
+
+        await MainActor.run { [weak self] in
+            guard let self = self, self.consoleEnabled else { return }
+            self.consoleOutput += "Loaded \(results.count) available \(cask ? "casks" : "formulae")\n"
         }
 
         return results
@@ -926,9 +974,18 @@ class HomebrewController: ObservableObject {
         let allPackages = formulae + casks
         logger.log(.homebrew, "Starting Homebrew update check for \(allPackages.count) packages (\(formulae.count) formulae, \(casks.count) casks)")
 
+        await MainActor.run { [weak self] in
+            guard let self = self, self.consoleEnabled else { return }
+            self.consoleOutput += "Checking for outdated packages (\(allPackages.count) total)...\n"
+        }
+
         // Step 1: Try to check ALL packages via API first (fast path)
         // Assume packages with tap == nil are core packages (most common case)
         logger.log(.homebrew, "Step 1: Checking packages via public API (fast path)")
+        await MainActor.run { [weak self] in
+            guard let self = self, self.consoleEnabled else { return }
+            self.consoleOutput += "Checking packages via API...\n"
+        }
         let (coreOutdated, apiFailedPackages) = await checkCorePackagesViaAPI(allPackages)
 
         logger.log(.homebrew, "  API check complete: \(coreOutdated.count) outdated, \(apiFailedPackages.count) API failures (likely tap packages)")
@@ -937,11 +994,20 @@ class HomebrewController: ObservableObject {
         // This handles tap packages that don't exist in public API (typically 0-3 packages)
         if !apiFailedPackages.isEmpty {
             logger.log(.homebrew, "Step 2: Checking \(apiFailedPackages.count) tap packages manually")
+            await MainActor.run { [weak self] in
+                guard let self = self, self.consoleEnabled else { return }
+                self.consoleOutput += "Checking \(apiFailedPackages.count) tap packages...\n"
+            }
             let tapOutdated = await checkTapPackagesManually(apiFailedPackages)
             logger.log(.homebrew, "  Manual tap check complete: \(tapOutdated.count) outdated")
 
             let totalOutdated = coreOutdated.count + tapOutdated.count
             logger.log(.homebrew, "Found \(totalOutdated) Homebrew updates available")
+
+            await MainActor.run { [weak self] in
+                guard let self = self, self.consoleEnabled else { return }
+                self.consoleOutput += "Found \(totalOutdated) outdated packages\n"
+            }
 
             // Filter out Pearcleaner (has dedicated UI banner in Updater view)
             let allOutdated = coreOutdated + tapOutdated
@@ -949,6 +1015,11 @@ class HomebrewController: ObservableObject {
         }
 
         logger.log(.homebrew, "Found \(coreOutdated.count) Homebrew updates available")
+
+        await MainActor.run { [weak self] in
+            guard let self = self, self.consoleEnabled else { return }
+            self.consoleOutput += "Found \(coreOutdated.count) outdated packages\n"
+        }
 
         // Filter out Pearcleaner (has dedicated UI banner in Updater view)
         return coreOutdated.filter { $0.name != "pearcleaner" }
@@ -1247,6 +1318,11 @@ class HomebrewController: ObservableObject {
     // MARK: - Maintenance
 
     func getBrewVersion() async throws -> String {
+        await MainActor.run { [weak self] in
+            guard let self = self, self.consoleEnabled else { return }
+            self.consoleOutput += "Getting Homebrew version...\n"
+        }
+
         // Use git directly for faster version check (avoids spawning brew process)
         // --abbrev=0 returns clean semantic version (e.g., "4.6.19") for consistent display
         // Works with both full clones and shallow clones
@@ -1267,6 +1343,10 @@ class HomebrewController: ObservableObject {
         let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
 
         if process.terminationStatus == 0 && !output.isEmpty {
+            await MainActor.run { [weak self] in
+                guard let self = self, self.consoleEnabled else { return }
+                self.consoleOutput += "Homebrew version: \(output)\n"
+            }
             return output  // Returns "4.6.19"
         }
 
@@ -1296,6 +1376,11 @@ class HomebrewController: ObservableObject {
     }
 
     func checkForBrewUpdate() async throws -> (current: String, latest: String, updateAvailable: Bool) {
+        await MainActor.run { [weak self] in
+            guard let self = self, self.consoleEnabled else { return }
+            self.consoleOutput += "Checking for Homebrew updates...\n"
+        }
+
         // Get current semantic version (e.g., "4.6.19")
         let currentVersion = try await getBrewVersion()
 
@@ -1304,6 +1389,15 @@ class HomebrewController: ObservableObject {
 
         // Compare semantic versions
         let updateAvailable = compareSemanticVersions(current: currentVersion, latest: latestVersion)
+
+        await MainActor.run { [weak self] in
+            guard let self = self, self.consoleEnabled else { return }
+            if updateAvailable {
+                self.consoleOutput += "Update available: \(currentVersion) → \(latestVersion)\n"
+            } else {
+                self.consoleOutput += "Homebrew is up to date (\(currentVersion))\n"
+            }
+        }
 
         return (current: currentVersion, latest: latestVersion, updateAvailable: updateAvailable)
     }
@@ -1329,7 +1423,7 @@ class HomebrewController: ObservableObject {
     }
 
     func updateBrew() async throws {
-        let arguments = ["update"]
+        let arguments = ["update", "-v"]
         let result = try await runBrewCommand(arguments)
 
         if result.error.contains("Error") {
@@ -1343,35 +1437,75 @@ class HomebrewController: ObservableObject {
         return result.output + result.error
     }
 
-    func runCleanup() async throws {
-        // Collect all cleanable cache and log files
+    func runCleanup(dryRun: Bool = false) async throws -> (bytes: Int64, formatted: String)? {
+        // Collect all cleanable cache and log files (or calculate their size if dry-run)
         let homeDir = FileManager.default.homeDirectoryForCurrentUser
         let cacheDir = homeDir.appendingPathComponent("Library/Caches/Homebrew")
+        let cacheSubdirs = ["Cask", "api-source", "gh-actions-artifact", "cargo_cache", "go_cache", "go_mod_cache", "glide_home", "java_cache", "npm_cache", "pip_cache", "gclient_cache"]
         let logsDir = homeDir.appendingPathComponent("Library/Logs/Homebrew")
         let fileManager = FileManager.default
 
         var filesToDelete: [URL] = []
+        var totalBytes: Int64 = 0
 
         // 1. Everything in downloads/ folder
         let downloadsDir = cacheDir.appendingPathComponent("downloads")
         if fileManager.fileExists(atPath: downloadsDir.path) {
             do {
                 let downloadFiles = try fileManager.contentsOfDirectory(at: downloadsDir, includingPropertiesForKeys: nil, options: [])
-                filesToDelete.append(contentsOf: downloadFiles)
+                if dryRun {
+                    for file in downloadFiles {
+                        totalBytes += totalSizeOnDisk(for: file)
+                    }
+                } else {
+                    filesToDelete.append(contentsOf: downloadFiles)
+                }
             } catch {
                 // Continue if we can't read downloads directory
             }
         }
 
-        // 2. Non-directory files in root Homebrew cache folder
+        // 2. Additional cache subdirectories (emulate brew cleanup --prune=all)
+        // brew's nested_cache? removes entire directories with FileUtils.rm_rf
+        for subdirName in cacheSubdirs {
+            let subdirURL = cacheDir.appendingPathComponent(subdirName)
+            if fileManager.fileExists(atPath: subdirURL.path) {
+                if dryRun {
+                    totalBytes += totalSizeOnDisk(for: subdirURL)
+                } else {
+                    // Delete entire subdirectory (brew uses FileUtils.rm_rf on nested_cache directories)
+                    await MainActor.run { [weak self] in
+                        guard let self = self, self.consoleEnabled else { return }
+                        self.consoleOutput += "Removing \(subdirName)/\n"
+                    }
+                    filesToDelete.append(subdirURL)
+                }
+            }
+        }
+
+        // 3. Non-directory files and versioned directories in root Homebrew cache folder
         if fileManager.fileExists(atPath: cacheDir.path) {
             do {
                 let contents = try fileManager.contentsOfDirectory(at: cacheDir, includingPropertiesForKeys: [.isDirectoryKey], options: [])
                 for itemURL in contents {
                     let resourceValues = try itemURL.resourceValues(forKeys: [.isDirectoryKey])
-                    // Only include files (not directories like api/, bootsnap/, etc.)
+
                     if resourceValues.isDirectory == false {
-                        filesToDelete.append(itemURL)
+                        // Skip .cleaned file (Homebrew's periodic cleanup tracker)
+                        if itemURL.lastPathComponent != ".cleaned" {
+                            if dryRun {
+                                totalBytes += totalSizeOnDisk(for: itemURL)
+                            } else {
+                                filesToDelete.append(itemURL)
+                            }
+                        }
+                    } else if itemURL.lastPathComponent.contains("--") {
+                        // Also remove directories with "--" (old formula/cask version caches, HEAD installs)
+                        if dryRun {
+                            totalBytes += totalSizeOnDisk(for: itemURL)
+                        } else {
+                            filesToDelete.append(itemURL)
+                        }
                     }
                 }
             } catch {
@@ -1379,25 +1513,53 @@ class HomebrewController: ObservableObject {
             }
         }
 
-        // 3. Everything in logs directory
+        // 4. Everything in logs directory
         if fileManager.fileExists(atPath: logsDir.path) {
-            do {
-                let logFiles = try fileManager.contentsOfDirectory(at: logsDir, includingPropertiesForKeys: nil, options: [])
-                filesToDelete.append(contentsOf: logFiles)
-            } catch {
-                // Continue if we can't read logs directory
+            if dryRun {
+                totalBytes += totalSizeOnDisk(for: logsDir)
+            } else {
+                do {
+                    let logFiles = try fileManager.contentsOfDirectory(at: logsDir, includingPropertiesForKeys: nil, options: [])
+                    filesToDelete.append(contentsOf: logFiles)
+                } catch {
+                    // Continue if we can't read logs directory
+                }
             }
         }
 
-        // Move all files to Trash in a bundle
-        if !filesToDelete.isEmpty {
-            let _ = FileManagerUndo.shared.deleteFiles(at: filesToDelete, bundleName: "BrewCleanup")
+        // Return results based on mode
+        if dryRun {
+            // Format as human-readable (must run on main thread - ByteCountFormatter is not thread-safe)
+            let bytesToFormat = totalBytes
+            let formatted = await MainActor.run {
+                ByteCountFormatter.string(fromByteCount: bytesToFormat, countStyle: .file)
+            }
+            return (bytes: totalBytes, formatted: formatted)
+        } else {
+            // Move all files to Trash in a bundle
+            if !filesToDelete.isEmpty {
+                await MainActor.run { [weak self] in
+                    guard let self = self, self.consoleEnabled else { return }
+                    self.consoleOutput += "Cleaning \(filesToDelete.count) items...\n"
+                }
+                let _ = FileManagerUndo.shared.deleteFiles(at: filesToDelete, bundleName: "BrewCleanup")
+                await MainActor.run { [weak self] in
+                    guard let self = self, self.consoleEnabled else { return }
+                    self.consoleOutput += "Cleanup complete\n"
+                }
+            } else {
+                await MainActor.run { [weak self] in
+                    guard let self = self, self.consoleEnabled else { return }
+                    self.consoleOutput += "No files to clean\n"
+                }
+            }
+            return nil
         }
     }
 
     func performFullCleanup() async throws {
         // Fast operation: delete cache and logs to Trash (blocks UI briefly ~50ms)
-        try await runCleanup()
+        _ = try await runCleanup()
 
         // Slow operation: run brew autoremove in background without blocking UI
         Task.detached(priority: .background) {
@@ -1407,6 +1569,11 @@ class HomebrewController: ObservableObject {
     }
 
     func getAnalyticsStatus() async throws -> Bool {
+        await MainActor.run { [weak self] in
+            guard let self = self, self.consoleEnabled else { return }
+            self.consoleOutput += "Checking analytics status...\n"
+        }
+
         // Use git config directly for faster check (avoids spawning brew process)
         let gitCommand = "git -C \(brewPrefix) config --get homebrew.analyticsdisabled 2>/dev/null"
 
@@ -1427,13 +1594,27 @@ class HomebrewController: ObservableObject {
         // If config key doesn't exist or is empty, analytics are enabled by default
         // If set to "true", analytics are disabled
         // If set to "false", analytics are enabled
+        let analyticsEnabled: Bool
         if output.isEmpty {
-            return true  // Analytics enabled by default
+            analyticsEnabled = true  // Analytics enabled by default
+        } else {
+            analyticsEnabled = output.lowercased() != "true"  // Return true if NOT disabled
         }
-        return output.lowercased() != "true"  // Return true if NOT disabled
+
+        await MainActor.run { [weak self] in
+            guard let self = self, self.consoleEnabled else { return }
+            self.consoleOutput += "Analytics are \(analyticsEnabled ? "enabled" : "disabled")\n"
+        }
+
+        return analyticsEnabled
     }
 
     func setAnalyticsStatus(enabled: Bool) async throws {
+        await MainActor.run { [weak self] in
+            guard let self = self, self.consoleEnabled else { return }
+            self.consoleOutput += "Setting analytics to \(enabled ? "enabled" : "disabled")...\n"
+        }
+
         // Use git config directly for faster toggle (avoids spawning brew process)
         let value = enabled ? "false" : "true"  // Inverted: "false" means NOT disabled (i.e., enabled)
         let gitCommand = "git -C \(brewPrefix) config --replace-all homebrew.analyticsdisabled \(value) 2>&1"
@@ -1452,59 +1633,23 @@ class HomebrewController: ObservableObject {
         if process.terminationStatus != 0 {
             let data = pipe.fileHandleForReading.readDataToEndOfFile()
             let error = String(data: data, encoding: .utf8) ?? "Unknown error"
+            await MainActor.run { [weak self] in
+                guard let self = self, self.consoleEnabled else { return }
+                self.consoleOutput += "Error: \(error)\n"
+            }
             throw HomebrewError.commandFailed("Failed to set analytics status: \(error)")
+        }
+
+        await MainActor.run { [weak self] in
+            guard let self = self, self.consoleEnabled else { return }
+            self.consoleOutput += "Analytics status updated successfully\n"
         }
     }
 
     func calculateCacheSize() async -> (bytes: Int64, formatted: String) {
-        // Calculate cleanable Homebrew cache size to match brew cleanup --dry-run --scrub --prune=all
-        // This matches brew's cleanup logic:
-        // 1. Everything in downloads/ folder (cached formula/cask downloads)
-        // 2. Non-directory files in root Homebrew/ folder (loose files, symlinks, .txt files)
-        // 3. Everything in Logs/Homebrew/ folder
-        // Excludes: api/, bootsnap/, and other subdirectories (needed for Homebrew function)
-
-        let homeDir = FileManager.default.homeDirectoryForCurrentUser
-        let cacheDir = homeDir.appendingPathComponent("Library/Caches/Homebrew")
-        let logsDir = homeDir.appendingPathComponent("Library/Logs/Homebrew")
-        let fileManager = FileManager.default
-
-        var totalBytes: Int64 = 0
-
-        // 1. Calculate size of downloads/ folder (bulk of cleanable cache)
-        let downloadsDir = cacheDir.appendingPathComponent("downloads")
-        if fileManager.fileExists(atPath: downloadsDir.path) {
-            totalBytes += totalSizeOnDisk(for: downloadsDir)
-        }
-
-        // 2. Calculate size of non-directory files in root Homebrew cache folder
-        if fileManager.fileExists(atPath: cacheDir.path) {
-            do {
-                let contents = try fileManager.contentsOfDirectory(at: cacheDir, includingPropertiesForKeys: [.isDirectoryKey], options: [])
-                for itemURL in contents {
-                    let resourceValues = try itemURL.resourceValues(forKeys: [.isDirectoryKey])
-                    // Only count files (not directories)
-                    if resourceValues.isDirectory == false {
-                        totalBytes += totalSizeOnDisk(for: itemURL)
-                    }
-                }
-            } catch {
-                // Silently continue if we can't read the directory
-            }
-        }
-
-        // 3. Calculate logs directory size
-        if fileManager.fileExists(atPath: logsDir.path) {
-            totalBytes += totalSizeOnDisk(for: logsDir)
-        }
-
-        // Format as human-readable (must run on main thread - ByteCountFormatter is not thread-safe)
-        let bytesToFormat = totalBytes
-        let formatted = await MainActor.run {
-            ByteCountFormatter.string(fromByteCount: bytesToFormat, countStyle: .file)
-        }
-
-        return (bytes: totalBytes, formatted: formatted)
+        // Wrapper around runCleanup with dry-run mode
+        // Returns size of cleanable cache without actually deleting anything
+        return try! await runCleanup(dryRun: true) ?? (0, "0 bytes")
     }
 
     func calculateFormulaSize(name: String, version: String) async -> (Int64, String) {
