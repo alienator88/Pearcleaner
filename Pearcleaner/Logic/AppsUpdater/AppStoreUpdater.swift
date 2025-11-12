@@ -66,11 +66,16 @@ class AppStoreUpdater {
             // Create SSPurchase for downloading (purchasing: false = update existing app)
             let purchase = await SSPurchase(adamID: adamID, purchasing: false)
 
+            // Mark as update to indicate this is a redownload of owned app
+            purchase.isUpdate = true
+
             // iOS apps need special handling on ALL macOS versions (flag passed from caller)
             // Check if workaround is needed for macOS apps on affected OS versions
             let needsWorkaround = needsInstalldWorkaround()
 
             try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+                // NOTE: iOS apps will show "Current Version Not Compatible" dialog
+                // User must click "Download Last Compatible" to proceed with download
                 CKPurchaseController.shared().perform(purchase, withOptions: 0) { _, _, error, response in
                     if let error = error {
                         continuation.resume(throwing: error)
@@ -80,11 +85,12 @@ class AppStoreUpdater {
                             do {
                                 if isIOSApp {
                                     // iOS apps: Use dedicated iOS observer (all macOS versions)
+                                    printOS("⚠️ Detected iOS app - using custom installer")
                                     let observer = IOSDownloadObserver(adamID: adamID, appPath: appPath, progress: progress)
                                     try await observer.observeDownloadQueue()
                                 } else if needsWorkaround {
                                     // macOS apps on affected OS versions: Use workaround observer
-                                    printOS("⚠️ Detected macOS version with installd bug - using workaround")
+                                    printOS("⚠️ Detected macOS version with private frameworks installer bug - using custom installer")
                                     let observer = MacOSDownloadObserverWithWorkaround(adamID: adamID, appPath: appPath, progress: progress)
                                     try await observer.observeDownloadQueue()
                                 } else {
@@ -374,8 +380,6 @@ private final class IOSDownloadObserver: NSObject, CKDownloadQueueObserver {
                 try FileManager.default.linkItem(atPath: ipaSource, toPath: ipaDest)
                 hardLinkedIPAPath = ipaDest
 
-                printOS("✅ Hard linked IPA: \(ipaFile)")
-
                 iosFilesPreserved = true
             } else {
                 printOS("⚠️ No IPA file found in \(downloadDir)")
@@ -519,7 +523,6 @@ private final class MacOSDownloadObserverWithWorkaround: NSObject, CKDownloadQue
 
                 try FileManager.default.linkItem(atPath: pkgSource, toPath: pkgDest)
                 hardLinkedPkgPath = pkgDest
-                printOS("✅ Hard linked PKG: \(pkgFile)")
 
                 // Hard link receipt file
                 let receiptSource = "\(downloadDir)/receipt"
