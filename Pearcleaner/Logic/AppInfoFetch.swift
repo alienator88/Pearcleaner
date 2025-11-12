@@ -98,9 +98,24 @@ class MetadataAppInfoFetcher {
         let hasSparkle = AppCategoryDetector.checkForSparkle(bundle: bundle, infoDict: bundle?.infoDictionary)
         let isAppStore = AppCategoryDetector.checkForAppStore(bundle: bundle, path: path, wrapped: wrapped)
 
+        // Extract App Store adamID from metadata (if available)
+        let adamID: UInt64? = {
+            if let adamValue = metadata["kMDItemAppStoreAdamID"] {
+                // Handle NSNumber conversion
+                if let number = adamValue as? NSNumber {
+                    return number.uint64Value
+                }
+                // Handle direct UInt64
+                if let uint = adamValue as? UInt64 {
+                    return uint
+                }
+            }
+            return nil
+        }()
+
         return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName,
                        appVersion: version, appBuildNumber: buildNumber, appIcon: appIcon, webApp: webApp, wrapped: wrapped, system: system,
-                       arch: arch, cask: cask, steam: false, hasSparkle: hasSparkle, isAppStore: isAppStore, autoUpdates: autoUpdates, bundleSize: logicalSize, fileSize: [:],
+                       arch: arch, cask: cask, steam: false, hasSparkle: hasSparkle, isAppStore: isAppStore, adamID: adamID, autoUpdates: autoUpdates, bundleSize: logicalSize, fileSize: [:],
                        fileIcon: [:], creationDate: creationDate, contentChangeDate: contentChangeDate, lastUsedDate: lastUsedDate, dateAdded: dateAdded, entitlements: entitlements, teamIdentifier: teamIdentifier)
     }
 }
@@ -208,6 +223,7 @@ class AppInfoUtils {
 func getMDLSMetadata(for paths: [String]) -> [String: [String: Any]]? {
     let kMDItemLogicalSize: CFString = "kMDItemLogicalSize" as CFString
     let kMDItemPhysicalSize: CFString = "kMDItemPhysicalSize" as CFString
+    let kMDItemAppStoreAdamID: CFString = "kMDItemAppStoreAdamID" as CFString
 
     // List of metadata attributes to fetch
     let attributes: [CFString] = [
@@ -219,7 +235,8 @@ func getMDLSMetadata(for paths: [String]) -> [String: [String: Any]]? {
         kMDItemCFBundleIdentifier,
         kMDItemFSName,
         kMDItemLogicalSize,
-        kMDItemPhysicalSize
+        kMDItemPhysicalSize,
+        kMDItemAppStoreAdamID
     ]
 
     // OPTIMIZATION: Process in parallel chunks
@@ -345,8 +362,11 @@ class AppInfoFetcher {
             let hasSparkle = AppCategoryDetector.checkForSparkle(bundle: bundle, infoDict: bundle.infoDictionary)
             let isAppStore = AppCategoryDetector.checkForAppStore(bundle: bundle, path: path, wrapped: wrapped)
 
+            // adamID not available in fallback path (no mdls metadata)
+            let adamID: UInt64? = nil
+
             return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName, appVersion: appVersion, appBuildNumber: appBuildNumber, appIcon: appIcon,
-                           webApp: webApp, wrapped: wrapped, system: system, arch: arch, cask: cask, steam: false, hasSparkle: hasSparkle, isAppStore: isAppStore, autoUpdates: autoUpdates, bundleSize: 0, fileSize: [:], fileIcon: [:], creationDate: dates?.creation, contentChangeDate: dates?.contentChange, lastUsedDate: dates?.lastUsed, dateAdded: dates?.dateAdded, entitlements: entitlements, teamIdentifier: teamIdentifier)
+                           webApp: webApp, wrapped: wrapped, system: system, arch: arch, cask: cask, steam: false, hasSparkle: hasSparkle, isAppStore: isAppStore, adamID: adamID, autoUpdates: autoUpdates, bundleSize: 0, fileSize: [:], fileIcon: [:], creationDate: dates?.creation, contentChangeDate: dates?.contentChange, lastUsedDate: dates?.lastUsed, dateAdded: dates?.dateAdded, entitlements: entitlements, teamIdentifier: teamIdentifier)
         }
 
         // Fallback: Read Info.plist directly from disk (useful for newly installed apps where Bundle cache isn't ready)
@@ -382,8 +402,11 @@ class AppInfoFetcher {
             let hasSparkle = AppCategoryDetector.checkForSparkle(bundle: nil, infoDict: infoDict)
             let isAppStore = AppCategoryDetector.checkForAppStore(bundle: nil, path: path, wrapped: wrapped)
 
+            // adamID not available in fallback path (no mdls metadata)
+            let adamID: UInt64? = nil
+
             return AppInfo(id: UUID(), path: path, bundleIdentifier: bundleIdentifier, appName: appName, appVersion: appVersion, appBuildNumber: appBuildNumber, appIcon: appIcon,
-                           webApp: webApp, wrapped: wrapped, system: system, arch: arch, cask: cask, steam: false, hasSparkle: hasSparkle, isAppStore: isAppStore, autoUpdates: autoUpdates, bundleSize: 0, fileSize: [:], fileIcon: [:], creationDate: dates?.creation, contentChangeDate: dates?.contentChange, lastUsedDate: dates?.lastUsed, dateAdded: dates?.dateAdded, entitlements: entitlements, teamIdentifier: teamIdentifier)
+                           webApp: webApp, wrapped: wrapped, system: system, arch: arch, cask: cask, steam: false, hasSparkle: hasSparkle, isAppStore: isAppStore, adamID: adamID, autoUpdates: autoUpdates, bundleSize: 0, fileSize: [:], fileIcon: [:], creationDate: dates?.creation, contentChangeDate: dates?.contentChange, lastUsedDate: dates?.lastUsed, dateAdded: dates?.dateAdded, entitlements: entitlements, teamIdentifier: teamIdentifier)
         }
 
         // If both Bundle and direct reading failed, check if this might be a Steam game
@@ -484,11 +507,12 @@ class SteamAppInfoFetcher {
         // Steam games: typically no Sparkle or App Store (distributed via Steam)
         let hasSparkle = AppCategoryDetector.checkForSparkle(bundle: bundle, infoDict: bundle.infoDictionary)
         let isAppStore = false  // Steam games are never from App Store
+        let adamID: UInt64? = nil  // Steam games don't have App Store adamID
         let autoUpdates: Bool? = nil  // Steam games don't use Homebrew
 
         return AppInfo(id: UUID(), path: launcherPath, bundleIdentifier: bundleIdentifier, appName: appName,
                        appVersion: appVersion, appBuildNumber: appBuildNumber, appIcon: appIcon, webApp: webApp, wrapped: false,
-                       system: system, arch: arch, cask: nil, steam: true, hasSparkle: hasSparkle, isAppStore: isAppStore, autoUpdates: autoUpdates, bundleSize: 0, fileSize: [:],
+                       system: system, arch: arch, cask: nil, steam: true, hasSparkle: hasSparkle, isAppStore: isAppStore, adamID: adamID, autoUpdates: autoUpdates, bundleSize: 0, fileSize: [:],
                        fileIcon: [:], creationDate: nil, contentChangeDate: nil, lastUsedDate: nil, dateAdded: nil, entitlements: entitlements, teamIdentifier: teamIdentifier)
     }
 }

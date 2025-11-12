@@ -77,6 +77,10 @@ struct UpdateRowView: View {
                 .buttonStyle(.plain)
                 .foregroundStyle(.orange)
 
+//                Button("Test") {
+//                    Task { await updateManager.updateApp(app) }
+//                }
+
             case .checking, .downloading, .extracting, .installing, .verifying:
                 HStack(spacing: 6) {
                     ProgressView()

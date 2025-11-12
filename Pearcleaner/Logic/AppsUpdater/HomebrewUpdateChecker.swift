@@ -121,6 +121,7 @@ class HomebrewUpdateChecker {
                 steam: appInfo.steam,
                 hasSparkle: appInfo.hasSparkle,
                 isAppStore: appInfo.isAppStore,
+                adamID: appInfo.adamID,
                 autoUpdates: appInfo.autoUpdates,
                 bundleSize: appInfo.bundleSize,
                 lipoSavings: appInfo.lipoSavings,
@@ -195,7 +196,8 @@ class HomebrewUpdateChecker {
                     cask: outdatedPkg.name, // Store formula name in cask field for update/uninstall operations
                     steam: false,
                     hasSparkle: false,  // Formulae (CLI tools) don't have Sparkle
-                    isAppStore: false,  // Formulae are not from App Store
+                    isAppStore: false, // Formulae are not from App Store
+                    adamID: nil,       // Formulae are not from App Store
                     autoUpdates: nil,  // Formulae don't have auto_updates (cask-only property)
                     bundleSize: 0,
                     lipoSavings: nil,

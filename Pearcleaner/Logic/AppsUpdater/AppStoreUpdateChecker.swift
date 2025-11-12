@@ -79,13 +79,30 @@ class AppStoreUpdateChecker {
     private static func checkSingleApp(app: AppInfo) async -> UpdateableApp? {
         logger.log(.appStore, "Checking: \(app.appName) (\(app.bundleIdentifier))")
 
-        // Query iTunes Search API using bundle ID to get app info (adamID, version, metadata) and region
-        guard let result = await getAppStoreInfo(bundleID: app.bundleIdentifier) else {
+        // OPTIMIZATION: Try direct adamID lookup first if available (much faster than bundleID search)
+        let result: (AppStoreInfo, String)?
+        if let adamID = app.adamID {
+            logger.log(.appStore, "  🚀 Fast path - using cached adamID: \(adamID)")
+            let primaryRegion = await getAppStoreRegion()
+            if let appStoreInfo = await fetchAppStoreInfoByAdamID(adamID: adamID, region: primaryRegion) {
+                result = (appStoreInfo, primaryRegion)
+                logger.log(.appStore, "  ✅ Found via adamID lookup")
+            } else {
+                // Fallback to bundleID search if adamID lookup fails (app might have been transferred)
+                logger.log(.appStore, "  ⚠️ adamID lookup failed, falling back to bundleID search")
+                result = await getAppStoreInfo(bundleID: app.bundleIdentifier)
+            }
+        } else {
+            // No cached adamID - use standard bundleID search
+            logger.log(.appStore, "  📍 Standard path - using bundleID lookup")
+            result = await getAppStoreInfo(bundleID: app.bundleIdentifier)
+        }
+
+        guard let (appStoreInfo, foundRegion) = result else {
             logger.log(.appStore, "  ❌ API lookup failed - not found in App Store")
             return nil
         }
 
-        let (appStoreInfo, foundRegion) = result
         logger.log(.appStore, "  ✅ Found in App Store: v\(appStoreInfo.version) (adamID: \(appStoreInfo.adamID)) in region: \(foundRegion)")
 
         // Use Version for robust comparison (handles 1, 2, 3+ component versions)
@@ -208,6 +225,60 @@ class AppStoreUpdateChecker {
         if let entity = entity {
             queryItems.append(URLQueryItem(name: "entity", value: entity))
         }
+
+        components?.queryItems = queryItems
+
+        guard let url = components?.url else {
+            return nil
+        }
+
+        do {
+            let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 30)
+            let (data, _) = try await URLSession.shared.data(for: request)
+
+            if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+               let resultCount = json["resultCount"] as? Int,
+               resultCount > 0,
+               let results = json["results"] as? [[String: Any]],
+               let firstResult = results.first,
+               let trackId = firstResult["trackId"] as? UInt64,
+               let version = firstResult["version"] as? String,
+               let trackViewUrl = firstResult["trackViewUrl"] as? String {
+
+                // Extract optional metadata
+                let releaseNotes = firstResult["releaseNotes"] as? String
+                let releaseDate = firstResult["currentVersionReleaseDate"] as? String
+
+                return AppStoreInfo(
+                    adamID: trackId,
+                    version: version,
+                    appStoreURL: trackViewUrl,
+                    releaseNotes: releaseNotes,
+                    releaseDate: releaseDate
+                )
+            }
+        } catch {
+            // Error querying iTunes API - silently fail
+        }
+
+        return nil
+    }
+
+    /// Fetch App Store info using adamID (faster than bundleID lookup)
+    /// Uses direct adamID lookup, avoiding multi-region/entity fallback overhead
+    private static func fetchAppStoreInfoByAdamID(adamID: UInt64, region: String) async -> AppStoreInfo? {
+        // Query iTunes Search API using adamID
+        guard let endpoint = URL(string: "https://itunes.apple.com/lookup") else {
+            return nil
+        }
+
+        var components = URLComponents(url: endpoint, resolvingAgainstBaseURL: false)
+
+        let queryItems = [
+            URLQueryItem(name: "id", value: String(adamID)),
+            URLQueryItem(name: "country", value: region),
+            URLQueryItem(name: "limit", value: "1")
+        ]
 
         components?.queryItems = queryItems
 
