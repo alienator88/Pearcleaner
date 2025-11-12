@@ -60,26 +60,34 @@ struct UpdateRowView: View {
         } else {
             switch app.status {
             case .idle:
-                Button {
-                    if app.isIOSApp, let appStoreURL = app.appStoreURL {
-                        // iOS apps: Open App Store page
-                        openInAppStore(urlString: appStoreURL)
-                    } else if isNonPrimaryRegion, let appStoreURL = app.appStoreURL {
-                        // Apps found in non-primary regions: Open App Store page
-                        openInAppStore(urlString: appStoreURL)
-                    } else {
-                        // Regular apps: Use CommerceKit or open to update
-                        Task { await updateManager.updateApp(app) }
+                HStack(spacing: 8) {
+                    Button {
+                        if app.isIOSApp, let appStoreURL = app.appStoreURL {
+                            // iOS apps: Open App Store page
+                            openInAppStore(urlString: appStoreURL)
+                        } else if isNonPrimaryRegion, let appStoreURL = app.appStoreURL {
+                            // Apps found in non-primary regions: Open App Store page
+                            openInAppStore(urlString: appStoreURL)
+                        } else {
+                            // Regular apps: Use CommerceKit or open to update
+                            Task { await updateManager.updateApp(app) }
+                        }
+                    } label: {
+                        Text(app.isIOSApp || isNonPrimaryRegion ? "Update in App Store" : "Update")
                     }
-                } label: {
-                    Text(app.isIOSApp || isNonPrimaryRegion ? "Update in App Store" : "Update")
-                }
-                .buttonStyle(.plain)
-                .foregroundStyle(.orange)
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.orange)
 
-//                Button("Test") {
-//                    Task { await updateManager.updateApp(app) }
-//                }
+                    // Test button for iOS apps only
+                    if app.isIOSApp {
+                        Button {
+                            Task { await updateManager.testIOSAppUpdate(app) }
+                        } label: {
+                            Text("Test")
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                }
 
             case .checking, .downloading, .extracting, .installing, .verifying:
                 HStack(spacing: 6) {

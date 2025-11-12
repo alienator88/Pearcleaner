@@ -58,6 +58,7 @@ class AppStoreUpdater {
     func updateApp(
         adamID: UInt64,
         appPath: URL,
+        isIOSApp: Bool = false,
         progress: @escaping @Sendable (Double, String) -> Void,
         attemptCount: UInt32 = 3
     ) async throws {
@@ -65,7 +66,8 @@ class AppStoreUpdater {
             // Create SSPurchase for downloading (purchasing: false = update existing app)
             let purchase = await SSPurchase(adamID: adamID, purchasing: false)
 
-            // Check if workaround is needed before entering @Sendable closure
+            // iOS apps need special handling on ALL macOS versions (flag passed from caller)
+            // Check if workaround is needed for macOS apps on affected OS versions
             let needsWorkaround = needsInstalldWorkaround()
 
             try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
@@ -76,13 +78,18 @@ class AppStoreUpdater {
                         // Download started - create observer to track it
                         Task {
                             do {
-                                if needsWorkaround {
-                                    // Use workaround observer for affected macOS versions
+                                if isIOSApp {
+                                    // iOS apps: Use dedicated iOS observer (all macOS versions)
+                                    printOS("📱 iOS app detected - using iOS download handler")
+                                    let observer = IOSDownloadObserver(adamID: adamID, appPath: appPath, progress: progress)
+                                    try await observer.observeDownloadQueue()
+                                } else if needsWorkaround {
+                                    // macOS apps on affected OS versions: Use workaround observer
                                     printOS("⚠️ Detected macOS version with installd bug - using workaround")
-                                    let observer = AppStoreDownloadObserverWithWorkaround(adamID: adamID, appPath: appPath, progress: progress)
+                                    let observer = MacOSDownloadObserverWithWorkaround(adamID: adamID, appPath: appPath, progress: progress)
                                     try await observer.observeDownloadQueue()
                                 } else {
-                                    // Use standard observer for unaffected versions
+                                    // macOS apps on unaffected OS versions: Use standard observer
                                     let observer = AppStoreDownloadObserver(adamID: adamID, progress: progress)
                                     try await observer.observeDownloadQueue()
                                 }
@@ -110,7 +117,7 @@ class AppStoreUpdater {
             }
 
             let remainingAttempts = attemptCount - 1
-            try await updateApp(adamID: adamID, appPath: appPath, progress: progress, attemptCount: remainingAttempts)
+            try await updateApp(adamID: adamID, appPath: appPath, isIOSApp: isIOSApp, progress: progress, attemptCount: remainingAttempts)
         }
     }
 }
@@ -216,11 +223,164 @@ private final class AppStoreDownloadObserver: NSObject, CKDownloadQueueObserver 
     }
 }
 
-// MARK: - AppStoreDownloadObserverWithWorkaround
+// MARK: - IOSDownloadObserver
+
+/// Observer for iOS/iPad app downloads (IPA files)
+/// Preserves IPA to /tmp for installation
+/// Used for all iOS apps regardless of macOS version
+private final class IOSDownloadObserver: NSObject, CKDownloadQueueObserver {
+    private let adamID: UInt64
+    private let appPath: URL
+    private let progressCallback: @Sendable (Double, String) -> Void
+    private var completionHandler: (() -> Void)?
+    private var errorHandler: ((Error) -> Void)?
+    private var iosFilesPreserved = false  // Track if IPA was already preserved
+    private var hardLinkedIPAPath: String?  // Path to hard-linked IPA in /tmp
+
+    init(adamID: UInt64, appPath: URL, progress: @escaping @Sendable (Double, String) -> Void) {
+        self.adamID = adamID
+        self.appPath = appPath
+        self.progressCallback = progress
+        super.init()
+    }
+
+    func observeDownloadQueue(_ queue: CKDownloadQueue = .shared()) async throws {
+        let observerID = queue.add(self)
+        defer {
+            queue.removeObserver(observerID)
+        }
+
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            completionHandler = { [weak self] in
+                self?.completionHandler = nil
+                self?.errorHandler = nil
+                continuation.resume()
+            }
+            errorHandler = { [weak self] error in
+                self?.completionHandler = nil
+                self?.errorHandler = nil
+                continuation.resume(throwing: error)
+            }
+        }
+    }
+
+    // MARK: - CKDownloadQueueObserver Delegate Methods
+
+    func downloadQueue(_ queue: CKDownloadQueue, changedWithAddition download: SSDownload) {
+        // Download was added to queue - no action needed
+    }
+
+    func downloadQueue(_ queue: CKDownloadQueue, changedWithRemoval download: SSDownload) {
+        guard let metadata = download.metadata,
+              metadata.itemIdentifier == adamID,
+              let status = download.status else {
+            return
+        }
+
+        // iOS app download completed
+        if status.isFailed || status.isCancelled {
+            // Check if we preserved the IPA successfully
+            if let ipaPath = hardLinkedIPAPath {
+                // Trigger installation
+                printOS("📦 iOS app download complete, starting installation...")
+                Task {
+                    do {
+                        try await IOSAppInstaller.installIOSApp(
+                            ipaPath: ipaPath,
+                            adamID: adamID,
+                            existingAppPath: appPath
+                        )
+                        progressCallback(1.0, "Installation complete")
+                        completionHandler?()
+                    } catch {
+                        printOS("❌ iOS app installation failed: \(error.localizedDescription)")
+                        errorHandler?(error)
+                    }
+                }
+            } else {
+                errorHandler?(AppStoreUpdateError.downloadFailed("Failed to preserve IPA file"))
+            }
+        } else {
+            // Unexpected success (CommerceKit handled it)
+            progressCallback(1.0, "Completed")
+            completionHandler?()
+        }
+    }
+
+    func downloadQueue(_ queue: CKDownloadQueue, statusChangedFor download: SSDownload) {
+        guard let metadata = download.metadata,
+              metadata.itemIdentifier == adamID,
+              let status = download.status,
+              let activePhase = status.activePhase else {
+            return
+        }
+
+        let phaseType = activePhase.phaseType
+        let percentComplete = status.percentComplete
+        let progress = max(0.0, min(1.0, Double(percentComplete)))
+
+        // At 80% progress, preserve IPA file before CommerceKit potentially cleans it up
+        if progress >= 0.80 && progress < 1.0 && !iosFilesPreserved {
+            preserveIPAFile()
+        }
+
+        // Report progress
+        switch phaseType {
+        case 0: progressCallback(progress, "Downloading...")
+        case 1: progressCallback(progress, "Installing...")
+        case 4: progressCallback(progress, "Preparing...")
+        case 5: progressCallback(progress, "Downloaded")
+        default: progressCallback(progress, "Downloading...")
+        }
+    }
+
+    // MARK: - Helper Methods
+
+    private func preserveIPAFile() {
+        guard !iosFilesPreserved else { return }
+
+        let downloadDir = "\(CKDownloadDirectory(nil))/\(adamID)"
+        let tempDir = "/tmp/pearcleaner-ios-\(adamID)"
+
+        do {
+            // Create temp directory
+            try FileManager.default.createDirectory(atPath: tempDir, withIntermediateDirectories: true)
+
+            let contents = try FileManager.default.contentsOfDirectory(atPath: downloadDir)
+
+            if let ipaFile = contents.first(where: { $0.hasSuffix(".ipa") }) {
+                printOS("🎯 iOS app detected - preserving IPA to /tmp")
+
+                // Hard link IPA to /tmp (same pattern as PKG files)
+                let ipaSource = "\(downloadDir)/\(ipaFile)"
+                let ipaDest = "\(tempDir)/app.ipa"
+
+                try FileManager.default.linkItem(atPath: ipaSource, toPath: ipaDest)
+                hardLinkedIPAPath = ipaDest
+
+                printOS("✅ Hard linked IPA: \(ipaFile)")
+                printOS("   Source: \(ipaSource)")
+                printOS("   Dest: \(ipaDest)")
+
+                let ipaSize = try FileManager.default.attributesOfItem(atPath: ipaDest)[.size] as? Int64 ?? 0
+                printOS("   Size: \(ByteCountFormatter.string(fromByteCount: ipaSize, countStyle: .file))")
+
+                iosFilesPreserved = true
+            } else {
+                printOS("⚠️ No IPA file found in \(downloadDir)")
+            }
+        } catch {
+            printOS("❌ Failed to preserve IPA: \(error.localizedDescription)")
+        }
+    }
+}
+
+// MARK: - MacOSDownloadObserverWithWorkaround
 
 /// Special observer for macOS versions affected by installd bug
 /// Downloads PKG, hard links it, then manually installs via HelperToolManager
-private final class AppStoreDownloadObserverWithWorkaround: NSObject, CKDownloadQueueObserver {
+/// Used only for macOS apps on affected OS versions
+private final class MacOSDownloadObserverWithWorkaround: NSObject, CKDownloadQueueObserver {
     private let adamID: UInt64
     private let appPath: URL
     private let progressCallback: @Sendable (Double, String) -> Void
@@ -340,25 +500,27 @@ private final class AppStoreDownloadObserverWithWorkaround: NSObject, CKDownload
 
             let contents = try FileManager.default.contentsOfDirectory(atPath: downloadDir)
 
-            // Hard link PKG file
+            // Find PKG file (macOS apps only)
             if let pkgFile = contents.first(where: { $0.hasSuffix(".pkg") }) {
+                // Hard link PKG file
                 let pkgSource = "\(downloadDir)/\(pkgFile)"
                 let pkgDest = "\(tempDir)/\(pkgFile)"
 
                 try FileManager.default.linkItem(atPath: pkgSource, toPath: pkgDest)
                 hardLinkedPkgPath = pkgDest
+                printOS("✅ Hard linked PKG: \(pkgFile)")
+
+                // Hard link receipt file
+                let receiptSource = "\(downloadDir)/receipt"
+                let receiptDest = "\(tempDir)/receipt"
+                if FileManager.default.fileExists(atPath: receiptSource) {
+                    try FileManager.default.linkItem(atPath: receiptSource, toPath: receiptDest)
+                    hardLinkedReceiptPath = receiptDest
+                } else {
+                    printOS("⚠️ No receipt file found in \(downloadDir)")
+                }
             } else {
                 printOS("⚠️ No PKG file found in \(downloadDir)")
-            }
-
-            // Hard link receipt file
-            let receiptSource = "\(downloadDir)/receipt"
-            let receiptDest = "\(tempDir)/receipt"
-            if FileManager.default.fileExists(atPath: receiptSource) {
-                try FileManager.default.linkItem(atPath: receiptSource, toPath: receiptDest)
-                hardLinkedReceiptPath = receiptDest
-            } else {
-                printOS("⚠️ No receipt file found in \(downloadDir)")
             }
         } catch {
             printOS("❌ Failed to create hard links: \(error.localizedDescription)")

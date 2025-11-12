@@ -346,7 +346,7 @@ class UpdateManager: ObservableObject {
 
                 // Perform update (new API throws errors)
                 do {
-                    try await AppStoreUpdater.shared.updateApp(adamID: adamID, appPath: app.appInfo.path) { [weak self] progress, status in
+                    try await AppStoreUpdater.shared.updateApp(adamID: adamID, appPath: app.appInfo.path, isIOSApp: app.isIOSApp) { [weak self] progress, status in
                         Task { @MainActor in
                             guard let self = self else { return }
                             if var apps = self.updatesBySource[.appStore],
@@ -448,6 +448,49 @@ class UpdateManager: ObservableObject {
             // Unsupported apps cannot be updated - do nothing
             UpdaterDebugLogger.shared.log(.sparkle, "⚠️ Cannot update unsupported app: \(app.appInfo.appName)")
             break
+        }
+    }
+
+    /// Test function for iOS app updates - preserves IPA and receipt to ~/Downloads/<adamID>/
+    func testIOSAppUpdate(_ app: UpdateableApp) async {
+        guard app.isIOSApp, let adamID = app.adamID else {
+            printOS("❌ Not an iOS app or missing adamID")
+            return
+        }
+
+        printOS("🧪 Starting iOS app update test for adamID: \(adamID)")
+
+        // Update status
+        if var apps = updatesBySource[.appStore],
+           let index = apps.firstIndex(where: { $0.id == app.id }) {
+            apps[index].status = .downloading
+            apps[index].progress = 0.0
+            updatesBySource[.appStore] = apps
+        }
+
+        // Call AppStoreUpdater to download (which will trigger our observer)
+        do {
+            try await AppStoreUpdater.shared.updateApp(
+                adamID: adamID,
+                appPath: app.appInfo.path,
+                isIOSApp: true,
+                progress: { progress, message in
+                    Task { @MainActor in
+                        if var apps = self.updatesBySource[.appStore],
+                           let index = apps.firstIndex(where: { $0.id == app.id }) {
+                            apps[index].progress = progress
+                            self.updatesBySource[.appStore] = apps
+                        }
+                    }
+                }
+            )
+        } catch {
+            printOS("❌ Test failed: \(error)")
+            if var apps = updatesBySource[.appStore],
+               let index = apps.firstIndex(where: { $0.id == app.id }) {
+                apps[index].status = .failed(error.localizedDescription)
+                updatesBySource[.appStore] = apps
+            }
         }
     }
 
