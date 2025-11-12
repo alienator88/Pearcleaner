@@ -180,7 +180,7 @@ class HomebrewController: ObservableObject {
 
         // Read pipes on background thread with console streaming
         let (outputData, errorData) = await withCheckedContinuation { continuation in
-            Task.detached { [weak self] in
+            Task.detached {
                 var outputData = Data()
                 var errorData = Data()
 
@@ -195,9 +195,9 @@ class HomebrewController: ObservableObject {
 
                     // Stream to console if enabled - check dynamically to support mid-operation console opening
                     if let text = String(data: chunk, encoding: .utf8) {
-                        await MainActor.run { [weak self] in
-                            guard let self = self, self.consoleEnabled else { return }
-                            self.consoleOutput += text
+                        await MainActor.run {
+                            guard HomebrewController.shared.consoleEnabled else { return }
+                            HomebrewController.shared.consoleOutput += text
                         }
                     }
                 }
@@ -284,9 +284,10 @@ class HomebrewController: ObservableObject {
             }
         }
 
+        let finalLoadedCount = loadedCount
         await MainActor.run { [weak self] in
             guard let self = self, self.consoleEnabled else { return }
-            self.consoleOutput += "Loaded \(loadedCount) \(cask ? "casks" : "formulae")\n"
+            self.consoleOutput += "Loaded \(finalLoadedCount) \(cask ? "casks" : "formulae")\n"
         }
     }
 
@@ -351,9 +352,10 @@ class HomebrewController: ObservableObject {
             results.append((name: name, displayName: displayName, description: description, version: version, bundleVersion: bundleVersion))
         }
 
+        let resultsCount = results.count
         await MainActor.run { [weak self] in
             guard let self = self, self.consoleEnabled else { return }
-            self.consoleOutput += "Loaded \(results.count) available \(cask ? "casks" : "formulae")\n"
+            self.consoleOutput += "Loaded \(resultsCount) available \(cask ? "casks" : "formulae")\n"
         }
 
         return results
@@ -1101,8 +1103,12 @@ class HomebrewController: ObservableObject {
             let actualVersion: String
             let installedBundleVersion: String?
             if package.isCask {
-                // Find matching app in sortedApps by cask name
-                if let appInfo = await MainActor.run(body: { AppState.shared.sortedApps.first(where: { $0.cask == package.name }) }) {
+                // Find matching app in sortedApps by cask name (must access on MainActor)
+                let appInfo = await MainActor.run {
+                    AppState.shared.sortedApps.first(where: { $0.cask == package.name })
+                }
+
+                if let appInfo = appInfo {
                     actualVersion = appInfo.appVersion  // Use actual version from Info.plist (ground truth)
                     installedBundleVersion = appInfo.appBuildNumber  // CFBundleVersion for tiebreaker
                     logger.log(.homebrew, "  🔍 Using actual app version for \(package.name): \(actualVersion) (build: \(installedBundleVersion ?? "nil")) (Homebrew metadata: \(installedVersion))")
@@ -1538,9 +1544,10 @@ class HomebrewController: ObservableObject {
         } else {
             // Move all files to Trash in a bundle
             if !filesToDelete.isEmpty {
+                let itemCount = filesToDelete.count
                 await MainActor.run { [weak self] in
                     guard let self = self, self.consoleEnabled else { return }
-                    self.consoleOutput += "Cleaning \(filesToDelete.count) items...\n"
+                    self.consoleOutput += "Cleaning \(itemCount) items...\n"
                 }
                 let _ = FileManagerUndo.shared.deleteFiles(at: filesToDelete, bundleName: "BrewCleanup")
                 await MainActor.run { [weak self] in
@@ -1709,7 +1716,12 @@ class HomebrewController: ObservableObject {
         }
 
         // For casks, get size from AppState.sortedApps (actual installed app)
-        if let appInfo = await MainActor.run(body: { AppState.shared.sortedApps.first(where: { $0.cask == name }) }) {
+        // Must access sortedApps on MainActor
+        let appInfo = await MainActor.run {
+            AppState.shared.sortedApps.first(where: { $0.cask == name })
+        }
+
+        if let appInfo = appInfo {
             // If bundleSize is 0, calculate it now and update the AppInfo
             if appInfo.bundleSize == 0 {
                 let calculatedSize = totalSizeOnDisk(for: appInfo.path)
@@ -1717,7 +1729,7 @@ class HomebrewController: ObservableObject {
                     ByteCountFormatter.string(fromByteCount: calculatedSize, countStyle: .file)
                 }
 
-                // Update the AppInfo in sortedApps with calculated size
+                // Update the AppInfo in sortedApps with calculated size (must access on MainActor)
                 await MainActor.run {
                     if let index = AppState.shared.sortedApps.firstIndex(where: { $0.path == appInfo.path }) {
                         var updatedAppInfo = AppState.shared.sortedApps[index]

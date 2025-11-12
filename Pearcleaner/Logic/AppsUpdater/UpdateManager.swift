@@ -506,7 +506,7 @@ class UpdateManager: ObservableObject {
             printOS("❌ iOS app update failed: \(error)")
             if var apps = updatesBySource[.appStore],
                let index = apps.firstIndex(where: { $0.id == app.id }) {
-                apps[index].status = .failed("Failed. Open in App Store to update")
+                apps[index].status = .failed("Open in App Store to update using the Info button to the left.")
                 updatesBySource[.appStore] = apps
             }
         }

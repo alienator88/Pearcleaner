@@ -117,7 +117,11 @@
         }
       }
     },
+    " (iOS app)" : {
+
+    },
     " (iOS apps have to be updated in the App Store)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -77810,6 +77814,9 @@
           }
         }
       }
+    },
+    "Update (Pinned)" : {
+
     },
     "Update %@?" : {
       "localizations" : {

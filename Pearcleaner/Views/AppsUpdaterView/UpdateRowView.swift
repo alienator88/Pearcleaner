@@ -62,9 +62,13 @@ struct UpdateRowView: View {
             case .idle:
                 HStack(spacing: 8) {
                     Button {
-                        if app.isIOSApp, let appStoreURL = app.appStoreURL {
+                        if app.isIOSApp { //, let appStoreURL = app.appStoreURL {
                             // iOS apps: Open App Store page
-                            openInAppStore(urlString: appStoreURL)
+//                            openInAppStore(urlString: appStoreURL)
+                            // Use new custom iOS installer function
+                            showCustomAlert(title: "Information", message: "App Store will show an alert shortly which will start the download for this iOS app. \n\nClick Download Last Compatible button in the new alert to continue.", style: .informational, onOk: {
+                                Task { await updateManager.updateIOSApp(app) }
+                            })
                         } else if isNonPrimaryRegion, let appStoreURL = app.appStoreURL {
                             // Apps found in non-primary regions: Open App Store page
                             openInAppStore(urlString: appStoreURL)
@@ -73,20 +77,20 @@ struct UpdateRowView: View {
                             Task { await updateManager.updateApp(app) }
                         }
                     } label: {
-                        Text(app.isIOSApp || isNonPrimaryRegion ? "Update in App Store" : "Update")
+                        Text(isNonPrimaryRegion ? "Update in App Store" : "Update")
                     }
                     .buttonStyle(.plain)
                     .foregroundStyle(.orange)
 
                     // iOS app update button
-                    if app.isIOSApp {
-                        Button {
-                            Task { await updateManager.updateIOSApp(app) }
-                        } label: {
-                            Text("Update")
-                        }
-                        .buttonStyle(.bordered)
-                    }
+//                    if app.isIOSApp {
+//                        Button {
+//                            Task { await updateManager.updateIOSApp(app) }
+//                        } label: {
+//                            Text("Update")
+//                        }
+//                        .buttonStyle(.bordered)
+//                    }
                 }
 
             case .checking, .downloading, .extracting, .installing, .verifying:
@@ -445,7 +449,7 @@ struct UpdateRowView: View {
                 }
                 result = result + Text(verbatim: ")")
                 if app.isIOSApp {
-                    result = result + Text(" (iOS apps have to be updated in the App Store)")
+                    result = result + Text(" (iOS app)")
                 } else if isNonPrimaryRegion, let region = app.foundInRegion {
                     result = result + Text(" (Found in \(region) App Store. Open in App Store to update.)")
                 }
@@ -459,7 +463,7 @@ struct UpdateRowView: View {
                 result = result + Text(verbatim: " → build ")
                 result = result + Text(availableBuild).foregroundColor(.green)
                 if app.isIOSApp {
-                    result = result + Text(" (iOS apps have to be updated in the App Store)")
+                    result = result + Text(" (iOS app)")
                 } else if isNonPrimaryRegion, let region = app.foundInRegion {
                     result = result + Text(" (Found in \(region) App Store. Open in App Store to update.)")
                 }
@@ -476,7 +480,7 @@ struct UpdateRowView: View {
                     result = result + Text(verbatim: " (\(build))").foregroundColor(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
                 if app.isIOSApp {
-                    result = result + Text(" (iOS apps have to be updated in the App Store)")
+                    result = result + Text(" (iOS app)")
                 } else if isNonPrimaryRegion, let region = app.foundInRegion {
                     result = result + Text(" (Found in \(region) App Store. Open in App Store to update.)")
                 }
@@ -488,7 +492,7 @@ struct UpdateRowView: View {
             result = result + Text(verbatim: " → ")
             result = result + Text(verbatim: displayAvailableVersion).foregroundColor(.green)
             if app.isIOSApp {
-                result = result + Text(" (iOS apps have to be updated in the App Store)")
+                result = result + Text(" (iOS app)")
             } else if isNonPrimaryRegion, let region = app.foundInRegion {
                 result = result + Text(" (Found in \(region) App Store. Open in App Store to update.)")
             }

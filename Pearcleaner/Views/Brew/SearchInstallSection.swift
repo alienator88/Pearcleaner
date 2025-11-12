@@ -640,7 +640,7 @@ struct SearchResultRowView: View {
             }
         } else if isOutdated {
             HStack(spacing: 8) {
-                Button("Update") {
+                Button(isPinned ? "Update (Pinned)" : "Update") {
                     if confirmAlert {
                         showUpdateAlert = true
                     } else {
@@ -1010,7 +1010,31 @@ struct SearchResultRowView: View {
             defer { Task { @MainActor in isInstalling = false } }
 
             do {
-                try await HomebrewController.shared.upgradePackage(name: result.name)
+                // Check if formula is pinned before updating
+                let wasPinned = isPinned
+
+                // If pinned, unpin before updating
+                if wasPinned {
+                    try await HomebrewController.shared.unpinPackage(name: result.name)
+                }
+
+                // Perform the update
+                var updateSucceeded = false
+                do {
+                    try await HomebrewController.shared.upgradePackage(name: result.name)
+                    updateSucceeded = true
+                } catch {
+                    // Re-pin if update failed and package was originally pinned
+                    if wasPinned {
+                        try? await HomebrewController.shared.pinPackage(name: result.name)
+                    }
+                    throw error  // Re-throw to be caught by outer catch
+                }
+
+                // Re-pin at new version if update succeeded and was originally pinned
+                if wasPinned && updateSucceeded {
+                    try await HomebrewController.shared.pinPackage(name: result.name)
+                }
 
                 // Targeted refresh - only update this specific package (much faster than full scan)
                 await brewManager.refreshSpecificPackages([result.name])
