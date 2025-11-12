@@ -78,12 +78,12 @@ struct UpdateRowView: View {
                     .buttonStyle(.plain)
                     .foregroundStyle(.orange)
 
-                    // Test button for iOS apps only
+                    // iOS app update button
                     if app.isIOSApp {
                         Button {
-                            Task { await updateManager.testIOSAppUpdate(app) }
+                            Task { await updateManager.updateIOSApp(app) }
                         } label: {
-                            Text("Test")
+                            Text("Update")
                         }
                         .buttonStyle(.bordered)
                     }

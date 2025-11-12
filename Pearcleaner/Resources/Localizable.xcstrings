@@ -71071,9 +71071,6 @@
         }
       }
     },
-    "Test" : {
-
-    },
     "The search sensitivity level controls how strict or lenient Pearcleaner is when finding related files for an app:\n\n• Strict – %@\n\n• Enhanced – %@\n\n• Deep – %@\n\nAt levels higher than Strict it is recommended to check found files manually." : {
       "localizations" : {
         "de" : {

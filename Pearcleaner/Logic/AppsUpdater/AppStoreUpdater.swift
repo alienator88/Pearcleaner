@@ -80,7 +80,6 @@ class AppStoreUpdater {
                             do {
                                 if isIOSApp {
                                     // iOS apps: Use dedicated iOS observer (all macOS versions)
-                                    printOS("📱 iOS app detected - using iOS download handler")
                                     let observer = IOSDownloadObserver(adamID: adamID, appPath: appPath, progress: progress)
                                     try await observer.observeDownloadQueue()
                                 } else if needsWorkaround {
@@ -236,6 +235,7 @@ private final class IOSDownloadObserver: NSObject, CKDownloadQueueObserver {
     private var errorHandler: ((Error) -> Void)?
     private var iosFilesPreserved = false  // Track if IPA was already preserved
     private var hardLinkedIPAPath: String?  // Path to hard-linked IPA in /tmp
+    private var isManuallyInstalling = false
 
     init(adamID: UInt64, appPath: URL, progress: @escaping @Sendable (Double, String) -> Void) {
         self.adamID = adamID
@@ -277,33 +277,22 @@ private final class IOSDownloadObserver: NSObject, CKDownloadQueueObserver {
             return
         }
 
-        // iOS app download completed
-        if status.isFailed || status.isCancelled {
-            // Check if we preserved the IPA successfully
-            if let ipaPath = hardLinkedIPAPath {
-                // Trigger installation
-                printOS("📦 iOS app download complete, starting installation...")
-                Task {
-                    do {
-                        try await IOSAppInstaller.installIOSApp(
-                            ipaPath: ipaPath,
-                            adamID: adamID,
-                            existingAppPath: appPath
-                        )
-                        progressCallback(1.0, "Installation complete")
-                        completionHandler?()
-                    } catch {
-                        printOS("❌ iOS app installation failed: \(error.localizedDescription)")
-                        errorHandler?(error)
-                    }
-                }
-            } else {
-                errorHandler?(AppStoreUpdateError.downloadFailed("Failed to preserve IPA file"))
+        // iOS app download completed - always perform manual installation if IPA was preserved
+        // (CommerceKit cannot install iOS apps, so we handle it ourselves regardless of reported status)
+        if let ipaPath = hardLinkedIPAPath {
+            Task {
+                await performManualInstallation(ipaPath: ipaPath)
             }
         } else {
-            // Unexpected success (CommerceKit handled it)
-            progressCallback(1.0, "Completed")
-            completionHandler?()
+            // No IPA preserved - this shouldn't happen, but handle gracefully
+            if status.isFailed || status.isCancelled {
+                errorHandler?(AppStoreUpdateError.downloadFailed("Failed to preserve IPA file"))
+            } else {
+                // Unexpected: CommerceKit claims success but we don't have an IPA
+                printOS("⚠️ Download completed but no IPA was preserved")
+                progressCallback(1.0, "Completed")
+                completionHandler?()
+            }
         }
     }
 
@@ -325,16 +314,45 @@ private final class IOSDownloadObserver: NSObject, CKDownloadQueueObserver {
         }
 
         // Report progress
-        switch phaseType {
-        case 0: progressCallback(progress, "Downloading...")
-        case 1: progressCallback(progress, "Installing...")
-        case 4: progressCallback(progress, "Preparing...")
-        case 5: progressCallback(progress, "Downloaded")
-        default: progressCallback(progress, "Downloading...")
+        if isManuallyInstalling {
+            progressCallback(progress, "Installing...")
+        } else if progress >= 1.0 {
+            progressCallback(progress, "Downloading...")
+        } else {
+            switch phaseType {
+            case 0: // Downloading
+                progressCallback(progress, "Downloading...")
+            case 4: // Initial/Preparing
+                progressCallback(progress, "Preparing...")
+            default:
+                progressCallback(progress, "Downloading...")
+            }
         }
     }
 
     // MARK: - Helper Methods
+
+    private func performManualInstallation(ipaPath: String) async {
+        isManuallyInstalling = true
+
+        // 80%: Preparing installation
+        progressCallback(0.80, "Preparing installation...")
+        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 sec
+
+        do {
+            // 80-100%: IOSAppInstaller handles the rest (extraction, metadata, installation, cleanup)
+            try await IOSAppInstaller.installIOSApp(
+                ipaPath: ipaPath,
+                adamID: adamID,
+                existingAppPath: appPath,
+                progress: progressCallback
+            )
+
+            completionHandler?()
+        } catch {
+            errorHandler?(error)
+        }
+    }
 
     private func preserveIPAFile() {
         guard !iosFilesPreserved else { return }
@@ -349,8 +367,6 @@ private final class IOSDownloadObserver: NSObject, CKDownloadQueueObserver {
             let contents = try FileManager.default.contentsOfDirectory(atPath: downloadDir)
 
             if let ipaFile = contents.first(where: { $0.hasSuffix(".ipa") }) {
-                printOS("🎯 iOS app detected - preserving IPA to /tmp")
-
                 // Hard link IPA to /tmp (same pattern as PKG files)
                 let ipaSource = "\(downloadDir)/\(ipaFile)"
                 let ipaDest = "\(tempDir)/app.ipa"
@@ -359,11 +375,6 @@ private final class IOSDownloadObserver: NSObject, CKDownloadQueueObserver {
                 hardLinkedIPAPath = ipaDest
 
                 printOS("✅ Hard linked IPA: \(ipaFile)")
-                printOS("   Source: \(ipaSource)")
-                printOS("   Dest: \(ipaDest)")
-
-                let ipaSize = try FileManager.default.attributesOfItem(atPath: ipaDest)[.size] as? Int64 ?? 0
-                printOS("   Size: \(ByteCountFormatter.string(fromByteCount: ipaSize, countStyle: .file))")
 
                 iosFilesPreserved = true
             } else {

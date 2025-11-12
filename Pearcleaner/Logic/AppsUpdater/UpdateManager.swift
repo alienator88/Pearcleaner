@@ -451,14 +451,14 @@ class UpdateManager: ObservableObject {
         }
     }
 
-    /// Test function for iOS app updates - preserves IPA and receipt to ~/Downloads/<adamID>/
-    func testIOSAppUpdate(_ app: UpdateableApp) async {
+    /// Update an iOS app from the App Store
+    func updateIOSApp(_ app: UpdateableApp) async {
         guard app.isIOSApp, let adamID = app.adamID else {
             printOS("❌ Not an iOS app or missing adamID")
             return
         }
 
-        printOS("🧪 Starting iOS app update test for adamID: \(adamID)")
+        printOS("📱 Starting iOS app update for adamID: \(adamID)")
 
         // Update status
         if var apps = updatesBySource[.appStore],
@@ -474,18 +474,38 @@ class UpdateManager: ObservableObject {
                 adamID: adamID,
                 appPath: app.appInfo.path,
                 isIOSApp: true,
-                progress: { progress, message in
+                progress: { [weak self] progress, status in
                     Task { @MainActor in
+                        guard let self = self else { return }
                         if var apps = self.updatesBySource[.appStore],
                            let index = apps.firstIndex(where: { $0.id == app.id }) {
                             apps[index].progress = progress
-                            self.updatesBySource[.appStore] = apps
+
+                            // Update status based on App Store phase (match real updateApp logic)
+                            if status.contains("Downloading") || status.contains("Preparing") {
+                                // Phase 0 or 4: Downloading or preparing
+                                apps[index].status = .downloading
+                                self.updatesBySource[.appStore] = apps
+                            } else if status.contains("Installing") {
+                                // Phase 1: Installing
+                                apps[index].status = .installing
+                                self.updatesBySource[.appStore] = apps
+                            } else if status.contains("Completed") || status.contains("Already up to date") {
+                                // Phase 5 or no download needed: Complete - remove from list and refresh
+                                Task {
+                                    await self.removeFromUpdatesList(appID: app.id, source: .appStore)
+                                    await self.refreshApps(updatedApp: app.appInfo)
+                                }
+                            } else {
+                                // Other phases: Keep updating progress but maintain current status
+                                self.updatesBySource[.appStore] = apps
+                            }
                         }
                     }
                 }
             )
         } catch {
-            printOS("❌ Test failed: \(error)")
+            printOS("❌ iOS app update failed: \(error)")
             if var apps = updatesBySource[.appStore],
                let index = apps.firstIndex(where: { $0.id == app.id }) {
                 apps[index].status = .failed(error.localizedDescription)

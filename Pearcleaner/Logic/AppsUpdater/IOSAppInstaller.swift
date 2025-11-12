@@ -66,29 +66,25 @@ class IOSAppInstaller {
     static func installIOSApp(
         ipaPath: String,
         adamID: UInt64,
-        existingAppPath: URL
+        existingAppPath: URL,
+        progress: @escaping (Double, String) -> Void
     ) async throws {
 
-        printOS("📱 Starting iOS app installation...")
-        printOS("   IPA: \(ipaPath)")
-        printOS("   Target: \(existingAppPath.path)")
-
-        // 1. Extract IPA to temp directory
+        // 1. Extract IPA to temp directory (80-85%)
+        progress(0.80, "Installing...")
         let extractedPayload = try await extractIPA(ipaPath: ipaPath, adamID: adamID)
 
         // 2. Detect wrapped bundle name (NOT hardcoded!)
         let wrappedBundleName = try detectWrappedBundleName(payloadDir: extractedPayload)
-        printOS("   Detected wrapped bundle: \(wrappedBundleName)")
 
         let extractedApp = extractedPayload.appendingPathComponent(wrappedBundleName)
 
         // 3. Read new version info from extracted app
         let versionInfo = try readVersionInfo(from: extractedApp)
-        printOS("   New version: \(versionInfo.version) (build \(versionInfo.build))")
 
-        // 4. Preserve critical metadata from existing installation
+        // 4. Preserve critical metadata from existing installation (85%)
+        progress(0.85, "Installing...")
         let preservedData = try preserveExistingMetadata(appPath: existingAppPath)
-        printOS("   Preserved protectedMetadata: \(preservedData.protectedMetadata.count) bytes")
 
         // 5. Generate updated metadata files
         let newITunesMetadata = try await generateITunesMetadata(
@@ -106,17 +102,24 @@ class IOSAppInstaller {
             adamID: adamID
         )
 
-        // 7. Atomic replacement with root privileges
+        // 7. Atomic replacement with root privileges (90%)
+        progress(0.90, "Installing...")
         try await performAtomicReplacement(
             existingAppPath: existingAppPath,
             newWrapper: newWrapper,
             wrappedBundleName: wrappedBundleName
         )
 
-        // 8. Cleanup
-        try? FileManager.default.removeItem(atPath: "/tmp/pearcleaner-ios-\(adamID)")
+        // 8. Cleanup (95%)
+        progress(0.95, "Installing...")
 
-        printOS("✅ iOS app installation complete!")
+        // Remove entire temp directory (includes extracted IPA and hard link)
+        let tempDir = "/tmp/pearcleaner-ios-\(adamID)"
+        if FileManager.default.fileExists(atPath: tempDir) {
+            try? FileManager.default.removeItem(atPath: tempDir)
+        }
+
+        progress(1.0, "Completed")
     }
 
     // MARK: - Private Helper Methods
@@ -144,8 +147,6 @@ class IOSAppInstaller {
         try? FileManager.default.removeItem(at: extractDir)
         try FileManager.default.createDirectory(at: extractDir, withIntermediateDirectories: true)
 
-        printOS("   Extracting IPA...")
-
         // Extract using ditto (handles LZFSE compression)
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/bin/ditto")
@@ -164,8 +165,6 @@ class IOSAppInstaller {
             let errorString = String(data: errorData, encoding: .utf8) ?? "Unknown error"
             throw IOSAppInstallerError.extractionFailed(errorString)
         }
-
-        printOS("   ✅ Extraction complete")
 
         // Return Payload directory path
         return extractDir.appendingPathComponent("Payload")
@@ -230,8 +229,6 @@ class IOSAppInstaller {
         preservedData: IOSPreservedMetadata
     ) async throws -> [String: Any] {
 
-        printOS("   Fetching App Store metadata...")
-
         // Fetch latest metadata from iTunes API
         let url = URL(string: "https://itunes.apple.com/lookup?id=\(adamID)")!
         let (data, _) = try await URLSession.shared.data(from: url)
@@ -252,8 +249,6 @@ class IOSAppInstaller {
 
         // CRITICAL: Ensure protectedMetadata is preserved
         metadata["protectedMetadata"] = preservedData.protectedMetadata
-
-        printOS("   ✅ Metadata updated")
 
         return metadata
     }
@@ -290,8 +285,6 @@ class IOSAppInstaller {
         adamID: UInt64
     ) throws -> URL {
 
-        printOS("   Building new Wrapper structure...")
-
         let wrapperDir = URL(fileURLWithPath: "/tmp/pearcleaner-ios-\(adamID)/Wrapper")
         try FileManager.default.createDirectory(at: wrapperDir, withIntermediateDirectories: true)
 
@@ -317,8 +310,6 @@ class IOSAppInstaller {
         )
         try bundleData.write(to: wrapperDir.appendingPathComponent("BundleMetadata.plist"))
 
-        printOS("   ✅ Wrapper structure built")
-
         return wrapperDir
     }
 
@@ -328,8 +319,6 @@ class IOSAppInstaller {
         newWrapper: URL,
         wrappedBundleName: String
     ) async throws {
-
-        printOS("🔧 Performing atomic replacement (requires privileges)...")
 
         // Kill app if running
         let appName = wrappedBundleName.replacingOccurrences(of: ".app", with: "")
@@ -384,11 +373,8 @@ class IOSAppInstaller {
             // Remove backup on success
             try? FileManager.default.removeItem(at: backupWrapper)
 
-            printOS("✅ Atomic replacement complete")
-
         } catch {
             // Attempt to restore backup on failure
-            printOS("❌ Atomic replacement failed, attempting to restore backup...")
             if FileManager.default.fileExists(atPath: backupWrapper.path) {
                 _ = await HelperToolManager.shared.runCommand(
                     "mv '\(backupWrapper.path)' '\(oldWrapper.path)'"
