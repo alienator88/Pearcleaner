@@ -66,6 +66,62 @@ extension String {
     }
 }
 
+/// Homebrew-style package version combining version + revision
+/// Mimics Homebrew's PkgVersion class for accurate formula outdated detection
+/// Examples: "12.2.0_1" → (version: "12.2.0", revision: 1), "12.2.0" → (version: "12.2.0", revision: 0)
+struct PkgVersion: Comparable {
+    let version: String   // Base version: "12.2.0"
+    let revision: Int     // Revision: 1 (or 0 if none)
+
+    /// Parse version string with optional revision suffix
+    /// Examples: "12.2.0_1" → ("12.2.0", 1), "12.2.0" → ("12.2.0", 0)
+    init(_ versionString: String) {
+        // Regex pattern matches Homebrew's REGEX but with Swift-compatible anchors
+        // Group 1: version (non-greedy), Group 2: optional revision after underscore
+        // Use ^ and $ instead of Ruby's \A and \z
+        let regex = /^(.+?)(?:_(\d+))?$/
+        if let match = versionString.firstMatch(of: regex) {
+            self.version = String(match.1)
+            self.revision = match.2.map { Int($0) ?? 0 } ?? 0
+        } else {
+            // Fallback: treat entire string as version with revision 0
+            self.version = versionString
+            self.revision = 0
+        }
+    }
+
+    /// Initialize with explicit version and revision
+    init(version: String, revision: Int) {
+        self.version = version
+        self.revision = revision
+    }
+
+    /// Compare exactly like Homebrew: version first, then revision
+    /// Ruby implementation:
+    ///   version_comparison = (version <=> other.version)
+    ///   return if version_comparison.nil?
+    ///   version_comparison.nonzero? || revision <=> other.revision
+    static func < (lhs: PkgVersion, rhs: PkgVersion) -> Bool {
+        // Use existing Version struct for semantic comparison
+        let lhsVer = Version(versionNumber: lhs.version, buildNumber: nil)
+        let rhsVer = Version(versionNumber: rhs.version, buildNumber: nil)
+
+        // If versions differ, use version comparison
+        if lhsVer != rhsVer {
+            return lhsVer < rhsVer
+        }
+
+        // Versions equal, compare revisions
+        return lhs.revision < rhs.revision
+    }
+
+    static func == (lhs: PkgVersion, rhs: PkgVersion) -> Bool {
+        let lhsVer = Version(versionNumber: lhs.version, buildNumber: nil)
+        let rhsVer = Version(versionNumber: rhs.version, buildNumber: nil)
+        return lhsVer == rhsVer && lhs.revision == rhs.revision
+    }
+}
+
 class HomebrewController: ObservableObject {
     static let shared = HomebrewController()
     private let brewPath: String
@@ -413,35 +469,19 @@ class HomebrewController: ObservableObject {
         let pinPath = "\(brewPrefix)/var/homebrew/pinned/\(name)"
         let isPinned = FileManager.default.fileExists(atPath: pinPath)
 
-        // Read INSTALL_RECEIPT.json for version and installed_on_request field
-        // Use receipt as source of truth for ALL formulae (HEAD and regular)
+        // Read INSTALL_RECEIPT.json for installed_on_request field only
+        // For version: ALWAYS use directory name (includes revision suffix like "2.14.1_1")
+        // INSTALL_RECEIPT stores base version without revision, so it's unreliable for revision tracking
         let receiptPath = "\(cellarPath)/\(latestVersion)/INSTALL_RECEIPT.json"
         var installedOnRequest = false  // Default to false if field missing
-        var actualVersion = latestVersion  // Fallback to directory name
 
         if let receiptData = try? Data(contentsOf: URL(fileURLWithPath: receiptPath)),
            let receipt = try? JSONSerialization.jsonObject(with: receiptData) as? [String: Any] {
             installedOnRequest = receipt["installed_on_request"] as? Bool ?? false
-
-            // Extract version from receipt (unified for HEAD and regular formulae)
-            // Version is nested: source.versions.stable
-            if let source = receipt["source"] as? [String: Any],
-               let versions = source["versions"] as? [String: Any],
-               let stableVersion = versions["stable"] as? String,
-               !stableVersion.isEmpty {
-                // Use receipt version and apply cleanup as safety measure
-                actualVersion = stableVersion.stripBrewRevisionSuffix()
-            } else {
-                // Fallback: strip revision suffix from directory name
-                actualVersion = latestVersion.stripBrewRevisionSuffix()
-            }
-        } else {
-            // Fallback if receipt missing/corrupted: use directory name with cleanup
-            actualVersion = latestVersion.stripBrewRevisionSuffix()
         }
 
-        // actualVersion is now clean and ready to use (no additional stripping needed)
-        let cleanedVersion = actualVersion
+        // Use directory name as version (already includes revision if present)
+        let cleanedVersion = latestVersion
 
         // Read .rb file for description
         let rbPath = "\(cellarPath)/\(latestVersion)/.brew/\(name).rb"
@@ -1030,7 +1070,7 @@ class HomebrewController: ObservableObject {
     /// Returns tuple: (outdatedPackages, apiFailedPackages)
     private func checkCorePackagesViaAPI(_ packages: [InstalledPackage]) async -> (outdated: [HomebrewOutdatedPackage], apiFailed: [InstalledPackage]) {
         // Fetch latest versions from API using parallel requests
-        let latestVersions = await withTaskGroup(of: (String, String?, String?, Bool).self, returning: [String: (String, String?, Bool)].self) { group in
+        let latestVersions = await withTaskGroup(of: (String, String?, String?, Int?, Bool).self, returning: [String: (String, String?, Int?, Bool)].self) { group in
             for package in packages {
                 group.addTask {
                     // Construct API URL based on package type
@@ -1039,7 +1079,7 @@ class HomebrewController: ObservableObject {
                         : "https://formulae.brew.sh/api/formula/\(package.name).json"
 
                     guard let url = URL(string: urlString) else {
-                        return (package.name, nil, nil, package.isCask)
+                        return (package.name, nil, nil, nil, package.isCask)
                     }
 
                     // Use cache policy to bypass HTTP cache (prevents stale API data after upgrades)
@@ -1048,40 +1088,41 @@ class HomebrewController: ObservableObject {
 
                     guard let (data, _) = try? await URLSession.shared.data(for: request),
                           let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
-                        return (package.name, nil, nil, package.isCask)
+                        return (package.name, nil, nil, nil, package.isCask)
                     }
 
-                    // Extract version based on package type
-                    let rawVersion: String? = package.isCask
-                        ? json["version"] as? String
-                        : (json["versions"] as? [String: Any])?["stable"] as? String
+                    if package.isCask {
+                        // Casks: Extract version and bundle version
+                        let rawVersion = json["version"] as? String
+                        let bundleVersion = json["bundle_version"] as? String
 
-                    // Extract bundle version for casks (used as tiebreaker)
-                    let bundleVersion: String? = package.isCask
-                        ? json["bundle_version"] as? String
-                        : nil
+                        // Strip revision suffix for casks (handles Sparkle updates)
+                        let version = rawVersion?.stripBrewRevisionSuffix()
 
-                    // Strip revision suffix from both formulae and cask API versions for consistent comparison
-                    // This is defensive - ensures consistency even if Homebrew API format changes in future
-                    // (Installed versions already have revision suffix stripped during scan - lines 296, 395)
-                    //
-                    // Background:
-                    // - Formulae API: Stores revision in separate "revision" field (never in version string currently)
-                    // - Cask API: Inconsistently includes/excludes revision in version string
-                    // - Local directories: Always include revision suffix in directory name (both types)
-                    //
-                    // By stripping universally, we ensure consistent comparison regardless of API format changes
-                    let version = rawVersion?.stripBrewRevisionSuffix()
+                        return (package.name, version, bundleVersion, nil, true)
+                    } else {
+                        // Formulae: Extract version and revision separately
+                        let rawVersion = (json["versions"] as? [String: Any])?["stable"] as? String
+                        let revision = json["revision"] as? Int ?? 0
 
-                    return (package.name, version, bundleVersion, package.isCask)
+                        // Build full version with revision for formulae (don't strip)
+                        let version: String?
+                        if let rawVersion = rawVersion {
+                            version = revision > 0 ? "\(rawVersion)_\(revision)" : rawVersion
+                        } else {
+                            version = nil
+                        }
+
+                        return (package.name, version, nil, revision, false)
+                    }
                 }
             }
 
-            // Collect results into dictionary (version, bundleVersion, isCask)
-            var results: [String: (String, String?, Bool)] = [:]
-            for await (name, version, bundleVersion, isCask) in group {
+            // Collect results into dictionary (version, bundleVersion, revision, isCask)
+            var results: [String: (String, String?, Int?, Bool)] = [:]
+            for await (name, version, bundleVersion, revision, isCask) in group {
                 if let version = version {
-                    results[name] = (version, bundleVersion, isCask)
+                    results[name] = (version, bundleVersion, revision, isCask)
                 }
             }
             return results
@@ -1132,36 +1173,46 @@ class HomebrewController: ObservableObject {
                 installedBundleVersion = nil
             }
 
-            if let (latestVersion, apiBundleVersion, _) = latestVersions[package.name] {
+            if let (latestVersion, apiBundleVersion, _, _) = latestVersions[package.name] {
                 // API call succeeded - package exists in public API
-
-                // Clean versions for semantic comparison (strip build numbers, "latest", etc.)
-                let installedClean = actualVersion.stripBrewRevisionSuffix()
-                let availableClean = latestVersion.stripBrewRevisionSuffix()
-
-                // Use Version struct for semantic comparison (same logic as HomebrewUpdateChecker)
-                let installed = Version(versionNumber: installedClean, buildNumber: nil)
-                let available = Version(versionNumber: availableClean, buildNumber: nil)
 
                 // Determine if update is available
                 var isOutdated = false
 
-                if !installed.isEmpty && !available.isEmpty {
-                    if available > installed {
-                        // Clear case: API version is newer
-                        isOutdated = true
-                    } else if available == installed && package.isCask {
-                        // Versions are equal - use bundle version as tiebreaker
-                        if let installedBundle = installedBundleVersion,
-                           let apiBundle = apiBundleVersion {
-                            let installedBundleVer = Version(versionNumber: installedBundle, buildNumber: nil)
-                            let apiBundleVer = Version(versionNumber: apiBundle, buildNumber: nil)
+                if package.isCask {
+                    // Casks: Strip revision suffix and use Version struct (handles Sparkle updates)
+                    let installedClean = actualVersion.stripBrewRevisionSuffix()
+                    let availableClean = latestVersion.stripBrewRevisionSuffix()
 
-                            if apiBundleVer > installedBundleVer {
-                                isOutdated = true
-                                logger.log(.homebrew, "  🔍 Version equal, using bundle version tiebreaker: \(installedBundle) → \(apiBundle)")
+                    let installed = Version(versionNumber: installedClean, buildNumber: nil)
+                    let available = Version(versionNumber: availableClean, buildNumber: nil)
+
+                    if !installed.isEmpty && !available.isEmpty {
+                        if available > installed {
+                            // Clear case: API version is newer
+                            isOutdated = true
+                        } else if available == installed {
+                            // Versions are equal - use bundle version as tiebreaker
+                            if let installedBundle = installedBundleVersion,
+                               let apiBundle = apiBundleVersion {
+                                let installedBundleVer = Version(versionNumber: installedBundle, buildNumber: nil)
+                                let apiBundleVer = Version(versionNumber: apiBundle, buildNumber: nil)
+
+                                if apiBundleVer > installedBundleVer {
+                                    isOutdated = true
+                                    logger.log(.homebrew, "  🔍 Version equal, using bundle version tiebreaker: \(installedBundle) → \(apiBundle)")
+                                }
                             }
                         }
+                    }
+                } else {
+                    // Formulae: Use PkgVersion for revision-aware comparison (no stripping)
+                    let installed = PkgVersion(actualVersion)
+                    let available = PkgVersion(latestVersion)
+
+                    // PkgVersion handles empty/invalid versions internally via Version struct
+                    if available > installed {
+                        isOutdated = true
                     }
                 }
 
@@ -1242,10 +1293,11 @@ class HomebrewController: ObservableObject {
                 continue  // Rb file not readable
             }
 
-            // Parse version from .rb file using line-by-line search
-            // Look for lines that ONLY contain: version "X.Y.Z"
+            // Parse version and revision from .rb file using line-by-line search
+            // Look for lines that ONLY contain: version "X.Y.Z" or revision N
             // This avoids matching comments or other occurrences
             var tapVersion: String?
+            var tapRevision: Int = 0
             for line in rbContent.split(separator: "\n") {
                 let trimmed = line.trimmingCharacters(in: .whitespaces)
 
@@ -1253,32 +1305,37 @@ class HomebrewController: ObservableObject {
                 // Pattern ensures it's on its own line (Ruby requirement)
                 let versionRegex = /^version\s+"([^"]+)"$/
                 if let match = trimmed.firstMatch(of: versionRegex) {
-                    tapVersion = String(match.1).stripBrewRevisionSuffix()
-                    break  // Found it, stop searching
+                    tapVersion = String(match.1)
+                    continue  // Keep searching for revision
+                }
+
+                // Match standalone revision declarations: revision N
+                let revisionRegex = /^revision\s+(\d+)$/
+                if let match = trimmed.firstMatch(of: revisionRegex) {
+                    tapRevision = Int(match.1) ?? 0
                 }
             }
 
             // If version not found, skip this package (don't show as outdated)
-            guard let availableVersion = tapVersion else {
+            guard let baseVersion = tapVersion else {
                 logger.log(.homebrew, "    ⚠️ No standalone version line found - skipping")
                 continue
             }
 
-            logger.log(.homebrew, "    Tap version from .rb: \(availableVersion)")
+            // Build full version with revision (same as API and directory naming)
+            let availableVersion = tapRevision > 0 ? "\(baseVersion)_\(tapRevision)" : baseVersion
 
-            // Compare using semantic Version (not string comparison)
-            let installedClean = installedVersion.stripBrewRevisionSuffix()
-            let availableClean = availableVersion.stripBrewRevisionSuffix()
+            logger.log(.homebrew, "    Tap version from .rb: \(availableVersion) (base: \(baseVersion), revision: \(tapRevision))")
 
-            logger.log(.homebrew, "    Comparing (cleaned): \(installedClean) vs \(availableClean)")
+            // Compare using PkgVersion for revision-aware comparison (formulae and casks in taps)
+            let installed = PkgVersion(installedVersion)
+            let available = PkgVersion(availableVersion)
 
-            // Use Version struct for semantic comparison
-            let installed = Version(versionNumber: installedClean, buildNumber: nil)
-            let available = Version(versionNumber: availableClean, buildNumber: nil)
+            logger.log(.homebrew, "    Comparing: \(installedVersion) vs \(availableVersion)")
 
             // Only add if truly outdated
-            guard !installed.isEmpty && !available.isEmpty && available > installed else {
-                logger.log(.homebrew, "    ✓ Up to date or invalid version")
+            guard available > installed else {
+                logger.log(.homebrew, "    ✓ Up to date")
                 continue
             }
 

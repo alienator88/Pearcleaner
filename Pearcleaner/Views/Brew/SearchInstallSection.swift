@@ -783,9 +783,18 @@ struct SearchResultRowView: View {
                         if isAlreadyInstalled {
                             // Installed package - check if outdated and show update arrow
                             if let versions = brewManager.getOutdatedVersions(for: result.name) {
-                                Text(verbatim: "(\(versions.installed.stripBrewRevisionSuffix()) → \(versions.available.stripBrewRevisionSuffix()))")
+                                // Match Updater view color scheme: orange (outdated) → green (new)
+                                (Text(verbatim: "(")
+                                    .foregroundColor(ThemeColors.shared(for: colorScheme).secondaryText) +
+                                Text(verbatim: versions.installed)
+                                    .foregroundColor(.orange) +
+                                Text(verbatim: " → ")
+                                    .foregroundColor(ThemeColors.shared(for: colorScheme).secondaryText) +
+                                Text(verbatim: versions.available)
+                                    .foregroundColor(.green) +
+                                Text(verbatim: ")")
+                                    .foregroundColor(ThemeColors.shared(for: colorScheme).secondaryText))
                                     .font(.footnote)
-                                    .foregroundStyle(.orange)
                             } else {
                                 Text(verbatim: "(\(version.stripBrewRevisionSuffix()))")
                                     .font(.footnote)

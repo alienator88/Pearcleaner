@@ -183,7 +183,10 @@ class HomebrewManager: ObservableObject {
 
                 await MainActor.run {
                     outdatedPackagesMap = Dictionary(uniqueKeysWithValues: packages.map {
-                        ($0.name, OutdatedVersionInfo(installed: $0.installedVersion, available: $0.availableVersion))
+                        // Strip revision suffix for casks (Sparkle updates), keep for formulae (revision tracking)
+                        let installedDisplay = $0.isCask ? $0.installedVersion.stripBrewRevisionSuffix() : $0.installedVersion
+                        let availableDisplay = $0.isCask ? $0.availableVersion.stripBrewRevisionSuffix() : $0.availableVersion
+                        return ($0.name, OutdatedVersionInfo(installed: installedDisplay, available: availableDisplay))
                     })
                     isLoadingOutdated = false
                     // Update categories now that we have outdated info
@@ -307,9 +310,12 @@ class HomebrewManager: ObservableObject {
         }
 
         for package in updatedOutdated {
+            // Strip revision suffix for casks (Sparkle updates), keep for formulae (revision tracking)
+            let installedDisplay = package.isCask ? package.installedVersion.stripBrewRevisionSuffix() : package.installedVersion
+            let availableDisplay = package.isCask ? package.availableVersion.stripBrewRevisionSuffix() : package.availableVersion
             outdatedPackagesMap[package.name] = OutdatedVersionInfo(
-                installed: package.installedVersion,
-                available: package.availableVersion
+                installed: installedDisplay,
+                available: availableDisplay
             )
         }
 
