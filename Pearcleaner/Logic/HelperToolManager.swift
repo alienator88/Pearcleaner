@@ -277,21 +277,40 @@ class HelperToolManager: ObservableObject {
             switch service.status {
             case .notRegistered:
                 updateOnMain {
-                    self.message = String(localized: "Service hasn’t been registered. You may register it now.")
+                    self.message = String(localized: "Service hasn't been registered. You may register it now.")
                 }
             case .enabled:
                 let whoamiResult = await runCommand("whoami", skipHelperCheck: true)
                 let isRoot = whoamiResult.0 && whoamiResult.1.trimmingCharacters(in: .whitespacesAndNewlines) == "root"
 
                 if !isRoot {
-                    // Desync detected - automatically attempt to fix
+                    // Desync detected - try reinstall first, then nuclear reset
                     updateOnMain {
                         self.message = String(localized: "Service desynced, attempting recovery...")
                     }
 
-                    // Recursively call with reinstall action
+                    // Try standard reinstall first
                     await manageHelperTool(action: .reinstall)
-                    return // Exit early, reinstall will handle status updates
+
+                    // Check if reinstall worked
+                    let recheckResult = await runCommand("whoami", skipHelperCheck: true)
+                    let reinstallWorked = recheckResult.0 && recheckResult.1.trimmingCharacters(in: .whitespacesAndNewlines) == "root"
+
+                    if !reinstallWorked {
+                        // Reinstall failed, try nuclear reset
+                        printOS("Standard reinstall failed, attempting nuclear reset...")
+                        updateOnMain {
+                            self.message = String(localized: "Recovery failed, attempting nuclear reset...")
+                        }
+
+                        let resetSuccess = await nuclearResetHelper()
+                        if resetSuccess {
+                            // Try installing again after nuclear reset
+                            await manageHelperTool(action: .install)
+                        }
+                    }
+
+                    return // Exit early, operations will handle status updates
                 }
 
                 updateOnMain {
@@ -310,6 +329,62 @@ class HelperToolManager: ObservableObject {
                     self.message = String(localized: "Unknown service status (\(service.status.rawValue)).")
                 }
             }
+        }
+    }
+
+    // MARK: - Nuclear Reset
+
+    /// Nuclear reset: Force cleanup of ALL helper tool instances using privileged commands
+    /// This is a last-resort fix for when SMAppService becomes desynced during development
+    /// Uses AlinFoundation's performPrivilegedCommands() which prompts for password
+    func nuclearResetHelper() async -> Bool {
+        printOS("Starting nuclear reset of helper tool...")
+
+        updateOnMain {
+            self.message = String(localized: "Performing nuclear reset...")
+        }
+
+        // Build comprehensive cleanup script
+        let resetScript = """
+        # Boot out ALL launchd instances matching helper identifier (with wildcard for numbered variants)
+        for service in $(launchctl list | grep '\(helperToolIdentifier)' | awk '{print $3}'); do
+            launchctl bootout system/$service 2>/dev/null || true
+        done
+
+        # Kill any running helper processes
+        pkill -9 -f PearcleanerHelper 2>/dev/null || true
+
+        # Kick launchd to reload its database
+        launchctl kickstart -k system/com.apple.launchctl.System 2>/dev/null || true
+
+        echo "Nuclear reset complete"
+        """
+
+        // Execute privileged commands via AlinFoundation
+        let (success, output) = performPrivilegedCommands(commands: resetScript)
+
+        if success {
+            printOS("Nuclear reset succeeded: \(output)")
+
+            // Invalidate XPC connection
+            helperConnection?.invalidate()
+            helperConnection = nil
+
+            // Small delay for launchd to process changes
+            try? await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
+
+            updateOnMain {
+                self.message = String(localized: "Nuclear reset complete. Please reinstall helper.")
+                self.isHelperToolInstalled = false
+            }
+
+            return true
+        } else {
+            printOS("Nuclear reset failed: \(output)")
+            updateOnMain {
+                self.message = String(localized: "Nuclear reset failed: \(output)")
+            }
+            return false
         }
     }
 }

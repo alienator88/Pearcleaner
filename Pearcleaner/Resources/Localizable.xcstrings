@@ -16983,119 +16983,6 @@
         }
       }
     },
-    "Console Output" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Konsolenausgabe"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Salida de consola"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sortie de la console"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Keluaran Konsol"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Output della console"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "コンソール出力"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "콘솔 출력"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wynik konsoli"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Saída do console"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Вывод консоли"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Výstup konzoly"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Izhod konzole"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Konsol Çıkışı"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Вивід консолі"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đầu ra bảng điều khiển"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "控制台输出"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "控制台輸出"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "控制台輸出"
-          }
-        }
-      }
-    },
     "Container" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -46605,6 +46492,18 @@
         }
       }
     },
+    "Nuclear Reset" : {
+
+    },
+    "Nuclear Reset (last resort - clears ALL helper instances)" : {
+
+    },
+    "Nuclear reset complete. Please reinstall helper." : {
+
+    },
+    "Nuclear reset failed: %@" : {
+
+    },
     "of" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -50311,6 +50210,9 @@
         }
       }
     },
+    "Performing nuclear reset..." : {
+
+    },
     "Permission required. Enable in System Settings > Login Items." : {
       "localizations" : {
         "de" : {
@@ -53679,6 +53581,9 @@
           }
         }
       }
+    },
+    "Recovery failed, attempting nuclear reset..." : {
+
     },
     "Refresh" : {
       "extractionState" : "manual",
@@ -64114,7 +64019,11 @@
         }
       }
     },
+    "Service hasn't been registered. You may register it now." : {
+
+    },
     "Service hasn’t been registered. You may register it now." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

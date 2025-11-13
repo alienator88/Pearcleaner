@@ -74,6 +74,19 @@ struct SettingsView: View {
                                 .help("Force Reinstall Service (fixes desync)")
                         }
 
+                        #if DEBUG
+                        Button {
+                            Task {
+                                let _ = await helperToolManager.nuclearResetHelper()
+                            }
+                        } label: {
+                            Label("Nuclear Reset", systemImage: "exclamationmark.triangle")
+                                .labelStyle(.iconOnly)
+                                .help("Nuclear Reset (last resort - clears ALL helper instances)")
+                        }
+                        .foregroundStyle(.red)
+                        #endif
+
                     case .about:
                         // About tab toolbar item
                         Button(action: {
