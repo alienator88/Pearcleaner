@@ -196,7 +196,6 @@ class HomebrewController: ObservableObject {
                     // Stream to console if enabled - check dynamically to support mid-operation console opening
                     if let text = String(data: chunk, encoding: .utf8) {
                         await MainActor.run {
-                            guard HomebrewController.shared.consoleEnabled else { return }
                             HomebrewController.shared.consoleOutput += text
                         }
                     }
@@ -1098,8 +1097,8 @@ class HomebrewController: ObservableObject {
                 continue  // No installed version
             }
 
-            // For casks, use ACTUAL app version from AppState.sortedApps instead of stale Homebrew metadata
-            // This eliminates false positives when apps auto-update via Sparkle but Homebrew record isn't synced
+            // For casks, use hybrid version detection to handle both Sparkle updates and incomplete app versions
+            // Compare app bundle version vs Homebrew metadata version and use the HIGHER one
             let actualVersion: String
             let installedBundleVersion: String?
             if package.isCask {
@@ -1109,13 +1108,24 @@ class HomebrewController: ObservableObject {
                 }
 
                 if let appInfo = appInfo {
-                    actualVersion = appInfo.appVersion  // Use actual version from Info.plist (ground truth)
+                    let appBundleVersion = appInfo.appVersion
+                    let homebrewMetadataVersion = installedVersion  // Already cleaned via stripBrewRevisionSuffix()
+
+                    // Compare using Version struct and use HIGHER version
+                    // This handles:
+                    // - Apps with incomplete versions (Google Drive: app=116.0, brew=116.0.6 → use 116.0.6)
+                    // - Apps with Sparkle updates (app=116.0.7, brew=116.0.6 → use 116.0.7)
+                    let appVer = Version(versionNumber: appBundleVersion, buildNumber: nil)
+                    let brewVer = Version(versionNumber: homebrewMetadataVersion, buildNumber: nil)
+
+                    actualVersion = (appVer > brewVer) ? appBundleVersion : homebrewMetadataVersion
                     installedBundleVersion = appInfo.appBuildNumber  // CFBundleVersion for tiebreaker
-                    logger.log(.homebrew, "  🔍 Using actual app version for \(package.name): \(actualVersion) (build: \(installedBundleVersion ?? "nil")) (Homebrew metadata: \(installedVersion))")
+
+                    logger.log(.homebrew, "  🔍 Cask \(package.name): app=\(appBundleVersion), brew=\(homebrewMetadataVersion), using=\(actualVersion) (build: \(installedBundleVersion ?? "nil"))")
                 } else {
                     actualVersion = installedVersion  // Fallback to Homebrew metadata if app not found
                     installedBundleVersion = nil
-                    logger.log(.homebrew, "  ⚠️ App not found in sortedApps for cask \(package.name), using Homebrew metadata")
+                    logger.log(.homebrew, "  ⚠️ App not found in sortedApps for cask \(package.name), using Homebrew metadata: \(installedVersion)")
                 }
             } else {
                 actualVersion = installedVersion  // For formulae, use Homebrew metadata (no Info.plist)
@@ -1288,10 +1298,40 @@ class HomebrewController: ObservableObject {
     // MARK: - Tap Management
 
     func loadTaps() async throws -> [HomebrewTapInfo] {
-        let arguments = ["tap"]
-        let result = try await runBrewCommand(arguments)
+        // Read taps directly from filesystem instead of calling `brew tap`
+        // This avoids unwanted console output during background operations
+        // Mimics Homebrew's Tap.installed logic: /opt/homebrew/Library/Taps/
+        let tapsDirectory = "\(brewPrefix)/Library/Taps"
+        let fileManager = FileManager.default
 
-        let tapNames = result.output.components(separatedBy: "\n").filter { !$0.isEmpty }
+        guard fileManager.fileExists(atPath: tapsDirectory) else {
+            return []
+        }
+
+        var tapNames: [String] = []
+
+        // Get all user/org directories
+        let userDirs = try fileManager.contentsOfDirectory(atPath: tapsDirectory)
+            .filter { !$0.hasPrefix(".") }
+
+        for userDir in userDirs {
+            let userPath = "\(tapsDirectory)/\(userDir)"
+
+            // Get all repo directories for this user
+            let repoDirs = try fileManager.contentsOfDirectory(atPath: userPath)
+                .filter { !$0.hasPrefix(".") && fileManager.fileExists(atPath: "\(userPath)/\($0)/.git") }
+
+            for repoDir in repoDirs {
+                // Strip "homebrew-" prefix from repo name
+                let repoName = repoDir.hasPrefix("homebrew-")
+                    ? String(repoDir.dropFirst("homebrew-".count))
+                    : repoDir
+
+                // Combine as "user/repo"
+                tapNames.append("\(userDir)/\(repoName)")
+            }
+        }
+
         return tapNames.map { name in
             let isOfficial = name.starts(with: "homebrew/")
             return HomebrewTapInfo(name: name, isOfficial: isOfficial)
@@ -1816,7 +1856,17 @@ class HomebrewController: ObservableObject {
         }
 
         guard !pkgIdentifiers.isEmpty else {
-            return (0, "0 KB")
+            // Fallback: Calculate Caskroom directory size directly
+            // This handles casks with custom uninstall scripts but no pkgutil directive (e.g., fuse-t)
+            guard FileManager.default.fileExists(atPath: caskroomPath) else {
+                return (0, "0 KB")
+            }
+
+            let directorySize = totalSizeOnDisk(for: URL(fileURLWithPath: caskroomPath))
+            let formatted = await MainActor.run {
+                ByteCountFormatter.string(fromByteCount: directorySize, countStyle: .file)
+            }
+            return (directorySize, formatted)
         }
 
         // Query PKG receipts and sum sizes

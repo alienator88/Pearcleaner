@@ -858,6 +858,47 @@ private func buildCaskLookupTable() -> [String: CaskMetadata] {
                                 )
                             }
                         }
+
+                        // PKG-based casks: Extract app bundles from package receipts
+                        // Uses private PackageKit framework to avoid Process() overhead
+                        if let pkgutilID = uninstall["pkgutil"] as? String {
+                            // Find package receipt by ID
+                            let allPackages = PKGManager.getAllPackages(volume: "/")
+                            if let receipt = allPackages.first(where: { $0.packageIdentifier() as? String == pkgutilID }) {
+                                // Get package info to determine install location
+                                guard let packageInfo = PKGManager.getPackageInfo(from: receipt) else {
+                                    continue
+                                }
+
+                                // Get all files installed by this package
+                                let installedFiles = PKGManager.getPackageFiles(
+                                    receipt: receipt,
+                                    installLocation: packageInfo.installLocation
+                                )
+
+                                // Extract .app bundles from Applications directory
+                                let appBundles = installedFiles.filter { path in
+                                    path.contains("/Applications/") && path.hasSuffix(".app/Contents")
+                                }.compactMap { path -> String? in
+                                    // Extract app name from path like "/Applications/VeraCrypt.app/Contents"
+                                    let components = path.components(separatedBy: "/")
+                                    if let appIndex = components.firstIndex(where: { $0.hasSuffix(".app") }) {
+                                        return components[appIndex]
+                                            .replacingOccurrences(of: ".app", with: "")
+                                            .lowercased()
+                                    }
+                                    return nil
+                                }
+
+                                // Add each discovered app to lookup table
+                                for appName in Set(appBundles) {  // Use Set to avoid duplicates
+                                    appToCask[appName] = CaskMetadata(
+                                        caskName: caskName,
+                                        autoUpdates: autoUpdates
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }

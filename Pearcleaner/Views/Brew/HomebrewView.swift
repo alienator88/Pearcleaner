@@ -256,10 +256,6 @@ struct HomebrewView: View {
         .onChange(of: showConsole) { newValue in
             Task { @MainActor in
                 brewController.consoleEnabled = newValue
-                if !newValue {
-                    // Clear console when hiding
-                    brewController.consoleOutput = ""
-                }
             }
         }
     }
@@ -362,6 +358,8 @@ struct BrewConsoleView: View {
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
                         .id("consoleBottom")
+                        .textSelection(.enabled)
+                        .lineSpacing(1)
                         .onChange(of: output) { _ in
                             withAnimation {
                                 proxy.scrollTo("consoleBottom", anchor: .bottom)
