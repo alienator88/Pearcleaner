@@ -672,26 +672,18 @@ struct FileSearchView: View {
         let newURL = result.url.deletingLastPathComponent().appendingPathComponent(newName)
 
         // Always use helper for file operations (works for all file types)
-        var success = false
+        let command = "/bin/mv \"\(result.url.path)\" \"\(newURL.path)\""
 
-        if HelperToolManager.shared.isHelperToolInstalled {
-            let command = "/bin/mv \"\(result.url.path)\" \"\(newURL.path)\""
-            let semaphore = DispatchSemaphore(value: 0)
-            Task {
-                let result = await HelperToolManager.shared.runCommand(command)
-                success = result.0
-                semaphore.signal()
-            }
-            semaphore.wait()
-        } else {
-            printOS("Helper tool required to rename protected file. Authorization Services has been removed.")
-            HelperToolManager.shared.triggerHelperRequiredAlert()
-            success = false
-        }
+        Task {
+            let moveResult = try! await runSUCommand(
+                command,
+                errorContext: "Failed to rename file",
+                throwOnFailure: false
+            )
 
-        if success {
-            // Update the result in the list
-            if let index = results.firstIndex(where: { $0.id == result.id }) {
+            if moveResult.0 {
+                // Update the result in the list
+                if let index = results.firstIndex(where: { $0.id == result.id }) {
                 let updatedResult = FileSearchResult(
                     url: newURL,
                     name: newName,
@@ -702,15 +694,16 @@ struct FileSearchView: View {
                     icon: result.icon
                 )
                 results[index] = updatedResult
+                }
+            } else {
+                let error = NSError(domain: "com.pearcleaner.rename", code: 1,
+                                  userInfo: [NSLocalizedDescriptionKey: "Failed to rename file"])
+                showCustomAlert(
+                    title: "Rename Failed",
+                    message: "Failed to rename '\(result.name)' to '\(newName)'. Error: \(error.localizedDescription)",
+                    style: .critical
+                )
             }
-        } else {
-            let error = NSError(domain: "com.pearcleaner.rename", code: 1,
-                              userInfo: [NSLocalizedDescriptionKey: "Failed to rename file"])
-            showCustomAlert(
-                title: "Rename Failed",
-                message: "Failed to rename '\(result.name)' to '\(newName)'. Error: \(error.localizedDescription)",
-                style: .critical
-            )
         }
     }
 

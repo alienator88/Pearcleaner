@@ -363,6 +363,9 @@ private final class IOSDownloadObserver: NSObject, CKDownloadQueueObserver {
     private func preserveIPAFile() {
         guard !iosFilesPreserved else { return }
 
+        // Clean up any stale temp directories from previous operations
+        cleanupPearcleanerTempDirs()
+
         let downloadDir = "\(CKDownloadDirectory(nil))/\(adamID)"
         let tempDir = "/tmp/pearcleaner-ios-\(adamID)"
 
@@ -506,6 +509,9 @@ private final class MacOSDownloadObserverWithWorkaround: NSObject, CKDownloadQue
     // MARK: - Helper Methods
 
     private func createHardLinkToPKG() {
+        // Clean up any stale temp directories from previous operations
+        cleanupPearcleanerTempDirs()
+
         let downloadDir = "\(CKDownloadDirectory(nil))/\(adamID)"
         let tempDir = "/tmp/pearcleaner-appstore-\(adamID)"
 
@@ -549,40 +555,42 @@ private final class MacOSDownloadObserverWithWorkaround: NSObject, CKDownloadQue
         try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 sec
         progressCallback(0.85, "Installing...")
 
-        // 85-90%: Running installer
-        let result = await HelperToolManager.shared.runCommand("installer -pkg \(pkgPath) -target /")
+        // 85-90%: Running installer (Script 1)
+        let installerScript = "installer -pkg '\(pkgPath)' -target /"
+        let result = try! await runSUCommand(
+            installerScript,
+            errorContext: "Failed to install package",
+            throwOnFailure: false
+        )
 
         progressCallback(0.90, "Configuring App Store receipt...")
 
-        // 90-95%: Inject receipt and refresh metadata
+        // 90-95%: Inject receipt and refresh metadata (Script 2 - only runs if Script 1 succeeds)
         if result.0, let receiptPath = hardLinkedReceiptPath, FileManager.default.fileExists(atPath: receiptPath) {
             let appPathString = appPath.path
             let receiptDir = "\(appPathString)/Contents/_MASReceipt"
             let receiptDestPath = "\(receiptDir)/receipt"
 
-            // Create _MASReceipt directory using privileged helper
-            let mkdirResult = await HelperToolManager.shared.runCommand("mkdir -p \"\(receiptDir)\"")
-            if !mkdirResult.0 {
-                printOS("⚠️ Failed to create _MASReceipt directory: \(mkdirResult.1)")
-            } else {
-                // Copy receipt file using privileged helper
-                let cpResult = await HelperToolManager.shared.runCommand("cp \"\(receiptPath)\" \"\(receiptDestPath)\"")
-                if !cpResult.0 {
-                    printOS("⚠️ Failed to copy receipt: \(cpResult.1)")
-                } else {
-                    // Set proper permissions using privileged helper
-                    let chmodResult = await HelperToolManager.shared.runCommand("chmod 644 \"\(receiptDestPath)\"")
-                    if !chmodResult.0 {
-                        printOS("⚠️ Failed to set receipt permissions: \(chmodResult.1)")
-                    }
+            // Create receipt directory, copy receipt, and set permissions (chained commands)
+            let receiptScript = """
+            mkdir -p '\(receiptDir)' && \
+            cp '\(receiptPath)' '\(receiptDestPath)' && \
+            chmod 644 '\(receiptDestPath)'
+            """
 
-                    // Force immediate Spotlight re-indexing
-                    let mdimportProcess = Process()
-                    mdimportProcess.executableURL = URL(fileURLWithPath: "/usr/bin/mdimport")
-                    mdimportProcess.arguments = ["-i", appPathString]
-                    try? mdimportProcess.run()
-                    mdimportProcess.waitUntilExit()
-                }
+            let receiptResult = try! await runSUCommand(
+                receiptScript,
+                errorContext: "Failed to configure App Store receipt",
+                throwOnFailure: false
+            )
+
+            if receiptResult.0 {
+                // Force immediate Spotlight re-indexing
+                let mdimportProcess = Process()
+                mdimportProcess.executableURL = URL(fileURLWithPath: "/usr/bin/mdimport")
+                mdimportProcess.arguments = ["-i", appPathString]
+                try? mdimportProcess.run()
+                mdimportProcess.waitUntilExit()
             }
         }
 

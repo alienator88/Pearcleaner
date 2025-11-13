@@ -432,8 +432,7 @@ struct PackageView: View {
                 let success = FileManagerUndo.shared.deleteFiles(at: receiptURLs, bundleName: "PKG-\(package.packageName)")
 
                 if !success {
-                    printOS("Helper tool required to forget package. Authorization Services has been removed.")
-                    HelperToolManager.shared.triggerHelperRequiredAlert()
+                    printOS("Failed to forget package.")
                 }
 
                 continuation.resume(returning: success)

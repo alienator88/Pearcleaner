@@ -141,10 +141,12 @@ class IOSAppInstaller {
 
     /// Extract IPA to temp directory
     private static func extractIPA(ipaPath: String, adamID: UInt64) async throws -> URL {
+        // Clean up any stale temp directories from previous operations
+        cleanupPearcleanerTempDirs()
+
         let extractDir = URL(fileURLWithPath: "/tmp/pearcleaner-ios-\(adamID)/extracted")
 
-        // Remove existing extraction if present
-        try? FileManager.default.removeItem(at: extractDir)
+        // Create extraction directory
         try FileManager.default.createDirectory(at: extractDir, withIntermediateDirectories: true)
 
         // Extract using ditto (handles LZFSE compression)
@@ -313,74 +315,48 @@ class IOSAppInstaller {
         return wrapperDir
     }
 
-    /// Perform atomic replacement using HelperToolManager
+    /// Perform atomic replacement using unified privileged command wrapper
     private static func performAtomicReplacement(
         existingAppPath: URL,
         newWrapper: URL,
         wrappedBundleName: String
     ) async throws {
 
-        // Kill app if running
-        let appName = wrappedBundleName.replacingOccurrences(of: ".app", with: "")
-        _ = await HelperToolManager.shared.runCommand("pkill -x '\(appName)'")
-
         let oldWrapper = existingAppPath.appendingPathComponent("Wrapper")
         let backupWrapper = URL(fileURLWithPath: "/tmp/pearcleaner-ios-backup-\(UUID().uuidString)")
+        let symlinkPath = existingAppPath.appendingPathComponent("WrappedBundle")
 
-        do {
-            // Move old wrapper to backup
-            let (mvBackupSuccess, mvBackupError) = await HelperToolManager.shared.runCommand(
-                "mv '\(oldWrapper.path)' '\(backupWrapper.path)'"
-            )
-            guard mvBackupSuccess else {
-                throw IOSAppInstallerError.atomicReplacementFailed("Failed to backup old Wrapper: \(mvBackupError)")
-            }
+        // Script 1: Atomic replacement (all commands chained with &&)
+        let installScript = """
+        pkill -x '\(wrappedBundleName.replacingOccurrences(of: ".app", with: ""))' 2>/dev/null || true && \
+        mv '\(oldWrapper.path)' '\(backupWrapper.path)' && \
+        mv '\(newWrapper.path)' '\(oldWrapper.path)' && \
+        chown -R root:wheel '\(existingAppPath.path)' && \
+        chmod -R 755 '\(existingAppPath.path)' && \
+        rm -f '\(symlinkPath.path)' && \
+        ln -s 'Wrapper/\(wrappedBundleName)' '\(symlinkPath.path)' && \
+        rm -rf '\(backupWrapper.path)'
+        """
 
-            // Move new wrapper into place
-            let (mvNewSuccess, mvNewError) = await HelperToolManager.shared.runCommand(
-                "mv '\(newWrapper.path)' '\(oldWrapper.path)'"
-            )
-            guard mvNewSuccess else {
-                throw IOSAppInstallerError.atomicReplacementFailed("Failed to move new Wrapper: \(mvNewError)")
-            }
+        let result = try await runSUCommand(
+            installScript,
+            errorContext: "Failed to install iOS app",
+            throwOnFailure: false
+        )
 
-            // Set ownership to root:wheel
-            let (chownSuccess, chownError) = await HelperToolManager.shared.runCommand(
-                "chown -R root:wheel '\(existingAppPath.path)'"
-            )
-            guard chownSuccess else {
-                throw IOSAppInstallerError.atomicReplacementFailed("Failed to set ownership: \(chownError)")
-            }
+        // Script 2: Restore on failure (only runs if Script 1 fails)
+        if !result.0 {
+            printOS("Atomic replacement failed, attempting to restore backup...")
 
-            // Set permissions
-            let (chmodSuccess, chmodError) = await HelperToolManager.shared.runCommand(
-                "chmod -R 755 '\(existingAppPath.path)'"
-            )
-            guard chmodSuccess else {
-                throw IOSAppInstallerError.atomicReplacementFailed("Failed to set permissions: \(chmodError)")
-            }
-
-            // Verify/recreate WrappedBundle symlink
-            let symlinkPath = existingAppPath.appendingPathComponent("WrappedBundle")
-            _ = await HelperToolManager.shared.runCommand("rm -f '\(symlinkPath.path)'")
-            let (lnSuccess, lnError) = await HelperToolManager.shared.runCommand(
-                "ln -s 'Wrapper/\(wrappedBundleName)' '\(symlinkPath.path)'"
-            )
-            guard lnSuccess else {
-                throw IOSAppInstallerError.atomicReplacementFailed("Failed to create symlink: \(lnError)")
-            }
-
-            // Remove backup on success
-            try? FileManager.default.removeItem(at: backupWrapper)
-
-        } catch {
-            // Attempt to restore backup on failure
             if FileManager.default.fileExists(atPath: backupWrapper.path) {
-                _ = await HelperToolManager.shared.runCommand(
-                    "mv '\(backupWrapper.path)' '\(oldWrapper.path)'"
+                let restoreScript = "mv '\(backupWrapper.path)' '\(oldWrapper.path)'"
+                let _ = try await runSUCommand(
+                    restoreScript,
+                    errorContext: "Failed to restore backup after failed installation"
                 )
             }
-            throw IOSAppInstallerError.atomicReplacementFailed(error.localizedDescription)
+
+            throw IOSAppInstallerError.atomicReplacementFailed(result.1)
         }
     }
 }

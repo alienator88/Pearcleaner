@@ -1141,11 +1141,11 @@ func removeApp(appState: AppState, withPath path: URL) {
             appState.sortedApps.remove(at: index)
         }
 
-        if HelperToolManager.shared.isHelperToolInstalled {
-            Task {
-                let _ = await HelperToolManager.shared.runCommand(
-                    "pkgutil --forget \(appState.appInfo.bundleIdentifier)")
-            }
+        Task {
+            let _ = try? await runSUCommand(
+                "pkgutil --forget \(appState.appInfo.bundleIdentifier)",
+                throwOnFailure: false
+            )
         }
     }
 }

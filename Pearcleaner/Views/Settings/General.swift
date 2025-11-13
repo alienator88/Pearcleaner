@@ -414,7 +414,6 @@ struct GeneralSettingsTab: View {
                                     manageSymlink(install: false)
                                 }
                             }
-                            .disabled(!HelperToolManager.shared.isHelperToolInstalled)
 
                         }
                     }

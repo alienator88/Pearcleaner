@@ -228,50 +228,40 @@ class FileManagerUndo {
 
     // Helper function to perform shell commands based on available privileges
     private func executeFileCommands(_ commands: String, isCLI: Bool, hasProtectedFiles: Bool, isRestore: Bool = false) -> Bool {
+        let semaphore = DispatchSemaphore(value: 0)
         var status = false
 
-        if HelperToolManager.shared.isHelperToolInstalled {
-//            printOS(isRestore ? "Attempting restore using helper tool" : "Attempting delete using helper tool")
-            let semaphore = DispatchSemaphore(value: 0)
-            var success = false
-            var output = ""
+        // Try privileged wrapper (helper tool or Authorization Services)
+        Task {
+            let result = try! await runSUCommand(
+                commands,
+                errorContext: isRestore ? "Undo restore operation failed" : "Undo delete operation failed",
+                throwOnFailure: false
+            )
+            status = result.0
 
-            Task {
-                let result = await HelperToolManager.shared.runCommand(commands)
-                success = result.0
-                output = result.1
-                semaphore.signal()
-            }
-            semaphore.wait()
-
-            status = success
-            if !success {
-                printOS(isRestore ? "Restore Error: \(output)" : "Trash Error: \(output)")
+            if !status {
+                printOS(isRestore ? "Restore Error: \(result.1)" : "Trash Error: \(result.1)")
                 updateOnMain {
                     AppState.shared.trashError = true
                 }
-            }
-        } else {
-            if isCLI || !hasProtectedFiles {
-//                printOS(isRestore ? "Attempting restore using direct shell command" : "Attempting delete using direct shell command")
-                let result = runDirectShellCommand(command: commands)
-                status = result.0
-                if !status {
-                    printOS(isRestore ? "Restore Error: \(result.1)" : "Trash Error: \(result.1)")
-                    updateOnMain {
-                        AppState.shared.trashError = true
+
+                // Fallback to direct shell if appropriate
+                if isCLI || !hasProtectedFiles {
+                    let shellResult = runDirectShellCommand(command: commands)
+                    status = shellResult.0
+                    if !status {
+                        printOS(isRestore ? "Restore Error: \(shellResult.1)" : "Trash Error: \(shellResult.1)")
+                        updateOnMain {
+                            AppState.shared.trashError = true
+                        }
                     }
                 }
-            } else {
-                // Helper required but not installed - trigger overlay and fail immediately
-                printOS(isRestore ? "Helper tool required for protected file restore. Authorization Services has been removed." : "Helper tool required for protected file deletion. Authorization Services has been removed.")
-                HelperToolManager.shared.triggerHelperRequiredAlert()
-                updateOnMain {
-                    AppState.shared.trashError = true
-                }
-                return false
             }
+
+            semaphore.signal()
         }
+        semaphore.wait()
 
         return status
     }

@@ -81,21 +81,27 @@ class AppStoreUpdateChecker {
 
         // OPTIMIZATION: Try direct adamID lookup first if available (much faster than bundleID search)
         let result: (AppStoreInfo, String)?
+        let isWrappedApp = isIOSApp(app)
+
         if let adamID = app.adamID {
             logger.log(.appStore, "  🚀 Fast path - using cached adamID: \(adamID)")
             let primaryRegion = await getAppStoreRegion()
-            if let appStoreInfo = await fetchAppStoreInfoByAdamID(adamID: adamID, region: primaryRegion) {
+
+            // Use entity filtering based on app type (prevents iOS version pollution for Mac apps)
+            let entity = isWrappedApp ? "macSoftware" : "desktopSoftware"
+
+            if let appStoreInfo = await fetchAppStoreInfoByAdamID(adamID: adamID, region: primaryRegion, entity: entity) {
                 result = (appStoreInfo, primaryRegion)
                 logger.log(.appStore, "  ✅ Found via adamID lookup")
             } else {
                 // Fallback to bundleID search if adamID lookup fails (app might have been transferred)
                 logger.log(.appStore, "  ⚠️ adamID lookup failed, falling back to bundleID search")
-                result = await getAppStoreInfo(bundleID: app.bundleIdentifier)
+                result = await getAppStoreInfo(bundleID: app.bundleIdentifier, isWrappedIOSApp: isWrappedApp)
             }
         } else {
             // No cached adamID - use standard bundleID search
             logger.log(.appStore, "  📍 Standard path - using bundleID lookup")
-            result = await getAppStoreInfo(bundleID: app.bundleIdentifier)
+            result = await getAppStoreInfo(bundleID: app.bundleIdentifier, isWrappedIOSApp: isWrappedApp)
         }
 
         guard let (appStoreInfo, foundRegion) = result else {
@@ -156,13 +162,13 @@ class AppStoreUpdateChecker {
         let releaseDate: String?
     }
 
-    private static func getAppStoreInfo(bundleID: String) async -> (info: AppStoreInfo, region: String)? {
+    private static func getAppStoreInfo(bundleID: String, isWrappedIOSApp: Bool) async -> (info: AppStoreInfo, region: String)? {
         // Get user's primary region
         let primaryRegion = await getAppStoreRegion()
         logger.log(.appStore, "    Primary region: \(primaryRegion)")
 
         // Try primary region first with all entity types
-        if let info = await tryAllEntities(bundleID: bundleID, region: primaryRegion) {
+        if let info = await tryAllEntities(bundleID: bundleID, region: primaryRegion, isWrappedIOSApp: isWrappedIOSApp) {
             return (info, primaryRegion)
         }
 
@@ -170,7 +176,7 @@ class AppStoreUpdateChecker {
         logger.log(.appStore, "    Not found in primary region, trying fallback regions...")
         for region in fallbackRegions where region != primaryRegion {
             logger.log(.appStore, "    Trying region: \(region)")
-            if let info = await tryAllEntities(bundleID: bundleID, region: region) {
+            if let info = await tryAllEntities(bundleID: bundleID, region: region, isWrappedIOSApp: isWrappedIOSApp) {
                 logger.log(.appStore, "    ✓ Found in region: \(region)")
                 return (info, region)
             }
@@ -180,28 +186,22 @@ class AppStoreUpdateChecker {
         return nil
     }
 
-    /// Try all entity types for a given region
-    private static func tryAllEntities(bundleID: String, region: String) async -> AppStoreInfo? {
-        // 1. Try desktopSoftware first (Mac-native apps - most accurate)
-        // 2. Fallback to macSoftware (broader: includes Catalyst and iOS apps)
-        // 3. Fallback to software (all platforms: catches iPad/iOS apps that run via "Designed for iPad")
-
-        logger.log(.appStore, "      Trying entity: desktopSoftware")
-        if let info = await fetchAppStoreInfo(bundleID: bundleID, region: region, entity: "desktopSoftware") {
-            logger.log(.appStore, "      ✓ Found with desktopSoftware")
-            return info
-        }
-
-        logger.log(.appStore, "      Trying entity: macSoftware")
-        if let info = await fetchAppStoreInfo(bundleID: bundleID, region: region, entity: "macSoftware") {
-            logger.log(.appStore, "      ✓ Found with macSoftware")
-            return info
-        }
-
-        logger.log(.appStore, "      Trying entity: software")
-        if let info = await fetchAppStoreInfo(bundleID: bundleID, region: region, entity: "software") {
-            logger.log(.appStore, "      ✓ Found with software")
-            return info
+    /// Try all entity types for a given region based on app type
+    private static func tryAllEntities(bundleID: String, region: String, isWrappedIOSApp: Bool) async -> AppStoreInfo? {
+        if isWrappedIOSApp {
+            // Wrapped iOS apps: Only try macSoftware (covers "Designed for iPad" apps)
+            logger.log(.appStore, "      Trying entity: macSoftware (iOS app)")
+            if let info = await fetchAppStoreInfo(bundleID: bundleID, region: region, entity: "macSoftware") {
+                logger.log(.appStore, "      ✓ Found with macSoftware")
+                return info
+            }
+        } else {
+            // Regular Mac apps: Only try desktopSoftware (prevents iOS version pollution)
+            logger.log(.appStore, "      Trying entity: desktopSoftware (Mac app)")
+            if let info = await fetchAppStoreInfo(bundleID: bundleID, region: region, entity: "desktopSoftware") {
+                logger.log(.appStore, "      ✓ Found with desktopSoftware")
+                return info
+            }
         }
 
         return nil
@@ -266,7 +266,7 @@ class AppStoreUpdateChecker {
 
     /// Fetch App Store info using adamID (faster than bundleID lookup)
     /// Uses direct adamID lookup, avoiding multi-region/entity fallback overhead
-    private static func fetchAppStoreInfoByAdamID(adamID: UInt64, region: String) async -> AppStoreInfo? {
+    private static func fetchAppStoreInfoByAdamID(adamID: UInt64, region: String, entity: String?) async -> AppStoreInfo? {
         // Query iTunes Search API using adamID
         guard let endpoint = URL(string: "https://itunes.apple.com/lookup") else {
             return nil
@@ -274,11 +274,16 @@ class AppStoreUpdateChecker {
 
         var components = URLComponents(url: endpoint, resolvingAgainstBaseURL: false)
 
-        let queryItems = [
+        var queryItems = [
             URLQueryItem(name: "id", value: String(adamID)),
             URLQueryItem(name: "country", value: region),
             URLQueryItem(name: "limit", value: "1")
         ]
+
+        // Add entity parameter if provided (desktopSoftware for Mac apps, macSoftware for iOS apps)
+        if let entity = entity {
+            queryItems.append(URLQueryItem(name: "entity", value: entity))
+        }
 
         components?.queryItems = queryItems
 

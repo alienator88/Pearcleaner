@@ -984,16 +984,13 @@ struct LaunchItemRowView: View {
             // Execute command based on privilege requirements
             if needsSudo {
                 // Use privileged command execution for daemons/system services
-                if HelperToolManager.shared.isHelperToolInstalled {
-                    let result = await HelperToolManager.shared.runCommand(command)
-                    success = result.0
-                    output = result.1
-                } else {
-                    printOS("Helper tool required for launchctl operations. Authorization Services has been removed.")
-                    HelperToolManager.shared.triggerHelperRequiredAlert()
-                    success = false
-                    output = "Helper tool required"
-                }
+                let result = try! await runSUCommand(
+                    command,
+                    errorContext: "Daemon operation failed",
+                    throwOnFailure: false
+                )
+                success = result.0
+                output = result.1
             } else {
                 // Use direct shell command for user agents
                 let result = await Task.detached {

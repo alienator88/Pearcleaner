@@ -96,30 +96,21 @@ func manageSymlink(install: Bool, symlinkName: String = "pear") {
         return
     }
 
-    // Perform privileged commands (only for creating symlink)
-    if HelperToolManager.shared.isHelperToolInstalled {
-        let semaphore = DispatchSemaphore(value: 0)
-        Task {
-            let result = await HelperToolManager.shared.runCommand(command)
-            if !result.0 {
-                printOS("Symlink: \(result.1)")
-            }
-            semaphore.signal()
-        }
-        semaphore.wait()
-    } else {
-        printOS("Helper tool required to create CLI symlink. Authorization Services has been removed.")
-        HelperToolManager.shared.triggerHelperRequiredAlert()
-        return
-    }
+    // Perform privileged commands using unified wrapper (only for creating symlink)
+    Task {
+        let result = try! await runSUCommand(
+            command,
+            errorContext: "Failed to create CLI symlink",
+            throwOnFailure: false
+        )
 
-    updateOnMain {
-        isCLISymlinked = checkCLISymlink()
-//        if install {
-//            printOS("Symlink created successfully at \(symlinkPath).")
-//        } else {
-//            printOS("Symlink removed successfully from \(symlinkPath).")
-//        }
+        if !result.0 {
+            printOS("Symlink creation failed: \(result.1)")
+        }
+
+        updateOnMain {
+            isCLISymlinked = checkCLISymlink()
+        }
     }
 }
 
@@ -128,7 +119,22 @@ func directoryExists(at path: String) -> Bool {
     return fileManager.fileExists(atPath: path, isDirectory: nil)
 }
 
+/// Clean up all stale /tmp/pearcleaner* directories
+/// Used before creating new temp directories to avoid conflicts from previous failed operations
+func cleanupPearcleanerTempDirs() {
+    let tmpDir = URL(fileURLWithPath: "/tmp")
 
+    guard let contents = try? FileManager.default.contentsOfDirectory(
+        at: tmpDir,
+        includingPropertiesForKeys: nil
+    ) else {
+        return
+    }
+
+    for item in contents where item.lastPathComponent.hasPrefix("pearcleaner") {
+        try? FileManager.default.removeItem(at: item)
+    }
+}
 
 
 
@@ -822,4 +828,50 @@ func formatBytes(_ bytes: Int64) -> String {
     formatter.allowedUnits = [.useAll]
     formatter.countStyle = .file
     return formatter.string(fromByteCount: bytes)
+}
+
+// MARK: - Unified Privileged Command Execution
+/// Unified wrapper for executing privileged commands with automatic fallback
+/// Tries helper tool first if installed, falls back to Authorization Services (password prompt)
+func runSUCommand(
+    _ command: String,
+    errorContext: String? = nil,
+    skipHelperCheck: Bool = false,
+    throwOnFailure: Bool = false
+) async throws -> (success: Bool, output: String) {
+
+    // Pattern 1: Skip helper check (for CLI diagnostics)
+    if skipHelperCheck {
+        let result = await HelperToolManager.shared.runCommand(command, skipHelperCheck: true)
+        return result
+    }
+
+    // Pattern 2: Try helper if installed
+    if HelperToolManager.shared.isHelperToolInstalled {
+        let result = await HelperToolManager.shared.runCommand(command)
+
+        if result.0 {
+            return result
+        }
+
+        // Helper failed, log if errorContext provided
+        if let context = errorContext {
+            printOS("\(context): \(result.1)")
+        }
+    }
+
+    // Pattern 3: Fallback to Authorization Services (prompts for password)
+    let (success, output) = performPrivilegedCommands(commands: command)
+
+    // Log custom error if provided and command failed
+    if !success, let context = errorContext {
+        printOS("\(context): \(output)")
+    }
+
+    // Throw error if requested
+    if throwOnFailure && !success {
+        throw NSError(domain: "SU Command", code: 1, userInfo: [NSLocalizedDescriptionKey: output])
+    }
+
+    return (success, output)
 }
