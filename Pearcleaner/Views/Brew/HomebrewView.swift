@@ -39,8 +39,17 @@ struct HomebrewView: View {
     @State private var selectedPackage: HomebrewSearchResult?
     @State private var selectedPackageIsCask: Bool = false
     @State private var showConsole: Bool = false
-    @State private var consoleHeight: CGFloat = 200
+    @State private var consoleHeight: Double = 200
+    @AppStorage("settings.homebrew.consoleState") private var consoleStateData: Data = Data()
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+
+    // Console state struct
+    private struct ConsoleState: Codable {
+        var isOpen: Bool
+        var height: Double
+
+        static let `default` = ConsoleState(isOpen: false, height: 200)
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -162,6 +171,13 @@ struct HomebrewView: View {
                     .spring(response: 0.4, dampingFraction: 0.8),
                     value: showConsole)
                 .environmentObject(brewManager)
+                .onAppear {
+                    // Restore console state from AppStorage
+                    if let decoded = try? JSONDecoder().decode(ConsoleState.self, from: consoleStateData) {
+                        showConsole = decoded.isOpen
+                        consoleHeight = decoded.height
+                    }
+                }
                 .task {
                     // Load other data in parallel (installed packages loaded in SearchInstallSection)
                     async let taps: Void = brewManager.loadTaps()
@@ -256,6 +272,28 @@ struct HomebrewView: View {
         .onChange(of: showConsole) { newValue in
             Task { @MainActor in
                 brewController.consoleEnabled = newValue
+
+                // Save console state
+                let state = ConsoleState(isOpen: newValue, height: consoleHeight)
+                if let encoded = try? JSONEncoder().encode(state) {
+                    consoleStateData = encoded
+                }
+
+                // When console is hidden, trim output to 300 lines max to prevent memory bloat
+                if !newValue {
+                    let lines = brewController.consoleOutput.components(separatedBy: "\n")
+                    if lines.count > 300 {
+                        // Keep last 300 lines
+                        brewController.consoleOutput = lines.suffix(300).joined(separator: "\n")
+                    }
+                }
+            }
+        }
+        .onChange(of: consoleHeight) { newValue in
+            // Save console height when changed
+            let state = ConsoleState(isOpen: showConsole, height: newValue)
+            if let encoded = try? JSONEncoder().encode(state) {
+                consoleStateData = encoded
             }
         }
     }
@@ -265,7 +303,7 @@ struct HomebrewView: View {
 
 struct BrewConsoleView: View {
     let output: String
-    @Binding var height: CGFloat
+    @Binding var height: Double
     let onClear: () -> Void
     @Environment(\.colorScheme) var colorScheme
     @State private var cursorState: CursorState = .normal
@@ -289,13 +327,16 @@ struct BrewConsoleView: View {
         }
     }
 
+
+
     var body: some View {
         VStack(spacing: 0) {
             // Header with grab handle and clear button
             ZStack {
                 // Label on left
                 HStack {
-                    Text("Console Output")
+                    let title = "Console (\(output.components(separatedBy: "\n").count) lines)"
+                    Text(title)
                         .font(.system(.caption, design: .monospaced))
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     Spacer()
@@ -305,7 +346,13 @@ struct BrewConsoleView: View {
                 RoundedRectangle(cornerRadius: 2)
                     .fill(ThemeColors.shared(for: colorScheme).secondaryText)
                     .frame(width: 30, height: 2)
+                    .padding(6)
                     .contentShape(Rectangle())
+                    .contextMenu {
+                        Button("Reset Size") {
+                            height = 200
+                        }
+                    }
                     .onHover { hovering in
                         isHovering = hovering
                         if cursorState != .dragging {

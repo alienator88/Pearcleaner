@@ -244,7 +244,7 @@ class HomebrewController: ObservableObject {
         logger.log(.homebrew, "🔍 Scanning for installed \(cask ? "casks" : "formulae") in \(baseDir)")
 
         await MainActor.run { [weak self] in
-            guard let self = self, self.consoleEnabled else { return }
+            guard let self = self else { return }
             self.consoleOutput += "Loading installed \(cask ? "casks" : "formulae")...\n"
         }
 
@@ -285,7 +285,7 @@ class HomebrewController: ObservableObject {
 
         let finalLoadedCount = loadedCount
         await MainActor.run { [weak self] in
-            guard let self = self, self.consoleEnabled else { return }
+            guard let self = self else { return }
             self.consoleOutput += "Loaded \(finalLoadedCount) \(cask ? "casks" : "formulae")\n"
         }
     }
@@ -295,7 +295,7 @@ class HomebrewController: ObservableObject {
     /// JWS files are already cached by Homebrew after `brew update`
     func loadMinimalPackageMetadata(cask: Bool) async throws -> [(name: String, displayName: String?, description: String?, version: String?, bundleVersion: String?)] {
         await MainActor.run { [weak self] in
-            guard let self = self, self.consoleEnabled else { return }
+            guard let self = self else { return }
             self.consoleOutput += "Loading available \(cask ? "casks" : "formulae") metadata...\n"
         }
 
@@ -353,7 +353,7 @@ class HomebrewController: ObservableObject {
 
         let resultsCount = results.count
         await MainActor.run { [weak self] in
-            guard let self = self, self.consoleEnabled else { return }
+            guard let self = self else { return }
             self.consoleOutput += "Loaded \(resultsCount) available \(cask ? "casks" : "formulae")\n"
         }
 
@@ -976,7 +976,7 @@ class HomebrewController: ObservableObject {
         logger.log(.homebrew, "Starting Homebrew update check for \(allPackages.count) packages (\(formulae.count) formulae, \(casks.count) casks)")
 
         await MainActor.run { [weak self] in
-            guard let self = self, self.consoleEnabled else { return }
+            guard let self = self else { return }
             self.consoleOutput += "Checking for outdated packages (\(allPackages.count) total)...\n"
         }
 
@@ -984,7 +984,7 @@ class HomebrewController: ObservableObject {
         // Assume packages with tap == nil are core packages (most common case)
         logger.log(.homebrew, "Step 1: Checking packages via public API (fast path)")
         await MainActor.run { [weak self] in
-            guard let self = self, self.consoleEnabled else { return }
+            guard let self = self else { return }
             self.consoleOutput += "Checking packages via API...\n"
         }
         let (coreOutdated, apiFailedPackages) = await checkCorePackagesViaAPI(allPackages)
@@ -996,7 +996,7 @@ class HomebrewController: ObservableObject {
         if !apiFailedPackages.isEmpty {
             logger.log(.homebrew, "Step 2: Checking \(apiFailedPackages.count) tap packages manually")
             await MainActor.run { [weak self] in
-                guard let self = self, self.consoleEnabled else { return }
+                guard let self = self else { return }
                 self.consoleOutput += "Checking \(apiFailedPackages.count) tap packages...\n"
             }
             let tapOutdated = await checkTapPackagesManually(apiFailedPackages)
@@ -1006,7 +1006,7 @@ class HomebrewController: ObservableObject {
             logger.log(.homebrew, "Found \(totalOutdated) Homebrew updates available")
 
             await MainActor.run { [weak self] in
-                guard let self = self, self.consoleEnabled else { return }
+                guard let self = self else { return }
                 self.consoleOutput += "Found \(totalOutdated) outdated packages\n"
             }
 
@@ -1018,7 +1018,7 @@ class HomebrewController: ObservableObject {
         logger.log(.homebrew, "Found \(coreOutdated.count) Homebrew updates available")
 
         await MainActor.run { [weak self] in
-            guard let self = self, self.consoleEnabled else { return }
+            guard let self = self else { return }
             self.consoleOutput += "Found \(coreOutdated.count) outdated packages\n"
         }
 
@@ -1365,7 +1365,7 @@ class HomebrewController: ObservableObject {
 
     func getBrewVersion() async throws -> String {
         await MainActor.run { [weak self] in
-            guard let self = self, self.consoleEnabled else { return }
+            guard let self = self else { return }
             self.consoleOutput += "Getting Homebrew version...\n"
         }
 
@@ -1390,7 +1390,7 @@ class HomebrewController: ObservableObject {
 
         if process.terminationStatus == 0 && !output.isEmpty {
             await MainActor.run { [weak self] in
-                guard let self = self, self.consoleEnabled else { return }
+                guard let self = self else { return }
                 self.consoleOutput += "Homebrew version: \(output)\n"
             }
             return output  // Returns "4.6.19"
@@ -1423,7 +1423,7 @@ class HomebrewController: ObservableObject {
 
     func checkForBrewUpdate() async throws -> (current: String, latest: String, updateAvailable: Bool) {
         await MainActor.run { [weak self] in
-            guard let self = self, self.consoleEnabled else { return }
+            guard let self = self else { return }
             self.consoleOutput += "Checking for Homebrew updates...\n"
         }
 
@@ -1437,7 +1437,7 @@ class HomebrewController: ObservableObject {
         let updateAvailable = compareSemanticVersions(current: currentVersion, latest: latestVersion)
 
         await MainActor.run { [weak self] in
-            guard let self = self, self.consoleEnabled else { return }
+            guard let self = self else { return }
             if updateAvailable {
                 self.consoleOutput += "Update available: \(currentVersion) → \(latestVersion)\n"
             } else {
@@ -1521,7 +1521,7 @@ class HomebrewController: ObservableObject {
                 } else {
                     // Delete entire subdirectory (brew uses FileUtils.rm_rf on nested_cache directories)
                     await MainActor.run { [weak self] in
-                        guard let self = self, self.consoleEnabled else { return }
+                        guard let self = self else { return }
                         self.consoleOutput += "Removing \(subdirName)/\n"
                     }
                     filesToDelete.append(subdirURL)
@@ -1586,17 +1586,17 @@ class HomebrewController: ObservableObject {
             if !filesToDelete.isEmpty {
                 let itemCount = filesToDelete.count
                 await MainActor.run { [weak self] in
-                    guard let self = self, self.consoleEnabled else { return }
+                    guard let self = self else { return }
                     self.consoleOutput += "Cleaning \(itemCount) items...\n"
                 }
                 let _ = FileManagerUndo.shared.deleteFiles(at: filesToDelete, bundleName: "BrewCleanup")
                 await MainActor.run { [weak self] in
-                    guard let self = self, self.consoleEnabled else { return }
+                    guard let self = self else { return }
                     self.consoleOutput += "Cleanup complete\n"
                 }
             } else {
                 await MainActor.run { [weak self] in
-                    guard let self = self, self.consoleEnabled else { return }
+                    guard let self = self else { return }
                     self.consoleOutput += "No files to clean\n"
                 }
             }
@@ -1617,7 +1617,7 @@ class HomebrewController: ObservableObject {
 
     func getAnalyticsStatus() async throws -> Bool {
         await MainActor.run { [weak self] in
-            guard let self = self, self.consoleEnabled else { return }
+            guard let self = self else { return }
             self.consoleOutput += "Checking analytics status...\n"
         }
 
@@ -1649,7 +1649,7 @@ class HomebrewController: ObservableObject {
         }
 
         await MainActor.run { [weak self] in
-            guard let self = self, self.consoleEnabled else { return }
+            guard let self = self else { return }
             self.consoleOutput += "Analytics are \(analyticsEnabled ? "enabled" : "disabled")\n"
         }
 
@@ -1658,7 +1658,7 @@ class HomebrewController: ObservableObject {
 
     func setAnalyticsStatus(enabled: Bool) async throws {
         await MainActor.run { [weak self] in
-            guard let self = self, self.consoleEnabled else { return }
+            guard let self = self else { return }
             self.consoleOutput += "Setting analytics to \(enabled ? "enabled" : "disabled")...\n"
         }
 
@@ -1681,14 +1681,14 @@ class HomebrewController: ObservableObject {
             let data = pipe.fileHandleForReading.readDataToEndOfFile()
             let error = String(data: data, encoding: .utf8) ?? "Unknown error"
             await MainActor.run { [weak self] in
-                guard let self = self, self.consoleEnabled else { return }
+                guard let self = self else { return }
                 self.consoleOutput += "Error: \(error)\n"
             }
             throw HomebrewError.commandFailed("Failed to set analytics status: \(error)")
         }
 
         await MainActor.run { [weak self] in
-            guard let self = self, self.consoleEnabled else { return }
+            guard let self = self else { return }
             self.consoleOutput += "Analytics status updated successfully\n"
         }
     }

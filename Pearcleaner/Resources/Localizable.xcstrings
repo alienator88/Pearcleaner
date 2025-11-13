@@ -120,119 +120,6 @@
     " (iOS app)" : {
 
     },
-    " (iOS apps have to be updated in the App Store)" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " (iOS-Apps müssen im App Store aktualisiert werden)"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " (las aplicaciones de iOS deben actualizarse en la App Store)"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " (les applications iOS doivent être mises à jour dans l'App Store)"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " (aplikasi iOS harus diperbarui di App Store)"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " (le app iOS devono essere aggiornate nell'App Store)"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " (iOSアプリはApp Storeで更新する必要があります)"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " (iOS 앱은 App Store에서 업데이트해야 합니다)"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " (aplikacje iOS muszą być aktualizowane w App Store)"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " (os aplicativos iOS precisam ser atualizados na App Store)"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " (iOS приложения должны обновляться в App Store)"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " (aplikácie pre iOS musia byť aktualizované v App Store)"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " (iOS aplikacije je treba posodobiti v trgovini App Store)"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " (iOS uygulamaları App Store'da güncellenmelidir)"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " (iOS додатки потрібно оновлювати в App Store)"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " (ứng dụng iOS phải được cập nhật trong App Store)"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "（iOS 应用必须在 App Store 中更新）"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "（iOS 應用程式必須在 App Store 中更新）"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "（iOS 應用程式必須在 App Store 中更新）"
-          }
-        }
-      }
-    },
     "(Build %@)" : {
       "localizations" : {
         "de" : {
@@ -17097,6 +16984,7 @@
       }
     },
     "Console Output" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
