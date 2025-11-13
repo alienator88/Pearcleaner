@@ -59,33 +59,45 @@ struct SettingsView: View {
                                 await helperToolManager.manageHelperTool(action: .uninstall)
                             }
                         } label: {
-                            Label("Unregister Service", systemImage: "scissors")
+                            Label("Unregister Service", systemImage: "trash")
                                 .labelStyle(.iconOnly)
                                 .help("Unregister Service")
                         }
 
                         Button {
-                            Task {
-                                await helperToolManager.manageHelperTool(action: .reinstall)
-                            }
-                        } label: {
-                            Label("Reinstall Service", systemImage: "arrow.clockwise")
-                                .labelStyle(.iconOnly)
-                                .help("Force Reinstall Service (fixes desync)")
-                        }
+                            showCustomAlert(title: "Reset BTM", message: "This resets the whole Background Task Management database and will clear your 'Open at Login' and 'App Background Activity' list.", style: .warning, onOk: {
+                                Task {
+                                    let _ = await helperToolManager.nuclearResetHelper()
+                                }
+                            })
 
-                        #if DEBUG
-                        Button {
-                            Task {
-                                let _ = await helperToolManager.nuclearResetHelper()
-                            }
                         } label: {
                             Label("Nuclear Reset", systemImage: "exclamationmark.triangle")
                                 .labelStyle(.iconOnly)
-                                .help("Nuclear Reset (last resort - clears ALL helper instances)")
+                                .help("Reset Background Task Management database")
                         }
-                        .foregroundStyle(.red)
-                        #endif
+//                        Button {
+//                            Task {
+//                                await helperToolManager.manageHelperTool(action: .reinstall)
+//                            }
+//                        } label: {
+//                            Label("Reinstall Service", systemImage: "arrow.clockwise")
+//                                .labelStyle(.iconOnly)
+//                                .help("Force Reinstall Service (fixes desync)")
+//                        }
+
+//                        #if DEBUG
+//                        Button {
+//                            Task {
+//                                let _ = await helperToolManager.nuclearResetHelper()
+//                            }
+//                        } label: {
+//                            Label("Nuclear Reset", systemImage: "exclamationmark.triangle")
+//                                .labelStyle(.iconOnly)
+//                                .help("Nuclear Reset (last resort - clears ALL helper instances)")
+//                        }
+//                        .foregroundStyle(.red)
+//                        #endif
 
                     case .about:
                         // About tab toolbar item

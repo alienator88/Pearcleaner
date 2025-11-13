@@ -292,24 +292,6 @@ class HelperToolManager: ObservableObject {
                     // Try standard reinstall first
                     await manageHelperTool(action: .reinstall)
 
-                    // Check if reinstall worked
-                    let recheckResult = await runCommand("whoami", skipHelperCheck: true)
-                    let reinstallWorked = recheckResult.0 && recheckResult.1.trimmingCharacters(in: .whitespacesAndNewlines) == "root"
-
-                    if !reinstallWorked {
-                        // Reinstall failed, try nuclear reset
-                        printOS("Standard reinstall failed, attempting nuclear reset...")
-                        updateOnMain {
-                            self.message = String(localized: "Recovery failed, attempting nuclear reset...")
-                        }
-
-                        let resetSuccess = await nuclearResetHelper()
-                        if resetSuccess {
-                            // Try installing again after nuclear reset
-                            await manageHelperTool(action: .install)
-                        }
-                    }
-
                     return // Exit early, operations will handle status updates
                 }
 
@@ -334,55 +316,38 @@ class HelperToolManager: ObservableObject {
 
     // MARK: - Nuclear Reset
 
-    /// Nuclear reset: Force cleanup of ALL helper tool instances using privileged commands
+    /// Nuclear reset: Reset BTM (Background Task Management) database to clear desynced helper registrations
     /// This is a last-resort fix for when SMAppService becomes desynced during development
+    /// PREREQUISITE: User must manually disable helper in System Settings > Login Items first in certain cases
     /// Uses AlinFoundation's performPrivilegedCommands() which prompts for password
     func nuclearResetHelper() async -> Bool {
         printOS("Starting nuclear reset of helper tool...")
 
         updateOnMain {
-            self.message = String(localized: "Performing nuclear reset...")
+            self.message = String(localized: "Resetting BTM database...")
         }
 
-        // Build comprehensive cleanup script
-        let resetScript = """
-        # Boot out ALL launchd instances matching helper identifier (with wildcard for numbered variants)
-        for service in $(launchctl list | grep '\(helperToolIdentifier)' | awk '{print $3}'); do
-            launchctl bootout system/$service 2>/dev/null || true
-        done
-
-        # Kill any running helper processes
-        pkill -9 -f PearcleanerHelper 2>/dev/null || true
-
-        # Kick launchd to reload its database
-        launchctl kickstart -k system/com.apple.launchctl.System 2>/dev/null || true
-
-        echo "Nuclear reset complete"
-        """
-
-        // Execute privileged commands via AlinFoundation
-        let (success, output) = performPrivilegedCommands(commands: resetScript)
+        // Execute sfltool resetbtm to clear Background Task Management database
+        // NOTE: This only works if user has disabled the service in System Settings first
+        let (success, output) = performPrivilegedCommands(commands: "sfltool resetbtm")
 
         if success {
-            printOS("Nuclear reset succeeded: \(output)")
+            printOS("BTM reset succeeded")
 
             // Invalidate XPC connection
             helperConnection?.invalidate()
             helperConnection = nil
 
-            // Small delay for launchd to process changes
-            try? await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
-
             updateOnMain {
-                self.message = String(localized: "Nuclear reset complete. Please reinstall helper.")
+                self.message = String(localized: "BTM reset complete. Please reinstall helper.")
                 self.isHelperToolInstalled = false
             }
 
             return true
         } else {
-            printOS("Nuclear reset failed: \(output)")
+            printOS("BTM reset failed: \(output)")
             updateOnMain {
-                self.message = String(localized: "Nuclear reset failed: \(output)")
+                self.message = String(localized: "BTM reset failed: \(output)")
             }
             return false
         }

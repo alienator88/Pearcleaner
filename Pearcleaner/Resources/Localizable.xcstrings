@@ -11707,6 +11707,12 @@
         }
       }
     },
+    "BTM reset complete. Please reinstall helper." : {
+
+    },
+    "BTM reset failed: %@" : {
+
+    },
     "Build only:" : {
       "localizations" : {
         "de" : {
@@ -28653,6 +28659,7 @@
       }
     },
     "Force Reinstall Service (fixes desync)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -46495,15 +46502,6 @@
     "Nuclear Reset" : {
 
     },
-    "Nuclear Reset (last resort - clears ALL helper instances)" : {
-
-    },
-    "Nuclear reset complete. Please reinstall helper." : {
-
-    },
-    "Nuclear reset failed: %@" : {
-
-    },
     "of" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -50210,9 +50208,6 @@
         }
       }
     },
-    "Performing nuclear reset..." : {
-
-    },
     "Permission required. Enable in System Settings > Login Items." : {
       "localizations" : {
         "de" : {
@@ -53582,9 +53577,6 @@
         }
       }
     },
-    "Recovery failed, attempting nuclear reset..." : {
-
-    },
     "Refresh" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -54598,6 +54590,7 @@
       }
     },
     "Reinstall Service" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -57961,6 +57954,9 @@
         }
       }
     },
+    "Reset Background Task Management database" : {
+
+    },
     "Reset Settings" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -58186,6 +58182,9 @@
           }
         }
       }
+    },
+    "Resetting BTM database..." : {
+
     },
     "Restart" : {
       "extractionState" : "manual",

@@ -662,7 +662,7 @@ func manageFinderPlugin(install: Bool) {
     let task = Process()
     task.launchPath = "/usr/bin/pluginkit"
 
-    task.arguments = ["-e", "\(install ? "use" : "ignore")", "-i", "com.alienator88.Pearcleaner"]
+    task.arguments = ["-e", "\(install ? "use" : "ignore")", "-i", "com.alienator88.Pearcleaner.FinderOpen"]
 
     task.launch()
     task.waitUntilExit()
