@@ -12,26 +12,26 @@ struct GlobalConsoleView: View {
     @Binding var height: Double
     let onClear: () -> Void
     @Environment(\.colorScheme) var colorScheme
-    @State private var cursorState: CursorState = .normal
-    @State private var isHovering: Bool = false
+//    @State private var cursorState: CursorState = .normal
+//    @State private var isHovering: Bool = false
 
-    enum CursorState {
-        case normal
-        case hovering
-        case dragging
-
-        var cursor: NSCursor {
-            switch self {
-            case .normal: return .arrow
-            case .hovering: return .openHand
-            case .dragging: return .closedHand
-            }
-        }
-
-        func apply() {
-            cursor.set()
-        }
-    }
+//    enum CursorState {
+//        case normal
+//        case hovering
+//        case dragging
+//
+//        var cursor: NSCursor {
+//            switch self {
+//            case .normal: return .arrow
+//            case .hovering: return .openHand
+//            case .dragging: return .closedHand
+//            }
+//        }
+//
+//        func apply() {
+//            cursor.set()
+//        }
+//    }
 
     private var shouldShowLineCount: Bool {
         let trimmedOutput = output.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -80,28 +80,28 @@ struct GlobalConsoleView: View {
                             height = 200
                         }
                     }
-                    .onHover { hovering in
-                        isHovering = hovering
-                        if cursorState != .dragging {
-                            cursorState = hovering ? .hovering : .normal
-                            cursorState.apply()
-                        }
-                    }
+//                    .onHover { hovering in
+//                        isHovering = hovering
+//                        if cursorState != .dragging {
+//                            cursorState = hovering ? .hovering : .normal
+//                            cursorState.apply()
+//                        }
+//                    }
                     .gesture(
                         DragGesture()
                             .onChanged { value in
-                                if cursorState != .dragging {
-                                    cursorState = .dragging
-                                    cursorState.apply()
-                                }
+//                                if cursorState != .dragging {
+//                                    cursorState = .dragging
+//                                    cursorState.apply()
+//                                }
                                 let newHeight = height - value.translation.height
                                 height = min(max(newHeight, 150), 400)
                             }
-                            .onEnded { _ in
-                                // Restore cursor based on hover state
-                                cursorState = isHovering ? .hovering : .normal
-                                cursorState.apply()
-                            }
+//                            .onEnded { _ in
+//                                // Restore cursor based on hover state
+//                                cursorState = isHovering ? .hovering : .normal
+//                                cursorState.apply()
+//                            }
                     )
 
                 // Buttons on right
