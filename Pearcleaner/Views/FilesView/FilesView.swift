@@ -179,6 +179,9 @@ struct FilesView: View {
                 }
 
                 Button {
+                    if GlobalConsoleManager.shared.showConsole {
+                        GlobalConsoleManager.shared.showConsole.toggle()
+                    }
                     infoSidebar.toggle()
                 } label: {
                     Label("Info", systemImage: "sidebar.trailing")

@@ -159,6 +159,11 @@ struct GlobalConsoleView: View {
                                 proxy.scrollTo("consoleBottom", anchor: .bottom)
                             }
                         }
+                        .onChange(of: height) { _ in
+                            withAnimation {
+                                proxy.scrollTo("consoleBottom", anchor: .bottom)
+                            }
+                        }
                 }
             }
         }
