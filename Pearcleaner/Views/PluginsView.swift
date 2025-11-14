@@ -867,15 +867,16 @@ struct PluginRowView: View {
     @State private var isHovered = false
 
     var body: some View {
-        HStack(alignment: .center, spacing: 12) {
-
-            // Selection checkbox
+        HStack(spacing: 15) {
+            // Selection checkbox - OUTSIDE the background
             Button(action: onToggleSelection) {
                 EmptyView()
             }
             .buttonStyle(CircleCheckboxButtonStyle(isSelected: isSelected))
 
-            // Plugin icon and type indicator
+            // Content with background
+            HStack(alignment: .center, spacing: 12) {
+                // Plugin icon and type indicator
             VStack(spacing: 4) {
                 ZStack {
                     if plugin.customIcon == nil {
@@ -969,23 +970,24 @@ struct PluginRowView: View {
                     .help("Delete plugin")
                 }
 
-                if isPerformingAction {
-                    ProgressView()
-                        .scaleEffect(0.7)
+                    if isPerformingAction {
+                        ProgressView()
+                            .scaleEffect(0.7)
+                    }
                 }
             }
-        }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 8)
-                .fill(isHovered ?
-                    ThemeColors.shared(for: colorScheme).secondaryBG.opacity(0.8) :
-                    ThemeColors.shared(for: colorScheme).secondaryBG
-                )
-        )
-        .onHover { hovering in
-            withAnimation(.easeInOut(duration: 0.2)) {
-                isHovered = hovering
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(isHovered ?
+                        ThemeColors.shared(for: colorScheme).secondaryBG.opacity(0.8) :
+                        ThemeColors.shared(for: colorScheme).secondaryBG
+                    )
+            )
+            .onHover { hovering in
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    isHovered = hovering
+                }
             }
         }
         .onAppear {
@@ -1102,27 +1104,28 @@ struct AudioPluginRowView: View {
     @State private var selectedRelatedFiles: Set<UUID> = []
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            // Main plugin row
-            HStack(alignment: .center, spacing: 12) {
-
-                // Selection checkbox
-                Button(action: {
-                    // When selecting/deselecting plugin, also select/deselect all related files
-                    if !isSelected {
-                        // Plugin is about to be selected, select all related files
-                        selectedRelatedFiles = Set(relatedFiles.map { $0.id })
-                    } else {
-                        // Plugin is about to be deselected, deselect all related files
-                        selectedRelatedFiles.removeAll()
-                    }
-                    onToggleSelection()
-                }) {
-                    EmptyView()
+        HStack(spacing: 15) {
+            // Selection checkbox - OUTSIDE the background
+            Button(action: {
+                // When selecting/deselecting plugin, also select/deselect all related files
+                if !isSelected {
+                    // Plugin is about to be selected, select all related files
+                    selectedRelatedFiles = Set(relatedFiles.map { $0.id })
+                } else {
+                    // Plugin is about to be deselected, deselect all related files
+                    selectedRelatedFiles.removeAll()
                 }
-                .buttonStyle(CircleCheckboxButtonStyle(isSelected: isSelected))
+                onToggleSelection()
+            }) {
+                EmptyView()
+            }
+            .buttonStyle(CircleCheckboxButtonStyle(isSelected: isSelected))
 
-                // Plugin icon and type indicator
+            // Content with background
+            VStack(alignment: .leading, spacing: 0) {
+                // Main plugin row
+                HStack(alignment: .center, spacing: 12) {
+                    // Plugin icon and type indicator
                 VStack(spacing: 4) {
                     ZStack {
                         if plugin.customIcon == nil {
@@ -1318,20 +1321,21 @@ struct AudioPluginRowView: View {
                         }
                         .padding(.vertical, 4)
                     }
+                    }
+                    .transition(.opacity)
                 }
-                .transition(.opacity)
             }
-        }
-        .background(
-            RoundedRectangle(cornerRadius: 8)
-                .fill(isHovered ?
-                    ThemeColors.shared(for: colorScheme).secondaryBG.opacity(0.8) :
-                    ThemeColors.shared(for: colorScheme).secondaryBG
-                )
-        )
-        .onHover { hovering in
-            withAnimation(.easeInOut(duration: 0.2)) {
-                isHovered = hovering
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(isHovered ?
+                        ThemeColors.shared(for: colorScheme).secondaryBG.opacity(0.8) :
+                        ThemeColors.shared(for: colorScheme).secondaryBG
+                    )
+            )
+            .onHover { hovering in
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    isHovered = hovering
+                }
             }
         }
         .onAppear {

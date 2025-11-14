@@ -455,18 +455,19 @@ struct PathRowView: View {
         VStack(alignment: .leading, spacing: 10) {
             if !matchingPaths.isEmpty {
                 ForEach(matchingPaths, id: \.self) { matchedPath in
-                    VStack(alignment: .leading, spacing: 10) {
-                        HStack {
+                    HStack(spacing: 15) {
+                        // Selection checkbox - OUTSIDE the background
+                        Button(action: { isSelected.toggle() }) {
+                            Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                                .foregroundStyle(isSelected ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
+                                .font(.title3)
+                        }
+                        .buttonStyle(.plain)
 
-                            // Selection checkbox
-                            Button(action: { isSelected.toggle() }) {
-                                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                                    .foregroundStyle(isSelected ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
-                                    .font(.title3)
-                            }
-                            .buttonStyle(.plain)
-
-                            Button {
+                        // Content with background
+                        VStack(alignment: .leading, spacing: 10) {
+                            HStack {
+                                Button {
                                 openInFinder(matchedPath)
                             } label: {
                                 Image(systemName: "folder")
@@ -502,23 +503,26 @@ struct PathRowView: View {
                                 .foregroundStyle(.red)
                                 .disabled(isEmpty)
                                 .help("Delete all files within this folder")
+                                }
+
                             }
+                            .onAppear {
+                                DispatchQueue.global(qos: .userInitiated).async {
+                                    if let url = URL(string: matchedPath) {
+                                        let calculatedSize = totalSizeOnDisk(for: url)
 
-                        }
-                        .onAppear {
-                            DispatchQueue.global(qos: .userInitiated).async {
-                                if let url = URL(string: matchedPath) {
-                                    let calculatedSize = totalSizeOnDisk(for: url)
-
-                                    DispatchQueue.main.async {
-                                        self.size = calculatedSize
+                                        DispatchQueue.main.async {
+                                            self.size = calculatedSize
+                                        }
                                     }
                                 }
                             }
+
                         }
-
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(ThemeColors.shared(for: colorScheme).secondaryBG.clipShape(RoundedRectangle(cornerRadius: 8)))
                     }
-
                 }
             } else {
                 HStack {
@@ -531,11 +535,11 @@ struct PathRowView: View {
                     Text("Not Found")
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(ThemeColors.shared(for: colorScheme).secondaryBG.clipShape(RoundedRectangle(cornerRadius: 8)))
             }
         }
-        .frame(maxWidth: .infinity)
-        .padding()
-        .background(ThemeColors.shared(for: colorScheme).secondaryBG.clipShape(RoundedRectangle(cornerRadius: 8)))
         .onAppear {
             checkPath(path)
         }

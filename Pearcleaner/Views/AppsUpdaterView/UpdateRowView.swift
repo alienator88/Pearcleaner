@@ -142,20 +142,22 @@ struct UpdateRowView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            // Main row
-            HStack(alignment: .center, spacing: 12) {
-                // Selection checkbox
-                Button(action: {
-                    updateManager.toggleAppSelection(app)
-                }) {
-                    EmptyView()
-                }
-                .buttonStyle(CircleCheckboxButtonStyle(isSelected: app.isSelectedForUpdate))
-                .disabled(app.source == .unsupported)
-                .opacity(app.source == .unsupported ? 0.5 : 1.0)
+        HStack(spacing: 15) {
+            // Selection checkbox - OUTSIDE the background
+            Button(action: {
+                updateManager.toggleAppSelection(app)
+            }) {
+                EmptyView()
+            }
+            .buttonStyle(CircleCheckboxButtonStyle(isSelected: app.isSelectedForUpdate))
+            .disabled(app.source == .unsupported)
+            .opacity(app.source == .unsupported ? 0.5 : 1.0)
 
-                // App icon (use actual app icon if available, fallback to source icon)
+            // Content with background
+            VStack(spacing: 0) {
+                // Main row
+                HStack(alignment: .center, spacing: 12) {
+                    // App icon (use actual app icon if available, fallback to source icon)
                 if let appIcon = app.appInfo.appIcon {
                     Image(nsImage: appIcon)
                         .resizable()
@@ -228,10 +230,10 @@ struct UpdateRowView: View {
                 // Action buttons
                 actionButtons
 
-                // Secondary actions (info button, etc.)
-                secondaryActionButtons
-            }
-            .padding()
+                    // Secondary actions (info button, etc.)
+                    secondaryActionButtons
+                }
+                .padding()
 
             // Expanded release notes (Sparkle and App Store)
             if isExpanded, (app.source == .sparkle || app.source == .appStore) {
@@ -300,8 +302,8 @@ struct UpdateRowView: View {
                     .padding(.bottom)
                 }
             }
-        }
-        .background {
+            }
+            .background {
             // Sparkle progress bar with twinkle effects (for Sparkle and App Store apps)
             GeometryReader { geometry in
                 HStack(spacing: 0) {
@@ -325,17 +327,18 @@ struct UpdateRowView: View {
             }
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .animation(.linear(duration: 0.3), value: app.progress)
-        }
-        .background(
-            RoundedRectangle(cornerRadius: 8)
-                .fill(isHovered ?
-                    ThemeColors.shared(for: colorScheme).secondaryBG.opacity(0.8) :
-                    ThemeColors.shared(for: colorScheme).secondaryBG
-                )
-        )
-        .onHover { hovering in
-            withAnimation(.easeInOut(duration: 0.2)) {
-                isHovered = hovering
+            }
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(isHovered ?
+                        ThemeColors.shared(for: colorScheme).secondaryBG.opacity(0.8) :
+                        ThemeColors.shared(for: colorScheme).secondaryBG
+                    )
+            )
+            .onHover { hovering in
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    isHovered = hovering
+                }
             }
         }
     }

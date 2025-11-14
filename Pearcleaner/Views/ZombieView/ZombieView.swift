@@ -613,14 +613,16 @@ struct ZombieFileDetailsItem: View {
     @Binding var isSelected: Bool
 
     var body: some View {
-
-        HStack(alignment: .center, spacing: 15) {
+        HStack(spacing: 15) {
+            // Selection checkbox - OUTSIDE the background
             Button(action: { isSelected.toggle() }) {
                 EmptyView()
             }
             .buttonStyle(CircleCheckboxButtonStyle(isSelected: isSelected))
 
-            if let appIcon = icon {
+            // Content with background
+            HStack(alignment: .center, spacing: 15) {
+                if let appIcon = icon {
                 appIcon
                     .resizable()
                     .aspectRatio(contentMode: .fit)
@@ -674,14 +676,15 @@ struct ZombieFileDetailsItem: View {
 
             let displaySize = formatByte(size: size!).human
 
-            Text(verbatim: "\(displaySize)")
-                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                Text(verbatim: "\(displaySize)")
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(ThemeColors.shared(for: colorScheme).secondaryBG)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .background(ThemeColors.shared(for: colorScheme).secondaryBG)
-        .clipShape(RoundedRectangle(cornerRadius: 8))
         .contextMenu {
             if path.pathExtension == "app" {
                 Button("Open \(path.deletingPathExtension().lastPathComponent)") {
