@@ -27,6 +27,7 @@ class AppStoreUpdateChecker {
         guard !apps.isEmpty else { return [] }
 
         logger.log(.appStore, "Starting App Store update check for \(apps.count) apps")
+        await GlobalConsoleManager.shared.appendOutput("Checking for App Store updates (\(apps.count) apps)...\n", source: CurrentPage.updater.title)
 
         // Create optimal chunks based on CPU cores (smaller chunks for App Store API calls)
         let chunks = createOptimalChunks(from: apps, minChunkSize: 3, maxChunkSize: 10)
@@ -50,6 +51,7 @@ class AppStoreUpdateChecker {
             }
 
             logger.log(.appStore, "Found \(allUpdates.count) available App Store updates")
+            await GlobalConsoleManager.shared.appendOutput("Found \(allUpdates.count) App Store update(s)\n", source: CurrentPage.updater.title)
             return allUpdates
         }
     }

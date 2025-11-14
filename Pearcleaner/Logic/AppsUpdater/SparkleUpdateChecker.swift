@@ -42,6 +42,7 @@ class SparkleUpdateChecker {
     /// Only checks apps with SUFeedURL in Info.plist (no binary scanning)
     static func checkForUpdates(apps: [AppInfo], includePreReleases: Bool) async -> [UpdateableApp] {
         logger.log(.sparkle, "Starting Sparkle update check for \(apps.count) apps (includePreReleases: \(includePreReleases))")
+        await GlobalConsoleManager.shared.appendOutput("Checking for Sparkle updates (\(apps.count) apps)...\n", source: CurrentPage.updater.title)
 
         // Filter apps that have Sparkle feed URLs
         var sparkleApps: [(appInfo: AppInfo, bundle: Bundle, feedURL: URL)] = []
@@ -94,6 +95,7 @@ class SparkleUpdateChecker {
         }
 
         logger.log(.sparkle, "Found \(updates.count) Sparkle updates available")
+        await GlobalConsoleManager.shared.appendOutput("Found \(updates.count) Sparkle update(s)\n", source: CurrentPage.updater.title)
         return updates
     }
 

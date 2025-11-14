@@ -60,6 +60,7 @@ struct GlobalConsoleView: View {
                     if shouldShowLineCount {
                         Divider()
                             .frame(height: 10)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
                         Text(lineCountText)
                             .font(.system(.caption, design: .monospaced))
@@ -138,6 +139,8 @@ struct GlobalConsoleView: View {
             .padding(.vertical, 8)
 
             Divider()
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                .padding(.horizontal, 8)
 
             // Console output
             ScrollView {

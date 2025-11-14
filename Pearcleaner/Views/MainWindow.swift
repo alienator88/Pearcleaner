@@ -49,7 +49,9 @@ struct MainWindow: View {
                 Group {
                     switch appState.currentPage {
                     case .applications:
-                        applicationsView
+                        withConsole {
+                            applicationsView
+                        }
 
                     case .orphans:
                         withConsole {
@@ -324,7 +326,7 @@ struct MainWindow: View {
         VStack(spacing: 0) {
             content()
 
-            if consoleManager.showConsole {
+            if consoleManager.showConsole && !(appState.currentPage == .applications && appState.currentView == .empty) {
                 GlobalConsoleView(
                     output: consoleManager.consoleOutput,
                     height: $consoleManager.consoleHeight,
@@ -360,10 +362,8 @@ struct MainWindow: View {
                             MountedVolumeView()
                                 .id(appState.appInfo.id)
                         case .files:
-                            withConsole {
-                                FilesView()
-                                    .id(appState.appInfo.id)
-                            }
+                            FilesView()
+                                .id(appState.appInfo.id)
                         }
                     }
                     .transition(.opacity)
