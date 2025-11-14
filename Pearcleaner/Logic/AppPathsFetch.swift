@@ -128,6 +128,9 @@ class AppPathFinder {
         if let groupContainer = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: containerBundleIdentifier) {
             if FileManager.default.fileExists(atPath: groupContainer.path) {
                 containers.append(groupContainer)
+                Task { @MainActor in
+                    GlobalConsoleManager.shared.appendOutput("Found group container: \(groupContainer.lastPathComponent)\n", source: CurrentPage.applications.title)
+                }
             }
         }
 
@@ -142,6 +145,9 @@ class AppPathFinder {
                            let applicationBundleID = metadataDict["MCMMetadataIdentifier"] as? String {
                             if applicationBundleID == self.appInfo.bundleIdentifier {
                                 containers.append(directory)
+                                Task { @MainActor in
+                                    GlobalConsoleManager.shared.appendOutput("Found app container: \(directoryName)\n", source: CurrentPage.applications.title)
+                                }
                             }
                         }
                     }
@@ -493,14 +499,27 @@ class AppPathFinder {
             self.collectionAccessQueue.sync {
                 tempCollection = Array(self.collectionSet)
             }
+
+            Task { @MainActor in
+                GlobalConsoleManager.shared.appendOutput("Found \(tempCollection.count) files from manual search\n", source: CurrentPage.applications.title)
+            }
+
             tempCollection.append(contentsOf: self.containerCollection)
             tempCollection.append(contentsOf: outliers)
+
             // Insert spotlight results before sorting and filtering
+            Task { @MainActor in
+                GlobalConsoleManager.shared.appendOutput("Running Spotlight supplemental search...\n", source: CurrentPage.applications.title)
+            }
             let spotlightResults = self.spotlightSupplementalPaths()
             let spotlightOnly = spotlightResults.filter { !self.collectionSet.contains($0) }
-            //            if self.spotlight {
-            //                printOS("Spotlight index found: \(spotlightOnly.count)")
-            //            }
+
+            if spotlightOnly.count > 0 {
+                Task { @MainActor in
+                    GlobalConsoleManager.shared.appendOutput("Spotlight found \(spotlightOnly.count) additional files\n", source: CurrentPage.applications.title)
+                }
+            }
+
             tempCollection.append(contentsOf: spotlightOnly)
 
             let excludePaths = outliersEx.map { $0.path }
@@ -526,6 +545,11 @@ class AppPathFinder {
                     filteredCollection.append(url)
                 }
             }
+
+            Task { @MainActor in
+                GlobalConsoleManager.shared.appendOutput("Calculating file sizes for \(filteredCollection.count) items...\n", source: CurrentPage.applications.title)
+            }
+
             self.handlePostProcessing(sortedCollection: filteredCollection)
         }
     }
@@ -653,6 +677,11 @@ class AppPathFinder {
             }
             self.appState?.progressStep = 0
             self.appState?.showProgress = false
+
+            let totalSize = fileSize.values.reduce(0, +)
+            let sizeString = ByteCountFormatter.string(fromByteCount: totalSize, countStyle: .file)
+            GlobalConsoleManager.shared.appendOutput("✓ Found \(updatedCollection.count) items (\(sizeString))\n", source: CurrentPage.applications.title)
+
             self.completion?()
         }
     }
@@ -660,11 +689,15 @@ class AppPathFinder {
     // Public method for GUI
     func findPaths() {
         Task(priority: .background) {
+            await GlobalConsoleManager.shared.appendOutput("Searching for files related to \(self.appInfo.appName)...\n", source: CurrentPage.applications.title)
+
             if self.appInfo.webApp {
+                await GlobalConsoleManager.shared.appendOutput("Detected web app, scanning containers...\n", source: CurrentPage.applications.title)
                 self.containerCollection = self.getAllContainers(bundleURL: self.appInfo.path)
                 self.initialURLProcessing()
                 self.finalizeCollection()
             } else {
+                await GlobalConsoleManager.shared.appendOutput("Scanning \(self.locations.apps.paths.count) system locations...\n", source: CurrentPage.applications.title)
                 self.containerCollection = self.getAllContainers(bundleURL: self.appInfo.path)
                 self.initialURLProcessing()
                 self.collectLocations()

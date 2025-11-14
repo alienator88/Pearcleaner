@@ -296,6 +296,15 @@ struct ZombieView: View {
             ToolbarItem { Spacer() }
 
             TahoeToolbarItem(isGroup: true) {
+                Button {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                        consoleManager.showConsole.toggle()
+                    }
+                } label: {
+                    Label("Console", systemImage: consoleManager.showConsole ? "terminal.fill" : "terminal")
+                }
+                .help("Toggle console output")
+                
                 Menu {
                     ForEach(SortOptionList.allCases, id: \.self) { sortOption in
                         Button {
@@ -332,14 +341,7 @@ struct ZombieView: View {
                 }
                 .help("See details")
 
-                Button {
-                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-                        consoleManager.showConsole.toggle()
-                    }
-                } label: {
-                    Label("Console", systemImage: consoleManager.showConsole ? "terminal.fill" : "terminal")
-                }
-                .help("Toggle console output")
+
             }
 
 

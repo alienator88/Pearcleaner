@@ -57058,6 +57058,7 @@
       }
     },
     "Report Issue" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -83683,6 +83684,7 @@
       }
     },
     "While in beta, report issues with missing or incorrect updates here" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

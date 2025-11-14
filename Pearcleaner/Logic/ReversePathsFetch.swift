@@ -60,6 +60,8 @@ class ReversePathsSearcher {
 
     func reversePathsSearch(completion: @escaping () -> Void = {}) {
         Task(priority: .high) {
+            await GlobalConsoleManager.shared.appendOutput("Scanning \(locations.reverse.paths.count) system locations for orphaned files...\n", source: CurrentPage.orphans.title)
+
             if streamingMode {
                 await self.processLocationsStreaming()
             } else {
@@ -74,12 +76,18 @@ class ReversePathsSearcher {
     private func processLocationsStreaming() async {
         var batch: [(url: URL, size: Int64, icon: NSImage?)] = []
         let batchSize = 10
+        var totalFound = 0
 
         for location in locations.reverse.paths where fileManager.fileExists(atPath: location) {
             if shouldStop {
                 break
             }
+            let beforeCount = batch.count
             await processLocationStreaming(location, batch: &batch, batchSize: batchSize)
+            let foundInLocation = batch.count - beforeCount
+            if foundInLocation > 0 {
+                totalFound += foundInLocation
+            }
         }
 
         // Flush any remaining items
@@ -87,9 +95,15 @@ class ReversePathsSearcher {
             await flushBatch(&batch)
         }
 
+        // Capture totalFound value before MainActor.run to avoid concurrency issues
+        let finalCount = totalFound
+
         // Mark scanning as complete
         await MainActor.run {
             self.appState?.showProgress = false
+            if !shouldStop {
+                GlobalConsoleManager.shared.appendOutput("✓ Orphan scan complete, found \(finalCount) orphaned files\n", source: CurrentPage.orphans.title)
+            }
         }
     }
 
@@ -147,6 +161,13 @@ class ReversePathsSearcher {
                 updatedZombieFile.fileSize[item.url] = item.size
                 updatedZombieFile.fileIcon[item.url] = item.icon
             }
+
+            // Log progress periodically (every 50 files)
+            let currentCount = updatedZombieFile.fileSize.count
+            if currentCount % 50 == 0 && currentCount > 0 {
+                GlobalConsoleManager.shared.appendOutput("Scanned \(currentCount) orphaned files so far...\n", source: CurrentPage.orphans.title)
+            }
+
             self.appState?.zombieFile = updatedZombieFile
         }
     }
@@ -276,6 +297,14 @@ class ReversePathsSearcher {
             var updatedZombieFile = ZombieFile.empty
             updatedZombieFile.fileSize = self.fileSize
             updatedZombieFile.fileIcon = self.fileIcon
+
+            let totalSize = self.fileSize.values.reduce(0, +)
+            let sizeString = ByteCountFormatter.string(fromByteCount: totalSize, countStyle: .file)
+
+            Task { @MainActor in
+                GlobalConsoleManager.shared.appendOutput("✓ Found \(self.collection.count) orphaned files (\(sizeString))\n", source: CurrentPage.orphans.title)
+            }
+
             self.appState?.zombieFile = updatedZombieFile
             self.appState?.showProgress = false
         }

@@ -39,7 +39,9 @@ struct GlobalConsoleView: View {
     }
 
     private var lineCountText: String {
-        let lineCount = output.components(separatedBy: "\n").count
+        // Trim trailing newlines before counting to avoid counting empty trailing lines
+        let trimmedOutput = output.trimmingCharacters(in: .whitespacesAndNewlines)
+        let lineCount = trimmedOutput.components(separatedBy: "\n").count
         return lineCount == 1 ? "1 line" : "\(lineCount) lines"
     }
 

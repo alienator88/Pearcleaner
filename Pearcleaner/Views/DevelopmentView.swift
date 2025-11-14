@@ -397,6 +397,15 @@ struct EnvironmentCleanerView: View {
             ToolbarItem { Spacer() }
 
             TahoeToolbarItem(isGroup: true) {
+                Button {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                        consoleManager.showConsole.toggle()
+                    }
+                } label: {
+                    Label("Console", systemImage: consoleManager.showConsole ? "terminal.fill" : "terminal")
+                }
+                .help("Toggle console output")
+                
                 Menu {
                     ForEach(paths, id: \.self) { environment in
                         Group {
@@ -425,14 +434,6 @@ struct EnvironmentCleanerView: View {
                     Label("Refresh", systemImage: "arrow.counterclockwise")
                 }
 
-                Button {
-                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-                        consoleManager.showConsole.toggle()
-                    }
-                } label: {
-                    Label("Console", systemImage: consoleManager.showConsole ? "terminal.fill" : "terminal")
-                }
-                .help("Toggle console output")
             }
         }
     }

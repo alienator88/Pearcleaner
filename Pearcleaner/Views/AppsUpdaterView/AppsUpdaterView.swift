@@ -396,13 +396,15 @@ struct AppsUpdaterView: View {
             ToolbarItem { Spacer() }
 
             TahoeToolbarItem(isGroup: true) {
+
                 Button {
-                    NSWorkspace.shared.open(URL(string: "https://github.com/alienator88/Pearcleaner/issues/381")!)
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                        consoleManager.showConsole.toggle()
+                    }
                 } label: {
-                    Label("Report Issue", systemImage: "ladybug.fill")
+                    Label("Console", systemImage: consoleManager.showConsole ? "terminal.fill" : "terminal")
                 }
-                .disabled(updateManager.isScanning)
-                .help("While in beta, report issues with missing or incorrect updates here")
+                .help("Toggle console output")
 
                 if updateManager.isScanning {
                     // Show stop button during scan
@@ -435,14 +437,7 @@ struct AppsUpdaterView: View {
                 }
                 .help("Show hidden updates")
 
-                Button {
-                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-                        consoleManager.showConsole.toggle()
-                    }
-                } label: {
-                    Label("Console", systemImage: consoleManager.showConsole ? "terminal.fill" : "terminal")
-                }
-                .help("Toggle console output")
+
             }
         }
         .task {

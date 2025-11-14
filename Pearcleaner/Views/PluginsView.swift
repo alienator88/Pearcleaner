@@ -348,6 +348,15 @@ struct PluginsView: View {
             ToolbarItem { Spacer() }
 
             TahoeToolbarItem(isGroup: true) {
+                Button {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                        consoleManager.showConsole.toggle()
+                    }
+                } label: {
+                    Label("Console", systemImage: consoleManager.showConsole ? "terminal.fill" : "terminal")
+                }
+                .help("Toggle console output")
+                
                 Menu {
                     ForEach(PluginSortOption.allCases, id: \.self) { option in
                         Button {
@@ -369,14 +378,7 @@ struct PluginsView: View {
                 }
                 .disabled(isLoading)
 
-                Button {
-                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-                        consoleManager.showConsole.toggle()
-                    }
-                } label: {
-                    Label("Console", systemImage: consoleManager.showConsole ? "terminal.fill" : "terminal")
-                }
-                .help("Toggle console output")
+
             }
         }
     }
