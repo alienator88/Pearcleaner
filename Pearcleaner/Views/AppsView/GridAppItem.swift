@@ -29,36 +29,34 @@ struct GridAppItem: View {
 
             if multiSelect {
                 HStack {
-                    Toggle(
-                        isOn: Binding(
-                            get: { self.appState.externalPaths.contains(self.appInfo.path) },
-                            set: { isChecked in
-                                if isChecked {
-                                    if !self.appState.externalPaths.contains(self.appInfo.path) {
-                                        let wasEmpty = self.appState.externalPaths.isEmpty
-                                        self.appState.externalPaths.append(self.appInfo.path)
+                    Button {
+                        let isChecked = self.appState.externalPaths.contains(self.appInfo.path)
 
-                                        if wasEmpty && appState.currentView != .files {
-                                            appState.multiMode = true
-                                            showAppInFiles(
-                                                appInfo: appInfo, appState: appState,
-                                                locations: locations)
-                                        }
-                                    }
-                                } else {
-                                    self.appState.externalPaths.removeAll {
-                                        $0 == self.appInfo.path
-                                    }
+                        if !isChecked {
+                            if !self.appState.externalPaths.contains(self.appInfo.path) {
+                                let wasEmpty = self.appState.externalPaths.isEmpty
+                                self.appState.externalPaths.append(self.appInfo.path)
 
-                                    if self.appState.externalPaths.isEmpty {
-                                        appState.multiMode = false
-                                    }
+                                if wasEmpty && appState.currentView != .files {
+                                    appState.multiMode = true
+                                    showAppInFiles(
+                                        appInfo: appInfo, appState: appState,
+                                        locations: locations)
                                 }
                             }
-                        )
-                    ) { EmptyView() }
-                    .toggleStyle(SimpleCheckboxToggleStyle())
-                    .scaleEffect(0.8)
+                        } else {
+                            self.appState.externalPaths.removeAll {
+                                $0 == self.appInfo.path
+                            }
+
+                            if self.appState.externalPaths.isEmpty {
+                                appState.multiMode = false
+                            }
+                        }
+                    } label: {
+                        EmptyView()
+                    }
+                    .buttonStyle(CircleCheckboxButtonStyle(isSelected: self.appState.externalPaths.contains(self.appInfo.path)))
 
                     Spacer()
                 }

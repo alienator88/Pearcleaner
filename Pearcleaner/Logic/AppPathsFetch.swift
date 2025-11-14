@@ -17,7 +17,8 @@ class AppPathFinder {
     private var containerCollection: [URL] = []
     private let collectionAccessQueue = DispatchQueue(label: "com.alienator88.Pearcleaner.appPathFinder.collectionAccess")
     @AppStorage("settings.general.searchSensitivity") private var sensitivityLevel: SearchSensitivityLevel = .strict
-    
+    @AppStorage("settings.general.searchTextContent") private var searchTextContent: Bool = false
+
     // Optional override sensitivity level for per-app settings
     private var overrideSensitivityLevel: SearchSensitivityLevel?
 
@@ -417,12 +418,44 @@ class AppPathFinder {
         case .deep:
             // Deep: Fuzzy search with metadata and AND logic for multi-word names
             var subpredicates: [NSPredicate] = [
-                NSPredicate(format: "kMDItemDisplayName CONTAINS[cd] %@", appName),
-                NSPredicate(format: "kMDItemPath CONTAINS[cd] %@", bundleID),
-                NSPredicate(format: "kMDItemTextContent CONTAINS[cd] %@", appName),
-                NSPredicate(format: "kMDItemComment CONTAINS[cd] %@", appName),
-                NSPredicate(format: "kMDItemCreator ==[cd] %@", bundleID)
+                // DisplayName: appName OR bundleID
+                NSCompoundPredicate(orPredicateWithSubpredicates: [
+                    NSPredicate(format: "kMDItemDisplayName CONTAINS[cd] %@", appName),
+                    NSPredicate(format: "kMDItemDisplayName CONTAINS[cd] %@", bundleID)
+                ]),
+                // Path: appName OR bundleID
+                NSCompoundPredicate(orPredicateWithSubpredicates: [
+                    NSPredicate(format: "kMDItemPath CONTAINS[cd] %@", appName),
+                    NSPredicate(format: "kMDItemPath CONTAINS[cd] %@", bundleID)
+                ]),
+                // Comment: appName OR bundleID
+                NSCompoundPredicate(orPredicateWithSubpredicates: [
+                    NSPredicate(format: "kMDItemComment CONTAINS[cd] %@", appName),
+                    NSPredicate(format: "kMDItemComment CONTAINS[cd] %@", bundleID)
+                ]),
+                // Creator: appName OR bundleID
+                NSCompoundPredicate(orPredicateWithSubpredicates: [
+                    NSPredicate(format: "kMDItemCreator ==[cd] %@", appName),
+                    NSPredicate(format: "kMDItemCreator ==[cd] %@", bundleID)
+                ]),
+                // Copyright: appName OR bundleID (often contains developer/company info)
+                NSCompoundPredicate(orPredicateWithSubpredicates: [
+                    NSPredicate(format: "kMDItemCopyright CONTAINS[cd] %@", appName),
+                    NSPredicate(format: "kMDItemCopyright CONTAINS[cd] %@", bundleID)
+                ]),
+                // EncodingApplications: appName only (array of apps that processed the file)
+                NSPredicate(format: "kMDItemEncodingApplications CONTAINS[cd] %@", appName)
             ]
+
+            // TextContent: appName OR bundleID (optional, controlled by user setting)
+            if searchTextContent {
+                subpredicates.append(
+                    NSCompoundPredicate(orPredicateWithSubpredicates: [
+                        NSPredicate(format: "kMDItemTextContent CONTAINS[cd] %@", appName),
+                        NSPredicate(format: "kMDItemTextContent CONTAINS[cd] %@", bundleID)
+                    ])
+                )
+            }
 
             // Add wildcard predicate: ALL name parts must be present (AND logic)
             let nameParts = appName.split(separator: " ")

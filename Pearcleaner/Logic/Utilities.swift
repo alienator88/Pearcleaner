@@ -453,19 +453,21 @@ func getUserProfile() async -> UserProfile {
                let data = dataList.first,
                let img = NSImage(data: data) {
                 let targetSize = NSSize(width: 50, height: 50)
-                let resized = NSImage(size: targetSize)
 
-                // Image resizing must run on main thread to avoid deadlock
-                await MainActor.run {
-                    resized.lockFocus()
-                    img.draw(in: NSRect(origin: .zero, size: targetSize),
-                             from: NSRect(origin: .zero, size: img.size),
-                             operation: .copy,
-                             fraction: 1.0)
-                    resized.unlockFocus()
+                // Pre-render resized image (must run on main thread)
+                // Note: NSImage Sendable conformance requires macOS 14+, but we ensure thread safety via DispatchQueue.main
+                resizedImage = await withCheckedContinuation { continuation in
+                    DispatchQueue.main.async {
+                        let resized = NSImage(size: targetSize, flipped: false) { rect in
+                            img.draw(in: rect,
+                                    from: NSRect(origin: .zero, size: img.size),
+                                    operation: .copy,
+                                    fraction: 1.0)
+                            return true
+                        }
+                        continuation.resume(returning: resized)
+                    }
                 }
-
-                resizedImage = resized
             }
 
             return UserProfile(firstName: firstName, image: resizedImage)

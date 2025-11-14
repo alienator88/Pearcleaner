@@ -24,6 +24,7 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.spotlight") private var spotlight = false
     @AppStorage("settings.general.searchSensitivity") private var sensitivityLevel: SearchSensitivityLevel = .strict
     @AppStorage("settings.general.deepLevelAlertShown") private var deepLevelAlertShown: Bool = false
+    @AppStorage("settings.general.searchTextContent") private var searchTextContent: Bool = false
     @AppStorage("settings.app.autoSlim") private var autoSlim: Bool = false
     @AppStorage("settings.general.sudoCacheTimeout") private var sudoCacheTimeoutData: Data = {
         let defaultTimeout = SudoCacheTimeout()
@@ -205,6 +206,27 @@ struct GeneralSettingsTab: View {
                     At levels higher than Strict it is recommended to check found files manually.
                     """))
                         Spacer()
+
+                        // Text content search toggle (Deep level only)
+                        if sensitivityLevel == .deep {
+                            HStack {
+
+                                Spacer()
+
+                                Button {
+                                    searchTextContent.toggle()
+                                } label: {
+                                    Text("Search file content")
+                                        .font(.callout)
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                }
+                                .buttonStyle(CircleCheckboxButtonStyle(isSelected: searchTextContent))
+                                .padding(.horizontal, 5)
+
+                            }
+
+                        }
+
                         Text(verbatim: "\(sensitivityLevel.title)")
                             .font(.title3)
                             .fontWeight(.semibold)
@@ -240,7 +262,6 @@ struct GeneralSettingsTab: View {
                     } message: {
                         Text(SearchSensitivityLevel.deep.description)
                     }
-
 
                 })
 

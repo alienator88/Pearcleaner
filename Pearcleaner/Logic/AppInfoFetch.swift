@@ -203,25 +203,28 @@ class AppInfoUtils {
     /// Fetch app icon.
     static func fetchAppIcon(for path: URL, wrapped: Bool, md: Bool = false) -> NSImage? {
         let iconPath = wrapped ? (md ? path : path.deletingLastPathComponent().deletingLastPathComponent()) : path
-        if let appIcon = getIconForFileOrFolderNS(atPath: iconPath) {
-            appIcon.size = NSSize(width: 50, height: 50)
-
-            // OPTIMIZATION: Force NSImage to prepare its representations on main thread
-            // This must run on main thread to avoid deadlock with AppKit initialization
-            if Thread.isMainThread {
-                appIcon.lockFocus()
-                appIcon.unlockFocus()
-            } else {
-                DispatchQueue.main.sync {
-                    appIcon.lockFocus()
-                    appIcon.unlockFocus()
-                }
-            }
-
-            return appIcon
-        } else {
+        guard let appIcon = getIconForFileOrFolderNS(atPath: iconPath) else {
             printOS("App Icon not found for app at path: \(path)")
             return nil
+        }
+
+        let targetSize = NSSize(width: 50, height: 50)
+
+        // OPTIMIZATION: Pre-render icon with cached representation using modern API
+        // This must run on main thread to avoid deadlock with AppKit initialization
+        func createRenderedIcon() -> NSImage {
+            return NSImage(size: targetSize, flipped: false) { rect in
+                appIcon.draw(in: rect)
+                return true
+            }
+        }
+
+        if Thread.isMainThread {
+            return createRenderedIcon()
+        } else {
+            return DispatchQueue.main.sync {
+                createRenderedIcon()
+            }
         }
     }
 }
@@ -568,8 +571,8 @@ private func getEntitlements(for appPath: String) -> [String]? {
                 do {
                     let files = try FileManager.default.contentsOfDirectory(atPath: macosPath.path)
                     for file in files where !file.hasPrefix(".") {
-                        // Add binary name if not already present
-                        if !results.contains(file) {
+                        // Add binary name if not already present and length >= 5 to avoid false matches
+                        if !results.contains(file) && file.count >= 5 {
                             results.append(file)
                         }
                     }
