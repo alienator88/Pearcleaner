@@ -80,8 +80,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSWindow.allowsAutomaticWindowTabbing = false
 
-        ensureApplicationSupportFolderExists()
-
         // Check permissions once at launch
         PermissionManagerLocal.shared.checkPermissions(types: [.fullDiskAccess]) { results in
             PermissionManagerLocal.shared.results = results
@@ -91,6 +89,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         Task { @MainActor in
             UndoHistoryManager.shared.cleanupStaleEntries()
         }
+
+        ensureApplicationSupportFolderExists()
+
+        cleanupPearcleanerTempDirs()
 
     }
 

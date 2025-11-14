@@ -50,6 +50,17 @@ struct UpdateRowView: View {
         }
     }
 
+    /// Convert release description to HTML format
+    /// - App Store returns plain text with \n - convert to <br>
+    /// - Sparkle already has HTML markup - use as is
+    private func formattedReleaseDescription(_ description: String) -> String {
+        if app.source == .appStore {
+            return description.replacingOccurrences(of: "\n", with: "<br>")
+        } else {
+            return description
+        }
+    }
+
     @ViewBuilder
     private var actionButtons: some View {
         // For unsupported apps, show explanatory message instead of action buttons
@@ -62,13 +73,13 @@ struct UpdateRowView: View {
             case .idle:
                 HStack(spacing: 8) {
                     Button {
-                        if app.isIOSApp { //, let appStoreURL = app.appStoreURL {
+                        if app.isIOSApp, let appStoreURL = app.appStoreURL {
                             // iOS apps: Open App Store page
-//                            openInAppStore(urlString: appStoreURL)
-                            // Use new custom iOS installer function
-                            showCustomAlert(title: "Information", message: "App Store will show an alert shortly which will start the download for this iOS app. \n\nClick Download Last Compatible button in the new alert to continue.", style: .informational, onOk: {
-                                Task { await updateManager.updateIOSApp(app) }
-                            })
+                            openInAppStore(urlString: appStoreURL)
+                            // Testing new custom iOS installer function
+//                            showCustomAlert(title: "Information", message: "App Store will show an alert shortly which will start the download for this iOS app. \n\nClick Download Last Compatible button in the new alert to continue.", style: .informational, onOk: {
+//                                Task { await updateManager.updateIOSApp(app) }
+//                            })
                         } else if isNonPrimaryRegion, let appStoreURL = app.appStoreURL {
                             // Apps found in non-primary regions: Open App Store page
                             openInAppStore(urlString: appStoreURL)
@@ -77,20 +88,10 @@ struct UpdateRowView: View {
                             Task { await updateManager.updateApp(app) }
                         }
                     } label: {
-                        Text(isNonPrimaryRegion ? "Update in App Store" : "Update")
+                        Text(app.isIOSApp || isNonPrimaryRegion ? "Update in App Store" : "Update")
                     }
                     .buttonStyle(.plain)
                     .foregroundStyle(.orange)
-
-                    // iOS app update button
-//                    if app.isIOSApp {
-//                        Button {
-//                            Task { await updateManager.updateIOSApp(app) }
-//                        } label: {
-//                            Text("Update")
-//                        }
-//                        .buttonStyle(.bordered)
-//                    }
                 }
 
             case .checking, .downloading, .extracting, .installing, .verifying:
@@ -210,7 +211,7 @@ struct UpdateRowView: View {
                             Button {
                                 openInAppStore(urlString: appStoreURL)
                             } label: {
-                                Image(systemName: "info.circle")
+                                Image(systemName: ifOSBelow(macOS: 14) ? "cart.fill" : "storefront.fill")
                                     .font(.system(size: 14))
                                     .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
                             }
@@ -259,8 +260,10 @@ struct UpdateRowView: View {
                         // Release description (HTML or plain text)
                         if let description = app.releaseDescription {
                             ScrollView {
+                                let htmlDescription = formattedReleaseDescription(description)
+
                                 if let nsAttributedString = try? NSAttributedString(
-                                    data: Data(description.utf8),
+                                    data: Data(htmlDescription.utf8),
                                     options: [.documentType: NSAttributedString.DocumentType.html,
                                              .characterEncoding: String.Encoding.utf8.rawValue],
                                     documentAttributes: nil

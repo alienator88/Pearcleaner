@@ -70,6 +70,9 @@ class IOSAppInstaller {
         progress: @escaping (Double, String) -> Void
     ) async throws {
 
+        // Normalize path to outer wrapper at entry point (defensive coding)
+        let normalizedAppPath = normalizeToOuterWrapper(existingAppPath)
+
         // 1. Extract IPA to temp directory (80-85%)
         progress(0.80, "Installing...")
         let extractedPayload = try await extractIPA(ipaPath: ipaPath, adamID: adamID)
@@ -84,7 +87,7 @@ class IOSAppInstaller {
 
         // 4. Preserve critical metadata from existing installation (85%)
         progress(0.85, "Installing...")
-        let preservedData = try preserveExistingMetadata(appPath: existingAppPath)
+        let preservedData = try preserveExistingMetadata(appPath: normalizedAppPath)
 
         // 5. Generate updated metadata files
         let newITunesMetadata = try await generateITunesMetadata(
@@ -105,7 +108,7 @@ class IOSAppInstaller {
         // 7. Atomic replacement with root privileges (90%)
         progress(0.90, "Installing...")
         try await performAtomicReplacement(
-            existingAppPath: existingAppPath,
+            existingAppPath: normalizedAppPath,
             newWrapper: newWrapper,
             wrappedBundleName: wrappedBundleName
         )
@@ -124,6 +127,24 @@ class IOSAppInstaller {
 
     // MARK: - Private Helper Methods
 
+    /// Normalize path to outer wrapper (handles both inner app and outer wrapper paths)
+    /// - Parameter appPath: Either inner app or outer wrapper path
+    /// - Returns: Path to outer wrapper
+    private static func normalizeToOuterWrapper(_ appPath: URL) -> URL {
+        // Check if this is already the outer wrapper by looking for Wrapper/ subdirectory
+        let wrapperDir = appPath.appendingPathComponent("Wrapper")
+        let isOuterWrapper = FileManager.default.fileExists(atPath: wrapperDir.path)
+
+        if isOuterWrapper {
+            // Already at outer wrapper
+            return appPath
+        } else {
+            // This is the inner app, go up two levels to outer wrapper
+            // /Applications/To Do List.app/Wrapper/ToDoList.app -> /Applications/To Do List.app
+            return appPath.deletingLastPathComponent().deletingLastPathComponent()
+        }
+    }
+
     /// Detect the wrapped bundle name dynamically (e.g., "Runner.app", "DREO.app")
     private static func detectWrappedBundleName(payloadDir: URL) throws -> String {
         let contents = try FileManager.default.contentsOfDirectory(
@@ -141,8 +162,6 @@ class IOSAppInstaller {
 
     /// Extract IPA to temp directory
     private static func extractIPA(ipaPath: String, adamID: UInt64) async throws -> URL {
-        // Clean up any stale temp directories from previous operations
-        cleanupPearcleanerTempDirs()
 
         let extractDir = URL(fileURLWithPath: "/tmp/pearcleaner-ios-\(adamID)/extracted")
 
@@ -192,7 +211,10 @@ class IOSAppInstaller {
 
     /// Preserve critical metadata from existing installation
     private static func preserveExistingMetadata(appPath: URL) throws -> IOSPreservedMetadata {
-        let metadataPath = appPath
+        // Normalize to outer wrapper first (handles both inner app and outer wrapper paths)
+        let normalizedPath = normalizeToOuterWrapper(appPath)
+
+        let metadataPath = normalizedPath
             .appendingPathComponent("Wrapper")
             .appendingPathComponent("iTunesMetadata.plist")
 
@@ -237,7 +259,7 @@ class IOSAppInstaller {
         let json = try JSONSerialization.jsonObject(with: data) as! [String: Any]
         let results = json["results"] as! [[String: Any]]
 
-        guard let appData = results.first else {
+        guard let _ = results.first else {
             throw IOSAppInstallerError.apiLookupFailed
         }
 
@@ -247,7 +269,8 @@ class IOSAppInstaller {
         // Update ONLY version-specific fields
         metadata["bundleShortVersionString"] = versionInfo.version
         metadata["bundleVersion"] = versionInfo.build
-        metadata["softwareVersionExternalIdentifier"] = appData["version"]
+        // NOTE: Do NOT update softwareVersionExternalIdentifier - it must remain as integer from original
+        // The preserved rawPlist already contains the correct integer value
 
         // CRITICAL: Ensure protectedMetadata is preserved
         metadata["protectedMetadata"] = preservedData.protectedMetadata
@@ -255,8 +278,9 @@ class IOSAppInstaller {
         return metadata
     }
 
-    /// Generate BundleMetadata.plist
-    private static func generateBundleMetadata() throws -> [String: Any] {
+    /// Generate BundleMetadata.plist in NSKeyedArchiver format
+    /// Must match the exact structure that App Store creates to avoid launch failures
+    private static func generateBundleMetadata() throws -> Data {
         let installDate = Date().timeIntervalSinceReferenceDate
 
         let process = Process()
@@ -271,19 +295,57 @@ class IOSAppInstaller {
         let buildVersion = String(data: data, encoding: .utf8)?
             .trimmingCharacters(in: .whitespacesAndNewlines) ?? "25B78"
 
-        return [
-            "installDate": installDate,
-            "installBuildVersion": buildVersion,
-            "installType": 0,
-            "autoInstallOverride": 0
+        // Create NSKeyedArchiver format matching App Store's structure
+        // This is critical - plain dict format causes kLSInvalidWrapperErr (-10671)
+        let archivedDict: [String: Any] = [
+            "$archiver": "NSKeyedArchiver",
+            "$version": 100000,
+            "$objects": [
+                "$null",  // Index 0
+                [  // Index 1 - root object (MIBundleMetadata)
+                    "$class": ["CF$UID": 6],
+                    "installDate": ["CF$UID": 2],
+                    "installBuildVersion": ["CF$UID": 4],
+                    "installType": ["CF$UID": 5],
+                    "autoInstallOverride": ["CF$UID": 5],
+                    "alternateIconName": ["CF$UID": 0],
+                    "placeholderFailureReason": ["CF$UID": 5],
+                    "placeholderFailureUnderlyingError": ["CF$UID": 0],
+                    "placeholderFailureUnderlyingErrorSource": ["CF$UID": 5],
+                    "watchKitAppExecutableHash": ["CF$UID": 0]
+                ],
+                [  // Index 2 - NSDate object
+                    "$class": ["CF$UID": 3],
+                    "NS.time": installDate
+                ],
+                [  // Index 3 - NSDate class
+                    "$classes": ["NSDate", "NSObject"],
+                    "$classname": "NSDate"
+                ],
+                buildVersion,  // Index 4
+                0,  // Index 5
+                [  // Index 6 - MIBundleMetadata class
+                    "$classes": ["MIBundleMetadata", "NSObject"],
+                    "$classname": "MIBundleMetadata"
+                ]
+            ],
+            "$top": [
+                "root": ["CF$UID": 1]
+            ]
         ]
+
+        return try PropertyListSerialization.data(
+            fromPropertyList: archivedDict,
+            format: .binary,
+            options: 0
+        )
     }
 
     /// Build new Wrapper structure in temp directory
     private static func buildWrapperStructure(
         extractedApp: URL,
         iTunesMetadata: [String: Any],
-        bundleMetadata: [String: Any],
+        bundleMetadata: Data,  // Changed from [String: Any] to Data
         adamID: UInt64
     ) throws -> URL {
 
@@ -297,20 +359,16 @@ class IOSAppInstaller {
             to: wrapperDir.appendingPathComponent(appName)
         )
 
-        // Write metadata plists
+        // Write metadata plists (both must be binary format)
         let iTunesData = try PropertyListSerialization.data(
             fromPropertyList: iTunesMetadata,
-            format: .xml,
+            format: .binary,  // CRITICAL: Must be binary, not XML
             options: 0
         )
         try iTunesData.write(to: wrapperDir.appendingPathComponent("iTunesMetadata.plist"))
 
-        let bundleData = try PropertyListSerialization.data(
-            fromPropertyList: bundleMetadata,
-            format: .xml,
-            options: 0
-        )
-        try bundleData.write(to: wrapperDir.appendingPathComponent("BundleMetadata.plist"))
+        // BundleMetadata is already in binary NSKeyedArchiver format
+        try bundleMetadata.write(to: wrapperDir.appendingPathComponent("BundleMetadata.plist"))
 
         return wrapperDir
     }
@@ -322,17 +380,20 @@ class IOSAppInstaller {
         wrappedBundleName: String
     ) async throws {
 
-        let oldWrapper = existingAppPath.appendingPathComponent("Wrapper")
+        // Normalize to outer wrapper first (handles both inner app and outer wrapper paths)
+        let normalizedPath = normalizeToOuterWrapper(existingAppPath)
+
+        let oldWrapper = normalizedPath.appendingPathComponent("Wrapper")
         let backupWrapper = URL(fileURLWithPath: "/tmp/pearcleaner-ios-backup-\(UUID().uuidString)")
-        let symlinkPath = existingAppPath.appendingPathComponent("WrappedBundle")
+        let symlinkPath = normalizedPath.appendingPathComponent("WrappedBundle")
 
         // Script 1: Atomic replacement (all commands chained with &&)
         let installScript = """
         pkill -x '\(wrappedBundleName.replacingOccurrences(of: ".app", with: ""))' 2>/dev/null || true && \
         mv '\(oldWrapper.path)' '\(backupWrapper.path)' && \
         mv '\(newWrapper.path)' '\(oldWrapper.path)' && \
-        chown -R root:wheel '\(existingAppPath.path)' && \
-        chmod -R 755 '\(existingAppPath.path)' && \
+        chown -R root:wheel '\(normalizedPath.path)' && \
+        chmod -R 755 '\(normalizedPath.path)' && \
         rm -f '\(symlinkPath.path)' && \
         ln -s 'Wrapper/\(wrappedBundleName)' '\(symlinkPath.path)' && \
         rm -rf '\(backupWrapper.path)'

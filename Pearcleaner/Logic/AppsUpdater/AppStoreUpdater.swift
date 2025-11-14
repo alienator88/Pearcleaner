@@ -66,7 +66,10 @@ class AppStoreUpdater {
 
         do {
             // Create SSPurchase for downloading (purchasing: false = update existing app)
-            let purchase = await SSPurchase(adamID: adamID, purchasing: false)
+            // NOTE: For iOS apps, all entity types ("software", "macSoftware", "desktopSoftware")
+            // download the same universal variant, which is NOT Mac-compatible.
+            // iOS app updates are currently non-functional due to Apple's CDN serving wrong variant.
+            let purchase = await SSPurchase(adamID: adamID, purchasing: false, kind: "software")
 
             // Mark as update to indicate this is a redownload of owned app
             purchase.isUpdate = true
@@ -392,9 +395,6 @@ private final class IOSDownloadObserver: NSObject, CKDownloadQueueObserver {
     private func preserveIPAFile() {
         guard !iosFilesPreserved else { return }
 
-        // Clean up any stale temp directories from previous operations
-        cleanupPearcleanerTempDirs()
-
         let downloadDir = "\(CKDownloadDirectory(nil))/\(adamID)"
         let tempDir = "/tmp/pearcleaner-ios-\(adamID)"
 
@@ -538,8 +538,6 @@ private final class MacOSDownloadObserverWithWorkaround: NSObject, CKDownloadQue
     // MARK: - Helper Methods
 
     private func createHardLinkToPKG() {
-        // Clean up any stale temp directories from previous operations
-        cleanupPearcleanerTempDirs()
 
         let downloadDir = "\(CKDownloadDirectory(nil))/\(adamID)"
         let tempDir = "/tmp/pearcleaner-appstore-\(adamID)"

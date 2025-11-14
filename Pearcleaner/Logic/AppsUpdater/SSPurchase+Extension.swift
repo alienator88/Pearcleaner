@@ -12,7 +12,7 @@ import StoreFoundation
 typealias ADAMID = UInt64
 
 extension SSPurchase {
-    convenience init(adamID: ADAMID, purchasing: Bool) async {
+    convenience init(adamID: ADAMID, purchasing: Bool, kind: String = "software") async {
         self.init(
             buyParameters: """
                 productType=C&price=0&pg=default&appExtVrsId=0&pricingParameters=\
@@ -25,7 +25,7 @@ extension SSPurchase {
 
         itemIdentifier = adamID
 
-        let downloadMetadata = SSDownloadMetadata(kind: "software")
+        let downloadMetadata = SSDownloadMetadata(kind: kind)
         downloadMetadata.itemIdentifier = adamID
         self.downloadMetadata = downloadMetadata
 
