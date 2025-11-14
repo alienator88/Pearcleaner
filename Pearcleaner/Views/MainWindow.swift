@@ -349,7 +349,7 @@ struct MainWindow: View {
                 .frame(width: sidebarWidth)
                 .transition(.opacity)
                 .ifGlassMain()
-                .padding(8)
+                .padding([.leading, .vertical], 8)
                 .ignoresSafeArea(edges: .top)
 
             // Details View with Console

@@ -51,13 +51,15 @@ struct FilesView: View {
                 VStack {
                     Spacer()
 
-                    ProgressStepView(currentStep: appState.progressStep)
+                    ProgressView()
+//                    ProgressStepView(currentStep: appState.progressStep)
 
                     Spacer()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .transition(.opacity)
-                .animation(.none, value: appState.showProgress)
+                .ignoresSafeArea(.all)
+//                .transition(.opacity)
+//                .animation(.none, value: appState.showProgress)
             } else {
 
                 ZStack {

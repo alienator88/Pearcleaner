@@ -62,22 +62,13 @@ struct AppListItems: View {
 
             Button(action: {
                 if !isSelected {
+                    showAppInFiles(appInfo: appInfo, appState: appState, locations: locations)
+                } else {
+                    // Closing the same item
                     updateOnMain {
                         appState.appInfo = .empty
                         appState.selectedItems = []
                         appState.currentView = .empty
-                    }
-                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                        showAppInFiles(appInfo: appInfo, appState: appState, locations: locations)
-                    }
-                } else {
-                    // Closing the same item - animate the close
-                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                        updateOnMain {
-                            appState.appInfo = .empty
-                            appState.selectedItems = []
-                            appState.currentView = .empty
-                        }
                     }
                 }
 

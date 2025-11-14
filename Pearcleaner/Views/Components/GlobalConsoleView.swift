@@ -159,7 +159,8 @@ struct GlobalConsoleView: View {
                 }
             }
         }
-        .background(Color.black)
-        .shadow(color: Color.black.opacity(0.3), radius: 10, x: 0, y: -5)
+        .background(RoundedRectangle(cornerRadius: ifOSBelow(macOS: 26) ? 8 : 20).fill(Color.black))
+        .shadow(color: Color.black.opacity(1), radius: 10, x: 0, y: 0)
+        .padding(8)
     }
 }

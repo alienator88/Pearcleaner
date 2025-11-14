@@ -316,6 +316,7 @@ func showAppInFiles(
     @AppStorage("settings.general.searchSensitivity") var globalSensitivityLevel: SearchSensitivityLevel = .strict
 
     updateOnMain {
+        appState.showProgress = true
         appState.appInfo = .empty
         appState.selectedItems = []
 
@@ -324,18 +325,12 @@ func showAppInFiles(
             appState.perAppSensitivity[appInfo.path.path] = globalSensitivityLevel
         }
 
-        // When the appInfo is not found, show progress, and search for paths.
-        appState.showProgress = true
-
         // Initialize the path finder and execute its search.
         AppPathFinder(appInfo: appInfo, locations: locations, appState: appState, sensitivityOverride: appState.perAppSensitivity[appInfo.path.path]).findPaths()
 
         appState.appInfo = appInfo
 
-        // Animate the view change and popover display.
-        withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-            appState.currentView = .files
-        }
+        appState.currentView = .files
     }
 }
 
