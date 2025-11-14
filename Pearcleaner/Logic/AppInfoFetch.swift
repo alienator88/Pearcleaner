@@ -206,9 +206,17 @@ class AppInfoUtils {
         if let appIcon = getIconForFileOrFolderNS(atPath: iconPath) {
             appIcon.size = NSSize(width: 50, height: 50)
 
-            // OPTIMIZATION: Force NSImage to prepare its representations
-            appIcon.lockFocus()
-            appIcon.unlockFocus()
+            // OPTIMIZATION: Force NSImage to prepare its representations on main thread
+            // This must run on main thread to avoid deadlock with AppKit initialization
+            if Thread.isMainThread {
+                appIcon.lockFocus()
+                appIcon.unlockFocus()
+            } else {
+                DispatchQueue.main.sync {
+                    appIcon.lockFocus()
+                    appIcon.unlockFocus()
+                }
+            }
 
             return appIcon
         } else {

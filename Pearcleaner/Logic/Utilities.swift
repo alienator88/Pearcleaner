@@ -454,12 +454,17 @@ func getUserProfile() async -> UserProfile {
                let img = NSImage(data: data) {
                 let targetSize = NSSize(width: 50, height: 50)
                 let resized = NSImage(size: targetSize)
-                resized.lockFocus()
-                img.draw(in: NSRect(origin: .zero, size: targetSize),
-                         from: NSRect(origin: .zero, size: img.size),
-                         operation: .copy,
-                         fraction: 1.0)
-                resized.unlockFocus()
+
+                // Image resizing must run on main thread to avoid deadlock
+                await MainActor.run {
+                    resized.lockFocus()
+                    img.draw(in: NSRect(origin: .zero, size: targetSize),
+                             from: NSRect(origin: .zero, size: img.size),
+                             operation: .copy,
+                             fraction: 1.0)
+                    resized.unlockFocus()
+                }
+
                 resizedImage = resized
             }
 

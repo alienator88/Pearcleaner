@@ -12,6 +12,7 @@
 - [x] Fix veracrypt, google-drive casks
 - [x] Fix updating pinned formulae - #457
 - [x] Fix App Store release notes not respecting new lines
+- [x] Fix NSImage focus locks between main/background threads
 - [x] Clear any /tmp/pearcleaner files during MAS update functions
 - [x] Increase brew console drag handle click area, remember size and if left open/closed
 - [x] Translations
