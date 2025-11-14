@@ -266,7 +266,6 @@ struct PluginsView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.horizontal, 20)
-        .padding(.bottom, !selectedPlugins.isEmpty ? 10 : 20)
         .onAppear {
             // Start loading plugins immediately but non-blocking
             if allPlugins.isEmpty {

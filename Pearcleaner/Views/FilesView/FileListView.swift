@@ -177,7 +177,6 @@ struct FileListView: View {
                 .opacity(infoSidebar ? 0.5 : 1)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .padding(.horizontal, 20)
-                .padding(.bottom, !selectedFileItemsLocal.isEmpty ? 10 : 20)
                 .safeAreaInset(edge: .bottom) {
                     if !selectedFileItemsLocal.isEmpty {
                         HStack {

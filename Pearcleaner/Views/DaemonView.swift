@@ -266,7 +266,7 @@ struct DaemonView: View {
 //            Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding([.horizontal, .bottom], 20)
+        .padding([.horizontal], 20)
         .onAppear {
             if launchItems.isEmpty {
                 refreshLaunchItems()

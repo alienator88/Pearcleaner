@@ -279,7 +279,6 @@ struct EnvironmentCleanerView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.horizontal, 20)
-        .padding(.bottom, !selectedPaths.isEmpty ? 10 : 20)
         .safeAreaInset(edge: .bottom) {
             if !selectedPaths.isEmpty {
                 // Show selection toolbar only when items are selected
