@@ -13,6 +13,7 @@ struct AppsUpdaterView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var updater: Updater
     @Environment(\.colorScheme) var colorScheme
+    @ObservedObject private var consoleManager = GlobalConsoleManager.shared
     @State private var searchText = ""
     @State private var collapsedCategories: Set<String> = ["Unsupported"]
     @State private var hiddenSidebar: Bool = false
@@ -414,10 +415,12 @@ struct AppsUpdaterView: View {
                 } else {
                     // Show refresh button when not scanning
                     Button {
+                        GlobalConsoleManager.shared.appendOutput("Refreshing app updates...\n", source: CurrentPage.updater.title)
                         Task {
                             let task = Task { await updateManager.scanForUpdates(forceReload: true) }
                             updateManager.currentScanTask = task
                             await task.value
+                            GlobalConsoleManager.shared.appendOutput("✓ Completed update scan\n", source: CurrentPage.updater.title)
                         }
                     } label: {
                         Label("Refresh", systemImage: "arrow.counterclockwise")
@@ -431,12 +434,23 @@ struct AppsUpdaterView: View {
                     Label("Hidden", systemImage: "sidebar.trailing")
                 }
                 .help("Show hidden updates")
+
+                Button {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                        consoleManager.showConsole.toggle()
+                    }
+                } label: {
+                    Label("Console", systemImage: consoleManager.showConsole ? "terminal.fill" : "terminal")
+                }
+                .help("Toggle console output")
             }
         }
         .task {
+            GlobalConsoleManager.shared.appendOutput("Loading app updates...\n", source: CurrentPage.updater.title)
             let task = Task { await updateManager.scanForUpdates() }
             updateManager.currentScanTask = task
             await task.value
+            GlobalConsoleManager.shared.appendOutput("✓ Loaded app updates\n", source: CurrentPage.updater.title)
         }
         .onDisappear {
             UpdaterDebugLogger.shared.clearLogs()
@@ -476,8 +490,10 @@ struct AppsUpdaterView: View {
     }
 
     private func updateSelectedApps() {
+        GlobalConsoleManager.shared.appendOutput("Starting update of \(selectedAppsCount) selected app(s)...\n", source: CurrentPage.updater.title)
         Task {
             await updateManager.updateSelectedApps()
+            GlobalConsoleManager.shared.appendOutput("✓ Completed update operation\n", source: CurrentPage.updater.title)
         }
     }
 }

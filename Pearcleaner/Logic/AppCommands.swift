@@ -76,29 +76,27 @@ struct AppCommands: Commands {
 
             Button
             {
-                if appState.currentView != .zombie {
-                    let result = undoTrash()
-                    if result {
-                        if appState.currentPage == .plugins {
-                            // For plugins view, post notification to undo
-                            NotificationCenter.default.post(name: NSNotification.Name("PluginsViewShouldUndo"), object: nil)
-                        } else if appState.currentPage == .fileSearch {
-                            // For file search view, post notification to undo
-                            NotificationCenter.default.post(name: NSNotification.Name("FileSearchViewShouldUndo"), object: nil)
-                        } else if appState.currentPage == .orphans {
-                            // For orphans view, post notification to undo
-                            NotificationCenter.default.post(name: NSNotification.Name("ZombieViewShouldUndo"), object: nil)
-                        } else if appState.currentPage == .packages {
-                            // For packages view, post notification to undo
-                            NotificationCenter.default.post(name: NSNotification.Name("PackagesViewShouldUndo"), object: nil)
-                        } else {
-                            loadApps(folderPaths: fsm.folderPaths)
-                            // After reload, if we're viewing files, refresh the file view
-                            if appState.currentView == .files {
-                                Task { @MainActor in
-                                    try? await Task.sleep(nanoseconds: 500_000_000)
-                                    showAppInFiles(appInfo: appState.appInfo, appState: appState, locations: locations)
-                                }
+                let result = undoTrash()
+                if result {
+                    if appState.currentPage == .plugins {
+                        // For plugins view, post notification to undo
+                        NotificationCenter.default.post(name: NSNotification.Name("PluginsViewShouldUndo"), object: nil)
+                    } else if appState.currentPage == .fileSearch {
+                        // For file search view, post notification to undo
+                        NotificationCenter.default.post(name: NSNotification.Name("FileSearchViewShouldUndo"), object: nil)
+                    } else if appState.currentPage == .orphans {
+                        // For orphans view, post notification to undo
+                        NotificationCenter.default.post(name: NSNotification.Name("ZombieViewShouldUndo"), object: nil)
+                    } else if appState.currentPage == .packages {
+                        // For packages view, post notification to undo
+                        NotificationCenter.default.post(name: NSNotification.Name("PackagesViewShouldUndo"), object: nil)
+                    } else {
+                        loadApps(folderPaths: fsm.folderPaths)
+                        // After reload, if we're viewing files, refresh the file view
+                        if appState.currentView == .files {
+                            Task { @MainActor in
+                                try? await Task.sleep(nanoseconds: 500_000_000)
+                                showAppInFiles(appInfo: appState.appInfo, appState: appState, locations: locations)
                             }
                         }
                     }

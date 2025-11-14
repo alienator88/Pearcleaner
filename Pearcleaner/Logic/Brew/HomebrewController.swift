@@ -133,9 +133,8 @@ class HomebrewController: ObservableObject {
     @MainActor @Published var isOperationRunning: Bool = false
     @MainActor private var runningProcess: Process?
 
-    // Console output tracking
+    // Console enabled flag (keep for backward compatibility)
     @MainActor @Published var consoleEnabled: Bool = false
-    @MainActor @Published var consoleOutput: String = ""
 
     private init() {
         // Determine paths based on architecture
@@ -252,7 +251,7 @@ class HomebrewController: ObservableObject {
                     // Stream to console if enabled - check dynamically to support mid-operation console opening
                     if let text = String(data: chunk, encoding: .utf8) {
                         await MainActor.run {
-                            HomebrewController.shared.consoleOutput += text
+                            GlobalConsoleManager.shared.appendOutput(text, source: CurrentPage.homebrew.title)
                         }
                     }
                 }
@@ -299,9 +298,8 @@ class HomebrewController: ObservableObject {
 
         logger.log(.homebrew, "🔍 Scanning for installed \(cask ? "casks" : "formulae") in \(baseDir)")
 
-        await MainActor.run { [weak self] in
-            guard let self = self else { return }
-            self.consoleOutput += "Loading installed \(cask ? "casks" : "formulae")...\n"
+        await MainActor.run {
+            GlobalConsoleManager.shared.appendOutput("Loading installed \(cask ? "casks" : "formulae")...\n", source: CurrentPage.homebrew.title)
         }
 
         guard let packageDirs = try? FileManager.default.contentsOfDirectory(atPath: baseDir) else {
@@ -342,7 +340,7 @@ class HomebrewController: ObservableObject {
         let finalLoadedCount = loadedCount
         await MainActor.run { [weak self] in
             guard let self = self else { return }
-            self.consoleOutput += "Loaded \(finalLoadedCount) \(cask ? "casks" : "formulae")\n"
+            GlobalConsoleManager.shared.appendOutput("Loaded \(finalLoadedCount) \(cask ? "casks" : "formulae")\n", source: CurrentPage.homebrew.title)
         }
     }
 
@@ -352,7 +350,7 @@ class HomebrewController: ObservableObject {
     func loadMinimalPackageMetadata(cask: Bool) async throws -> [(name: String, displayName: String?, description: String?, version: String?, bundleVersion: String?)] {
         await MainActor.run { [weak self] in
             guard let self = self else { return }
-            self.consoleOutput += "Loading available \(cask ? "casks" : "formulae") metadata...\n"
+            GlobalConsoleManager.shared.appendOutput("Loading available \(cask ? "casks" : "formulae") metadata...\n", source: CurrentPage.homebrew.title)
         }
 
         let fileName = cask ? "cask.jws.json" : "formula.jws.json"
@@ -410,7 +408,7 @@ class HomebrewController: ObservableObject {
         let resultsCount = results.count
         await MainActor.run { [weak self] in
             guard let self = self else { return }
-            self.consoleOutput += "Loaded \(resultsCount) available \(cask ? "casks" : "formulae")\n"
+            GlobalConsoleManager.shared.appendOutput("Loaded \(resultsCount) available \(cask ? "casks" : "formulae")\n", source: CurrentPage.homebrew.title)
         }
 
         return results
@@ -1017,7 +1015,7 @@ class HomebrewController: ObservableObject {
 
         await MainActor.run { [weak self] in
             guard let self = self else { return }
-            self.consoleOutput += "Checking for outdated packages (\(allPackages.count) total)...\n"
+            GlobalConsoleManager.shared.appendOutput("Checking for outdated packages (\(allPackages.count) total)...\n", source: CurrentPage.homebrew.title)
         }
 
         // Step 1: Try to check ALL packages via API first (fast path)
@@ -1025,7 +1023,7 @@ class HomebrewController: ObservableObject {
         logger.log(.homebrew, "Step 1: Checking packages via public API (fast path)")
         await MainActor.run { [weak self] in
             guard let self = self else { return }
-            self.consoleOutput += "Checking packages via API...\n"
+            GlobalConsoleManager.shared.appendOutput("Checking packages via API...\n", source: CurrentPage.homebrew.title)
         }
         let (coreOutdated, apiFailedPackages) = await checkCorePackagesViaAPI(allPackages)
 
@@ -1037,7 +1035,7 @@ class HomebrewController: ObservableObject {
             logger.log(.homebrew, "Step 2: Checking \(apiFailedPackages.count) tap packages manually")
             await MainActor.run { [weak self] in
                 guard let self = self else { return }
-                self.consoleOutput += "Checking \(apiFailedPackages.count) tap packages...\n"
+                GlobalConsoleManager.shared.appendOutput("Checking \(apiFailedPackages.count) tap packages...\n", source: CurrentPage.homebrew.title)
             }
             let tapOutdated = await checkTapPackagesManually(apiFailedPackages)
             logger.log(.homebrew, "  Manual tap check complete: \(tapOutdated.count) outdated")
@@ -1047,7 +1045,7 @@ class HomebrewController: ObservableObject {
 
             await MainActor.run { [weak self] in
                 guard let self = self else { return }
-                self.consoleOutput += "Found \(totalOutdated) outdated packages\n"
+                GlobalConsoleManager.shared.appendOutput("Found \(totalOutdated) outdated packages\n", source: CurrentPage.homebrew.title)
             }
 
             // Filter out Pearcleaner (has dedicated UI banner in Updater view)
@@ -1059,7 +1057,7 @@ class HomebrewController: ObservableObject {
 
         await MainActor.run { [weak self] in
             guard let self = self else { return }
-            self.consoleOutput += "Found \(coreOutdated.count) outdated packages\n"
+            GlobalConsoleManager.shared.appendOutput("Found \(coreOutdated.count) outdated packages\n", source: CurrentPage.homebrew.title)
         }
 
         // Filter out Pearcleaner (has dedicated UI banner in Updater view)
@@ -1423,7 +1421,7 @@ class HomebrewController: ObservableObject {
     func getBrewVersion() async throws -> String {
         await MainActor.run { [weak self] in
             guard let self = self else { return }
-            self.consoleOutput += "Getting Homebrew version...\n"
+            GlobalConsoleManager.shared.appendOutput("Getting Homebrew version...\n", source: CurrentPage.homebrew.title)
         }
 
         // Use git directly for faster version check (avoids spawning brew process)
@@ -1448,7 +1446,7 @@ class HomebrewController: ObservableObject {
         if process.terminationStatus == 0 && !output.isEmpty {
             await MainActor.run { [weak self] in
                 guard let self = self else { return }
-                self.consoleOutput += "Homebrew version: \(output)\n"
+                GlobalConsoleManager.shared.appendOutput("Homebrew version: \(output)\n", source: CurrentPage.homebrew.title)
             }
             return output  // Returns "4.6.19"
         }
@@ -1481,7 +1479,7 @@ class HomebrewController: ObservableObject {
     func checkForBrewUpdate() async throws -> (current: String, latest: String, updateAvailable: Bool) {
         await MainActor.run { [weak self] in
             guard let self = self else { return }
-            self.consoleOutput += "Checking for Homebrew updates...\n"
+            GlobalConsoleManager.shared.appendOutput("Checking for Homebrew updates...\n", source: CurrentPage.homebrew.title)
         }
 
         // Get current semantic version (e.g., "4.6.19")
@@ -1496,9 +1494,9 @@ class HomebrewController: ObservableObject {
         await MainActor.run { [weak self] in
             guard let self = self else { return }
             if updateAvailable {
-                self.consoleOutput += "Update available: \(currentVersion) → \(latestVersion)\n"
+                GlobalConsoleManager.shared.appendOutput("Update available: \(currentVersion) → \(latestVersion)\n", source: CurrentPage.homebrew.title)
             } else {
-                self.consoleOutput += "Homebrew is up to date (\(currentVersion))\n"
+                GlobalConsoleManager.shared.appendOutput("Homebrew is up to date (\(currentVersion))\n", source: CurrentPage.homebrew.title)
             }
         }
 
@@ -1579,7 +1577,7 @@ class HomebrewController: ObservableObject {
                     // Delete entire subdirectory (brew uses FileUtils.rm_rf on nested_cache directories)
                     await MainActor.run { [weak self] in
                         guard let self = self else { return }
-                        self.consoleOutput += "Removing \(subdirName)/\n"
+                        GlobalConsoleManager.shared.appendOutput("Removing \(subdirName)/\n", source: CurrentPage.homebrew.title)
                     }
                     filesToDelete.append(subdirURL)
                 }
@@ -1644,17 +1642,17 @@ class HomebrewController: ObservableObject {
                 let itemCount = filesToDelete.count
                 await MainActor.run { [weak self] in
                     guard let self = self else { return }
-                    self.consoleOutput += "Cleaning \(itemCount) items...\n"
+                    GlobalConsoleManager.shared.appendOutput("Cleaning \(itemCount) items...\n", source: CurrentPage.homebrew.title)
                 }
                 let _ = FileManagerUndo.shared.deleteFiles(at: filesToDelete, bundleName: "BrewCleanup")
                 await MainActor.run { [weak self] in
                     guard let self = self else { return }
-                    self.consoleOutput += "Cleanup complete\n"
+                    GlobalConsoleManager.shared.appendOutput("Cleanup complete\n", source: CurrentPage.homebrew.title)
                 }
             } else {
                 await MainActor.run { [weak self] in
                     guard let self = self else { return }
-                    self.consoleOutput += "No files to clean\n"
+                    GlobalConsoleManager.shared.appendOutput("No files to clean\n", source: CurrentPage.homebrew.title)
                 }
             }
             return nil
@@ -1675,7 +1673,7 @@ class HomebrewController: ObservableObject {
     func getAnalyticsStatus() async throws -> Bool {
         await MainActor.run { [weak self] in
             guard let self = self else { return }
-            self.consoleOutput += "Checking analytics status...\n"
+            GlobalConsoleManager.shared.appendOutput("Checking analytics status...\n", source: CurrentPage.homebrew.title)
         }
 
         // Use git config directly for faster check (avoids spawning brew process)
@@ -1707,7 +1705,7 @@ class HomebrewController: ObservableObject {
 
         await MainActor.run { [weak self] in
             guard let self = self else { return }
-            self.consoleOutput += "Analytics are \(analyticsEnabled ? "enabled" : "disabled")\n"
+            GlobalConsoleManager.shared.appendOutput("Analytics are \(analyticsEnabled ? "enabled" : "disabled")\n", source: CurrentPage.homebrew.title)
         }
 
         return analyticsEnabled
@@ -1716,7 +1714,7 @@ class HomebrewController: ObservableObject {
     func setAnalyticsStatus(enabled: Bool) async throws {
         await MainActor.run { [weak self] in
             guard let self = self else { return }
-            self.consoleOutput += "Setting analytics to \(enabled ? "enabled" : "disabled")...\n"
+            GlobalConsoleManager.shared.appendOutput("Setting analytics to \(enabled ? "enabled" : "disabled")...\n", source: CurrentPage.homebrew.title)
         }
 
         // Use git config directly for faster toggle (avoids spawning brew process)
@@ -1739,14 +1737,14 @@ class HomebrewController: ObservableObject {
             let error = String(data: data, encoding: .utf8) ?? "Unknown error"
             await MainActor.run { [weak self] in
                 guard let self = self else { return }
-                self.consoleOutput += "Error: \(error)\n"
+                GlobalConsoleManager.shared.appendOutput("Error: \(error)\n", source: CurrentPage.homebrew.title)
             }
             throw HomebrewError.commandFailed("Failed to set analytics status: \(error)")
         }
 
         await MainActor.run { [weak self] in
             guard let self = self else { return }
-            self.consoleOutput += "Analytics status updated successfully\n"
+            GlobalConsoleManager.shared.appendOutput("Analytics status updated successfully\n", source: CurrentPage.homebrew.title)
         }
     }
 

@@ -9,6 +9,8 @@ import Foundation
 
 class HomebrewUpdateChecker {
     static func checkForUpdates(apps: [AppInfo], includeFormulae: Bool, showAutoUpdatesInHomebrew: Bool = true) async -> [UpdateableApp] {
+        await GlobalConsoleManager.shared.appendOutput("Checking for Homebrew updates...\n", source: CurrentPage.updater.title)
+
         // Filter apps that have a cask identifier
         // When showAutoUpdatesInHomebrew=false: exclude casks with auto_updates=true (they'll only appear in Sparkle)
         let brewApps = apps.filter { app in
@@ -21,6 +23,8 @@ class HomebrewUpdateChecker {
 
             return true
         }
+
+        await GlobalConsoleManager.shared.appendOutput("Found \(brewApps.count) Homebrew-managed apps to check\n", source: CurrentPage.updater.title)
 
         // Step 1: Build list of installed packages by scanning Cellar/Caskroom (~70ms)
         // This enables the fast hybrid API approach instead of slow `brew outdated` command
@@ -74,12 +78,23 @@ class HomebrewUpdateChecker {
 
         // Step 2: Check outdated using FAST hybrid API approach (~650ms)
         // Much faster than `brew outdated` command (~2.3s) - uses parallel API calls + .rb fallback for taps
+        await GlobalConsoleManager.shared.appendOutput("Checking outdated packages (scanning \(installedCasks.count) casks", source: CurrentPage.updater.title)
+        if includeFormulae {
+            await GlobalConsoleManager.shared.appendOutput(", \(installedFormulae.count) formulae", source: CurrentPage.updater.title)
+        }
+        await GlobalConsoleManager.shared.appendOutput(")...\n", source: CurrentPage.updater.title)
+
         let outdatedPackages = await HomebrewController.shared.getOutdatedPackagesHybrid(
             formulae: installedFormulae,
             casks: installedCasks
         )
 
-        guard !outdatedPackages.isEmpty else { return [] }
+        guard !outdatedPackages.isEmpty else {
+            await GlobalConsoleManager.shared.appendOutput("All Homebrew packages are up to date\n", source: CurrentPage.updater.title)
+            return []
+        }
+
+        await GlobalConsoleManager.shared.appendOutput("Found \(outdatedPackages.count) outdated package(s)\n", source: CurrentPage.updater.title)
 
         var updateableApps: [UpdateableApp] = []
 
@@ -233,6 +248,8 @@ class HomebrewUpdateChecker {
                 updateableApps.append(updateableApp)
             }
         }
+
+        await GlobalConsoleManager.shared.appendOutput("Processed \(updateableApps.count) updateable app(s) from Homebrew\n", source: CurrentPage.updater.title)
 
         return updateableApps
     }

@@ -12,6 +12,7 @@ import SwiftUI
 
 struct MainWindow: View {
     @ObservedObject private var themeManager = ThemeManager.shared
+    @ObservedObject private var consoleManager = GlobalConsoleManager.shared
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
     @EnvironmentObject var fsm: FolderSettingsManager
@@ -35,6 +36,9 @@ struct MainWindow: View {
     @State private var showPermissionList = false
     @State private var glowRadius = 0.0
 
+    // Global Console State (managed via GlobalConsoleManager)
+    @AppStorage("settings.console.state") private var consoleStateData: Data = Data()
+
     var body: some View {
 
         // Main App Window
@@ -48,31 +52,47 @@ struct MainWindow: View {
                         applicationsView
 
                     case .orphans:
-                        ZombieView()
+                        withConsole {
+                            ZombieView()
+                        }
 
                     case .development:
-                        EnvironmentCleanerView()
+                        withConsole {
+                            EnvironmentCleanerView()
+                        }
 
                     case .lipo:
-                        LipoView()
+                        withConsole {
+                            LipoView()
+                        }
 
                     case .services:
-                        DaemonView()
+                        withConsole {
+                            DaemonView()
+                        }
 
                     case .packages:
-                        PackageView()
+                        withConsole {
+                            PackageView()
+                        }
 
                     case .plugins:
-                        PluginsView()
+                        withConsole {
+                            PluginsView()
+                        }
 
                     case .fileSearch:
-                        FileSearchView()
+                        withConsole {
+                            FileSearchView()
+                        }
 
                     case .homebrew:
                         HomebrewView()
 
                     case .updater:
-                        AppsUpdaterView()
+                        withConsole {
+                            AppsUpdaterView()
+                        }
                     }
                 }
 
@@ -137,7 +157,36 @@ struct MainWindow: View {
         ) { _ in
             isFullscreen = false
         }
+        .task {
+            // Restore console state from AppStorage
+            if let decoded = try? JSONDecoder().decode(ConsoleState.self, from: consoleStateData) {
+                await MainActor.run {
+                    consoleManager.showConsole = decoded.isOpen
+                    consoleManager.consoleHeight = decoded.height
+                }
+            }
+        }
+        .onChange(of: consoleManager.showConsole) { newValue in
+            // Save console state
+            let state = ConsoleState(isOpen: newValue, height: consoleManager.consoleHeight)
+            if let encoded = try? JSONEncoder().encode(state) {
+                consoleStateData = encoded
+            }
 
+            // When console is hidden, trim output to 300 lines max to prevent memory bloat
+            if !newValue {
+                Task { @MainActor in
+                    consoleManager.trimOutput(toLines: 300)
+                }
+            }
+        }
+        .onChange(of: consoleManager.consoleHeight) { newValue in
+            // Save console height when changed
+            let state = ConsoleState(isOpen: consoleManager.showConsole, height: newValue)
+            if let encoded = try? JSONEncoder().encode(state) {
+                consoleStateData = encoded
+            }
+        }
         .toolbar {
             TahoeToolbarItem(placement: .navigation, isGroup: true) {
 
@@ -269,6 +318,28 @@ struct MainWindow: View {
         }
     }
 
+    /// Helper to wrap view content with console at bottom
+    @ViewBuilder
+    private func withConsole<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+        VStack(spacing: 0) {
+            content()
+
+            if consoleManager.showConsole {
+                GlobalConsoleView(
+                    output: consoleManager.consoleOutput,
+                    height: $consoleManager.consoleHeight,
+                    onClear: {
+                        Task { @MainActor in
+                            consoleManager.clearOutput()
+                        }
+                    }
+                )
+                .frame(height: consoleManager.consoleHeight)
+                .transition(.move(edge: .bottom))
+            }
+        }
+    }
+
     @ViewBuilder
     private var applicationsView: some View {
         HStack(alignment: .center, spacing: 0) {
@@ -281,25 +352,24 @@ struct MainWindow: View {
                 .padding(8)
                 .ignoresSafeArea(edges: .top)
 
-            // Details View
-            HStack(spacing: 0) {
-                Group {
-                    switch appState.currentView {
-                    case .empty:
-                        MountedVolumeView()
-                            .id(appState.appInfo.id)
-                    case .files:
-                        FilesView()
-                            .id(appState.appInfo.id)
-                    case .zombie:
-                        ZombieView()
-                            .id(appState.appInfo.id)
+            // Details View with Console
+                HStack(spacing: 0) {
+                    Group {
+                        switch appState.currentView {
+                        case .empty:
+                            MountedVolumeView()
+                                .id(appState.appInfo.id)
+                        case .files:
+                            withConsole {
+                                FilesView()
+                                    .id(appState.appInfo.id)
+                            }
+                        }
                     }
+                    .transition(.opacity)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-                .transition(.opacity)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            }
-            .zIndex(2)
+                .zIndex(2)
         }
     }
 

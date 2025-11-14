@@ -62,6 +62,8 @@ class AppStoreUpdater {
         progress: @escaping @Sendable (Double, String) -> Void,
         attemptCount: UInt32 = 3
     ) async throws {
+        await GlobalConsoleManager.shared.appendOutput("Initiating App Store download for adamID \(adamID)...\n", source: CurrentPage.updater.title)
+
         do {
             // Create SSPurchase for downloading (purchasing: false = update existing app)
             let purchase = await SSPurchase(adamID: adamID, purchasing: false)
@@ -73,15 +75,25 @@ class AppStoreUpdater {
             // Check if workaround is needed for macOS apps on affected OS versions
             let needsWorkaround = needsInstalldWorkaround()
 
+            if isIOSApp {
+                await GlobalConsoleManager.shared.appendOutput("Detected iOS app - using custom installer\n", source: CurrentPage.updater.title)
+            } else if needsWorkaround {
+                await GlobalConsoleManager.shared.appendOutput("Detected macOS version with installer bug - using custom installer\n", source: CurrentPage.updater.title)
+            }
+
             try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
                 // NOTE: iOS apps will show "Current Version Not Compatible" dialog
                 // User must click "Download Last Compatible" to proceed with download
                 CKPurchaseController.shared().perform(purchase, withOptions: 0) { _, _, error, response in
                     if let error = error {
+                        Task {
+                            await GlobalConsoleManager.shared.appendOutput("✗ App Store purchase failed: \(error.localizedDescription)\n", source: CurrentPage.updater.title)
+                        }
                         continuation.resume(throwing: error)
                     } else if response?.downloads?.isEmpty == false {
                         // Download started - create observer to track it
                         Task {
+                            await GlobalConsoleManager.shared.appendOutput("Download started, monitoring progress...\n", source: CurrentPage.updater.title)
                             do {
                                 if isIOSApp {
                                     // iOS apps: Use dedicated iOS observer (all macOS versions)
@@ -98,13 +110,18 @@ class AppStoreUpdater {
                                     let observer = AppStoreDownloadObserver(adamID: adamID, progress: progress)
                                     try await observer.observeDownloadQueue()
                                 }
+                                await GlobalConsoleManager.shared.appendOutput("Download and installation completed successfully\n", source: CurrentPage.updater.title)
                                 continuation.resume()
                             } catch {
+                                await GlobalConsoleManager.shared.appendOutput("✗ Download/installation failed: \(error.localizedDescription)\n", source: CurrentPage.updater.title)
                                 continuation.resume(throwing: error)
                             }
                         }
                     } else {
                         // No downloads means already up to date
+                        Task {
+                            await GlobalConsoleManager.shared.appendOutput("App is already up to date\n", source: CurrentPage.updater.title)
+                        }
                         progress(1.0, "Already up to date")
                         continuation.resume()
                     }
@@ -113,15 +130,18 @@ class AppStoreUpdater {
         } catch {
             // Retry logic for network errors (like mas does)
             guard attemptCount > 1 else {
+                await GlobalConsoleManager.shared.appendOutput("✗ Update failed after retries: \(error.localizedDescription)\n", source: CurrentPage.updater.title)
                 throw error
             }
 
             // Only retry network errors
             guard (error as NSError).domain == NSURLErrorDomain else {
+                await GlobalConsoleManager.shared.appendOutput("✗ Non-network error, not retrying: \(error.localizedDescription)\n", source: CurrentPage.updater.title)
                 throw error
             }
 
             let remainingAttempts = attemptCount - 1
+            await GlobalConsoleManager.shared.appendOutput("Network error, retrying... (\(remainingAttempts) attempts remaining)\n", source: CurrentPage.updater.title)
             try await updateApp(adamID: adamID, appPath: appPath, isIOSApp: isIOSApp, progress: progress, attemptCount: remainingAttempts)
         }
     }
@@ -181,11 +201,20 @@ private final class AppStoreDownloadObserver: NSObject, CKDownloadQueueObserver 
         // This is the official completion signal from CommerceKit
         if status.isFailed {
             let error = status.error ?? AppStoreUpdateError.downloadFailed("Download failed")
+            Task {
+                await GlobalConsoleManager.shared.appendOutput("✗ App Store download failed: \(error.localizedDescription)\n", source: CurrentPage.updater.title)
+            }
             errorHandler?(error)
         } else if status.isCancelled {
+            Task {
+                await GlobalConsoleManager.shared.appendOutput("Download cancelled by user\n", source: CurrentPage.updater.title)
+            }
             errorHandler?(AppStoreUpdateError.downloadCancelled)
         } else {
             // Success!
+            Task {
+                await GlobalConsoleManager.shared.appendOutput("App Store download completed\n", source: CurrentPage.updater.title)
+            }
             progressCallback(1.0, "Completed")
             completionHandler?()
         }

@@ -13,6 +13,7 @@ struct ZombieView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
     @EnvironmentObject var fsm: FolderSettingsManager
+    @ObservedObject private var consoleManager = GlobalConsoleManager.shared
     @State private var showPop: Bool = false
     @State private var windowController = WindowManager()
     @AppStorage("settings.general.leftoverWarning") private var warning: Bool = false
@@ -330,6 +331,15 @@ struct ZombieView: View {
                     Label("Info", systemImage: "sidebar.trailing")
                 }
                 .help("See details")
+
+                Button {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                        consoleManager.showConsole.toggle()
+                    }
+                } label: {
+                    Label("Console", systemImage: consoleManager.showConsole ? "terminal.fill" : "terminal")
+                }
+                .help("Toggle console output")
             }
 
 
@@ -338,6 +348,7 @@ struct ZombieView: View {
     }
 
     private func startSearch() {
+        GlobalConsoleManager.shared.appendOutput("Starting orphan file search...\n", source: CurrentPage.orphans.title)
         updateOnMain {
             appState.zombieFile = .empty
             appState.showProgress = true
@@ -350,16 +361,19 @@ struct ZombieView: View {
                 updateOnMain {
                     self.lastRefreshDate = Date()
                     self.currentSearcher = nil
+                    GlobalConsoleManager.shared.appendOutput("✓ Completed orphan file search\n", source: CurrentPage.orphans.title)
                 }
             }
         }
     }
 
     private func stopSearch() {
+        GlobalConsoleManager.shared.appendOutput("Stopping orphan search...\n", source: CurrentPage.orphans.title)
         currentSearcher?.stop()
         updateOnMain {
             appState.showProgress = false
             currentSearcher = nil
+            GlobalConsoleManager.shared.appendOutput("✓ Orphan search stopped\n", source: CurrentPage.orphans.title)
         }
     }
 
@@ -370,12 +384,14 @@ struct ZombieView: View {
     private func handleUninstallAction() {
         showCustomAlert(enabled: confirmAlert, title: String(localized: "Warning"), message: String(localized: "Are you sure you want to remove these files?"), style: .warning, onOk: {
             Task {
+                GlobalConsoleManager.shared.appendOutput("Starting deletion of \(selectedZombieItemsLocal.count) orphaned file(s)...\n", source: CurrentPage.orphans.title)
 
                 let selectedItemsArray = Array(selectedZombieItemsLocal)
                 let bundleName = "Orphaned Files (\(selectedItemsArray.count))"
 
                 let result = FileManagerUndo.shared.deleteFiles(at: selectedItemsArray, bundleName: bundleName)
                 if result {
+                    GlobalConsoleManager.shared.appendOutput("✓ Completed deletion of \(selectedItemsArray.count) orphaned file(s)\n", source: CurrentPage.orphans.title)
 
                     if selectedZombieItemsLocal.count == appState.zombieFile.fileSize.keys.count {
                         updateOnMain {

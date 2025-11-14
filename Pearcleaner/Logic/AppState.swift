@@ -723,7 +723,7 @@ enum CurrentTabView: Int, CaseIterable {
 enum CurrentDetailsView: Int {
     case empty
     case files
-    case zombie
+//    case zombie
 }
 
 extension AppState {

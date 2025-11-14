@@ -37,6 +37,7 @@ struct LaunchItem: Identifiable, Hashable, Equatable {
 struct DaemonView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.colorScheme) var colorScheme
+    @ObservedObject private var consoleManager = GlobalConsoleManager.shared
     @State private var launchItems: [LaunchItem] = []
     @State private var isLoading: Bool = false
     @State private var lastRefreshDate: Date?
@@ -311,23 +312,34 @@ struct DaemonView: View {
                     Label("Refresh", systemImage: "arrow.counterclockwise")
                 }
                 .disabled(isLoading)
+
+                Button {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                        consoleManager.showConsole.toggle()
+                    }
+                } label: {
+                    Label("Console", systemImage: consoleManager.showConsole ? "terminal.fill" : "terminal")
+                }
+                .help("Toggle console output")
             }
 
         }
     }
     
     private func refreshLaunchItems() {
+        GlobalConsoleManager.shared.appendOutput("Refreshing launch services...\n", source: CurrentPage.services.title)
         isLoading = true
-        
+
         Task {
             let items = await loadLaunchItems()
-            
+
             await MainActor.run {
                 self.launchItems = items.sorted { first, second in
                     return first.label.localizedCaseInsensitiveCompare(second.label) == .orderedAscending
                 }
                 self.lastRefreshDate = Date()
                 self.isLoading = false
+                GlobalConsoleManager.shared.appendOutput("✓ Loaded \(items.count) launch services\n", source: CurrentPage.services.title)
             }
         }
     }

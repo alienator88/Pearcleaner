@@ -307,6 +307,8 @@ class UpdateManager: ObservableObject {
         switch app.source {
         case .homebrew:
             if let cask = app.appInfo.cask {
+                GlobalConsoleManager.shared.appendOutput("Starting Homebrew update for \(app.appInfo.appName) (\(cask))...\n", source: CurrentPage.updater.title)
+
                 // Update the app status
                 if var apps = updatesBySource[.homebrew],
                    let index = apps.firstIndex(where: { $0.id == app.id }) {
@@ -318,12 +320,16 @@ class UpdateManager: ObservableObject {
                 do {
                     try await HomebrewController.shared.upgradePackage(name: cask)
 
+                    GlobalConsoleManager.shared.appendOutput("✓ Successfully updated \(app.appInfo.appName) to version \(app.availableVersion ?? "unknown")\n", source: CurrentPage.updater.title)
+
                     // Only remove from list if upgrade succeeded
                     updatesBySource[.homebrew]?.removeAll { $0.id == app.id }
 
                     // Refresh apps (only flush updated app's bundle for performance)
                     await refreshApps(updatedApp: app.appInfo)
                 } catch {
+                    GlobalConsoleManager.shared.appendOutput("✗ Failed to update \(app.appInfo.appName): \(error.localizedDescription)\n", source: CurrentPage.updater.title)
+
                     // Update status to failed on error
                     if var apps = updatesBySource[.homebrew],
                        let index = apps.firstIndex(where: { $0.id == app.id }) {
@@ -337,6 +343,8 @@ class UpdateManager: ObservableObject {
 
         case .appStore:
             if let adamID = app.adamID {
+                GlobalConsoleManager.shared.appendOutput("Starting App Store update for \(app.appInfo.appName) (adamID: \(adamID))...\n", source: CurrentPage.updater.title)
+
                 // Update the app status
                 if var apps = updatesBySource[.appStore],
                    let index = apps.firstIndex(where: { $0.id == app.id }) {
@@ -378,11 +386,13 @@ class UpdateManager: ObservableObject {
 
                     // Update succeeded - refresh happens via completion callback above
                     UpdaterDebugLogger.shared.log(.appStore, "✅ App Store update completed for adamID \(adamID)")
+                    GlobalConsoleManager.shared.appendOutput("✓ Successfully updated \(app.appInfo.appName) from App Store\n", source: CurrentPage.updater.title)
 
                 } catch {
                     // Handle errors from the new throwing API
                     let message = error.localizedDescription
                     printOS("❌ App Store update failed for adamID \(adamID): \(message)")
+                    GlobalConsoleManager.shared.appendOutput("✗ Failed to update \(app.appInfo.appName) from App Store: \(message)\n", source: CurrentPage.updater.title)
 
                     // Update UI to show error (matching Sparkle's error display pattern)
                     if var apps = updatesBySource[.appStore],
@@ -402,8 +412,11 @@ class UpdateManager: ObservableObject {
             if UpdateQueue.shared.containsOperation(for: app.appInfo.bundleIdentifier) {
                 UpdaterDebugLogger.shared.log(.sparkle, "⚠️ Update already queued for \(app.appInfo.appName)")
                 printOS("Update already queued for \(app.appInfo.appName)")
+                GlobalConsoleManager.shared.appendOutput("⚠ Update already queued for \(app.appInfo.appName)\n", source: CurrentPage.updater.title)
                 return
             }
+
+            GlobalConsoleManager.shared.appendOutput("Starting Sparkle update for \(app.appInfo.appName) (target version: \(app.availableVersion ?? "unknown"))...\n", source: CurrentPage.updater.title)
 
             UpdaterDebugLogger.shared.log(.sparkle, "═══ Initiating update for \(app.appInfo.appName)")
             UpdaterDebugLogger.shared.log(.sparkle, "  Bundle ID: \(app.appInfo.bundleIdentifier)")
@@ -428,6 +441,7 @@ class UpdateManager: ObservableObject {
                     Task { @MainActor in
                         if success {
                             UpdaterDebugLogger.shared.log(.sparkle, "═══ Update completed successfully for \(app.appInfo.appName)")
+                            GlobalConsoleManager.shared.appendOutput("✓ Successfully updated \(app.appInfo.appName) via Sparkle\n", source: CurrentPage.updater.title)
                             // Update completed - remove from list and refresh (only flush updated app's bundle)
                             await self.removeFromUpdatesList(appID: app.id, source: .sparkle)
                             await self.refreshApps(updatedApp: app.appInfo)
@@ -435,6 +449,7 @@ class UpdateManager: ObservableObject {
                             // Update failed - show error
                             let message = error?.localizedDescription ?? "Unknown error"
                             UpdaterDebugLogger.shared.log(.sparkle, "═══ Update failed for \(app.appInfo.appName): \(message)")
+                            GlobalConsoleManager.shared.appendOutput("✗ Failed to update \(app.appInfo.appName) via Sparkle: \(message)\n", source: CurrentPage.updater.title)
                             self.updateStatus(for: app, status: .failed(message), progress: 0.0)
                         }
                     }
@@ -455,8 +470,11 @@ class UpdateManager: ObservableObject {
     func updateIOSApp(_ app: UpdateableApp) async {
         guard app.isIOSApp, let adamID = app.adamID else {
             printOS("❌ Not an iOS app or missing adamID")
+            GlobalConsoleManager.shared.appendOutput("✗ Not an iOS app or missing adamID for \(app.appInfo.appName)\n", source: CurrentPage.updater.title)
             return
         }
+
+        GlobalConsoleManager.shared.appendOutput("Starting iOS app update for \(app.appInfo.appName) (adamID: \(adamID))...\n", source: CurrentPage.updater.title)
 
         // Update status
         if var apps = updatesBySource[.appStore],
@@ -502,8 +520,10 @@ class UpdateManager: ObservableObject {
                     }
                 }
             )
+            GlobalConsoleManager.shared.appendOutput("✓ Successfully updated iOS app \(app.appInfo.appName)\n", source: CurrentPage.updater.title)
         } catch {
             printOS("❌ iOS app update failed: \(error)")
+            GlobalConsoleManager.shared.appendOutput("✗ Failed to update iOS app \(app.appInfo.appName): \(error.localizedDescription)\n", source: CurrentPage.updater.title)
             if var apps = updatesBySource[.appStore],
                let index = apps.firstIndex(where: { $0.id == app.id }) {
                 apps[index].status = .failed("Open in App Store to update using the Info button to the left.")
@@ -518,13 +538,21 @@ class UpdateManager: ObservableObject {
         // Only update apps that are selected for update
         let selectedApps = apps.filter { $0.isSelectedForUpdate }
 
+        GlobalConsoleManager.shared.appendOutput("Starting batch update for \(selectedApps.count) app(s) from \(source.rawValue)...\n", source: CurrentPage.updater.title)
+
         for app in selectedApps {
             await updateApp(app)
         }
+
+        GlobalConsoleManager.shared.appendOutput("Batch update completed for \(source.rawValue)\n", source: CurrentPage.updater.title)
     }
 
     /// Update all selected apps across all sources (concurrent per-source)
     func updateSelectedApps() async {
+        // Count total selected apps across all sources
+        let totalSelected = updatesBySource.values.flatMap { $0 }.filter { $0.isSelectedForUpdate }.count
+        GlobalConsoleManager.shared.appendOutput("Starting updates for \(totalSelected) selected app(s) across all sources...\n", source: CurrentPage.updater.title)
+
         await withTaskGroup(of: Void.self) { group in
             // Process each source's updates concurrently in separate Tasks
             for source in UpdateSource.allCases {
@@ -541,6 +569,8 @@ class UpdateManager: ObservableObject {
                 }
             }
         }
+
+        GlobalConsoleManager.shared.appendOutput("All selected updates completed\n", source: CurrentPage.updater.title)
     }
 
     /// Update the status and progress of an app in the updates list

@@ -18,6 +18,7 @@
 		C73545F92D849B5700A3DC0C /* PearcleanerHelper in CopyFiles */ = {isa = PBXBuildFile; fileRef = C73545F02D849A1B00A3DC0C /* PearcleanerHelper */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C73545FD2D84E5DD00A3DC0C /* com.alienator88.PearcleanerSentinel.plist in CopyFiles */ = {isa = PBXBuildFile; fileRef = C7B3AB072D83900B00D829C5 /* com.alienator88.PearcleanerSentinel.plist */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C739C3382EB027A9003639C6 /* askpass.sh in Resources */ = {isa = PBXBuildFile; fileRef = C739C3372EB027A9003639C6 /* askpass.sh */; };
+		C73AE1922EC69A81009CAC42 /* GlobalConsoleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C73AE1912EC69A81009CAC42 /* GlobalConsoleManager.swift */; };
 		C74206E52E79E47400BDDB6A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C74206E42E79E47400BDDB6A /* Assets.xcassets */; };
 		C74422412E4936750002D277 /* DaemonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74422402E4936700002D277 /* DaemonView.swift */; };
 		C74422432E494D830002D277 /* PackageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74422422E494D7E0002D277 /* PackageView.swift */; };
@@ -138,6 +139,7 @@
 		C73545EA2D8496DA00A3DC0C /* HelperToolManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelperToolManager.swift; sourceTree = "<group>"; };
 		C73545F02D849A1B00A3DC0C /* PearcleanerHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PearcleanerHelper; sourceTree = BUILT_PRODUCTS_DIR; };
 		C739C3372EB027A9003639C6 /* askpass.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = askpass.sh; sourceTree = "<group>"; };
+		C73AE1912EC69A81009CAC42 /* GlobalConsoleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalConsoleManager.swift; sourceTree = "<group>"; };
 		C74206E42E79E47400BDDB6A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C74422402E4936700002D277 /* DaemonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaemonView.swift; sourceTree = "<group>"; };
 		C74422422E494D7E0002D277 /* PackageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageView.swift; sourceTree = "<group>"; };
@@ -297,6 +299,7 @@
 				C74FDC622BCD833D00B8960F /* Conditions.swift */,
 				C72893042AFD42E600C8C1CD /* DeepLink.swift */,
 				C77020282EA94D0A00240D58 /* FuzzySearch.swift */,
+				C73AE1912EC69A81009CAC42 /* GlobalConsoleManager.swift */,
 				C73545EA2D8496DA00A3DC0C /* HelperToolManager.swift */,
 				C78FF5E22EC1B1E100FC610A /* KeychainPasswordManager.swift */,
 				C7C90DD22DA81C590056769A /* Lipo.swift */,
@@ -684,6 +687,7 @@
 				C72FDCB92D6D089100DE7D56 /* UndoManager.swift in Sources */,
 				C7BB992F2E8B225F007BBB81 /* FileSearchView.swift in Sources */,
 				C75AED0E2EC259A900824CCD /* DeleteHistoryView.swift in Sources */,
+				C73AE1922EC69A81009CAC42 /* GlobalConsoleManager.swift in Sources */,
 				C77B90042AF18E2E009CC655 /* PearcleanerApp.swift in Sources */,
 				C77B90182AF19382009CC655 /* AppCommands.swift in Sources */,
 				C74FDC632BCD833D00B8960F /* Conditions.swift in Sources */,

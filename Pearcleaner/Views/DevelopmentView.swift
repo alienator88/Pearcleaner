@@ -16,6 +16,7 @@ struct PathEnv: Identifiable, Hashable, Equatable {
 struct EnvironmentCleanerView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.colorScheme) var colorScheme
+    @ObservedObject private var consoleManager = GlobalConsoleManager.shared
     @State private var paths: [PathEnv] = []
     @State private var selectedPaths: Set<String> = []
     @State private var searchText: String = ""
@@ -33,6 +34,7 @@ struct EnvironmentCleanerView: View {
     }
 
     private func refreshPaths() {
+        GlobalConsoleManager.shared.appendOutput("Refreshing development paths...\n", source: CurrentPage.development.title)
         isLoading = true
 
         Task {
@@ -64,6 +66,7 @@ struct EnvironmentCleanerView: View {
             self.paths = refreshedPaths
             self.lastRefreshDate = Date()
             self.isLoading = false
+            GlobalConsoleManager.shared.appendOutput("✓ Refreshed development paths\n", source: CurrentPage.development.title)
 
             // Update selected environment to its refreshed version
             if let selected = appState.selectedEnvironment {
@@ -311,9 +314,11 @@ struct EnvironmentCleanerView: View {
 
                             Button("Delete \(selectedPaths.count) Selected Folders") {
                                 showCustomAlert(title: "Warning", message: "This will delete \(selectedPaths.count) selected folders. Are you sure?", style: .warning, onOk: {
+                                    GlobalConsoleManager.shared.appendOutput("Starting deletion of \(selectedPaths.count) development folder(s)...\n", source: CurrentPage.development.title)
                                     let urls = selectedPaths.map { URL(fileURLWithPath: NSString(string: $0).expandingTildeInPath) }
                                     let bundleName = "Development - Folders (\(selectedPaths.count))"
                                     let _ = FileManagerUndo.shared.deleteFiles(at: urls, bundleName: bundleName)
+                                    GlobalConsoleManager.shared.appendOutput("✓ Completed deletion of \(selectedPaths.count) folder(s)\n", source: CurrentPage.development.title)
                                     selectedPaths.removeAll()
                                     refreshPaths()
                                     if let env = appState.selectedEnvironment,
@@ -333,6 +338,7 @@ struct EnvironmentCleanerView: View {
 
                             Button("Delete \(selectedPaths.count) Selected Contents") {
                                 showCustomAlert(title: "Warning", message: "This will delete the contents of \(selectedPaths.count) selected folders. Are you sure?", style: .warning, onOk: {
+                                    GlobalConsoleManager.shared.appendOutput("Starting deletion of contents from \(selectedPaths.count) folder(s)...\n", source: CurrentPage.development.title)
                                     var allContentURLs: [URL] = []
                                     let fm = FileManager.default
                                     for path in selectedPaths {
@@ -347,6 +353,7 @@ struct EnvironmentCleanerView: View {
                                     if !allContentURLs.isEmpty {
                                         let bundleName = "Development - Contents (\(selectedPaths.count))"
                                         let _ = FileManagerUndo.shared.deleteFiles(at: allContentURLs, bundleName: bundleName)
+                                        GlobalConsoleManager.shared.appendOutput("✓ Completed deletion of contents\n", source: CurrentPage.development.title)
                                     }
                                     selectedPaths.removeAll()
                                     refreshPaths()
@@ -417,6 +424,15 @@ struct EnvironmentCleanerView: View {
                 } label: {
                     Label("Refresh", systemImage: "arrow.counterclockwise")
                 }
+
+                Button {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                        consoleManager.showConsole.toggle()
+                    }
+                } label: {
+                    Label("Console", systemImage: consoleManager.showConsole ? "terminal.fill" : "terminal")
+                }
+                .help("Toggle console output")
             }
         }
     }

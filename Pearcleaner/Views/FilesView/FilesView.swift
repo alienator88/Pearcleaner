@@ -31,6 +31,7 @@ struct FilesView: View {
     @State private var sortedFiles: [URL] = []
     @State private var infoSidebar: Bool = false
     @AppStorage("settings.general.searchSensitivity") private var globalSensitivityLevel: SearchSensitivityLevel = .strict
+    @ObservedObject private var consoleManager = GlobalConsoleManager.shared
 
     var body: some View {
 
@@ -151,6 +152,7 @@ struct FilesView: View {
 
 
                 Button {
+                    GlobalConsoleManager.shared.appendOutput("Refreshing files for \(appState.appInfo.appName)...\n", source: CurrentPage.applications.title)
                     let currentAppInfo = appState.appInfo
                     updateOnMain {
                         appState.selectedItems = []
@@ -160,9 +162,19 @@ struct FilesView: View {
                             appInfo: currentAppInfo, appState: appState,
                             locations: locations)
                     }
+                    GlobalConsoleManager.shared.appendOutput("✓ Refreshed files\n", source: CurrentPage.applications.title)
                 } label: {
                     Label("Refresh", systemImage: "arrow.counterclockwise")
                 }
+
+                Button {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                        consoleManager.showConsole.toggle()
+                    }
+                } label: {
+                    Label("Console", systemImage: consoleManager.showConsole ? "terminal.fill" : "terminal")
+                }
+                .help("Toggle console output")
 
                 Button {
                     infoSidebar.toggle()
@@ -185,6 +197,7 @@ struct FilesView: View {
             style: .warning,
             onOk: {
                 Task {
+                    GlobalConsoleManager.shared.appendOutput("Starting deletion for \(appState.appInfo.appName)...\n", source: CurrentPage.applications.title)
                     let selectedItemsArray = Array(appState.selectedItems)
                     var appWasRemoved = false
 
@@ -251,10 +264,12 @@ struct FilesView: View {
                                 appWasRemoved = true
                                 // Remove the app from the app list
                                 removeApp(appState: appState, withPath: appState.appInfo.path)
+                                GlobalConsoleManager.shared.appendOutput("✓ Completed full deletion for \(appState.appInfo.appName)\n", source: CurrentPage.applications.title)
 
                             case .semiDelete:
                                 // Some files deleted but main app bundle remains
                                 // App remains in the list; removes only deleted items
+                                GlobalConsoleManager.shared.appendOutput("✓ Completed partial deletion for \(appState.appInfo.appName)\n", source: CurrentPage.applications.title)
                                 break
                             }
 

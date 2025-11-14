@@ -63,6 +63,7 @@ struct PackageInfo: Identifiable, Hashable, Equatable {
 struct PackageView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.colorScheme) var colorScheme
+    @ObservedObject private var consoleManager = GlobalConsoleManager.shared
     @State private var packages: [PackageInfo] = []
     @State private var packageIds: [String] = []
     @State private var isLoading: Bool = false
@@ -275,6 +276,15 @@ struct PackageView: View {
                     Label("Refresh", systemImage: "arrow.counterclockwise")
                 }
                 .disabled(isLoading)
+
+                Button {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                        consoleManager.showConsole.toggle()
+                    }
+                } label: {
+                    Label("Console", systemImage: consoleManager.showConsole ? "terminal.fill" : "terminal")
+                }
+                .help("Toggle console output")
             }
 
         }
@@ -340,6 +350,7 @@ struct PackageView: View {
     }
 
     private func refreshPackages() {
+        GlobalConsoleManager.shared.appendOutput("Refreshing packages...\n", source: CurrentPage.packages.title)
         isLoading = true
         packages = []
         packageIds = []
@@ -352,6 +363,7 @@ struct PackageView: View {
                 self.packageIds = loadedPackages.map { $0.packageId }
                 self.lastRefreshDate = Date()
                 self.isLoading = false
+                GlobalConsoleManager.shared.appendOutput("✓ Loaded \(loadedPackages.count) packages\n", source: CurrentPage.packages.title)
             }
         }
     }
@@ -379,12 +391,14 @@ struct PackageView: View {
     
     
     private func forgetPackage(_ package: PackageInfo) {
+        GlobalConsoleManager.shared.appendOutput("Starting forget operation for \(package.displayName)...\n", source: CurrentPage.packages.title)
         Task {
             await performPackageForget(package)
         }
     }
 
     private func uninstallPackage(_ package: PackageInfo) {
+        GlobalConsoleManager.shared.appendOutput("Starting uninstall operation for \(package.displayName)...\n", source: CurrentPage.packages.title)
         Task {
             await prepareUninstall(package)
         }
@@ -441,6 +455,7 @@ struct PackageView: View {
 
         await MainActor.run {
             if success {
+                GlobalConsoleManager.shared.appendOutput("✓ Completed forget operation for \(package.displayName)\n", source: CurrentPage.packages.title)
                 // Remove the package from the local array
                 packages.removeAll { $0.packageId == package.packageId }
                 packageIds.removeAll { $0 == package.packageId }

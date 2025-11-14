@@ -11,6 +11,7 @@ import AlinFoundation
 struct FileSearchView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.colorScheme) var colorScheme
+    @ObservedObject private var consoleManager = GlobalConsoleManager.shared
     @State private var results: [FileSearchResult] = []
     @State private var selectedResults: Set<FileSearchResult.ID> = []
     @State private var selectedVolume: String = "/"
@@ -538,6 +539,15 @@ struct FileSearchView: View {
                         Label("Search", systemImage: "play.fill")
                     }
                 }
+
+                Button {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                        consoleManager.showConsole.toggle()
+                    }
+                } label: {
+                    Label("Console", systemImage: consoleManager.showConsole ? "terminal.fill" : "terminal")
+                }
+                .help("Toggle console output")
             }
         }
         .sheet(isPresented: $showNameFilterDialog) {
@@ -609,6 +619,7 @@ struct FileSearchView: View {
     }
 
     private func startSearch() {
+        GlobalConsoleManager.shared.appendOutput("Starting file search in \(selectedVolumeName)...\n", source: CurrentPage.fileSearch.title)
         isSearching = true
         hasSearched = true
         results.removeAll()
@@ -643,6 +654,7 @@ struct FileSearchView: View {
             completion: {
                 isSearching = false
                 currentSearcher = nil
+                GlobalConsoleManager.shared.appendOutput("✓ File search completed - found \(results.count) result(s)\n", source: CurrentPage.fileSearch.title)
 
                 // Stop the timer but keep the final elapsed time
                 self.elapsedTimeUpdateTimer?.invalidate()
@@ -652,9 +664,11 @@ struct FileSearchView: View {
     }
 
     private func stopSearch() {
+        GlobalConsoleManager.shared.appendOutput("Stopping file search...\n", source: CurrentPage.fileSearch.title)
         currentSearcher?.stop()
         isSearching = false
         currentSearcher = nil
+        GlobalConsoleManager.shared.appendOutput("✓ File search stopped\n", source: CurrentPage.fileSearch.title)
 
         // Stop the timer but keep the elapsed time
         elapsedTimeUpdateTimer?.invalidate()
@@ -709,6 +723,7 @@ struct FileSearchView: View {
 
     private func deleteFile(_ result: FileSearchResult) {
         Task {
+            GlobalConsoleManager.shared.appendOutput("Starting deletion of \(result.name)...\n", source: CurrentPage.fileSearch.title)
             let success = await withCheckedContinuation { continuation in
                 DispatchQueue.global(qos: .userInitiated).async {
                     let success = FileManagerUndo.shared.deleteFiles(at: [result.url], bundleName: "File Search - \(result.name)")
@@ -718,6 +733,7 @@ struct FileSearchView: View {
 
             await MainActor.run {
                 if success {
+                    GlobalConsoleManager.shared.appendOutput("✓ Completed deletion of \(result.name)\n", source: CurrentPage.fileSearch.title)
                     // Cache the deleted item before removing
                     deletedItemsCache.append(result)
                     results.removeAll { $0.id == result.id }
@@ -738,6 +754,7 @@ struct FileSearchView: View {
         let urlsToDelete = itemsToDelete.map { $0.url }
 
         Task {
+            GlobalConsoleManager.shared.appendOutput("Starting deletion of \(itemsToDelete.count) selected file(s)...\n", source: CurrentPage.fileSearch.title)
             let success = await withCheckedContinuation { continuation in
                 DispatchQueue.global(qos: .userInitiated).async {
                     let bundleName = "File Search (\(itemsToDelete.count) items)"
@@ -748,6 +765,7 @@ struct FileSearchView: View {
 
             await MainActor.run {
                 if success {
+                    GlobalConsoleManager.shared.appendOutput("✓ Completed deletion of \(itemsToDelete.count) file(s)\n", source: CurrentPage.fileSearch.title)
                     // Cache the deleted items before removing
                     deletedItemsCache.append(contentsOf: itemsToDelete)
                     let deletedIds = Set(itemsToDelete.map { $0.id })

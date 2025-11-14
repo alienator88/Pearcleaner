@@ -11,6 +11,7 @@ import SwiftUI
 struct LipoView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.colorScheme) var colorScheme
+    @ObservedObject private var consoleManager = GlobalConsoleManager.shared
     @State private var selectedApps: Set<String> = []
     @State private var isProcessing: Bool = false
     @State private var savingsAllApps: UInt64 = 0
@@ -392,12 +393,22 @@ struct LipoView: View {
                     Label("Info", systemImage: "sidebar.trailing")
                 }
                 .help("See lipo details")
+
+                Button {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                        consoleManager.showConsole.toggle()
+                    }
+                } label: {
+                    Label("Console", systemImage: consoleManager.showConsole ? "terminal.fill" : "terminal")
+                }
+                .help("Toggle console output")
             }
 
         }
     }
 
     private func refreshList() {
+        GlobalConsoleManager.shared.appendOutput("Refreshing app list...\n", source: CurrentPage.lipo.title)
         isRefreshing = true
 
         Task {
@@ -414,6 +425,7 @@ struct LipoView: View {
             await MainActor.run {
                 lastRefreshDate = Date()
                 isRefreshing = false
+                GlobalConsoleManager.shared.appendOutput("✓ Refreshed app list\n", source: CurrentPage.lipo.title)
             }
         }
     }
@@ -425,6 +437,7 @@ struct LipoView: View {
     }
 
     private func startLipo() {
+        GlobalConsoleManager.shared.appendOutput("Starting lipo operation on \(selectedApps.count) app(s)...\n", source: CurrentPage.lipo.title)
         isProcessing = true
         Task {
             var totalPreSize: UInt64 = 0
@@ -476,6 +489,7 @@ struct LipoView: View {
 
             await MainActor.run {
                 self.totalSpaceSaved += actualSpaceSaved
+                GlobalConsoleManager.shared.appendOutput("✓ Completed lipo operation - saved \(formatByte(size: Int64(actualSpaceSaved)).human)\n", source: CurrentPage.lipo.title)
                 showCustomAlert(title: title, message: message, style: .informational)
                 self.isProcessing = false
 

@@ -66,6 +66,7 @@ struct PluginsView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
     @Environment(\.colorScheme) var colorScheme
+    @ObservedObject private var consoleManager = GlobalConsoleManager.shared
     @State private var allPlugins: [PluginInfo] = []
     @State private var isLoading: Bool = false
     @State private var lastRefreshDate: Date?
@@ -367,6 +368,15 @@ struct PluginsView: View {
                     Label("Refresh", systemImage: "arrow.counterclockwise")
                 }
                 .disabled(isLoading)
+
+                Button {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                        consoleManager.showConsole.toggle()
+                    }
+                } label: {
+                    Label("Console", systemImage: consoleManager.showConsole ? "terminal.fill" : "terminal")
+                }
+                .help("Toggle console output")
             }
         }
     }
@@ -380,6 +390,7 @@ struct PluginsView: View {
     }
 
     private func refreshPluginsAsync() async {
+        GlobalConsoleManager.shared.appendOutput("Refreshing plugins...\n", source: CurrentPage.plugins.title)
         await MainActor.run {
             isLoading = true
             allPlugins = []
@@ -394,6 +405,7 @@ struct PluginsView: View {
         await MainActor.run {
             self.lastRefreshDate = Date()
             self.isLoading = false
+            GlobalConsoleManager.shared.appendOutput("✓ Loaded \(allPlugins.count) plugins\n", source: CurrentPage.plugins.title)
         }
     }
 
@@ -528,6 +540,7 @@ struct PluginsView: View {
     }
 
     private func performPluginRemoval(_ plugin: PluginInfo) async {
+        GlobalConsoleManager.shared.appendOutput("Starting deletion of \(plugin.name)...\n", source: CurrentPage.plugins.title)
         let success = await withCheckedContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
                 let pluginURL = URL(fileURLWithPath: plugin.path)
@@ -539,6 +552,7 @@ struct PluginsView: View {
 
         await MainActor.run {
             if success {
+                GlobalConsoleManager.shared.appendOutput("✓ Completed deletion of \(plugin.name)\n", source: CurrentPage.plugins.title)
                 // Remove the plugin from the local arrays
                 allPlugins.removeAll { $0.id == plugin.id }
                 selectedPlugins.remove(plugin.id)
@@ -563,6 +577,7 @@ struct PluginsView: View {
         let urlsToDelete = pluginsToDelete.map { URL(fileURLWithPath: $0.path) }
 
         Task {
+            GlobalConsoleManager.shared.appendOutput("Starting deletion of \(pluginsToDelete.count) selected plugin(s)...\n", source: CurrentPage.plugins.title)
             let success = await withCheckedContinuation { continuation in
                 DispatchQueue.global(qos: .userInitiated).async {
                     // Create descriptive bundle name for multiple plugins
@@ -580,6 +595,7 @@ struct PluginsView: View {
 
             await MainActor.run {
                 if success {
+                    GlobalConsoleManager.shared.appendOutput("✓ Completed deletion of \(pluginsToDelete.count) plugin(s)\n", source: CurrentPage.plugins.title)
                     // Remove all deleted plugins from the local arrays
                     let deletedIds = Set(pluginsToDelete.map { $0.id })
                     allPlugins.removeAll { deletedIds.contains($0.id) }

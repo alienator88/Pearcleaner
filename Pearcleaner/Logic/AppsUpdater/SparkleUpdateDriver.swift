@@ -56,6 +56,10 @@ class SparkleUpdateDriver: NSObject, SPUUserDriver, SPUUpdaterDelegate, @uncheck
         logger.log(.sparkle, "━━━ Starting Sparkle update for \(appBundle.bundleIdentifier ?? "unknown")")
         logger.log(.sparkle, "  App path: \(appBundle.bundlePath)")
 
+        Task { @MainActor in
+            GlobalConsoleManager.shared.appendOutput("Initializing Sparkle updater for \(appBundle.bundleURL.lastPathComponent)...\n", source: CurrentPage.updater.title)
+        }
+
         // Check for public key
         if let publicKey = appBundle.object(forInfoDictionaryKey: "SUPublicEDKey") as? String {
             logger.log(.sparkle, "  ✓ Found SUPublicEDKey: \(publicKey.prefix(20))...")
@@ -77,6 +81,9 @@ class SparkleUpdateDriver: NSObject, SPUUserDriver, SPUUpdaterDelegate, @uncheck
             logger.log(.sparkle, "  ✓ Triggered user-initiated update check (forces SPUUserDriver callbacks)")
         } catch {
             logger.log(.sparkle, "  ❌ Failed to start updater: \(error.localizedDescription)")
+            Task { @MainActor in
+                GlobalConsoleManager.shared.appendOutput("✗ Failed to start Sparkle updater: \(error.localizedDescription)\n", source: CurrentPage.updater.title)
+            }
             completionCallback(false, error)
         }
     }
@@ -98,6 +105,11 @@ class SparkleUpdateDriver: NSObject, SPUUserDriver, SPUUpdaterDelegate, @uncheck
             logger.log(.sparkle, "  Download URL: \(fileURL.absoluteString)")
         }
         logger.log(.sparkle, "  Auto-approving installation...")
+
+        Task { @MainActor in
+            GlobalConsoleManager.shared.appendOutput("Found update: \(appcastItem.displayVersionString), starting download...\n", source: CurrentPage.updater.title)
+        }
+
         // Auto-approve installation (no UI)
         progressCallback(0.0, .downloading)
         reply(.install)
@@ -107,6 +119,10 @@ class SparkleUpdateDriver: NSObject, SPUUserDriver, SPUUpdaterDelegate, @uncheck
         totalBytes = Int64(expectedContentLength)
         let sizeStr = ByteCountFormatter.string(fromByteCount: Int64(expectedContentLength), countStyle: .file)
         logger.log(.sparkle, "  Starting download (\(sizeStr))...")
+
+        Task { @MainActor in
+            GlobalConsoleManager.shared.appendOutput("Downloading update (\(sizeStr))...\n", source: CurrentPage.updater.title)
+        }
     }
 
     func showDownloadDidReceiveData(ofLength length: UInt64) {
@@ -130,6 +146,14 @@ class SparkleUpdateDriver: NSObject, SPUUserDriver, SPUUpdaterDelegate, @uncheck
         if percentage > 0 && percentage % 25 == 0 {
             logger.log(.sparkle, "  Extraction progress: \(percentage)%")
         }
+
+        // Log extraction start (once at 0%)
+        if percentage == 0 {
+            Task { @MainActor in
+                GlobalConsoleManager.shared.appendOutput("Extracting update...\n", source: CurrentPage.updater.title)
+            }
+        }
+
         // Extraction = 75-95% of total progress
         progressCallback(0.75 + (progress * 0.20), .extracting)
     }
@@ -138,8 +162,14 @@ class SparkleUpdateDriver: NSObject, SPUUserDriver, SPUUpdaterDelegate, @uncheck
                             retryTerminatingApplication: @escaping () -> Void) {
         if withApplicationTerminated {
             logger.log(.sparkle, "  ✓ Target app terminated, installing update...")
+            Task { @MainActor in
+                GlobalConsoleManager.shared.appendOutput("Target app terminated, installing update...\n", source: CurrentPage.updater.title)
+            }
         } else {
             logger.log(.sparkle, "  Installing update (app will be terminated)...")
+            Task { @MainActor in
+                GlobalConsoleManager.shared.appendOutput("Installing update (app will be terminated)...\n", source: CurrentPage.updater.title)
+            }
         }
         // Installing = 95-100%
         progressCallback(0.95, .installing)
@@ -151,6 +181,14 @@ class SparkleUpdateDriver: NSObject, SPUUserDriver, SPUUpdaterDelegate, @uncheck
         if relaunched {
             logger.log(.sparkle, "  App relaunched")
         }
+
+        Task { @MainActor in
+            GlobalConsoleManager.shared.appendOutput("✓ Sparkle update installed successfully\n", source: CurrentPage.updater.title)
+            if relaunched {
+                GlobalConsoleManager.shared.appendOutput("App relaunched\n", source: CurrentPage.updater.title)
+            }
+        }
+
         progressCallback(1.0, .completed)
         completionCallback(true, nil)
         acknowledgement()
@@ -166,6 +204,11 @@ class SparkleUpdateDriver: NSObject, SPUUserDriver, SPUUpdaterDelegate, @uncheck
                 logger.log(.sparkle, "    Underlying: \(underlyingError.localizedDescription)")
             }
         }
+
+        Task { @MainActor in
+            GlobalConsoleManager.shared.appendOutput("✗ Sparkle updater error: \(error.localizedDescription)\n", source: CurrentPage.updater.title)
+        }
+
         completionCallback(false, error)
         acknowledgement()
     }
@@ -183,6 +226,11 @@ class SparkleUpdateDriver: NSObject, SPUUserDriver, SPUUpdaterDelegate, @uncheck
     func showUpdateNotFoundWithError(_ error: Error,
                                     acknowledgement: @escaping () -> Void) {
         logger.log(.sparkle, "  ℹ️ No update found: \(error.localizedDescription)")
+
+        Task { @MainActor in
+            GlobalConsoleManager.shared.appendOutput("No update available: \(error.localizedDescription)\n", source: CurrentPage.updater.title)
+        }
+
         acknowledgement()
     }
 
