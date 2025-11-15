@@ -210,9 +210,7 @@ struct FilesView: View {
                     sendStopNotificationFW()
 
                     killApp(appId: appState.appInfo.bundleIdentifier) {
-
                         let result = moveFilesToTrash(appState: appState, at: selectedItemsArray)
-
                         // Always cleanup UI, regardless of whether files physically existed
                         updateOnMain {
                             // Remove selected items from app's file list

@@ -1138,7 +1138,7 @@ func removeApp(appState: AppState, withPath path: URL) {
 
         Task {
             let _ = try? await runSUCommand(
-                "pkgutil --forget \(appState.appInfo.bundleIdentifier)",
+                "pkgutil --forget \(appState.appInfo.bundleIdentifier) || true",
                 throwOnFailure: false
             )
         }

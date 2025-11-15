@@ -852,11 +852,10 @@ func runSUCommand(
         let result = await HelperToolManager.shared.runCommand(command, skipHelperCheck: true)
         return result
     }
-
+    
     // Pattern 2: Try helper if installed
     if HelperToolManager.shared.isHelperToolInstalled {
         let result = await HelperToolManager.shared.runCommand(command)
-
         if result.0 {
             return result
         }
