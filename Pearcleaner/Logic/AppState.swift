@@ -385,6 +385,10 @@ struct AppInfo: Identifiable, Equatable, Hashable {
         return fileSize.values.reduce(0, +)
     }
 
+    var brew: Bool {
+        return cask != nil
+    }
+
     var executableURL: URL? {
         let infoPlistURL = path.appendingPathComponent("Contents/Info.plist")
         guard let info = NSDictionary(contentsOf: infoPlistURL) as? [String: Any],
@@ -454,8 +458,9 @@ extension AppInfo {
         Team ID: \(teamIdentifier ?? "nil")
         ====================================
         Update Sources:
-          Sparkle: \(hasSparkle)
           App Store: \(isAppStore)
+          Homebrew: \(brew)
+          Sparkle: \(hasSparkle)
         ====================================
         Files (\(fileSize.count)):
         \(filePathsFormatted.isEmpty ? "  (none)" : filePathsFormatted)

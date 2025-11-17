@@ -66,7 +66,9 @@ struct AppDetailsHeaderView: View {
                 if appState.appInfo.wrapped { badge("iOS") }
                 if appState.appInfo.arch != .empty { badge(appState.appInfo.arch.type) }
                 badge(appState.appInfo.system ? "system" : "user")
-                if appState.appInfo.cask != nil { badge("brew") }
+                if appState.appInfo.brew { badge("brew") }
+                if appState.appInfo.hasSparkle { badge("sparkle") }
+                if appState.appInfo.isAppStore { badge("mas") }
                 if appState.appInfo.steam { badge("steam") }
 
             }

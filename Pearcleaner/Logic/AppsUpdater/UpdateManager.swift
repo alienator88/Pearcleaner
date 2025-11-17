@@ -176,6 +176,29 @@ class UpdateManager: ObservableObject {
             return
         }
 
+        // Deduplicate: Remove Homebrew apps that also exist in Sparkle (when auto_updates=true and toggle is ON)
+        // Rationale: If an app has both Homebrew cask and Sparkle framework with auto_updates=true,
+        // prefer the developer's choice (built-in Sparkle updater) and avoid showing in both categories
+        if showAutoUpdatesInHomebrew, let homebrewApps = updatesBySource[.homebrew], let sparkleApps = updatesBySource[.sparkle] {
+            // Build set of Sparkle app paths for quick lookup
+            let sparkleAppPaths = Set(sparkleApps.map { $0.appInfo.path })
+
+            // Filter out Homebrew apps that have both:
+            // 1. auto_updates=true (developer chose built-in updater)
+            // 2. Sparkle framework (exists in Sparkle category)
+            let deduplicatedHomebrew = homebrewApps.filter { brewApp in
+                guard let autoUpdates = brewApp.appInfo.autoUpdates, autoUpdates else {
+                    return true  // Keep: no auto_updates flag
+                }
+
+                // Exclude if app also exists in Sparkle (prefer Sparkle)
+                return !sparkleAppPaths.contains(brewApp.appInfo.path)
+            }
+
+            // Update with deduplicated list
+            updatesBySource[.homebrew] = deduplicatedHomebrew
+        }
+
         // Calculate unsupported apps (always calculate - it's instant, toggle only controls UI visibility)
         let unsupportedApps = apps.filter { app in
             // Not a web app (web apps update with browser)

@@ -402,7 +402,7 @@ struct UpdaterHiddenAppsSection: View {
         let source: UpdateSource = {
             if appInfo.hasSparkle {
                 return .sparkle
-            } else if appInfo.cask != nil {
+            } else if appInfo.brew {
                 return .homebrew
             } else if appInfo.isAppStore {
                 return .appStore
