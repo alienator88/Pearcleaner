@@ -89,24 +89,19 @@ private func extractVersionFromVariations(
 func parseDependencyConflict(from error: String, package: String) -> HomebrewError? {
     // Pattern: "Refusing to uninstall ... because it is required by X, Y, which is currently installed"
     guard error.contains("Refusing to uninstall") && error.contains("because it is required by") else {
-        printOS("DEBUG: parseDependencyConflict - guards failed")
         return nil
     }
 
     // Extract dependents between "required by" and "which is currently installed" or end of line
     if let range = error.range(of: "required by ") {
         let afterBy = String(error[range.upperBound...])
-        printOS("DEBUG: afterBy = '\(afterBy)'")
         // Find everything up to "which is currently installed" or newline
         let endRange = afterBy.range(of: ", which is") ?? afterBy.range(of: "\n") ?? afterBy.endIndex..<afterBy.endIndex
         let dependentsStr = String(afterBy[..<endRange.lowerBound])
-        printOS("DEBUG: dependentsStr = '\(dependentsStr)'")
         let dependents = dependentsStr.split(separator: ",").map { String($0.trimmingCharacters(in: .whitespaces)) }
-        printOS("DEBUG: dependents = \(dependents)")
         return .dependencyConflict(package: package, dependents: dependents)
     }
 
-    printOS("DEBUG: parseDependencyConflict - no range found")
     return nil
 }
 
@@ -1089,15 +1084,12 @@ class HomebrewController: ObservableObject {
 
             if result.error.contains("Error") || result.error.contains("because it is required by") {
                 logger.log(.homebrew, "❌ Uninstall failed for \(name): \(result.error)")
-                printOS("DEBUG: About to parse error, result.error = '\(result.error)'")
 
                 // Parse specific errors
                 if let depError = parseDependencyConflict(from: result.error, package: name) {
-                    printOS("DEBUG: Parsed as dependency conflict, throwing specific error")
                     throw depError
                 }
 
-                printOS("DEBUG: No specific error parsed, throwing commandFailed")
                 // Fallback to generic error
                 throw HomebrewError.commandFailed(result.error)
             }

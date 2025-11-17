@@ -983,7 +983,6 @@ struct SearchResultRowView: View {
                             brewManager.updateInstalledCategories()
                         }
                     } catch let error as HomebrewError {
-                        printOS("DEBUG: Caught HomebrewError in view: \(error)")
                         handleBrewUninstallError(error, packageName: result.name, brewManager: brewManager)
                     } catch {
                         printOS("Error uninstalling package \(result.name): \(error)")
@@ -1111,7 +1110,6 @@ struct SearchResultRowView: View {
                     brewManager.updateInstalledCategories()
                 }
             } catch let error as HomebrewError {
-                printOS("DEBUG: Caught HomebrewError in performUninstall: \(error)")
                 handleBrewUninstallError(error, packageName: result.name, brewManager: brewManager)
             } catch {
                 printOS("Error uninstalling package \(result.name): \(error)")
@@ -3098,10 +3096,8 @@ private func handleBrewInstallError(_ error: HomebrewError, packageName: String,
 }
 
 private func handleBrewUninstallError(_ error: HomebrewError, packageName: String, brewManager: HomebrewManager) {
-    printOS("DEBUG: handleBrewUninstallError called with error: \(error)")
     switch error {
     case .dependencyConflict(_, let dependents):
-        printOS("DEBUG: Matched dependencyConflict case")
         let depList = dependents.joined(separator: ", ")
         showCustomAlert(
             title: "Dependency Conflict",
