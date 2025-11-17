@@ -526,7 +526,7 @@ class UpdateManager: ObservableObject {
             GlobalConsoleManager.shared.appendOutput("✗ Failed to update iOS app \(app.appInfo.appName): \(error.localizedDescription)\n", source: CurrentPage.updater.title)
             if var apps = updatesBySource[.appStore],
                let index = apps.firstIndex(where: { $0.id == app.id }) {
-                apps[index].status = .failed("Open in App Store to update using the Info button to the left.")
+                apps[index].status = .failed("Open in App Store to update using the App Store button to the left.")
                 updatesBySource[.appStore] = apps
             }
         }

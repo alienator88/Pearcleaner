@@ -28,6 +28,50 @@ enum HomebrewError: Error, LocalizedError {
     }
 }
 
+// MARK: - OS Version Helpers
+
+private func getCurrentOSCodename() -> String {
+    // TEMPORARY: Fake Sequoia for testing
+//    return "sequoia"
+
+    //MARK: THIS WILL NEED TO BE UDPATED WITH EACH NEW OS RELEASE
+    let version = ProcessInfo.processInfo.operatingSystemVersion
+    switch version.majorVersion {
+    case 13: return "ventura"
+    case 14: return "sonoma"
+    case 15: return "sequoia"
+    case 26...: return "tahoe"
+    default: return "ventura" // fallback for unsupported versions
+    }
+}
+
+private func extractVersionFromVariations(
+    json: [String: Any],
+    baseVersion: String?,
+    osCodename: String,
+    isArm: Bool
+) -> String? {
+    guard let variations = json["variations"] as? [String: Any] else {
+        return baseVersion // No variations, use base
+    }
+
+    // Try arm64-specific first (e.g., "arm64_sequoia")
+    if isArm,
+       let armVariation = variations["arm64_\(osCodename)"] as? [String: Any],
+       let version = armVariation["version"] as? String {
+        return version
+    }
+
+    // Try OS-specific (e.g., "sequoia")
+    if let osVariation = variations[osCodename] as? [String: Any],
+       let version = osVariation["version"] as? String {
+        return version
+    }
+
+    // Fallback to base version
+    return baseVersion
+}
+
 extension String {
     /// Strip all Homebrew revision suffixes and metadata from version string
     /// Used for both directory scan and API comparison to ensure consistent version matching
@@ -389,8 +433,25 @@ class HomebrewController: ObservableObject {
                 name = token
                 let nameArray = packageDict["name"] as? [String]
                 displayName = nameArray?.first
-                version = packageDict["version"] as? String
+
+                // Extract version with OS-specific variation support
+                let rawVersion = packageDict["version"] as? String
                 bundleVersion = packageDict["bundle_version"] as? String
+
+                // Check for OS-specific version in variations
+                let osCodename = getCurrentOSCodename()
+                #if arch(arm64)
+                let isArm = true
+                #else
+                let isArm = false
+                #endif
+
+                version = extractVersionFromVariations(
+                    json: packageDict,
+                    baseVersion: rawVersion,
+                    osCodename: osCodename,
+                    isArm: isArm
+                )
             } else {
                 // Formulae: name is brew ID (no separate display name)
                 guard let formulaName = packageDict["name"] as? String else { continue }
@@ -1086,8 +1147,23 @@ class HomebrewController: ObservableObject {
                         let rawVersion = json["version"] as? String
                         let bundleVersion = json["bundle_version"] as? String
 
+                        // Check for OS-specific version in variations
+                        let osCodename = getCurrentOSCodename()
+                        #if arch(arm64)
+                        let isArm = true
+                        #else
+                        let isArm = false
+                        #endif
+
+                        let versionToUse = extractVersionFromVariations(
+                            json: json,
+                            baseVersion: rawVersion,
+                            osCodename: osCodename,
+                            isArm: isArm
+                        )
+
                         // Strip revision suffix for casks (handles Sparkle updates)
-                        let version = rawVersion?.stripBrewRevisionSuffix()
+                        let version = versionToUse?.stripBrewRevisionSuffix()
 
                         return (package.name, version, bundleVersion, nil, true)
                     } else {
