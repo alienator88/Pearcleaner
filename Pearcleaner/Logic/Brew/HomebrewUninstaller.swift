@@ -107,6 +107,12 @@ class HomebrewUninstaller {
 
         // Check for errors
         if !result.error.isEmpty && result.error.contains("Error") {
+            // Parse specific errors
+            if let depError = parseDependencyConflict(from: result.error, package: name) {
+                throw depError
+            }
+
+            // Fallback to generic error
             throw HomebrewError.commandFailed(result.error)
         }
     }

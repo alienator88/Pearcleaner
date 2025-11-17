@@ -899,6 +899,8 @@ struct SearchResultRowView: View {
                         if isCask {
                             await loadAndAddCaskApp(caskName: result.name)
                         }
+                    } catch let error as HomebrewError {
+                        handleBrewInstallError(error, packageName: result.name, isCask: isCask, brewManager: brewManager)
                     } catch {
                         printOS("Error installing package \(result.name): \(error)")
                     }
@@ -980,6 +982,9 @@ struct SearchResultRowView: View {
                         await MainActor.run {
                             brewManager.updateInstalledCategories()
                         }
+                    } catch let error as HomebrewError {
+                        printOS("DEBUG: Caught HomebrewError in view: \(error)")
+                        handleBrewUninstallError(error, packageName: result.name, brewManager: brewManager)
                     } catch {
                         printOS("Error uninstalling package \(result.name): \(error)")
                     }
@@ -1105,6 +1110,9 @@ struct SearchResultRowView: View {
                 await MainActor.run {
                     brewManager.updateInstalledCategories()
                 }
+            } catch let error as HomebrewError {
+                printOS("DEBUG: Caught HomebrewError in performUninstall: \(error)")
+                handleBrewUninstallError(error, packageName: result.name, brewManager: brewManager)
             } catch {
                 printOS("Error uninstalling package \(result.name): \(error)")
             }
@@ -3039,5 +3047,90 @@ fileprivate func loadAndUpdateCaskApp(caskName: String) async {
         }
         AppState.shared.sortedApps.sort { $0.appName < $1.appName }
         invalidateCaskLookupCache()
+    }
+}
+
+// MARK: - Error Handlers (Free Functions)
+
+private func handleBrewInstallError(_ error: HomebrewError, packageName: String, isCask: Bool, brewManager: HomebrewManager) {
+    switch error {
+    case .appAlreadyExists(_, let path):
+        showCustomAlert(
+            title: "App Already Exists",
+            message: "An app already exists at \(path). Would you like to force install and overwrite it?",
+            style: .warning,
+            onOk: {
+                Task {
+                    do {
+                        try await HomebrewController.shared.installPackage(name: packageName, cask: isCask, force: true)
+                        await brewManager.refreshSpecificPackages([packageName])
+                    } catch {
+                        printOS("Error force installing \(packageName): \(error)")
+                    }
+                }
+            }
+        )
+
+    case .formulaConflict(_, let conflicts):
+        showCustomAlert(
+            title: "Formula Conflict",
+            message: "Cannot install \(packageName) because it conflicts with: \(conflicts). Would you like to force install anyway?",
+            style: .warning,
+            onOk: {
+                Task {
+                    do {
+                        try await HomebrewController.shared.installPackage(name: packageName, cask: isCask, force: true)
+                        await brewManager.refreshSpecificPackages([packageName])
+                    } catch {
+                        printOS("Error force installing \(packageName): \(error)")
+                    }
+                }
+            }
+        )
+
+    default:
+        showCustomAlert(
+            title: "Installation Error",
+            message: error.localizedDescription,
+            style: .critical
+        )
+    }
+}
+
+private func handleBrewUninstallError(_ error: HomebrewError, packageName: String, brewManager: HomebrewManager) {
+    printOS("DEBUG: handleBrewUninstallError called with error: \(error)")
+    switch error {
+    case .dependencyConflict(_, let dependents):
+        printOS("DEBUG: Matched dependencyConflict case")
+        let depList = dependents.joined(separator: ", ")
+        showCustomAlert(
+            title: "Dependency Conflict",
+            message: "Cannot uninstall \(packageName) because it is required by: \(depList). Would you like to uninstall it anyway (ignoring dependencies)?",
+            style: .warning,
+            onOk: {
+                Task {
+                    do {
+                        try await HomebrewController.shared.uninstallPackage(name: packageName, ignoreDependencies: true)
+                        let shortName = packageName.components(separatedBy: "/").last ?? packageName
+                        await MainActor.run {
+                            brewManager.installedCasks.removeAll { $0.name == packageName || $0.name == shortName }
+                            brewManager.installedFormulae.removeAll { $0.name == packageName || $0.name == shortName }
+                            brewManager.outdatedPackagesMap.removeValue(forKey: packageName)
+                            brewManager.outdatedPackagesMap.removeValue(forKey: shortName)
+                            brewManager.updateInstalledCategories()
+                        }
+                    } catch {
+                        printOS("Error uninstalling \(packageName) with --ignore-dependencies: \(error)")
+                    }
+                }
+            }
+        )
+
+    default:
+        showCustomAlert(
+            title: "Uninstall Error",
+            message: error.localizedDescription,
+            style: .critical
+        )
     }
 }

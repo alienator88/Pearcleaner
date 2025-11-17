@@ -14,6 +14,11 @@ enum HomebrewError: Error, LocalizedError {
     case jsonParseError
     case packageNotFound
 
+    // User-actionable errors
+    case dependencyConflict(package: String, dependents: [String])
+    case appAlreadyExists(package: String, path: String)
+    case formulaConflict(package: String, conflicts: String)
+
     var errorDescription: String? {
         switch self {
         case .brewNotFound:
@@ -24,6 +29,13 @@ enum HomebrewError: Error, LocalizedError {
             return "Failed to parse JSON response from Homebrew API"
         case .packageNotFound:
             return "Package not found in Homebrew"
+        case .dependencyConflict(let package, let dependents):
+            let depList = dependents.joined(separator: ", ")
+            return "Cannot uninstall \(package) because it is required by: \(depList)"
+        case .appAlreadyExists(let package, let path):
+            return "Cannot install \(package) because an app already exists at: \(path)"
+        case .formulaConflict(let package, let conflicts):
+            return "Cannot install \(package) because of conflicts with: \(conflicts)"
         }
     }
 }
@@ -70,6 +82,59 @@ private func extractVersionFromVariations(
 
     // Fallback to base version
     return baseVersion
+}
+
+// MARK: - Error Parsing Helpers
+
+func parseDependencyConflict(from error: String, package: String) -> HomebrewError? {
+    // Pattern: "Refusing to uninstall ... because it is required by X, Y, which is currently installed"
+    guard error.contains("Refusing to uninstall") && error.contains("because it is required by") else {
+        printOS("DEBUG: parseDependencyConflict - guards failed")
+        return nil
+    }
+
+    // Extract dependents between "required by" and "which is currently installed" or end of line
+    if let range = error.range(of: "required by ") {
+        let afterBy = String(error[range.upperBound...])
+        printOS("DEBUG: afterBy = '\(afterBy)'")
+        // Find everything up to "which is currently installed" or newline
+        let endRange = afterBy.range(of: ", which is") ?? afterBy.range(of: "\n") ?? afterBy.endIndex..<afterBy.endIndex
+        let dependentsStr = String(afterBy[..<endRange.lowerBound])
+        printOS("DEBUG: dependentsStr = '\(dependentsStr)'")
+        let dependents = dependentsStr.split(separator: ",").map { String($0.trimmingCharacters(in: .whitespaces)) }
+        printOS("DEBUG: dependents = \(dependents)")
+        return .dependencyConflict(package: package, dependents: dependents)
+    }
+
+    printOS("DEBUG: parseDependencyConflict - no range found")
+    return nil
+}
+
+func parseAppAlreadyExists(from error: String, package: String) -> HomebrewError? {
+    // Pattern: "It seems there is already an App at '/Applications/...'"
+    guard error.contains("already an App at") || error.contains("already a") else {
+        return nil
+    }
+
+    // Extract path between single quotes using simple string search
+    if let startQuote = error.range(of: "'"),
+       let endQuote = error.range(of: "'", range: startQuote.upperBound..<error.endIndex) {
+        let path = String(error[startQuote.upperBound..<endQuote.lowerBound])
+        return .appAlreadyExists(package: package, path: path)
+    }
+
+    return nil
+}
+
+func parseFormulaConflict(from error: String, package: String) -> HomebrewError? {
+    // Pattern: "Cannot install ... because conflicting formulae are installed"
+    guard error.contains("Cannot install") && error.contains("conflicting formulae") else {
+        return nil
+    }
+
+    // Extract conflicts - usually in the error message after "installed."
+    // Simplified: just return the full conflict message
+    return .formulaConflict(package: package, conflicts: "other installed formulae")
 }
 
 extension String {
@@ -959,15 +1024,21 @@ class HomebrewController: ObservableObject {
 
     // MARK: - Package Management
 
-    func installPackage(name: String, cask: Bool) async throws {
+    func installPackage(name: String, cask: Bool, force: Bool = false) async throws {
         logger.log(.homebrew, "📦 Installing package: \(name) (type: \(cask ? "cask" : "formula"))")
 
         var arguments = ["install"]
         if cask {
             arguments.append("--cask")
             arguments.append("--no-quarantine")
+            if force {
+                arguments.append("--force")
+            }
         } else {
             arguments.append("--formula")
+            if force {
+                arguments.append("--force")
+            }
         }
         arguments.append(name)
 
@@ -978,6 +1049,16 @@ class HomebrewController: ObservableObject {
             let combinedOutput = result.output + result.error
             if result.error.contains("Error:") && !combinedOutput.contains("was successfully installed") {
                 logger.log(.homebrew, "❌ Install failed for \(name): \(result.error)")
+
+                // Parse specific errors
+                if let appExistsError = parseAppAlreadyExists(from: result.error, package: name) {
+                    throw appExistsError
+                }
+                if let conflictError = parseFormulaConflict(from: result.error, package: name) {
+                    throw conflictError
+                }
+
+                // Fallback to generic error
                 throw HomebrewError.commandFailed(result.error)
             }
 
@@ -988,16 +1069,36 @@ class HomebrewController: ObservableObject {
         }
     }
 
-    func uninstallPackage(name: String) async throws {
+    func uninstallPackage(name: String, ignoreDependencies: Bool = false) async throws {
         logger.log(.homebrew, "🗑️ Uninstalling package: \(name)")
 
-        let arguments = ["uninstall", name]
+        // Check if pinned and unpin automatically (user is choosing to uninstall, pin doesn't matter)
+        let pinPath = "\(brewPrefix)/var/homebrew/pinned/\(name)"
+        if FileManager.default.fileExists(atPath: pinPath) {
+            logger.log(.homebrew, "📌 Package is pinned, unpinning before uninstall...")
+            try await unpinPackage(name: name)
+        }
+
+        var arguments = ["uninstall", name]
+        if ignoreDependencies {
+            arguments.append("--ignore-dependencies")
+        }
 
         do {
             let result = try await runBrewCommand(arguments)
 
             if result.error.contains("Error") || result.error.contains("because it is required by") {
                 logger.log(.homebrew, "❌ Uninstall failed for \(name): \(result.error)")
+                printOS("DEBUG: About to parse error, result.error = '\(result.error)'")
+
+                // Parse specific errors
+                if let depError = parseDependencyConflict(from: result.error, package: name) {
+                    printOS("DEBUG: Parsed as dependency conflict, throwing specific error")
+                    throw depError
+                }
+
+                printOS("DEBUG: No specific error parsed, throwing commandFailed")
+                // Fallback to generic error
                 throw HomebrewError.commandFailed(result.error)
             }
 
