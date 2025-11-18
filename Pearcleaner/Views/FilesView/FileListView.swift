@@ -22,6 +22,7 @@ struct FileListView: View {
     @State private var selectedFileItemsLocal: Set<URL> = []
     @State private var memoizedFiles: [URL] = []
     @State private var lastRefreshDate: Date?
+    @State private var collapsedCategories: Set<FileCategory> = []
     let locations: Locations
     let windowController: WindowManager
     let handleUninstallAction: () -> Void
@@ -41,6 +42,35 @@ struct FileListView: View {
                     || path.path.localizedCaseInsensitiveContains(searchText)
             }
         }
+    }
+
+    // Categorized files grouped by category
+    var categorizedFiles: [GroupedFiles] {
+        // Group files by category
+        var grouped: [FileCategory: [URL]] = [:]
+        for file in filteredFiles {
+            let category = categorizeFile(file)
+            grouped[category, default: []].append(file)
+        }
+
+        // Convert to GroupedFiles array
+        return grouped.map { category, files in
+            let totalSize = files.reduce(0) { sum, url in
+                sum + (appState.appInfo.fileSize[url] ?? 0)
+            }
+
+            let selectedCount = files.filter { selectedFileItemsLocal.contains($0) }.count
+
+            return GroupedFiles(
+                category: category,
+                files: files,
+                totalSize: totalSize,
+                isExpanded: !collapsedCategories.contains(category),
+                allSelected: selectedCount == files.count && files.count > 0,
+                someSelected: selectedCount > 0 && selectedCount < files.count
+            )
+        }
+        .sorted { $0.category.sortOrder < $1.category.sortOrder }
     }
 
     var body: some View {
@@ -113,21 +143,27 @@ struct FileListView: View {
                     }
                     .padding(.vertical)
 
-                    // File list
+                    // File list with categories
                     ScrollView {
-                        LazyVStack(spacing: 0) {
-                            ForEach(Array(filteredFiles.enumerated()), id: \.element) {
-                                index, path in
-                                VStack(spacing: 0) {
-                                    FileDetailsItem(
-                                        path: path,
-                                        removeAssociation: removeSingleZombieAssociation,
-                                        isSelected: binding(for: path)
-                                    )
+                        LazyVStack(spacing: 8) {
+                            ForEach(categorizedFiles, id: \.category) { group in
+                                FileCategoryView(
+                                    group: group,
+                                    onToggleExpand: {
+                                        withAnimation(.easeInOut(duration: animationEnabled ? 0.2 : 0)) {
+                                            toggleCategory(group.category)
+                                        }
+                                    },
+                                    onToggleSelection: {
+                                        toggleCategorySelection(group)
+                                    },
+                                    fileItemBinding: binding(for:),
+                                    removeAssociation: removeSingleZombieAssociation
+                                )
 
-                                    if index < filteredFiles.count - 1 {
-                                        Divider()
-                                    }
+                                if group.category != categorizedFiles.last?.category {
+                                    Divider()
+                                        .padding(.vertical, 4)
                                 }
                             }
                         }
@@ -274,6 +310,33 @@ struct FileListView: View {
                 appState.selectedItems = selectedFileItemsLocal
             }
         )
+    }
+
+    // Helper function to toggle category expansion
+    private func toggleCategory(_ category: FileCategory) {
+        if collapsedCategories.contains(category) {
+            collapsedCategories.remove(category)
+        } else {
+            collapsedCategories.insert(category)
+        }
+    }
+
+    // Helper function to toggle category selection
+    private func toggleCategorySelection(_ group: GroupedFiles) {
+        if group.allSelected {
+            // Deselect all files in this category
+            for file in group.files {
+                selectedFileItemsLocal.remove(file)
+            }
+        } else {
+            // Select all files in this category (that are in filteredFiles)
+            let filesToSelect = group.files.filter { filteredFiles.contains($0) }
+            for file in filesToSelect {
+                selectedFileItemsLocal.insert(file)
+            }
+        }
+        // Sync with appState
+        appState.selectedItems = selectedFileItemsLocal
     }
 
     // Helper function to update memoized files

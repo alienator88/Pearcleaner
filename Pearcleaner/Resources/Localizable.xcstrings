@@ -241,6 +241,9 @@
         }
       }
     },
+    "(%lld)" : {
+
+    },
     "(Build %@)" : {
       "localizations" : {
         "de" : {
@@ -22727,6 +22730,9 @@
           }
         }
       }
+    },
+    "Deselect all files in this category" : {
+
     },
     "Details" : {
       "localizations" : {
@@ -67179,6 +67185,9 @@
           }
         }
       }
+    },
+    "Select all files in this category" : {
+
     },
     "Select an app from the sidebar to begin" : {
       "localizations" : {
