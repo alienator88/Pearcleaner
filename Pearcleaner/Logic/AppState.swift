@@ -415,7 +415,79 @@ struct AppInfo: Identifiable, Equatable, Hashable {
 
 }
 
+// MARK: - AppInfoMini (Phase 1 Fast Loading)
+
+/// Lightweight version of AppInfo for fast initial app list display
+/// Contains only essential properties needed for list rendering and sorting
+/// Converts to full AppInfo with placeholder values for deferred properties
+struct AppInfoMini {
+    let id: UUID
+    let path: URL
+    let bundleIdentifier: String
+    let appName: String
+    let appVersion: String
+    let appIcon: NSImage?
+    let system: Bool
+    let bundleSize: Int64           // Always calculated (mdls or totalSizeOnDisk)
+    let creationDate: Date?
+    let contentChangeDate: Date?
+    let lastUsedDate: Date?
+    let dateAdded: Date?
+
+    /// Convert AppInfoMini to full AppInfo with placeholder values for expensive properties
+    /// Phase 2 will populate these expensive properties in background
+    func toAppInfo() -> AppInfo {
+        return AppInfo(
+            id: self.id,
+            path: self.path,
+            bundleIdentifier: self.bundleIdentifier,
+            appName: self.appName,
+            appVersion: self.appVersion,
+            appBuildNumber: nil,                // Phase 2
+            appIcon: self.appIcon,
+            webApp: false,                      // Phase 2
+            wrapped: false,                     // Phase 2
+            system: self.system,
+            arch: .empty,                       // Phase 2 (expensive)
+            cask: nil,                          // Phase 2 (expensive)
+            steam: false,                       // Phase 2
+            hasSparkle: false,                  // Phase 2 (expensive)
+            isAppStore: false,                  // Phase 2 (expensive)
+            adamID: nil,                        // Phase 2
+            autoUpdates: nil,                   // Phase 2
+            bundleSize: self.bundleSize,        // ✅ Already calculated
+            lipoSavings: nil,                   // Phase 2
+            fileSize: [:],                      // Populated when user selects app
+            fileIcon: [:],                      // Populated when user selects app
+            creationDate: self.creationDate,
+            contentChangeDate: self.contentChangeDate,
+            lastUsedDate: self.lastUsedDate,
+            dateAdded: self.dateAdded,
+            entitlements: nil,                  // Phase 2 (expensive)
+            teamIdentifier: nil                 // Phase 2 (expensive)
+        )
+    }
+}
+
 extension AppInfo {
+    /// Convert full AppInfo to lightweight AppInfoMini (for fallback case when no mdls metadata)
+    func toMini() -> AppInfoMini {
+        return AppInfoMini(
+            id: self.id,
+            path: self.path,
+            bundleIdentifier: self.bundleIdentifier,
+            appName: self.appName,
+            appVersion: self.appVersion,
+            appIcon: self.appIcon,
+            system: self.system,
+            bundleSize: self.bundleSize,
+            creationDate: self.creationDate,
+            contentChangeDate: self.contentChangeDate,
+            lastUsedDate: self.lastUsedDate,
+            dateAdded: self.dateAdded
+        )
+    }
+
     /// Generate debug string that excludes NSImage properties for cleaner output
     func getDebugString() -> String {
         // Format file paths with sizes

@@ -158,33 +158,35 @@ func getSortedApps(paths: [String]) -> [AppInfo] {
         metadataDictionary = metadata
     }
 
-    // Process each app path and construct AppInfo using metadata first, then fallback if necessary
-    let appInfos: [AppInfo] = {
+    // === PHASE 1: Load AppInfoMini (fast path - display-critical properties only) ===
+    let miniApps: [AppInfoMini] = {
         let chunks = createOptimalChunks(from: apps, minChunkSize: 10, maxChunkSize: 40)
-        let queue = DispatchQueue(label: "com.pearcleaner.appinfo", qos: .userInitiated, attributes: .concurrent)
+        let queue = DispatchQueue(label: "com.pearcleaner.appinfo.mini", qos: .userInitiated, attributes: .concurrent)
         let group = DispatchGroup()
 
-        var allAppInfos: [AppInfo] = []
-        let resultsQueue = DispatchQueue(label: "com.pearcleaner.appinfo.results")
+        var allMiniInfos: [AppInfoMini] = []
+        let resultsQueue = DispatchQueue(label: "com.pearcleaner.appinfo.mini.results")
 
         for chunk in chunks {
             group.enter()
             queue.async {
                 autoreleasepool {
-                    let chunkAppInfos: [AppInfo] = chunk.compactMap { appURL in
+                    let chunkMiniInfos: [AppInfoMini] = chunk.compactMap { appURL in
                         autoreleasepool {
                             let appPath = appURL.path
 
+                            // Use mini version for fast initial load
                             if let appMetadata = metadataDictionary[appPath] {
-                                return MetadataAppInfoFetcher.getAppInfo(fromMetadata: appMetadata, atPath: appURL)
+                                return MetadataAppInfoFetcher.getAppInfoMini(fromMetadata: appMetadata, atPath: appURL)
                             } else {
-                                return AppInfoFetcher.getAppInfo(atPath: appURL)
+                                // Fallback to full version if no metadata
+                                return AppInfoFetcher.getAppInfo(atPath: appURL)?.toMini()
                             }
                         }
                     }
 
                     resultsQueue.sync {
-                        allAppInfos.append(contentsOf: chunkAppInfos)
+                        allMiniInfos.append(contentsOf: chunkMiniInfos)
                     }
                 }
                 group.leave()
@@ -192,23 +194,32 @@ func getSortedApps(paths: [String]) -> [AppInfo] {
         }
 
         group.wait()
-        return allAppInfos
+        return allMiniInfos
     }()
-//    let appInfos: [AppInfo] = apps.compactMap { appURL in
-//        let appPath = appURL.path
-//
-//        if let appMetadata = metadataDictionary[appPath] {
-//            // Use `MetadataAppInfoFetcher` first
-//            return MetadataAppInfoFetcher.getAppInfo(fromMetadata: appMetadata, atPath: appURL)
-//        } else {
-//            // Fallback to `AppInfoFetcher` if no metadata found
-//            return AppInfoFetcher.getAppInfo(atPath: appURL)
-//        }
-//
-//    }
+
+    // Convert AppInfoMini to AppInfo with placeholders for immediate display
+    let initialAppInfos = miniApps.map { $0.toAppInfo() }
 
     // Sort apps by display name
-    let sortedApps = appInfos.sorted { $0.appName.lowercased() < $1.appName.lowercased() }
+    let sortedApps = initialAppInfos.sorted { $0.appName.lowercased() < $1.appName.lowercased() }
+
+    // === PHASE 2: Background upgrade to full AppInfo (expensive operations) ===
+    // Launch detached task to upgrade each app without blocking
+    Task.detached(priority: .utility) {
+        for (index, mini) in miniApps.enumerated() {
+            autoreleasepool {
+                // Upgrade mini to full AppInfo with all expensive properties
+                let fullAppInfo = MetadataAppInfoFetcher.upgradeToFullAppInfo(mini: mini)
+
+                // Update sorted array on main thread using path as stable identifier
+                Task { @MainActor in
+                    if let targetIndex = AppState.shared.sortedApps.firstIndex(where: { $0.path == mini.path }) {
+                        AppState.shared.sortedApps[targetIndex] = fullAppInfo
+                    }
+                }
+            }
+        }
+    }
 
     return sortedApps
 }

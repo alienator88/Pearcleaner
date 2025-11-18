@@ -118,6 +118,164 @@ class MetadataAppInfoFetcher {
                        arch: arch, cask: cask, steam: false, hasSparkle: hasSparkle, isAppStore: isAppStore, adamID: adamID, autoUpdates: autoUpdates, bundleSize: logicalSize, fileSize: [:],
                        fileIcon: [:], creationDate: creationDate, contentChangeDate: contentChangeDate, lastUsedDate: lastUsedDate, dateAdded: dateAdded, entitlements: entitlements, teamIdentifier: teamIdentifier)
     }
+
+    // MARK: - Phase 1: Fast Loading with AppInfoMini
+
+    /// Fast lightweight app info loading for initial display
+    /// Skips expensive operations: arch detection, entitlements, cask lookup, team identifier
+    /// Always calculates bundleSize (required for sorting)
+    static func getAppInfoMini(fromMetadata metadata: [String: Any], atPath path: URL) -> AppInfoMini? {
+        // Extract basic info from metadata
+        var displayName = metadata["kMDItemDisplayName"] as? String ?? ""
+        displayName = displayName.replacingOccurrences(of: ".app", with: "").capitalizingFirstLetter()
+        let fsName = metadata["kMDItemFSName"] as? String ?? path.lastPathComponent
+        let appName = displayName.isEmpty ? fsName : displayName
+
+        let bundleIdentifier = metadata["kMDItemCFBundleIdentifier"] as? String ?? ""
+
+        // Get version from bundle Info.plist
+        let version: String = {
+            if let bundle = Bundle(url: path) {
+                let shortVersion = bundle.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+                let buildVer = bundle.infoDictionary?["CFBundleVersion"] as? String ?? ""
+                return shortVersion.isEmpty ? buildVer : shortVersion
+            }
+
+            if let infoDict = readInfoPlistDirect(at: path) {
+                let shortVersion = infoDict["CFBundleShortVersionString"] as? String ?? ""
+                let buildVer = infoDict["CFBundleVersion"] as? String ?? ""
+                return shortVersion.isEmpty ? buildVer : shortVersion
+            }
+
+            return ""
+        }()
+
+        // Require critical fields
+        if appName.isEmpty || bundleIdentifier.isEmpty || version.isEmpty {
+            return nil
+        }
+
+        // Get app icon (required for display, fast enough ~5-10ms)
+        let wrapped = AppInfoFetcher.isDirectoryWrapped(path: path)
+        let appIcon = AppInfoUtils.fetchAppIcon(for: path, wrapped: wrapped, md: true)
+
+        // Determine if system app
+        let system = !path.path.contains(NSHomeDirectory())
+
+        // Get bundleSize - ALWAYS calculate, never 0 (required for sorting)
+        let bundleSize: Int64 = {
+            // Try mdls metadata first (fast)
+            if let mdlsSize = metadata["kMDItemLogicalSize"] as? Int64, mdlsSize > 0 {
+                return mdlsSize
+            }
+
+            // Fallback: Calculate using totalSizeOnDisk (same as AppInfoFetcher)
+            return totalSizeOnDisk(for: path)
+        }()
+
+        // Extract date fields from metadata
+        let creationDate = metadata["kMDItemFSCreationDate"] as? Date
+        let contentChangeDate = metadata["kMDItemFSContentChangeDate"] as? Date
+        let lastUsedDate = metadata["kMDItemLastUsedDate"] as? Date
+        let dateAdded = metadata["kMDItemDateAdded"] as? Date
+
+        return AppInfoMini(
+            id: UUID(),
+            path: path,
+            bundleIdentifier: bundleIdentifier,
+            appName: appName,
+            appVersion: version,
+            appIcon: appIcon,
+            system: system,
+            bundleSize: bundleSize,  // ✅ Always calculated
+            creationDate: creationDate,
+            contentChangeDate: contentChangeDate,
+            lastUsedDate: lastUsedDate,
+            dateAdded: dateAdded
+        )
+    }
+
+    // MARK: - Phase 2: Upgrade to Full AppInfo
+
+    /// Upgrade AppInfoMini to full AppInfo with all expensive properties
+    /// Runs expensive operations: arch, entitlements, cask lookup, team identifier
+    static func upgradeToFullAppInfo(mini: AppInfoMini) -> AppInfo {
+        let path = mini.path
+
+        // Get bundle for further inspection
+        let bundle = Bundle(url: path)
+        let infoDict = bundle?.infoDictionary ?? readInfoPlistDirect(at: path)
+
+        // NOW do the expensive operations that were skipped in Phase 1
+
+        // Architecture detection (expensive: reads Mach-O binary headers)
+        let arch = checkAppBundleArchitecture(at: path.path)
+
+        // Entitlements scanning (expensive: code signing + recursive bundle scan)
+        let entitlements = getEntitlements(for: path.path)
+
+        // Team identifier (expensive: code signing read)
+        let teamIdentifier = getTeamIdentifier(for: path.path)
+
+        // Cask lookup (expensive: first-time builds entire lookup table)
+        let caskInfo = getCaskInfo(for: mini.appName, appPath: path, bundleId: mini.bundleIdentifier)
+        let cask = caskInfo?.caskName
+        let autoUpdates = caskInfo?.autoUpdates
+
+        // Detect app properties
+        let wrapped = AppInfoFetcher.isDirectoryWrapped(path: path)
+        let webApp = AppInfoUtils.isWebApp(appPath: path)
+
+        // Detect update sources
+        let hasSparkle = AppCategoryDetector.checkForSparkle(bundle: bundle, infoDict: infoDict)
+        let isAppStore = AppCategoryDetector.checkForAppStore(bundle: bundle, path: path, wrapped: wrapped)
+
+        // Get build number
+        let appBuildNumber: String? = {
+            if let dict = infoDict {
+                let shortVersion = dict["CFBundleShortVersionString"] as? String ?? ""
+                let buildVer = dict["CFBundleVersion"] as? String ?? ""
+                return shortVersion.isEmpty ? nil : buildVer
+            }
+            return nil
+        }()
+
+        // Steam detection (not implemented in fast path, defaults to false)
+        let steam = false
+
+        // Adam ID (App Store ID) - would need to query mdls again, skip for now
+        let adamID: UInt64? = nil
+
+        return AppInfo(
+            id: mini.id,
+            path: mini.path,
+            bundleIdentifier: mini.bundleIdentifier,
+            appName: mini.appName,
+            appVersion: mini.appVersion,
+            appBuildNumber: appBuildNumber,
+            appIcon: mini.appIcon,
+            webApp: webApp,
+            wrapped: wrapped,
+            system: mini.system,
+            arch: arch,                      // ✅ Phase 2 populated
+            cask: cask,                      // ✅ Phase 2 populated
+            steam: steam,
+            hasSparkle: hasSparkle,          // ✅ Phase 2 populated
+            isAppStore: isAppStore,          // ✅ Phase 2 populated
+            adamID: adamID,
+            autoUpdates: autoUpdates,
+            bundleSize: mini.bundleSize,     // Keep from Phase 1
+            lipoSavings: nil,
+            fileSize: [:],                   // Populated when user selects app
+            fileIcon: [:],                   // Populated when user selects app
+            creationDate: mini.creationDate,
+            contentChangeDate: mini.contentChangeDate,
+            lastUsedDate: mini.lastUsedDate,
+            dateAdded: mini.dateAdded,
+            entitlements: entitlements,      // ✅ Phase 2 populated
+            teamIdentifier: teamIdentifier   // ✅ Phase 2 populated
+        )
+    }
 }
 
 
@@ -636,14 +794,13 @@ private func getTeamIdentifier(for appPath: String) -> String? {
             return nil
         }
 
-        // 1 << 2 is the bitmask for entitlements (kSecCSEntitlements)
+        // Get signing information with team identifier
         var info: CFDictionary?
         if SecCodeCopySigningInformation(code,
-                                         SecCSFlags(rawValue: 1 << 2),
+                                         SecCSFlags(rawValue: kSecCSSigningInformation),
                                          &info) == errSecSuccess,
            let dict = info as? [String: Any],
-           let entitlements = dict[kSecCodeInfoEntitlementsDict as String] as? [String: Any],
-           let teamIdentifier = entitlements["com.apple.developer.team-identifier"] as? String {
+           let teamIdentifier = dict[kSecCodeInfoTeamIdentifier as String] as? String {
             return teamIdentifier
         }
 
