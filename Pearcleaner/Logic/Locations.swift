@@ -70,6 +70,7 @@ class Locations: ObservableObject {
             "\(home)/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.ApplicationRecentDocuments",
             "\(home)/Library/Containers",
             "\(home)/Library/Caches",
+            "\(home)/Library/Caches/com.apple.helpd/Generated",
             "\(home)/Library/Caches/com.crashlytics",
             "\(home)/Library/Caches/com.google.SoftwareUpdate",
             "\(home)/Library/Caches/com.google.Keystone",
