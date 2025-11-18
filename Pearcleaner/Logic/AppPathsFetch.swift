@@ -10,6 +10,19 @@ import AppKit
 import SwiftUI
 import AlinFoundation
 
+extension String {
+    /// Strips trailing version numbers and digits from app names
+    /// "Bartender 6" → "Bartender"
+    /// "Firefox 120.0" → "Firefox"
+    func strippingTrailingDigits() -> String {
+        return self.replacingOccurrences(
+            of: #"\s+\d+(\.\d+)*\s*$"#,
+            with: "",
+            options: .regularExpression
+        ).trimmingCharacters(in: .whitespaces)
+    }
+}
+
 class AppPathFinder {
     // Shared properties
     private var appInfo: AppInfo
@@ -39,7 +52,7 @@ class AppPathFinder {
     }()
 
     // Change from lazy var to regular property initialized in init
-    private let cachedIdentifiers: (formattedBundleId: String, bundleLastTwoComponents: String, formattedAppName: String, appNameLettersOnly: String, pathComponentName: String, useBundleIdentifier: Bool, formattedCompanyName: String?, formattedEntitlements: [String], formattedTeamIdentifier: String?, formattedBaseBundleId: String?)
+    private let cachedIdentifiers: (formattedBundleId: String, bundleLastTwoComponents: String, formattedAppName: String, formattedAppNameStripped: String?, appNameLettersOnly: String, pathComponentName: String, useBundleIdentifier: Bool, formattedCompanyName: String?, formattedEntitlements: [String], formattedTeamIdentifier: String?, formattedBaseBundleId: String?)
 
     // Exclusion list for app file search (computed property to always get current list)
     private var formattedAppExclusionList: [String] {
@@ -106,7 +119,16 @@ class AppPathFinder {
             formattedBaseBundleId = nil
         }
 
-        self.cachedIdentifiers = (formattedBundleId, bundleLastTwoComponents, formattedAppName, appNameLettersOnly, pathComponentName, useBundleIdentifier, formattedCompanyName, formattedEntitlements, formattedTeamIdentifier, formattedBaseBundleId)
+        // Strip trailing digits from app name for Enhanced/Deep mode matching
+        // "Bartender 6" → "bartender6" (regular) + "bartender" (stripped)
+        let appNameStripped = appInfo.appName.strippingTrailingDigits()
+        let formattedAppNameStripped: String? = {
+            let stripped = appNameStripped.pearFormat()
+            // Only use if different from regular formatted name and not empty
+            return (stripped != formattedAppName && !stripped.isEmpty) ? stripped : nil
+        }()
+
+        self.cachedIdentifiers = (formattedBundleId, bundleLastTwoComponents, formattedAppName, formattedAppNameStripped, appNameLettersOnly, pathComponentName, useBundleIdentifier, formattedCompanyName, formattedEntitlements, formattedTeamIdentifier, formattedBaseBundleId)
     }
 
     // Process the initial URL
@@ -331,7 +353,16 @@ class AppPathFinder {
             baseBundleIdMatch = false
         }
 
-        return (cached.useBundleIdentifier && fullBundleMatch) || (appNameMatch || pathNameMatch || appNameLettersMatch) || twoComponentMatch || companyMatch || teamIdMatch || baseBundleIdMatch
+        // Stripped app name matching (Enhanced/Deep only)
+        // Matches files with version-stripped names: "Bartender 6" → also matches "bartender" files
+        let strippedAppNameMatch: Bool
+        if effectiveSensitivityLevel != .strict, let stripped = cached.formattedAppNameStripped, !stripped.isEmpty {
+            strippedAppNameMatch = normalizedItemName.contains(stripped)
+        } else {
+            strippedAppNameMatch = false
+        }
+
+        return (cached.useBundleIdentifier && fullBundleMatch) || (appNameMatch || pathNameMatch || appNameLettersMatch) || twoComponentMatch || companyMatch || teamIdMatch || baseBundleIdMatch || strippedAppNameMatch
     }
     
     // Helper function to extract game ID from manifest filename
