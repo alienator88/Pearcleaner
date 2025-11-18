@@ -22,12 +22,14 @@ struct ZombieView: View {
     @AppStorage("settings.sentinel.enable") private var sentinel: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.general.selectedSort") var selectedSort: SortOptionList = .name
+    @AppStorage("settings.interface.zombieListViewMode") private var viewMode: FileListViewMode = .simple
     @AppStorage("settings.general.confirmAlert") private var confirmAlert: Bool = false
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @Environment(\.colorScheme) var colorScheme
     @State private var searchZ: String = ""
     @State private var selectedZombieItemsLocal: Set<URL> = []
     @State private var memoizedFiles: [URL] = []
+    @State private var collapsedCategories: Set<FileCategory> = []
     @State private var lastSearchTermUsed: String? = nil
     @State private var totalSize: Int64 = 0
     @State private var totalSizeUninstallBtn: String = ""
@@ -35,6 +37,35 @@ struct ZombieView: View {
     @State private var lastRefreshDate: Date?
     @State private var isRefreshing: Bool = false
     @State private var currentSearcher: ReversePathsSearcher?
+
+    // Categorized files grouped by category
+    var categorizedZombieFiles: [GroupedFiles] {
+        // Group files by category
+        var grouped: [FileCategory: [URL]] = [:]
+        for file in memoizedFiles {
+            let category = categorizeFile(file)
+            grouped[category, default: []].append(file)
+        }
+
+        // Convert to GroupedFiles array
+        return grouped.map { category, files in
+            let totalSize = files.reduce(0) { sum, url in
+                sum + (appState.zombieFile.fileSize[url] ?? 0)
+            }
+
+            let selectedCount = files.filter { selectedZombieItemsLocal.contains($0) }.count
+
+            return GroupedFiles(
+                category: category,
+                files: files,
+                totalSize: totalSize,
+                isExpanded: !collapsedCategories.contains(category),
+                allSelected: selectedCount == files.count && files.count > 0,
+                someSelected: selectedCount > 0 && selectedCount < files.count
+            )
+        }
+        .sorted { $0.category.sortOrder < $1.category.sortOrder }
+    }
 
     var body: some View {
 
@@ -111,13 +142,45 @@ struct ZombieView: View {
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                         } else {
                             ScrollView() {
-                                LazyVStack(spacing: 8) {
-                                    ForEach(memoizedFiles, id: \.self) { file in
-                                        if let fileSize = appState.zombieFile.fileSize[file], let fileIcon = appState.zombieFile.fileIcon[file], let iconImage = fileIcon.map(Image.init(nsImage:)) {
-                                            ZombieFileDetailsItem(size: fileSize, icon: iconImage, path: file, memoizedFiles: $memoizedFiles, isSelected: self.binding(for: file))
+                                if viewMode == .simple {
+                                    // Simple flat list view
+                                    LazyVStack(spacing: 0) {
+                                        ForEach(Array(memoizedFiles.enumerated()), id: \.element) { index, file in
+                                            if let fileSize = appState.zombieFile.fileSize[file], let fileIcon = appState.zombieFile.fileIcon[file], let iconImage = fileIcon.map(Image.init(nsImage:)) {
+                                                VStack(spacing: 0) {
+                                                    ZombieFileDetailsItem(size: fileSize, icon: iconImage, path: file, memoizedFiles: $memoizedFiles, isSelected: self.binding(for: file))
+
+                                                    if index < memoizedFiles.count - 1 {
+                                                        Divider()
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
+                                } else {
+                                    // Categorized view
+                                    LazyVStack(spacing: 8) {
+                                        ForEach(categorizedZombieFiles, id: \.category) { group in
+                                            ZombieFileCategoryView(
+                                                group: group,
+                                                onToggleExpand: {
+                                                    withAnimation(.easeInOut(duration: animationEnabled ? 0.2 : 0)) {
+                                                        toggleZombieCategory(group.category)
+                                                    }
+                                                },
+                                                onToggleSelection: {
+                                                    toggleZombieCategorySelection(group)
+                                                },
+                                                fileItemBinding: binding(for:),
+                                                memoizedFiles: $memoizedFiles
+                                            )
 
+                                            if group.category != categorizedZombieFiles.last?.category {
+                                                Divider()
+                                                    .padding(.vertical, 4)
+                                            }
+                                        }
+                                    }
                                 }
                             }
                             .scrollIndicators(scrollIndicators ? .automatic : .never)
@@ -303,21 +366,26 @@ struct ZombieView: View {
                     Label("Console", systemImage: consoleManager.showConsole ? "terminal.fill" : "terminal")
                 }
                 .help("Toggle console output")
-                
-                Menu {
-                    ForEach(SortOptionList.allCases, id: \.self) { sortOption in
-                        Button {
-                            selectedSort = sortOption
-                            updateMemoizedFiles(for: searchZ, selectedSort: selectedSort, force: true)
-                        } label: {
-                            Label(sortOption.title, systemImage: sortOption.systemImage)
-                        }
+
+                Button {
+                    viewMode = viewMode == .simple ? .categorized : .simple
+                } label: {
+                    Label("View", systemImage: viewMode == .simple ? "list.bullet" : "checklist")
+                }
+                .help(viewMode == .simple ? "Switch to categorized view" : "Switch to simple view")
+
+                Button {
+                    // Cycle through sort options
+                    let allOptions = SortOptionList.allCases
+                    if let currentIndex = allOptions.firstIndex(of: selectedSort) {
+                        let nextIndex = (currentIndex + 1) % allOptions.count
+                        selectedSort = allOptions[nextIndex]
+                        updateMemoizedFiles(for: searchZ, selectedSort: selectedSort, force: true)
                     }
                 } label: {
                     Label(selectedSort.title, systemImage: selectedSort.systemImage)
                 }
-                .labelStyle(.titleAndIcon)
-                .menuIndicator(.hidden)
+                .help("Sort by \(selectedSort.title). Click to cycle through options")
 
                 if appState.showProgress {
                     Button {
@@ -598,6 +666,32 @@ struct ZombieView: View {
         return NSWorkspace.shared.icon(forFile: url.path)
     }
 
+    // Helper function to toggle category expansion
+    private func toggleZombieCategory(_ category: FileCategory) {
+        if collapsedCategories.contains(category) {
+            collapsedCategories.remove(category)
+        } else {
+            collapsedCategories.insert(category)
+        }
+    }
+
+    // Helper function to toggle category selection
+    private func toggleZombieCategorySelection(_ group: GroupedFiles) {
+        if group.allSelected {
+            // Deselect all files in this category
+            for file in group.files {
+                selectedZombieItemsLocal.remove(file)
+            }
+        } else {
+            // Select all files in this category (that are in memoizedFiles)
+            let filesToSelect = group.files.filter { memoizedFiles.contains($0) }
+            for file in filesToSelect {
+                selectedZombieItemsLocal.insert(file)
+            }
+        }
+        updateTotalSizes()
+    }
+
 }
 
 
@@ -616,26 +710,22 @@ struct ZombieFileDetailsItem: View {
     @Binding var isSelected: Bool
 
     var body: some View {
-        HStack(spacing: 15) {
-            // Selection checkbox - OUTSIDE the background
+        HStack(alignment: .center, spacing: 15) {
+            // Selection checkbox
             Button(action: { isSelected.toggle() }) {
                 EmptyView()
             }
             .buttonStyle(CircleCheckboxButtonStyle(isSelected: isSelected))
 
-            // Content with background
-            HStack(alignment: .center, spacing: 15) {
-                if let appIcon = icon {
+            if let appIcon = icon {
                 appIcon
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 30, height: 30)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
-
             }
 
             VStack(alignment: .leading, spacing: 5) {
-
                 HStack(alignment: .center) {
                     Text(showLocalized(url: path))
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
@@ -643,8 +733,8 @@ struct ZombieFileDetailsItem: View {
                         .lineLimit(1)
                         .truncationMode(.tail)
                         .help(path.lastPathComponent)
-                        .overlay{
-                            if (isHovered) {
+                        .overlay {
+                            if isHovered {
                                 VStack {
                                     Spacer()
                                     RoundedRectangle(cornerRadius: 10)
@@ -658,7 +748,6 @@ struct ZombieFileDetailsItem: View {
                     if let imageView = folderImages(for: path.path) {
                         imageView
                     }
-
                 }
 
                 path.path.pathWithArrows(separatorColor: ThemeColors.shared(for: colorScheme).primaryText)
@@ -666,28 +755,21 @@ struct ZombieFileDetailsItem: View {
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     .help(path.path)
             }
+            .onTapGesture {
+                NSWorkspace.shared.selectFile(path.path, inFileViewerRootedAtPath: path.deletingLastPathComponent().path)
+            }
             .onHover { hovering in
                 withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                     self.isHovered = hovering
                 }
             }
-            .onTapGesture {
-                NSWorkspace.shared.selectFile(path.path, inFileViewerRootedAtPath: path.deletingLastPathComponent().path)
-            }
 
             Spacer()
 
-            let displaySize = formatByte(size: size!).human
-
-                Text(verbatim: "\(displaySize)")
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-
-            }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(ThemeColors.shared(for: colorScheme).secondaryBG)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
+            Text(verbatim: "\(formatByte(size: size!).human)")
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
         }
+        .padding(.vertical, 8)
         .contextMenu {
             if path.pathExtension == "app" {
                 Button("Open \(path.deletingPathExtension().lastPathComponent)") {

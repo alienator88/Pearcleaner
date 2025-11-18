@@ -237,3 +237,95 @@ struct FileCategoryView: View {
         }
     }
 }
+
+// MARK: - ZombieFileCategoryView Component
+
+struct ZombieFileCategoryView: View {
+    @EnvironmentObject var appState: AppState
+    @Environment(\.colorScheme) var colorScheme
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+
+    let group: GroupedFiles
+    let onToggleExpand: () -> Void
+    let onToggleSelection: () -> Void
+    let fileItemBinding: (URL) -> Binding<Bool>
+    @Binding var memoizedFiles: [URL]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            // Category Header
+            HStack(spacing: 10) {
+                // Expand/Collapse chevron
+                Button(action: onToggleExpand) {
+                    Image(systemName: group.isExpanded ? "chevron.down" : "chevron.right")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        .frame(width: 10)
+                }
+                .buttonStyle(.plain)
+
+                // Category checkbox (select all in category)
+                Button(action: onToggleSelection) {
+                    Image(systemName: group.allSelected ? "checkmark.circle.fill" :
+                          (group.someSelected ? "circle.lefthalf.filled" : "circle"))
+                        .foregroundStyle(group.allSelected || group.someSelected ?
+                                       ThemeColors.shared(for: colorScheme).accent :
+                                       ThemeColors.shared(for: colorScheme).secondaryText)
+                        .font(.title3)
+                }
+                .buttonStyle(.plain)
+                .help(group.allSelected ? "Deselect all files in this category" : "Select all files in this category")
+
+                // Category name
+                Text(group.category.rawValue)
+                    .font(.headline)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                // File count
+                Text("(\(group.files.count))")
+                    .font(.caption)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                Spacer()
+
+                // Total size
+                Text(formatByte(size: group.totalSize).human)
+                    .font(.caption)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+            }
+            .padding(.vertical, 8)
+            .contentShape(Rectangle())
+            .onTapGesture {
+                onToggleExpand()
+            }
+
+            // Files in category (only if expanded)
+            if group.isExpanded {
+                LazyVStack(spacing: 0) {
+                    ForEach(Array(group.files.enumerated()), id: \.element) { index, path in
+                        VStack(spacing: 0) {
+                            if let fileSize = appState.zombieFile.fileSize[path],
+                               let fileIcon = appState.zombieFile.fileIcon[path],
+                               let iconImage = fileIcon.map(Image.init(nsImage:)) {
+                                ZombieFileDetailsItem(
+                                    size: fileSize,
+                                    icon: iconImage,
+                                    path: path,
+                                    memoizedFiles: $memoizedFiles,
+                                    isSelected: fileItemBinding(path)
+                                )
+                                .padding(.leading, 35) // Indent files under category
+                            }
+
+                            if index < group.files.count - 1 {
+                                Divider()
+                                    .padding(.leading, 35)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
