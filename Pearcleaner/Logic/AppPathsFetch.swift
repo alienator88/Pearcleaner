@@ -230,8 +230,17 @@ class AppPathFinder {
                     }
 
                     // If this is a directory and we haven't reached max depth, mark for recursive search
+                    // Skip directories in the exclusion list when doing Library root deep searches
                     if isDirectory.boolValue && currentDepth < maxDepth {
-                        subdirectoriesToSearch.append(scannedItemURL)
+                        // For Library root searches at depth 0, check if directory should be excluded from deep search
+                        if isLibraryRootSearch && currentDepth == 0 {
+                            let dirName = scannedItemURL.lastPathComponent
+                            if !skipDeepSearch.contains(dirName) {
+                                subdirectoriesToSearch.append(scannedItemURL)
+                            }
+                        } else {
+                            subdirectoriesToSearch.append(scannedItemURL)
+                        }
                     }
                 }
             }
