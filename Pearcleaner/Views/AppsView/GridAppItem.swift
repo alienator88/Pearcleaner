@@ -113,6 +113,7 @@ struct GridAppItem: View {
                     .font(.system(size: 9))
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.6))
                     .lineLimit(1)
+                    .frame(minWidth: 50, alignment: .center)
                 }
             }
             .buttonStyle(.borderless)

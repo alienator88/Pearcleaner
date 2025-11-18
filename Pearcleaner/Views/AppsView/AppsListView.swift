@@ -114,7 +114,7 @@ struct Header: View {
             Text(verbatim: "\(count)")
                 .font(.system(size: 10))
                 .monospacedDigit()
-                .frame(minWidth: count > 99 ? 30 : 24, minHeight: 17)
+                .frame(width: count > 99 ? 30 : 24, height: 17)
                 .background(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.1))
                 .clipShape(.capsule)
                 .padding(.leading, 2)
@@ -125,10 +125,6 @@ struct Header: View {
         .background(.black.opacity(0.0000000001))
         .frame(minHeight: 20)
         .padding([.horizontal, .bottom], 5)
-        //        .help("Click header to change sorting order")
-        //        .onTapGesture {
-        //            selectedSortAlpha.toggle()
-        //        }
     }
 }
 

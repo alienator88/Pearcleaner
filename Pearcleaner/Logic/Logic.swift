@@ -51,27 +51,38 @@ func flushBundleCache(for path: URL) {
 
 /// Load apps from specified folder paths and update AppState
 /// This is the main entry point for loading/refreshing apps
+/// Apps stream into AppState.shared.sortedApps progressively as chunks complete
 func loadApps(folderPaths: [String]) {
+    // Clear array immediately before loading
+    Task { @MainActor in
+        AppState.shared.sortedApps = []
+    }
+
     DispatchQueue.global(qos: .userInitiated).async {
-        let apps = getSortedApps(paths: folderPaths)
+        // getSortedApps now streams results to AppState.shared.sortedApps
+        _ = getSortedApps(paths: folderPaths)
 
         Task { @MainActor in
-            AppState.shared.sortedApps = apps
             AppState.shared.restoreZombieAssociations()
         }
     }
 }
 
 // Awaitable version that waits for apps to finish loading
+// Note: With streaming, this still clears and starts loading but doesn't wait for completion
 func loadAppsAsync(folderPaths: [String]) async {
-    // Load apps on background thread
-    let apps = await Task.detached(priority: .userInitiated) {
-        getSortedApps(paths: folderPaths)
+    // Clear array immediately before loading
+    await MainActor.run {
+        AppState.shared.sortedApps = []
+    }
+
+    // Load apps on background thread (streams results)
+    await Task.detached(priority: .userInitiated) {
+        _ = getSortedApps(paths: folderPaths)
     }.value
 
     // Update AppState on MainActor
     await MainActor.run {
-        AppState.shared.sortedApps = apps
         AppState.shared.restoreZombieAssociations()
     }
 }
@@ -148,6 +159,19 @@ func getSortedApps(paths: [String]) -> [AppInfo] {
         }
     }
 
+    // === DEBUG: Duplicate AppCleaner for testing high app counts ===
+#if DEBUG
+//    if let appCleanerURL = apps.first(where: { $0.lastPathComponent == "AppCleaner.app" }) {
+//        print("🧪 TEST MODE: Duplicating AppCleaner 150 times for stress testing")
+//        // Simply add the same URL 150 times - they'll get unique UUIDs but share metadata
+//        for _ in 1...150 {
+//            apps.append(appCleanerURL)
+//        }
+//        print("🧪 Total apps after duplication: \(apps.count)")
+//    }
+#endif
+    // === END DEBUG ===
+
     // Convert collected paths to string format for metadata query
     let combinedPaths = apps.map { $0.path }
 
@@ -158,8 +182,8 @@ func getSortedApps(paths: [String]) -> [AppInfo] {
         metadataDictionary = metadata
     }
 
-    // === PHASE 1: Load AppInfoMini (fast path - display-critical properties only) ===
-    let miniApps: [AppInfoMini] = {
+    // === PHASE 1: Stream AppInfoMini as chunks complete (progressive loading) ===
+    Task.detached(priority: .userInitiated) {
         let chunks = createOptimalChunks(from: apps, minChunkSize: 10, maxChunkSize: 40)
         let queue = DispatchQueue(label: "com.pearcleaner.appinfo.mini", qos: .userInitiated, attributes: .concurrent)
         let group = DispatchGroup()
@@ -188,40 +212,40 @@ func getSortedApps(paths: [String]) -> [AppInfo] {
                     resultsQueue.sync {
                         allMiniInfos.append(contentsOf: chunkMiniInfos)
                     }
+
+                    // Stream to UI as each chunk completes
+                    let currentBatch = chunkMiniInfos.map { $0.toAppInfo() }
+                    Task { @MainActor in
+                        AppState.shared.sortedApps.append(contentsOf: currentBatch)
+                        // Sort after each addition to maintain alphabetical order
+                        AppState.shared.sortedApps.sort { $0.appName.lowercased() < $1.appName.lowercased() }
+                    }
                 }
                 group.leave()
             }
         }
 
-        group.wait()
-        return allMiniInfos
-    }()
+        // Wait for all chunks to complete before launching Phase 2
+        group.notify(queue: DispatchQueue.global(qos: .utility)) {
+            // === PHASE 2: Background upgrade to full AppInfo (expensive operations) ===
+            for mini in allMiniInfos {
+                autoreleasepool {
+                    // Upgrade mini to full AppInfo with all expensive properties
+                    let fullAppInfo = MetadataAppInfoFetcher.upgradeToFullAppInfo(mini: mini)
 
-    // Convert AppInfoMini to AppInfo with placeholders for immediate display
-    let initialAppInfos = miniApps.map { $0.toAppInfo() }
-
-    // Sort apps by display name
-    let sortedApps = initialAppInfos.sorted { $0.appName.lowercased() < $1.appName.lowercased() }
-
-    // === PHASE 2: Background upgrade to full AppInfo (expensive operations) ===
-    // Launch detached task to upgrade each app without blocking
-    Task.detached(priority: .utility) {
-        for (index, mini) in miniApps.enumerated() {
-            autoreleasepool {
-                // Upgrade mini to full AppInfo with all expensive properties
-                let fullAppInfo = MetadataAppInfoFetcher.upgradeToFullAppInfo(mini: mini)
-
-                // Update sorted array on main thread using path as stable identifier
-                Task { @MainActor in
-                    if let targetIndex = AppState.shared.sortedApps.firstIndex(where: { $0.path == mini.path }) {
-                        AppState.shared.sortedApps[targetIndex] = fullAppInfo
+                    // Update sorted array on main thread using path as stable identifier
+                    Task { @MainActor in
+                        if let targetIndex = AppState.shared.sortedApps.firstIndex(where: { $0.path == mini.path }) {
+                            AppState.shared.sortedApps[targetIndex] = fullAppInfo
+                        }
                     }
                 }
             }
         }
     }
 
-    return sortedApps
+    // Return empty array - results will stream in via AppState updates
+    return []
 }
 
 // Get directory path for darwin cache and temp directories
@@ -438,13 +462,17 @@ func reloadAppsList(
     appState: AppState, fsm: FolderSettingsManager, delay: Double = 0.0,
     completion: @escaping () -> Void = {}
 ) {
-    appState.reload = true
     updateOnBackground(after: delay) {
-        let sortedApps = getSortedApps(paths: fsm.folderPaths)
-        // Update UI on the main thread
+        // Clear array before reload
         updateOnMain {
-            appState.sortedApps = sortedApps
-            appState.reload = false
+            appState.sortedApps = []
+        }
+
+        // getSortedApps now streams results to appState.sortedApps
+        _ = getSortedApps(paths: fsm.folderPaths)
+
+        // Run completion after streaming starts
+        updateOnMain {
             completion()
         }
     }

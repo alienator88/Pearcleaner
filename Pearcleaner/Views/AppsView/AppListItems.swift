@@ -121,6 +121,7 @@ struct AppListItems: View {
                                     .lineLimit(1)
                                     .truncationMode(.tail)
                                     .opacity(0.5)
+                                    .frame(minWidth: 60, alignment: .leading)
                                     Spacer()
                                 }
 
@@ -140,6 +141,7 @@ struct AppListItems: View {
                             .font(.system(size: 10))
                             .foregroundStyle(
                                 ThemeColors.shared(for: colorScheme).primaryText.opacity(0.5))
+                            .frame(minWidth: 60, alignment: .trailing)
                         }
                     }
 
@@ -148,7 +150,7 @@ struct AppListItems: View {
                 .padding(.trailing)
                 .padding(.vertical, 5)
             }
-            .buttonStyle(.borderless)
+            .buttonStyle(.plain)
             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
             .padding(.leading, multiSelect ? 0 : 10)
             .onHover { hovering in

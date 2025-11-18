@@ -26,11 +26,12 @@ struct AppSearchView: View {
     var body: some View {
 
         VStack(alignment: .center, spacing: 0) {
-            if appState.reload || appState.sortedApps.isEmpty {
+            if appState.sortedApps.isEmpty {
                 VStack {
                     Spacer()
-                    ProgressView()
-                        .controlSize(.small)
+                    Text("No apps found")
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        .font(.callout)
                     Spacer()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)

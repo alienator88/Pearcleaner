@@ -31,7 +31,6 @@ class AppState: ObservableObject {
     @Published var showAlert: Bool = false
     @Published var showDeleteHistory: Bool = false
     @Published var sidebar: Bool = true
-    @Published var reload: Bool = false
     @Published var showProgress: Bool = false
     @Published var isBrewCleanupInProgress: Bool = false
     @Published var progressStep: Int = 0
