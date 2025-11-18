@@ -36,6 +36,7 @@ struct Condition: Codable {
 struct SkipCondition {
     var skipPrefix: [String]
     var allowPrefixes: [String]
+    var skipPaths: [String]
 }
 
 
@@ -199,8 +200,9 @@ var conditions: [Condition] = [
 // Skip some system files/folders
 let skipConditions: [SkipCondition] = [
     SkipCondition(
-        skipPrefix: ["mobiledocuments", "reminders", "dsstore", ".DS_Store"],
-        allowPrefixes: ["comappleconfigurator", "comappledt", "comappleiwork", "comapplesfsymbols", "comappletestflight", "comapplesharedfilelist", "comapplelssharedfilelist"]
+        skipPrefix: ["mobiledocuments", "reminders", "dsstore"],
+        allowPrefixes: ["comappleconfigurator", "comappledt", "comappleiwork", "comapplesfsymbols", "comappletestflight", "comapplesharedfilelist", "comapplelssharedfilelist"],
+        skipPaths: ["\(home)/.Trash", "/Library/SystemExtensions"]
     )
 ]
 

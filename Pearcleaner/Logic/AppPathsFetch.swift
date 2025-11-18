@@ -184,8 +184,14 @@ class AppPathFinder {
 
     // Combined processing for directories and files
     private func processLocation(_ location: String) {
+        processLocation(location, currentDepth: 0, maxDepth: 1, isLibraryRootSearch: false)
+    }
+
+    private func processLocation(_ location: String, currentDepth: Int, maxDepth: Int, isLibraryRootSearch: Bool = false) {
         if let contents = try? FileManager.default.contentsOfDirectory(atPath: location) {
             var localResults: [URL] = []
+            var subdirectoriesToSearch: [URL] = []
+
             for scannedItem in contents {
                 let scannedItemURL = URL(fileURLWithPath: location).appendingPathComponent(scannedItem)
                 let normalizedItemName: String
@@ -201,12 +207,44 @@ class AppPathFinder {
                     if shouldSkipItem(normalizedItemName, at: scannedItemURL) { continue }
 
                     if specificCondition(normalizedItemName: normalizedItemName, scannedItemURL: scannedItemURL) {
-                        localResults.append(scannedItemURL)
+                        // Determine what to add: matched item or its parent (for vendor folders)
+                        let itemToAdd: URL
+
+                        // For depth=2 matches in Library root searches, check if parent is a vendor folder
+                        if isLibraryRootSearch && currentDepth == 2 {
+                            let parentURL = scannedItemURL.deletingLastPathComponent()
+                            let parentName = parentURL.lastPathComponent
+
+                            // Add parent directory if it's NOT a standard macOS directory
+                            // This captures vendor folders like /Library/Objective-See/ instead of /Library/Objective-See/LuLu/
+                            if !Locations.standardLibrarySubdirectories.contains(parentName) {
+                                itemToAdd = parentURL
+                            } else {
+                                itemToAdd = scannedItemURL
+                            }
+                        } else {
+                            itemToAdd = scannedItemURL
+                        }
+
+                        localResults.append(itemToAdd)
+                    }
+
+                    // If this is a directory and we haven't reached max depth, mark for recursive search
+                    if isDirectory.boolValue && currentDepth < maxDepth {
+                        subdirectoriesToSearch.append(scannedItemURL)
                     }
                 }
             }
+
             collectionAccessQueue.sync {
                 collectionSet.formUnion(localResults)
+            }
+
+            // Recursively search subdirectories if we haven't reached max depth
+            if currentDepth < maxDepth {
+                for subdirectory in subdirectoriesToSearch {
+                    processLocation(subdirectory.path, currentDepth: currentDepth + 1, maxDepth: maxDepth, isLibraryRootSearch: isLibraryRootSearch)
+                }
             }
         }
     }
@@ -217,7 +255,11 @@ class AppPathFinder {
         for location in self.locations.apps.paths {
             dispatchGroup.enter()
             DispatchQueue.global(qos: .userInitiated).async {
-                self.processLocation(location)
+                // Use depth=2 for Library directories to find files in vendor subdirectories
+                // Example: /Library/Objective-See/LuLu, ~/Library/Microsoft/Edge
+                let isLibRoot = self.isLibraryDirectory(location)
+                let maxDepth = isLibRoot ? 2 : 1
+                self.processLocation(location, currentDepth: 0, maxDepth: maxDepth, isLibraryRootSearch: isLibRoot)
                 dispatchGroup.leave()
             }
         }
@@ -227,8 +269,17 @@ class AppPathFinder {
     // Synchronous collection for CLI usage
     private func collectLocationsCLI() {
         for location in self.locations.apps.paths {
-            processLocation(location)
+            // Use depth=2 for Library directories to find files in vendor subdirectories
+            let isLibRoot = isLibraryDirectory(location)
+            let maxDepth = isLibRoot ? 2 : 1
+            processLocation(location, currentDepth: 0, maxDepth: maxDepth, isLibraryRootSearch: isLibRoot)
         }
+    }
+
+    // Helper to determine if a location is a Library directory
+    private func isLibraryDirectory(_ location: String) -> Bool {
+        let home = FileManager.default.homeDirectoryForCurrentUser.path
+        return location == "\(home)/Library" || location == "/Library"
     }
 
     // Skip items based on conditions and membership in collectionSet
@@ -241,6 +292,14 @@ class AppPathFinder {
             return true
         }
         for skipCondition in skipConditions {
+            // Check path-based exclusions first
+            for skipPath in skipCondition.skipPaths {
+                if scannedItemURL.path.hasPrefix(skipPath) {
+                    return true
+                }
+            }
+
+            // Check prefix-based exclusions
             if skipCondition.skipPrefix.contains(where: normalizedItemName.hasPrefix) {
                 let isAllowed = skipCondition.allowPrefixes.contains(where: normalizedItemName.hasPrefix)
                 if !isAllowed {

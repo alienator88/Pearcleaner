@@ -19,6 +19,30 @@ class Locations: ObservableObject {
         var subcategories: [String: [String]]
     }
 
+    // Standard macOS Library subdirectories
+    // Used to determine if depth=2 matches should add parent directory (vendor folders)
+    // or the matched item itself (standard system folders)
+    static let standardLibrarySubdirectories: Set<String> = [
+        "Application Scripts",
+        "Application Support",
+        "Caches",
+        "Containers",
+        "Group Containers",
+        "HTTPStorages",
+        "Internet Plug-Ins",
+        "LaunchAgents",
+        "LaunchDaemons",
+        "Logs",
+        "Preferences",
+        "PreferencePanes",
+        "PrivilegedHelperTools",
+        "Saved Application State",
+        "Services",
+        "WebKit",
+        "Extensions",
+        "Frameworks"
+    ]
+
     let cacheDir: String
     let tempDir: String
 
