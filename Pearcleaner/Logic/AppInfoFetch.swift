@@ -531,7 +531,7 @@ class SteamAppInfoFetcher {
 
 
 private func getEntitlements(for appPath: String) -> [String]? {
-    return autoreleasepool {
+    return autoreleasepool { () -> [String]? in
         let appURL = URL(fileURLWithPath: appPath) as CFURL
         var staticCode: SecStaticCode?
 
@@ -574,6 +574,43 @@ private func getEntitlements(for appPath: String) -> [String]? {
                         // Add binary name if not already present and length >= 5 to avoid false matches
                         if !results.contains(file) && file.count >= 5 {
                             results.append(file)
+                        }
+                    }
+                } catch {
+                    // Silently ignore errors (e.g., permission denied, folder doesn't exist)
+                }
+            }
+
+            // Scan nested bundles one level deep in Contents/*/ for helper apps
+            // Example: Contents/SharedSupport/wpscloudsvr.app
+            let contentsPath = URL(fileURLWithPath: appPath).appendingPathComponent("Contents")
+            if FileManager.default.fileExists(atPath: contentsPath.path) {
+                do {
+                    let subdirs = try FileManager.default.contentsOfDirectory(at: contentsPath, includingPropertiesForKeys: nil)
+                    for subdir in subdirs where subdir.hasDirectoryPath {
+                        // Check for .app bundles in this subdirectory
+                        if let bundles = try? FileManager.default.contentsOfDirectory(at: subdir, includingPropertiesForKeys: nil) {
+                            for bundle in bundles where bundle.pathExtension == "app" {
+                                // Add bundle name (without .app extension)
+                                let bundleName = bundle.deletingPathExtension().lastPathComponent
+                                // Skip generic names that could cause false positives
+                                let excludedNames = ["crashhandler", "crash handler"]
+                                let bundleNameLower = bundleName.lowercased()
+                                if !results.contains(bundleName) && bundleName.count >= 5 && !excludedNames.contains(bundleNameLower) {
+                                    results.append(bundleName)
+                                }
+
+                                // Scan nested bundle's MacOS folder for binary names
+                                let nestedMacOS = bundle.appendingPathComponent("Contents/MacOS")
+                                if let binaries = try? FileManager.default.contentsOfDirectory(atPath: nestedMacOS.path) {
+                                    for binary in binaries where !binary.hasPrefix(".") && binary.count >= 5 {
+                                        let binaryNameLower = binary.lowercased()
+                                        if !results.contains(binary) && !excludedNames.contains(binaryNameLower) {
+                                            results.append(binary)
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 } catch {
