@@ -698,7 +698,7 @@ enum SortOptionList: String, CaseIterable {
 
     var systemImage: String {
         switch self {
-        case .name: return "list.bullet"
+        case .name: return "textformat"
         case .path: return "folder"
         case .size: return "number"
         }

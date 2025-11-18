@@ -9,6 +9,11 @@ import AlinFoundation
 import Foundation
 import SwiftUI
 
+enum FileListViewMode: String {
+    case simple = "Simple"
+    case categorized = "Categorized"
+}
+
 struct FileListView: View {
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.general.brew") private var brew: Bool = false
@@ -18,6 +23,7 @@ struct FileListView: View {
     @Binding var sortedFiles: [URL]
     @Binding var infoSidebar: Bool
     @Binding var selectedSort: SortOptionList
+    @Binding var viewMode: FileListViewMode
     @State private var searchText: String = ""
     @State private var selectedFileItemsLocal: Set<URL> = []
     @State private var memoizedFiles: [URL] = []
@@ -143,36 +149,63 @@ struct FileListView: View {
                     }
                     .padding(.vertical)
 
-                    // File list with categories
+                    // File list (simple or categorized based on viewMode)
                     ScrollView {
-                        LazyVStack(spacing: 8) {
-                            ForEach(categorizedFiles, id: \.category) { group in
-                                FileCategoryView(
-                                    group: group,
-                                    onToggleExpand: {
-                                        withAnimation(.easeInOut(duration: animationEnabled ? 0.2 : 0)) {
-                                            toggleCategory(group.category)
-                                        }
-                                    },
-                                    onToggleSelection: {
-                                        toggleCategorySelection(group)
-                                    },
-                                    fileItemBinding: binding(for:),
-                                    removeAssociation: removeSingleZombieAssociation
-                                )
+                        if viewMode == .simple {
+                            // Simple flat list view
+                            LazyVStack(spacing: 0) {
+                                ForEach(Array(filteredFiles.enumerated()), id: \.element) { index, path in
+                                    VStack(spacing: 0) {
+                                        FileDetailsItem(
+                                            path: path,
+                                            removeAssociation: removeSingleZombieAssociation,
+                                            isSelected: binding(for: path)
+                                        )
 
-                                if group.category != categorizedFiles.last?.category {
-                                    Divider()
-                                        .padding(.vertical, 4)
+                                        if index < filteredFiles.count - 1 {
+                                            Divider()
+                                        }
+                                    }
                                 }
                             }
-                        }
-                        .onAppear {
-                            updateSortedFiles()
-                            updateMemoizedFiles()
-                        }
-                        .onChange(of: sortedFiles) { _ in
-                            updateMemoizedFiles()
+                            .onAppear {
+                                updateSortedFiles()
+                                updateMemoizedFiles()
+                            }
+                            .onChange(of: sortedFiles) { _ in
+                                updateMemoizedFiles()
+                            }
+                        } else {
+                            // Categorized view
+                            LazyVStack(spacing: 8) {
+                                ForEach(categorizedFiles, id: \.category) { group in
+                                    FileCategoryView(
+                                        group: group,
+                                        onToggleExpand: {
+                                            withAnimation(.easeInOut(duration: animationEnabled ? 0.2 : 0)) {
+                                                toggleCategory(group.category)
+                                            }
+                                        },
+                                        onToggleSelection: {
+                                            toggleCategorySelection(group)
+                                        },
+                                        fileItemBinding: binding(for:),
+                                        removeAssociation: removeSingleZombieAssociation
+                                    )
+
+                                    if group.category != categorizedFiles.last?.category {
+                                        Divider()
+                                            .padding(.vertical, 4)
+                                    }
+                                }
+                            }
+                            .onAppear {
+                                updateSortedFiles()
+                                updateMemoizedFiles()
+                            }
+                            .onChange(of: sortedFiles) { _ in
+                                updateMemoizedFiles()
+                            }
                         }
                     }
                     .scrollIndicators(scrollIndicators ? .automatic : .never)

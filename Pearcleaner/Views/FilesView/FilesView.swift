@@ -19,6 +19,7 @@ struct FilesView: View {
     @AppStorage("settings.general.brew") private var brew: Bool = false
     //    @AppStorage("settings.general.selectedSort") var selectedSortAlpha: Bool = true
     @AppStorage("settings.general.selectedSort") var selectedSort: SortOptionList = .name
+    @AppStorage("settings.interface.fileListViewMode") private var viewMode: FileListViewMode = .simple
     @AppStorage("settings.general.filesWarning") private var warning: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.general.confirmAlert") private var confirmAlert: Bool = false
@@ -68,6 +69,7 @@ struct FilesView: View {
                         sortedFiles: $sortedFiles,
                         infoSidebar: $infoSidebar,
                         selectedSort: $selectedSort,
+                        viewMode: $viewMode,
                         locations: locations,
                         windowController: windowController,
                         handleUninstallAction: handleUninstallAction,
@@ -145,21 +147,26 @@ struct FilesView: View {
                     Label("Console", systemImage: consoleManager.showConsole ? "terminal.fill" : "terminal")
                 }
                 .help("Toggle console output")
-                
-                Menu {
-                    ForEach(SortOptionList.allCases, id: \.self) { sortOption in
-                        Button {
-                            selectedSort = sortOption
-                            updateSortedFiles()
-                        } label: {
-                            Label(sortOption.title, systemImage: sortOption.systemImage)
-                        }
+
+                Button {
+                    viewMode = viewMode == .simple ? .categorized : .simple
+                } label: {
+                    Label("View", systemImage: viewMode == .simple ? "list.bullet" : "checklist")
+                }
+                .help(viewMode == .simple ? "Switch to categorized view" : "Switch to simple view")
+
+                Button {
+                    // Cycle through sort options
+                    let allOptions = SortOptionList.allCases
+                    if let currentIndex = allOptions.firstIndex(of: selectedSort) {
+                        let nextIndex = (currentIndex + 1) % allOptions.count
+                        selectedSort = allOptions[nextIndex]
+                        updateSortedFiles()
                     }
                 } label: {
                     Label(selectedSort.title, systemImage: selectedSort.systemImage)
                 }
-                .labelStyle(.titleAndIcon)
-                .menuIndicator(.hidden)
+                .help("Sort by \(selectedSort.title). Click to cycle through options")
 
 
                 Button {

@@ -71563,6 +71563,9 @@
         }
       }
     },
+    "Sort by %@. Click to cycle through options" : {
+
+    },
     "Sorted by Name" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -74404,6 +74407,12 @@
           }
         }
       }
+    },
+    "Switch to categorized view" : {
+
+    },
+    "Switch to simple view" : {
+
     },
     "Switch Utilities" : {
       "localizations" : {
