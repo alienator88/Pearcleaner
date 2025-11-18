@@ -9,6 +9,7 @@
 - [x] Add category view option to Files view and Orphans view - #462
 - [x] Add 2 level depth search for Library folders excluding OS directories
 - [x] Add 2 phase loading model to app startup to speed up loading apps while offloading unneeded data to lower priority queue
+- [x] Stream apps into list instead of waiting for all to load
 
 ### Fixes
 

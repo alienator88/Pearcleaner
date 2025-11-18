@@ -147,9 +147,11 @@ struct AppListItems: View {
 
                 }
                 .frame(height: 35)
+                .background(Color.white.opacity(0.000000001))
                 .padding(.trailing)
                 .padding(.vertical, 5)
             }
+            .contentShape(Rectangle())
             .buttonStyle(.plain)
             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
             .padding(.leading, multiSelect ? 0 : 10)
