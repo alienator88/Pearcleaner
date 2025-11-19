@@ -57,7 +57,7 @@ enum UpdateStatus: Equatable {
     }
 }
 
-struct UpdateableApp: Identifiable {
+struct UpdateableApp: Identifiable, Hashable {
     let id = UUID()
     let appInfo: AppInfo
     var availableVersion: String?
@@ -88,5 +88,21 @@ struct UpdateableApp: Identifiable {
     /// Unique identifier for tracking hidden apps
     var uniqueIdentifier: String {
         appInfo.bundleIdentifier
+    }
+
+    // Hashable conformance
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+
+    static func == (lhs: UpdateableApp, rhs: UpdateableApp) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
+// Conform to FuzzySearchable for automatic fuzzy search support in GenericSidebarListView
+extension UpdateableApp: FuzzySearchable {
+    var searchableString: String {
+        return appInfo.appName
     }
 }

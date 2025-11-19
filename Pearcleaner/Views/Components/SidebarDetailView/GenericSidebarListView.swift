@@ -15,16 +15,16 @@ struct GenericSidebarListView<Item: Identifiable & Hashable, Content: View>: Vie
 
     // Bindings
     @Binding var searchText: String
-    @Binding var sidebarWidth: Double
 
     // Customization
-    let searchFilter: (Item, String) -> Bool
+    let searchFilter: ((Item, String) -> Bool)?
     let emptyMessage: String
     let noResultsMessage: String
     @ViewBuilder let itemView: (Item) -> Content
 
     // Internal state
     @Environment(\.colorScheme) var colorScheme
+    @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 265
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @State private var dimensionStart: Double?
 
@@ -32,8 +32,7 @@ struct GenericSidebarListView<Item: Identifiable & Hashable, Content: View>: Vie
         items: [Item],
         categories: [(title: String, filter: (Item) -> Bool)],
         searchText: Binding<String>,
-        sidebarWidth: Binding<Double>,
-        searchFilter: @escaping (Item, String) -> Bool,
+        searchFilter: ((Item, String) -> Bool)? = nil,
         emptyMessage: String = "No items found",
         noResultsMessage: String = "No results",
         @ViewBuilder itemView: @escaping (Item) -> Content
@@ -41,7 +40,6 @@ struct GenericSidebarListView<Item: Identifiable & Hashable, Content: View>: Vie
         self.items = items
         self.categories = categories
         self._searchText = searchText
-        self._sidebarWidth = sidebarWidth
         self.searchFilter = searchFilter
         self.emptyMessage = emptyMessage
         self.noResultsMessage = noResultsMessage
@@ -83,6 +81,10 @@ struct GenericSidebarListView<Item: Identifiable & Hashable, Content: View>: Vie
                 }
             }
         }
+        .frame(width: sidebarWidth)
+        .ifGlassMain()
+        .padding([.leading, .vertical], 8)
+        .ignoresSafeArea(edges: .top)
         .overlay(alignment: .trailing) {
             // Invisible resize handle on the trailing edge
             Rectangle()
@@ -135,7 +137,20 @@ struct GenericSidebarListView<Item: Identifiable & Hashable, Content: View>: Vie
         if searchText.isEmpty {
             return items
         } else {
-            return items.filter { searchFilter($0, searchText) }
+            // Use custom searchFilter if provided
+            if let customFilter = searchFilter {
+                return items.filter { customFilter($0, searchText) }
+            }
+            // Otherwise, check if items conform to FuzzySearchable and use fuzzy matching
+            else if let fuzzySearchableItems = items as? [any FuzzySearchable] {
+                return fuzzySearchableItems.filter { item in
+                    item.fuzzyMatch(query: searchText).weight > 0
+                } as? [Item] ?? []
+            }
+            // Fallback: no filtering (return empty to show "no results")
+            else {
+                return []
+            }
         }
     }
 

@@ -67356,6 +67356,9 @@
         }
       }
     },
+    "Select an app to view details" : {
+
+    },
     "Select an environment to view stored cache" : {
       "localizations" : {
         "de" : {

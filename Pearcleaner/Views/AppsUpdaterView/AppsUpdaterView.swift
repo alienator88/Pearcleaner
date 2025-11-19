@@ -17,6 +17,7 @@ struct AppsUpdaterView: View {
     @State private var searchText = ""
     @State private var collapsedCategories: Set<String> = ["Unsupported"]
     @State private var hiddenSidebar: Bool = false
+    @State private var selectedApp: UpdateableApp? = nil
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.updater.checkAppStore") private var checkAppStore: Bool = true
@@ -24,6 +25,7 @@ struct AppsUpdaterView: View {
     @AppStorage("settings.updater.checkSparkle") private var checkSparkle: Bool = true
     @AppStorage("settings.updater.includeSparklePreReleases") private var includeSparklePreReleases: Bool = false
     @AppStorage("settings.updater.showUnsupported") private var showUnsupported: Bool = true
+    @State private var testingSidebar: Bool = true
 
     private var totalUpdateCount: Int {
         updateManager.updatesBySource
@@ -53,6 +55,29 @@ struct AppsUpdaterView: View {
     // Check if any apps are selected
     private var hasSelectedApps: Bool {
         selectedAppsCount > 0
+    }
+
+    // Sidebar categories
+    private var sidebarCategories: [(String, (UpdateableApp) -> Bool)] {
+        var cats: [(String, (UpdateableApp) -> Bool)] = []
+        if checkAppStore {
+            cats.append(("App Store", { $0.source == .appStore }))
+        }
+        if checkHomebrew {
+            cats.append(("Homebrew", { $0.source == .homebrew }))
+        }
+        if checkSparkle {
+            cats.append(("Sparkle", { $0.source == .sparkle }))
+        }
+        if showUnsupported {
+            cats.append(("Unsupported", { $0.source == .unsupported }))
+        }
+        return cats
+    }
+
+    // All updateable apps for sidebar
+    private var allUpdateableApps: [UpdateableApp] {
+        updateManager.updatesBySource.values.flatMap { $0 }
     }
 
     private var resultsCountBar: some View {
@@ -86,6 +111,26 @@ struct AppsUpdaterView: View {
     }
 
     var body: some View {
+        Group {
+            if testingSidebar {
+                sidebarTestView
+            } else {
+                currentView
+            }
+        }
+        .task {
+            GlobalConsoleManager.shared.appendOutput("Loading app updates...\n", source: CurrentPage.updater.title)
+            let task = Task { await updateManager.scanForUpdates() }
+            updateManager.currentScanTask = task
+            await task.value
+            GlobalConsoleManager.shared.appendOutput("✓ Loaded app updates\n", source: CurrentPage.updater.title)
+        }
+        .onDisappear {
+            UpdaterDebugLogger.shared.clearLogs()
+        }
+    }
+
+    private var currentView: some View {
         ZStack {
             VStack(spacing: 0) {
                 // Search bar (matching Homebrew style)
@@ -440,15 +485,42 @@ struct AppsUpdaterView: View {
 
             }
         }
-        .task {
-            GlobalConsoleManager.shared.appendOutput("Loading app updates...\n", source: CurrentPage.updater.title)
-            let task = Task { await updateManager.scanForUpdates() }
-            updateManager.currentScanTask = task
-            await task.value
-            GlobalConsoleManager.shared.appendOutput("✓ Loaded app updates\n", source: CurrentPage.updater.title)
-        }
-        .onDisappear {
-            UpdaterDebugLogger.shared.clearLogs()
+    }
+
+    private var sidebarTestView: some View {
+        SidebarDetailLayout {
+            GenericSidebarListView(
+                items: allUpdateableApps,
+                categories: sidebarCategories,
+                searchText: $searchText,
+                emptyMessage: "No apps to update",
+                noResultsMessage: "No matching apps"
+            ) { app in
+                UpdateRowViewSidebar(
+                    app: app,
+                    isSelected: selectedApp?.id == app.id,
+                    onTap: {
+                        if selectedApp?.id == app.id {
+                            // Deselect if tapping the same app
+                            selectedApp = nil
+                        } else {
+                            // Select new app
+                            selectedApp = app
+                        }
+                    }
+                )
+            }
+        } detail: {
+            VStack {
+                if let app = selectedApp {
+                    Text(app.appInfo.appName)
+                        .font(.title2)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                } else {
+                    Text("Select an app to view details")
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                }
+            }
         }
     }
 
