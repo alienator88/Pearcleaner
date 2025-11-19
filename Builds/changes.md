@@ -16,4 +16,6 @@
 
 - [x] Fix teamIdentifier function failing on some apps
 - [x] Fix file size gathering function to be slightly more efficient
+- [x] Fix warp-cli version/size checking
+- [x] Fix tap icon/info button logic
 - [x] Translations

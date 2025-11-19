@@ -374,7 +374,7 @@ class HomebrewManager: ObservableObject {
             return availableShortName == shortName
         })
 
-        let tap = matchingPackage?.tap
+        let tap = package.tap
 
         // For installed casks, prefer AppInfo name over Homebrew displayName for consistent sorting
         let finalDisplayName: String? = {

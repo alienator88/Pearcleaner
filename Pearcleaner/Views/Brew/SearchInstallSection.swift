@@ -76,67 +76,6 @@ struct SearchInstallSection: View {
         }
     }
 
-
-    private func convertToSearchResult(_ package: InstalledPackage) -> HomebrewSearchResult {
-        // Look up tap info from available packages
-        let availablePackages = package.isCask ? brewManager.allAvailableCasks : brewManager.allAvailableFormulae
-        let shortName = package.name.components(separatedBy: "/").last ?? package.name
-
-        // Try multiple matching strategies:
-        // 1. Exact match on full name
-        // 2. Match on short name
-        // 3. Match where available package's short name equals installed short name
-        let matchingPackage = availablePackages.first(where: {
-            if $0.name == package.name {
-                return true
-            }
-            if $0.name == shortName {
-                return true
-            }
-            let availableShortName = $0.name.components(separatedBy: "/").last ?? $0.name
-            return availableShortName == shortName
-        })
-
-        // Extract tap - pass through directly from available packages
-        let tap = matchingPackage?.tap
-
-        return HomebrewSearchResult(
-            name: package.name,
-            displayName: package.displayName ?? matchingPackage?.displayName,  // Fallback: Ruby file → JWS lookup
-            description: package.description,
-            homepage: nil,
-            license: nil,
-            version: package.version,
-            dependencies: nil,
-            caveats: nil,
-            tap: tap,
-            fullName: nil,
-            isDeprecated: false,
-            deprecationReason: nil,
-            deprecationDate: nil,
-            isDisabled: false,
-            disableDate: nil,
-            disableReason: nil,
-            conflictsWith: nil,
-            conflictsWithReasons: nil,
-            isBottled: nil,
-            isKegOnly: nil,
-            kegOnlyReason: nil,
-            buildDependencies: nil,
-            optionalDependencies: nil,
-            recommendedDependencies: nil,
-            usesFromMacos: nil,
-            aliases: nil,
-            versionedFormulae: nil,
-            requirements: nil,
-            caskName: nil,
-            autoUpdates: nil,
-            artifacts: nil,
-            url: nil,
-            appcast: nil
-        )
-    }
-
     private func updateAllOutdated(packages: [HomebrewSearchResult]) {
         Task { @MainActor in
             isUpdatingAll = true
@@ -461,7 +400,7 @@ struct SearchInstallSection: View {
                 _ = await loadAvailableTask.value
 
                 // Re-enrich installed packages now that JWS data is available
-                // This is very fast (~10-50ms) - just re-runs convertToSearchResult() with new JWS data
+                // This is very fast (~10-50ms) - re-runs updateInstalledCategories() with new JWS data
                 await MainActor.run {
                     brewManager.updateInstalledCategories()
                 }
@@ -738,15 +677,17 @@ struct SearchResultRowView: View {
             .help(isPinned ? "Unpin version" : "Pin version")
         }
 
-        // Info button
-        Button {
-            onInfoTapped()
-        } label: {
-            Image(systemName: "info.circle")
-                .font(.system(size: 16))
-                .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+        // Info button (hide for tap packages - no API available)
+        if result.tap == nil || result.tap == "homebrew/core" || result.tap == "homebrew/cask" {
+            Button {
+                onInfoTapped()
+            } label: {
+                Image(systemName: "info.circle")
+                    .font(.system(size: 16))
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+            }
+            .buttonStyle(.plain)
         }
-        .buttonStyle(.plain)
     }
 
     var body: some View {

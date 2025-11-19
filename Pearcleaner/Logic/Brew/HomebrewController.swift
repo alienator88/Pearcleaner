@@ -706,9 +706,24 @@ class HomebrewController: ObservableObject {
             }
         }
 
-        // Don't load tap info during scan - will be lazy loaded during outdated check if needed
-        let tap: String? = nil
-        let tapRbPath: String? = nil
+        // Read tap info from INSTALL_RECEIPT.json
+        let receiptPath = "\(caskroomPath)/.metadata/INSTALL_RECEIPT.json"
+        var tap: String? = nil
+        var tapRbPath: String? = nil
+
+        if let receiptData = try? Data(contentsOf: URL(fileURLWithPath: receiptPath)),
+           let receipt = try? JSONSerialization.jsonObject(with: receiptData) as? [String: Any] {
+
+            // Try new format first (source.tap and source.path)
+            if let source = receipt["source"] as? [String: Any] {
+                tap = source["tap"] as? String
+                tapRbPath = source["path"] as? String
+            }
+            // Fall back to old format (top-level tap field)
+            else if let topLevelTap = receipt["tap"] as? String {
+                tap = topLevelTap
+            }
+        }
 
         return (name, displayName, desc, cleanedVersion, isPinned, tap, tapRbPath)
     }
@@ -1493,7 +1508,8 @@ class HomebrewController: ObservableObject {
                 // Pattern ensures it's on its own line (Ruby requirement)
                 let versionRegex = /^version\s+"([^"]+)"$/
                 if let match = trimmed.firstMatch(of: versionRegex) {
-                    tapVersion = String(match.1)
+                    // Strip revision suffix for casks to match installed version format
+                    tapVersion = package.isCask ? String(match.1).stripBrewRevisionSuffix() : String(match.1)
                     continue  // Keep searching for revision
                 }
 
@@ -2062,7 +2078,16 @@ class HomebrewController: ObservableObject {
               globResult.gl_pathc > 0,
               let cPath = globResult.gl_pathv[0],
               let jsonPath = String(validatingUTF8: cPath) else {
-            return (0, "0 KB")
+            // Glob failed (e.g., tap casks) - fallback to Caskroom directory size
+            guard FileManager.default.fileExists(atPath: caskroomPath) else {
+                return (0, "0 KB")
+            }
+
+            let directorySize = totalSizeOnDisk(for: URL(fileURLWithPath: caskroomPath))
+            let formatted = await MainActor.run {
+                ByteCountFormatter.string(fromByteCount: directorySize, countStyle: .file)
+            }
+            return (directorySize, formatted)
         }
 
         // Read and parse cask JSON
