@@ -11,6 +11,30 @@ import ServiceManagement
 import SwiftUI
 import UniformTypeIdentifiers
 
+// MARK: - String Sorting Extension
+
+extension String {
+    /// Returns a normalized sort key that handles Chinese characters via pinyin transformation
+    /// Only applies expensive transformation when CJK characters are detected
+    var sortKey: String {
+        // Check if string contains CJK characters
+        let containsCJK = self.unicodeScalars.contains { scalar in
+            (0x4E00...0x9FFF).contains(scalar.value) ||  // CJK Unified Ideographs
+            (0x3400...0x4DBF).contains(scalar.value) ||  // CJK Extension A
+            (0x20000...0x2A6DF).contains(scalar.value)   // CJK Extension B
+        }
+
+        if containsCJK {
+            // Apply pinyin transformation for Chinese characters
+            let latin = self.applyingTransform(.toLatin, reverse: false) ?? self
+            let noTone = latin.applyingTransform(.stripDiacritics, reverse: false) ?? latin
+            return noTone.lowercased()
+        } else {
+            // Fast path for non-CJK strings
+            return self.lowercased()
+        }
+    }
+}
 
 /// Creates optimally-sized chunks for parallel processing based on system capabilities
 /// - Parameters:
@@ -237,7 +261,7 @@ func getSortedApps(paths: [String], useStreaming: Bool = false) -> [AppInfo] {
                         Task { @MainActor in
                             AppState.shared.sortedApps.append(contentsOf: currentBatch)
                             // Sort after each addition to maintain alphabetical order
-                            AppState.shared.sortedApps.sort { $0.appName.lowercased() < $1.appName.lowercased() }
+                            AppState.shared.sortedApps.sort { $0.appName.sortKey < $1.appName.sortKey }
                         }
                     }
                     group.leave()
@@ -304,7 +328,7 @@ func getSortedApps(paths: [String], useStreaming: Bool = false) -> [AppInfo] {
         group.wait()
 
         // Sort alphabetically and return
-        return allFullInfos.sorted { $0.appName.lowercased() < $1.appName.lowercased() }
+        return allFullInfos.sorted { $0.appName.sortKey < $1.appName.sortKey }
     }
 }
 

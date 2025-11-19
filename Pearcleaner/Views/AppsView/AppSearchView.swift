@@ -155,8 +155,8 @@ struct AppSearchView: View {
         switch selectedSortOption {
         case .alphabetical:
             return apps.sorted {
-                $0.appName.replacingOccurrences(of: ".", with: "").lowercased()
-                    < $1.appName.replacingOccurrences(of: ".", with: "").lowercased()
+                $0.appName.replacingOccurrences(of: ".", with: "").sortKey
+                    < $1.appName.replacingOccurrences(of: ".", with: "").sortKey
             }
         case .size:
             return apps.sorted { $0.bundleSize > $1.bundleSize }
