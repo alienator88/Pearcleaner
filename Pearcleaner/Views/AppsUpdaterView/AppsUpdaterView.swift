@@ -25,7 +25,8 @@ struct AppsUpdaterView: View {
     @AppStorage("settings.updater.checkSparkle") private var checkSparkle: Bool = true
     @AppStorage("settings.updater.includeSparklePreReleases") private var includeSparklePreReleases: Bool = false
     @AppStorage("settings.updater.showUnsupported") private var showUnsupported: Bool = true
-    @State private var testingSidebar: Bool = true
+    @AppStorage("settings.interface.startupView") private var startupView: Int = CurrentPage.applications.rawValue
+    @State private var testingSidebar: Bool = false
 
     private var totalUpdateCount: Int {
         updateManager.updatesBySource
@@ -116,6 +117,79 @@ struct AppsUpdaterView: View {
                 sidebarTestView
             } else {
                 currentView
+            }
+        }
+        .animation(animationEnabled ? .spring(response: 0.35, dampingFraction: 0.8) : .none, value: hiddenSidebar)
+        .transition(.opacity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("UpdaterViewShouldRefresh"))) { _ in
+            Task {
+                let task = Task { await updateManager.scanForUpdates(forceReload: true) }
+                updateManager.currentScanTask = task
+                await task.value
+            }
+        }
+        .toolbar {
+            TahoeToolbarItem(placement: .navigation) {
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("Updater")
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            .font(.title2)
+                            .fontWeight(.bold)
+                        Text("Check for app updates from App Store, Homebrew and Sparkle")
+                            .font(.callout)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                    BetaBadge()
+                }
+            }
+
+            ToolbarItem { Spacer() }
+
+            TahoeToolbarItem(isGroup: true) {
+
+                Button {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                        consoleManager.showConsole.toggle()
+                    }
+                } label: {
+                    Label("Console", systemImage: consoleManager.showConsole ? "terminal.fill" : "terminal")
+                }
+                .help("Toggle console output")
+
+                if updateManager.isScanning {
+                    // Show stop button during scan
+                    Button {
+                        updateManager.cancelScan()
+                    } label: {
+                        Label("Stop", systemImage: "stop.circle")
+                    }
+                    .help("Stop checking for updates")
+                } else {
+                    // Show refresh button when not scanning
+                    Button {
+                        GlobalConsoleManager.shared.appendOutput("Refreshing app updates...\n", source: CurrentPage.updater.title)
+                        Task {
+                            let task = Task { await updateManager.scanForUpdates(forceReload: true) }
+                            updateManager.currentScanTask = task
+                            await task.value
+                            GlobalConsoleManager.shared.appendOutput("✓ Completed update scan\n", source: CurrentPage.updater.title)
+                        }
+                    } label: {
+                        Label("Refresh", systemImage: "arrow.counterclockwise")
+                    }
+                    .help("Scan for app updates")
+                }
+
+                Button {
+                    hiddenSidebar.toggle()
+                } label: {
+                    Label("Hidden", systemImage: "sidebar.trailing")
+                }
+                .help("Show hidden updates")
+
+
             }
         }
         .task {
@@ -412,79 +486,7 @@ struct AppsUpdaterView: View {
                 showUnsupported: $showUnsupported
             )
         }
-        .animation(animationEnabled ? .spring(response: 0.35, dampingFraction: 0.8) : .none, value: hiddenSidebar)
-        .transition(.opacity)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("UpdaterViewShouldRefresh"))) { _ in
-            Task {
-                let task = Task { await updateManager.scanForUpdates(forceReload: true) }
-                updateManager.currentScanTask = task
-                await task.value
-            }
-        }
-        .toolbar {
-            TahoeToolbarItem(placement: .navigation) {
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text("Updater")
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                            .font(.title2)
-                            .fontWeight(.bold)
-                        Text("Check for app updates from App Store, Homebrew and Sparkle")
-                            .font(.callout)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    }
-                    BetaBadge()
-                }
-            }
 
-            ToolbarItem { Spacer() }
-
-            TahoeToolbarItem(isGroup: true) {
-
-                Button {
-                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-                        consoleManager.showConsole.toggle()
-                    }
-                } label: {
-                    Label("Console", systemImage: consoleManager.showConsole ? "terminal.fill" : "terminal")
-                }
-                .help("Toggle console output")
-
-                if updateManager.isScanning {
-                    // Show stop button during scan
-                    Button {
-                        updateManager.cancelScan()
-                    } label: {
-                        Label("Stop", systemImage: "stop.circle")
-                    }
-                    .help("Stop checking for updates")
-                } else {
-                    // Show refresh button when not scanning
-                    Button {
-                        GlobalConsoleManager.shared.appendOutput("Refreshing app updates...\n", source: CurrentPage.updater.title)
-                        Task {
-                            let task = Task { await updateManager.scanForUpdates(forceReload: true) }
-                            updateManager.currentScanTask = task
-                            await task.value
-                            GlobalConsoleManager.shared.appendOutput("✓ Completed update scan\n", source: CurrentPage.updater.title)
-                        }
-                    } label: {
-                        Label("Refresh", systemImage: "arrow.counterclockwise")
-                    }
-                    .help("Scan for app updates")
-                }
-
-                Button {
-                    hiddenSidebar.toggle()
-                } label: {
-                    Label("Hidden", systemImage: "sidebar.trailing")
-                }
-                .help("Show hidden updates")
-
-
-            }
-        }
     }
 
     private var sidebarTestView: some View {
@@ -511,16 +513,45 @@ struct AppsUpdaterView: View {
                 )
             }
         } detail: {
-            VStack {
+            Group {
                 if let app = selectedApp {
-                    Text(app.appInfo.appName)
-                        .font(.title2)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                    UpdateDetailView(
+                        app: app,
+                        onHideToggle: {
+                            updateManager.hideApp(app)
+                            selectedApp = nil
+                        }
+                    )
                 } else {
-                    Text("Select an app to view details")
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    VStack {
+                        Spacer()
+                        Text("Select an app to view details")
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            .font(.title2)
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             }
+            .toolbar{
+                TahoeToolbarItem(placement: .principal) {
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text("Updater")
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                                .font(.title2)
+                                .fontWeight(.bold)
+                            Text("Check for app updates from App Store, Homebrew and Sparkle")
+                                .font(.callout)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        }
+                        BetaBadge()
+                    }
+                    .offset(x: 50)
+                }
+
+            }
+
         }
     }
 

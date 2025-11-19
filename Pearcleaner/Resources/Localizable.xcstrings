@@ -365,6 +365,9 @@
         }
       }
     },
+    "(iOS)" : {
+
+    },
     "(same unit)" : {
       "localizations" : {
         "de" : {
@@ -15188,6 +15191,9 @@
         }
       }
     },
+    "CHECKED" : {
+
+    },
     "Checking..." : {
       "localizations" : {
         "de" : {
@@ -17790,6 +17796,9 @@
           }
         }
       }
+    },
+    "Completed" : {
+
     },
     "Completed 🚀" : {
       "extractionState" : "manual",
@@ -29024,6 +29033,9 @@
         }
       }
     },
+    "Failed: %@" : {
+
+    },
     "Fewer files" : {
       "localizations" : {
         "de" : {
@@ -35410,6 +35422,9 @@
       }
     },
     "If the correct cask isn't listed above, enter the cask token manually:" : {
+
+    },
+    "Ignore" : {
 
     },
     "Important" : {
@@ -58131,6 +58146,9 @@
         }
       }
     },
+    "RELEASED" : {
+
+    },
     "Released: %@" : {
       "localizations" : {
         "de" : {
@@ -71260,6 +71278,9 @@
         }
       }
     },
+    "Skip Version" : {
+
+    },
     "Some of the features that require the helper:" : {
       "localizations" : {
         "de" : {
@@ -72211,6 +72232,9 @@
           }
         }
       }
+    },
+    "SOURCE" : {
+
     },
     "Sources" : {
       "localizations" : {
@@ -77902,6 +77926,9 @@
           }
         }
       }
+    },
+    "Today" : {
+
     },
     "Toggle console output" : {
       "localizations" : {
@@ -88315,6 +88342,9 @@
           }
         }
       }
+    },
+    "What's New" : {
+
     },
     "When applications are moved to Trash, Pearcleaner will launch and find related files and folders for deletion." : {
       "extractionState" : "manual",

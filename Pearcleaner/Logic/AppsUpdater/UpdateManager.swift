@@ -107,7 +107,7 @@ class UpdateManager: ObservableObject {
 
         // Only flush caches and reload apps if explicitly requested or debug mode enabled
         // This significantly improves performance for regular update checks
-        if forceReload || debugLogging {
+        if forceReload || debugLogging || AppState.shared.sortedApps.isEmpty {
             // Flush bundle caches (useful for testing with fake versions in debug mode)
             Pearcleaner.flushBundleCaches(for: AppState.shared.sortedApps)
 
