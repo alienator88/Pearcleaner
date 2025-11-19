@@ -967,7 +967,7 @@ struct SearchResultRowView: View {
                             }
 
                             invalidateCaskLookupCache()
-                            await loadAppsAsync(folderPaths: folderPaths)
+                            await loadAppsAsync(folderPaths: folderPaths, useStreaming: false)
                         } else {
                             await MainActor.run {
                                 brewManager.installedFormulae.removeAll { $0.name == result.name || $0.name == shortName }
@@ -1094,7 +1094,7 @@ struct SearchResultRowView: View {
 
                     invalidateCaskLookupCache()
 
-                    await loadAppsAsync(folderPaths: folderPaths)
+                    await loadAppsAsync(folderPaths: folderPaths, useStreaming: false)
                 } else {
                     await MainActor.run {
                         brewManager.installedFormulae.removeAll { $0.name == result.name || $0.name == shortName }

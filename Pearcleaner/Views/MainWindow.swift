@@ -13,6 +13,7 @@ import SwiftUI
 struct MainWindow: View {
     @ObservedObject private var themeManager = ThemeManager.shared
     @ObservedObject private var consoleManager = GlobalConsoleManager.shared
+    @StateObject private var brewManager = HomebrewManager()
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
     @EnvironmentObject var fsm: FolderSettingsManager
@@ -90,10 +91,12 @@ struct MainWindow: View {
 
                     case .homebrew:
                         HomebrewView()
+                            .environmentObject(brewManager)
 
                     case .updater:
                         withConsole {
                             AppsUpdaterView()
+                                .environmentObject(brewManager)
                         }
                     }
                 }
@@ -364,6 +367,7 @@ struct MainWindow: View {
                         case .files:
                             FilesView()
                                 .id(appState.appInfo.id)
+                                .environmentObject(brewManager)
                         }
                     }
                     .transition(.opacity)

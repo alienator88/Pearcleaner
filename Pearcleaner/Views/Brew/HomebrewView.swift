@@ -29,7 +29,7 @@ enum HomebrewViewSection: String, CaseIterable {
 }
 
 struct HomebrewView: View {
-    @StateObject private var brewManager = HomebrewManager()
+    @EnvironmentObject var brewManager: HomebrewManager
     @ObservedObject private var brewController = HomebrewController.shared
     @ObservedObject private var consoleManager = GlobalConsoleManager.shared
     @EnvironmentObject var appState: AppState
@@ -160,7 +160,6 @@ struct HomebrewView: View {
                 .animation(
                     .spring(response: 0.4, dampingFraction: 0.8),
                     value: consoleManager.showConsole)
-                .environmentObject(brewManager)
                 .task {
                     // Load other data in parallel (installed packages loaded in SearchInstallSection)
                     async let taps: Void = brewManager.loadTaps()
@@ -232,7 +231,7 @@ struct HomebrewView: View {
                                 await brewManager.loadAvailablePackages(appState: appState, forceRefresh: true)
                                 // Refresh sortedApps to pick up newly installed casks with proper size
                                 let folderPaths = await MainActor.run { FolderSettingsManager.shared.folderPaths }
-                                await loadAppsAsync(folderPaths: folderPaths)
+                                await loadAppsAsync(folderPaths: folderPaths, useStreaming: false)
                                 // Update categories to pick up latest app names from sortedApps and re-sort
                                 await MainActor.run {
                                     brewManager.updateInstalledCategories()

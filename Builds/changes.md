@@ -1,5 +1,6 @@
 ### What's New
 
+- [x] NEW: Adopt unsupported apps into homebrew from Updater unsupported section and also from FilesView sidebar options menu - #464
 - [x] Add homebrew catch when install/uninstall fail for some reason - #461
 - [x] Add Homebrew/Sparkle deduplication logic when auto_updates is enabled.
 - [x] Add OS version/arch check in homebrew controller
@@ -14,4 +15,5 @@
 ### Fixes
 
 - [x] Fix teamIdentifier function failing on some apps
+- [x] Fix file size gathering function to be slightly more efficient
 - [x] Translations

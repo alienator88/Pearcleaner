@@ -115,7 +115,7 @@ class UpdateManager: ObservableObject {
             let folderPaths = await MainActor.run {
                 FolderSettingsManager.shared.folderPaths
             }
-            await loadAppsAsync(folderPaths: folderPaths)
+            await loadAppsAsync(folderPaths: folderPaths, useStreaming: false)
         }
 
         // Check for cancellation after loading apps
@@ -628,6 +628,6 @@ class UpdateManager: ObservableObject {
             Pearcleaner.flushBundleCaches(for: AppState.shared.sortedApps)
         }
 
-        await loadAppsAsync(folderPaths: folderPaths)
+        await loadAppsAsync(folderPaths: folderPaths, useStreaming: false)
     }
 }

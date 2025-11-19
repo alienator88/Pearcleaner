@@ -52,15 +52,23 @@ func flushBundleCache(for path: URL) {
 /// Load apps from specified folder paths and update AppState
 /// This is the main entry point for loading/refreshing apps
 /// Apps stream into AppState.shared.sortedApps progressively as chunks complete
-func loadApps(folderPaths: [String]) {
+/// - Parameter useStreaming: If true, uses two-phase streaming (fast initial load). If false, loads full AppInfo immediately.
+func loadApps(folderPaths: [String], useStreaming: Bool = true) {
     // Clear array immediately before loading
     Task { @MainActor in
         AppState.shared.sortedApps = []
     }
 
     DispatchQueue.global(qos: .userInitiated).async {
-        // getSortedApps now streams results to AppState.shared.sortedApps
-        _ = getSortedApps(paths: folderPaths)
+        // getSortedApps now streams results to AppState.shared.sortedApps (or returns full array if not streaming)
+        let apps = getSortedApps(paths: folderPaths, useStreaming: useStreaming)
+
+        // If not streaming, update AppState with sorted results
+        if !useStreaming {
+            Task { @MainActor in
+                AppState.shared.sortedApps = apps
+            }
+        }
 
         Task { @MainActor in
             AppState.shared.restoreZombieAssociations()
@@ -70,16 +78,23 @@ func loadApps(folderPaths: [String]) {
 
 // Awaitable version that waits for apps to finish loading
 // Note: With streaming, this still clears and starts loading but doesn't wait for completion
-func loadAppsAsync(folderPaths: [String]) async {
+func loadAppsAsync(folderPaths: [String], useStreaming: Bool = true) async {
     // Clear array immediately before loading
     await MainActor.run {
         AppState.shared.sortedApps = []
     }
 
-    // Load apps on background thread (streams results)
-    await Task.detached(priority: .userInitiated) {
-        _ = getSortedApps(paths: folderPaths)
+    // Load apps on background thread (streams results or returns full array)
+    let apps = await Task.detached(priority: .userInitiated) {
+        getSortedApps(paths: folderPaths, useStreaming: useStreaming)
     }.value
+
+    // If not streaming, update AppState with sorted results
+    if !useStreaming {
+        await MainActor.run {
+            AppState.shared.sortedApps = apps
+        }
+    }
 
     // Update AppState on MainActor
     await MainActor.run {
@@ -89,7 +104,9 @@ func loadAppsAsync(folderPaths: [String]) async {
 
 
 // Get all apps from /Applications and ~/Applications
-func getSortedApps(paths: [String]) -> [AppInfo] {
+/// - Parameter useStreaming: If true, uses two-phase streaming (AppInfoMini → full AppInfo). If false, loads full AppInfo immediately.
+/// - Returns: Array of AppInfo. Empty if streaming (results delivered via AppState updates), populated if not streaming.
+func getSortedApps(paths: [String], useStreaming: Bool = false) -> [AppInfo] {
     let fileManager = FileManager.default
     var apps: [URL] = []
 
@@ -182,70 +199,113 @@ func getSortedApps(paths: [String]) -> [AppInfo] {
         metadataDictionary = metadata
     }
 
-    // === PHASE 1: Stream AppInfoMini as chunks complete (progressive loading) ===
-    Task.detached(priority: .userInitiated) {
+    if useStreaming {
+        // === STREAMING MODE: Two-phase streaming for fast initial load ===
+        // === PHASE 1: Stream AppInfoMini as chunks complete (progressive loading) ===
+        Task.detached(priority: .userInitiated) {
+            let chunks = createOptimalChunks(from: apps, minChunkSize: 10, maxChunkSize: 40)
+            let queue = DispatchQueue(label: "com.pearcleaner.appinfo.mini", qos: .userInitiated, attributes: .concurrent)
+            let group = DispatchGroup()
+
+            var allMiniInfos: [AppInfoMini] = []
+            let resultsQueue = DispatchQueue(label: "com.pearcleaner.appinfo.mini.results")
+
+            for chunk in chunks {
+                group.enter()
+                queue.async {
+                    autoreleasepool {
+                        let chunkMiniInfos: [AppInfoMini] = chunk.compactMap { appURL in
+                            autoreleasepool {
+                                let appPath = appURL.path
+
+                                // Use mini version for fast initial load
+                                if let appMetadata = metadataDictionary[appPath] {
+                                    return MetadataAppInfoFetcher.getAppInfoMini(fromMetadata: appMetadata, atPath: appURL)
+                                } else {
+                                    // Fallback to full version if no metadata
+                                    return AppInfoFetcher.getAppInfo(atPath: appURL)?.toMini()
+                                }
+                            }
+                        }
+
+                        resultsQueue.sync {
+                            allMiniInfos.append(contentsOf: chunkMiniInfos)
+                        }
+
+                        // Stream to UI as each chunk completes
+                        let currentBatch = chunkMiniInfos.map { $0.toAppInfo() }
+                        Task { @MainActor in
+                            AppState.shared.sortedApps.append(contentsOf: currentBatch)
+                            // Sort after each addition to maintain alphabetical order
+                            AppState.shared.sortedApps.sort { $0.appName.lowercased() < $1.appName.lowercased() }
+                        }
+                    }
+                    group.leave()
+                }
+            }
+
+            // Wait for all chunks to complete before launching Phase 2
+            group.notify(queue: DispatchQueue.global(qos: .utility)) {
+                // === PHASE 2: Background upgrade to full AppInfo (expensive operations) ===
+                for mini in allMiniInfos {
+                    autoreleasepool {
+                        // Upgrade mini to full AppInfo with all expensive properties
+                        let fullAppInfo = MetadataAppInfoFetcher.upgradeToFullAppInfo(mini: mini)
+
+                        // Update sorted array on main thread using path as stable identifier
+                        Task { @MainActor in
+                            if let targetIndex = AppState.shared.sortedApps.firstIndex(where: { $0.path == mini.path }) {
+                                AppState.shared.sortedApps[targetIndex] = fullAppInfo
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Return empty array - results will stream in via AppState updates
+        return []
+    } else {
+        // === FULL MODE: Load complete AppInfo immediately (for Updater, post-uninstall, etc.) ===
         let chunks = createOptimalChunks(from: apps, minChunkSize: 10, maxChunkSize: 40)
-        let queue = DispatchQueue(label: "com.pearcleaner.appinfo.mini", qos: .userInitiated, attributes: .concurrent)
+        let queue = DispatchQueue(label: "com.pearcleaner.appinfo.full", qos: .userInitiated, attributes: .concurrent)
         let group = DispatchGroup()
 
-        var allMiniInfos: [AppInfoMini] = []
-        let resultsQueue = DispatchQueue(label: "com.pearcleaner.appinfo.mini.results")
+        var allFullInfos: [AppInfo] = []
+        let resultsQueue = DispatchQueue(label: "com.pearcleaner.appinfo.full.results")
 
         for chunk in chunks {
             group.enter()
             queue.async {
                 autoreleasepool {
-                    let chunkMiniInfos: [AppInfoMini] = chunk.compactMap { appURL in
+                    let chunkFullInfos: [AppInfo] = chunk.compactMap { appURL in
                         autoreleasepool {
                             let appPath = appURL.path
 
-                            // Use mini version for fast initial load
-                            if let appMetadata = metadataDictionary[appPath] {
-                                return MetadataAppInfoFetcher.getAppInfoMini(fromMetadata: appMetadata, atPath: appURL)
+                            // Load full AppInfo with all expensive properties
+                            if let appMetadata = metadataDictionary[appPath],
+                               let mini = MetadataAppInfoFetcher.getAppInfoMini(fromMetadata: appMetadata, atPath: appURL) {
+                                return MetadataAppInfoFetcher.upgradeToFullAppInfo(mini: mini)
                             } else {
-                                // Fallback to full version if no metadata
-                                return AppInfoFetcher.getAppInfo(atPath: appURL)?.toMini()
+                                // Fallback to direct full version
+                                return AppInfoFetcher.getAppInfo(atPath: appURL)
                             }
                         }
                     }
 
                     resultsQueue.sync {
-                        allMiniInfos.append(contentsOf: chunkMiniInfos)
-                    }
-
-                    // Stream to UI as each chunk completes
-                    let currentBatch = chunkMiniInfos.map { $0.toAppInfo() }
-                    Task { @MainActor in
-                        AppState.shared.sortedApps.append(contentsOf: currentBatch)
-                        // Sort after each addition to maintain alphabetical order
-                        AppState.shared.sortedApps.sort { $0.appName.lowercased() < $1.appName.lowercased() }
+                        allFullInfos.append(contentsOf: chunkFullInfos)
                     }
                 }
                 group.leave()
             }
         }
 
-        // Wait for all chunks to complete before launching Phase 2
-        group.notify(queue: DispatchQueue.global(qos: .utility)) {
-            // === PHASE 2: Background upgrade to full AppInfo (expensive operations) ===
-            for mini in allMiniInfos {
-                autoreleasepool {
-                    // Upgrade mini to full AppInfo with all expensive properties
-                    let fullAppInfo = MetadataAppInfoFetcher.upgradeToFullAppInfo(mini: mini)
+        group.wait()
 
-                    // Update sorted array on main thread using path as stable identifier
-                    Task { @MainActor in
-                        if let targetIndex = AppState.shared.sortedApps.firstIndex(where: { $0.path == mini.path }) {
-                            AppState.shared.sortedApps[targetIndex] = fullAppInfo
-                        }
-                    }
-                }
-            }
-        }
+        // Sort alphabetically and return
+        return allFullInfos.sorted { $0.appName.lowercased() < $1.appName.lowercased() }
     }
-
-    // Return empty array - results will stream in via AppState updates
-    return []
 }
 
 // Get directory path for darwin cache and temp directories
@@ -468,11 +528,12 @@ func reloadAppsList(
             appState.sortedApps = []
         }
 
-        // getSortedApps now streams results to appState.sortedApps
-        _ = getSortedApps(paths: fsm.folderPaths)
+        // Use non-streaming mode for reloads (needs full AppInfo immediately)
+        let apps = getSortedApps(paths: fsm.folderPaths, useStreaming: false)
 
-        // Run completion after streaming starts
+        // Update appState with sorted results
         updateOnMain {
+            appState.sortedApps = apps
             completion()
         }
     }

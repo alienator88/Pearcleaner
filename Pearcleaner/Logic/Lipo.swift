@@ -443,28 +443,23 @@ public func totalSizeOnDisk(for paths: [URL]) -> Int64 {
         if fileManager.fileExists(atPath: url.path, isDirectory: &isDirectory) {
             let keys: [URLResourceKey] = [.fileSizeKey]
             if isDirectory.boolValue {
-                // It's a directory, recurse into it
+
+                //MARK: Directory Size
                 if let enumerator = fileManager.enumerator(at: url, includingPropertiesForKeys: keys, errorHandler: nil) {
                     for case let fileURL as URL in enumerator {
                         do {
-                            let fileAttributes = try fileURL.resourceValues(forKeys: Set(keys))
-                            if let fileSize = fileAttributes.fileSize {
-                                totalFileSize += Int64(fileSize)
+                            if let size = (try? fileURL.resourceValues(forKeys: [.fileSizeKey]))?.fileSize {
+                                totalFileSize += Int64(size)
                             }
-                        } catch {
-                            print("Error getting file attributes for \(fileURL): \(error)")
                         }
                     }
                 }
             } else {
-                // It's a file
+                //MARK: File Size
                 do {
-                    let fileAttributes = try url.resourceValues(forKeys: Set(keys))
-                    if let fileSize = fileAttributes.fileSize {
-                        totalFileSize += Int64(fileSize)
+                    if let size = (try? url.resourceValues(forKeys: [.fileSizeKey]))?.fileSize {
+                        totalFileSize += Int64(size)
                     }
-                } catch {
-                    print("Error getting file attributes for \(url): \(error)")
                 }
             }
         }

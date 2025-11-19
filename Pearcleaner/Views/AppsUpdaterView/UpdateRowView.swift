@@ -12,9 +12,13 @@ struct UpdateRowView: View {
     let app: UpdateableApp
     let onHideToggle: (UpdateableApp) -> Void
     @StateObject private var updateManager = UpdateManager.shared
+    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var brewManager: HomebrewManager
     @Environment(\.colorScheme) var colorScheme
     @State private var isHovered: Bool = false
     @State private var isExpanded: Bool = false
+    @State private var showAdoptionSheet: Bool = false
+    @State private var isLoadingCasks: Bool = false
 
     private var sourceColor: Color {
         switch app.source {
@@ -63,11 +67,44 @@ struct UpdateRowView: View {
 
     @ViewBuilder
     private var actionButtons: some View {
-        // For unsupported apps, show explanatory message instead of action buttons
+        // For unsupported apps, show Adopt button
         if app.source == .unsupported {
-            Text("No update mechanism detected")
-                .font(.caption)
-                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+            HStack(spacing: 8) {
+                Text("No update mechanism detected")
+                    .font(.caption)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                Button {
+                    // Lazy loading: only load casks on first click
+                    if brewManager.allAvailableCasks.isEmpty {
+                        isLoadingCasks = true
+                        Task {
+                            await brewManager.loadAvailablePackages(appState: appState)
+                            await MainActor.run {
+                                isLoadingCasks = false
+                                showAdoptionSheet = true
+                            }
+                        }
+                    } else {
+                        showAdoptionSheet = true
+                    }
+                } label: {
+                    if isLoadingCasks {
+                        HStack(spacing: 4) {
+                            ProgressView()
+                                .scaleEffect(0.7)
+                            Text("Loading...")
+                                .font(.caption)
+                        }
+                    } else {
+                        Text("Adopt")
+                            .font(.caption)
+                    }
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(.blue)
+                .disabled(isLoadingCasks)
+            }
         } else {
             switch app.status {
             case .idle:
@@ -343,6 +380,14 @@ struct UpdateRowView: View {
                     isHovered = hovering
                 }
             }
+        }
+        .sheet(isPresented: $showAdoptionSheet) {
+            AdoptionSheetView(
+                appInfo: app.appInfo,
+                context: .updaterView,
+                isPresented: $showAdoptionSheet
+            )
+            .environmentObject(brewManager)
         }
     }
 

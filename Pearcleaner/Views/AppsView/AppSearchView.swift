@@ -333,6 +333,7 @@ struct SimpleSearchStyleSidebar: TextFieldStyle {
                     Button("Refresh List") {
                         Task { @MainActor in
                             withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                                // Use default non-streaming mode for manual refresh (needs full AppInfo)
                                 loadApps(folderPaths: fsm.folderPaths)
                             }
                         }

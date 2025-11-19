@@ -28,9 +28,9 @@ struct PearcleanerApp: App {
         //MARK: Initialize password request handler for SUDO_ASKPASS IPC
         _ = PasswordRequestHandler.shared
 
-        //MARK: Pre-load apps data during app initialization
+        //MARK: Pre-load apps data during app initialization (use streaming for fast initial load)
         let folderPaths = FolderSettingsManager.shared.folderPaths
-        loadApps(folderPaths: folderPaths)
+        loadApps(folderPaths: folderPaths, useStreaming: true)
 
         //MARK: Pre-load volume information
         AppState.shared.loadVolumeInfo()

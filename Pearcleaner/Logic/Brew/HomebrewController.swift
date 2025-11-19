@@ -1064,6 +1064,35 @@ class HomebrewController: ObservableObject {
         }
     }
 
+    func adoptCask(token: String) async throws {
+        logger.log(.homebrew, "🔄 Adopting cask: \(token)")
+
+        let arguments = ["install", "--cask", "--adopt", "--no-quarantine", token]
+
+        do {
+            let result = try await runBrewCommand(arguments)
+
+            // Check for actual errors (not warnings)
+            let combinedOutput = result.output + result.error
+            if result.error.contains("Error:") && !combinedOutput.contains("was successfully installed") {
+                logger.log(.homebrew, "❌ Adoption failed for \(token): \(result.error)")
+
+                // Parse specific errors (reuse existing error parsers)
+                if let conflictError = parseFormulaConflict(from: result.error, package: token) {
+                    throw conflictError
+                }
+
+                // Fallback to generic error
+                throw HomebrewError.commandFailed(result.error)
+            }
+
+            logger.log(.homebrew, "✓ Adopted \(token) successfully")
+        } catch {
+            logger.log(.homebrew, "❌ Adoption failed for \(token): \(error.localizedDescription)")
+            throw error
+        }
+    }
+
     func uninstallPackage(name: String, ignoreDependencies: Bool = false) async throws {
         logger.log(.homebrew, "🗑️ Uninstalling package: \(name)")
 

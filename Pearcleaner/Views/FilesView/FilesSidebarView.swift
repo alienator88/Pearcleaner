@@ -233,6 +233,7 @@ struct AppDetails: View {
 
 struct ExtraOptions: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var brewManager: HomebrewManager
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.files.showSidebarOnLoad") private var showSidebarOnLoad: Bool = false
 
@@ -242,12 +243,38 @@ struct ExtraOptions: View {
     @State private var selectedLanguagesToRemove: Set<String> = []
     @State private var isLoadingLanguages: Bool = false
 
+    // Homebrew adoption state
+    @State private var showAdoptionSheet: Bool = false
+    @State private var isLoadingCasks: Bool = false
+
     var body: some View {
         HStack() {
             Text("Click to dismiss").font(.caption).foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.5))
             Spacer()
             Menu {
                 Toggle("Show sidebar on view load", isOn: $showSidebarOnLoad)
+
+                // Homebrew Adoption (only show for non-App Store and non-Homebrew apps)
+                if !appState.appInfo.isAppStore && appState.appInfo.cask == nil {
+                    Divider()
+
+                    Button(isLoadingCasks ? "Loading..." : "Adopt with Homebrew") {
+                        // Lazy load casks only when user clicks
+                        if brewManager.allAvailableCasks.isEmpty {
+                            isLoadingCasks = true
+                            Task {
+                                await brewManager.loadAvailablePackages(appState: appState)
+                                await MainActor.run {
+                                    isLoadingCasks = false
+                                    showAdoptionSheet = true
+                                }
+                            }
+                        } else {
+                            showAdoptionSheet = true
+                        }
+                    }
+                    .disabled(isLoadingCasks)
+                }
 
                 Divider()
 
@@ -292,6 +319,14 @@ struct ExtraOptions: View {
             .menuIndicator(.hidden)
             .fixedSize()
 
+        }
+        .sheet(isPresented: $showAdoptionSheet) {
+            AdoptionSheetView(
+                appInfo: appState.appInfo,
+                context: .filesView,
+                isPresented: $showAdoptionSheet
+            )
+            .environmentObject(brewManager)
         }
     }
 

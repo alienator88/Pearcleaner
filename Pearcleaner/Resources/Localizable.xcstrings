@@ -241,6 +241,9 @@
         }
       }
     },
+    "(%@)" : {
+
+    },
     "(%lld)" : {
 
     },
@@ -3231,6 +3234,12 @@
           }
         }
       }
+    },
+    "• Auto-updates" : {
+
+    },
+    "• Version mismatch" : {
+
     },
     "⚙️ Service/Daemon" : {
       "localizations" : {
@@ -7837,6 +7846,15 @@
           }
         }
       }
+    },
+    "Adopt" : {
+
+    },
+    "Adopt with Homebrew" : {
+
+    },
+    "Adopting..." : {
+
     },
     "All apps are hidden" : {
       "localizations" : {
@@ -14221,6 +14239,9 @@
           }
         }
       }
+    },
+    "Cask not found" : {
+
     },
     "Casks" : {
       "localizations" : {
@@ -24627,6 +24648,9 @@
           }
         }
       }
+    },
+    "e.g., firefox" : {
+
     },
     "Elapsed Time: %@" : {
       "localizations" : {
@@ -35384,6 +35408,9 @@
         }
       }
     },
+    "If the correct cask isn't listed above, enter the cask token manually:" : {
+
+    },
     "Important" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -43185,6 +43212,9 @@
         }
       }
     },
+    "Manual Entry" : {
+
+    },
     "Manually hide an app from update checks" : {
       "localizations" : {
         "de" : {
@@ -43302,6 +43332,12 @@
           }
         }
       }
+    },
+    "Match score: %lld" : {
+
+    },
+    "Matching Casks" : {
+
     },
     "Max Value" : {
       "localizations" : {
@@ -46735,6 +46771,9 @@
           }
         }
       }
+    },
+    "No matching casks found. Try manual entry below." : {
+
     },
     "No New Announcement" : {
       "extractionState" : "manual",
@@ -66009,6 +66048,9 @@
         }
       }
     },
+    "Searching for matching casks..." : {
+
+    },
     "Searching for related files..." : {
       "localizations" : {
         "de" : {
@@ -67070,6 +67112,9 @@
           }
         }
       }
+    },
+    "Select a Homebrew cask to manage this app. Homebrew will adopt the existing installation without moving or duplicating files." : {
+
     },
     "Select All" : {
       "localizations" : {
@@ -85300,6 +85345,9 @@
         }
       }
     },
+    "Valid cask: %@" : {
+
+    },
     "Value" : {
       "localizations" : {
         "de" : {
@@ -85535,6 +85583,9 @@
           }
         }
       }
+    },
+    "Version:" : {
+
     },
     "Version: %@" : {
       "localizations" : {

@@ -157,6 +157,7 @@ struct DeleteHistoryView: View {
                     } else if appState.currentPage == .packages {
                         NotificationCenter.default.post(name: NSNotification.Name("PackagesViewShouldUndo"), object: nil)
                     } else {
+                        // Use default non-streaming mode for undo (needs full AppInfo)
                         loadApps(folderPaths: fsm.folderPaths)
                         // After reload, if we're viewing files, refresh the file view
                         if appState.currentView == .files {
