@@ -752,6 +752,140 @@ extension View {
 //}
 
 
+
+struct SimpleSearchStyleSidebar: TextFieldStyle {
+    @Environment(\.colorScheme) var colorScheme
+    @State private var isHovered = false
+    @FocusState private var isFocused: Bool
+    @State var trash: Bool = false
+    @Binding var text: String
+    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var fsm: FolderSettingsManager
+    @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+    @AppStorage("settings.general.selectedSortAppsList") var selectedSortOption: SortOption =
+        .alphabetical
+    @AppStorage("settings.interface.multiSelect") private var multiSelect: Bool = false
+    @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 265
+
+    func _body(configuration: TextField<Self._Label>) -> some View {
+
+        HStack {
+            configuration
+                .font(.title3)
+                .textFieldStyle(PlainTextFieldStyle())
+
+            Spacer()
+
+            if trash && text != "" {
+                Button {
+                    text = ""
+                } label: {
+                    Image(systemName: "delete.left.fill")
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                }
+            }
+
+            Menu {
+                Section(header: Text("Sorting")) {
+                    ForEach(SortOption.allCases) { option in
+                        Button {
+                            withAnimation(
+                                Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)
+                            ) {
+                                selectedSortOption = option
+                            }
+                        } label: {
+                            HStack {
+                                Image(
+                                    systemName: selectedSortOption == option
+                                    ? "circle.inset.filled" : "circle")
+                                Text(option.title)
+                            }
+                        }
+                    }
+                }
+
+                Section(header: Text("Layout")) {
+                    Button(action: {
+                        withAnimation(.spring(duration: animationEnabled ? 0.3 : 0)) {
+                            sidebarWidth = 265
+                        }
+                    }) {
+                        HStack {
+                            Image(systemName: sidebarWidth < 316 ? "circle.inset.filled" : "circle")
+                            Text("List View")
+                        }
+
+                    }
+
+                    Button(action: {
+                        withAnimation(.spring(duration: animationEnabled ? 0.3 : 0)) {
+                            sidebarWidth = 375
+                        }
+                    }) {
+                        HStack {
+                            Image(systemName: sidebarWidth > 316 ? "circle.inset.filled" : "circle")
+                            Text("Grid View")
+                        }
+
+                    }
+                }
+
+                Section(header: Text("Options")) {
+                    Button("Refresh List") {
+                        Task { @MainActor in
+                            withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                                // Use default non-streaming mode for manual refresh (needs full AppInfo)
+                                loadApps(folderPaths: fsm.folderPaths)
+                            }
+                        }
+                    }
+
+                    Button(multiSelect ? "Hide multi-select" : "Show multi-select") {
+                        withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                            multiSelect.toggle()
+                        }
+                    }
+                }
+            } label: {
+                Image(systemName: "line.3.horizontal")
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    .padding(2)
+                    .contentShape(Rectangle())
+            }
+            .menuStyle(BorderlessButtonMenuStyle())
+            .menuIndicator(.hidden)
+            .frame(width: 16)
+        }
+        .buttonStyle(.plain)
+        .padding(.vertical, 8)
+        .padding(.horizontal, 14)
+        .controlGroup(Capsule(style: .continuous), level: .primary)
+        .onHover { hovering in
+            withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                self.isHovered = hovering
+                self.isFocused = true
+            }
+        }
+        .focused($isFocused)
+        .onAppear {
+            updateOnMain {
+                self.isFocused = true
+            }
+        }
+    }
+}
+
+// Hide blinking textfield caret
+extension NSTextView {
+    open override var frame: CGRect {
+        didSet {
+            insertionPointColor = NSColor(.primary.opacity(0.2))  //.clear
+        }
+    }
+}
+
+
 struct BetaBadge: View {
     let label: String
     let fontSize: CGFloat

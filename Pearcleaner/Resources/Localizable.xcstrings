@@ -35173,6 +35173,7 @@
       }
     },
     "Hover to search" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -79672,6 +79673,7 @@
       }
     },
     "Type to search" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
