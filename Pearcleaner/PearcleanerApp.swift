@@ -59,18 +59,7 @@ struct PearcleanerApp: App {
 
 
 
-
-// MARK: - View Extension for Conditional Modifiers
-
-extension View {
-    /// Helper to conditionally apply modifiers
-    func apply<Content: View>(@ViewBuilder _ transform: (Self) -> Content) -> Content {
-        transform(self)
-    }
-}
-
 // MARK: - App Delegate
-
 class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
@@ -79,6 +68,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSWindow.allowsAutomaticWindowTabbing = false
+
+        // Register as services provider (required for NSServices to work)
+        NSApp.servicesProvider = self
 
         // Check permissions once at launch
         PermissionManagerLocal.shared.checkPermissions(types: [.fullDiskAccess]) { results in
@@ -102,5 +94,30 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         return false
     }
 
+    // MARK: - Service Handler
+    @objc func handleServiceRequest(_ pasteboard: NSPasteboard, userData: NSString, error: AutoreleasingUnsafeMutablePointer<NSString>) {
+        // Get file URLs from pasteboard
+        guard let fileURLs = pasteboard.readObjects(forClasses: [NSURL.self], options: [
+            .urlReadingFileURLsOnly: true
+        ]) as? [URL], !fileURLs.isEmpty else {
+            printOS("Service: No valid file URLs found in pasteboard")
+            return
+        }
+
+        // Process all selected .app files
+        let appURLs = fileURLs.filter { $0.pathExtension == "app" }
+
+        guard !appURLs.isEmpty else {
+            printOS("Service: No .app bundles found in selection")
+            return
+        }
+
+        // Open deep link for each app - DeeplinkManager will queue and process them sequentially
+        for appURL in appURLs {
+            if let deepLinkURL = URL(string: "pear://com.alienator88.Pearcleaner?path=\(appURL.path.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? appURL.path)") {
+                NSWorkspace.shared.open(deepLinkURL)
+            }
+        }
+    }
 
 }

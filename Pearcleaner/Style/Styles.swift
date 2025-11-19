@@ -730,6 +730,16 @@ struct SettingsToggle: ToggleStyle {
 }
 
 
+// MARK: - View Extension for Conditional Modifiers
+
+extension View {
+    /// Helper to conditionally apply modifiers
+    func apply<Content: View>(@ViewBuilder _ transform: (Self) -> Content) -> Content {
+        transform(self)
+    }
+}
+
+
 //struct HelperBadge: View {
 //    @EnvironmentObject var updater: Updater
 //

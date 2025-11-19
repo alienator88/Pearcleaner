@@ -151,7 +151,9 @@ class HomebrewAutoUpdateManager: ObservableObject {
             // Enable: Restore preserved schedules if available
             isEnabled = true
 
-            if schedules.isEmpty && !preservedSchedules.isEmpty {
+            // Always restore from preserved schedules when re-enabling (not just when empty)
+            // This ensures deleted schedules don't reappear after toggle cycle
+            if !preservedSchedules.isEmpty {
                 schedules = preservedSchedules
                 originalSchedules = preservedSchedules
             }
@@ -165,10 +167,9 @@ class HomebrewAutoUpdateManager: ObservableObject {
             // Disable: Preserve schedules but clean up plist
             isEnabled = false
 
-            // Save current schedules to AppStorage before cleanup
-            if !schedules.isEmpty {
-                preservedSchedules = schedules
-            }
+            // Always save current schedules to AppStorage before cleanup (even if empty)
+            // This ensures deleted schedules are cleared from AppStorage
+            preservedSchedules = schedules
 
             // Unregister agent if running
             try? unregisterAgent()
@@ -252,6 +253,12 @@ class HomebrewAutoUpdateManager: ObservableObject {
         // Remove from originals
         originalSchedules.removeAll { $0.id == schedule.id }
 
+        // Always update preserved schedules in AppStorage (not just when disabled)
+        // This ensures deletions persist across toggle cycles
+        var preserved = preservedSchedules
+        preserved.removeAll { $0.id == schedule.id }
+        preservedSchedules = preserved
+
         // Apply to plist (saves deletion)
         try applySchedule()
     }
@@ -294,7 +301,16 @@ class HomebrewAutoUpdateManager: ObservableObject {
             throw HomebrewAutoUpdateError.invalidFormat(error.localizedDescription)
         }
 
-        // Write plist to LaunchAgents directory (must exist before registering!)
+        // Ensure LaunchAgents directory exists
+        let launchAgentsDir = (plistPath as NSString).deletingLastPathComponent
+        let fileManager = FileManager.default
+        if !fileManager.fileExists(atPath: launchAgentsDir) {
+            try fileManager.createDirectory(atPath: launchAgentsDir,
+                                           withIntermediateDirectories: true,
+                                           attributes: nil)
+        }
+
+        // Write plist to LaunchAgents directory
         let plistURL = URL(fileURLWithPath: plistPath)
         try data.write(to: plistURL)
 

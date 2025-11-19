@@ -32,5 +32,23 @@
 			</array>
 		</dict>
 	</array>
+	<key>NSServices</key>
+	<array>
+		<dict>
+			<key>NSMenuItem</key>
+			<dict>
+				<key>default</key>
+				<string>Uninstall with Pearcleaner</string>
+			</dict>
+			<key>NSMessage</key>
+			<string>handleServiceRequest</string>
+			<key>NSSendFileTypes</key>
+			<array>
+				<string>com.apple.application-bundle</string>
+			</array>
+			<key>NSRequiredContext</key>
+			<dict/>
+		</dict>
+	</array>
 </dict>
 </plist>
