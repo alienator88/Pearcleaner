@@ -216,81 +216,81 @@ struct FilesView: View {
                     // Stop Sentinel FileWatcher momentarily to ignore .app bundle being sent to Trash
                     sendStopNotificationFW()
 
-                    killApp(appId: appState.appInfo.bundleIdentifier) {
-                        let result = moveFilesToTrash(appState: appState, at: selectedItemsArray)
-                        // Always cleanup UI, regardless of whether files physically existed
-                        updateOnMain {
-                            // Remove selected items from app's file list
-                            appState.appInfo.fileSize = appState.appInfo.fileSize.filter {
-                                !selectedItemsArray.contains($0.key)
-                            }
-                            appState.appInfo.fileIcon = appState.appInfo.fileIcon.filter {
-                                !selectedItemsArray.contains($0.key)
-                            }
-                            appState.selectedItems.removeAll()
-                            updateSortedFiles()
+                    // Kill the app before proceeding
+                    await killApp(appId: appState.appInfo.bundleIdentifier)
+
+                    // Trash the files
+                    let _ = moveFilesToTrash(appState: appState, at: selectedItemsArray)
+
+                    // Always cleanup UI, regardless of whether files physically existed
+                    updateOnMain {
+                        // Remove selected items from app's file list
+                        appState.appInfo.fileSize = appState.appInfo.fileSize.filter {
+                            !selectedItemsArray.contains($0.key)
                         }
-
-                        // Only proceed with additional deletion logic if files were actually moved to trash
-                        if result {
-                            // Determine if it's a full delete
-                            let appPath = appState.appInfo.path.absoluteString
-                            let appRemoved = selectedItemsArray.contains(where: {
-                                $0.absoluteString == appPath
-                            })
-
-                            // For wrapped apps, also check if the container is being deleted
-                            let containerRemoved: Bool = {
-                                if appState.appInfo.wrapped {
-                                    // Get container path by going up two levels from inner app
-                                    // e.g., Container.app/Wrapper/ActualApp.app -> Container.app
-                                    let containerPath = appState.appInfo.path
-                                        .deletingLastPathComponent()  // Remove ActualApp.app -> Container.app/Wrapper
-                                        .deletingLastPathComponent()  // Remove Wrapper -> Container.app
-
-                                    return selectedItemsArray.contains(where: {
-                                        $0.absoluteString == containerPath.absoluteString
-                                    })
-                                }
-                                return false
-                            }()
-
-                            let mainAppRemoved = !appState.appInfo.wrapped && appRemoved
-                            let wrappedAppRemoved = appState.appInfo.wrapped && (appRemoved || containerRemoved)
-
-                            let isInTrash = appState.appInfo.path.path.contains(".Trash")
-
-                            var deleteType: DeleteType
-
-                            if mainAppRemoved || wrappedAppRemoved || isInTrash {
-                                deleteType = .fullDelete
-                            } else {
-                                deleteType = .semiDelete
-                            }
-
-                            switch deleteType {
-                            case .fullDelete:
-                                // The main app bundle is deleted or is already in Trash (Sentinel delete)
-                                appWasRemoved = true
-                                // Remove the app from the app list
-                                removeApp(appState: appState, withPath: appState.appInfo.path)
-                                GlobalConsoleManager.shared.appendOutput("✓ Completed full deletion for \(appState.appInfo.appName)\n", source: CurrentPage.applications.title)
-
-                            case .semiDelete:
-                                // Some files deleted but main app bundle remains
-                                // App remains in the list; removes only deleted items
-                                GlobalConsoleManager.shared.appendOutput("✓ Completed partial deletion for \(appState.appInfo.appName)\n", source: CurrentPage.applications.title)
-                                break
-                            }
-
-                            // Process the next app if in external mode
-                            processNextExternalApp(
-                                appWasRemoved: appWasRemoved, isInTrash: isInTrash)
+                        appState.appInfo.fileIcon = appState.appInfo.fileIcon.filter {
+                            !selectedItemsArray.contains($0.key)
                         }
-
-                        // Send Sentinel FileWatcher start notification
-                        sendStartNotificationFW()
+                        appState.selectedItems.removeAll()
+                        updateSortedFiles()
                     }
+
+                    // Determine if it's a full delete
+                    let appPath = appState.appInfo.path.absoluteString
+                    let appRemoved = selectedItemsArray.contains(where: {
+                        $0.absoluteString == appPath
+                    })
+
+                    // For wrapped apps, also check if the container is being deleted
+                    let containerRemoved: Bool = {
+                        if appState.appInfo.wrapped {
+                            // Get container path by going up two levels from inner app
+                            // e.g., Container.app/Wrapper/ActualApp.app -> Container.app
+                            let containerPath = appState.appInfo.path
+                                .deletingLastPathComponent()  // Remove ActualApp.app -> Container.app/Wrapper
+                                .deletingLastPathComponent()  // Remove Wrapper -> Container.app
+
+                            return selectedItemsArray.contains(where: {
+                                $0.absoluteString == containerPath.absoluteString
+                            })
+                        }
+                        return false
+                    }()
+
+                    let mainAppRemoved = !appState.appInfo.wrapped && appRemoved
+                    let wrappedAppRemoved = appState.appInfo.wrapped && (appRemoved || containerRemoved)
+
+                    let isInTrash = appState.appInfo.path.path.contains(".Trash")
+
+                    var deleteType: DeleteType
+
+                    if mainAppRemoved || wrappedAppRemoved || isInTrash {
+                        deleteType = .fullDelete
+                    } else {
+                        deleteType = .semiDelete
+                    }
+
+                    switch deleteType {
+                    case .fullDelete:
+                        // The main app bundle is deleted or is already in Trash (Sentinel delete)
+                        appWasRemoved = true
+                        // Remove the app from the app list
+                        await removeApp(appState: appState, withPath: appState.appInfo.path)
+                        GlobalConsoleManager.shared.appendOutput("✓ Completed full deletion for \(appState.appInfo.appName)\n", source: CurrentPage.applications.title)
+
+                    case .semiDelete:
+                        // Some files deleted but main app bundle remains
+                        // App remains in the list; removes only deleted items
+                        GlobalConsoleManager.shared.appendOutput("✓ Completed partial deletion for \(appState.appInfo.appName)\n", source: CurrentPage.applications.title)
+                        break
+                    }
+
+                    // Process the next app if in external mode
+                    processNextExternalApp(
+                        appWasRemoved: appWasRemoved, isInTrash: isInTrash)
+
+                    // Send Sentinel FileWatcher start notification
+                    sendStartNotificationFW()
                 }
             })
     }

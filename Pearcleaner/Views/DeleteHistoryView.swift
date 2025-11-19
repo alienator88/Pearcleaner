@@ -149,13 +149,15 @@ struct DeleteHistoryView: View {
                 // Refresh app list and file view (same as Undo Removal in AppCommands)
                 await MainActor.run {
                     if appState.currentPage == .plugins {
-                        NotificationCenter.default.post(name: NSNotification.Name("PluginsViewShouldUndo"), object: nil)
+                        NotificationCenter.default.post(name: NSNotification.Name("PluginsViewShouldRefresh"), object: nil)
                     } else if appState.currentPage == .fileSearch {
                         NotificationCenter.default.post(name: NSNotification.Name("FileSearchViewShouldUndo"), object: nil)
                     } else if appState.currentPage == .orphans {
-                        NotificationCenter.default.post(name: NSNotification.Name("ZombieViewShouldUndo"), object: nil)
+                        NotificationCenter.default.post(name: NSNotification.Name("ZombieViewShouldRefresh"), object: nil)
                     } else if appState.currentPage == .packages {
-                        NotificationCenter.default.post(name: NSNotification.Name("PackagesViewShouldUndo"), object: nil)
+                        NotificationCenter.default.post(name: NSNotification.Name("PackagesViewShouldRefresh"), object: nil)
+                    } else if appState.currentPage == .development {
+                        NotificationCenter.default.post(name: NSNotification.Name("DevelopmentViewShouldRefresh"), object: nil)
                     } else {
                         // Use default non-streaming mode for undo (needs full AppInfo)
                         loadApps(folderPaths: fsm.folderPaths)

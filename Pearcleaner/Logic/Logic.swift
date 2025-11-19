@@ -77,7 +77,7 @@ func flushBundleCache(for path: URL) {
 /// This is the main entry point for loading/refreshing apps
 /// Apps stream into AppState.shared.sortedApps progressively as chunks complete
 /// - Parameter useStreaming: If true, uses two-phase streaming (fast initial load). If false, loads full AppInfo immediately.
-func loadApps(folderPaths: [String], useStreaming: Bool = true) {
+func loadApps(folderPaths: [String], useStreaming: Bool = false) {
     // Clear array immediately before loading
     Task { @MainActor in
         AppState.shared.sortedApps = []
@@ -102,7 +102,7 @@ func loadApps(folderPaths: [String], useStreaming: Bool = true) {
 
 // Awaitable version that waits for apps to finish loading
 // Note: With streaming, this still clears and starts loading but doesn't wait for completion
-func loadAppsAsync(folderPaths: [String], useStreaming: Bool = true) async {
+func loadAppsAsync(folderPaths: [String], useStreaming: Bool = false) async {
     // Clear array immediately before loading
     await MainActor.run {
         AppState.shared.sortedApps = []
@@ -1251,20 +1251,13 @@ func exportUpdaterDebugInfo() {
 
 
 // Remove app from cache
-func removeApp(appState: AppState, withPath path: URL) {
+func removeApp(appState: AppState, withPath path: URL) async {
     @AppStorage("settings.general.brew") var brew: Bool = false
-    DispatchQueue.main.async {
+    await MainActor.run {
 
         // Remove from sortedApps if found
         if let index = appState.sortedApps.firstIndex(where: { $0.path == path }) {
             appState.sortedApps.remove(at: index)
-        }
-
-        Task {
-            let _ = try? await runSUCommand(
-                "pkgutil --forget \(appState.appInfo.bundleIdentifier) || true",
-                throwOnFailure: false
-            )
         }
     }
 }

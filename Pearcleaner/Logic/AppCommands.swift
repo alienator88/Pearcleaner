@@ -79,17 +79,20 @@ struct AppCommands: Commands {
                 let result = undoTrash()
                 if result {
                     if appState.currentPage == .plugins {
-                        // For plugins view, post notification to undo
-                        NotificationCenter.default.post(name: NSNotification.Name("PluginsViewShouldUndo"), object: nil)
+                        // For plugins view, post notification to refresh
+                        NotificationCenter.default.post(name: NSNotification.Name("PluginsViewShouldRefresh"), object: nil)
                     } else if appState.currentPage == .fileSearch {
-                        // For file search view, post notification to undo
+                        // For file search view, post notification to undo (has unique cache logic)
                         NotificationCenter.default.post(name: NSNotification.Name("FileSearchViewShouldUndo"), object: nil)
                     } else if appState.currentPage == .orphans {
-                        // For orphans view, post notification to undo
-                        NotificationCenter.default.post(name: NSNotification.Name("ZombieViewShouldUndo"), object: nil)
+                        // For orphans view, post notification to refresh
+                        NotificationCenter.default.post(name: NSNotification.Name("ZombieViewShouldRefresh"), object: nil)
                     } else if appState.currentPage == .packages {
-                        // For packages view, post notification to undo
-                        NotificationCenter.default.post(name: NSNotification.Name("PackagesViewShouldUndo"), object: nil)
+                        // For packages view, post notification to refresh
+                        NotificationCenter.default.post(name: NSNotification.Name("PackagesViewShouldRefresh"), object: nil)
+                    } else if appState.currentPage == .development {
+                        // For development view, post notification to refresh
+                        NotificationCenter.default.post(name: NSNotification.Name("DevelopmentViewShouldRefresh"), object: nil)
                     } else {
                         loadApps(folderPaths: fsm.folderPaths)
                         // After reload, if we're viewing files, refresh the file view
@@ -243,7 +246,7 @@ struct AppCommands: Commands {
                             withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                                 // Flush bundle caches before reloading to ensure fresh version info
                                 flushBundleCaches(for: appState.sortedApps)
-                                loadApps(folderPaths: fsm.folderPaths, useStreaming: true)
+                                loadApps(folderPaths: fsm.folderPaths)
                             }
                         }
                     case .development:

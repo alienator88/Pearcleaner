@@ -325,24 +325,10 @@ struct ZombieView: View {
                 // Only trigger scan if warning has been acknowledged
                 startFileScan()
             }
-
-            // Listen for undo notification
-            NotificationCenter.default.addObserver(
-                forName: NSNotification.Name("ZombieViewShouldUndo"),
-                object: nil,
-                queue: .main
-            ) { _ in
-                startSearch()
-            }
-
-            // Listen for refresh notification
-            NotificationCenter.default.addObserver(
-                forName: NSNotification.Name("ZombieViewShouldRefresh"),
-                object: nil,
-                queue: .main
-            ) { _ in
-                startSearch()
-            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("ZombieViewShouldRefresh"))) { _ in
+            // Refresh orphaned files search
+            startSearch()
         }
         .toolbarBackground(.hidden, for: .windowToolbar)
         .toolbar {

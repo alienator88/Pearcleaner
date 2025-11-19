@@ -448,11 +448,7 @@ struct LipoView: View {
 
             for app in universalApps where selectedApps.contains(app.path.path) {
                 // Kill app if running before lipo'ing to prevent corruption
-                await withCheckedContinuation { continuation in
-                    killApp(appId: app.bundleIdentifier) {
-                        continuation.resume()
-                    }
-                }
+                await killApp(appId: app.bundleIdentifier)
 
                 // Use the updated thinAppBundleArchitecture function with multi=true
                 let (success, sizes) = thinAppBundleArchitecture(

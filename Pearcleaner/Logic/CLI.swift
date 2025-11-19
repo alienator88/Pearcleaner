@@ -116,7 +116,7 @@ struct PearCLI: ParsableCommand {
         @Argument(help: "Path to the application")
         var path: String
 
-        func run() throws {
+        func run() async throws {
             // Convert the provided string path to a URL
             let url = URL(fileURLWithPath: path)
 
@@ -126,20 +126,12 @@ struct PearCLI: ParsableCommand {
                 Foundation.exit(1)
             }
 
-            // Create a semaphore for synchronous operation
-            let semaphore = DispatchSemaphore(value: 0)
-            var operationSuccess = false
+            // Kill app before deletion
+            await killApp(appId: appInfo.bundleIdentifier)
 
-            killApp(appId: appInfo.bundleIdentifier) {
-                let success = moveFilesToTrashCLI(at: [appInfo.path])
-                operationSuccess = success
-                semaphore.signal()
-            }
+            let success = moveFilesToTrashCLI(at: [appInfo.path])
 
-            // Wait for the async operation to complete
-            semaphore.wait()
-
-            if operationSuccess {
+            if success {
                 printOS("Application deleted successfully.\n")
                 Foundation.exit(0)
             } else {
@@ -158,7 +150,7 @@ struct PearCLI: ParsableCommand {
         @Argument(help: "Path to the application")
         var path: String
 
-        func run() throws {
+        func run() async throws {
             // Convert the provided string path to a URL
             let url = URL(fileURLWithPath: path)
 
@@ -190,20 +182,12 @@ struct PearCLI: ParsableCommand {
                 Foundation.exit(1)
             }
 
-            // Create a semaphore for synchronous operation
-            let semaphore = DispatchSemaphore(value: 0)
-            var operationSuccess = false
+            // Kill app before deletion
+            await killApp(appId: appInfo.bundleIdentifier)
 
-            killApp(appId: appInfo.bundleIdentifier) {
-                let success = moveFilesToTrashCLI(at: Array(foundPaths))
-                operationSuccess = success
-                semaphore.signal()
-            }
+            let success = moveFilesToTrashCLI(at: Array(foundPaths))
 
-            // Wait for the async operation to complete
-            semaphore.wait()
-
-            if operationSuccess {
+            if success {
                 printOS("The application and related files have been deleted successfully.\n")
                 Foundation.exit(0)
             } else {

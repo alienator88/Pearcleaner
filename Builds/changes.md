@@ -22,4 +22,5 @@
 - [x] Fix tap icon/info button logic
 - [x] Fix homebrew auto-update not being able to create plist file if LaunchAgents folder is not present - #469
 - [x] Fix homebrew auto-update schedule hiccup with deleted schedules coming back from appstorage
+- [x] Fix notification observers for undo actions on some pages
 - [x] Translations

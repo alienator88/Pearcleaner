@@ -360,14 +360,13 @@ func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool
 
 
 // Check if app is running before deleting app files
-func killApp(appId: String, completion: @escaping () -> Void = {}) {
+func killApp(appId: String) async {
     let runningApps = NSWorkspace.shared.runningApplications
     for app in runningApps {
         if app.bundleIdentifier == appId {
             app.terminate()
         }
     }
-    completion()
 }
 
 

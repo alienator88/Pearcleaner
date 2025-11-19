@@ -274,12 +274,6 @@ struct PluginsView: View {
                 }
             }
         }
-        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("PluginsViewShouldUndo"))) { _ in
-            // Refresh plugins when undo is performed
-            Task {
-                await refreshPluginsAsync()
-            }
-        }
         .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("PluginsViewShouldRefresh"))) { _ in
             // Refresh plugins
             Task {
