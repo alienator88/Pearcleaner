@@ -365,6 +365,9 @@
         }
       }
     },
+    "(Hidden)" : {
+
+    },
     "(iOS)" : {
 
     },
@@ -485,6 +488,9 @@
           }
         }
       }
+    },
+    "(Skipped %@)" : {
+
     },
     "**%lld%%** savings" : {
       "localizations" : {

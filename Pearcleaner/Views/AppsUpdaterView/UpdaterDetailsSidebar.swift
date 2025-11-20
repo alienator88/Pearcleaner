@@ -484,10 +484,20 @@ struct UpdaterHiddenAppRow: View {
             }
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(app.appInfo.appName)
-                    .font(.caption)
-                    .lineLimit(1)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                HStack(spacing: 4) {
+                    Text(app.appInfo.appName)
+                        .lineLimit(1)
+
+                    if let ignoredVersion = updateManager.getIgnoredVersion(for: app) {
+                        Text("(Skipped \(ignoredVersion))")
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    } else {
+                        Text("(Hidden)")
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                }
+                .font(.caption)
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
                 HStack(spacing: 4) {
                     Image(systemName: sourceIcon)

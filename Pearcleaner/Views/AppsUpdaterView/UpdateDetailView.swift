@@ -104,7 +104,9 @@ struct UpdateDetailView: View {
 
                     if app.source != .unsupported {
                         Button("Skip Version") {
-                            // TODO: Implement skip version
+                            if let availableVersion = app.availableVersion {
+                                updateManager.hideApp(app, skipVersion: availableVersion)
+                            }
                         }
                         .buttonStyle(.plain)
                         .padding(.horizontal, 16)
@@ -112,9 +114,10 @@ struct UpdateDetailView: View {
                         .background(Color.orange)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                         .clipShape(Capsule())
+                        .disabled(app.availableVersion == nil)
 
                         Button("Ignore") {
-                            updateManager.hideApp(app)
+                            updateManager.hideApp(app, skipVersion: nil)
                         }
                         .buttonStyle(.plain)
                         .padding(.horizontal, 16)

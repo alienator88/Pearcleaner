@@ -28,8 +28,12 @@ class UpdateManager: ObservableObject {
     @AppStorage("settings.updater.showUnsupported") private var showUnsupported: Bool = true
     @AppStorage("settings.updater.debugLogging") private var debugLogging: Bool = true
     @AppStorage("settings.updater.hiddenAppsData") private var hiddenAppsData: Data = Data()
+    @AppStorage("settings.updater.ignoredAppsData") private var ignoredAppsData: Data = Data()
 
-    private init() {}
+    private init() {
+        // Migrate old hiddenApps data to new ignoredApps format on first launch
+        migrateHiddenAppsIfNeeded()
+    }
 
     var hasUpdates: Bool {
         updatesBySource.values.contains { !$0.isEmpty } || !hiddenUpdates.isEmpty
@@ -51,12 +55,62 @@ class UpdateManager: ObservableObject {
         }
     }
 
-    /// Hide an app (add to hidden filter, remove from visible lists, trigger rescan)
-    func hideApp(_ app: UpdateableApp) {
-        // Add to persistent hidden storage
-        var hidden = hiddenApps
-        hidden[app.uniqueIdentifier] = app.source
-        hiddenApps = hidden
+    /// Unified ignored apps storage: bundleID -> [source -> version?]
+    /// nil version = permanently ignored, string version = skip until newer version
+    private var ignoredApps: [String: [String: String?]] {
+        get {
+            guard let decoded = try? JSONDecoder().decode([String: [String: String?]].self, from: ignoredAppsData) else {
+                return [:]
+            }
+            return decoded
+        }
+        set {
+            ignoredAppsData = (try? JSONEncoder().encode(newValue)) ?? Data()
+        }
+    }
+
+    /// Migrate old hiddenApps data to new ignoredApps format (one-time migration)
+    private func migrateHiddenAppsIfNeeded() {
+        // Only migrate if old data exists and new data is empty
+        guard !hiddenAppsData.isEmpty, ignoredAppsData.isEmpty else { return }
+
+        var migrated: [String: [String: String?]] = [:]
+        for (bundleID, source) in hiddenApps {
+            // Convert to new format with nil version (permanent ignore)
+            migrated[bundleID] = [source.rawValue: nil]
+        }
+
+        ignoredApps = migrated
+        // Keep old data for now in case user downgrades
+    }
+
+    /// Get the ignored version for a specific app and source
+    /// - Parameter app: The app to check
+    /// - Returns: nil if permanently ignored, version string if skipped, or nil if not ignored for this source
+    func getIgnoredVersion(for app: UpdateableApp) -> String? {
+        return ignoredApps[app.uniqueIdentifier]?[app.source.rawValue] ?? nil
+    }
+
+    /// Hide an app permanently or skip a specific version
+    /// - Parameters:
+    ///   - app: The app to ignore
+    ///   - skipVersion: Optional version to skip. If nil, app is permanently ignored. If provided, only that version is skipped.
+    func hideApp(_ app: UpdateableApp, skipVersion: String? = nil) {
+        // Add to new unified ignored apps storage
+        var ignored = ignoredApps
+        if ignored[app.uniqueIdentifier] == nil {
+            ignored[app.uniqueIdentifier] = [:]
+        }
+        ignored[app.uniqueIdentifier]?[app.source.rawValue] = skipVersion
+
+        ignoredApps = ignored
+
+        // Also update old storage for backward compatibility
+        if skipVersion == nil {
+            var hidden = hiddenApps
+            hidden[app.uniqueIdentifier] = app.source
+            hiddenApps = hidden
+        }
 
         // Immediately remove from visible lists for instant UI feedback
         updatesBySource[app.source]?.removeAll { $0.uniqueIdentifier == app.uniqueIdentifier }
@@ -104,7 +158,15 @@ class UpdateManager: ObservableObject {
 
     /// Unhide an app (remove from hidden filter and restore to visible list if it has an update)
     func unhideApp(_ app: UpdateableApp) async {
-        // Remove from persistent hidden storage
+        // Remove from new unified ignored apps storage
+        var ignored = ignoredApps
+        ignored[app.uniqueIdentifier]?.removeValue(forKey: app.source.rawValue)
+        if ignored[app.uniqueIdentifier]?.isEmpty == true {
+            ignored.removeValue(forKey: app.uniqueIdentifier)
+        }
+        ignoredApps = ignored
+
+        // Also remove from old storage for backward compatibility
         var hidden = hiddenApps
         hidden.removeValue(forKey: app.uniqueIdentifier)
         hiddenApps = hidden
@@ -167,10 +229,10 @@ class UpdateManager: ObservableObject {
         // Use apps from AppState (either freshly loaded or existing)
         let apps = AppState.shared.sortedApps
 
-        // Filter out hidden apps BEFORE checking for updates
-        // This prevents wasting time on HEAD requests and SPUUpdater calls for hidden apps
-        let hiddenAppIds = Set(hiddenApps.keys)
-        let visibleApps = apps.filter { !hiddenAppIds.contains($0.bundleIdentifier) }
+        // Filter out ignored apps BEFORE checking for updates
+        // This prevents wasting time on HEAD requests and SPUUpdater calls for ignored apps
+        let ignoredAppIds = Set(ignoredApps.keys)
+        let visibleApps = apps.filter { !ignoredAppIds.contains($0.bundleIdentifier) }
 
         // Launch concurrent scans with progressive updates
         await withTaskGroup(of: (UpdateSource, [UpdateableApp]).self) { group in
@@ -340,10 +402,36 @@ class UpdateManager: ObservableObject {
         // Sort alphabetically
         let sortedApps = apps.sorted { $0.appInfo.appName.localizedCaseInsensitiveCompare($1.appInfo.appName) == .orderedAscending }
 
-        // Filter hidden apps
-        let hidden = hiddenApps
-        let visible = sortedApps.filter { !hidden.keys.contains($0.uniqueIdentifier) }
-        let hiddenAppsFromSource = sortedApps.filter { hidden.keys.contains($0.uniqueIdentifier) }
+        // Filter ignored and version-skipped apps
+        let ignored = ignoredApps
+        let visible = sortedApps.filter { app in
+            // Check if app is in ignored list
+            guard let ignoredVersions = ignored[app.uniqueIdentifier],
+                  let ignoredVersion = ignoredVersions[source.rawValue] else {
+                return true // Not ignored, show it
+            }
+
+            // If ignoredVersion is nil, permanently ignored
+            if ignoredVersion == nil {
+                return false
+            }
+
+            // If ignoredVersion matches availableVersion, skip this version
+            if let availableVersion = app.availableVersion,
+               availableVersion == ignoredVersion {
+                return false
+            }
+
+            // Newer version available, show it
+            return true
+        }
+        let hiddenAppsFromSource = sortedApps.filter { app in
+            guard let ignoredVersions = ignored[app.uniqueIdentifier],
+                  let ignoredVersion = ignoredVersions[source.rawValue] else {
+                return false
+            }
+            return ignoredVersion == nil || app.availableVersion == ignoredVersion
+        }
 
         // Update results (set to empty array even if no visible results to indicate "completed")
         updatesBySource[source] = visible
