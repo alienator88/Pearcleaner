@@ -23,7 +23,7 @@ class MetadataAppInfoFetcher {
     static func getAppInfo(fromMetadata metadata: [String: Any], atPath path: URL) -> AppInfo? {
         // Extract metadata attributes for known fields
         var displayName = metadata["kMDItemDisplayName"] as? String ?? ""
-        displayName = displayName.replacingOccurrences(of: ".app", with: "").capitalizingFirstLetter()
+        displayName = displayName.replacingOccurrences(of: ".app", with: "")
         let fsName = metadata["kMDItemFSName"] as? String ?? path.lastPathComponent
         let appName = displayName.isEmpty ? fsName : displayName
 
@@ -127,7 +127,7 @@ class MetadataAppInfoFetcher {
     static func getAppInfoMini(fromMetadata metadata: [String: Any], atPath path: URL) -> AppInfoMini? {
         // Extract basic info from metadata
         var displayName = metadata["kMDItemDisplayName"] as? String ?? ""
-        displayName = displayName.replacingOccurrences(of: ".app", with: "").capitalizingFirstLetter()
+        displayName = displayName.replacingOccurrences(of: ".app", with: "")
         let fsName = metadata["kMDItemFSName"] as? String ?? path.lastPathComponent
         let appName = displayName.isEmpty ? fsName : displayName
 
@@ -500,7 +500,7 @@ class AppInfoFetcher {
     private static func createAppInfoFromBundle(atPath path: URL, wrapped: Bool, dates: (creation: Date?, contentChange: Date?, lastUsed: Date?, dateAdded: Date?)? = nil) -> AppInfo? {
         // Try Bundle(url:) first
         if let bundle = Bundle(url: path), let bundleIdentifier = bundle.bundleIdentifier {
-            let appName = wrapped ? path.deletingLastPathComponent().deletingLastPathComponent().deletingPathExtension().lastPathComponent.capitalizingFirstLetter() : path.localizedName().capitalizingFirstLetter()
+            let appName = wrapped ? path.deletingLastPathComponent().deletingLastPathComponent().deletingPathExtension().lastPathComponent : path.localizedName()
 
             // Extract marketing version (CFBundleShortVersionString) - no fallback to build number
             let appVersion = (bundle.infoDictionary?["CFBundleShortVersionString"] as? String)?.isEmpty ?? true
@@ -540,7 +540,7 @@ class AppInfoFetcher {
 
         // Fallback: Read Info.plist directly from disk (useful for newly installed apps where Bundle cache isn't ready)
         if let infoDict = readInfoPlistDirect(at: path), let bundleIdentifier = infoDict["CFBundleIdentifier"] as? String {
-            let appName = wrapped ? path.deletingLastPathComponent().deletingLastPathComponent().deletingPathExtension().lastPathComponent.capitalizingFirstLetter() : path.localizedName().capitalizingFirstLetter()
+            let appName = wrapped ? path.deletingLastPathComponent().deletingLastPathComponent().deletingPathExtension().lastPathComponent : path.localizedName()
 
             // Extract marketing version (CFBundleShortVersionString) - no fallback to build number
             let appVersion = (infoDict["CFBundleShortVersionString"] as? String)?.isEmpty ?? true

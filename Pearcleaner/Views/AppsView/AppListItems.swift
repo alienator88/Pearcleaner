@@ -90,14 +90,14 @@ struct AppListItems: View {
                         }
 
                         if minimalEnabled {
-                            Text(appInfo.appName)
+                            Text(verbatim: appInfo.appName)
                                 .font(.system(size: (isSelected) ? 14 : 12))
                                 .lineLimit(1)
                                 .truncationMode(.tail)
                         } else {
                             VStack(alignment: .center, spacing: 2) {
                                 HStack {
-                                    Text(appInfo.appName)
+                                    Text(verbatim: appInfo.appName)
                                         .font(.system(size: (isSelected) ? 14 : 12))
                                         .lineLimit(1)
                                         .truncationMode(.tail)

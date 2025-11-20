@@ -68,7 +68,7 @@ struct UpdateRowViewSidebar: View {
 
                 // App name and version
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(app.appInfo.appName)
+                    Text(verbatim: app.appInfo.appName)
                         .font(.system(size: isSelected ? 14 : 12))
                         .lineLimit(1)
                         .truncationMode(.tail)
