@@ -517,7 +517,9 @@ struct AppsUpdaterView: View {
                 categories: sidebarCategories,
                 searchText: $searchText,
                 emptyMessage: "No apps to update",
-                noResultsMessage: "No matching apps"
+                noResultsMessage: "No matching apps",
+                isLoading: updateManager.isScanning,
+                loadingMessage: "Scanning for updates..."
             ) { app in
                 UpdateRowViewSidebar(
                     app: app,

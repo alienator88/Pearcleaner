@@ -20,6 +20,8 @@ struct GenericSidebarListView<Item: Identifiable & Hashable, Content: View>: Vie
     let searchFilter: ((Item, String) -> Bool)?
     let emptyMessage: String
     let noResultsMessage: String
+    let isLoading: Bool
+    let loadingMessage: String
     @ViewBuilder let itemView: (Item) -> Content
 
     // Internal state
@@ -35,6 +37,8 @@ struct GenericSidebarListView<Item: Identifiable & Hashable, Content: View>: Vie
         searchFilter: ((Item, String) -> Bool)? = nil,
         emptyMessage: String = "No items found",
         noResultsMessage: String = "No results",
+        isLoading: Bool = false,
+        loadingMessage: String = "Loading...",
         @ViewBuilder itemView: @escaping (Item) -> Content
     ) {
         self.items = items
@@ -43,17 +47,27 @@ struct GenericSidebarListView<Item: Identifiable & Hashable, Content: View>: Vie
         self.searchFilter = searchFilter
         self.emptyMessage = emptyMessage
         self.noResultsMessage = noResultsMessage
+        self.isLoading = isLoading
+        self.loadingMessage = loadingMessage
         self.itemView = itemView
     }
 
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
             if items.isEmpty {
-                VStack {
+                VStack(spacing: 12) {
                     Spacer()
-                    Text(emptyMessage)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        .font(.callout)
+                    if isLoading {
+                        ProgressView()
+                            .controlSize(.regular)
+                        Text(loadingMessage)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            .font(.callout)
+                    } else {
+                        Text(emptyMessage)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            .font(.callout)
+                    }
                     Spacer()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -63,22 +77,11 @@ struct GenericSidebarListView<Item: Identifiable & Hashable, Content: View>: Vie
                     .padding()
                     .padding(.top, 20)
 
-                if !filteredItems.isEmpty {
-                    CategorizedListView(
-                        categories: categorizedItems,
-                        itemView: itemView
-                    )
-                    .padding([.bottom, .horizontal], 5)
-                } else {
-                    VStack {
-                        Spacer()
-                        Text(noResultsMessage)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                            .font(.title2)
-                        Spacer()
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                }
+                CategorizedListView(
+                    categories: categorizedItems,
+                    itemView: itemView
+                )
+                .padding([.bottom, .horizontal], 5)
             }
         }
         .frame(width: sidebarWidth)
@@ -119,8 +122,8 @@ struct GenericSidebarListView<Item: Identifiable & Hashable, Content: View>: Vie
                 let newDimension = dimensionStart! + Double(delta)
 
                 // Standard range for sidebar width
-                let minWidth: Double = 240
-                let maxWidth: Double = 640
+                let minWidth: Double = 220
+                let maxWidth: Double = 350
                 let newWidth = max(minWidth, min(maxWidth, newDimension))
 
                 sidebarWidth = newWidth
@@ -155,9 +158,9 @@ struct GenericSidebarListView<Item: Identifiable & Hashable, Content: View>: Vie
     }
 
     private var categorizedItems: [(title: String, items: [Item])] {
-        return categories.compactMap { category in
+        return categories.map { category in
             let categoryItems = filteredItems.filter(category.filter)
-            return categoryItems.isEmpty ? nil : (category.title, categoryItems)
+            return (category.title, categoryItems)
         }
     }
 }
