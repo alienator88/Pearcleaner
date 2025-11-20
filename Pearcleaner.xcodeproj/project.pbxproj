@@ -186,6 +186,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				ChromeBorder.swift,
+				CircularProgressView.swift,
 				ControlGroupChrome.swift,
 				PearGroupBox.swift,
 				SparkleProgressBar.swift,

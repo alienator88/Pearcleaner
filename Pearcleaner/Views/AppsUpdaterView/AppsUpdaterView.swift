@@ -26,7 +26,7 @@ struct AppsUpdaterView: View {
     @AppStorage("settings.updater.includeSparklePreReleases") private var includeSparklePreReleases: Bool = false
     @AppStorage("settings.updater.showUnsupported") private var showUnsupported: Bool = true
     @AppStorage("settings.interface.startupView") private var startupView: Int = CurrentPage.applications.rawValue
-    @State private var testingSidebar: Bool = false
+    @State private var testingSidebar: Bool = true
 
     private var totalUpdateCount: Int {
         updateManager.updatesBySource
@@ -114,7 +114,19 @@ struct AppsUpdaterView: View {
     var body: some View {
         Group {
             if testingSidebar {
-                sidebarTestView
+                ZStack {
+                    sidebarTestView
+                    .opacity(hiddenSidebar ? 0.5 : 1)
+
+                    UpdaterDetailsSidebar(
+                        hiddenSidebar: $hiddenSidebar,
+                        checkAppStore: $checkAppStore,
+                        checkHomebrew: $checkHomebrew,
+                        checkSparkle: $checkSparkle,
+                        includeSparklePreReleases: $includeSparklePreReleases,
+                        showUnsupported: $showUnsupported
+                    )
+                }
             } else {
                 currentView
             }
@@ -130,20 +142,20 @@ struct AppsUpdaterView: View {
             }
         }
         .toolbar {
-            TahoeToolbarItem(placement: .navigation) {
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text("Updater")
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                            .font(.title2)
-                            .fontWeight(.bold)
-                        Text("Check for app updates from App Store, Homebrew and Sparkle")
-                            .font(.callout)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    }
-                    BetaBadge()
-                }
-            }
+//            TahoeToolbarItem(placement: .navigation) {
+//                HStack {
+//                    VStack(alignment: .leading) {
+//                        Text("Updater")
+//                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+//                            .font(.title2)
+//                            .fontWeight(.bold)
+//                        Text("Check for app updates from App Store, Homebrew and Sparkle")
+//                            .font(.callout)
+//                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+//                    }
+//                    BetaBadge()
+//                }
+//            }
 
             ToolbarItem { Spacer() }
 
@@ -157,6 +169,15 @@ struct AppsUpdaterView: View {
                     Label("Console", systemImage: consoleManager.showConsole ? "terminal.fill" : "terminal")
                 }
                 .help("Toggle console output")
+
+                Button {
+                    selectAllApps()
+                    updateSelectedApps()
+                } label: {
+                    Label("Update All", systemImage: "arrow.down.circle")
+                }
+                .help("Update all available apps")
+                .disabled(allUpdateableApps.isEmpty || !updateManager.scanningSources.isEmpty)
 
                 if updateManager.isScanning {
                     // Show stop button during scan
@@ -515,13 +536,7 @@ struct AppsUpdaterView: View {
         } detail: {
             Group {
                 if let app = selectedApp {
-                    UpdateDetailView(
-                        app: app,
-                        onHideToggle: {
-                            updateManager.hideApp(app)
-                            selectedApp = nil
-                        }
-                    )
+                    UpdateDetailView(appId: app.id)
                 } else {
                     VStack {
                         Spacer()
@@ -533,25 +548,13 @@ struct AppsUpdaterView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             }
-            .toolbar{
-                TahoeToolbarItem(placement: .principal) {
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text("Updater")
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                                .font(.title2)
-                                .fontWeight(.bold)
-                            Text("Check for app updates from App Store, Homebrew and Sparkle")
-                                .font(.callout)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        }
-                        BetaBadge()
-                    }
-                    .offset(x: 50)
-                }
-
+        }
+        .onChange(of: allUpdateableApps) { newApps in
+            // Auto-clear selectedApp if it no longer exists in the updates list
+            if let selected = selectedApp,
+               !newApps.contains(where: { $0.id == selected.id }) {
+                selectedApp = nil
             }
-
         }
     }
 

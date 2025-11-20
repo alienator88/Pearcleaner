@@ -9635,6 +9635,9 @@
         }
       }
     },
+    "App not found" : {
+
+    },
     "App Size" : {
       "localizations" : {
         "de" : {
@@ -14719,6 +14722,7 @@
       }
     },
     "Check for app updates from App Store, Homebrew and Sparkle" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -15190,9 +15194,6 @@
           }
         }
       }
-    },
-    "CHECKED" : {
-
     },
     "Checking..." : {
       "localizations" : {
@@ -17796,9 +17797,6 @@
           }
         }
       }
-    },
-    "Completed" : {
-
     },
     "Completed 🚀" : {
       "extractionState" : "manual",
@@ -29032,9 +29030,6 @@
           }
         }
       }
-    },
-    "Failed: %@" : {
-
     },
     "Fewer files" : {
       "localizations" : {
@@ -54360,6 +54355,9 @@
         }
       }
     },
+    "PLACEHOLDER" : {
+
+    },
     "Please install the helper service" : {
       "localizations" : {
         "de" : {
@@ -75317,6 +75315,9 @@
         }
       }
     },
+    "Test" : {
+
+    },
     "The search sensitivity level controls how strict or lenient Pearcleaner is when finding related files for an app:\n\n• Strict – %@\n\n• Enhanced – %@\n\n• Deep – %@\n\nAt levels higher than Strict it is recommended to check found files manually." : {
       "localizations" : {
         "de" : {
@@ -77926,9 +77927,6 @@
           }
         }
       }
-    },
-    "Today" : {
-
     },
     "Toggle console output" : {
       "localizations" : {
@@ -82892,6 +82890,9 @@
           }
         }
       }
+    },
+    "Update all available apps" : {
+
     },
     "Update Available" : {
       "extractionState" : "manual",

@@ -504,7 +504,9 @@ struct UpdaterHiddenAppRow: View {
 
             // Unhide button
             Button {
-                updateManager.unhideApp(app)
+                Task {
+                    await updateManager.unhideApp(app)
+                }
             } label: {
                 Image(systemName: "eye")
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)

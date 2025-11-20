@@ -65,13 +65,45 @@ class UpdateManager: ObservableObject {
         if !hiddenUpdates.contains(where: { $0.uniqueIdentifier == app.uniqueIdentifier }) {
             hiddenUpdates.append(app)
         }
-
-        // Rescan to ensure filtering is applied
-        Task { await scanForUpdates() }
     }
 
-    /// Unhide an app (remove from hidden filter, trigger rescan to check for updates)
-    func unhideApp(_ app: UpdateableApp) {
+    /// Rescan a single app to get fresh update data
+    func recheckUpdate(for app: UpdateableApp) async -> UpdateableApp? {
+        // Get fresh AppInfo from sortedApps (handles case where app was updated externally)
+        guard let freshAppInfo = AppState.shared.sortedApps.first(where: {
+            $0.bundleIdentifier == app.uniqueIdentifier
+        }) else {
+            return nil // App no longer exists
+        }
+
+        // Call appropriate source-specific checker based on app.source
+        switch app.source {
+        case .homebrew:
+            let results = await HomebrewUpdateChecker.checkForUpdates(
+                apps: [freshAppInfo],
+                includeFormulae: false,
+                showAutoUpdatesInHomebrew: showAutoUpdatesInHomebrew
+            )
+            return results.first
+
+        case .appStore:
+            let results = await AppStoreUpdateChecker.checkForUpdates(apps: [freshAppInfo])
+            return results.first
+
+        case .sparkle:
+            let results = await SparkleUpdateChecker.checkForUpdates(
+                apps: [freshAppInfo],
+                includePreReleases: includeSparklePreReleases
+            )
+            return results.first
+
+        case .unsupported:
+            return nil // Can't check unsupported apps
+        }
+    }
+
+    /// Unhide an app (remove from hidden filter and restore to visible list if it has an update)
+    func unhideApp(_ app: UpdateableApp) async {
         // Remove from persistent hidden storage
         var hidden = hiddenApps
         hidden.removeValue(forKey: app.uniqueIdentifier)
@@ -80,8 +112,17 @@ class UpdateManager: ObservableObject {
         // Immediately remove from hidden list for instant UI feedback
         hiddenUpdates.removeAll { $0.uniqueIdentifier == app.uniqueIdentifier }
 
-        // Rescan to check for updates now that app is unhidden
-        Task { await scanForUpdates() }
+        // Rescan the app to get fresh update data
+        if let refreshedApp = await recheckUpdate(for: app) {
+            // Add refreshed app to visible list
+            if var apps = updatesBySource[app.source] {
+                apps.append(refreshedApp)
+                updatesBySource[app.source] = apps
+            } else {
+                updatesBySource[app.source] = [refreshedApp]
+            }
+        }
+        // If nil returned, no update available anymore - don't add to visible list
     }
 
     /// Toggle selection state for an app in the update queue

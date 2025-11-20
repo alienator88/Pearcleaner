@@ -9,13 +9,24 @@ import SwiftUI
 import AlinFoundation
 
 struct UpdateDetailView: View {
-    let app: UpdateableApp
-    let onHideToggle: () -> Void
+    let appId: UUID
     @StateObject private var updateManager = UpdateManager.shared
+    @EnvironmentObject var brewManager: HomebrewManager
+    @EnvironmentObject var appState: AppState
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
+    @State private var showAdoptionSheet: Bool = false
+    @State private var isLoadingCasks: Bool = false
+
+    // Look up live app data from updateManager - this makes the view reactive to status changes
+    private var app: UpdateableApp? {
+        updateManager.updatesBySource.values
+            .flatMap { $0 }
+            .first { $0.id == appId }
+    }
 
     private var sourceColor: Color {
+        guard let app = app else { return .gray }
         switch app.source {
         case .homebrew:
             return .green
@@ -29,7 +40,7 @@ struct UpdateDetailView: View {
     }
 
     private var isNonPrimaryRegion: Bool {
-        guard app.source == .appStore, let foundRegion = app.foundInRegion else {
+        guard let app = app, app.source == .appStore, let foundRegion = app.foundInRegion else {
             return false
         }
         let primaryRegion = Locale.autoupdatingCurrent.region?.identifier ?? "US"
@@ -37,6 +48,24 @@ struct UpdateDetailView: View {
     }
 
     var body: some View {
+        Group {
+            if let app = app {
+                contentView(for: app)
+            } else {
+                VStack {
+                    Spacer()
+                    Text("App not found")
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        .font(.title2)
+                    Spacer()
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func contentView(for app: UpdateableApp) -> some View {
         VStack(alignment: .leading, spacing: 20) {
             // Header: App icon, name, version, action buttons
             VStack(alignment: .leading, spacing: 16) {
@@ -59,13 +88,18 @@ struct UpdateDetailView: View {
                         buildVersionText(for: app, colorScheme: colorScheme)
                             .font(.title3)
                     }
+
+                    Spacer()
+
+                    // Status view (matches UpdateRowView lines 134-148)
+                    statusView(for: app)
                 }
                 .offset(x: -5)
 
                 // Action buttons in header
                 HStack(spacing: 8) {
                     if app.source != .unsupported {
-                        actionButton
+                        actionButton(for: app)
                     }
 
                     if app.source != .unsupported {
@@ -75,25 +109,39 @@ struct UpdateDetailView: View {
                         .buttonStyle(.plain)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 8)
-                        .background(ThemeColors.shared(for: colorScheme).secondaryBG)
+                        .background(Color.orange)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                         .clipShape(Capsule())
 
                         Button("Ignore") {
-                            onHideToggle()
+                            updateManager.hideApp(app)
                         }
                         .buttonStyle(.plain)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 8)
-                        .background(ThemeColors.shared(for: colorScheme).secondaryBG)
+                        .background(Color.red)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                         .clipShape(Capsule())
                     }
 
                     // Adopt button for non-Homebrew apps
-                    if app.source != .homebrew && app.source != .unsupported {
-                        Button("Adopt") {
-                            // TODO: Implement adopt
+                    if app.source != .homebrew {
+                        Button {
+                            // Lazy loading: only load casks on first click
+                            if brewManager.allAvailableCasks.isEmpty {
+                                isLoadingCasks = true
+                                Task {
+                                    await brewManager.loadAvailablePackages(appState: appState)
+                                    await MainActor.run {
+                                        isLoadingCasks = false
+                                        showAdoptionSheet = true
+                                    }
+                                }
+                            } else {
+                                showAdoptionSheet = true
+                            }
+                        } label: {
+                            Text("Adopt")
                         }
                         .buttonStyle(.plain)
                         .padding(.horizontal, 16)
@@ -101,6 +149,8 @@ struct UpdateDetailView: View {
                         .background(ThemeColors.shared(for: colorScheme).secondaryBG)
                         .foregroundStyle(.blue)
                         .clipShape(Capsule())
+                        .disabled(isLoadingCasks)
+                        .opacity(isLoadingCasks ? 0.5 : 1.0)
                     }
                 }
             }
@@ -148,10 +198,10 @@ struct UpdateDetailView: View {
                 Divider().frame(height: 20)
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("CHECKED")
+                    Text("PLACEHOLDER")
                         .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    Text("Today")
+                    Text("Test")
                         .font(.body)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                 }
@@ -186,7 +236,7 @@ struct UpdateDetailView: View {
                     // Release description (HTML formatted) - scrollable section
                     if let description = app.releaseDescription {
                         ScrollView {
-                            let htmlDescription = formattedReleaseDescription(description)
+                            let htmlDescription = formattedReleaseDescription(description, for: app)
 
                             if let nsAttributedString = try? NSAttributedString(
                                 data: Data(htmlDescription.utf8),
@@ -232,59 +282,63 @@ struct UpdateDetailView: View {
         }
         .padding(.horizontal)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .sheet(isPresented: $showAdoptionSheet) {
+            AdoptionSheetView(
+                appInfo: app.appInfo,
+                context: .updaterView,
+                isPresented: $showAdoptionSheet
+            )
+        }
     }
 
     @ViewBuilder
-    private var actionButton: some View {
+    private func statusView(for app: UpdateableApp) -> some View {
         switch app.status {
-        case .idle:
-            Button {
-                if app.isIOSApp, let appStoreURL = app.appStoreURL {
-                    openInAppStore(urlString: appStoreURL)
-                } else if isNonPrimaryRegion, let appStoreURL = app.appStoreURL {
-                    openInAppStore(urlString: appStoreURL)
-                } else {
-                    Task { await updateManager.updateApp(app) }
-                }
-            } label: {
-                Text(app.isIOSApp || isNonPrimaryRegion ? "Update in App Store" : "Update")
-            }
-            .buttonStyle(.plain)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 8)
-            .background(Color.blue)
-            .foregroundStyle(.white)
-            .clipShape(Capsule())
-
         case .checking, .downloading, .extracting, .installing, .verifying:
-            HStack(spacing: 8) {
-                ProgressView()
-                    .scaleEffect(0.8)
+            HStack(spacing: 6) {
                 Text(statusText(for: app.status))
-                    .font(.callout)
+                    .font(.caption)
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                CircularProgressView(
+                    progress: app.progress,
+                    size: 20,
+                    lineWidth: 5
+                )
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 8)
-
         case .completed:
-            HStack(spacing: 6) {
-                Image(systemName: "checkmark.circle.fill")
-                Text("Completed")
-            }
-            .foregroundStyle(.green)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 8)
-
-        case .failed(let message):
-            HStack(spacing: 6) {
-                Image(systemName: "xmark.circle.fill")
-                Text("Failed: \(message)")
-            }
-            .foregroundStyle(.red)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 8)
+            Text(statusText(for: app.status))
+                .font(.caption)
+                .foregroundStyle(.green)
+        case .failed:
+            Text(statusText(for: app.status))
+                .font(.caption)
+                .foregroundStyle(.red)
+        case .idle:
+            EmptyView()
         }
+    }
+
+    @ViewBuilder
+    private func actionButton(for app: UpdateableApp) -> some View {
+        Button {
+            if app.isIOSApp, let appStoreURL = app.appStoreURL {
+                openInAppStore(urlString: appStoreURL)
+            } else if isNonPrimaryRegion, let appStoreURL = app.appStoreURL {
+                openInAppStore(urlString: appStoreURL)
+            } else {
+                Task { await updateManager.updateApp(app) }
+            }
+        } label: {
+            Text(app.isIOSApp || isNonPrimaryRegion ? "Update in App Store" : "Update")
+        }
+        .buttonStyle(.plain)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+        .background(Color.green)
+        .foregroundStyle(.white)
+        .clipShape(Capsule())
+        .disabled(app.status != .idle)
+        .opacity(app.status == .idle ? 1.0 : 0.5)
     }
 
     private func statusText(for status: UpdateStatus) -> String {
@@ -368,7 +422,7 @@ struct UpdateDetailView: View {
         }
     }
 
-    private func formattedReleaseDescription(_ description: String) -> String {
+    private func formattedReleaseDescription(_ description: String, for app: UpdateableApp) -> String {
         if app.source == .appStore {
             return description.replacingOccurrences(of: "\n", with: "<br>")
         } else {
