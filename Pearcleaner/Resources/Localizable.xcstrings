@@ -7984,6 +7984,7 @@
       }
     },
     "All apps up to date" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -45612,6 +45613,7 @@
       }
     },
     "No app store apps to update" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -46324,6 +46326,7 @@
       }
     },
     "No homebrew apps to update" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -48338,6 +48341,7 @@
       }
     },
     "No sparkle apps to update" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -48692,6 +48696,7 @@
       }
     },
     "No unsupported apps to update" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -82665,6 +82670,7 @@
       }
     },
     "Update %lld Selected" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

@@ -11,7 +11,7 @@ import SwiftUI
 struct GenericSidebarListView<Item: Identifiable & Hashable, Content: View>: View {
     // Data
     let items: [Item]
-    let categories: [(title: String, filter: (Item) -> Bool)]
+    let categories: [(title: String, filter: (Item) -> Bool, initiallyExpanded: Bool)]
 
     // Bindings
     @Binding var searchText: String
@@ -32,7 +32,7 @@ struct GenericSidebarListView<Item: Identifiable & Hashable, Content: View>: Vie
 
     init(
         items: [Item],
-        categories: [(title: String, filter: (Item) -> Bool)],
+        categories: [(title: String, filter: (Item) -> Bool, initiallyExpanded: Bool)],
         searchText: Binding<String>,
         searchFilter: ((Item, String) -> Bool)? = nil,
         emptyMessage: String = "No items found",
@@ -157,10 +157,10 @@ struct GenericSidebarListView<Item: Identifiable & Hashable, Content: View>: Vie
         }
     }
 
-    private var categorizedItems: [(title: String, items: [Item])] {
+    private var categorizedItems: [(title: String, items: [Item], initiallyExpanded: Bool)] {
         return categories.map { category in
             let categoryItems = filteredItems.filter(category.filter)
-            return (category.title, categoryItems)
+            return (category.title, categoryItems, category.initiallyExpanded)
         }
     }
 }
@@ -168,21 +168,55 @@ struct GenericSidebarListView<Item: Identifiable & Hashable, Content: View>: Vie
 // MARK: - Categorized List View
 
 struct CategorizedListView<Item: Identifiable & Hashable, Content: View>: View {
-    let categories: [(title: String, items: [Item])]
+    let categories: [(title: String, items: [Item], initiallyExpanded: Bool)]
     @ViewBuilder let itemView: (Item) -> Content
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
+    @Environment(\.colorScheme) var colorScheme
+
+    // Split categories: those with items go above divider, empty/Unsupported go below
+    private var categoriesAboveDivider: [(title: String, items: [Item], initiallyExpanded: Bool)] {
+        categories.filter { $0.items.count > 0 && $0.title != "Unsupported" }
+    }
+
+    private var categoriesBelowDivider: [(title: String, items: [Item], initiallyExpanded: Bool)] {
+        categories.filter { $0.items.count == 0 || $0.title == "Unsupported" }
+    }
+
+    private var shouldShowDivider: Bool {
+        !categoriesAboveDivider.isEmpty && !categoriesBelowDivider.isEmpty
+    }
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                ForEach(Array(categories.enumerated()), id: \.offset) { index, category in
+                // Categories with updates
+                ForEach(Array(categoriesAboveDivider.enumerated()), id: \.offset) { index, category in
                     GenericSectionView(
                         title: category.title,
                         count: category.items.count,
                         items: category.items,
+                        initiallyExpanded: category.initiallyExpanded,
                         itemView: itemView
                     )
                     .padding(.top, index > 0 ? 5 : 0)
+                }
+
+                // Divider (only if there are categories both above and below)
+                if shouldShowDivider {
+                    Divider()
+                        .padding(10)
+                }
+
+                // Empty categories and Unsupported
+                ForEach(Array(categoriesBelowDivider.enumerated()), id: \.offset) { index, category in
+                    GenericSectionView(
+                        title: category.title,
+                        count: category.items.count,
+                        items: category.items,
+                        initiallyExpanded: category.initiallyExpanded,
+                        itemView: itemView
+                    )
+                    .padding(.top, (shouldShowDivider && index == 0) ? 0 : 5)
                 }
             }
         }
@@ -196,10 +230,20 @@ struct GenericSectionView<Item: Identifiable & Hashable, Content: View>: View {
     let title: String
     let count: Int
     let items: [Item]
+    let initiallyExpanded: Bool
     @ViewBuilder let itemView: (Item) -> Content
 
-    @State private var showItems: Bool = true
+    @State private var showItems: Bool
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+
+    init(title: String, count: Int, items: [Item], initiallyExpanded: Bool = true, @ViewBuilder itemView: @escaping (Item) -> Content) {
+        self.title = title
+        self.count = count
+        self.items = items
+        self.initiallyExpanded = initiallyExpanded
+        self.itemView = itemView
+        self._showItems = State(initialValue: initiallyExpanded)
+    }
 
     var body: some View {
         VStack(spacing: 0) {
