@@ -14,6 +14,7 @@ enum UpdateSource: String, CaseIterable {
     case appStore = "App Store"
     case sparkle = "Sparkle"
     case unsupported = "Unsupported"
+    case current = "Current"
 
     var icon: String {
         switch self {
@@ -25,6 +26,8 @@ enum UpdateSource: String, CaseIterable {
             return "✨"
         case .unsupported:
             return "❓"
+        case .current:
+            return "✓"
         }
     }
 }

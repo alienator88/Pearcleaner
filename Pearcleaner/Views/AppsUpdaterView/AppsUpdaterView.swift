@@ -28,7 +28,7 @@ struct AppsUpdaterView: View {
 
     private var totalUpdateCount: Int {
         updateManager.updatesBySource
-            .filter { $0.key != .unsupported }
+            .filter { $0.key != .unsupported && $0.key != .current }
             .values
             .reduce(0) { $0 + $1.count }
     }
@@ -41,9 +41,9 @@ struct AppsUpdaterView: View {
         updateManager.updatesBySource.values.contains { !$0.isEmpty }
     }
 
-    // Collect all apps across all sources (exclude unsupported apps - they can't be updated)
+    // Collect all apps across all sources (exclude unsupported and current apps - they can't/don't need updates)
     private var allApps: [UpdateableApp] {
-        updateManager.updatesBySource.values.flatMap { $0 }.filter { $0.source != .unsupported }
+        updateManager.updatesBySource.values.flatMap { $0 }.filter { $0.source != .unsupported && $0.source != .current }
     }
 
     // Count selected apps across all sources
@@ -68,6 +68,8 @@ struct AppsUpdaterView: View {
         if checkSparkle {
             cats.append(("Sparkle", { $0.source == .sparkle }, true))
         }
+        // Always show Current category, show Unsupported if enabled
+        cats.append(("Current", { $0.source == .current }, false))  // Collapsed by default
         if showUnsupported {
             cats.append(("Unsupported", { $0.source == .unsupported }, false))  // Collapsed by default
         }

@@ -36614,6 +36614,7 @@
       }
     },
     "Install Update" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -52244,6 +52245,7 @@
       }
     },
     "Pearcleaner" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -82314,6 +82316,9 @@
           }
         }
       }
+    },
+    "Up to date" : {
+
     },
     "Update" : {
       "localizations" : {

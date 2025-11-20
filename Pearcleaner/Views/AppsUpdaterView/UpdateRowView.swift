@@ -30,6 +30,8 @@ struct UpdateRowView: View {
             return .orange
         case .unsupported:
             return .gray
+        case .current:
+            return .green
         }
     }
 
@@ -51,6 +53,8 @@ struct UpdateRowView: View {
             return "sparkles"
         case .unsupported:
             return "questionmark.circle"
+        case .current:
+            return "checkmark.circle"
         }
     }
 
@@ -67,8 +71,14 @@ struct UpdateRowView: View {
 
     @ViewBuilder
     private var actionButtons: some View {
+        // For current apps, show up-to-date message
+        if app.source == .current {
+            Text("Up to date")
+                .font(.caption)
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+        }
         // For unsupported apps, show Adopt button
-        if app.source == .unsupported {
+        else if app.source == .unsupported {
             HStack(spacing: 8) {
                 Text("No update mechanism detected")
                     .font(.caption)
@@ -151,8 +161,8 @@ struct UpdateRowView: View {
 
     @ViewBuilder
     private var secondaryActionButtons: some View {
-        // No secondary actions for unsupported apps
-        if app.source != .unsupported {
+        // No secondary actions for unsupported or current apps
+        if app.source != .unsupported && app.source != .current {
             // View Changes button (shown for all sources, disabled for Homebrew)
             Button {
                 withAnimation(.easeInOut(duration: 0.3)) {
@@ -188,8 +198,8 @@ struct UpdateRowView: View {
                 EmptyView()
             }
             .buttonStyle(CircleCheckboxButtonStyle(isSelected: app.isSelectedForUpdate))
-            .disabled(app.source == .unsupported)
-            .opacity(app.source == .unsupported ? 0.5 : 1.0)
+            .disabled(app.source == .unsupported || app.source == .current)
+            .opacity(app.source == .unsupported || app.source == .current ? 0.5 : 1.0)
 
             // Content with background
             VStack(spacing: 0) {
@@ -465,6 +475,16 @@ struct UpdateRowView: View {
     }
 
     private func buildVersionText(for app: UpdateableApp, colorScheme: ColorScheme) -> Text {
+        // For unsupported and current apps, just show the installed version (no arrow)
+        if app.source == .unsupported || app.source == .current {
+            if let installedBuild = app.appInfo.appBuildNumber {
+                return Text(verbatim: "\(app.appInfo.appVersion) (\(installedBuild))")
+                    .foregroundColor(ThemeColors.shared(for: colorScheme).secondaryText)
+            }
+            return Text(verbatim: app.appInfo.appVersion)
+                .foregroundColor(ThemeColors.shared(for: colorScheme).secondaryText)
+        }
+
         guard let availableVersion = app.availableVersion else {
             // No available version (shouldn't happen, but handle gracefully)
             if app.source == .sparkle, let installedBuild = app.appInfo.appBuildNumber {

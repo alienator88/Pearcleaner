@@ -26,7 +26,7 @@ struct GenericSidebarListView<Item: Identifiable & Hashable, Content: View>: Vie
 
     // Internal state
     @Environment(\.colorScheme) var colorScheme
-    @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 265
+    @AppStorage("settings.general.sidebarWidthGeneric") private var sidebarWidth: Double = 265
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @State private var dimensionStart: Double?
 
@@ -173,13 +173,13 @@ struct CategorizedListView<Item: Identifiable & Hashable, Content: View>: View {
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @Environment(\.colorScheme) var colorScheme
 
-    // Split categories: those with items go above divider, empty/Unsupported go below
+    // Split categories: those with items go above divider, empty/Current/Unsupported go below
     private var categoriesAboveDivider: [(title: String, items: [Item], initiallyExpanded: Bool)] {
-        categories.filter { $0.items.count > 0 && $0.title != "Unsupported" }
+        categories.filter { $0.items.count > 0 && $0.title != "Unsupported" && $0.title != "Current" }
     }
 
     private var categoriesBelowDivider: [(title: String, items: [Item], initiallyExpanded: Bool)] {
-        categories.filter { $0.items.count == 0 || $0.title == "Unsupported" }
+        categories.filter { $0.items.count == 0 || $0.title == "Unsupported" || $0.title == "Current" }
     }
 
     private var shouldShowDivider: Bool {
@@ -233,8 +233,22 @@ struct GenericSectionView<Item: Identifiable & Hashable, Content: View>: View {
     let initiallyExpanded: Bool
     @ViewBuilder let itemView: (Item) -> Content
 
-    @State private var showItems: Bool
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+    @AppStorage("settings.updater.collapsedCategories") private var collapsedCategoriesData: Data = Data()
+    @State private var hasInitialized = false
+
+    private var collapsedCategories: Set<String> {
+        get {
+            (try? JSONDecoder().decode(Set<String>.self, from: collapsedCategoriesData)) ?? []
+        }
+        nonmutating set {
+            collapsedCategoriesData = (try? JSONEncoder().encode(newValue)) ?? Data()
+        }
+    }
+
+    private var showItems: Bool {
+        !collapsedCategories.contains(title)
+    }
 
     init(title: String, count: Int, items: [Item], initiallyExpanded: Bool = true, @ViewBuilder itemView: @escaping (Item) -> Content) {
         self.title = title
@@ -242,7 +256,6 @@ struct GenericSectionView<Item: Identifiable & Hashable, Content: View>: View {
         self.items = items
         self.initiallyExpanded = initiallyExpanded
         self.itemView = itemView
-        self._showItems = State(initialValue: initiallyExpanded)
     }
 
     var body: some View {
@@ -251,7 +264,7 @@ struct GenericSectionView<Item: Identifiable & Hashable, Content: View>: View {
                 .padding(.leading, 5)
                 .onTapGesture {
                     withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                        showItems.toggle()
+                        toggleCategory()
                     }
                 }
 
@@ -262,5 +275,32 @@ struct GenericSectionView<Item: Identifiable & Hashable, Content: View>: View {
                 }
             }
         }
+        .onAppear {
+            initializeCollapseState()
+        }
+    }
+
+    private func initializeCollapseState() {
+        guard !hasInitialized else { return }
+        hasInitialized = true
+
+        // If this category should default to collapsed and isn't in the set yet, add it
+        if !initiallyExpanded && !collapsedCategories.contains(title) {
+            var categories = collapsedCategories
+            categories.insert(title)
+            collapsedCategories = categories
+        }
+    }
+
+    private func toggleCategory() {
+        var categories = collapsedCategories
+        if categories.contains(title) {
+            // Was collapsed, now expand it
+            categories.remove(title)
+        } else {
+            // Was expanded, now collapse it
+            categories.insert(title)
+        }
+        collapsedCategories = categories
     }
 }

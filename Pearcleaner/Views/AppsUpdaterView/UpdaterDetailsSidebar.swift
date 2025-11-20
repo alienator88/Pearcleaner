@@ -449,6 +449,7 @@ struct UpdaterHiddenAppRow: View {
         case .homebrew: return "mug"
         case .sparkle: return "sparkles"
         case .unsupported: return "questionmark.circle"
+        case .current: return "checkmark.circle"
         }
     }
 
@@ -458,6 +459,7 @@ struct UpdaterHiddenAppRow: View {
         case .homebrew: return .orange
         case .sparkle: return .purple
         case .unsupported: return .gray
+        case .current: return .green
         }
     }
 

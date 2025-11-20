@@ -169,6 +169,9 @@ class UpdateManager: ObservableObject {
 
         case .unsupported:
             return nil // Can't check unsupported apps
+
+        case .current:
+            return nil // Already current, no update available
         }
     }
 
@@ -352,6 +355,40 @@ class UpdateManager: ObservableObject {
         }
 
         await processSourceResults(source: .unsupported, apps: unsupportedApps)
+
+        // Calculate current apps (supported but up-to-date - no updates available)
+        let currentApps = apps.filter { app in
+            // Not a web app
+            !app.webApp &&
+            // Must be supported (App Store, Homebrew, or Sparkle)
+            (app.isAppStore || app.cask != nil || app.hasSparkle) &&
+            // But doesn't have an update available in any of the update sources
+            !updatesBySource.values.flatMap { $0 }.contains(where: { $0.appInfo.path == app.path })
+        }.map { app in
+            // Create UpdateableApp with current source
+            UpdateableApp(
+                appInfo: app,
+                availableVersion: app.appVersion,  // Already up-to-date
+                availableBuildNumber: nil,
+                source: .current,
+                adamID: nil,
+                appStoreURL: nil,
+                status: .idle,
+                progress: 0.0,
+                isSelectedForUpdate: false,  // Already current, no update needed
+                releaseTitle: nil,
+                releaseDescription: nil,
+                releaseNotesLink: nil,
+                releaseDate: nil,
+                isPreRelease: false,
+                isIOSApp: false,
+                foundInRegion: nil,
+                fetchedReleaseNotes: nil,
+                appcastItem: nil
+            )
+        }
+
+        await processSourceResults(source: .current, apps: currentApps)
 
         // Rebuild hidden apps list for display
         // This ensures ALL hidden apps appear in the sidebar, even those without updates
@@ -630,6 +667,11 @@ class UpdateManager: ObservableObject {
         case .unsupported:
             // Unsupported apps cannot be updated - do nothing
             UpdaterDebugLogger.shared.log(.sparkle, "⚠️ Cannot update unsupported app: \(app.appInfo.appName)")
+            break
+
+        case .current:
+            // Current apps are already up-to-date - do nothing
+            UpdaterDebugLogger.shared.log(.sparkle, "ℹ️ App is already current: \(app.appInfo.appName)")
             break
         }
     }

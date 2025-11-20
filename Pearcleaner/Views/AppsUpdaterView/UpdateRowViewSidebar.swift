@@ -28,6 +28,8 @@ struct UpdateRowViewSidebar: View {
             return .orange
         case .unsupported:
             return .gray
+        case .current:
+            return .gray
         }
     }
 
@@ -41,6 +43,8 @@ struct UpdateRowViewSidebar: View {
             return "sparkles"
         case .unsupported:
             return "questionmark.circle"
+        case .current:
+            return "app"
         }
     }
 
@@ -142,6 +146,12 @@ struct UpdateRowViewSidebar: View {
     }
 
     private func buildVersionText(for app: UpdateableApp, colorScheme: ColorScheme) -> Text {
+        // For unsupported and current apps, just show the installed version (no arrow)
+        if app.source == .unsupported || app.source == .current {
+            return Text(verbatim: app.appInfo.appVersion)
+                .foregroundColor(ThemeColors.shared(for: colorScheme).secondaryText)
+        }
+
         guard let availableVersion = app.availableVersion else {
             // No available version (shouldn't happen, but handle gracefully)
             return Text(verbatim: app.appInfo.appVersion)

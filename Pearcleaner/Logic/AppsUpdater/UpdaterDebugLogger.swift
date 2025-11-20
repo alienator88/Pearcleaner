@@ -43,6 +43,9 @@ class UpdaterDebugLogger: ObservableObject {
             case .unsupported:
                 // No logs for unsupported apps (they don't have updates to debug)
                 break
+            case .current:
+                // No logs for current apps (they're already up-to-date)
+                break
             }
         }
     }

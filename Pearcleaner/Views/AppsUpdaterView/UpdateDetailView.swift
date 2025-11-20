@@ -36,6 +36,8 @@ struct UpdateDetailView: View {
             return .orange
         case .unsupported:
             return .gray
+        case .current:
+            return .green
         }
     }
 
