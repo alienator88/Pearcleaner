@@ -186,6 +186,7 @@ struct AppSearchView: View {
 
 struct SearchBarSidebar: View {
     @Binding var search: String
+    @State var menu: Bool = true
     @State var padding: CGFloat = 5
     @State var sidebar: Bool = true
     @EnvironmentObject var appState: AppState
@@ -193,7 +194,7 @@ struct SearchBarSidebar: View {
     var body: some View {
         HStack {
             TextField("Search...", text: $search)
-                .textFieldStyle(SimpleSearchStyleSidebar(trash: true, text: $search))
+                .textFieldStyle(SimpleSearchStyleSidebar(menu: menu, trash: true, text: $search))
         }
     }
 }

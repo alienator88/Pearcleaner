@@ -757,6 +757,7 @@ struct SimpleSearchStyleSidebar: TextFieldStyle {
     @Environment(\.colorScheme) var colorScheme
     @State private var isHovered = false
     @FocusState private var isFocused: Bool
+    @State var menu: Bool = true
     @State var trash: Bool = false
     @Binding var text: String
     @EnvironmentObject var appState: AppState
@@ -785,77 +786,81 @@ struct SimpleSearchStyleSidebar: TextFieldStyle {
                 }
             }
 
-            Menu {
-                Section(header: Text("Sorting")) {
-                    ForEach(SortOption.allCases) { option in
-                        Button {
-                            withAnimation(
-                                Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)
-                            ) {
-                                selectedSortOption = option
+            if menu {
+                Menu {
+                    Section(header: Text("Sorting")) {
+                        ForEach(SortOption.allCases) { option in
+                            Button {
+                                withAnimation(
+                                    Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)
+                                ) {
+                                    selectedSortOption = option
+                                }
+                            } label: {
+                                HStack {
+                                    Image(
+                                        systemName: selectedSortOption == option
+                                        ? "circle.inset.filled" : "circle")
+                                    Text(option.title)
+                                }
                             }
-                        } label: {
+                        }
+                    }
+
+                    Section(header: Text("Layout")) {
+                        Button(action: {
+                            withAnimation(.spring(duration: animationEnabled ? 0.3 : 0)) {
+                                sidebarWidth = 265
+                            }
+                        }) {
                             HStack {
-                                Image(
-                                    systemName: selectedSortOption == option
-                                    ? "circle.inset.filled" : "circle")
-                                Text(option.title)
+                                Image(systemName: sidebarWidth < 316 ? "circle.inset.filled" : "circle")
+                                Text("List View")
+                            }
+
+                        }
+
+                        Button(action: {
+                            withAnimation(.spring(duration: animationEnabled ? 0.3 : 0)) {
+                                sidebarWidth = 375
+                            }
+                        }) {
+                            HStack {
+                                Image(systemName: sidebarWidth > 316 ? "circle.inset.filled" : "circle")
+                                Text("Grid View")
+                            }
+
+                        }
+                    }
+
+                    Section(header: Text("Options")) {
+                        Button("Refresh List") {
+                            Task { @MainActor in
+                                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                                    // Use default non-streaming mode for manual refresh (needs full AppInfo)
+                                    loadApps(folderPaths: fsm.folderPaths)
+                                }
                             }
                         }
-                    }
-                }
 
-                Section(header: Text("Layout")) {
-                    Button(action: {
-                        withAnimation(.spring(duration: animationEnabled ? 0.3 : 0)) {
-                            sidebarWidth = 265
-                        }
-                    }) {
-                        HStack {
-                            Image(systemName: sidebarWidth < 316 ? "circle.inset.filled" : "circle")
-                            Text("List View")
-                        }
-
-                    }
-
-                    Button(action: {
-                        withAnimation(.spring(duration: animationEnabled ? 0.3 : 0)) {
-                            sidebarWidth = 375
-                        }
-                    }) {
-                        HStack {
-                            Image(systemName: sidebarWidth > 316 ? "circle.inset.filled" : "circle")
-                            Text("Grid View")
-                        }
-
-                    }
-                }
-
-                Section(header: Text("Options")) {
-                    Button("Refresh List") {
-                        Task { @MainActor in
+                        Button(multiSelect ? "Hide multi-select" : "Show multi-select") {
                             withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                                // Use default non-streaming mode for manual refresh (needs full AppInfo)
-                                loadApps(folderPaths: fsm.folderPaths)
+                                multiSelect.toggle()
                             }
                         }
                     }
-
-                    Button(multiSelect ? "Hide multi-select" : "Show multi-select") {
-                        withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                            multiSelect.toggle()
-                        }
-                    }
+                } label: {
+                    Image(systemName: "line.3.horizontal")
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        .padding(2)
+                        .contentShape(Rectangle())
                 }
-            } label: {
-                Image(systemName: "line.3.horizontal")
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    .padding(2)
-                    .contentShape(Rectangle())
+                .menuStyle(BorderlessButtonMenuStyle())
+                .menuIndicator(.hidden)
+                .frame(width: 16)
             }
-            .menuStyle(BorderlessButtonMenuStyle())
-            .menuIndicator(.hidden)
-            .frame(width: 16)
+
+
         }
         .buttonStyle(.plain)
         .padding(.vertical, 8)

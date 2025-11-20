@@ -148,6 +148,7 @@ class AppStoreUpdateChecker {
                 isPreRelease: false,  // App Store updates are not pre-releases
                 isIOSApp: isIOSApp,
                 foundInRegion: foundRegion,
+                fetchedReleaseNotes: nil,  // App Store has inline release notes
                 appcastItem: nil  // App Store doesn't use Sparkle
             )
         }

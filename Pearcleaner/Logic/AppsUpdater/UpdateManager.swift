@@ -91,6 +91,22 @@ class UpdateManager: ObservableObject {
         return ignoredApps[app.uniqueIdentifier]?[app.source.rawValue] ?? nil
     }
 
+    /// Update the fetched release notes for a specific app
+    /// - Parameters:
+    ///   - appId: The UUID of the app to update
+    ///   - content: The fetched release notes content
+    func updateFetchedReleaseNotes(for appId: UUID, content: String) {
+        // Find and update the app in updatesBySource
+        for (source, apps) in updatesBySource {
+            if let index = apps.firstIndex(where: { $0.id == appId }) {
+                var updatedApp = apps[index]
+                updatedApp.fetchedReleaseNotes = content
+                updatesBySource[source]?[index] = updatedApp
+                return
+            }
+        }
+    }
+
     /// Hide an app permanently or skip a specific version
     /// - Parameters:
     ///   - app: The app to ignore

@@ -239,6 +239,7 @@ private class SparkleCheckerOperation: NSObject, SPUUserDriver, SPUUpdaterDelega
         var releaseTitle: String?
         var releaseDescription: String?
         var releaseNotesLink: String?
+        var fetchedReleaseNotes: String?
 
         if let title = appcastItem.title {
             releaseTitle = title
@@ -248,6 +249,8 @@ private class SparkleCheckerOperation: NSObject, SPUUserDriver, SPUUpdaterDelega
         }
         if let notesURL = appcastItem.releaseNotesURL ?? appcastItem.fullReleaseNotesURL {
             releaseNotesLink = notesURL.absoluteString
+            // Note: Cannot fetch here synchronously - will be fetched on-demand when sidebar row appears
+            fetchedReleaseNotes = nil
         }
 
         return UpdateableApp(
@@ -267,6 +270,7 @@ private class SparkleCheckerOperation: NSObject, SPUUserDriver, SPUUpdaterDelega
             isPreRelease: isPreRelease,
             isIOSApp: false,
             foundInRegion: nil,
+            fetchedReleaseNotes: fetchedReleaseNotes,
             appcastItem: appcastItem  // Cache the validated appcast item
         )
     }

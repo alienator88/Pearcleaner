@@ -167,6 +167,7 @@ class HomebrewUpdateChecker {
                 isPreRelease: false,  // Homebrew updates are not pre-releases
                 isIOSApp: false,  // Homebrew apps are never iOS apps
                 foundInRegion: nil,
+                fetchedReleaseNotes: nil,  // Homebrew doesn't provide release notes
                 appcastItem: nil  // Homebrew doesn't use Sparkle
             )
             updateableApps.append(updateableApp)

@@ -77,6 +77,7 @@ struct UpdateableApp: Identifiable, Hashable {
     let isPreRelease: Bool  // True for Sparkle pre-release updates (has channel tag or SemVer pre-release identifier)
     let isIOSApp: Bool  // True for wrapped iPad/iOS apps that must be updated via App Store app
     let foundInRegion: String?  // App Store region code where update was found (e.g., "US", "CN")
+    var fetchedReleaseNotes: String?  // Fetched content from external releaseNotesLink URL
 
     // Cached Sparkle appcast item (for consistent version selection between check and install)
     let appcastItem: SUAppcastItem?

@@ -16,6 +16,7 @@ struct UpdateRowViewSidebar: View {
     @AppStorage("settings.general.glass") private var glass: Bool = true
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @State private var isHovered: Bool = false
+    @StateObject private var updateManager = UpdateManager.shared
 
     private var sourceColor: Color {
         switch app.source {
@@ -128,6 +129,16 @@ struct UpdateRowViewSidebar: View {
                 .allowsHitTesting(false)
             }
         }
+        .task(id: app.id) {
+            // Fetch external release notes if we have a link but no content yet
+            guard let notesLink = app.releaseNotesLink,
+                  let notesURL = URL(string: notesLink),
+                  app.fetchedReleaseNotes == nil else {
+                return
+            }
+
+            await fetchReleaseNotes(for: app.id, from: notesURL)
+        }
     }
 
     private func buildVersionText(for app: UpdateableApp, colorScheme: ColorScheme) -> Text {
@@ -147,5 +158,24 @@ struct UpdateRowViewSidebar: View {
         result = result + Text(verbatim: " → ").foregroundColor(ThemeColors.shared(for: colorScheme).secondaryText)
         result = result + Text(verbatim: displayAvailableVersion).foregroundColor(.green)
         return result
+    }
+
+    private func fetchReleaseNotes(for appId: UUID, from url: URL) async {
+        do {
+            var request = URLRequest(url: url, timeoutInterval: 3)
+            request.httpMethod = "GET"
+
+            // This runs on a background thread automatically
+            let (data, _) = try await URLSession.shared.data(for: request)
+
+            guard let content = String(data: data, encoding: .utf8) else { return }
+
+            // Update the app's fetchedReleaseNotes in the UpdateManager (must be on main thread)
+            await MainActor.run {
+                updateManager.updateFetchedReleaseNotes(for: appId, content: content)
+            }
+        } catch {
+            // Silent failure - will fall back to inline description
+        }
     }
 }

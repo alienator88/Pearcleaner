@@ -14727,6 +14727,9 @@
         }
       }
     },
+    "CHANGELOG" : {
+
+    },
     "Check for app updates from App Store, Homebrew and Sparkle" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -44775,6 +44778,9 @@
         }
       }
     },
+    "N/A" : {
+
+    },
     "Name" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -47736,6 +47742,9 @@
           }
         }
       }
+    },
+    "No release notes were found" : {
+
     },
     "No releases to display" : {
       "extractionState" : "manual",
@@ -54360,9 +54369,6 @@
           }
         }
       }
-    },
-    "PLACEHOLDER" : {
-
     },
     "Please install the helper service" : {
       "localizations" : {
@@ -75321,9 +75327,6 @@
         }
       }
     },
-    "Test" : {
-
-    },
     "The search sensitivity level controls how strict or lenient Pearcleaner is when finding related files for an app:\n\n• Strict – %@\n\n• Enhanced – %@\n\n• Deep – %@\n\nAt levels higher than Strict it is recommended to check found files manually." : {
       "localizations" : {
         "de" : {
@@ -88349,9 +88352,6 @@
           }
         }
       }
-    },
-    "What's New" : {
-
     },
     "When applications are moved to Trash, Pearcleaner will launch and find related files and folders for deletion." : {
       "extractionState" : "manual",

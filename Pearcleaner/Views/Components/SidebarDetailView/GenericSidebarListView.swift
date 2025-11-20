@@ -59,7 +59,7 @@ struct GenericSidebarListView<Item: Identifiable & Hashable, Content: View>: Vie
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
 
-                SearchBarSidebar(search: $searchText)
+                SearchBarSidebar(search: $searchText, menu: false)
                     .padding()
                     .padding(.top, 20)
 
