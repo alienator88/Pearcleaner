@@ -123,6 +123,14 @@ struct UpdateDetailView: View {
                                 .buttonStyle(.plain)
                                 .help("View in App Store")
                             }
+
+                            // Unsupported indicator
+                            if app.source == .unsupported {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .font(.title3)
+                                    .foregroundStyle(.orange)
+                                    .help("Unsupported")
+                            }
                         }
 
                         // Version info with build numbers
