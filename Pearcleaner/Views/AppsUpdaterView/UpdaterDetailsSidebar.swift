@@ -18,7 +18,7 @@ struct UpdaterDetailsSidebar: View {
     @Binding var checkSparkle: Bool
     @Binding var includeSparklePreReleases: Bool
     @Binding var showUnsupported: Bool
-    @StateObject private var updateManager = UpdateManager.shared
+    @EnvironmentObject var updateManager: UpdateManager
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
 
@@ -61,7 +61,7 @@ struct UpdaterSourceCheckboxSection: View {
     @Binding var checkSparkle: Bool
     @Binding var includeSparklePreReleases: Bool
     @Binding var showUnsupported: Bool
-    @StateObject private var updateManager = UpdateManager.shared
+    @EnvironmentObject var updateManager: UpdateManager
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.updater.debugLogging") private var debugLogging: Bool = true
     @AppStorage("settings.updater.showAutoUpdatesInHomebrew") private var showAutoUpdatesInHomebrew: Bool = false
@@ -324,7 +324,7 @@ struct UpdaterSourceCheckboxSection: View {
 // Hidden apps section component (combines header, list, and manual hide)
 struct UpdaterHiddenAppsSection: View {
     @StateObject private var appState = AppState.shared
-    @StateObject private var updateManager = UpdateManager.shared
+    @EnvironmentObject var updateManager: UpdateManager
     @Environment(\.colorScheme) var colorScheme
 
     private var availableApps: [AppInfo] {
@@ -439,7 +439,7 @@ struct UpdaterHiddenAppsSection: View {
 // Individual hidden app row component
 struct UpdaterHiddenAppRow: View {
     let app: UpdateableApp
-    @StateObject private var updateManager = UpdateManager.shared
+    @EnvironmentObject var updateManager: UpdateManager
     @Environment(\.colorScheme) var colorScheme
     @State private var isHovered = false
 

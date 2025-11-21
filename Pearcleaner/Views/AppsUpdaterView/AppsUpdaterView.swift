@@ -9,7 +9,7 @@ import SwiftUI
 import AlinFoundation
 
 struct AppsUpdaterView: View {
-    @StateObject private var updateManager = UpdateManager.shared
+    @EnvironmentObject var updateManager: UpdateManager
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var updater: Updater
     @Environment(\.colorScheme) var colorScheme
@@ -254,6 +254,12 @@ struct AppsUpdaterView: View {
             }
         }
         .task {
+            // Skip scan if background scan already completed
+            guard updateManager.lastScanDate == nil else {
+                GlobalConsoleManager.shared.appendOutput("Using cached updates from background scan\n", source: CurrentPage.updater.title)
+                return
+            }
+
             GlobalConsoleManager.shared.appendOutput("Loading app updates...\n", source: CurrentPage.updater.title)
             let task = Task { await updateManager.scanForUpdates() }
             updateManager.currentScanTask = task

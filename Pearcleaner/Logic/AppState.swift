@@ -50,28 +50,6 @@ class AppState: ObservableObject {
     // Per-app sensitivity level (session-only, not persisted)
     @Published var perAppSensitivity: [String: SearchSensitivityLevel] = [:]
 
-    // Auto-slim stats storage
-    @AppStorage("settings.app.autoSlim.stats") var autoSlimStatsData: Data = Data()
-
-    var autoSlimStats: AutoSlimStats {
-        get {
-            guard !autoSlimStatsData.isEmpty,
-                  let stats = try? JSONDecoder().decode(AutoSlimStats.self, from: autoSlimStatsData) else {
-                return AutoSlimStats(originalSize: 0, currentSize: 0, lastRunVersion: "")
-            }
-            return stats
-        }
-        set {
-            if let encoded = try? JSONEncoder().encode(newValue) {
-                autoSlimStatsData = encoded
-            }
-        }
-    }
-
-    var autoSlimSavings: Int64 {
-        return max(0, autoSlimStats.originalSize - autoSlimStats.currentSize)
-    }
-
     func getBundleSize(for appInfo: AppInfo, updateState: @escaping (Int64) -> Void) {
         DispatchQueue.global(qos: .userInitiated).async {
             // Step 1: Check if the size is available and not 0 in the sortedApps cache

@@ -14,6 +14,7 @@ struct MainWindow: View {
     @ObservedObject private var themeManager = ThemeManager.shared
     @ObservedObject private var consoleManager = GlobalConsoleManager.shared
     @StateObject private var brewManager = HomebrewManager()
+    @StateObject private var updateManager = UpdateManager.shared
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
     @EnvironmentObject var fsm: FolderSettingsManager
@@ -24,6 +25,8 @@ struct MainWindow: View {
     @AppStorage("settings.general.sidebarWidth") private var sidebarWidth: Double = 265
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.tutorial.switchUtilitiesShown") private var tutorialShown: Bool = true
+    @AppStorage("settings.updater.loadOnStartup") private var loadUpdatesOnStartup: Bool = true
+    @AppStorage("settings.console.state") private var consoleStateData: Data = Data()
 
     @State private var isDraggingOver: Bool = false
     @State private var showSys: Bool = true
@@ -36,9 +39,6 @@ struct MainWindow: View {
     @State private var showFeatureView = false
     @State private var showPermissionList = false
     @State private var glowRadius = 0.0
-
-    // Global Console State (managed via GlobalConsoleManager)
-    @AppStorage("settings.console.state") private var consoleStateData: Data = Data()
 
     var body: some View {
 
@@ -97,6 +97,7 @@ struct MainWindow: View {
                         withConsole {
                             AppsUpdaterView()
                                 .environmentObject(brewManager)
+                                .environmentObject(updateManager)
                         }
                     }
                 }
@@ -212,12 +213,26 @@ struct MainWindow: View {
                             appState.currentPage = page
 
                             // Hide tutorial when user interacts with menu
-                            tutorialShown = false
+                            if tutorialShown {
+                                tutorialShown = false
+                            }
                         } label: {
-                            HStack(spacing: 8) {
-                                Image(systemName: page.icon)
-                                    .frame(width: 16)
-                                Text(page.title)
+                            if page == .updater {
+                                HStack(spacing: 8) {
+                                    Image(systemName: page.icon)
+                                        .frame(width: 16)
+                                    if loadUpdatesOnStartup || updateManager.totalUpdateCount > 0 {
+                                        Text("\(page.title) (\(updateManager.totalUpdateCount))")
+                                    } else {
+                                        Text(page.title)
+                                    }
+                                }
+                            } else {
+                                HStack(spacing: 8) {
+                                    Image(systemName: page.icon)
+                                        .frame(width: 16)
+                                    Text(page.title)
+                                }
                             }
                         }
                     }

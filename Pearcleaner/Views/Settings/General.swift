@@ -25,7 +25,7 @@ struct GeneralSettingsTab: View {
     @AppStorage("settings.general.searchSensitivity") private var sensitivityLevel: SearchSensitivityLevel = .strict
     @AppStorage("settings.general.deepLevelAlertShown") private var deepLevelAlertShown: Bool = false
     @AppStorage("settings.general.searchTextContent") private var searchTextContent: Bool = false
-    @AppStorage("settings.app.autoSlim") private var autoSlim: Bool = false
+    @AppStorage("settings.updater.loadOnStartup") private var loadUpdatesOnStartup: Bool = true
     @AppStorage("settings.general.sudoCacheTimeout") private var sudoCacheTimeoutData: Data = {
         let defaultTimeout = SudoCacheTimeout()
         return (try? JSONEncoder().encode(defaultTimeout)) ?? Data()
@@ -111,6 +111,30 @@ struct GeneralSettingsTab: View {
 
                             Spacer()
                             Toggle(isOn: $oneShotMode, label: {
+                            })
+                            .toggleStyle(SettingsToggle())
+                        }
+                        .padding(5)
+
+
+
+                        HStack(spacing: 0) {
+                            Image(systemName: "arrow.down.circle")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 15, height: 15)
+                                .padding(.trailing)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text("Load app updates on startup")
+                                    .font(.callout)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            }
+
+                            InfoButton(text: String(localized: "When enabled, Pearcleaner will automatically scan for app updates in the background during launch. This way, updates are ready when you open the Updater view."))
+
+                            Spacer()
+                            Toggle(isOn: $loadUpdatesOnStartup, label: {
                             })
                             .toggleStyle(SettingsToggle())
                         }

@@ -30,13 +30,40 @@ class UpdateManager: ObservableObject {
     @AppStorage("settings.updater.hiddenAppsData") private var hiddenAppsData: Data = Data()
     @AppStorage("settings.updater.ignoredAppsData") private var ignoredAppsData: Data = Data()
 
+    private var hasAutoScannedOnce = false
+
     private init() {
         // Migrate old hiddenApps data to new ignoredApps format on first launch
         migrateHiddenAppsIfNeeded()
+
+        // Subscribe to notification for automatic background scanning
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleAllAppsFullyLoaded),
+            name: NSNotification.Name("AllAppsFullyLoaded"),
+            object: nil
+        )
+    }
+
+    @objc private func handleAllAppsFullyLoaded() {
+        // Only run once per app session
+        guard !hasAutoScannedOnce else { return }
+        hasAutoScannedOnce = true
+
+        Task { @MainActor in
+            await scanForUpdates()
+        }
     }
 
     var hasUpdates: Bool {
         updatesBySource.values.contains { !$0.isEmpty } || !hiddenUpdates.isEmpty
+    }
+
+    var totalUpdateCount: Int {
+        updatesBySource
+            .filter { $0.key != .unsupported && $0.key != .current }
+            .values
+            .reduce(0) { $0 + $1.count }
     }
 
     /// Computed property for easy access to hidden apps mapping (bundleID -> source)
@@ -403,6 +430,7 @@ class UpdateManager: ObservableObject {
 
         // Clear task reference on completion
         currentScanTask = nil
+
     }
 
     /// Rebuild hidden apps list from storage for display in sidebar

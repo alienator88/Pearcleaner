@@ -10,7 +10,7 @@ import AlinFoundation
 
 struct UpdateDetailView: View {
     let appId: UUID
-    @StateObject private var updateManager = UpdateManager.shared
+    @EnvironmentObject var updateManager: UpdateManager
     @EnvironmentObject var brewManager: HomebrewManager
     @EnvironmentObject var appState: AppState
     @Environment(\.colorScheme) var colorScheme

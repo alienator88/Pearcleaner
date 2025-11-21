@@ -3,6 +3,7 @@
 - [x] NEW: Updater view has been completely redesigned to use the main page sidebar
 - [x] NEW: Adopt apps into homebrew from Updater page and also from FilesView sidebar options menu - #464
 - [x] NEW: Add category view option to Files view and Orphans view toolbar - #462
+- [x] App updates are checked during Pearcleaner launch, can be disabled in Settings > General to opt out and check for updates only when navigating to the Updater view. This allows to show a count of how many updates are available in the global toolbar menu.
 - [x] Merge ignore/skip functionality into one mechanism for Updater view
 - [x] Add homebrew catch when install/uninstall fail for some reason - #461
 - [x] Add Homebrew/Sparkle deduplication logic when auto_updates is enabled.

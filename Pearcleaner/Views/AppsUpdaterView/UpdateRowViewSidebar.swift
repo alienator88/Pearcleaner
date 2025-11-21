@@ -16,7 +16,7 @@ struct UpdateRowViewSidebar: View {
     @AppStorage("settings.general.glass") private var glass: Bool = true
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @State private var isHovered: Bool = false
-    @StateObject private var updateManager = UpdateManager.shared
+    @EnvironmentObject var updateManager: UpdateManager
 
     private var sourceColor: Color {
         switch app.source {

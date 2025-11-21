@@ -713,6 +713,16 @@
         }
       }
     },
+    "%@ (%lld)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ (%2$lld)"
+          }
+        }
+      }
+    },
     "%@ is already on the latest release available" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -41642,6 +41652,9 @@
           }
         }
       }
+    },
+    "Load app updates on startup" : {
+
     },
     "Load the service" : {
       "localizations" : {
@@ -90731,6 +90744,9 @@
           }
         }
       }
+    },
+    "When enabled, Pearcleaner will automatically scan for app updates in the background during launch. This way, updates are ready when you open the Updater view." : {
+
     },
     "When executing certain write actions, show an alert before proceeding." : {
       "localizations" : {
