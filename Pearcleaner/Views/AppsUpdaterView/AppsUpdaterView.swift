@@ -192,6 +192,7 @@ struct AppsUpdaterView: View {
                     updateSelectedApps()
                 } label: {
                     Label("Update All", systemImage: "arrow.down.circle")
+                        .badge(updateManager.totalUpdateCount)
                 }
                 .help("Update all available apps")
                 .disabled(allUpdateableApps.isEmpty || !updateManager.scanningSources.isEmpty)
