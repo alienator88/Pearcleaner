@@ -20,19 +20,48 @@ class UpdateManager: ObservableObject {
     @Published var scanningSources: Set<UpdateSource> = []
     @Published var currentScanTask: Task<Void, Never>?
 
-    @AppStorage("settings.updater.checkAppStore") private var checkAppStore: Bool = true
-    @AppStorage("settings.updater.checkHomebrew") private var checkHomebrew: Bool = true
-    @AppStorage("settings.updater.checkSparkle") private var checkSparkle: Bool = true
-    @AppStorage("settings.updater.includeSparklePreReleases") private var includeSparklePreReleases: Bool = false
-    @AppStorage("settings.updater.showAutoUpdatesInHomebrew") private var showAutoUpdatesInHomebrew: Bool = false
-    @AppStorage("settings.updater.showUnsupported") private var showUnsupported: Bool = true
+    // Consolidated settings (2 Data properties total)
+    @AppStorage("settings.updater.sources") private var sourcesData: Data = UpdaterSourcesSettings.defaultEncoded()
+    @AppStorage("settings.updater.display") private var displayData: Data = UpdaterDisplaySettings.defaultEncoded()
+
     @AppStorage("settings.updater.debugLogging") private var debugLogging: Bool = true
     @AppStorage("settings.updater.hiddenAppsData") private var hiddenAppsData: Data = Data()
     @AppStorage("settings.updater.ignoredAppsData") private var ignoredAppsData: Data = Data()
 
+    // Computed properties for convenient access to nested structs
+    private var sources: UpdaterSourcesSettings {
+        get {
+            UpdaterSourcesSettings.decode(from: sourcesData)
+        }
+        set {
+            sourcesData = newValue.encode()
+        }
+    }
+
+    private var display: UpdaterDisplaySettings {
+        get {
+            UpdaterDisplaySettings.decode(from: displayData)
+        }
+        set {
+            displayData = newValue.encode()
+        }
+    }
+
+    // Backward-compatible convenience properties
+    private var checkAppStore: Bool { sources.appStore.enabled }
+    private var checkHomebrew: Bool { sources.homebrew.enabled }
+    private var checkSparkle: Bool { sources.sparkle.enabled }
+    private var showAutoUpdatesInHomebrew: Bool { sources.homebrew.showAutoUpdates }
+    private var includeSparklePreReleases: Bool { sources.sparkle.includePreReleases }
+    private var showUnsupported: Bool { display.showUnsupported }
+    private var showCurrent: Bool { display.showCurrent }
+
     private var hasAutoScannedOnce = false
 
     private init() {
+        // Migrate old settings to new consolidated format
+        migrateSettingsIfNeeded()
+
         // Migrate old hiddenApps data to new ignoredApps format on first launch
         migrateHiddenAppsIfNeeded()
 
@@ -43,6 +72,47 @@ class UpdateManager: ObservableObject {
             name: NSNotification.Name("AllAppsFullyLoaded"),
             object: nil
         )
+    }
+
+    /// Migrate old individual settings to new consolidated structs (one-time migration)
+    private func migrateSettingsIfNeeded() {
+        // Check if migration already happened by seeing if new settings exist
+        if sourcesData.isEmpty {
+            // Read old settings from UserDefaults
+            let oldCheckAppStore = UserDefaults.standard.bool(forKey: "settings.updater.checkAppStore")
+            let oldCheckHomebrew = UserDefaults.standard.bool(forKey: "settings.updater.checkHomebrew")
+            let oldCheckSparkle = UserDefaults.standard.bool(forKey: "settings.updater.checkSparkle")
+            let oldShowAutoUpdates = UserDefaults.standard.bool(forKey: "settings.updater.showAutoUpdatesInHomebrew")
+            let oldIncludePreReleases = UserDefaults.standard.bool(forKey: "settings.updater.includeSparklePreReleases")
+
+            // Check if any old settings exist (they default to false if never set)
+            let hasOldSettings = UserDefaults.standard.object(forKey: "settings.updater.checkAppStore") != nil ||
+                                UserDefaults.standard.object(forKey: "settings.updater.checkHomebrew") != nil ||
+                                UserDefaults.standard.object(forKey: "settings.updater.checkSparkle") != nil
+
+            if hasOldSettings {
+                // Migrate to new format
+                var newSources = UpdaterSourcesSettings()
+                newSources.appStore.enabled = oldCheckAppStore
+                newSources.homebrew.enabled = oldCheckHomebrew
+                newSources.homebrew.showAutoUpdates = oldShowAutoUpdates
+                newSources.sparkle.enabled = oldCheckSparkle
+                newSources.sparkle.includePreReleases = oldIncludePreReleases
+
+                sources = newSources
+            }
+        }
+
+        if displayData.isEmpty {
+            // Read old showUnsupported setting
+            let oldShowUnsupported = UserDefaults.standard.bool(forKey: "settings.updater.showUnsupported")
+
+            if UserDefaults.standard.object(forKey: "settings.updater.showUnsupported") != nil {
+                var newDisplay = UpdaterDisplaySettings()
+                newDisplay.showUnsupported = oldShowUnsupported
+                display = newDisplay
+            }
+        }
     }
 
     @objc private func handleAllAppsFullyLoaded() {

@@ -13,11 +13,8 @@ import AlinFoundation
 // Main updater hidden sidebar view
 struct UpdaterDetailsSidebar: View {
     @Binding var hiddenSidebar: Bool
-    @Binding var checkAppStore: Bool
-    @Binding var checkHomebrew: Bool
-    @Binding var checkSparkle: Bool
-    @Binding var includeSparklePreReleases: Bool
-    @Binding var showUnsupported: Bool
+    @Binding var sources: UpdaterSourcesSettings
+    @Binding var display: UpdaterDisplaySettings
     @EnvironmentObject var updateManager: UpdateManager
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
@@ -29,11 +26,8 @@ struct UpdaterDetailsSidebar: View {
 
                 VStack(alignment: .leading, spacing: 14) {
                     UpdaterSourceCheckboxSection(
-                        checkAppStore: $checkAppStore,
-                        checkHomebrew: $checkHomebrew,
-                        checkSparkle: $checkSparkle,
-                        includeSparklePreReleases: $includeSparklePreReleases,
-                        showUnsupported: $showUnsupported
+                        sources: $sources,
+                        display: $display
                     )
                     Divider()
                     UpdaterHiddenAppsSection()
@@ -56,20 +50,15 @@ struct UpdaterDetailsSidebar: View {
 
 // Source checkboxes section component
 struct UpdaterSourceCheckboxSection: View {
-    @Binding var checkAppStore: Bool
-    @Binding var checkHomebrew: Bool
-    @Binding var checkSparkle: Bool
-    @Binding var includeSparklePreReleases: Bool
-    @Binding var showUnsupported: Bool
+    @Binding var sources: UpdaterSourcesSettings
+    @Binding var display: UpdaterDisplaySettings
     @EnvironmentObject var updateManager: UpdateManager
     @Environment(\.colorScheme) var colorScheme
-    @AppStorage("settings.updater.debugLogging") private var debugLogging: Bool = true
-    @AppStorage("settings.updater.showAutoUpdatesInHomebrew") private var showAutoUpdatesInHomebrew: Bool = false
     @State private var isResetting = false
     @State private var showResetConfirmation = false
 
     private var selectedSourcesCount: Int {
-        [checkAppStore, checkHomebrew, checkSparkle].filter { $0 }.count
+        [sources.appStore.enabled, sources.homebrew.enabled, sources.sparkle.enabled].filter { $0 }.count
     }
 
     var body: some View {
@@ -89,9 +78,9 @@ struct UpdaterSourceCheckboxSection: View {
             // App Store checkbox with reset button
             HStack(spacing: 8) {
                 Toggle(isOn: Binding(
-                    get: { checkAppStore },
+                    get: { sources.appStore.enabled },
                     set: { newValue in
-                        checkAppStore = newValue
+                        sources.appStore.enabled = newValue
                         if newValue {
                             Task { await updateManager.scanIfNeeded(sources: [.appStore]) }
                         } else {
@@ -148,9 +137,9 @@ struct UpdaterSourceCheckboxSection: View {
             // Homebrew checkbox with auto-updates toggle
             HStack(spacing: 8) {
                 Toggle(isOn: Binding(
-                    get: { checkHomebrew },
+                    get: { sources.homebrew.enabled },
                     set: { newValue in
-                        checkHomebrew = newValue
+                        sources.homebrew.enabled = newValue
                         if newValue {
                             Task { await updateManager.scanIfNeeded(sources: [.homebrew]) }
                         } else {
@@ -175,21 +164,21 @@ struct UpdaterSourceCheckboxSection: View {
 
                 // Auto-updates button
                 Button(action: {
-                    showAutoUpdatesInHomebrew.toggle()
+                    sources.homebrew.showAutoUpdates.toggle()
                     Task { await updateManager.scanIfNeeded(sources: [.homebrew]) }
                 }) {
                     Image(systemName: "arrow.triangle.2.circlepath")
-                        .foregroundStyle(showAutoUpdatesInHomebrew ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
+                        .foregroundStyle(sources.homebrew.showAutoUpdates ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
                 }
                 .buttonStyle(.plain)
-                .help(showAutoUpdatesInHomebrew ? "Hide auto-updating apps from Homebrew" : "Show auto-updating apps in Homebrew")
+                .help(sources.homebrew.showAutoUpdates ? "Hide auto-updating apps from Homebrew" : "Show auto-updating apps in Homebrew")
             }
 
             HStack(spacing: 8) {
                 Toggle(isOn: Binding(
-                    get: { checkSparkle },
+                    get: { sources.sparkle.enabled },
                     set: { newValue in
-                        checkSparkle = newValue
+                        sources.sparkle.enabled = newValue
                         if newValue {
                             Task { await updateManager.scanIfNeeded(sources: [.sparkle]) }
                         } else {
@@ -214,55 +203,30 @@ struct UpdaterSourceCheckboxSection: View {
 
                 // Pre-releases button
                 Button(action: {
-                    includeSparklePreReleases.toggle()
+                    sources.sparkle.includePreReleases.toggle()
                     Task { await updateManager.scanIfNeeded(sources: [.sparkle]) }
                 }) {
                     if #available(macOS 14.0, *) {
-                        Image(systemName: includeSparklePreReleases ? "flask.fill" : "flask")
-                            .foregroundStyle(includeSparklePreReleases ? .green : ThemeColors.shared(for: colorScheme).secondaryText)
+                        Image(systemName: sources.sparkle.includePreReleases ? "flask.fill" : "flask")
+                            .foregroundStyle(sources.sparkle.includePreReleases ? .green : ThemeColors.shared(for: colorScheme).secondaryText)
                     } else {
                         Image(systemName: "testtube.2")
-                            .foregroundStyle(includeSparklePreReleases ? .green : ThemeColors.shared(for: colorScheme).secondaryText)
+                            .foregroundStyle(sources.sparkle.includePreReleases ? .green : ThemeColors.shared(for: colorScheme).secondaryText)
                     }
                 }
                 .buttonStyle(.plain)
-                .help(includeSparklePreReleases ? "Disable pre-releases" : "Enable pre-releases")
+                .help(sources.sparkle.includePreReleases ? "Disable pre-releases" : "Enable pre-releases")
             }
 
             // Debug logging toggle
             Divider()
                 .padding(.vertical, 4)
 
-            Toggle(isOn: Binding(
-                get: { debugLogging },
-                set: { newValue in
-                    debugLogging = newValue
-                    if !newValue {
-                        UpdaterDebugLogger.shared.clearLogs()
-                    } else {
-                        Task { await updateManager.scanIfNeeded() }
-                    }
-                }
-            )) {
-                HStack(spacing: 6) {
-                    Image(systemName: "ladybug.fill")
-                        .foregroundStyle(.orange)
-                        .font(.caption)
-                        .frame(width: 16)
-
-                    Text("Debug Logging")
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                }
-            }
-            .toggleStyle(CircleCheckboxToggleStyle())
-            .help("Enable verbose logging and bundle cache flushing for troubleshooting")
-
             // Show unsupported apps toggle
             Toggle(isOn: Binding(
-                get: { showUnsupported },
+                get: { display.showUnsupported },
                 set: { newValue in
-                    showUnsupported = newValue
+                    display.showUnsupported = newValue
                 }
             )) {
                 HStack(spacing: 6) {
@@ -278,6 +242,27 @@ struct UpdaterSourceCheckboxSection: View {
             }
             .toggleStyle(CircleCheckboxToggleStyle())
             .help("Show apps without a supported update mechanism")
+
+            // Show current apps toggle
+            Toggle(isOn: Binding(
+                get: { display.showCurrent },
+                set: { newValue in
+                    display.showCurrent = newValue
+                }
+            )) {
+                HStack(spacing: 6) {
+                    Image(systemName: "checkmark.circle")
+                        .foregroundStyle(.green)
+                        .font(.caption)
+                        .frame(width: 16)
+
+                    Text("Show Current Apps")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                }
+            }
+            .toggleStyle(CircleCheckboxToggleStyle())
+            .help("Show apps that are already up-to-date")
         }
     }
 
@@ -546,13 +531,34 @@ struct UpdaterHiddenAppRow: View {
 // Footer component
 struct UpdaterHiddenSidebarFooter: View {
     @Environment(\.colorScheme) var colorScheme
+    @EnvironmentObject var updateManager: UpdateManager
+    @AppStorage("settings.updater.debugLogging") private var debugLogging: Bool = true
 
     var body: some View {
         HStack {
             Text("Click to dismiss")
                 .font(.caption)
                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
             Spacer()
+
+            Toggle(isOn: Binding(
+                get: { debugLogging },
+                set: { newValue in
+                    debugLogging = newValue
+                    if !newValue {
+                        UpdaterDebugLogger.shared.clearLogs()
+                    } else {
+                        Task { await updateManager.scanIfNeeded() }
+                    }
+                }
+            )) {
+                Text("Debug")
+                    .font(.caption)
+                    .foregroundStyle(.orange)
+            }
+            .toggleStyle(CircleCheckboxToggleStyle())
+            .help("Enable verbose logging and bundle cache flushing for troubleshooting")
         }
     }
 }

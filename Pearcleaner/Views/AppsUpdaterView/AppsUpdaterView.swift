@@ -19,26 +19,27 @@ struct AppsUpdaterView: View {
     @State private var selectedApp: UpdateableApp? = nil
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
-    @AppStorage("settings.updater.checkAppStore") private var checkAppStore: Bool = true
-    @AppStorage("settings.updater.checkHomebrew") private var checkHomebrew: Bool = true
-    @AppStorage("settings.updater.checkSparkle") private var checkSparkle: Bool = true
-    @AppStorage("settings.updater.includeSparklePreReleases") private var includeSparklePreReleases: Bool = false
-    @AppStorage("settings.updater.showUnsupported") private var showUnsupported: Bool = true
+    @AppStorage("settings.updater.sources") private var sourcesData: Data = UpdaterSourcesSettings.defaultEncoded()
+    @AppStorage("settings.updater.display") private var displayData: Data = UpdaterDisplaySettings.defaultEncoded()
     @AppStorage("settings.interface.startupView") private var startupView: Int = CurrentPage.applications.rawValue
 
-    private var totalUpdateCount: Int {
-        updateManager.updatesBySource
-            .filter { $0.key != .unsupported && $0.key != .current }
-            .values
-            .reduce(0) { $0 + $1.count }
+    // Computed properties for convenient access
+    private var sources: UpdaterSourcesSettings {
+        get {
+            UpdaterSourcesSettings.decode(from: sourcesData)
+        }
+        set {
+            sourcesData = newValue.encode()
+        }
     }
 
-    private var allSourcesDisabled: Bool {
-        !checkAppStore && !checkHomebrew && !checkSparkle
-    }
-
-    private var hasVisibleUpdates: Bool {
-        updateManager.updatesBySource.values.contains { !$0.isEmpty }
+    private var display: UpdaterDisplaySettings {
+        get {
+            UpdaterDisplaySettings.decode(from: displayData)
+        }
+        set {
+            displayData = newValue.encode()
+        }
     }
 
     // Collect all apps across all sources (exclude unsupported and current apps - they can't/don't need updates)
@@ -51,26 +52,25 @@ struct AppsUpdaterView: View {
         allApps.filter { $0.isSelectedForUpdate }.count
     }
 
-    // Check if any apps are selected
-    private var hasSelectedApps: Bool {
-        selectedAppsCount > 0
-    }
 
     // Sidebar categories
     private var sidebarCategories: [(String, (UpdateableApp) -> Bool, Bool, Bool)] {
         var cats: [(String, (UpdateableApp) -> Bool, Bool, Bool)] = []
-        if checkAppStore {
+        if sources.appStore.enabled {
             cats.append(("App Store", { $0.source == .appStore }, true, updateManager.scanningSources.contains(.appStore)))
         }
-        if checkHomebrew {
+        if sources.homebrew.enabled {
             cats.append(("Homebrew", { $0.source == .homebrew }, true, updateManager.scanningSources.contains(.homebrew)))
         }
-        if checkSparkle {
+        if sources.sparkle.enabled {
             cats.append(("Sparkle", { $0.source == .sparkle }, true, updateManager.scanningSources.contains(.sparkle)))
         }
-        // Always show Current category, show Unsupported if enabled (never scanning)
-        cats.append(("Current", { $0.source == .current }, false, false))
-        if showUnsupported {
+        // Show Current category if enabled
+        if display.showCurrent {
+            cats.append(("Current", { $0.source == .current }, false, false))
+        }
+        // Show Unsupported if enabled
+        if display.showUnsupported {
             cats.append(("Unsupported", { $0.source == .unsupported }, false, false))
         }
         return cats
@@ -79,36 +79,6 @@ struct AppsUpdaterView: View {
     // All updateable apps for sidebar
     private var allUpdateableApps: [UpdateableApp] {
         updateManager.updatesBySource.values.flatMap { $0 }
-    }
-
-    private var resultsCountBar: some View {
-        HStack(spacing: 12) {
-            // Update count
-            Text("\(totalUpdateCount) update\(totalUpdateCount == 1 ? "" : "s")")
-                .font(.caption)
-                .monospacedDigit()
-                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-
-            if updateManager.isScanning {
-                Text("Loading...")
-                    .font(.caption)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-            }
-
-            Spacer()
-
-            // Timeline - only show if we have a lastScanDate
-            if let lastScan = updateManager.lastScanDate {
-                TimelineView(.periodic(from: lastScan, by: 1.0)) { _ in
-                    Text("Updated \(formatRelativeTime(lastScan))")
-                        .font(.caption)
-                        .monospacedDigit()
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                }
-            }
-        }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 10)
     }
 
     var body: some View {
@@ -164,11 +134,18 @@ struct AppsUpdaterView: View {
 
             UpdaterDetailsSidebar(
                 hiddenSidebar: $hiddenSidebar,
-                checkAppStore: $checkAppStore,
-                checkHomebrew: $checkHomebrew,
-                checkSparkle: $checkSparkle,
-                includeSparklePreReleases: $includeSparklePreReleases,
-                showUnsupported: $showUnsupported
+                sources: Binding(
+                    get: { self.sources },
+                    set: { newValue in
+                        self.sourcesData = newValue.encode()
+                    }
+                ),
+                display: Binding(
+                    get: { self.display },
+                    set: { newValue in
+                        self.displayData = newValue.encode()
+                    }
+                )
             )
         }
         .animation(animationEnabled ? .spring(response: 0.35, dampingFraction: 0.8) : .none, value: hiddenSidebar)
@@ -274,7 +251,7 @@ struct AppsUpdaterView: View {
     private func selectAllApps() {
         // Select all apps across all sources (skip unsupported - they can't be updated)
         for (source, apps) in updateManager.updatesBySource {
-            guard source != .unsupported else { continue }
+            guard source != .unsupported || source != .current else { continue }
             var updatedApps = apps
             for index in updatedApps.indices {
                 updatedApps[index].isSelectedForUpdate = true
@@ -283,17 +260,17 @@ struct AppsUpdaterView: View {
         }
     }
 
-    private func deselectAllApps() {
-        // Deselect all apps across all sources (skip unsupported - they can't be updated)
-        for (source, apps) in updateManager.updatesBySource {
-            guard source != .unsupported else { continue }
-            var updatedApps = apps
-            for index in updatedApps.indices {
-                updatedApps[index].isSelectedForUpdate = false
-            }
-            updateManager.updatesBySource[source] = updatedApps
-        }
-    }
+//    private func deselectAllApps() {
+//        // Deselect all apps across all sources (skip unsupported - they can't be updated)
+//        for (source, apps) in updateManager.updatesBySource {
+//            guard source != .unsupported else { continue }
+//            var updatedApps = apps
+//            for index in updatedApps.indices {
+//                updatedApps[index].isSelectedForUpdate = false
+//            }
+//            updateManager.updatesBySource[source] = updatedApps
+//        }
+//    }
 
     private func updateSelectedApps() {
         GlobalConsoleManager.shared.appendOutput("Starting update of \(selectedAppsCount) selected app(s)...\n", source: CurrentPage.updater.title)
