@@ -197,7 +197,7 @@ struct FileCategoryView: View {
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
                 // File count
-                Text("(\(group.files.count))")
+                Text(verbatim: "(\(group.files.count))")
                     .font(.caption)
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
@@ -283,7 +283,7 @@ struct ZombieFileCategoryView: View {
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
                 // File count
-                Text("(\(group.files.count))")
+                Text(verbatim: "(\(group.files.count))")
                     .font(.caption)
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 

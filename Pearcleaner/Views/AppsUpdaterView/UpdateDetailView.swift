@@ -301,7 +301,7 @@ struct UpdateDetailView: View {
                             .font(.body)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                     } else {
-                        Text("N/A")
+                        Text(verbatim: "N/A")
                             .font(.body)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                     }
@@ -322,7 +322,7 @@ struct UpdateDetailView: View {
                         }
                         .buttonStyle(.plain)
                     } else {
-                        Text("N/A")
+                        Text(verbatim: "N/A")
                             .font(.body)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                     }
@@ -340,7 +340,7 @@ struct UpdateDetailView: View {
                             .font(.body)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                         if app.isIOSApp {
-                            Text("(iOS)")
+                            Text(verbatim: "(iOS)")
                                 .font(.caption)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                         }

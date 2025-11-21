@@ -261,7 +261,7 @@ struct CaskRowView: View {
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
                         if cask.displayName != cask.token {
-                            Text("(\(cask.token))")
+                            Text(verbatim: "(\(cask.token))")
                                 .font(.caption)
                                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                         }
