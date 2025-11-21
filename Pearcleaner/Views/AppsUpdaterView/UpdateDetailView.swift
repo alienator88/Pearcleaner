@@ -186,7 +186,7 @@ struct UpdateDetailView: View {
                             .opacity(isLoadingCasks ? 0.5 : 1.0)
                         }
                     }
-                    // Unsupported apps: Show Hide + Adopt (if not Homebrew)
+                    // Unsupported apps: Show Hide only (inline adoption UI handles cask adoption)
                     else if app.source == .unsupported {
                         Button("Hide") {
                             updateManager.hideApp(app, skipVersion: nil)
@@ -197,35 +197,6 @@ struct UpdateDetailView: View {
                         .background(ThemeColors.shared(for: colorScheme).secondaryBG)
                         .foregroundStyle(Color.red)
                         .clipShape(Capsule())
-
-                        // Adopt button (only for non-Homebrew apps) - hidden since inline view handles adoption
-                        if app.appInfo.cask == nil && app.source != .unsupported {
-                            Button {
-                                // Lazy loading: only load casks on first click
-                                if brewManager.allAvailableCasks.isEmpty {
-                                    isLoadingCasks = true
-                                    Task {
-                                        await brewManager.loadAvailablePackages(appState: appState)
-                                        await MainActor.run {
-                                            isLoadingCasks = false
-                                            showAdoptionSheet = true
-                                        }
-                                    }
-                                } else {
-                                    showAdoptionSheet = true
-                                }
-                            } label: {
-                                Text("Adopt")
-                            }
-                            .buttonStyle(.plain)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
-                            .background(ThemeColors.shared(for: colorScheme).secondaryBG)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-                            .clipShape(Capsule())
-                            .disabled(isLoadingCasks)
-                            .opacity(isLoadingCasks ? 0.5 : 1.0)
-                        }
                     }
                     // Apps with updates: Show Update + Skip [version] + Hide + Adopt
                     else {
@@ -263,8 +234,8 @@ struct UpdateDetailView: View {
                         .foregroundStyle(Color.red)
                         .clipShape(Capsule())
 
-                        // Adopt button for non-Homebrew apps
-                        if app.source != .homebrew {
+                        // Adopt button for non-Homebrew apps (only if not already managed by a cask)
+                        if app.source != .homebrew && app.appInfo.cask == nil {
                             Button {
                                 // Lazy loading: only load casks on first click
                                 if brewManager.allAvailableCasks.isEmpty {
