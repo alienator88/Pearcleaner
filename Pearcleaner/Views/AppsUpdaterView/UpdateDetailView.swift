@@ -817,7 +817,7 @@ struct UpdateDetailView: View {
     @ViewBuilder
     private func unsupportedContentView(for app: UpdateableApp) -> some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text("This application does not have a supported installer. You may try to adopt it into Homebrew below.")
+            Text("This application does not have a supported installer. You may try to adopt it into Homebrew if it exists in the Cask repo.")
                 .font(.body)
                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 .padding(.horizontal)
@@ -837,17 +837,59 @@ struct UpdateDetailView: View {
                 }
                 .frame(maxHeight: .infinity)
             } else {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 20) {
-                        CaskAdoptionContentView(
-                            matchingCasks: $matchingCasks,
-                            selectedCaskToken: $selectedCaskToken,
-                            manualEntry: $manualEntry,
-                            manualEntryValidation: $manualEntryValidation,
-                            adoptionError: $adoptionError,
-                            onManualEntryChange: validateManualEntry,
-                            limitCaskListHeight: false
-                        )
+                VStack(spacing: 0) {
+                    // Scrollable matching casks section
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 20) {
+                            CaskAdoptionContentView(
+                                matchingCasks: $matchingCasks,
+                                selectedCaskToken: $selectedCaskToken,
+                                manualEntry: $manualEntry,
+                                manualEntryValidation: $manualEntryValidation,
+                                adoptionError: $adoptionError,
+                                onManualEntryChange: validateManualEntry,
+                                limitCaskListHeight: false,
+                                showManualEntry: false
+                            )
+                        }
+                        .padding(.horizontal)
+                    }
+                    .scrollIndicators(scrollIndicators ? .visible : .hidden)
+
+                    // Bottom-pinned manual entry and button section
+                    VStack(alignment: .leading, spacing: 12) {
+//                        Divider()
+
+                        // Manual entry section
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Manual Entry")
+                                .font(.headline)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                            Text("If the correct cask isn't listed above, enter the cask token manually:")
+                                .font(.caption)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                            HStack(spacing: 8) {
+                                TextField("e.g., firefox", text: $manualEntry)
+                                    .textFieldStyle(.roundedBorder)
+                                    .onChange(of: manualEntry) { newValue in
+                                        validateManualEntry(newValue)
+                                    }
+
+                                if !manualEntry.isEmpty {
+                                    if let validation = manualEntryValidation {
+                                        Image(systemName: "checkmark.circle.fill")
+                                            .foregroundStyle(.green)
+                                            .help("Valid cask: \(validation.displayName)")
+                                    } else if manualEntry.count >= 2 {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .foregroundStyle(.red)
+                                            .help("Cask not found")
+                                    }
+                                }
+                            }
+                        }
 
                         // Adopt button
                         HStack {
@@ -859,9 +901,9 @@ struct UpdateDetailView: View {
                             .disabled(isAdopting || !canAdopt)
                         }
                     }
-                    .padding(.horizontal)
+                    .padding([.horizontal, .top])
+                    .background(ThemeColors.shared(for: colorScheme).primaryBG)
                 }
-                .scrollIndicators(scrollIndicators ? .visible : .hidden)
             }
         }
     }

@@ -281,11 +281,12 @@ struct CaskRowView: View {
                             Text("• Auto-updates")
                                 .font(.caption)
                                 .foregroundStyle(.green)
-                        } else if !cask.isVersionCompatible {
-                            Text("• Version mismatch")
-                                .font(.caption)
-                                .foregroundStyle(.orange)
                         }
+//                        else if !cask.isVersionCompatible {
+//                            Text("• Version mismatch")
+//                                .font(.caption)
+//                                .foregroundStyle(.orange)
+//                        }
                     }
 
                     // Description
@@ -311,12 +312,17 @@ struct CaskRowView: View {
                         .buttonStyle(.plain)
                     }
 
-                    // Match score (debug info)
-                    #if DEBUG
-                    Text("Match score: \(cask.matchScore)")
-                        .font(.caption2)
-                        .foregroundStyle(.gray)
-                    #endif
+                    // Match confidence indicator
+                    let confidence = matchConfidence(cask.matchScore)
+                    HStack(spacing: 2) {
+                        Text(confidence.label)
+                            .font(.caption)
+                            .foregroundStyle(confidence.color)
+                        Text("match confidence")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+
                 }
 
                 Spacer()
@@ -339,5 +345,11 @@ struct CaskRowView: View {
             )
         }
         .buttonStyle(.plain)
+    }
+
+    private func matchConfidence(_ score: Int) -> (label: String, color: Color) {
+        if score >= 80 { return ("High", .green) }
+        if score >= 30 { return ("Medium", .orange) }
+        return ("Low", .red)
     }
 }
