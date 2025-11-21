@@ -1015,7 +1015,7 @@ struct UpdateDetailView: View {
                 }
 
                 // Trigger update scan to recategorize the app
-                await UpdateManager.shared.scanForUpdates(forceReload: true)
+                await UpdateManager.shared.scanIfNeeded(forceReload: true)
             } catch {
                 await MainActor.run {
                     adoptionError = "Failed to adopt: \(error.localizedDescription)"

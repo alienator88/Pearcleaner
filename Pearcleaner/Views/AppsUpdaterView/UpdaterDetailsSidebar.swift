@@ -93,7 +93,7 @@ struct UpdaterSourceCheckboxSection: View {
                     set: { newValue in
                         checkAppStore = newValue
                         if newValue {
-                            Task { await updateManager.scanForUpdates() }
+                            Task { await updateManager.scanIfNeeded() }
                         }
                     }
                 )) {
@@ -150,7 +150,7 @@ struct UpdaterSourceCheckboxSection: View {
                     set: { newValue in
                         checkHomebrew = newValue
                         if newValue {
-                            Task { await updateManager.scanForUpdates() }
+                            Task { await updateManager.scanIfNeeded() }
                         }
                     }
                 )) {
@@ -172,7 +172,7 @@ struct UpdaterSourceCheckboxSection: View {
                 // Auto-updates button
                 Button(action: {
                     showAutoUpdatesInHomebrew.toggle()
-                    Task { await updateManager.scanForUpdates() }
+                    Task { await updateManager.scanIfNeeded() }
                 }) {
                     Image(systemName: "arrow.triangle.2.circlepath")
                         .foregroundStyle(showAutoUpdatesInHomebrew ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
@@ -187,7 +187,7 @@ struct UpdaterSourceCheckboxSection: View {
                     set: { newValue in
                         checkSparkle = newValue
                         if newValue {
-                            Task { await updateManager.scanForUpdates() }
+                            Task { await updateManager.scanIfNeeded() }
                         }
                     }
                 )) {
@@ -209,7 +209,7 @@ struct UpdaterSourceCheckboxSection: View {
                 // Pre-releases button
                 Button(action: {
                     includeSparklePreReleases.toggle()
-                    Task { await updateManager.scanForUpdates() }
+                    Task { await updateManager.scanIfNeeded() }
                 }) {
                     if #available(macOS 14.0, *) {
                         Image(systemName: includeSparklePreReleases ? "flask.fill" : "flask")
@@ -234,7 +234,7 @@ struct UpdaterSourceCheckboxSection: View {
                     if !newValue {
                         UpdaterDebugLogger.shared.clearLogs()
                     } else {
-                        Task { await updateManager.scanForUpdates() }
+                        Task { await updateManager.scanIfNeeded() }
                     }
                 }
             )) {
@@ -294,7 +294,7 @@ struct UpdaterSourceCheckboxSection: View {
                 // Optionally rescan for updates after reset
                 Task {
                     try? await Task.sleep(nanoseconds: 1_000_000_000) // Wait 1 second
-                    await updateManager.scanForUpdates(forceReload: true)
+                    await updateManager.scanIfNeeded(forceReload: true)
                 }
 
             case .failure(let error):

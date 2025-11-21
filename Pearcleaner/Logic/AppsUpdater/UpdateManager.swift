@@ -51,8 +51,25 @@ class UpdateManager: ObservableObject {
         hasAutoScannedOnce = true
 
         Task { @MainActor in
-            await scanForUpdates()
+            await scanIfNeeded()
         }
+    }
+
+    /// Public entry point for triggering scans. Prevents duplicate scans through centralized logic.
+    /// - Parameter forceReload: If true, bypasses cache and forces a fresh scan
+    func scanIfNeeded(forceReload: Bool = false) async {
+        // Prevent duplicate scans
+        guard !isScanning else { return }
+
+        // If forcing reload, always scan
+        if forceReload {
+            await scanForUpdates(forceReload: true)
+            return
+        }
+
+        // Otherwise, only scan if no data exists yet
+        guard lastScanDate == nil else { return }
+        await scanForUpdates()
     }
 
     var hasUpdates: Bool {

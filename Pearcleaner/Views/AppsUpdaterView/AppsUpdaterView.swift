@@ -176,7 +176,7 @@ struct AppsUpdaterView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("UpdaterViewShouldRefresh"))) { _ in
             Task {
-                let task = Task { await updateManager.scanForUpdates(forceReload: true) }
+                let task = Task { await updateManager.scanIfNeeded(forceReload: true) }
                 updateManager.currentScanTask = task
                 await task.value
             }
@@ -232,7 +232,7 @@ struct AppsUpdaterView: View {
                     Button {
                         GlobalConsoleManager.shared.appendOutput("Refreshing app updates...\n", source: CurrentPage.updater.title)
                         Task {
-                            let task = Task { await updateManager.scanForUpdates(forceReload: true) }
+                            let task = Task { await updateManager.scanIfNeeded(forceReload: true) }
                             updateManager.currentScanTask = task
                             await task.value
                             GlobalConsoleManager.shared.appendOutput("✓ Completed update scan\n", source: CurrentPage.updater.title)
@@ -261,7 +261,7 @@ struct AppsUpdaterView: View {
             }
 
             GlobalConsoleManager.shared.appendOutput("Loading app updates...\n", source: CurrentPage.updater.title)
-            let task = Task { await updateManager.scanForUpdates() }
+            let task = Task { await updateManager.scanIfNeeded() }
             updateManager.currentScanTask = task
             await task.value
             GlobalConsoleManager.shared.appendOutput("✓ Loaded app updates\n", source: CurrentPage.updater.title)
