@@ -56,14 +56,16 @@ class UpdateManager: ObservableObject {
     }
 
     /// Public entry point for triggering scans. Prevents duplicate scans through centralized logic.
-    /// - Parameter forceReload: If true, bypasses cache and forces a fresh scan
-    func scanIfNeeded(forceReload: Bool = false) async {
+    /// - Parameters:
+    ///   - forceReload: If true, bypasses cache and forces a fresh scan
+    ///   - sources: Optional set of specific sources to scan. If nil, scans all enabled sources.
+    func scanIfNeeded(forceReload: Bool = false, sources: Set<UpdateSource>? = nil) async {
         // Prevent duplicate scans
         guard !isScanning else { return }
 
-        // If forcing reload, always scan
-        if forceReload {
-            await scanForUpdates(forceReload: true)
+        // Trigger scan if forcing reload OR specific sources requested
+        if forceReload || sources != nil {
+            await scanForUpdates(forceReload: forceReload, sources: sources)
             return
         }
 
@@ -259,17 +261,34 @@ class UpdateManager: ObservableObject {
         updatesBySource[app.source] = apps
     }
 
-    func scanForUpdates(forceReload: Bool = false) async {
+    func scanForUpdates(forceReload: Bool = false, sources: Set<UpdateSource>? = nil) async {
         isScanning = true
         defer { isScanning = false }
 
-        // Clear previous results and mark all enabled sources as scanning
-        updatesBySource = [:]
-        hiddenUpdates = []  // Clear to prevent stale entries (will be rebuilt from persistent storage)
-        scanningSources = []
-        if checkAppStore { scanningSources.insert(.appStore) }
-        if checkHomebrew { scanningSources.insert(.homebrew) }
-        if checkSparkle { scanningSources.insert(.sparkle) }
+        // Determine which sources to scan
+        var sourcesToScan: Set<UpdateSource>
+        if let sources = sources {
+            // Selective scan - only scan specified sources
+            sourcesToScan = sources
+
+            // Only clear specified sources from updatesBySource (preserve others)
+            for source in sources {
+                updatesBySource[source] = nil
+            }
+            // Don't clear hiddenUpdates - will be rebuilt at end
+        } else {
+            // Full scan - scan all enabled sources (current behavior)
+            sourcesToScan = []
+            if checkAppStore { sourcesToScan.insert(.appStore) }
+            if checkHomebrew { sourcesToScan.insert(.homebrew) }
+            if checkSparkle { sourcesToScan.insert(.sparkle) }
+
+            // Clear all results
+            updatesBySource = [:]
+            hiddenUpdates = []  // Clear to prevent stale entries (will be rebuilt from persistent storage)
+        }
+
+        scanningSources = sourcesToScan
 
         // Only flush caches and reload apps if explicitly requested or debug mode enabled
         // This significantly improves performance for regular update checks
@@ -299,14 +318,14 @@ class UpdateManager: ObservableObject {
 
         // Launch concurrent scans with progressive updates
         await withTaskGroup(of: (UpdateSource, [UpdateableApp]).self) { group in
-            if checkHomebrew {
+            if sourcesToScan.contains(.homebrew) {
                 group.addTask {
                     let results = await HomebrewUpdateChecker.checkForUpdates(apps: visibleApps, includeFormulae: false, showAutoUpdatesInHomebrew: self.showAutoUpdatesInHomebrew)
                     return (.homebrew, results)
                 }
             }
 
-            if checkAppStore {
+            if sourcesToScan.contains(.appStore) {
                 group.addTask {
                     // Use pre-categorized flag (instant check vs expensive receipt verification)
                     let appStoreApps = visibleApps.filter { $0.isAppStore }
@@ -315,7 +334,7 @@ class UpdateManager: ObservableObject {
                 }
             }
 
-            if checkSparkle {
+            if sourcesToScan.contains(.sparkle) {
                 group.addTask {
                     // Show all apps with Sparkle, regardless of other update sources
                     // This allows users to see version differences across App Store/Homebrew/Sparkle
