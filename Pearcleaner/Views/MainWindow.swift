@@ -222,7 +222,7 @@ struct MainWindow: View {
                                     Image(systemName: page.icon)
                                         .frame(width: 16)
                                     if loadUpdatesOnStartup || updateManager.totalUpdateCount > 0 {
-                                        Text("\(page.title) (\(updateManager.totalUpdateCount))")
+                                        Text(verbatim: "\(page.title) (\(updateManager.totalUpdateCount))")
                                     } else {
                                         Text(page.title)
                                     }
