@@ -147,6 +147,7 @@ class SparkleUpdateChecker {
 
         return nil
     }
+
 }
 
 // MARK: - SPUUpdater Operation

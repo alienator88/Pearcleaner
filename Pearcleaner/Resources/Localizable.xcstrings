@@ -9407,6 +9407,9 @@
         }
       }
     },
+    "App is up to date" : {
+
+    },
     "App Lipo" : {
       "comment" : "Lipo alert title",
       "localizations" : {

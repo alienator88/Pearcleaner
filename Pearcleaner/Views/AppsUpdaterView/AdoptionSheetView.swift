@@ -81,8 +81,8 @@ struct AdoptionSheetView: View {
                                                     manualEntryValidation = nil
                                                 }
                                             )
-                                            .disabled(!cask.isVersionCompatible)
-                                            .opacity(cask.isVersionCompatible ? 1.0 : 0.5)
+//                                            .disabled(!cask.isVersionCompatible)
+//                                            .opacity(cask.isVersionCompatible ? 1.0 : 0.5)
                                         }
                                     }
                                 }

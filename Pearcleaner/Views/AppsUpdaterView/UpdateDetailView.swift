@@ -273,6 +273,21 @@ struct UpdateDetailView: View {
             if app.source == .unsupported {
                 unsupportedContentView(for: app)
             }
+            // Current apps: Show simple "up to date" message
+            else if app.source == .current {
+                VStack {
+                    Spacer()
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 48))
+                        .foregroundStyle(.green)
+                    Text("App is up to date")
+                        .font(.title2)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                        .padding(.top, 8)
+                    Spacer()
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
             // All other apps: Show normal info and release notes
             else {
                 // Info section (SOURCE, RELEASED, CHECKED)
@@ -338,24 +353,6 @@ struct UpdateDetailView: View {
             Divider()
 
             VStack(alignment: .leading, spacing: 16) {
-//                    Text("What's New")
-//                        .font(.title2)
-//                        .fontWeight(.bold)
-//                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-
-                // Release title
-//                    if let title = app.releaseTitle {
-//                        Text(title)
-//                            .font(.headline)
-//                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-//                    }
-
-                // Release date
-//                    if let date = app.releaseDate {
-//                        Text("Released: \(formatDate(date))")
-//                            .font(.subheadline)
-//                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-//                    }
 
                 // Release description (HTML formatted) - scrollable section
                 // Priority 1: Fetched external notes, Priority 2: Inline description
@@ -508,6 +505,14 @@ struct UpdateDetailView: View {
     }
 
     private func buildVersionText(for app: UpdateableApp, colorScheme: ColorScheme) -> Text {
+        // Current apps: Show only installed version (no arrow)
+        if app.source == .current {
+            if app.source == .sparkle, let installedBuild = app.appInfo.appBuildNumber {
+                return Text(verbatim: "\(app.appInfo.appVersion) (\(installedBuild))")
+            }
+            return Text(verbatim: app.appInfo.appVersion)
+        }
+
         guard let availableVersion = app.availableVersion else {
             if app.source == .sparkle, let installedBuild = app.appInfo.appBuildNumber {
                 return Text(verbatim: "\(app.appInfo.appVersion) (\(installedBuild))")
@@ -834,8 +839,7 @@ struct UpdateDetailView: View {
                                                 manualEntryValidation = nil
                                             }
                                         )
-                                        .disabled(!cask.isVersionCompatible)
-                                        .opacity(cask.isVersionCompatible ? 1.0 : 0.5)
+                                        
                                     }
                                 }
                             }
