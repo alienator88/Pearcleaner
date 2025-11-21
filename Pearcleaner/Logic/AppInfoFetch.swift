@@ -722,6 +722,9 @@ private func getEntitlements(for appPath: String) -> [String]? {
             // Note: Path-based entitlements (like temporary-exception.files paths) are not extracted
             // as they cause false positives by matching generic folder names like "Desktop", "Documents"
 
+            // Skip generic binary names that could cause false positives
+            let excludedNames = ["crashhandler", "crash handler", "electron"]
+
             // Scan Contents/MacOS folder for binary names
             // App binaries often leave behind files/folders matching their names
             let macosPath = URL(fileURLWithPath: appPath).appendingPathComponent("Contents/MacOS")
@@ -729,8 +732,9 @@ private func getEntitlements(for appPath: String) -> [String]? {
                 do {
                     let files = try FileManager.default.contentsOfDirectory(atPath: macosPath.path)
                     for file in files where !file.hasPrefix(".") {
-                        // Add binary name if not already present and length >= 5 to avoid false matches
-                        if !results.contains(file) && file.count >= 5 {
+                        let fileNameLower = file.lowercased()
+                        // Add binary name if not already present, length >= 5, and not excluded
+                        if !results.contains(file) && file.count >= 5 && !excludedNames.contains(fileNameLower) {
                             results.append(file)
                         }
                     }
@@ -751,8 +755,6 @@ private func getEntitlements(for appPath: String) -> [String]? {
                             for bundle in bundles where bundle.pathExtension == "app" {
                                 // Add bundle name (without .app extension)
                                 let bundleName = bundle.deletingPathExtension().lastPathComponent
-                                // Skip generic names that could cause false positives
-                                let excludedNames = ["crashhandler", "crash handler"]
                                 let bundleNameLower = bundleName.lowercased()
                                 if !results.contains(bundleName) && bundleName.count >= 5 && !excludedNames.contains(bundleNameLower) {
                                     results.append(bundleName)
