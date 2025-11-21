@@ -1,7 +1,7 @@
 blank_issues_enabled: false
 contact_links:
   # - name: 🚀 Feature Request
-  #   url: https://github.com/fastlane/fastlane/discussions/new?category_id=13617532
+  #   url: https://github.com/alienator88/Pearcleaner/discussions/new?category=general
   #   about: Share ideas for new features
   - name: ❓ Ask a Question
     url: https://github.com/alienator88/Pearcleaner/discussions/new?category=general
