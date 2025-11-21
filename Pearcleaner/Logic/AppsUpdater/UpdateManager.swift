@@ -332,8 +332,13 @@ class UpdateManager: ObservableObject {
     }
 
     func scanForUpdates(forceReload: Bool = false, sources: Set<UpdateSource>? = nil) async {
+        // Double-check to prevent race condition where multiple scans pass the guard
+        guard !isScanning else { return }
         isScanning = true
-        defer { isScanning = false }
+        defer {
+            isScanning = false
+            scanningSources.removeAll()  // Always clear scanning state on exit
+        }
 
         // Determine which sources to scan
         var sourcesToScan: Set<UpdateSource>
@@ -420,6 +425,10 @@ class UpdateManager: ObservableObject {
             for await (source, apps) in group {
                 // Check for cancellation between source results
                 if Task.isCancelled {
+                    // Still process results with empty arrays to trigger cleanup
+                    for source in scanningSources {
+                        await processSourceResults(source: source, apps: [])
+                    }
                     break
                 }
                 await processSourceResults(source: source, apps: apps)

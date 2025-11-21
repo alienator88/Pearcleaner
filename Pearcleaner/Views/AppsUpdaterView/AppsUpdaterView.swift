@@ -91,7 +91,7 @@ struct AppsUpdaterView: View {
                     emptyMessage: "No apps to update",
                     noResultsMessage: "No matching apps",
                     isLoading: updateManager.isScanning,
-                    loadingMessage: "Scanning for updates..."
+                    loadingMessage: "Loading.."
                 ) { app in
                     UpdateRowViewSidebar(
                         app: app,
