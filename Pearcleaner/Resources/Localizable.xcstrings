@@ -76420,7 +76420,7 @@
         }
       }
     },
-    "This application does not have a supported installer." : {
+    "This application does not have a supported installer. You may try to adopt it into Homebrew below." : {
 
     },
     "This is a web app" : {

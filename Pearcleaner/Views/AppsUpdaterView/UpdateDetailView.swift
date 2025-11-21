@@ -145,7 +145,7 @@ struct UpdateDetailView: View {
 
                 // Action buttons in header
                 HStack(spacing: 8) {
-                    // Current apps: Only show Hide button
+                    // Current apps: Show Hide + Adopt (if not Homebrew)
                     if app.source == .current {
                         Button("Hide") {
                             updateManager.hideApp(app, skipVersion: nil)
@@ -156,6 +156,35 @@ struct UpdateDetailView: View {
                         .background(ThemeColors.shared(for: colorScheme).secondaryBG)
                         .foregroundStyle(Color.red)
                         .clipShape(Capsule())
+
+                        // Adopt button for non-Homebrew current apps
+                        if app.appInfo.cask == nil {
+                            Button {
+                                // Lazy loading: only load casks on first click
+                                if brewManager.allAvailableCasks.isEmpty {
+                                    isLoadingCasks = true
+                                    Task {
+                                        await brewManager.loadAvailablePackages(appState: appState)
+                                        await MainActor.run {
+                                            isLoadingCasks = false
+                                            showAdoptionSheet = true
+                                        }
+                                    }
+                                } else {
+                                    showAdoptionSheet = true
+                                }
+                            } label: {
+                                Text("Adopt")
+                            }
+                            .buttonStyle(.plain)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            .background(ThemeColors.shared(for: colorScheme).secondaryBG)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                            .clipShape(Capsule())
+                            .disabled(isLoadingCasks)
+                            .opacity(isLoadingCasks ? 0.5 : 1.0)
+                        }
                     }
                     // Unsupported apps: Show Hide + Adopt (if not Homebrew)
                     else if app.source == .unsupported {
@@ -169,8 +198,8 @@ struct UpdateDetailView: View {
                         .foregroundStyle(Color.red)
                         .clipShape(Capsule())
 
-                        // Adopt button (only for non-Homebrew apps)
-                        if app.appInfo.cask == nil {
+                        // Adopt button (only for non-Homebrew apps) - hidden since inline view handles adoption
+                        if app.appInfo.cask == nil && app.source != .unsupported {
                             Button {
                                 // Lazy loading: only load casks on first click
                                 if brewManager.allAvailableCasks.isEmpty {
@@ -429,6 +458,30 @@ struct UpdateDetailView: View {
             // Load casks for unsupported apps
             if app.source == .unsupported {
                 loadCasksForAdoption()
+            }
+        }
+        .onChange(of: appId) { newAppId in
+            // Clear cask search state when switching apps
+            matchingCasks = []
+            selectedCaskToken = nil
+            manualEntry = ""
+            manualEntryValidation = nil
+            isAdopting = false
+            adoptionError = nil
+            isSearchingCasks = false
+
+            // Re-trigger cask search for new unsupported app
+            // Use Task to allow SwiftUI to update with new app first
+            Task {
+                // Look up the new app directly from updateManager
+                if let newApp = updateManager.updatesBySource.values
+                    .flatMap({ $0 })
+                    .first(where: { $0.id == newAppId }),
+                   newApp.source == .unsupported {
+                    await MainActor.run {
+                        searchForMatchingCasks(for: newApp)
+                    }
+                }
             }
         }
     }
@@ -793,7 +846,7 @@ struct UpdateDetailView: View {
     @ViewBuilder
     private func unsupportedContentView(for app: UpdateableApp) -> some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text("This application does not have a supported installer.")
+            Text("This application does not have a supported installer. You may try to adopt it into Homebrew below.")
                 .font(.body)
                 .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 .padding(.horizontal)
