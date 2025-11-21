@@ -868,66 +868,15 @@ struct UpdateDetailView: View {
             } else {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
-                        // Matching casks section
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Matching Casks")
-                                .font(.headline)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-
-                            if matchingCasks.isEmpty {
-                                Text("No matching casks found. Try manual entry below.")
-                                    .font(.body)
-                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                                    .italic()
-                                    .padding(.vertical, 8)
-                            } else {
-                                VStack(spacing: 8) {
-                                    ForEach(matchingCasks) { cask in
-                                        CaskRowView(
-                                            cask: cask,
-                                            isSelected: selectedCaskToken == cask.token,
-                                            onSelect: {
-                                                selectedCaskToken = cask.token
-                                                manualEntry = ""
-                                                manualEntryValidation = nil
-                                            }
-                                        )
-                                        
-                                    }
-                                }
-                            }
-                        }
-
-                        // Manual entry section
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Manual Entry")
-                                .font(.headline)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-
-                            Text("If the correct cask isn't listed above, enter the cask token manually:")
-                                .font(.caption)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-
-                            HStack(spacing: 8) {
-                                TextField("e.g., firefox", text: $manualEntry)
-                                    .textFieldStyle(.roundedBorder)
-                                    .onChange(of: manualEntry) { newValue in
-                                        validateManualEntry(newValue)
-                                    }
-
-                                if !manualEntry.isEmpty {
-                                    if let validation = manualEntryValidation {
-                                        Image(systemName: "checkmark.circle.fill")
-                                            .foregroundStyle(.green)
-                                            .help("Valid cask: \(validation.displayName)")
-                                    } else if manualEntry.count >= 2 {
-                                        Image(systemName: "xmark.circle.fill")
-                                            .foregroundStyle(.red)
-                                            .help("Cask not found")
-                                    }
-                                }
-                            }
-                        }
+                        CaskAdoptionContentView(
+                            matchingCasks: $matchingCasks,
+                            selectedCaskToken: $selectedCaskToken,
+                            manualEntry: $manualEntry,
+                            manualEntryValidation: $manualEntryValidation,
+                            adoptionError: $adoptionError,
+                            onManualEntryChange: validateManualEntry,
+                            limitCaskListHeight: false
+                        )
 
                         // Adopt button
                         HStack {
@@ -937,18 +886,6 @@ struct UpdateDetailView: View {
                             }
                             .buttonStyle(.borderedProminent)
                             .disabled(isAdopting || !canAdopt)
-                        }
-
-                        // Error message
-                        if let error = adoptionError {
-                            HStack(spacing: 8) {
-                                Image(systemName: "exclamationmark.triangle.fill")
-                                    .foregroundStyle(.red)
-                                Text(error)
-                                    .font(.caption)
-                                    .foregroundStyle(.red)
-                            }
-                            .padding(.vertical, 8)
                         }
                     }
                     .padding(.horizontal)
