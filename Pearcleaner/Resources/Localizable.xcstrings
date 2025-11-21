@@ -8309,6 +8309,7 @@
       }
     },
     "All apps are hidden" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -8544,6 +8545,9 @@
           }
         }
       }
+    },
+    "All updates are hidden" : {
+
     },
     "All valid package files from the BOM list have been removed. You may Forget this package." : {
       "localizations" : {
@@ -15164,6 +15168,9 @@
         }
       }
     },
+    "Categories" : {
+
+    },
     "Category: %@" : {
       "localizations" : {
         "de" : {
@@ -19541,6 +19548,9 @@
           }
         }
       }
+    },
+    "Current" : {
+
     },
     "Custom Sensitivity" : {
       "localizations" : {
@@ -34203,6 +34213,7 @@
       }
     },
     "Hidden Apps" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -47441,6 +47452,7 @@
       }
     },
     "No hidden apps" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -47557,6 +47569,9 @@
           }
         }
       }
+    },
+    "No hidden updates" : {
+
     },
     "No issues detected" : {
       "localizations" : {
@@ -70851,9 +70866,6 @@
         }
       }
     },
-    "Show Current Apps" : {
-
-    },
     "Show file details" : {
       "localizations" : {
         "de" : {
@@ -71681,6 +71693,7 @@
       }
     },
     "Show Unsupported Apps" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -74048,6 +74061,7 @@
       }
     },
     "Sources" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

@@ -57,23 +57,13 @@ struct UpdaterSourceCheckboxSection: View {
     @State private var isResetting = false
     @State private var showResetConfirmation = false
 
-    private var selectedSourcesCount: Int {
-        [sources.appStore.enabled, sources.homebrew.enabled, sources.sparkle.enabled].filter { $0 }.count
-    }
-
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             // Header
-            HStack(spacing: 8) {
-                Text("Sources")
-                    .font(.headline)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-
-                Text(verbatim: "(\(selectedSourcesCount))")
-                    .font(.headline)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-            }
+            Text("Categories")
+                .font(.headline)
+                .fontWeight(.semibold)
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
             // App Store checkbox with reset button
             HStack(spacing: 8) {
@@ -167,7 +157,7 @@ struct UpdaterSourceCheckboxSection: View {
                     sources.homebrew.showAutoUpdates.toggle()
                     Task { await updateManager.scanIfNeeded(sources: [.homebrew]) }
                 }) {
-                    Image(systemName: "arrow.triangle.2.circlepath")
+                    Image(systemName: "square.and.arrow.up")
                         .foregroundStyle(sources.homebrew.showAutoUpdates ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
                 }
                 .buttonStyle(.plain)
@@ -203,8 +193,16 @@ struct UpdaterSourceCheckboxSection: View {
 
                 // Pre-releases button
                 Button(action: {
+//                    let wasEnabled = sources.sparkle.includePreReleases
                     sources.sparkle.includePreReleases.toggle()
-                    Task { await updateManager.scanIfNeeded(sources: [.sparkle]) }
+
+                    if sources.sparkle.includePreReleases {
+                        // Enabling - rescan to find pre-releases
+                        Task { await updateManager.scanIfNeeded(sources: [.sparkle]) }
+                    } else {
+                        // Disabling - filter existing data without rescanning
+                        updateManager.removePreReleaseApps(from: .sparkle)
+                    }
                 }) {
                     if #available(macOS 14.0, *) {
                         Image(systemName: sources.sparkle.includePreReleases ? "flask.fill" : "flask")
@@ -218,24 +216,41 @@ struct UpdaterSourceCheckboxSection: View {
                 .help(sources.sparkle.includePreReleases ? "Disable pre-releases" : "Enable pre-releases")
             }
 
-            // Debug logging toggle
-            Divider()
-                .padding(.vertical, 4)
+            // Current apps toggle
+            Toggle(isOn: Binding(
+                get: { display.showCurrent },
+                set: { newValue in
+                    display.showCurrent = newValue
+                }
+            )) {
+                HStack(spacing: 8) {
+                    Image(systemName: "checkmark.circle")
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        .font(.caption)
+                        .frame(width: 16)
 
-            // Show unsupported apps toggle
+                    Text("Current")
+                        .font(.caption)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                }
+            }
+            .toggleStyle(CircleCheckboxToggleStyle())
+            .help("Show apps that are already up-to-date")
+
+            // Unsupported apps toggle
             Toggle(isOn: Binding(
                 get: { display.showUnsupported },
                 set: { newValue in
                     display.showUnsupported = newValue
                 }
             )) {
-                HStack(spacing: 6) {
+                HStack(spacing: 8) {
                     Image(systemName: "questionmark.circle")
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                         .font(.caption)
                         .frame(width: 16)
 
-                    Text("Show Unsupported Apps")
+                    Text("Unsupported")
                         .font(.caption)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
@@ -243,26 +258,7 @@ struct UpdaterSourceCheckboxSection: View {
             .toggleStyle(CircleCheckboxToggleStyle())
             .help("Show apps without a supported update mechanism")
 
-            // Show current apps toggle
-            Toggle(isOn: Binding(
-                get: { display.showCurrent },
-                set: { newValue in
-                    display.showCurrent = newValue
-                }
-            )) {
-                HStack(spacing: 6) {
-                    Image(systemName: "checkmark.circle")
-                        .foregroundStyle(.green)
-                        .font(.caption)
-                        .frame(width: 16)
 
-                    Text("Show Current Apps")
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                }
-            }
-            .toggleStyle(CircleCheckboxToggleStyle())
-            .help("Show apps that are already up-to-date")
         }
     }
 
@@ -328,7 +324,7 @@ struct UpdaterHiddenAppsSection: View {
         VStack(alignment: .leading, spacing: 8) {
             // Header with count and plus button
             HStack(spacing: 8) {
-                Text("Hidden Apps")
+                Text("Hidden")
                     .font(.headline)
                     .fontWeight(.semibold)
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
@@ -341,7 +337,7 @@ struct UpdaterHiddenAppsSection: View {
 
                 Menu {
                     if availableApps.isEmpty {
-                        Text("All apps are hidden")
+                        Text("All updates are hidden")
                             .disabled(true)
                     } else {
                         ForEach(availableApps, id: \.bundleIdentifier) { app in
@@ -371,7 +367,7 @@ struct UpdaterHiddenAppsSection: View {
 
             // List of hidden apps
             if updateManager.hiddenUpdates.isEmpty {
-                Text("No hidden apps")
+                Text("No hidden updates")
                     .font(.caption)
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
                     .italic()

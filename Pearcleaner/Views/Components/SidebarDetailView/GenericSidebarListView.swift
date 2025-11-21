@@ -274,7 +274,7 @@ struct GenericSectionView<Item: Identifiable & Hashable, Content: View>: View {
                         .scaleEffect(0.7)
                 }
             }
-            .padding(.leading, 5)
+            .padding(.horizontal, 5)
             .onTapGesture {
                 withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
                     toggleCategory()

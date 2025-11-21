@@ -642,6 +642,18 @@ class UpdateManager: ObservableObject {
         scanningSources.removeAll()  // Clear scanning state for all sources
     }
 
+    /// Remove pre-release apps from a specific source without rescanning
+    /// This is more efficient than rescanning when toggling off pre-releases
+    func removePreReleaseApps(from source: UpdateSource) {
+        guard var apps = updatesBySource[source] else { return }
+
+        // Filter out pre-release apps
+        apps = apps.filter { !$0.isPreRelease }
+
+        // Update the source with filtered apps
+        updatesBySource[source] = apps
+    }
+
     func updateApp(_ app: UpdateableApp) async {
         switch app.source {
         case .homebrew:
