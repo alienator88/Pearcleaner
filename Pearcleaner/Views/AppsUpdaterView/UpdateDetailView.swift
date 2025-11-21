@@ -18,6 +18,15 @@ struct UpdateDetailView: View {
     @State private var showAdoptionSheet: Bool = false
     @State private var isLoadingCasks: Bool = false
 
+    // Inline adoption state for unsupported apps
+    @State private var matchingCasks: [AdoptableCask] = []
+    @State private var selectedCaskToken: String? = nil
+    @State private var manualEntry: String = ""
+    @State private var manualEntryValidation: AdoptableCask? = nil
+    @State private var isAdopting: Bool = false
+    @State private var adoptionError: String? = nil
+    @State private var isSearchingCasks: Bool = false
+
     // Look up live app data from updateManager - this makes the view reactive to status changes
     private var app: UpdateableApp? {
         updateManager.updatesBySource.values
@@ -81,14 +90,51 @@ struct UpdateDetailView: View {
                     }
 
                     VStack(alignment: .leading, spacing: 8) {
-                        Text(app.appInfo.appName)
-                            .font(.title)
-                            .fontWeight(.bold)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                        HStack(spacing: 8) {
+                            Text(app.appInfo.appName)
+                                .font(.title)
+                                .fontWeight(.bold)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                            // Pre-release indicator (Sparkle only)
+                            if app.source == .sparkle && app.isPreRelease {
+                                if #available(macOS 14.0, *) {
+                                    Image(systemName: "flask.fill")
+                                        .font(.title3)
+                                        .foregroundStyle(.green)
+                                        .help("Pre-release")
+                                } else {
+                                    Image(systemName: "testtube.2")
+                                        .font(.title3)
+                                        .foregroundStyle(.green)
+                                        .help("Pre-release")
+                                }
+                            }
+
+                            // App Store button (App Store only)
+                            if app.source == .appStore, let appStoreURL = app.appStoreURL {
+                                Button {
+                                    openInAppStore(urlString: appStoreURL)
+                                } label: {
+                                    Image(systemName: ifOSBelow(macOS: 14) ? "cart.fill" : "storefront.fill")
+                                        .font(.title3)
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                                }
+                                .buttonStyle(.plain)
+                                .help("View in App Store")
+                            }
+                        }
 
                         // Version info with build numbers
                         buildVersionText(for: app, colorScheme: colorScheme)
                             .font(.title3)
+
+                        // Non-primary region warning
+                        if isNonPrimaryRegion, let region = app.foundInRegion {
+                            Text("Found in \(region) App Store. Open in App Store to update.")
+                                .font(.caption)
+                                .foregroundStyle(.orange)
+                        }
                     }
 
                     Spacer()
@@ -99,14 +145,75 @@ struct UpdateDetailView: View {
 
                 // Action buttons in header
                 HStack(spacing: 8) {
-                    if app.source != .unsupported {
-                        actionButton(for: app)
+                    // Current apps: Only show Hide button
+                    if app.source == .current {
+                        Button("Hide") {
+                            updateManager.hideApp(app, skipVersion: nil)
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
+                        .background(ThemeColors.shared(for: colorScheme).secondaryBG)
+                        .foregroundStyle(Color.red)
+                        .clipShape(Capsule())
                     }
+                    // Unsupported apps: Show Hide + Adopt (if not Homebrew)
+                    else if app.source == .unsupported {
+                        Button("Hide") {
+                            updateManager.hideApp(app, skipVersion: nil)
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
+                        .background(ThemeColors.shared(for: colorScheme).secondaryBG)
+                        .foregroundStyle(Color.red)
+                        .clipShape(Capsule())
 
-                    if app.source != .unsupported {
-                        Button("Skip Version") {
+                        // Adopt button (only for non-Homebrew apps)
+                        if app.appInfo.cask == nil {
+                            Button {
+                                // Lazy loading: only load casks on first click
+                                if brewManager.allAvailableCasks.isEmpty {
+                                    isLoadingCasks = true
+                                    Task {
+                                        await brewManager.loadAvailablePackages(appState: appState)
+                                        await MainActor.run {
+                                            isLoadingCasks = false
+                                            showAdoptionSheet = true
+                                        }
+                                    }
+                                } else {
+                                    showAdoptionSheet = true
+                                }
+                            } label: {
+                                Text("Adopt")
+                            }
+                            .buttonStyle(.plain)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            .background(ThemeColors.shared(for: colorScheme).secondaryBG)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                            .clipShape(Capsule())
+                            .disabled(isLoadingCasks)
+                            .opacity(isLoadingCasks ? 0.5 : 1.0)
+                        }
+                    }
+                    // Apps with updates: Show Update + Skip [version] + Hide + Adopt
+                    else {
+                        actionButton(for: app)
+
+                        Button {
                             if let availableVersion = app.availableVersion {
                                 updateManager.hideApp(app, skipVersion: availableVersion)
+                            }
+                        } label: {
+                            if let availableVersion = app.availableVersion {
+                                // Clean Homebrew versions for display (strip commit hash)
+                                let displayVersion = app.source == .homebrew ?
+                                    availableVersion.stripBrewRevisionSuffix() : availableVersion
+                                Text("Skip \(displayVersion)")
+                            } else {
+                                Text("Skip Version")
                             }
                         }
                         .buttonStyle(.plain)
@@ -117,7 +224,7 @@ struct UpdateDetailView: View {
                         .clipShape(Capsule())
                         .disabled(app.availableVersion == nil)
 
-                        Button("Ignore") {
+                        Button("Hide") {
                             updateManager.hideApp(app, skipVersion: nil)
                         }
                         .buttonStyle(.plain)
@@ -126,35 +233,35 @@ struct UpdateDetailView: View {
                         .background(ThemeColors.shared(for: colorScheme).secondaryBG)
                         .foregroundStyle(Color.red)
                         .clipShape(Capsule())
-                    }
 
-                    // Adopt button for non-Homebrew apps
-                    if app.source != .homebrew {
-                        Button {
-                            // Lazy loading: only load casks on first click
-                            if brewManager.allAvailableCasks.isEmpty {
-                                isLoadingCasks = true
-                                Task {
-                                    await brewManager.loadAvailablePackages(appState: appState)
-                                    await MainActor.run {
-                                        isLoadingCasks = false
-                                        showAdoptionSheet = true
+                        // Adopt button for non-Homebrew apps
+                        if app.source != .homebrew {
+                            Button {
+                                // Lazy loading: only load casks on first click
+                                if brewManager.allAvailableCasks.isEmpty {
+                                    isLoadingCasks = true
+                                    Task {
+                                        await brewManager.loadAvailablePackages(appState: appState)
+                                        await MainActor.run {
+                                            isLoadingCasks = false
+                                            showAdoptionSheet = true
+                                        }
                                     }
+                                } else {
+                                    showAdoptionSheet = true
                                 }
-                            } else {
-                                showAdoptionSheet = true
+                            } label: {
+                                Text("Adopt")
                             }
-                        } label: {
-                            Text("Adopt")
+                            .buttonStyle(.plain)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            .background(ThemeColors.shared(for: colorScheme).secondaryBG)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+                            .clipShape(Capsule())
+                            .disabled(isLoadingCasks)
+                            .opacity(isLoadingCasks ? 0.5 : 1.0)
                         }
-                        .buttonStyle(.plain)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
-                        .background(ThemeColors.shared(for: colorScheme).secondaryBG)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-                        .clipShape(Capsule())
-                        .disabled(isLoadingCasks)
-                        .opacity(isLoadingCasks ? 0.5 : 1.0)
                     }
                 }
                 .padding(.leading, 6)
@@ -162,8 +269,14 @@ struct UpdateDetailView: View {
 
             Divider()
 
-            // Info section (SOURCE, RELEASED, CHECKED)
-            HStack(spacing: 40) {
+            // Unsupported apps: Show inline adoption view
+            if app.source == .unsupported {
+                unsupportedContentView(for: app)
+            }
+            // All other apps: Show normal info and release notes
+            else {
+                // Info section (SOURCE, RELEASED, CHECKED)
+                HStack(spacing: 40) {
                 VStack(alignment: .center, spacing: 4) {
                     Text("RELEASED")
                         .font(.caption)
@@ -221,33 +334,32 @@ struct UpdateDetailView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
             }
 
-            // Release details (if available)
-            if app.source == .sparkle || app.source == .appStore {
-                Divider()
+            // Release details (always show)
+            Divider()
 
-                VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: 16) {
 //                    Text("What's New")
 //                        .font(.title2)
 //                        .fontWeight(.bold)
 //                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
-                    // Release title
+                // Release title
 //                    if let title = app.releaseTitle {
 //                        Text(title)
 //                            .font(.headline)
 //                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 //                    }
 
-                    // Release date
+                // Release date
 //                    if let date = app.releaseDate {
 //                        Text("Released: \(formatDate(date))")
 //                            .font(.subheadline)
 //                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 //                    }
 
-                    // Release description (HTML formatted) - scrollable section
-                    // Priority 1: Fetched external notes, Priority 2: Inline description
-                    if let preprocessed = processedReleaseNotes(for: app), !preprocessed.isEmpty {
+                // Release description (HTML formatted) - scrollable section
+                // Priority 1: Fetched external notes, Priority 2: Inline description
+                if let preprocessed = processedReleaseNotes(for: app), !preprocessed.isEmpty {
                         ScrollView {
                             // Try HTML parsing first
                             if let htmlAttributedString = try? NSAttributedString(
@@ -315,6 +427,12 @@ struct UpdateDetailView: View {
                 context: .updaterView,
                 isPresented: $showAdoptionSheet
             )
+        }
+        .onAppear {
+            // Load casks for unsupported apps
+            if app.source == .unsupported {
+                loadCasksForAdoption()
+            }
         }
     }
 
@@ -664,6 +782,235 @@ struct UpdateDetailView: View {
 
         return AttributedString(mutableString)
     }
+
+    // MARK: - Unsupported App Content View
+
+    @ViewBuilder
+    private func unsupportedContentView(for app: UpdateableApp) -> some View {
+        VStack(alignment: .leading, spacing: 20) {
+            Text("This application does not have a supported installer.")
+                .font(.body)
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                .padding(.horizontal)
+
+            // Inline adoption view
+            if isSearchingCasks || brewManager.allAvailableCasks.isEmpty {
+                HStack {
+                    Spacer()
+                    VStack(spacing: 12) {
+                        ProgressView()
+                            .scaleEffect(1.2)
+                        Text("Searching for matching casks...")
+                            .font(.body)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                    Spacer()
+                }
+                .frame(maxHeight: .infinity)
+            } else {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 20) {
+                        // Matching casks section
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Matching Casks")
+                                .font(.headline)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                            if matchingCasks.isEmpty {
+                                Text("No matching casks found. Try manual entry below.")
+                                    .font(.body)
+                                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                                    .italic()
+                                    .padding(.vertical, 8)
+                            } else {
+                                VStack(spacing: 8) {
+                                    ForEach(matchingCasks) { cask in
+                                        CaskRowView(
+                                            cask: cask,
+                                            isSelected: selectedCaskToken == cask.token,
+                                            onSelect: {
+                                                selectedCaskToken = cask.token
+                                                manualEntry = ""
+                                                manualEntryValidation = nil
+                                            }
+                                        )
+                                        .disabled(!cask.isVersionCompatible)
+                                        .opacity(cask.isVersionCompatible ? 1.0 : 0.5)
+                                    }
+                                }
+                            }
+                        }
+
+                        // Manual entry section
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Manual Entry")
+                                .font(.headline)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+
+                            Text("If the correct cask isn't listed above, enter the cask token manually:")
+                                .font(.caption)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+
+                            HStack(spacing: 8) {
+                                TextField("e.g., firefox", text: $manualEntry)
+                                    .textFieldStyle(.roundedBorder)
+                                    .onChange(of: manualEntry) { newValue in
+                                        validateManualEntry(newValue)
+                                    }
+
+                                if !manualEntry.isEmpty {
+                                    if let validation = manualEntryValidation {
+                                        Image(systemName: "checkmark.circle.fill")
+                                            .foregroundStyle(.green)
+                                            .help("Valid cask: \(validation.displayName)")
+                                    } else if manualEntry.count >= 2 {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .foregroundStyle(.red)
+                                            .help("Cask not found")
+                                    }
+                                }
+                            }
+                        }
+
+                        // Adopt button
+                        HStack {
+                            Spacer()
+                            Button(isAdopting ? "Adopting..." : "Adopt with Homebrew") {
+                                performAdoption(for: app)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .disabled(isAdopting || !canAdopt)
+                        }
+
+                        // Error message
+                        if let error = adoptionError {
+                            HStack(spacing: 8) {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .foregroundStyle(.red)
+                                Text(error)
+                                    .font(.caption)
+                                    .foregroundStyle(.red)
+                            }
+                            .padding(.vertical, 8)
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+                .scrollIndicators(scrollIndicators ? .visible : .hidden)
+            }
+        }
+    }
+
+    // MARK: - Adoption Support Methods
+
+    private var canAdopt: Bool {
+        if isSearchingCasks || isAdopting { return false }
+
+        if let selected = selectedCaskToken, !selected.isEmpty {
+            return true
+        }
+
+        if manualEntryValidation != nil, !manualEntry.isEmpty {
+            return true
+        }
+
+        return false
+    }
+
+    private var selectedCask: AdoptableCask? {
+        if let token = selectedCaskToken {
+            return matchingCasks.first(where: { $0.token == token })
+        }
+        return manualEntryValidation
+    }
+
+    private func loadCasksForAdoption() {
+        guard let app = app else { return }
+
+        // Load casks if not already loaded
+        if brewManager.allAvailableCasks.isEmpty {
+            isSearchingCasks = true
+            Task {
+                await brewManager.loadAvailablePackages(appState: appState)
+                await MainActor.run {
+                    searchForMatchingCasks(for: app)
+                }
+            }
+        } else {
+            searchForMatchingCasks(for: app)
+        }
+    }
+
+    private func searchForMatchingCasks(for app: UpdateableApp) {
+        isSearchingCasks = true
+
+        Task {
+            try? await Task.sleep(nanoseconds: 100_000_000)  // 0.1 seconds
+
+            let matches = findMatchingCasks(for: app.appInfo, from: brewManager.allAvailableCasks)
+
+            await MainActor.run {
+                matchingCasks = matches
+                isSearchingCasks = false
+
+                // Auto-select first compatible cask if there's only one
+                if matches.count == 1, matches[0].isVersionCompatible {
+                    selectedCaskToken = matches[0].token
+                }
+            }
+        }
+    }
+
+    private func validateManualEntry(_ token: String) {
+        guard let app = app else { return }
+        guard !token.isEmpty, token.count >= 2 else {
+            manualEntryValidation = nil
+            return
+        }
+
+        let validated = validateManualCaskEntry(token, for: app.appInfo, from: brewManager.allAvailableCasks)
+        if validated != nil {
+            manualEntryValidation = validated
+            selectedCaskToken = nil
+        } else {
+            manualEntryValidation = nil
+        }
+    }
+
+    private func performAdoption(for app: UpdateableApp) {
+        guard let cask = selectedCask else { return }
+
+        isAdopting = true
+        adoptionError = nil
+
+        Task {
+            do {
+                try await HomebrewController.shared.adoptCask(token: cask.token)
+
+                await brewManager.loadInstalledPackages()
+                invalidateCaskLookupCache()
+
+                let folderPaths = await MainActor.run {
+                    FolderSettingsManager.shared.folderPaths
+                }
+                await loadAppsAsync(folderPaths: folderPaths, useStreaming: false)
+
+                await MainActor.run {
+                    isAdopting = false
+                }
+
+                // Trigger update scan to recategorize the app
+                await UpdateManager.shared.scanForUpdates(forceReload: true)
+            } catch {
+                await MainActor.run {
+                    adoptionError = "Failed to adopt: \(error.localizedDescription)"
+                    isAdopting = false
+                }
+            }
+        }
+    }
+
+    // MARK: - Helper Methods
 
     private func openInAppStore(urlString: String) {
         guard var urlComponents = URLComponents(string: urlString) else {

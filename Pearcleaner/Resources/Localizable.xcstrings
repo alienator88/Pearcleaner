@@ -6,6 +6,7 @@
       "shouldTranslate" : false
     },
     " (Found in %@ App Store. Open in App Store to update.)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -124,6 +125,7 @@
       }
     },
     " (iOS app)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -31170,6 +31172,9 @@
         }
       }
     },
+    "Found in %@ App Store. Open in App Store to update." : {
+
+    },
     "From source" : {
       "localizations" : {
         "de" : {
@@ -33300,6 +33305,9 @@
         }
       }
     },
+    "Hide" : {
+
+    },
     "Hide auto-updating apps from Homebrew" : {
       "localizations" : {
         "de" : {
@@ -33773,6 +33781,7 @@
       }
     },
     "Hide update" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -35427,9 +35436,6 @@
       }
     },
     "If the correct cask isn't listed above, enter the cask token manually:" : {
-
-    },
-    "Ignore" : {
 
     },
     "Important" : {
@@ -48935,6 +48941,7 @@
       }
     },
     "No update mechanism detected" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -58167,6 +58174,7 @@
 
     },
     "Released: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -71295,6 +71303,9 @@
         }
       }
     },
+    "Skip %@" : {
+
+    },
     "Skip Version" : {
 
     },
@@ -76405,6 +76416,9 @@
           }
         }
       }
+    },
+    "This application does not have a supported installer." : {
+
     },
     "This is a web app" : {
       "extractionState" : "manual",
@@ -82317,9 +82331,6 @@
         }
       }
     },
-    "Up to date" : {
-
-    },
     "Update" : {
       "localizations" : {
         "de" : {
@@ -85995,6 +86006,7 @@
       }
     },
     "View Changes" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -86231,6 +86243,7 @@
       }
     },
     "View Full Release Notes" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

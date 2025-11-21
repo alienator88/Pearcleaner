@@ -57,21 +57,21 @@ struct AppsUpdaterView: View {
     }
 
     // Sidebar categories
-    private var sidebarCategories: [(String, (UpdateableApp) -> Bool, Bool)] {
-        var cats: [(String, (UpdateableApp) -> Bool, Bool)] = []
+    private var sidebarCategories: [(String, (UpdateableApp) -> Bool, Bool, Bool)] {
+        var cats: [(String, (UpdateableApp) -> Bool, Bool, Bool)] = []
         if checkAppStore {
-            cats.append(("App Store", { $0.source == .appStore }, true))
+            cats.append(("App Store", { $0.source == .appStore }, true, updateManager.scanningSources.contains(.appStore)))
         }
         if checkHomebrew {
-            cats.append(("Homebrew", { $0.source == .homebrew }, true))
+            cats.append(("Homebrew", { $0.source == .homebrew }, true, updateManager.scanningSources.contains(.homebrew)))
         }
         if checkSparkle {
-            cats.append(("Sparkle", { $0.source == .sparkle }, true))
+            cats.append(("Sparkle", { $0.source == .sparkle }, true, updateManager.scanningSources.contains(.sparkle)))
         }
-        // Always show Current category, show Unsupported if enabled
-        cats.append(("Current", { $0.source == .current }, false))  // Collapsed by default
+        // Always show Current category, show Unsupported if enabled (never scanning)
+        cats.append(("Current", { $0.source == .current }, false, false))
         if showUnsupported {
-            cats.append(("Unsupported", { $0.source == .unsupported }, false))  // Collapsed by default
+            cats.append(("Unsupported", { $0.source == .unsupported }, false, false))
         }
         return cats
     }

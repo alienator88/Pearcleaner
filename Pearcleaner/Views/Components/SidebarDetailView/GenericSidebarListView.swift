@@ -11,7 +11,7 @@ import SwiftUI
 struct GenericSidebarListView<Item: Identifiable & Hashable, Content: View>: View {
     // Data
     let items: [Item]
-    let categories: [(title: String, filter: (Item) -> Bool, initiallyExpanded: Bool)]
+    let categories: [(title: String, filter: (Item) -> Bool, initiallyExpanded: Bool, isScanning: Bool)]
 
     // Bindings
     @Binding var searchText: String
@@ -32,7 +32,7 @@ struct GenericSidebarListView<Item: Identifiable & Hashable, Content: View>: Vie
 
     init(
         items: [Item],
-        categories: [(title: String, filter: (Item) -> Bool, initiallyExpanded: Bool)],
+        categories: [(title: String, filter: (Item) -> Bool, initiallyExpanded: Bool, isScanning: Bool)],
         searchText: Binding<String>,
         searchFilter: ((Item, String) -> Bool)? = nil,
         emptyMessage: String = "No items found",
@@ -157,10 +157,10 @@ struct GenericSidebarListView<Item: Identifiable & Hashable, Content: View>: Vie
         }
     }
 
-    private var categorizedItems: [(title: String, items: [Item], initiallyExpanded: Bool)] {
+    private var categorizedItems: [(title: String, items: [Item], initiallyExpanded: Bool, isScanning: Bool)] {
         return categories.map { category in
             let categoryItems = filteredItems.filter(category.filter)
-            return (category.title, categoryItems, category.initiallyExpanded)
+            return (category.title, categoryItems, category.initiallyExpanded, category.isScanning)
         }
     }
 }
@@ -168,17 +168,17 @@ struct GenericSidebarListView<Item: Identifiable & Hashable, Content: View>: Vie
 // MARK: - Categorized List View
 
 struct CategorizedListView<Item: Identifiable & Hashable, Content: View>: View {
-    let categories: [(title: String, items: [Item], initiallyExpanded: Bool)]
+    let categories: [(title: String, items: [Item], initiallyExpanded: Bool, isScanning: Bool)]
     @ViewBuilder let itemView: (Item) -> Content
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @Environment(\.colorScheme) var colorScheme
 
     // Split categories: those with items go above divider, empty/Current/Unsupported go below
-    private var categoriesAboveDivider: [(title: String, items: [Item], initiallyExpanded: Bool)] {
+    private var categoriesAboveDivider: [(title: String, items: [Item], initiallyExpanded: Bool, isScanning: Bool)] {
         categories.filter { $0.items.count > 0 && $0.title != "Unsupported" && $0.title != "Current" }
     }
 
-    private var categoriesBelowDivider: [(title: String, items: [Item], initiallyExpanded: Bool)] {
+    private var categoriesBelowDivider: [(title: String, items: [Item], initiallyExpanded: Bool, isScanning: Bool)] {
         categories.filter { $0.items.count == 0 || $0.title == "Unsupported" || $0.title == "Current" }
     }
 
@@ -196,6 +196,7 @@ struct CategorizedListView<Item: Identifiable & Hashable, Content: View>: View {
                         count: category.items.count,
                         items: category.items,
                         initiallyExpanded: category.initiallyExpanded,
+                        isScanning: category.isScanning,
                         itemView: itemView
                     )
                     .padding(.top, index > 0 ? 5 : 0)
@@ -214,6 +215,7 @@ struct CategorizedListView<Item: Identifiable & Hashable, Content: View>: View {
                         count: category.items.count,
                         items: category.items,
                         initiallyExpanded: category.initiallyExpanded,
+                        isScanning: category.isScanning,
                         itemView: itemView
                     )
                     .padding(.top, (shouldShowDivider && index == 0) ? 0 : 5)
@@ -231,6 +233,7 @@ struct GenericSectionView<Item: Identifiable & Hashable, Content: View>: View {
     let count: Int
     let items: [Item]
     let initiallyExpanded: Bool
+    let isScanning: Bool
     @ViewBuilder let itemView: (Item) -> Content
 
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
@@ -250,23 +253,33 @@ struct GenericSectionView<Item: Identifiable & Hashable, Content: View>: View {
         !collapsedCategories.contains(title)
     }
 
-    init(title: String, count: Int, items: [Item], initiallyExpanded: Bool = true, @ViewBuilder itemView: @escaping (Item) -> Content) {
+    init(title: String, count: Int, items: [Item], initiallyExpanded: Bool = true, isScanning: Bool = false, @ViewBuilder itemView: @escaping (Item) -> Content) {
         self.title = title
         self.count = count
         self.items = items
         self.initiallyExpanded = initiallyExpanded
+        self.isScanning = isScanning
         self.itemView = itemView
     }
 
     var body: some View {
         VStack(spacing: 0) {
-            Header(title: title, count: count)
-                .padding(.leading, 5)
-                .onTapGesture {
-                    withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
-                        toggleCategory()
-                    }
+            HStack(spacing: 6) {
+                Header(title: title, count: count)
+
+                // Show scanning indicator next to count
+                if isScanning {
+                    ProgressView()
+                        .controlSize(.small)
+                        .scaleEffect(0.7)
                 }
+            }
+            .padding(.leading, 5)
+            .onTapGesture {
+                withAnimation(Animation.easeInOut(duration: animationEnabled ? 0.35 : 0)) {
+                    toggleCategory()
+                }
+            }
 
             if showItems {
                 ForEach(items) { item in
