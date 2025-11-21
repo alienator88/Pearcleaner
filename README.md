@@ -33,7 +33,7 @@ This project was born out of wanting to learn more on how macOS deals with app i
 - Drag/drop apps, CLI support, and deep link automation [view](https://github.com/alienator88/Pearcleaner/wiki/Deep-Link-Guide)
 - List or Grid view with badges for web/iOS apps
 - Finder Extension for right-click uninstall
-- Pearcleaner self-uninstall and slimming options
+- Pearcleaner self-uninstall and other options
 
 ### Utilities
 - Prune unused app translations, keeping only preferred languages
