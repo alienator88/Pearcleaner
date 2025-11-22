@@ -3,7 +3,7 @@ name: 🐛 Bug Report
 about: For submitting new bugs related to the application functionality
 title: "[BUG] ENTER ISSUE TITLE HERE"
 labels: 'bug'
-assignees: 'alienator88'
+assignees: ''
 ---
 
 <!--
