@@ -88,13 +88,16 @@ struct PearCLI: ParsableCommand {
 
         func run() throws {
             // Get installed apps for filtering
-            let sortedApps = getSortedApps(paths: PearCLI.fsm.folderPaths)
+            DispatchQueue.global(qos: .userInitiated).async {
+                let _ = getSortedApps(paths: PearCLI.fsm.folderPaths, useStreaming: false)
+            }
+
 
             // Find orphaned files
             let foundPaths = ReversePathsSearcher(
                 locations: PearCLI.locations,
                 fsm: PearCLI.fsm,
-                sortedApps: sortedApps
+                sortedApps: AppState.shared.sortedApps
             )
                 .reversePathsSearchCLI()
 
@@ -207,13 +210,15 @@ struct PearCLI: ParsableCommand {
         func run() throws {
 
             // Get installed apps for filtering
-            let sortedApps = getSortedApps(paths: PearCLI.fsm.folderPaths)
+            DispatchQueue.global(qos: .userInitiated).async {
+                let _ = getSortedApps(paths: PearCLI.fsm.folderPaths, useStreaming: false)
+            }
 
             // Find orphaned files
             let foundPaths = ReversePathsSearcher(
                 locations: PearCLI.locations,
                 fsm: PearCLI.fsm,
-                sortedApps: sortedApps
+                sortedApps: AppState.shared.sortedApps
             )
                 .reversePathsSearchCLI()
 
