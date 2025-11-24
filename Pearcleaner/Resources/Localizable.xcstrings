@@ -8661,7 +8661,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bestätigen Sie immer die markierten Dateien zum löschen. In seltenen Fällen können Dateien gefunden werden, die nichts mit der App zu tun haben, wenn die App-Namen zu ähnlich sind."
+            "value" : "Prüfen & bestätigen Sie immer die zur Löschung markierten Dateien. In seltenen Fällen können auch Dateien gefunden werden, die nichts mit der App zu tun haben; wenn die App-Namen zu ähnlich sind."
           }
         },
         "es" : {
@@ -8780,7 +8780,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bestätigen Sie immer die zum Entfernen markierten Dateien. In seltenen Fällen können nicht verwandte Dateien gefunden werden, wenn die Namen der Anwendungen zu ähnlich sind.\n\nHINWEIS: Pearcleaner verwendet AppleScript, um Dateien zu entfernen. Derzeit erlaubt macOS nicht, dass AppleScript TouchID verwenden darf, daher wird nur die Kennworteingabe unterstützt."
+            "value" : "Prüfen & bestätigen Sie immer die zur Löschung markierten Dateien. In seltenen Fällen können nicht verwandte Dateien gefunden werden, wenn die Namen der Anwendungen zu ähnlich sind.\n\nHINWEIS: Pearcleaner verwendet AppleScript, um Dateien zu entfernen. Derzeit erlaubt macOS nicht, dass AppleScript TouchID verwenden darf, daher wird nur die Kennworteingabe unterstützt."
           }
         },
         "es" : {
@@ -13389,7 +13389,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bundle Dateien…"
+            "value" : "Dateien packen…"
           }
         },
         "es" : {
@@ -29464,7 +29464,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Exportiere Dateipfad…"
+            "value" : "Datei-Pfade exportieren …"
           }
         },
         "es" : {
@@ -56539,7 +56539,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Löschbar:"
+            "value" : "Bereinigbar:"
           }
         },
         "es" : {
