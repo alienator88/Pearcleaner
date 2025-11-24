@@ -57842,7 +57842,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Erneuern"
+            "value" : "Neu laden"
           }
         },
         "es" : {
@@ -58079,7 +58079,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Erneuere Programme"
+            "value" : "Apps neuladen"
           }
         },
         "es" : {
@@ -58198,7 +58198,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Erneuere Programme (⌘+R)"
+            "value" : "Apps neuladen (⌘+R)"
           }
         },
         "es" : {
@@ -58435,7 +58435,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Erneuere Updater"
+            "value" : "Updater neu laden"
           }
         },
         "es" : {
