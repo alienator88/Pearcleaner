@@ -16221,6 +16221,7 @@
       }
     },
     "Choose which view to open when launching the app" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -34898,6 +34899,9 @@
           }
         }
       }
+    },
+    "Hide page" : {
+
     },
     "Homebrew" : {
       "localizations" : {
@@ -70244,6 +70248,9 @@
         }
       }
     },
+    "Set as startup page" : {
+
+    },
     "Settings" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -71662,6 +71669,9 @@
           }
         }
       }
+    },
+    "Show page" : {
+
     },
     "Show sidebar on view load" : {
       "localizations" : {
@@ -74978,6 +74988,7 @@
       }
     },
     "Startup view" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -75094,6 +75105,9 @@
           }
         }
       }
+    },
+    "Startup view & page visibility" : {
+
     },
     "Statistics" : {
       "localizations" : {

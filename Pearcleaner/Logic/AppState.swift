@@ -82,7 +82,17 @@ class AppState: ObservableObject {
     init() {
         // Initialize currentPage from stored startup view preference
         let storedStartupView = UserDefaults.standard.integer(forKey: "settings.interface.startupView")
-        self.currentPage = CurrentPage(rawValue: storedStartupView) ?? .applications
+
+        // Load hidden pages
+        let hiddenPages = AppState.loadHiddenPages()
+
+        // Validate: If startup page is hidden, default to .applications
+        if hiddenPages.contains(storedStartupView) {
+            self.currentPage = .applications
+            UserDefaults.standard.set(CurrentPage.applications.rawValue, forKey: "settings.interface.startupView")
+        } else {
+            self.currentPage = CurrentPage(rawValue: storedStartupView) ?? .applications
+        }
 
         self.appInfo = AppInfo(
             id: UUID(),
@@ -133,6 +143,22 @@ class AppState: ObservableObject {
         let extensionStatus = FIFinderSyncController.isExtensionEnabled
         DispatchQueue.main.async {
             self.finderExtensionEnabled = extensionStatus
+        }
+    }
+
+    // MARK: - Hidden Pages Management
+
+    static func loadHiddenPages() -> Set<Int> {
+        guard let data = UserDefaults.standard.data(forKey: "settings.interface.hiddenPages"),
+              let decoded = try? JSONDecoder().decode(Set<Int>.self, from: data) else {
+            return []
+        }
+        return decoded
+    }
+
+    static func saveHiddenPages(_ pages: Set<Int>) {
+        if let encoded = try? JSONEncoder().encode(pages) {
+            UserDefaults.standard.set(encoded, forKey: "settings.interface.hiddenPages")
         }
     }
 
@@ -669,12 +695,16 @@ enum CurrentPage: Int, CaseIterable, Identifiable {
         return []
     }
 
-    /// Returns all pages filtered based on build configuration
+    /// Returns all pages filtered based on build configuration and user visibility settings
     static var availablePages: [CurrentPage] {
+        let hiddenPages = AppState.loadHiddenPages()
+
         #if DEBUG
-        return CurrentPage.allCases
+        return CurrentPage.allCases.filter { !hiddenPages.contains($0.rawValue) }
         #else
-        return CurrentPage.allCases.filter { !debugOnlyPages.contains($0) }
+        return CurrentPage.allCases
+            .filter { !debugOnlyPages.contains($0) }
+            .filter { !hiddenPages.contains($0.rawValue) }
         #endif
     }
 
