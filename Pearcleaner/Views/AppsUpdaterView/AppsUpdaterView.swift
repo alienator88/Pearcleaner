@@ -191,11 +191,21 @@ struct AppsUpdaterView: View {
                     selectAllApps()
                     updateSelectedApps()
                 } label: {
-                    Label("Update All", systemImage: "arrow.down.circle")
-                        .badge(updateManager.totalUpdateCount)
+                    if updateManager.isUpdatingAll {
+                        // Show circular progress with count during batch update
+                        CircularProgressView(
+                            progress: updateManager.updateAllProgress,
+                            size: 20,
+                            lineWidth: 3,
+                            badgeText: "\(updateManager.completedAppsCount)/\(updateManager.totalAppsToUpdate)"
+                        )
+                    } else {
+                        Label("Update All", systemImage: "arrow.down.circle")
+                            .badge(updateManager.totalUpdateCount)
+                    }
                 }
-                .help("Update all available apps")
-                .disabled(allUpdateableApps.isEmpty || !updateManager.scanningSources.isEmpty)
+                .help(updateManager.isUpdatingAll ? "Updating apps..." : "Update all available apps")
+                .disabled(allUpdateableApps.isEmpty || !updateManager.scanningSources.isEmpty || updateManager.isUpdatingAll)
 
                 if updateManager.isScanning {
                     // Show stop button during scan
