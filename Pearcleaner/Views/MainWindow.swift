@@ -223,9 +223,11 @@ struct MainWindow: View {
                                         .frame(width: 16)
                                     if loadUpdatesOnStartup || updateManager.totalUpdateCount > 0 {
                                         Text(page.title)
+                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                                             .badge(updateManager.totalUpdateCount)
                                     } else {
                                         Text(page.title)
+                                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                                     }
                                 }
                             } else {
@@ -233,6 +235,7 @@ struct MainWindow: View {
                                     Image(systemName: page.icon)
                                         .frame(width: 16)
                                     Text(page.title)
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                                 }
                             }
                         }

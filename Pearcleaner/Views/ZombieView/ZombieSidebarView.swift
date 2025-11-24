@@ -58,6 +58,7 @@ struct ZombieSizeInfoSection: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 0) {
                 Text("Total Size:")
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                 Spacer()
                 Text(displaySizeTotal)
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
@@ -65,6 +66,7 @@ struct ZombieSizeInfoSection: View {
 
             HStack(spacing: 0) {
                 Text("Selected Items:")
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                 Spacer()
                 Text(verbatim: "\(selectedCount) / \(totalCount)")
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
@@ -89,6 +91,7 @@ struct ZombieExcludedPathsSection: View {
             Text("Excluded Paths")
                 .font(.subheadline)
                 .fontWeight(.medium)
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
             if fsm.fileFolderPathsZ.isEmpty {
                 Text("No paths excluded or linked to an app")
@@ -140,6 +143,7 @@ struct ZombieExcludedPathRow: View {
                         Text(URL(fileURLWithPath: path).lastPathComponent)
                             .font(.caption)
                             .lineLimit(1)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
                         // Show link icon if this path is associated
                         if associationInfo.isAssociated {

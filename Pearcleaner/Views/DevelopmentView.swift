@@ -417,6 +417,7 @@ struct EnvironmentCleanerView: View {
                                     selectedPaths.removeAll()
                                 } label: {
                                     Text(verbatim: "\(environment.name) (\(environment.paths.count))")
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                                 }
                             }
                         }
@@ -742,6 +743,7 @@ struct WorkspaceStorageCleanerView: View {
                                         .font(.caption)
                                         .lineLimit(1)
                                         .truncationMode(.middle)
+                                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
                                     Text(verbatim: "\(workspace.folderPath)")
                                         .font(.caption)
@@ -1190,6 +1192,7 @@ struct PipPackageCleanerView: View {
             Button("Okay", role: .cancel) { }
         } message: {
             Text(alertMessage)
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
         }
         .fileImporter(
             isPresented: $showFileImporter,
