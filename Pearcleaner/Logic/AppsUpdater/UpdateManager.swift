@@ -342,6 +342,8 @@ class UpdateManager: ObservableObject {
             // Add refreshed app to visible list
             if var apps = updatesBySource[app.source] {
                 apps.append(refreshedApp)
+                // Sort alphabetically after adding using sortKey extension
+                apps.sort { $0.appInfo.appName.sortKey < $1.appInfo.appName.sortKey }
                 updatesBySource[app.source] = apps
             } else {
                 updatesBySource[app.source] = [refreshedApp]
@@ -624,7 +626,7 @@ class UpdateManager: ObservableObject {
 
     private func processSourceResults(source: UpdateSource, apps: [UpdateableApp]) async {
         // Sort alphabetically
-        let sortedApps = apps.sorted { $0.appInfo.appName.localizedCaseInsensitiveCompare($1.appInfo.appName) == .orderedAscending }
+        let sortedApps = apps.sorted { $0.appInfo.appName.sortKey < $1.appInfo.appName.sortKey }
 
         // Filter ignored and version-skipped apps
         let ignored = ignoredApps

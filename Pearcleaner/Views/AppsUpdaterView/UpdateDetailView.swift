@@ -549,7 +549,7 @@ struct UpdateDetailView: View {
         // Current apps: Show only installed version (no arrow)
         if app.source == .current {
             if app.source == .sparkle, let installedBuild = app.appInfo.appBuildNumber {
-                let displayBuild = installedBuild.count > 6 ? String(installedBuild.prefix(6)) + "..." : installedBuild
+                let displayBuild = installedBuild.count > 5 ? String(installedBuild.prefix(5)) + "..." : installedBuild
                 return Text(verbatim: "\(app.appInfo.appVersion) (\(displayBuild))")
             }
             return Text(verbatim: app.appInfo.appVersion)
@@ -557,7 +557,7 @@ struct UpdateDetailView: View {
 
         guard let availableVersion = app.availableVersion else {
             if app.source == .sparkle, let installedBuild = app.appInfo.appBuildNumber {
-                let displayBuild = installedBuild.count > 6 ? String(installedBuild.prefix(6)) + "..." : installedBuild
+                let displayBuild = installedBuild.count > 5 ? String(installedBuild.prefix(5)) + "..." : installedBuild
                 return Text(verbatim: "\(app.appInfo.appVersion) (\(displayBuild))")
             }
             return Text(verbatim: app.appInfo.appVersion)
