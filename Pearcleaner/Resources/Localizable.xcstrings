@@ -15394,6 +15394,7 @@
       }
     },
     "CHANGELOG" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -47197,6 +47198,9 @@
         }
       }
     },
+    "No Changelog" : {
+
+    },
     "No delete history" : {
       "localizations" : {
         "de" : {
@@ -59026,6 +59030,7 @@
       }
     },
     "RELEASED" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -73926,6 +73931,7 @@
       }
     },
     "SOURCE" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -88242,6 +88248,9 @@
           }
         }
       }
+    },
+    "View Changelog" : {
+
     },
     "View Debug Window" : {
       "localizations" : {

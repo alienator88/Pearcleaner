@@ -180,69 +180,8 @@ struct UpdateDetailView: View {
             }
             // All other apps: Show normal info and release notes
             else {
-                // Info section (SOURCE, RELEASED, CHECKED)
-                HStack(spacing: 40) {
-                VStack(alignment: .center, spacing: 4) {
-                    Text("RELEASED")
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    if let date = app.releaseDate {
-                        Text(formatDate(date))
-                            .font(.body)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                    } else {
-                        Text(verbatim: "N/A")
-                            .font(.body)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .center)
-
-                Divider().frame(height: 20)
-
-                VStack(alignment: .center, spacing: 4) {
-                    Text("CHANGELOG")
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    if let link = app.releaseNotesLink, let url = URL(string: link) {
-                        Link(destination: url) {
-                            Text("View")
-                                .font(.body)
-                                .foregroundStyle(.blue)
-                        }
-                        .buttonStyle(.plain)
-                    } else {
-                        Text(verbatim: "N/A")
-                            .font(.body)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .center)
-
-                Divider().frame(height: 20)
-
-                VStack(alignment: .center, spacing: 4) {
-                    Text("SOURCE")
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    HStack(spacing: 6) {
-                        Text(app.source.rawValue)
-                            .font(.body)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                        if app.isIOSApp {
-                            Text(verbatim: "(iOS)")
-                                .font(.caption)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        }
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .center)
-            }
-
-            // Release details (always show)
-            Divider()
-
-            VStack(alignment: .leading, spacing: 16) {
+                // Release details (only for apps with updates)
+                VStack(alignment: .leading, spacing: 16) {
 
                 // Release description (HTML formatted) - scrollable section
                 // Priority 1: Fetched external notes, Priority 2: Inline description
@@ -301,12 +240,17 @@ struct UpdateDetailView: View {
                     }
 
                 }
-                .padding(.horizontal)
+                .padding(.horizontal, 5)
+
+                // Metadata row at bottom
+                Divider()
+
+                metadataRow(for: app)
             }
 
             Spacer()
         }
-        .padding(.horizontal)
+        .padding(.horizontal, 15)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .sheet(isPresented: $showAdoptionSheet) {
             AdoptionSheetView(
@@ -316,10 +260,7 @@ struct UpdateDetailView: View {
             )
         }
         .onAppear {
-            // Load casks for unsupported apps
-            if app.source == .unsupported {
-                loadCasksForAdoption()
-            }
+            loadCasksForAdoption()
         }
         .onChange(of: appId) { newAppId in
             // Clear cask search state when switching apps
@@ -345,6 +286,57 @@ struct UpdateDetailView: View {
                 }
             }
         }
+    }
+
+    @ViewBuilder
+    private func metadataRow(for app: UpdateableApp) -> some View {
+        HStack(spacing: 0) {
+            // Released date
+            HStack(spacing: 0) {
+                Spacer()
+                if let date = app.releaseDate {
+                    Text(formatDate(date))
+                        .font(.subheadline)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                }
+                Spacer()
+            }
+
+            // Source
+            HStack(spacing: 0) {
+                Spacer()
+                HStack(spacing: 4) {
+                    Text(app.source.rawValue)
+                        .font(.subheadline)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                    if app.isIOSApp {
+                        Text(verbatim: "(iOS)")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                }
+                Spacer()
+            }
+
+            // Changelog
+            HStack(spacing: 0) {
+                Spacer()
+                if let link = app.releaseNotesLink, let url = URL(string: link) {
+                    Link(destination: url) {
+                        Text("View Changelog")
+                            .font(.subheadline)
+                            .foregroundStyle(.blue)
+                    }
+                    .buttonStyle(.plain)
+                } else {
+                    Text("No Changelog")
+                        .font(.subheadline)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                }
+                Spacer()
+            }
+        }
+        .padding(.vertical, 5)
     }
 
     @ViewBuilder
