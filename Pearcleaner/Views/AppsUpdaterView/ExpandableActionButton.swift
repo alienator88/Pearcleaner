@@ -36,7 +36,7 @@ struct ExpandableActionButton: View {
                 // Chevron button that shows NSMenu
                 MenuButton(
                     items: secondaryActions,
-                    foregroundColor: primaryAction.foregroundColor
+                    colorScheme: colorScheme
                 )
                 .frame(width: 20, height: 20)
                 .padding(.horizontal, 5)
@@ -46,8 +46,8 @@ struct ExpandableActionButton: View {
         .background(
             LinearGradient(
                 gradient: Gradient(colors: [
-                    primaryAction.backgroundColor.adjust(brightness: 0),
-                    primaryAction.backgroundColor.adjust(brightness: -0.1)
+                    primaryAction.backgroundColor.adjust(brightness: 0.05),
+                    primaryAction.backgroundColor.adjust(brightness: -0.05)
                 ]),
                 startPoint: .top,
                 endPoint: .bottom
@@ -76,7 +76,7 @@ struct ExpandableActionButton: View {
 
     private struct MenuButton: NSViewRepresentable {
         let items: [ActionButtonItem]
-        let foregroundColor: Color
+        let colorScheme: ColorScheme
 
         func makeNSView(context: Context) -> NSView {
             let button = NSButton()
@@ -91,8 +91,8 @@ struct ExpandableActionButton: View {
             button.target = context.coordinator
             button.action = #selector(Coordinator.showMenu(_:))
 
-            // Match color from SwiftUI button
-            button.contentTintColor = NSColor(foregroundColor)
+            // Use ThemeColors primary text color
+            button.contentTintColor = NSColor(ThemeColors.shared(for: colorScheme).primaryText)
 
             // Make the entire button area clickable
             button.imagePosition = .imageOnly
@@ -109,7 +109,7 @@ struct ExpandableActionButton: View {
 
         func updateNSView(_ button: NSView, context: Context) {
             guard let button = button as? NSButton else { return }
-            button.contentTintColor = NSColor(foregroundColor)
+            button.contentTintColor = NSColor(ThemeColors.shared(for: colorScheme).primaryText)
         }
 
         func makeCoordinator() -> Coordinator {

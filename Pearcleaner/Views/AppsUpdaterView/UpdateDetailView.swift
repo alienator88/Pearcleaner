@@ -131,6 +131,16 @@ struct UpdateDetailView: View {
                                     .foregroundStyle(.orange)
                                     .help("Unsupported")
                             }
+
+                            Spacer()
+
+                            HStack(spacing: 8) {
+                                // Status view (leading edge of button)
+                                statusView(for: app)
+
+                                // Action button (right edge)
+                                buildExpandableActionButton(for: app)
+                            }
                         }
 
                         // Version info with build numbers
@@ -143,16 +153,6 @@ struct UpdateDetailView: View {
                                 .font(.caption)
                                 .foregroundStyle(.orange)
                         }
-                    }
-
-                    Spacer()
-
-                    // Action button (right side of header)
-                    VStack(alignment: .trailing, spacing: 8) {
-                        buildExpandableActionButton(for: app)
-
-                        // Status view below action button
-                        statusView(for: app)
                     }
                 }
             }
