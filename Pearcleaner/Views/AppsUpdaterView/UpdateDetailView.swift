@@ -146,6 +146,7 @@ struct UpdateDetailView: View {
                         // Version info with build numbers
                         buildVersionText(for: app, colorScheme: colorScheme)
                             .font(.title3)
+                            .help(buildNumberTooltip(for: app) ?? "")
 
                         // Non-primary region warning
                         if isNonPrimaryRegion, let region = app.foundInRegion {
@@ -548,14 +549,16 @@ struct UpdateDetailView: View {
         // Current apps: Show only installed version (no arrow)
         if app.source == .current {
             if app.source == .sparkle, let installedBuild = app.appInfo.appBuildNumber {
-                return Text(verbatim: "\(app.appInfo.appVersion) (\(installedBuild))")
+                let displayBuild = installedBuild.count > 6 ? String(installedBuild.prefix(6)) + "..." : installedBuild
+                return Text(verbatim: "\(app.appInfo.appVersion) (\(displayBuild))")
             }
             return Text(verbatim: app.appInfo.appVersion)
         }
 
         guard let availableVersion = app.availableVersion else {
             if app.source == .sparkle, let installedBuild = app.appInfo.appBuildNumber {
-                return Text(verbatim: "\(app.appInfo.appVersion) (\(installedBuild))")
+                let displayBuild = installedBuild.count > 6 ? String(installedBuild.prefix(6)) + "..." : installedBuild
+                return Text(verbatim: "\(app.appInfo.appVersion) (\(displayBuild))")
             }
             return Text(verbatim: app.appInfo.appVersion)
         }
@@ -570,23 +573,27 @@ struct UpdateDetailView: View {
             let installedBuild = app.appInfo.appBuildNumber
             let availableBuild = app.availableBuildNumber
 
+            // Truncate build numbers to 6 characters
+            let displayInstalledBuild = installedBuild.map { $0.count > 6 ? String($0.prefix(6)) + "..." : $0 }
+            let displayAvailableBuild = availableBuild.map { $0.count > 6 ? String($0.prefix(6)) + "..." : $0 }
+
             if !displayInstalledVersion.isEmpty && !displayAvailableVersion.isEmpty &&
                displayInstalledVersion == displayAvailableVersion {
                 var result = Text(verbatim: displayInstalledVersion).foregroundColor(.orange)
-                if let build = installedBuild {
+                if let build = displayInstalledBuild {
                     result = result + Text(verbatim: " (\(build))").foregroundColor(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
                 result = result + Text(verbatim: " → ")
                 result = result + Text(verbatim: displayAvailableVersion).foregroundColor(.green)
                 result = result + Text(verbatim: " (")
-                if let build = availableBuild {
+                if let build = displayAvailableBuild {
                     result = result + Text(build).foregroundColor(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
                 result = result + Text(verbatim: ")")
                 return result
-            } else if displayAvailableVersion.isEmpty, let availableBuild = availableBuild {
+            } else if displayAvailableVersion.isEmpty, let availableBuild = displayAvailableBuild {
                 var result = Text(verbatim: displayInstalledVersion).foregroundColor(.orange)
-                if let build = installedBuild {
+                if let build = displayInstalledBuild {
                     result = result + Text(verbatim: " (\(build))").foregroundColor(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
                 result = result + Text(verbatim: " → build ")
@@ -594,12 +601,12 @@ struct UpdateDetailView: View {
                 return result
             } else {
                 var result = Text(verbatim: displayInstalledVersion).foregroundColor(.orange)
-                if let build = installedBuild {
+                if let build = displayInstalledBuild {
                     result = result + Text(verbatim: " (\(build))").foregroundColor(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
                 result = result + Text(verbatim: " → ")
                 result = result + Text(verbatim: displayAvailableVersion).foregroundColor(.green)
-                if let build = availableBuild {
+                if let build = displayAvailableBuild {
                     result = result + Text(verbatim: " (\(build))").foregroundColor(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
                 return result
@@ -610,6 +617,34 @@ struct UpdateDetailView: View {
             result = result + Text(verbatim: displayAvailableVersion).foregroundColor(.green)
             return result
         }
+    }
+
+    private func buildNumberTooltip(for app: UpdateableApp) -> String? {
+        let installedBuild = app.appInfo.appBuildNumber
+        let availableBuild = app.availableBuildNumber
+
+        // Only show tooltip if at least one build number exists and is > 6 chars
+        guard (installedBuild?.count ?? 0) > 6 || (availableBuild?.count ?? 0) > 6 else {
+            return nil
+        }
+
+        if app.source == .current {
+            if let build = installedBuild {
+                return "Build: \(build)"
+            }
+        } else {
+            // Apps with updates
+            var parts: [String] = []
+            if let installed = installedBuild {
+                parts.append("Installed: \(installed)")
+            }
+            if let available = availableBuild {
+                parts.append("Available: \(available)")
+            }
+            return parts.joined(separator: " → ")
+        }
+
+        return nil
     }
 
     private func preprocessChangelogText(_ text: String) -> String {
