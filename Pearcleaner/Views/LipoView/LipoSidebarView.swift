@@ -78,6 +78,7 @@ struct LipoDescriptionSection: View {
 }
 
 struct LipoSavingsSection: View {
+    @Environment(\.colorScheme) var colorScheme
     let totalSpaceSaved: UInt64
     let savingsAllApps: UInt64
 
