@@ -147,132 +147,14 @@ struct UpdateDetailView: View {
 
                     Spacer()
 
-                    // Status view (matches UpdateRowView lines 134-148)
-                    statusView(for: app)
-                }
+                    // Action button (right side of header)
+                    VStack(alignment: .trailing, spacing: 8) {
+                        buildExpandableActionButton(for: app)
 
-                // Action buttons in header
-                HStack(spacing: 8) {
-                    // Current apps: Show Hide + Adopt (if not Homebrew)
-                    if app.source == .current {
-                        Button("Hide") {
-                            updateManager.hideApp(app, skipVersion: nil)
-                        }
-                        .buttonStyle(.plain)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
-                        .background(ThemeColors.shared(for: colorScheme).secondaryBG)
-                        .foregroundStyle(Color.red)
-                        .clipShape(Capsule())
-
-                        // Adopt button for non-Homebrew current apps
-                        if app.appInfo.cask == nil {
-                            Button {
-                                // Lazy loading: only load casks on first click
-                                if brewManager.allAvailableCasks.isEmpty {
-                                    isLoadingCasks = true
-                                    Task {
-                                        await brewManager.loadAvailablePackages(appState: appState)
-                                        await MainActor.run {
-                                            isLoadingCasks = false
-                                            showAdoptionSheet = true
-                                        }
-                                    }
-                                } else {
-                                    showAdoptionSheet = true
-                                }
-                            } label: {
-                                Text("Adopt")
-                            }
-                            .buttonStyle(.plain)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
-                            .background(ThemeColors.shared(for: colorScheme).secondaryBG)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-                            .clipShape(Capsule())
-                            .disabled(isLoadingCasks)
-                            .opacity(isLoadingCasks ? 0.5 : 1.0)
-                        }
-                    }
-                    // Unsupported apps: Show Hide only (inline adoption UI handles cask adoption)
-                    else if app.source == .unsupported {
-                        Button("Hide") {
-                            updateManager.hideApp(app, skipVersion: nil)
-                        }
-                        .buttonStyle(.plain)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
-                        .background(ThemeColors.shared(for: colorScheme).secondaryBG)
-                        .foregroundStyle(Color.red)
-                        .clipShape(Capsule())
-                    }
-                    // Apps with updates: Show Update + Skip [version] + Hide + Adopt
-                    else {
-                        actionButton(for: app)
-
-                        Button {
-                            if let availableVersion = app.availableVersion {
-                                updateManager.hideApp(app, skipVersion: availableVersion)
-                            }
-                        } label: {
-                            if let availableVersion = app.availableVersion {
-                                // Clean Homebrew versions for display (strip commit hash)
-                                let displayVersion = app.source == .homebrew ?
-                                    availableVersion.stripBrewRevisionSuffix() : availableVersion
-                                Text("Skip \(displayVersion)")
-                            } else {
-                                Text("Skip Version")
-                            }
-                        }
-                        .buttonStyle(.plain)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
-                        .background(ThemeColors.shared(for: colorScheme).secondaryBG)
-                        .foregroundStyle(Color.orange)
-                        .clipShape(Capsule())
-                        .disabled(app.availableVersion == nil)
-
-                        Button("Hide") {
-                            updateManager.hideApp(app, skipVersion: nil)
-                        }
-                        .buttonStyle(.plain)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
-                        .background(ThemeColors.shared(for: colorScheme).secondaryBG)
-                        .foregroundStyle(Color.red)
-                        .clipShape(Capsule())
-
-                        // Adopt button for non-Homebrew apps (only if not already managed by a cask)
-                        if app.source != .homebrew && app.appInfo.cask == nil {
-                            Button {
-                                // Lazy loading: only load casks on first click
-                                if brewManager.allAvailableCasks.isEmpty {
-                                    isLoadingCasks = true
-                                    Task {
-                                        await brewManager.loadAvailablePackages(appState: appState)
-                                        await MainActor.run {
-                                            isLoadingCasks = false
-                                            showAdoptionSheet = true
-                                        }
-                                    }
-                                } else {
-                                    showAdoptionSheet = true
-                                }
-                            } label: {
-                                Text("Adopt")
-                            }
-                            .buttonStyle(.plain)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
-                            .background(ThemeColors.shared(for: colorScheme).secondaryBG)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-                            .clipShape(Capsule())
-                            .disabled(isLoadingCasks)
-                            .opacity(isLoadingCasks ? 0.5 : 1.0)
-                        }
+                        // Status view below action button
+                        statusView(for: app)
                     }
                 }
-                .padding(.leading, 6)
             }
 
             Divider()
@@ -513,6 +395,140 @@ struct UpdateDetailView: View {
         .clipShape(Capsule())
         .disabled(app.status != .idle)
         .opacity(app.status == .idle ? 1.0 : 0.5)
+    }
+
+    private func buildExpandableActionButton(for app: UpdateableApp) -> ExpandableActionButton {
+        // Current apps: Hide (primary) + Adopt (secondary, if applicable)
+        if app.source == .current {
+            let primaryAction = ActionButtonItem(
+                title: "Hide",
+                foregroundColor: .red,
+                backgroundColor: ThemeColors.shared(for: colorScheme).secondaryBG,
+                action: {
+                    updateManager.hideApp(app, skipVersion: nil)
+                }
+            )
+
+            var secondaryActions: [ActionButtonItem] = []
+
+            // Add Adopt button for non-Homebrew current apps
+            if app.appInfo.cask == nil {
+                secondaryActions.append(ActionButtonItem(
+                    title: "Adopt",
+                    foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                    backgroundColor: ThemeColors.shared(for: colorScheme).secondaryBG,
+                    isDisabled: isLoadingCasks,
+                    action: {
+                        if brewManager.allAvailableCasks.isEmpty {
+                            isLoadingCasks = true
+                            Task {
+                                await brewManager.loadAvailablePackages(appState: appState)
+                                await MainActor.run {
+                                    isLoadingCasks = false
+                                    showAdoptionSheet = true
+                                }
+                            }
+                        } else {
+                            showAdoptionSheet = true
+                        }
+                    }
+                ))
+            }
+
+            return ExpandableActionButton(
+                primaryAction: primaryAction,
+                secondaryActions: secondaryActions
+            )
+        }
+        // Unsupported apps: Hide only (no dropdown)
+        else if app.source == .unsupported {
+            let primaryAction = ActionButtonItem(
+                title: "Hide",
+                foregroundColor: .red,
+                backgroundColor: ThemeColors.shared(for: colorScheme).secondaryBG,
+                action: {
+                    updateManager.hideApp(app, skipVersion: nil)
+                }
+            )
+
+            return ExpandableActionButton(
+                primaryAction: primaryAction,
+                secondaryActions: []
+            )
+        }
+        // Apps with updates: Update (primary) + Skip + Hide + Adopt (secondary)
+        else {
+            let primaryAction = ActionButtonItem(
+                title: app.isIOSApp || isNonPrimaryRegion ? "Update in App Store" : "Update",
+                foregroundColor: .white,
+                backgroundColor: .green,
+                isDisabled: app.status != .idle,
+                action: {
+                    if app.isIOSApp, let appStoreURL = app.appStoreURL {
+                        openInAppStore(urlString: appStoreURL)
+                    } else if isNonPrimaryRegion, let appStoreURL = app.appStoreURL {
+                        openInAppStore(urlString: appStoreURL)
+                    } else {
+                        Task { await updateManager.updateApp(app) }
+                    }
+                }
+            )
+
+            var secondaryActions: [ActionButtonItem] = []
+
+            // Skip button
+            if let availableVersion = app.availableVersion {
+                let displayVersion = app.source == .homebrew ?
+                    availableVersion.stripBrewRevisionSuffix() : availableVersion
+                secondaryActions.append(ActionButtonItem(
+                    title: "Skip \(displayVersion)",
+                    foregroundColor: .orange,
+                    backgroundColor: ThemeColors.shared(for: colorScheme).secondaryBG,
+                    action: {
+                        updateManager.hideApp(app, skipVersion: availableVersion)
+                    }
+                ))
+            }
+
+            // Hide button
+            secondaryActions.append(ActionButtonItem(
+                title: "Hide",
+                foregroundColor: .red,
+                backgroundColor: ThemeColors.shared(for: colorScheme).secondaryBG,
+                action: {
+                    updateManager.hideApp(app, skipVersion: nil)
+                }
+            ))
+
+            // Adopt button for non-Homebrew apps
+            if app.source != .homebrew && app.appInfo.cask == nil {
+                secondaryActions.append(ActionButtonItem(
+                    title: "Adopt",
+                    foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                    backgroundColor: ThemeColors.shared(for: colorScheme).secondaryBG,
+                    isDisabled: isLoadingCasks,
+                    action: {
+                        if brewManager.allAvailableCasks.isEmpty {
+                            isLoadingCasks = true
+                            Task {
+                                await brewManager.loadAvailablePackages(appState: appState)
+                                await MainActor.run {
+                                    isLoadingCasks = false
+                                    showAdoptionSheet = true
+                                }
+                            }
+                        } else {
+                            showAdoptionSheet = true
+                        }
+                    }
+                ))
+            }
+
+            return ExpandableActionButton(
+                primaryAction: primaryAction,
+                secondaryActions: secondaryActions
+            )
+        }
     }
 
     private func statusText(for status: UpdateStatus) -> String {
