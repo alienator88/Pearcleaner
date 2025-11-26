@@ -356,10 +356,11 @@ struct PearCLI: ParsableCommand {
     struct AskPassword: ParsableCommand {
         static var configuration = CommandConfiguration(
             commandName: "ask-password",
-            abstract: "Display password prompt for sudo operations"
+            abstract: "Display password prompt for sudo operations",
+            shouldDisplay: false
         )
 
-        @Option(name: .long, help: "Message to display")
+        @Option(name: .long, help: .hidden)
         var message: String = "Homebrew is requesting your password to perform a privileged action"
 
         func run() throws {

@@ -26,6 +26,7 @@ struct UpdateDetailView: View {
     @State private var isAdopting: Bool = false
     @State private var adoptionError: String? = nil
     @State private var isSearchingCasks: Bool = false
+    @State private var showMASWarning = false
 
     // Look up live app data from updateManager - this makes the view reactive to status changes
     private var app: UpdateableApp? {
@@ -71,6 +72,27 @@ struct UpdateDetailView: View {
                     Spacer()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+        }
+        .confirmationDialog(
+            "App Store App Detected",
+            isPresented: $showMASWarning,
+            titleVisibility: .visible
+        ) {
+            if let app = app {
+                Button("Update Anyway", role: .destructive) {
+                    Task { await updateManager.updateApp(app) }
+                }
+                Button("Skip This Version") {
+                    updateManager.hideApp(app, skipVersion: app.availableVersion)
+                }
+                Button("Cancel", role: .cancel) { }
+            }
+        } message: {
+            if let app = app {
+                let sourceName = app.source == .sparkle ? "Sparkle" :
+                                 app.source == .homebrew ? "Homebrew" : "this source"
+                Text("This app was installed from the App Store. Updating it via \(sourceName) will:\n• Break the App Store receipt and licensing\n• Remove the app from App Store tracking\n• Prevent future App Store updates\n\nProceed with caution.")
             }
         }
     }
@@ -141,6 +163,7 @@ struct UpdateDetailView: View {
                                 // Action button (right edge)
                                 buildExpandableActionButton(for: app)
                             }
+
                         }
 
                         // Version info with build numbers
@@ -465,6 +488,9 @@ struct UpdateDetailView: View {
                         openInAppStore(urlString: appStoreURL)
                     } else if isNonPrimaryRegion, let appStoreURL = app.appStoreURL {
                         openInAppStore(urlString: appStoreURL)
+                    } else if app.appInfo.isAppStore && app.source != .appStore {
+                        // Warn for ANY non-App Store update (Sparkle, Homebrew, etc.)
+                        showMASWarning = true
                     } else {
                         Task { await updateManager.updateApp(app) }
                     }

@@ -10313,6 +10313,9 @@
         }
       }
     },
+    "App Store App Detected" : {
+
+    },
     "Appcast URL" : {
       "localizations" : {
         "de" : {
@@ -72612,6 +72615,9 @@
         }
       }
     },
+    "Skip This Version" : {
+
+    },
     "Some of the features that require the helper:" : {
       "localizations" : {
         "de" : {
@@ -77943,6 +77949,9 @@
           }
         }
       }
+    },
+    "This app was installed from the App Store. Updating it via %@ will:\n• Break the App Store receipt and licensing\n• Remove the app from App Store tracking\n• Prevent future App Store updates\n\nProceed with caution." : {
+
     },
     "This application does not have a supported installer. You may try to adopt it into Homebrew if it exists in the Cask repo." : {
       "localizations" : {
@@ -84561,6 +84570,9 @@
           }
         }
       }
+    },
+    "Update Anyway" : {
+
     },
     "Update Available" : {
       "extractionState" : "manual",
