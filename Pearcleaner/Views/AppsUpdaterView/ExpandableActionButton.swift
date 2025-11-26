@@ -19,7 +19,7 @@ struct ExpandableActionButton: View {
             Button(action: primaryAction.action) {
                 Text(primaryAction.title)
                     .foregroundStyle(primaryAction.foregroundColor)
-                    .padding(.leading, 2)
+                    .padding(.leading, 4)
                     .padding(.horizontal, 10)
                     .padding(.vertical, 4)
                     .contentShape(Rectangle())
@@ -46,8 +46,8 @@ struct ExpandableActionButton: View {
         .background(
             LinearGradient(
                 gradient: Gradient(colors: [
-                    primaryAction.backgroundColor.adjust(brightness: 0.05),
-                    primaryAction.backgroundColor.adjust(brightness: -0.05)
+                    primaryAction.backgroundColor.adjust(brightness: colorScheme == .dark ? 0.05 : 0),
+                    primaryAction.backgroundColor.adjust(brightness: colorScheme == .dark ? -0.05 : 0)
                 ]),
                 startPoint: .top,
                 endPoint: .bottom
@@ -128,14 +128,14 @@ struct ExpandableActionButton: View {
 
                 for item in items {
                     let menuItem = NSMenuItem(
-                        title: item.title,
+                        title: NSLocalizedString(item.title, comment: ""),
                         action: #selector(handleMenuAction(_:)),
                         keyEquivalent: ""
                     )
 
                     // Apply custom color via NSAttributedString
                     menuItem.attributedTitle = NSAttributedString(
-                        string: item.title,
+                        string: NSLocalizedString(item.title, comment: ""),
                         attributes: [
                             .foregroundColor: NSColor(item.foregroundColor),
                             .font: NSFont.systemFont(ofSize: NSFont.systemFontSize)
@@ -182,4 +182,5 @@ struct ActionButtonItem {
         self.isDisabled = isDisabled
         self.action = action
     }
+
 }

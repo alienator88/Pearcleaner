@@ -265,6 +265,7 @@ struct PageVisibilityPopover: View {
             ForEach(CurrentPage.allCases, id: \.rawValue) { page in
                 let isHidden = hiddenPages.contains(page.rawValue)
                 let isStartupPage = startupView == page.rawValue
+                let visiblePageCount = CurrentPage.allCases.count - hiddenPages.count
 
                 HStack(spacing: 12) {
                     // Radio button and label - clickable together
@@ -298,10 +299,6 @@ struct PageVisibilityPopover: View {
                         if isHidden {
                             hiddenPages.remove(page.rawValue)
                         } else {
-                            // If trying to hide current startup page, default to .applications
-                            if isStartupPage {
-                                startupView = CurrentPage.applications.rawValue
-                            }
                             hiddenPages.insert(page.rawValue)
                         }
                         AppState.saveHiddenPages(hiddenPages)
@@ -310,7 +307,8 @@ struct PageVisibilityPopover: View {
                             .foregroundStyle(isHidden ? ThemeColors.shared(for: colorScheme).secondaryText.opacity(0.5) : ThemeColors.shared(for: colorScheme).accent)
                     }
                     .buttonStyle(.plain)
-                    .help(isHidden ? "Show page" : "Hide page")
+                    .disabled(!isHidden && (visiblePageCount <= 1 || isStartupPage))
+                    .help(isHidden ? "Show page" : (isStartupPage ? "Cannot hide active startup page" : "Hide page"))
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)

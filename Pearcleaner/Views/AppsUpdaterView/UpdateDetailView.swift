@@ -83,9 +83,19 @@ struct UpdateDetailView: View {
                 Button("Update Anyway", role: .destructive) {
                     Task { await updateManager.updateApp(app) }
                 }
-                Button("Skip This Version") {
-                    updateManager.hideApp(app, skipVersion: app.availableVersion)
+                if let availableVersion = app.availableVersion {
+                    let displayVersion = app.source == .homebrew ?
+                    availableVersion.stripBrewRevisionSuffix() : availableVersion
+                    Button("Skip \(displayVersion)") {
+                        updateManager.hideApp(app, skipVersion: app.availableVersion)
+                    }
+                } else {
+                    Button("Skip This Version") {
+                        updateManager.hideApp(app, skipVersion: app.availableVersion)
+                    }
                 }
+
+
                 Button("Cancel", role: .cancel) { }
             }
         } message: {
@@ -144,6 +154,7 @@ struct UpdateDetailView: View {
                                 }
                                 .buttonStyle(.plain)
                                 .help("View in App Store")
+                                .id(app.id)
                             }
 
                             // Unsupported indicator
@@ -162,6 +173,7 @@ struct UpdateDetailView: View {
 
                                 // Action button (right edge)
                                 buildExpandableActionButton(for: app)
+                                    .id(app.id)
                             }
 
                         }
@@ -186,6 +198,7 @@ struct UpdateDetailView: View {
             // Unsupported apps: Show inline adoption view
             if app.source == .unsupported {
                 unsupportedContentView(for: app)
+                    .id(app.id)
             }
             // Current apps: Show simple "up to date" message
             else if app.source == .current {
@@ -201,6 +214,7 @@ struct UpdateDetailView: View {
                     Spacer()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .id(app.id)
             }
             // All other apps: Show normal info and release notes
             else {
@@ -265,11 +279,13 @@ struct UpdateDetailView: View {
 
                 }
                 .padding(.horizontal, 5)
+                .id(app.id)
 
                 // Metadata row at bottom
                 Divider()
 
                 metadataRow(for: app)
+                    .id(app.id)
             }
 
             Spacer()
@@ -363,6 +379,7 @@ struct UpdateDetailView: View {
                 }
                 Spacer()
             }
+            .id(app.id)
         }
         .padding(.vertical, 5)
     }
@@ -421,7 +438,7 @@ struct UpdateDetailView: View {
         // Current apps: Hide (primary) + Adopt (secondary, if applicable)
         if app.source == .current {
             let primaryAction = ActionButtonItem(
-                title: "Hide",
+                title: "Hide \(app.appInfo.appName)",
                 foregroundColor: .red,
                 backgroundColor: ThemeColors.shared(for: colorScheme).secondaryBG,
                 action: {
@@ -465,7 +482,7 @@ struct UpdateDetailView: View {
             let primaryAction = ActionButtonItem(
                 title: "Hide",
                 foregroundColor: .red,
-                backgroundColor: ThemeColors.shared(for: colorScheme).secondaryBG,
+                backgroundColor: ThemeColors.shared(for: colorScheme).primaryBG,
                 action: {
                     updateManager.hideApp(app, skipVersion: nil)
                 }
@@ -980,6 +997,7 @@ struct UpdateDetailView: View {
                             }
                             .buttonStyle(.borderedProminent)
                             .disabled(isAdopting || !canAdopt)
+                            .id(app.id)
                         }
                     }
                     .padding([.horizontal, .top])
