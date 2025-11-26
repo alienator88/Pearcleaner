@@ -299,6 +299,10 @@ struct UpdateDetailView: View {
                     Text(formatDate(date))
                         .font(.subheadline)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                } else {
+                    Text("No Release Date")
+                        .font(.subheadline)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                 }
                 Spacer()
             }
