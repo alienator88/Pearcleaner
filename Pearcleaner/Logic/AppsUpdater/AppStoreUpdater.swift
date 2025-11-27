@@ -598,11 +598,12 @@ private final class MacOSDownloadObserverWithWorkaround: NSObject, CKDownloadQue
             let receiptDir = "\(appPathString)/Contents/_MASReceipt"
             let receiptDestPath = "\(receiptDir)/receipt"
 
-            // Create receipt directory, copy receipt, and set permissions (chained commands)
+            // Create receipt directory, copy receipt, set permissions, and set ownership to root:wheel (chained commands)
             let receiptScript = """
             mkdir -p '\(receiptDir)' && \
             cp '\(receiptPath)' '\(receiptDestPath)' && \
-            chmod 644 '\(receiptDestPath)'
+            chmod 644 '\(receiptDestPath)' && \
+            chown 0:0 '\(receiptDestPath)'
             """
 
             let receiptResult = try! await runSUCommand(

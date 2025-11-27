@@ -102,12 +102,16 @@ struct UpdaterSourceCheckboxSection: View {
                             .controlSize(.small)
                     } else {
                         Image(systemName: "wrench.fill")
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 15, height: 15)
+                            .contentShape(Rectangle())
+                            .foregroundStyle(.blue)
+                            .help("Reset App Store (fixes stuck downloads)")
                     }
                 }
                 .buttonStyle(.plain)
                 .disabled(isResetting)
-                .help("Reset App Store (fixes stuck downloads)")
                 .confirmationDialog(
                     "Reset App Store?",
                     isPresented: $showResetConfirmation,
@@ -157,11 +161,16 @@ struct UpdaterSourceCheckboxSection: View {
                     sources.homebrew.showAutoUpdates.toggle()
                     Task { await updateManager.scanIfNeeded(sources: [.homebrew]) }
                 }) {
-                    Image(systemName: "square.and.arrow.up")
-                        .foregroundStyle(sources.homebrew.showAutoUpdates ? .blue : ThemeColors.shared(for: colorScheme).secondaryText)
+                    Image(systemName: "square.and.arrow.up.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 15, height: 15)
+                        .foregroundStyle(sources.homebrew.showAutoUpdates ? .orange : ThemeColors.shared(for: colorScheme).secondaryText)
+                        .contentShape(Rectangle())
+                        .help(sources.homebrew.showAutoUpdates ? "Hide auto-updating apps from Homebrew" : "Show auto-updating apps in Homebrew")
+
                 }
                 .buttonStyle(.plain)
-                .help(sources.homebrew.showAutoUpdates ? "Hide auto-updating apps from Homebrew" : "Show auto-updating apps in Homebrew")
             }
 
             HStack(spacing: 8) {
@@ -206,14 +215,24 @@ struct UpdaterSourceCheckboxSection: View {
                 }) {
                     if #available(macOS 14.0, *) {
                         Image(systemName: sources.sparkle.includePreReleases ? "flask.fill" : "flask")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 15, height: 15)
                             .foregroundStyle(sources.sparkle.includePreReleases ? .green : ThemeColors.shared(for: colorScheme).secondaryText)
+                            .contentShape(Rectangle())
+                            .help(sources.sparkle.includePreReleases ? "Disable pre-releases" : "Enable pre-releases")
                     } else {
                         Image(systemName: "testtube.2")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 15, height: 15)
                             .foregroundStyle(sources.sparkle.includePreReleases ? .green : ThemeColors.shared(for: colorScheme).secondaryText)
+                            .contentShape(Rectangle())
+                            .help(sources.sparkle.includePreReleases ? "Disable pre-releases" : "Enable pre-releases")
                     }
                 }
                 .buttonStyle(.plain)
-                .help(sources.sparkle.includePreReleases ? "Disable pre-releases" : "Enable pre-releases")
+
             }
 
             // Current apps toggle

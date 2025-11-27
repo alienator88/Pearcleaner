@@ -166,6 +166,15 @@ extension Color {
         let b = Int(components[2] * 255)
         return String(format: "#%02x%02x%02x", r, g, b)
     }
+
+    func adjust(brightness: Double) -> Color {
+        let components = NSColor(self).cgColor.components ?? [0, 0, 0, 1]
+        let r = min(max(components[0] + brightness, 0), 1)
+        let g = min(max(components[1] + brightness, 0), 1)
+        let b = min(max(components[2] + brightness, 0), 1)
+        let a = components[3]
+        return Color(red: r, green: g, blue: b, opacity: a)
+    }
 }
 
 

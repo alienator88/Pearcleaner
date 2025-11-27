@@ -27,7 +27,9 @@ struct AboutSettingsTab: View {
                     .bold()
                 HStack {
                     Text("Version \(Bundle.main.version)")
-                    Text("(Build \(Bundle.main.buildVersion))").font(.footnote)
+                    Text("(Build \(Bundle.main.buildVersion))")
+                        .font(.footnote)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                 }
                 .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 

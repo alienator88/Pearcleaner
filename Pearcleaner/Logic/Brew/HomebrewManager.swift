@@ -162,8 +162,8 @@ class HomebrewManager: ObservableObject {
             }
 
             // Update @Published properties once with all packages (sorted alphabetically by display name)
-            installedFormulae = tempFormulae.sorted { ($0.displayName ?? $0.name).localizedCaseInsensitiveCompare($1.displayName ?? $1.name) == .orderedAscending }
-            installedCasks = tempCasks.sorted { ($0.displayName ?? $0.name).localizedCaseInsensitiveCompare($1.displayName ?? $1.name) == .orderedAscending }
+            installedFormulae = tempFormulae.sorted { ($0.displayName ?? $0.name).sortKey < ($1.displayName ?? $1.name).sortKey }
+            installedCasks = tempCasks.sorted { ($0.displayName ?? $0.name).sortKey < ($1.displayName ?? $1.name).sortKey }
 
             // Mark as loaded for this session
             hasLoadedInstalledPackages = true
@@ -274,7 +274,7 @@ class HomebrewManager: ObservableObject {
                         installedCasks.append(updated)
                     }
                     // Re-sort after adding/updating to maintain alphabetical order
-                    installedCasks.sort { ($0.displayName ?? $0.name).localizedCaseInsensitiveCompare($1.displayName ?? $1.name) == .orderedAscending }
+                    installedCasks.sort { ($0.displayName ?? $0.name).sortKey < ($1.displayName ?? $1.name).sortKey }
                 } else {
                     if let index = installedFormulae.firstIndex(where: { $0.name == name }) {
                         installedFormulae[index] = updated
@@ -282,7 +282,7 @@ class HomebrewManager: ObservableObject {
                         installedFormulae.append(updated)
                     }
                     // Re-sort after adding/updating to maintain alphabetical order
-                    installedFormulae.sort { ($0.displayName ?? $0.name).localizedCaseInsensitiveCompare($1.displayName ?? $1.name) == .orderedAscending }
+                    installedFormulae.sort { ($0.displayName ?? $0.name).sortKey < ($1.displayName ?? $1.name).sortKey }
                 }
             }
         } catch {
@@ -350,9 +350,9 @@ class HomebrewManager: ObservableObject {
         }
 
         // Sort and update dictionary (by displayName for consistent alphabetical ordering)
-        installedByCategory[.outdated] = outdated.sorted { ($0.displayName ?? $0.name).localizedCaseInsensitiveCompare($1.displayName ?? $1.name) == .orderedAscending }
-        installedByCategory[.formulae] = formulae.sorted { ($0.displayName ?? $0.name).localizedCaseInsensitiveCompare($1.displayName ?? $1.name) == .orderedAscending }
-        installedByCategory[.casks] = casks.sorted { ($0.displayName ?? $0.name).localizedCaseInsensitiveCompare($1.displayName ?? $1.name) == .orderedAscending }
+        installedByCategory[.outdated] = outdated.sorted { ($0.displayName ?? $0.name).sortKey < ($1.displayName ?? $1.name).sortKey }
+        installedByCategory[.formulae] = formulae.sorted { ($0.displayName ?? $0.name).sortKey < ($1.displayName ?? $1.name).sortKey }
+        installedByCategory[.casks] = casks.sorted { ($0.displayName ?? $0.name).sortKey < ($1.displayName ?? $1.name).sortKey }
     }
 
     private func isPackageOutdated(_ result: HomebrewSearchResult) -> Bool {
@@ -534,7 +534,7 @@ class HomebrewManager: ObservableObject {
                     url: nil,
                     appcast: nil
                 )
-            }.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+            }.sorted { ($0.displayName ?? $0.name).sortKey < ($1.displayName ?? $1.name).sortKey }
 
             allAvailableCasks = casks.map { (name, displayName, description, version, _) in
                 HomebrewSearchResult(
@@ -572,7 +572,7 @@ class HomebrewManager: ObservableObject {
                     url: nil,
                     appcast: nil
                 )
-            }.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+            }.sorted { ($0.displayName ?? $0.name).sortKey < ($1.displayName ?? $1.name).sortKey }
 
             // Populate availableByCategory dictionary
             availableByCategory[.formulae] = allAvailableFormulae

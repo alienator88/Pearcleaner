@@ -6,7 +6,7 @@
    <br />
    <strong>Status: </strong>Maintained
    <br />
-   <strong>Version: </strong>5.4.2
+   <strong>Version: </strong>5.4.3
    <br />
    <a href="https://github.com/alienator88/Pearcleaner/releases"><strong>Download</strong></a>
     · 
@@ -102,7 +102,7 @@ If you are able to contribute to translations for the app, please see this discu
 
 ## Thanks
 
-- Much appreciation to [Freemacsoft's AppCleaner](https://freemacsoft.net/appcleaner/) and [Sun Knudsen's app-cleaner script](https://sunknudsen.com/privacy-guides/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative)
+- Much appreciation to [Freemacsoft's AppCleaner](https://freemacsoft.net/appcleaner/) and [Sun Knudsen's app-cleaner script](https://github.com/sunknudsen/guides/tree/main/archive/how-to-clean-uninstall-macos-apps-using-appcleaner-open-source-alternative) for the inspiration
 - [DharsanB](https://github.com/dharsanb) for sponsoring my Apple Developer account
 
 ## Some of my apps

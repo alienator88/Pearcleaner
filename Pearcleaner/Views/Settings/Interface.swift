@@ -27,6 +27,8 @@ struct InterfaceSettingsTab: View {
     @AppStorage("settings.interface.greetingEnabled") private var greetingEnabled: Bool = true
     @AppStorage("settings.interface.badgeOverlaysEnabled") private var badgeOverlaysEnabled: Bool = true
     @AppStorage("settings.interface.startupView") private var startupView: Int = CurrentPage.applications.rawValue
+    @State private var showPagePopover: Bool = false
+    @State private var hiddenPages: Set<Int> = AppState.loadHiddenPages()
 
     var body: some View {
 
@@ -211,25 +213,31 @@ struct InterfaceSettingsTab: View {
                             .frame(width: 15, height: 15)
                             .padding(.trailing)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text("Startup view")
-                                .font(.callout)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                            Text("Choose which view to open when launching the app")
-                                .font(.caption2)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        }
+                        Text("Startup view & page visibility")
+                            .font(.callout)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                         Spacer()
-                        Picker(selection: $startupView) {
-                            ForEach(CurrentPage.availablePages, id: \.self) { page in
-                                HStack {
-                                    Image(systemName: page.icon)
-                                    Text(page.title)
+                        Button(action: {
+                            showPagePopover.toggle()
+                        }) {
+                            HStack(spacing: 6) {
+                                if let currentPage = CurrentPage(rawValue: startupView) {
+                                    Image(systemName: currentPage.icon)
+                                    Text(currentPage.title)
                                 }
-                                .tag(page.rawValue)
+                                Image(systemName: "chevron.down")
+                                    .font(.caption)
                             }
-                        } label: { EmptyView() }
-                            .buttonStyle(.borderless)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                        }
+                        .buttonStyle(.borderless)
+                        .popover(isPresented: $showPagePopover, arrowEdge: .trailing) {
+                            PageVisibilityPopover(
+                                startupView: $startupView,
+                                hiddenPages: $hiddenPages,
+                                colorScheme: colorScheme
+                            )
+                        }
                     }
                     .padding(5)
 
@@ -243,5 +251,72 @@ struct InterfaceSettingsTab: View {
 
     }
 
+}
+
+// MARK: - Page Visibility Popover
+
+struct PageVisibilityPopover: View {
+    @Binding var startupView: Int
+    @Binding var hiddenPages: Set<Int>
+    let colorScheme: ColorScheme
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            ForEach(CurrentPage.allCases, id: \.rawValue) { page in
+                let isHidden = hiddenPages.contains(page.rawValue)
+                let isStartupPage = startupView == page.rawValue
+                let visiblePageCount = CurrentPage.allCases.count - hiddenPages.count
+
+                HStack(spacing: 12) {
+                    // Radio button and label - clickable together
+                    Button(action: {
+                        // If trying to set a hidden page as startup, unhide it first
+                        if isHidden {
+                            hiddenPages.remove(page.rawValue)
+                            AppState.saveHiddenPages(hiddenPages)
+                        }
+                        startupView = page.rawValue
+                    }) {
+                        HStack(spacing: 8) {
+                            Image(systemName: isStartupPage ? "circle.fill" : "circle")
+                                .foregroundStyle(isStartupPage ? ThemeColors.shared(for: colorScheme).accent : ThemeColors.shared(for: colorScheme).secondaryText)
+
+                            Image(systemName: page.icon)
+                                .frame(width: 16)
+                            Text(page.title)
+                                .font(.body)
+                        }
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .help("Set as startup page")
+
+                    Spacer()
+
+                    // Eye toggle button
+                    Button(action: {
+                        if isHidden {
+                            hiddenPages.remove(page.rawValue)
+                        } else {
+                            hiddenPages.insert(page.rawValue)
+                        }
+                        AppState.saveHiddenPages(hiddenPages)
+                    }) {
+                        Image(systemName: isHidden ? "eye.slash.fill" : "eye.fill")
+                            .foregroundStyle(isHidden ? ThemeColors.shared(for: colorScheme).secondaryText.opacity(0.5) : ThemeColors.shared(for: colorScheme).accent)
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(!isHidden && (visiblePageCount <= 1 || isStartupPage))
+                    .help(isHidden ? "Show page" : (isStartupPage ? "Cannot hide active startup page" : "Hide page"))
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .opacity(isHidden ? 0.5 : 1.0)
+            }
+        }
+        .frame(width: 200)
+        .padding(.vertical, 8)
+    }
 }
 

@@ -13,8 +13,16 @@ struct CircularProgressView: View {
     let progress: Double // 0.0 to 1.0
     let size: CGFloat
     let lineWidth: CGFloat
+    let badgeText: String? // Optional badge overlay text (e.g., "3/5")
 
     @Environment(\.colorScheme) var colorScheme
+
+    init(progress: Double, size: CGFloat, lineWidth: CGFloat, badgeText: String? = nil) {
+        self.progress = progress
+        self.size = size
+        self.lineWidth = lineWidth
+        self.badgeText = badgeText
+    }
 
     private var accent: Color {
         ThemeColors.shared(for: colorScheme).accent
@@ -36,6 +44,13 @@ struct CircularProgressView: View {
                 .stroke(accent, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
                 .rotationEffect(.degrees(-90)) // Start from top
                 .animation(.linear(duration: 0.3), value: progress)
+
+            // Optional badge text overlay
+            if let badgeText = badgeText {
+                Text(badgeText)
+                    .font(.system(size: size * 0.35, weight: .medium))
+                    .foregroundStyle(secondaryText)
+            }
         }
         .frame(width: size, height: size)
     }

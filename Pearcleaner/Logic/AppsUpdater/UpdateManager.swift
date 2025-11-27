@@ -20,6 +20,10 @@ class UpdateManager: ObservableObject {
     @Published var scanningSources: Set<UpdateSource> = []
     @Published var currentScanTask: Task<Void, Never>?
 
+    // Batch update tracking
+    @Published var isUpdatingAll: Bool = false
+    @Published var totalAppsToUpdate: Int = 0
+
     // Consolidated settings (2 Data properties total)
     @AppStorage("settings.updater.sources") private var sourcesData: Data = UpdaterSourcesSettings.defaultEncoded()
     @AppStorage("settings.updater.display") private var displayData: Data = UpdaterDisplaySettings.defaultEncoded()
@@ -153,6 +157,30 @@ class UpdateManager: ObservableObject {
             .filter { $0.key != .unsupported && $0.key != .current }
             .values
             .reduce(0) { $0 + $1.count }
+    }
+
+    /// Progress of batch update (0.0 to 1.0)
+    var updateAllProgress: Double {
+        guard totalAppsToUpdate > 0 else { return 0 }
+        let remaining = updatesBySource
+            .filter { $0.key != .unsupported && $0.key != .current }
+            .values
+            .flatMap { $0 }
+            .filter { $0.isSelectedForUpdate }
+            .count
+        return Double(totalAppsToUpdate - remaining) / Double(totalAppsToUpdate)
+    }
+
+    /// Number of completed apps in batch update
+    var completedAppsCount: Int {
+        guard totalAppsToUpdate > 0 else { return 0 }
+        let remaining = updatesBySource
+            .filter { $0.key != .unsupported && $0.key != .current }
+            .values
+            .flatMap { $0 }
+            .filter { $0.isSelectedForUpdate }
+            .count
+        return totalAppsToUpdate - remaining
     }
 
     /// Computed property for easy access to hidden apps mapping (bundleID -> source)
@@ -314,6 +342,8 @@ class UpdateManager: ObservableObject {
             // Add refreshed app to visible list
             if var apps = updatesBySource[app.source] {
                 apps.append(refreshedApp)
+                // Sort alphabetically after adding using sortKey extension
+                apps.sort { $0.appInfo.appName.sortKey < $1.appInfo.appName.sortKey }
                 updatesBySource[app.source] = apps
             } else {
                 updatesBySource[app.source] = [refreshedApp]
@@ -596,7 +626,7 @@ class UpdateManager: ObservableObject {
 
     private func processSourceResults(source: UpdateSource, apps: [UpdateableApp]) async {
         // Sort alphabetically
-        let sortedApps = apps.sorted { $0.appInfo.appName.localizedCaseInsensitiveCompare($1.appInfo.appName) == .orderedAscending }
+        let sortedApps = apps.sorted { $0.appInfo.appName.sortKey < $1.appInfo.appName.sortKey }
 
         // Filter ignored and version-skipped apps
         let ignored = ignoredApps
@@ -914,8 +944,21 @@ class UpdateManager: ObservableObject {
 
     /// Update all selected apps across all sources (concurrent per-source)
     func updateSelectedApps() async {
-        // Count total selected apps across all sources
-        let totalSelected = updatesBySource.values.flatMap { $0 }.filter { $0.isSelectedForUpdate }.count
+        // Count total selected apps across updateable sources only (exclude .current and .unsupported)
+        let totalSelected = updatesBySource
+            .filter { $0.key != .unsupported && $0.key != .current }
+            .values
+            .flatMap { $0 }
+            .filter { $0.isSelectedForUpdate }
+            .count
+        totalAppsToUpdate = totalSelected
+        isUpdatingAll = true
+
+        defer {
+            isUpdatingAll = false
+            totalAppsToUpdate = 0
+        }
+
         GlobalConsoleManager.shared.appendOutput("Starting updates for \(totalSelected) selected app(s) across all sources...\n", source: CurrentPage.updater.title)
 
         await withTaskGroup(of: Void.self) { group in

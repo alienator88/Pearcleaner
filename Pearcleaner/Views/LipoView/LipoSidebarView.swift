@@ -78,6 +78,7 @@ struct LipoDescriptionSection: View {
 }
 
 struct LipoSavingsSection: View {
+    @Environment(\.colorScheme) var colorScheme
     let totalSpaceSaved: UInt64
     let savingsAllApps: UInt64
 
@@ -85,12 +86,14 @@ struct LipoSavingsSection: View {
         VStack(alignment: .leading) {
             HStack(spacing: 0) {
                 Text("Total Saved:")
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                 Spacer()
                 Text(formatByte(size: Int64(totalSpaceSaved)).human)
                     .foregroundStyle(.green)
             }
             HStack(spacing: 0) {
                 Text("Approximate Savings:")
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                 Spacer()
                 Text(formatByte(size: Int64(savingsAllApps)).human)
                     .foregroundStyle(.orange)
@@ -124,6 +127,7 @@ struct LipoExcludedAppsSection: View {
             Text("Excluded Apps")
                 .font(.subheadline)
                 .fontWeight(.medium)
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
 
             if excludedApps.isEmpty {
                 Text("No apps excluded")
@@ -165,6 +169,7 @@ struct LipoExcludedAppRow: View {
                     Text(appInfo.appName)
                         .font(.caption)
                         .lineLimit(1)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
                     Text(appInfo.appVersion)
                         .font(.caption2)
                         .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)

@@ -26,6 +26,7 @@ struct UpdateDetailView: View {
     @State private var isAdopting: Bool = false
     @State private var adoptionError: String? = nil
     @State private var isSearchingCasks: Bool = false
+    @State private var showMASWarning = false
 
     // Look up live app data from updateManager - this makes the view reactive to status changes
     private var app: UpdateableApp? {
@@ -71,6 +72,37 @@ struct UpdateDetailView: View {
                     Spacer()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+        }
+        .confirmationDialog(
+            "App Store App Detected",
+            isPresented: $showMASWarning,
+            titleVisibility: .visible
+        ) {
+            if let app = app {
+                Button("Update Anyway", role: .destructive) {
+                    Task { await updateManager.updateApp(app) }
+                }
+                if let availableVersion = app.availableVersion {
+                    let displayVersion = app.source == .homebrew ?
+                    availableVersion.stripBrewRevisionSuffix() : availableVersion
+                    Button("Skip \(displayVersion)") {
+                        updateManager.hideApp(app, skipVersion: app.availableVersion)
+                    }
+                } else {
+                    Button("Skip This Version") {
+                        updateManager.hideApp(app, skipVersion: app.availableVersion)
+                    }
+                }
+
+
+                Button("Cancel", role: .cancel) { }
+            }
+        } message: {
+            if let app = app {
+                let sourceName = app.source == .sparkle ? "Sparkle" :
+                                 app.source == .homebrew ? "Homebrew" : "this source"
+                Text("This app was installed from the App Store. Updating it via \(sourceName) will:\n• Break the App Store receipt and licensing\n• Remove the app from App Store tracking\n• Prevent future App Store updates\n\nProceed with caution.")
             }
         }
     }
@@ -122,6 +154,7 @@ struct UpdateDetailView: View {
                                 }
                                 .buttonStyle(.plain)
                                 .help("View in App Store")
+                                .id(app.id)
                             }
 
                             // Unsupported indicator
@@ -131,11 +164,24 @@ struct UpdateDetailView: View {
                                     .foregroundStyle(.orange)
                                     .help("Unsupported")
                             }
+
+                            Spacer()
+
+                            HStack(spacing: 8) {
+                                // Status view (leading edge of button)
+                                statusView(for: app)
+
+                                // Action button (right edge)
+                                buildExpandableActionButton(for: app)
+                                    .id(app.id)
+                            }
+
                         }
 
                         // Version info with build numbers
                         buildVersionText(for: app, colorScheme: colorScheme)
                             .font(.title3)
+                            .help(buildNumberTooltip(for: app) ?? "")
 
                         // Non-primary region warning
                         if isNonPrimaryRegion, let region = app.foundInRegion {
@@ -144,135 +190,7 @@ struct UpdateDetailView: View {
                                 .foregroundStyle(.orange)
                         }
                     }
-
-                    Spacer()
-
-                    // Status view (matches UpdateRowView lines 134-148)
-                    statusView(for: app)
                 }
-
-                // Action buttons in header
-                HStack(spacing: 8) {
-                    // Current apps: Show Hide + Adopt (if not Homebrew)
-                    if app.source == .current {
-                        Button("Hide") {
-                            updateManager.hideApp(app, skipVersion: nil)
-                        }
-                        .buttonStyle(.plain)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
-                        .background(ThemeColors.shared(for: colorScheme).secondaryBG)
-                        .foregroundStyle(Color.red)
-                        .clipShape(Capsule())
-
-                        // Adopt button for non-Homebrew current apps
-                        if app.appInfo.cask == nil {
-                            Button {
-                                // Lazy loading: only load casks on first click
-                                if brewManager.allAvailableCasks.isEmpty {
-                                    isLoadingCasks = true
-                                    Task {
-                                        await brewManager.loadAvailablePackages(appState: appState)
-                                        await MainActor.run {
-                                            isLoadingCasks = false
-                                            showAdoptionSheet = true
-                                        }
-                                    }
-                                } else {
-                                    showAdoptionSheet = true
-                                }
-                            } label: {
-                                Text("Adopt")
-                            }
-                            .buttonStyle(.plain)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
-                            .background(ThemeColors.shared(for: colorScheme).secondaryBG)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-                            .clipShape(Capsule())
-                            .disabled(isLoadingCasks)
-                            .opacity(isLoadingCasks ? 0.5 : 1.0)
-                        }
-                    }
-                    // Unsupported apps: Show Hide only (inline adoption UI handles cask adoption)
-                    else if app.source == .unsupported {
-                        Button("Hide") {
-                            updateManager.hideApp(app, skipVersion: nil)
-                        }
-                        .buttonStyle(.plain)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
-                        .background(ThemeColors.shared(for: colorScheme).secondaryBG)
-                        .foregroundStyle(Color.red)
-                        .clipShape(Capsule())
-                    }
-                    // Apps with updates: Show Update + Skip [version] + Hide + Adopt
-                    else {
-                        actionButton(for: app)
-
-                        Button {
-                            if let availableVersion = app.availableVersion {
-                                updateManager.hideApp(app, skipVersion: availableVersion)
-                            }
-                        } label: {
-                            if let availableVersion = app.availableVersion {
-                                // Clean Homebrew versions for display (strip commit hash)
-                                let displayVersion = app.source == .homebrew ?
-                                    availableVersion.stripBrewRevisionSuffix() : availableVersion
-                                Text("Skip \(displayVersion)")
-                            } else {
-                                Text("Skip Version")
-                            }
-                        }
-                        .buttonStyle(.plain)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
-                        .background(ThemeColors.shared(for: colorScheme).secondaryBG)
-                        .foregroundStyle(Color.orange)
-                        .clipShape(Capsule())
-                        .disabled(app.availableVersion == nil)
-
-                        Button("Hide") {
-                            updateManager.hideApp(app, skipVersion: nil)
-                        }
-                        .buttonStyle(.plain)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
-                        .background(ThemeColors.shared(for: colorScheme).secondaryBG)
-                        .foregroundStyle(Color.red)
-                        .clipShape(Capsule())
-
-                        // Adopt button for non-Homebrew apps (only if not already managed by a cask)
-                        if app.source != .homebrew && app.appInfo.cask == nil {
-                            Button {
-                                // Lazy loading: only load casks on first click
-                                if brewManager.allAvailableCasks.isEmpty {
-                                    isLoadingCasks = true
-                                    Task {
-                                        await brewManager.loadAvailablePackages(appState: appState)
-                                        await MainActor.run {
-                                            isLoadingCasks = false
-                                            showAdoptionSheet = true
-                                        }
-                                    }
-                                } else {
-                                    showAdoptionSheet = true
-                                }
-                            } label: {
-                                Text("Adopt")
-                            }
-                            .buttonStyle(.plain)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
-                            .background(ThemeColors.shared(for: colorScheme).secondaryBG)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-                            .clipShape(Capsule())
-                            .disabled(isLoadingCasks)
-                            .opacity(isLoadingCasks ? 0.5 : 1.0)
-                        }
-                    }
-                }
-                .padding(.leading, 6)
             }
 
             Divider()
@@ -280,6 +198,7 @@ struct UpdateDetailView: View {
             // Unsupported apps: Show inline adoption view
             if app.source == .unsupported {
                 unsupportedContentView(for: app)
+                    .id(app.id)
             }
             // Current apps: Show simple "up to date" message
             else if app.source == .current {
@@ -295,72 +214,12 @@ struct UpdateDetailView: View {
                     Spacer()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .id(app.id)
             }
             // All other apps: Show normal info and release notes
             else {
-                // Info section (SOURCE, RELEASED, CHECKED)
-                HStack(spacing: 40) {
-                VStack(alignment: .center, spacing: 4) {
-                    Text("RELEASED")
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    if let date = app.releaseDate {
-                        Text(formatDate(date))
-                            .font(.body)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                    } else {
-                        Text(verbatim: "N/A")
-                            .font(.body)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .center)
-
-                Divider().frame(height: 20)
-
-                VStack(alignment: .center, spacing: 4) {
-                    Text("CHANGELOG")
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    if let link = app.releaseNotesLink, let url = URL(string: link) {
-                        Link(destination: url) {
-                            Text("View")
-                                .font(.body)
-                                .foregroundStyle(.blue)
-                        }
-                        .buttonStyle(.plain)
-                    } else {
-                        Text(verbatim: "N/A")
-                            .font(.body)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .center)
-
-                Divider().frame(height: 20)
-
-                VStack(alignment: .center, spacing: 4) {
-                    Text("SOURCE")
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    HStack(spacing: 6) {
-                        Text(app.source.rawValue)
-                            .font(.body)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                        if app.isIOSApp {
-                            Text(verbatim: "(iOS)")
-                                .font(.caption)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        }
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .center)
-            }
-
-            // Release details (always show)
-            Divider()
-
-            VStack(alignment: .leading, spacing: 16) {
+                // Release details (only for apps with updates)
+                VStack(alignment: .leading, spacing: 16) {
 
                 // Release description (HTML formatted) - scrollable section
                 // Priority 1: Fetched external notes, Priority 2: Inline description
@@ -419,12 +278,19 @@ struct UpdateDetailView: View {
                     }
 
                 }
-                .padding(.horizontal)
+                .padding(.horizontal, 5)
+                .id(app.id)
+
+                // Metadata row at bottom
+                Divider()
+
+                metadataRow(for: app)
+                    .id(app.id)
             }
 
             Spacer()
         }
-        .padding(.horizontal)
+        .padding(.horizontal, 15)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .sheet(isPresented: $showAdoptionSheet) {
             AdoptionSheetView(
@@ -434,10 +300,7 @@ struct UpdateDetailView: View {
             )
         }
         .onAppear {
-            // Load casks for unsupported apps
-            if app.source == .unsupported {
-                loadCasksForAdoption()
-            }
+            loadCasksForAdoption()
         }
         .onChange(of: appId) { newAppId in
             // Clear cask search state when switching apps
@@ -463,6 +326,62 @@ struct UpdateDetailView: View {
                 }
             }
         }
+    }
+
+    @ViewBuilder
+    private func metadataRow(for app: UpdateableApp) -> some View {
+        HStack(spacing: 0) {
+            // Released date
+            HStack(spacing: 0) {
+                Spacer()
+                if let date = app.releaseDate {
+                    Text(formatDate(date))
+                        .font(.subheadline)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                } else {
+                    Text("No Release Date")
+                        .font(.subheadline)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                }
+                Spacer()
+            }
+
+            // Source
+            HStack(spacing: 0) {
+                Spacer()
+                HStack(spacing: 4) {
+                    Text(app.source.rawValue)
+                        .font(.subheadline)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                    if app.isIOSApp {
+                        Text(verbatim: "(iOS)")
+                            .font(.caption)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    }
+                }
+                Spacer()
+            }
+
+            // Changelog
+            HStack(spacing: 0) {
+                Spacer()
+                if let link = app.releaseNotesLink, let url = URL(string: link) {
+                    Link(destination: url) {
+                        Text("View Changelog")
+                            .font(.subheadline)
+                            .foregroundStyle(.blue)
+                    }
+                    .buttonStyle(.plain)
+                } else {
+                    Text("No Changelog")
+                        .font(.subheadline)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                }
+                Spacer()
+            }
+            .id(app.id)
+        }
+        .padding(.vertical, 5)
     }
 
     @ViewBuilder
@@ -515,6 +434,143 @@ struct UpdateDetailView: View {
         .opacity(app.status == .idle ? 1.0 : 0.5)
     }
 
+    private func buildExpandableActionButton(for app: UpdateableApp) -> ExpandableActionButton {
+        // Current apps: Hide (primary) + Adopt (secondary, if applicable)
+        if app.source == .current {
+            let primaryAction = ActionButtonItem(
+                title: "Hide \(app.appInfo.appName)",
+                foregroundColor: .red,
+                backgroundColor: ThemeColors.shared(for: colorScheme).secondaryBG,
+                action: {
+                    updateManager.hideApp(app, skipVersion: nil)
+                }
+            )
+
+            var secondaryActions: [ActionButtonItem] = []
+
+            // Add Adopt button for non-Homebrew current apps
+            if app.appInfo.cask == nil {
+                secondaryActions.append(ActionButtonItem(
+                    title: "Adopt",
+                    foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                    backgroundColor: ThemeColors.shared(for: colorScheme).secondaryBG,
+                    isDisabled: isLoadingCasks,
+                    action: {
+                        if brewManager.allAvailableCasks.isEmpty {
+                            isLoadingCasks = true
+                            Task {
+                                await brewManager.loadAvailablePackages(appState: appState)
+                                await MainActor.run {
+                                    isLoadingCasks = false
+                                    showAdoptionSheet = true
+                                }
+                            }
+                        } else {
+                            showAdoptionSheet = true
+                        }
+                    }
+                ))
+            }
+
+            return ExpandableActionButton(
+                primaryAction: primaryAction,
+                secondaryActions: secondaryActions
+            )
+        }
+        // Unsupported apps: Hide only (no dropdown)
+        else if app.source == .unsupported {
+            let primaryAction = ActionButtonItem(
+                title: "Hide",
+                foregroundColor: .red,
+                backgroundColor: ThemeColors.shared(for: colorScheme).primaryBG,
+                action: {
+                    updateManager.hideApp(app, skipVersion: nil)
+                }
+            )
+
+            return ExpandableActionButton(
+                primaryAction: primaryAction,
+                secondaryActions: []
+            )
+        }
+        // Apps with updates: Update (primary) + Skip + Hide + Adopt (secondary)
+        else {
+            let primaryAction = ActionButtonItem(
+                title: app.isIOSApp || isNonPrimaryRegion ? "Update in App Store" : "Update",
+                foregroundColor: .white,
+                backgroundColor: .green,
+                isDisabled: app.status != .idle,
+                action: {
+                    if app.isIOSApp, let appStoreURL = app.appStoreURL {
+                        openInAppStore(urlString: appStoreURL)
+                    } else if isNonPrimaryRegion, let appStoreURL = app.appStoreURL {
+                        openInAppStore(urlString: appStoreURL)
+                    } else if app.appInfo.isAppStore && app.source != .appStore {
+                        // Warn for ANY non-App Store update (Sparkle, Homebrew, etc.)
+                        showMASWarning = true
+                    } else {
+                        Task { await updateManager.updateApp(app) }
+                    }
+                }
+            )
+
+            var secondaryActions: [ActionButtonItem] = []
+
+            // Skip button
+            if let availableVersion = app.availableVersion {
+                let displayVersion = app.source == .homebrew ?
+                    availableVersion.stripBrewRevisionSuffix() : availableVersion
+                secondaryActions.append(ActionButtonItem(
+                    title: "Skip \(displayVersion)",
+                    foregroundColor: .orange,
+                    backgroundColor: ThemeColors.shared(for: colorScheme).secondaryBG,
+                    action: {
+                        updateManager.hideApp(app, skipVersion: availableVersion)
+                    }
+                ))
+            }
+
+            // Hide button
+            secondaryActions.append(ActionButtonItem(
+                title: "Hide",
+                foregroundColor: .red,
+                backgroundColor: ThemeColors.shared(for: colorScheme).secondaryBG,
+                action: {
+                    updateManager.hideApp(app, skipVersion: nil)
+                }
+            ))
+
+            // Adopt button for non-Homebrew apps
+            if app.source != .homebrew && app.appInfo.cask == nil {
+                secondaryActions.append(ActionButtonItem(
+                    title: "Adopt",
+                    foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                    backgroundColor: ThemeColors.shared(for: colorScheme).secondaryBG,
+                    isDisabled: isLoadingCasks,
+                    action: {
+                        if brewManager.allAvailableCasks.isEmpty {
+                            isLoadingCasks = true
+                            Task {
+                                await brewManager.loadAvailablePackages(appState: appState)
+                                await MainActor.run {
+                                    isLoadingCasks = false
+                                    showAdoptionSheet = true
+                                }
+                            }
+                        } else {
+                            showAdoptionSheet = true
+                        }
+                    }
+                ))
+            }
+
+            return ExpandableActionButton(
+                primaryAction: primaryAction,
+                secondaryActions: secondaryActions
+            )
+        }
+    }
+
     private func statusText(for status: UpdateStatus) -> String {
         switch status {
         case .idle:
@@ -540,14 +596,16 @@ struct UpdateDetailView: View {
         // Current apps: Show only installed version (no arrow)
         if app.source == .current {
             if app.source == .sparkle, let installedBuild = app.appInfo.appBuildNumber {
-                return Text(verbatim: "\(app.appInfo.appVersion) (\(installedBuild))")
+                let displayBuild = installedBuild.count > 5 ? String(installedBuild.prefix(5)) + "..." : installedBuild
+                return Text(verbatim: "\(app.appInfo.appVersion) (\(displayBuild))")
             }
             return Text(verbatim: app.appInfo.appVersion)
         }
 
         guard let availableVersion = app.availableVersion else {
             if app.source == .sparkle, let installedBuild = app.appInfo.appBuildNumber {
-                return Text(verbatim: "\(app.appInfo.appVersion) (\(installedBuild))")
+                let displayBuild = installedBuild.count > 5 ? String(installedBuild.prefix(5)) + "..." : installedBuild
+                return Text(verbatim: "\(app.appInfo.appVersion) (\(displayBuild))")
             }
             return Text(verbatim: app.appInfo.appVersion)
         }
@@ -562,23 +620,27 @@ struct UpdateDetailView: View {
             let installedBuild = app.appInfo.appBuildNumber
             let availableBuild = app.availableBuildNumber
 
+            // Truncate build numbers to 6 characters
+            let displayInstalledBuild = installedBuild.map { $0.count > 6 ? String($0.prefix(6)) + "..." : $0 }
+            let displayAvailableBuild = availableBuild.map { $0.count > 6 ? String($0.prefix(6)) + "..." : $0 }
+
             if !displayInstalledVersion.isEmpty && !displayAvailableVersion.isEmpty &&
                displayInstalledVersion == displayAvailableVersion {
                 var result = Text(verbatim: displayInstalledVersion).foregroundColor(.orange)
-                if let build = installedBuild {
+                if let build = displayInstalledBuild {
                     result = result + Text(verbatim: " (\(build))").foregroundColor(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
                 result = result + Text(verbatim: " → ")
                 result = result + Text(verbatim: displayAvailableVersion).foregroundColor(.green)
                 result = result + Text(verbatim: " (")
-                if let build = availableBuild {
+                if let build = displayAvailableBuild {
                     result = result + Text(build).foregroundColor(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
                 result = result + Text(verbatim: ")")
                 return result
-            } else if displayAvailableVersion.isEmpty, let availableBuild = availableBuild {
+            } else if displayAvailableVersion.isEmpty, let availableBuild = displayAvailableBuild {
                 var result = Text(verbatim: displayInstalledVersion).foregroundColor(.orange)
-                if let build = installedBuild {
+                if let build = displayInstalledBuild {
                     result = result + Text(verbatim: " (\(build))").foregroundColor(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
                 result = result + Text(verbatim: " → build ")
@@ -586,12 +648,12 @@ struct UpdateDetailView: View {
                 return result
             } else {
                 var result = Text(verbatim: displayInstalledVersion).foregroundColor(.orange)
-                if let build = installedBuild {
+                if let build = displayInstalledBuild {
                     result = result + Text(verbatim: " (\(build))").foregroundColor(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
                 result = result + Text(verbatim: " → ")
                 result = result + Text(verbatim: displayAvailableVersion).foregroundColor(.green)
-                if let build = availableBuild {
+                if let build = displayAvailableBuild {
                     result = result + Text(verbatim: " (\(build))").foregroundColor(ThemeColors.shared(for: colorScheme).secondaryText)
                 }
                 return result
@@ -602,6 +664,34 @@ struct UpdateDetailView: View {
             result = result + Text(verbatim: displayAvailableVersion).foregroundColor(.green)
             return result
         }
+    }
+
+    private func buildNumberTooltip(for app: UpdateableApp) -> String? {
+        let installedBuild = app.appInfo.appBuildNumber
+        let availableBuild = app.availableBuildNumber
+
+        // Only show tooltip if at least one build number exists and is > 6 chars
+        guard (installedBuild?.count ?? 0) > 6 || (availableBuild?.count ?? 0) > 6 else {
+            return nil
+        }
+
+        if app.source == .current {
+            if let build = installedBuild {
+                return "Build: \(build)"
+            }
+        } else {
+            // Apps with updates
+            var parts: [String] = []
+            if let installed = installedBuild {
+                parts.append("Installed: \(installed)")
+            }
+            if let available = availableBuild {
+                parts.append("Available: \(available)")
+            }
+            return parts.joined(separator: " → ")
+        }
+
+        return nil
     }
 
     private func preprocessChangelogText(_ text: String) -> String {
@@ -907,6 +997,7 @@ struct UpdateDetailView: View {
                             }
                             .buttonStyle(.borderedProminent)
                             .disabled(isAdopting || !canAdopt)
+                            .id(app.id)
                         }
                     }
                     .padding([.horizontal, .top])

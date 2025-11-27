@@ -2709,7 +2709,7 @@ struct InstalledCategoryView: View {
     private var sortedPackages: [HomebrewSearchResult] {
         switch sortOption {
         case .name:
-            return packages.sorted { ($0.displayName ?? $0.name).lowercased() < ($1.displayName ?? $1.name).lowercased() }
+            return packages.sorted { ($0.displayName ?? $0.name).sortKey < ($1.displayName ?? $1.name).sortKey }
         case .size:
             // Sort by size bytes (largest first)
             // Get size from InstalledPackage
