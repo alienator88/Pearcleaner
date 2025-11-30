@@ -579,6 +579,11 @@
 				it,
 				ko,
 				"pt-PT",
+				nb,
+				fi,
+				da,
+				el,
+				sv,
 			);
 			mainGroup = C77B8FF72AF18E2E009CC655;
 			packageReferences = (
