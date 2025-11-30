@@ -27,10 +27,22 @@
             "value" : "Hapus Instalasi Pearlcleaner"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disinstallazione di Pearcleaner"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pearcleanerでアンインストール"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner 제거"
           }
         },
         "pl" : {
@@ -45,6 +57,12 @@
             "value" : "Desinstalar o Pearcleaner"
           }
         },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desinstalar Pearcleaner"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -55,6 +73,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Odinštalovať Pearcleanerom"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner Odstrani"
           }
         },
         "tr" : {
