@@ -202,7 +202,7 @@ let skipConditions: [SkipCondition] = [
     SkipCondition(
         skipPrefix: ["mobiledocuments", "reminders", "dsstore"],
         allowPrefixes: ["comappleconfigurator", "comappledt", "comappleiwork", "comapplesfsymbols", "comappletestflight", "comapplesharedfilelist", "comapplelssharedfilelist"],
-        skipPaths: ["\(home)/.Trash", "/Library/SystemExtensions"]
+        skipPaths: ["\(home)/.Trash", "/Library/SystemExtensions", "/System/Volumes/Preboot/Cryptexes/App/System/Library/CoreServices/PasswordManagerBrowserExtensionHelper.app/Contents/MacOS/PasswordManagerBrowserExtensionHelper", "\(home)/Library/Application Support/Chromium/NativeMessagingHosts/com.apple.passwordmanager.json"]
     )
 ]
 
