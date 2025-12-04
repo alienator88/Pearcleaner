@@ -200,9 +200,9 @@ var conditions: [Condition] = [
 // Skip some system files/folders
 let skipConditions: [SkipCondition] = [
     SkipCondition(
-        skipPrefix: ["mobiledocuments", "reminders", "dsstore"],
+        skipPrefix: ["mobiledocuments", "reminders", "dsstore", "comapplepasswordmanager"],
         allowPrefixes: ["comappleconfigurator", "comappledt", "comappleiwork", "comapplesfsymbols", "comappletestflight", "comapplesharedfilelist", "comapplelssharedfilelist"],
-        skipPaths: ["\(home)/.Trash", "/Library/SystemExtensions", "/System/Volumes/Preboot/Cryptexes/App/System/Library/CoreServices/PasswordManagerBrowserExtensionHelper.app/Contents/MacOS/PasswordManagerBrowserExtensionHelper", "\(home)/Library/Application Support/Chromium/NativeMessagingHosts/com.apple.passwordmanager.json"]
+        skipPaths: ["\(home)/.Trash", "/Library/SystemExtensions", "/System/Volumes/Preboot/Cryptexes/App/System/Library/CoreServices/PasswordManagerBrowserExtensionHelper.app/Contents/MacOS/PasswordManagerBrowserExtensionHelper", "\(home)/Library/Application Support/Chromium/NativeMessagingHosts/com.apple.passwordmanager.json", "\(home)/Library/Application Support/Google/Chrome/NativeMessagingHosts/com.apple.passwordmanager.json"]
     )
 ]
 
