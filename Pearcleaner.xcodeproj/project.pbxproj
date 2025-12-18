@@ -234,6 +234,7 @@
 /* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		C71B87562EF49C58009C5B07 /* TCC */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TCC; sourceTree = "<group>"; };
 		C71DC3392EAAAFF000503474 /* Components */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Components; sourceTree = "<group>"; };
 		C73545F12D849A1B00A3DC0C /* PearcleanerHelper */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (C73545FC2D849B7E00A3DC0C /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = PearcleanerHelper; sourceTree = "<group>"; };
 		C74649E62E48000C002D1C63 /* LipoView */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = LipoView; sourceTree = "<group>"; };
@@ -316,6 +317,7 @@
 				C7923DCC2E90807F005C5632 /* Brew */,
 				C783F8FD2E903707003450E7 /* FileSearch */,
 				C783F9492E903B53003450E7 /* PKG */,
+				C71B87562EF49C58009C5B07 /* TCC */,
 			);
 			path = Logic;
 			sourceTree = "<group>";
@@ -488,6 +490,7 @@
 				C781216A2BC892A000BE06BD /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				C71B87562EF49C58009C5B07 /* TCC */,
 				C71DC3392EAAAFF000503474 /* Components */,
 				C74649E62E48000C002D1C63 /* LipoView */,
 				C74649EA2E48008A002D1C63 /* ZombieView */,
