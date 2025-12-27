@@ -33,6 +33,7 @@ struct FilesView: View {
     @State private var infoSidebar: Bool = false
     @AppStorage("settings.general.searchSensitivity") private var globalSensitivityLevel: SearchSensitivityLevel = .strict
     @ObservedObject private var consoleManager = GlobalConsoleManager.shared
+    @State private var permissionsSheetWindow: NSWindow?
 
     var body: some View {
 
@@ -147,6 +148,13 @@ struct FilesView: View {
                     Label("Console", systemImage: consoleManager.showConsole ? "terminal.fill" : "terminal")
                 }
                 .help("Toggle console output")
+
+                Button {
+                    showPermissionsSheet()
+                } label: {
+                    Label("Permissions", systemImage: "lock.shield")
+                }
+                .help("View TCC permissions for this app")
 
                 Button {
                     viewMode = viewMode == .simple ? .categorized : .simple
@@ -507,6 +515,40 @@ struct FilesView: View {
             // Final update
             updateSortedFiles()
         }
+    }
+
+    // MARK: - Show Permissions Sheet
+
+    private func showPermissionsSheet() {
+        guard let parentWindow = NSApp.keyWindow ?? NSApp.windows.first(where: { $0.isVisible }) else {
+            return
+        }
+
+        let contentView = TCCPermissionViewer(
+            bundleIdentifier: appState.appInfo.bundleIdentifier,
+            appName: appState.appInfo.appName,
+            onClose: {
+                if let sheetWindow = self.permissionsSheetWindow {
+                    parentWindow.endSheet(sheetWindow)
+                }
+                self.permissionsSheetWindow = nil
+            }
+        )
+
+        let hostingController = NSHostingController(rootView: contentView)
+
+        let sheetWindow = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 700, height: 500),
+            styleMask: [.titled, .closable],
+            backing: .buffered,
+            defer: false
+        )
+        sheetWindow.title = "TCC Permissions"
+        sheetWindow.contentViewController = hostingController
+        sheetWindow.isReleasedWhenClosed = false
+
+        parentWindow.beginSheet(sheetWindow)
+        self.permissionsSheetWindow = sheetWindow
     }
 
 }
