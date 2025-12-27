@@ -639,6 +639,12 @@
             "value" : "**whoami** 명령은 도우미가 올바르게 실행되고 있으면 'root'를 반환해야 합니다."
           }
         },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**whoami**-kommandoen skal returnere 'root', hvis hjælperen kører korrekt."
+          }
+        },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
@@ -756,6 +762,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@은(는) 이미 사용 가능한 최신 릴리즈입니다"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ er allerede på den seneste tilgængelige version"
           }
         },
         "pl" : {
@@ -1715,6 +1727,12 @@
             "value" : "제거를 위해 %lld개 중 %lld개 언어%@ 선택됨"
           }
         },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld van %2$lld taal%3$@ geselecteerd voor verwijdering"
+          }
+        },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2073,6 +2091,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$lld 패키지%2$@ 설치됨"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld pakket%2$@ geïnstalleerd"
           }
         },
         "pl" : {
@@ -3031,6 +3055,12 @@
             "value" : "%1$lld/%2$lld 파일%3$@"
           }
         },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld/%2$lld bestand%3$@"
+          }
+        },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3267,6 +3297,12 @@
             "value" : "⚙️ 서비스/데몬"
           }
         },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚙️ Service/Daemon"
+          }
+        },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3383,6 +3419,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "⚠️ 충돌"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ Conflicten met"
           }
         },
         "pl" : {
@@ -3503,6 +3545,12 @@
             "value" : "⚠️ 사용 중단됨"
           }
         },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ Verouderd"
+          }
+        },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3619,6 +3667,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "✅ 설치됨"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✅ Geïnstalleerd"
           }
         },
         "pl" : {
@@ -3973,6 +4027,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "📦 추천 교체"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "📦 Aanbevolen vervangingen"
           }
         },
         "pl" : {
@@ -4801,6 +4861,12 @@
             "value" : "지금까지 기여해 주신 모든 분들께 **큰** 감사를 표합니다!"
           }
         },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hartelijk dank aan iedereen die tot nu toe heeft bijgedragen!"
+          }
+        },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4917,6 +4983,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pearcleaner의 새 버전을 다운로드할 수 있습니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Er is een nieuwe versie van Pearcleaner beschikbaar om te downloaden."
           }
         },
         "pl" : {
@@ -5508,6 +5580,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "작업 (모든 일정에 적용됨)"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acties (van toepassing op alle schema's)"
           }
         },
         "pl" : {
@@ -6572,6 +6650,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "연결되지 않은 파일을 검색할 때 무시할 파일이나 폴더를 추가합니다. 목록에서 제거하려면 경로를 클릭하세요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voeg bestanden of mappen toe die moeten worden genegeerd bij het zoeken naar verweesde bestanden. Klik op een pad om het uit de lijst te verwijderen."
           }
         },
         "pl" : {
