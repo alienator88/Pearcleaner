@@ -45,6 +45,12 @@
             "value" : "Hapus Instalasi Pearlcleaner"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disinstallazione di Pearcleaner"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
@@ -55,6 +61,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pearcleaner 제거"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner Avinstaller"
           }
         },
         "nl" : {
