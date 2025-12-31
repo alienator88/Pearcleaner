@@ -128,10 +128,16 @@ var conditions: [Condition] = [
         includeForce: nil
     ),
     Condition(
-        bundle_id: "com.microsoft.vscode",
+        bundle_id: "com.microsoft.VSCode",
         include: ["vscode"],
-        exclude: [],
+        exclude: ["vscodeinsiders", "insiders"],
         includeForce: ["\(home)/Library/Application Support/Code/"]
+    ),
+    Condition(
+        bundle_id: "com.microsoft.VSCodeInsiders",
+        include: ["vscodeinsiders", "insiders"],
+        exclude: [],
+        includeForce: ["\(home)/Library/Application Support/Code - Insiders/"]
     ),
     Condition(
         bundle_id: "com.facebook.archon.developerid",
