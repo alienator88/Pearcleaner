@@ -3,16 +3,34 @@
   "strings" : {
     "Pearcleaner Uninstall" : {
       "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odinstalovat Pearcleaner"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pearcleaner Deinstallation"
           }
         },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Απεγκατάσταση Pearcleaner"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Desinstalar Pearcleaner"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner Poista asennus"
           }
         },
         "fr" : {
@@ -33,6 +51,18 @@
             "value" : "Pearcleanerでアンインストール"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner 제거"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner verwijderen"
+          }
+        },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
@@ -40,6 +70,12 @@
           }
         },
         "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desinstalar o Pearcleaner"
+          }
+        },
+        "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Desinstalar o Pearcleaner"
@@ -55,6 +91,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Odinštalovať Pearcleanerom"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner Odstrani"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner Avinstallera"
           }
         },
         "tr" : {
