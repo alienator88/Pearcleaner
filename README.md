@@ -89,7 +89,7 @@ Pre-compiled, always up-to-date versions are available from my [releases](https:
 
 You can add the app via Homebrew:
 ```
-brew install pearcleaner
+brew install --cask pearcleaner
 ```
 </details>
 

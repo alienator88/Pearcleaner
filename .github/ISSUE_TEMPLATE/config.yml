@@ -1,11 +1,9 @@
 blank_issues_enabled: false
 contact_links:
-  # - name: 🚀 Feature Request
-  #   url: https://github.com/alienator88/Pearcleaner/discussions/new?category=general
-  #   about: Share ideas for new features
+  - name: PEARCLEANER IS NOW IN MAINTENANCE MODE
+    url: https://github.com/alienator88/Pearcleaner/blob/main/.github/ISSUE_TEMPLATE/project.md
+    about: New feature requests will be ignored/closed. Click here for more details.
   - name: ❓ Ask a Question
     url: https://github.com/alienator88/Pearcleaner/discussions/new?category=general
     about: Ask the community for help
-  - name: I WILL BE TAKING A BREAK DURING DECEMBER
-    url: https://github.com/alienator88/Pearcleaner
-    about: BUGS/FRs will not be looked at much, if at all
+  

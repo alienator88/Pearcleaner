@@ -1,3 +1,4 @@
+<!--
 ---
 name: 🌟 Feature Request
 about: For submitting new feature ideas
@@ -5,6 +6,7 @@ title: "[FR] ENTER TITLE HERE"
 labels: 'enhancement'
 assignees: ''
 ---
+-->
 
 <!--
 WARNING: Issues with the template below removed will be closed!
