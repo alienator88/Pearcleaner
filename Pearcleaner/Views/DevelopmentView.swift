@@ -1677,7 +1677,8 @@ struct PathLibrary {
                 "~/.nvm/versions/node/*/",
                 "~/.npm/",
                 "~/.nvm/",
-                "~/Library/pnpm/store"
+                "~/Library/pnpm/store",
+                "~/.bun/install/cache"
             ]),
             PathEnv(name: "Pip", paths: [
                 "~/Library/Caches/pip/"
