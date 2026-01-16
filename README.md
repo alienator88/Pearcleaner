@@ -1,4 +1,11 @@
 # Pearcleaner
+
+### Project Status: 
+> As you may have noticed, there haven't been recent updates made to the app and I wanted to provide some details.
+> I have a full time job on the side, but most recently I took a break for the holidays and right after that I joined a friend who is starting a SaaS company. For now, I just legitimately don't have any spare time to work on my open-source apps. Once things slow down in the future and I have more free time, I'll get back to tackling the submitted issues/requests. If anybody has Swift/SwiftUI experience and wants to work on the existing issues meanwhile, feel free to submit PRs and I'll review/approve as I can. Thank you!
+
+<br>
+
 <p align="center">
 <!--    <img src="https://github.com/alienator88/Pearcleaner/assets/91337119/165f6961-f4fc-4199-bc68-580bacff6eaf" align="center" width="128" height="128" /> -->
    <img src="https://github.com/user-attachments/assets/62cd5fcb-92d3-4d3a-9664-161a7deabd46" align="center" width="160" height="160" />
