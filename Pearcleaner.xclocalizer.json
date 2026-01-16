@@ -1,0 +1,27 @@
+{
+  "metadata" : {
+    "createdDate" : "2026-01-05T20:38:52Z",
+    "lastModifiedDate" : "2026-01-05T20:38:52Z",
+    "projectName" : "Pearcleaner",
+    "version" : "1.0",
+    "xcodeProjectPath" : "Pearcleaner.xcodeproj"
+  },
+  "perFileMetadata" : {
+
+  },
+  "settings" : {
+    "appendVariationContext" : true,
+    "glossaries" : [
+
+    ],
+    "ignoreList" : [
+
+    ]
+  },
+  "statistics" : {
+    "totalBilledCharacters" : 0,
+    "translationSessions" : [
+
+    ]
+  }
+}
