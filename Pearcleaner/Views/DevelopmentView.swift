@@ -173,7 +173,7 @@ struct EnvironmentCleanerView: View {
 
                 // Add workspace storage cleaner for certain IDEs
                 let workspaceIDEs = ["VS Code", "Cursor", "Zed"]
-                let packageManagers = ["Pip"]
+                let packageManagers = ["Python"]
 
                 if workspaceIDEs.contains(selectedEnvironment.name) {
                     WorkspaceStorageCleanerView(ideName: selectedEnvironment.name)
@@ -1694,6 +1694,18 @@ struct PathLibrary {
             PathEnv(name: "Pyenv", paths: [
                 "~/.pyenv/",
                 "~/.pyenv/cache/"
+            ]),
+            PathEnv(name: "Python", paths: [
+                "/usr/bin/python3", // interpreter: system
+                "/usr/local/bin/python*", // interpreters: python.org
+                "/opt/homebrew/bin/python*", // interpreters: homebrew
+                "~/.local/bin/python*", // interpreters: uv
+                "~/.local/share/virtualenvs/**/bin/python", // environments: pipenv
+                "~/Library/Caches/pypoetry/virtualenvs/**/bin/python", // environments: poetry
+                "~/.pyenv/versions/**/bin/python", // environments: pyenv
+                "~/.virtualenvs/**/bin/python", // environments: virtualenvwrapper
+                "~/anaconda3/envs/**/bin/python", // environments: anaconda
+                "~/miniconda3/envs/**/bin/python", // environments: miniconda
             ]),
             PathEnv(name: "Ruby Gems", paths: [
                 "~/.gem/",
