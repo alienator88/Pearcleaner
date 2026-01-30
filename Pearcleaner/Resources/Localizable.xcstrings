@@ -639,6 +639,12 @@
             "value" : "**whoami** 명령은 도우미가 올바르게 실행되고 있으면 'root'를 반환해야 합니다."
           }
         },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**whoami**-kommandoen skal returnere 'root', hvis hjælperen kører korrekt."
+          }
+        },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
@@ -756,6 +762,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@은(는) 이미 사용 가능한 최신 릴리즈입니다"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ er allerede på den nyeste tilgjengelige versjonen"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ er allerede på den seneste tilgængelige version"
           }
         },
         "pl" : {
@@ -877,6 +895,12 @@
             "value" : "%@가 업데이트를 확인할 것입니다"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ vil sjekke etter oppdateringer"
+          }
+        },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
@@ -993,6 +1017,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld 앱"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld app%@"
           }
         },
         "pl" : {
@@ -1591,6 +1621,12 @@
             "value" : "%1$lld개 중 %2$lld개의 파일%3$@ 선택됨"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld av %2$lld fil%3$@ valgt"
+          }
+        },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1713,6 +1749,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "제거를 위해 %lld개 중 %lld개 언어%@ 선택됨"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld av %2$lld språk%3$@ valgt for fjerning"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld van %2$lld taal%3$@ geselecteerd voor verwijdering"
           }
         },
         "pl" : {
@@ -2073,6 +2121,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$lld 패키지%2$@ 설치됨"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld-pakken%2$@ installert"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld pakket%2$@ geïnstalleerd"
           }
         },
         "pl" : {
@@ -2671,6 +2731,12 @@
             "value" : "%1$lld 일정%2$@ 활성화"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld tidsplan%2$@ aktiv"
+          }
+        },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3031,6 +3097,18 @@
             "value" : "%1$lld/%2$lld 파일%3$@"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld/%2$lld fil%3$@"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld/%2$lld bestand%3$@"
+          }
+        },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3147,6 +3225,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "• 자동 업데이트"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Automatiske oppdateringer"
           }
         },
         "pl" : {
@@ -3267,6 +3351,18 @@
             "value" : "⚙️ 서비스/데몬"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚙️ Tjeneste/Daemon"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚙️ Service/Daemon"
+          }
+        },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3383,6 +3479,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "⚠️ 충돌"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ Conflicten met"
           }
         },
         "pl" : {
@@ -3503,6 +3605,12 @@
             "value" : "⚠️ 사용 중단됨"
           }
         },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ Verouderd"
+          }
+        },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3619,6 +3727,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "✅ 설치됨"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✅ Geïnstalleerd"
           }
         },
         "pl" : {
@@ -3973,6 +4087,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "📦 추천 교체"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "📦 Anbefalte erstatninger"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "📦 Aanbevolen vervangingen"
           }
         },
         "pl" : {
@@ -4801,6 +4927,18 @@
             "value" : "지금까지 기여해 주신 모든 분들께 **큰** 감사를 표합니다!"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En **stor** takk til alle som har bidratt så langt!"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hartelijk dank aan iedereen die tot nu toe heeft bijgedragen!"
+          }
+        },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4917,6 +5055,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pearcleaner의 새 버전을 다운로드할 수 있습니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En ny versjon av Pearcleaner er tilgjengelig for nedlasting."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Er is een nieuwe versie van Pearcleaner beschikbaar om te downloaden."
           }
         },
         "pl" : {
@@ -5508,6 +5658,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "작업 (모든 일정에 적용됨)"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acties (van toepassing op alle schema's)"
           }
         },
         "pl" : {
@@ -6572,6 +6728,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "연결되지 않은 파일을 검색할 때 무시할 파일이나 폴더를 추가합니다. 목록에서 제거하려면 경로를 클릭하세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legg til filer eller mapper som skal ignoreres når du søker etter foreldreløse filer. Klikk på en bane for å fjerne den fra listen."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voeg bestanden of mappen toe die moeten worden genegeerd bij het zoeken naar verweesde bestanden. Klik op een pad om het uit de lijst te verwijderen."
           }
         },
         "pl" : {
@@ -8464,6 +8632,12 @@
             "value" : "BOM 목록의 모든 유효한 패키지 파일이 제거되었습니다. 이 패키지를 잊을 수 있습니다."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle gyldige pakkefiler fra BOM-listen er fjernet. Du kan glemme denne pakken."
+          }
+        },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8700,6 +8874,12 @@
             "value" : "제거할 파일을 항상 확인하세요. 드물게 앱 이름이 너무 비슷한 경우 관련 없는 파일이 발견될 수 있습니다."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bekreft alltid filene som er merket for fjerning. I sjeldne tilfeller kan det hende at urelaterte filer blir funnet når appnavnene er for like."
+          }
+        },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8817,6 +8997,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "제거 표시된 파일을 항상 확인하세요. 드물게 앱 이름이 너무 비슷할 경우 관련 없는 파일이 발견될 수 있습니다.\n\n참고: Pearcleaner는 AppleScript를 사용하여 파일을 제거합니다. 현재 macOS는 Touch ID를 사용한 인증을 허용하지 않으며, 비밀번호 인증만 지원됩니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bekreft alltid filene som er merket for sletting. I sjeldne tilfeller kan det hende at urelaterte filer blir funnet når appnavnene er for like.\n\nMERK: Pearcleaner bruker AppleScript til å slette filer. For øyeblikket tillater ikke macOS at AppleScript autentiseres ved hjelp av fingeravtrykkssensoren, kun passordautentisering støttes."
           }
         },
         "pl" : {
@@ -9053,6 +9239,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "분석이 비활성화되었습니다"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analytics er deaktivert"
           }
         },
         "pl" : {
@@ -10712,6 +10904,12 @@
             "value" : "응용 프로그램 파일이 하위 디렉토리에 포함되어 있습니다. 잘못된 폴더 삭제를 방지하기 위해 Pearcleaner는 이를 그대로 둡니다. 필요한 경우 남은 폴더를 수동으로 삭제할 수 있습니다."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applikasjonsfilen er plassert i underkataloger. For å unngå at feil mapper slettes, vil Pearcleaner la disse være. Du kan manuelt slette de gjenværende mappene hvis nødvendig."
+          }
+        },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12009,6 +12207,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "설정 > 로그인 항목 > %@.app 의 권한이 필요합니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisasjon kreves i Innstillinger > Påloggingselementer > %@.app."
           }
         },
         "pl" : {
@@ -13782,6 +13986,12 @@
             "value" : "번들 축소(Lipo)는 사용하지 않는 아키텍처를 제거하여 앱 번들 내의 바이너리를 수정하는 매우 공격적인 작업입니다. 보통은 안전하지만, 일부 애플리케이션은 과정 후에 문제가 발생하거나 실행되지 않을 수 있습니다. 특히 중요한 앱이나 자주 사용하는 앱일 경우엔 진행하기 전에 애플리케이션 백업을 만들어 두는 것이 강력히 권장됩니다."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bundle thinning (lipo) er en aggressiv operasjon som endrer binærfilene i app-pakker ved å fjerne ubrukte arkitekturer. Selv om dette generelt er trygt, kan noen applikasjoner oppleve problemer eller ikke starte etter denne prosessen. Det anbefales på det sterkeste å ta en sikkerhetskopi av applikasjonene dine før du fortsetter, spesielt for kritiske eller ofte brukte apper."
+          }
+        },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13899,6 +14109,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "번들 축소 완료.\n번들 내 모든 바이너리에서 절약된 총 공간."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bundle-tynning fullført.\nTotal plass spart fra alle binærfiler i bundle."
           }
         },
         "pl" : {
@@ -26667,6 +26883,12 @@
             "value" : "Pearclaner CLI를 활성화하면 터미널에서 Pearcleaner 작업을 실행할 수 있습니다. 이는 pearcleaner 명령을 /usr/local/bin에 추가하여 PATH 환경 변수에서 직접 사용할 수 있게 합니다. 활성화 후 시도해 보세요:\n\n> pear --help"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ved å aktivere CLI kan du utføre Pearcleaner-handlinger fra terminalen. Dette vil legge til pearcleaner-kommandoen i /usr/local/bin, slik at den er tilgjengelig direkte fra PATH-miljøvariabelen. Prøv det etter at du har aktivert det:\n\n> pear --help"
+          }
+        },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
@@ -27610,6 +27832,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Enhanced의 모든 기능에 회사 이름과 팀 식별자를 추가합니다. 파일 내용, 메타데이터, Finder 각주 및 앱에서 생성한 파일을 검색합니다. 가장 포괄적인 정리로, 앱 및 개발자와 관련된 모든 리소스를 찾고, 그들이 만든 다른 앱들도 찾습니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alt i Enhanced plus legger til firmanavn og teamidentifikator. Søker i filinnhold, metadata, Finder-kommentarer og filer opprettet av appen. Den mest omfattende oppryddingen, finner alle ressurser knyttet til appen og utvikleren, til og med andre apper de har laget."
           }
         },
         "pl" : {
@@ -39864,7 +40092,116 @@
       }
     },
     "Last modified: %@" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zuletzt geändert: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Última modificación: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dernière modification : %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diperbarui terakhir: %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultima modifica: %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最終更新日: %@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "마지막 수정일: %@"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ostatnia modyfikacja: %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Última modificação: %@"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Última modificação: %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Последнее изменение: %@"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posledná úprava: %@"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zadnja sprememba: %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son değişiklik tarihi: %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Останнє оновлення: %@"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Được sửa đổi lần cuối: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最后修改时间：%@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最後修改時間：%@"
+          }
+        }
+      }
     },
     "Last Used Date" : {
       "localizations" : {
@@ -42466,7 +42803,116 @@
       }
     },
     "Loading permissions..." : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berechtigungen werden geladen..."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cargando permisos..."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chargement des autorisations..."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muat izin..."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caricamento delle autorizzazioni..."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "権限を読み込み中..."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "권한을 불러오는 중..."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ładowanie uprawnień..."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregando permissões..."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A carregar permissões..."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загрузка разрешений..."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Načítanie povolení..."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nalaganje dovoljenj..."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İzinler yükleniyor..."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завантаження дозволів..."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đang tải quyền truy cập..."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在加载权限..."
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "載入權限中..."
+          }
+        }
+      }
     },
     "Loading plugins..." : {
       "localizations" : {
@@ -52325,6 +52771,12 @@
             "value" : "연결되지 않은 파일 검색은 파일 제외를 위한 제거된 앱 번들이 없기 때문에 100% 정확하지 않습니다. 이 검색은 파일/폴더에 대한 최상의 추측된 검색을 하며, 현재 설치된 애플리케이션과 겹치는 파일을 제외합니다. 삭제로 표시된 파일이 실제로 제거된 애플리케이션에 속하는지 확인해 주세요."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Søk etter foreldreløse filer er ikke 100 % nøyaktig, da det ikke har noen avinstallerte app-pakker å sjekke mot for å ekskludere filer. Dette gjør et best mulig søk etter filer/mapper og ekskluderer de som overlapper med dine nåværende installerte applikasjoner. Bekreft at filene som er merket for sletting virkelig tilhører avinstallerte applikasjoner."
+          }
+        },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
@@ -53980,6 +54432,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pearcleaner는 도우미를 활성화하기 위해 한 번 비밀번호를 입력하도록 요청한 후, 도우미가 설정 > 로그인 항목에서 활성화된 상태로 유지되는 한 모든 후속 권한 작업은 다른 프롬프트 없이 실행됩니다. 이 권한 부여는 SMAppService를 통해 macOS에서 관리됩니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner vil be deg om å oppgi passordet ditt én gang for å aktivere hjelpefunksjonen. Deretter vil alle påfølgende privilegerte operasjoner kjøres uten ytterligere spørsmål, så lenge hjelpefunksjonen forblir aktivert i Innstillinger > Påloggingselementer. Denne autorisasjonen administreres av macOS via SMAppService."
           }
         },
         "pl" : {
@@ -56422,7 +56880,116 @@
       }
     },
     "Previous action: %@" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorherige Aktion: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acción anterior: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Action précédente : %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tindakan sebelumnya: %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Azione precedente: %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前の操作: %@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이전 작업: %@"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poprzednia akcja: %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ação anterior: %@"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ação anterior: %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Предыдущее действие: %@"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Predchádzajúca akcia: %@"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prejšnja akcija: %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Önceki eylem: %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Попередня дія: %@"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hành động trước đó: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上一步操作：%@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "先前動作：%@"
+          }
+        }
+      }
     },
     "Privileged Helper Not Installed!" : {
       "localizations" : {
@@ -57533,6 +58100,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "실제 크기 유형은 파일이 디스크에 할당된 실제 공간의 크기를 보여줍니다.\n\n논리적 유형은 이진 크기를 보여줍니다. 파일 시스템은 디스크에서 섹터를 압축하고 중복 제거할 수 있으므로 실제 크기는 때때로 논리적인 크기보다 작거나 큽니다.\n\nFinder 크기는 Finder에서 파일을 마우스 오른쪽 버튼으로 클릭하여 '정보 가져오기'를 선택했을 때와 유사하며, 논리적 크기와 실제 크기를 함께 보여줍니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekte størrelse viser hvor mye faktisk allokert plass filen har på disken.\n\nLogisk størrelse viser binær størrelse. Filsystemet kan komprimere og deduplisere sektorer på disken, så ekte størrelse er noen ganger mindre (eller større) enn logisk størrelse.\n\nFinder-størrelse er lik det du får hvis du høyreklikker > Få informasjon om en fil i Finder, som viser både logisk og ekte størrelse sammen."
           }
         },
         "pl" : {
@@ -90126,7 +90699,116 @@
       }
     },
     "View TCC permissions for this app" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TCC-Berechtigungen für diese App anzeigen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver permisos de TCC para esta aplicación"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher les autorisations TCC pour cette application"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lihat izin TCC untuk aplikasi ini"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visualizza le autorizzazioni TCC per questa app"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このアプリのTCC権限を表示する"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 앱의 TCC 권한 보기"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wyświetl uprawnienia TCC dla tej aplikacji"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver permissões TCC para este aplicativo"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver permissões TCC para esta aplicação"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Просмотреть разрешения TCC для этого приложения"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zobraziť povolenia TCC pre túto aplikáciu"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prejšnja akcija: %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu uygulama için TCC izinlerini görüntüle"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переглянути дозволи TCC для цього додатка"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xem quyền truy cập TCC cho ứng dụng này"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看此应用的TCC权限"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "檢視此應用程式的 TCC 權限"
+          }
+        }
+      }
     },
     "View Update" : {
       "localizations" : {
