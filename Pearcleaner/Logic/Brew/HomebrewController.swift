@@ -988,16 +988,19 @@ class HomebrewController: ObservableObject {
 
         let data: Data
 
-        // Check local cache first (Homebrew's cache)
-        if FileManager.default.fileExists(atPath: cacheFile.path) {
-            data = try Data(contentsOf: cacheFile)
-        } else {
-            // Fetch from API (Homebrew will cache it automatically)
+        // Prefer official API for up-to-date analytics; fall back to cache only if needed.
+        do {
             let url = cask ?
                 URL(string: "https://formulae.brew.sh/api/cask/\(name).json")! :
                 URL(string: "https://formulae.brew.sh/api/formula/\(name).json")!
 
             (data, _) = try await URLSession.shared.data(from: url)
+        } catch {
+            if FileManager.default.fileExists(atPath: cacheFile.path) {
+                data = try Data(contentsOf: cacheFile)
+            } else {
+                throw error
+            }
         }
 
         guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
@@ -1008,9 +1011,9 @@ class HomebrewController: ObservableObject {
         if cask {
             // Cask: simpler structure {"install": {"30d": {"name": 123}}}
             let install = analytics["install"] as? [String: Any]
-            let install30d = (install?["30d"] as? [String: Int])?.values.first
-            let install90d = (install?["90d"] as? [String: Int])?.values.first
-            let install365d = (install?["365d"] as? [String: Int])?.values.first
+            let install30d = (install?["30d"] as? [String: Int])?[name] ?? (install?["30d"] as? [String: Int])?.values.first
+            let install90d = (install?["90d"] as? [String: Int])?[name] ?? (install?["90d"] as? [String: Int])?.values.first
+            let install365d = (install?["365d"] as? [String: Int])?[name] ?? (install?["365d"] as? [String: Int])?.values.first
 
             return HomebrewAnalytics(
                 install30d: install30d,
@@ -1020,9 +1023,9 @@ class HomebrewController: ObservableObject {
         } else {
             // Formula: only fetch install counts (not install_on_request or build_error)
             let install = analytics["install"] as? [String: Any]
-            let install30d = (install?["30d"] as? [String: Int])?.values.reduce(0, +)
-            let install90d = (install?["90d"] as? [String: Int])?.values.reduce(0, +)
-            let install365d = (install?["365d"] as? [String: Int])?.values.reduce(0, +)
+            let install30d = (install?["30d"] as? [String: Int])?[name] ?? (install?["30d"] as? [String: Int])?.values.reduce(0, +)
+            let install90d = (install?["90d"] as? [String: Int])?[name] ?? (install?["90d"] as? [String: Int])?.values.reduce(0, +)
+            let install365d = (install?["365d"] as? [String: Int])?[name] ?? (install?["365d"] as? [String: Int])?.values.reduce(0, +)
 
             return HomebrewAnalytics(
                 install30d: install30d,

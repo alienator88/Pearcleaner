@@ -1167,8 +1167,10 @@ struct PackageDetailsDrawer: View {
         Task {
             isLoadingAnalytics = true
             do {
+                // Use short name for API endpoints (strip tap prefix if present)
+                let shortName = package.name.components(separatedBy: "/").last ?? package.name
                 analytics = try await HomebrewController.shared.getAnalytics(
-                    name: package.name,
+                    name: shortName,
                     cask: isCask
                 )
             } catch {
