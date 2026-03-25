@@ -132,7 +132,7 @@ struct FileListView: View {
 
                     // Stats header
                     HStack {
-                        Text("\(selectedFileItemsLocal.count)/\(filteredFiles.count) file\(filteredFiles.count == 1 ? "" : "s")")
+                        Text("\(filteredFiles.count)/\(selectedFileItemsLocal.count) file\(filteredFiles.count == 1 ? "" : "s") found")
                             .font(.caption)
                             .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
 
