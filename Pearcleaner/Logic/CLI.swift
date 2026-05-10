@@ -87,17 +87,19 @@ struct PearCLI: ParsableCommand {
         )
 
         func run() throws {
-            // Get installed apps for filtering
-            DispatchQueue.global(qos: .userInitiated).async {
-                let _ = getSortedApps(paths: PearCLI.fsm.folderPaths, useStreaming: false)
-            }
-
+            // Load the installed-apps list synchronously, then pass it directly to the
+            // searcher. The previous code dispatched getSortedApps onto a background
+            // queue and read AppState.shared.sortedApps on the very next line, which
+            // raced — sortedApps was almost always still empty when the orphan matcher
+            // ran, so every residual file appeared as an orphan (massive false
+            // positives compared to the GUI's Orphaned Files view).
+            let sortedApps = getSortedApps(paths: PearCLI.fsm.folderPaths, useStreaming: false)
 
             // Find orphaned files
             let foundPaths = ReversePathsSearcher(
                 locations: PearCLI.locations,
                 fsm: PearCLI.fsm,
-                sortedApps: AppState.shared.sortedApps
+                sortedApps: sortedApps
             )
                 .reversePathsSearchCLI()
 
@@ -209,16 +211,14 @@ struct PearCLI: ParsableCommand {
 
         func run() throws {
 
-            // Get installed apps for filtering
-            DispatchQueue.global(qos: .userInitiated).async {
-                let _ = getSortedApps(paths: PearCLI.fsm.folderPaths, useStreaming: false)
-            }
+            // Load installed apps synchronously; see ListOrphaned for the rationale.
+            let sortedApps = getSortedApps(paths: PearCLI.fsm.folderPaths, useStreaming: false)
 
             // Find orphaned files
             let foundPaths = ReversePathsSearcher(
                 locations: PearCLI.locations,
                 fsm: PearCLI.fsm,
-                sortedApps: AppState.shared.sortedApps
+                sortedApps: sortedApps
             )
                 .reversePathsSearchCLI()
 
