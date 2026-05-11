@@ -110,11 +110,14 @@ class ReversePathsSearcher {
     private func processLocationStreaming(_ location: String, batch: inout [(url: URL, size: Int64, icon: NSImage?)], batchSize: Int) async {
         do {
             let contents = try fileManager.contentsOfDirectory(atPath: location)
+            // directoryHint: .notDirectory skips the implicit lstat that SwiftURL's default
+            // .inferFromPath performs on every appendingPathComponent call on macOS 26+.
+            let locationURL = URL(fileURLWithPath: location)
             for scannedItemName in contents {
                 if shouldStop {
                     return
                 }
-                let scannedItemURL = URL(fileURLWithPath: location).appendingPathComponent(scannedItemName)
+                let scannedItemURL = locationURL.appending(path: scannedItemName, directoryHint: .notDirectory)
                 await processItemStreaming(scannedItemName, scannedItemURL: scannedItemURL, batch: &batch, batchSize: batchSize)
             }
         } catch {
@@ -195,8 +198,11 @@ class ReversePathsSearcher {
 
         do {
             let contents = try fileManager.contentsOfDirectory(atPath: location)
+            // directoryHint: .notDirectory skips the implicit lstat that SwiftURL's default
+            // .inferFromPath performs on every appendingPathComponent call on macOS 26+.
+            let locationURL = URL(fileURLWithPath: location)
             contents.forEach { scannedItemName in
-                let scannedItemURL = URL(fileURLWithPath: location).appendingPathComponent(scannedItemName)
+                let scannedItemURL = locationURL.appending(path: scannedItemName, directoryHint: .notDirectory)
                 processItem(scannedItemName, scannedItemURL: scannedItemURL)
             }
         } catch {
