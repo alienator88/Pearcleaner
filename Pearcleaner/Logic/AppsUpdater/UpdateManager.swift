@@ -732,65 +732,30 @@ class UpdateManager: ObservableObject {
             }
 
         case .appStore:
-            if let adamID = app.adamID {
-                GlobalConsoleManager.shared.appendOutput("Starting App Store update for \(app.appInfo.appName) (adamID: \(adamID))...\n", source: CurrentPage.updater.title)
-
-                // Update the app status
+            if let urlString = app.appStoreURL, let url = URL(string: urlString) {
+                GlobalConsoleManager.shared.appendOutput("Opening App Store for \(app.appInfo.appName)...\n", source: CurrentPage.updater.title)
+                
+                // Open the App Store page
+                let workspace = NSWorkspace.shared
+                workspace.open(url)
+                
+                // Update the app status to indicate user action is needed
                 if var apps = updatesBySource[.appStore],
                    let index = apps.firstIndex(where: { $0.id == app.id }) {
-                    apps[index].status = .downloading
+                    apps[index].status = .failed("Please update directly in the App Store window.")
+                    apps[index].progress = 0.0
                     updatesBySource[.appStore] = apps
                 }
-
-                // Perform update (new API throws errors)
-                do {
-                    try await AppStoreUpdater.shared.updateApp(adamID: adamID, appPath: app.appInfo.path, isIOSApp: app.isIOSApp) { [weak self] progress, status in
-                        Task { @MainActor in
-                            guard let self = self else { return }
-                            if var apps = self.updatesBySource[.appStore],
-                               let index = apps.firstIndex(where: { $0.id == app.id }) {
-                                apps[index].progress = progress
-
-                                // Update status based on App Store phase
-                                if status.contains("Downloading") || status.contains("Preparing") {
-                                    // Phase 0 or 4: Downloading or preparing
-                                    apps[index].status = .downloading
-                                    self.updatesBySource[.appStore] = apps
-                                } else if status.contains("Installing") {
-                                    // Phase 1: Installing
-                                    apps[index].status = .installing
-                                    self.updatesBySource[.appStore] = apps
-                                } else if status.contains("Completed") || status.contains("Already up to date") {
-                                    // Phase 5 or no download needed: Complete - remove from list and refresh
-                                    Task {
-                                        await self.removeFromUpdatesList(appID: app.id, source: .appStore)
-                                        await self.refreshApps(updatedApp: app.appInfo)
-                                    }
-                                } else {
-                                    // Other phases: Keep updating progress but maintain current status
-                                    self.updatesBySource[.appStore] = apps
-                                }
-                            }
-                        }
-                    }
-
-                    // Update succeeded - refresh happens via completion callback above
-                    UpdaterDebugLogger.shared.log(.appStore, "✅ App Store update completed for adamID \(adamID)")
-                    GlobalConsoleManager.shared.appendOutput("✓ Successfully updated \(app.appInfo.appName) from App Store\n", source: CurrentPage.updater.title)
-
-                } catch {
-                    // Handle errors from the new throwing API
-                    let message = error.localizedDescription
-                    printOS("❌ App Store update failed for adamID \(adamID): \(message)")
-                    GlobalConsoleManager.shared.appendOutput("✗ Failed to update \(app.appInfo.appName) from App Store: \(message)\n", source: CurrentPage.updater.title)
-
-                    // Update UI to show error (matching Sparkle's error display pattern)
-                    if var apps = updatesBySource[.appStore],
-                       let index = apps.firstIndex(where: { $0.id == app.id }) {
-                        apps[index].status = .failed(message)
-                        apps[index].progress = 0.0
-                        updatesBySource[.appStore] = apps
-                    }
+            } else {
+                let msg = "No App Store URL found."
+                printOS("❌ App Store update failed for \(app.appInfo.appName): \(msg)")
+                GlobalConsoleManager.shared.appendOutput("✗ Failed to open App Store for \(app.appInfo.appName): \(msg)\n", source: CurrentPage.updater.title)
+                
+                if var apps = updatesBySource[.appStore],
+                   let index = apps.firstIndex(where: { $0.id == app.id }) {
+                    apps[index].status = .failed(msg)
+                    apps[index].progress = 0.0
+                    updatesBySource[.appStore] = apps
                 }
             }
 
@@ -863,65 +828,35 @@ class UpdateManager: ObservableObject {
 
     /// Update an iOS app from the App Store
     func updateIOSApp(_ app: UpdateableApp) async {
-        guard app.isIOSApp, let adamID = app.adamID else {
-            printOS("❌ Not an iOS app or missing adamID")
-            GlobalConsoleManager.shared.appendOutput("✗ Not an iOS app or missing adamID for \(app.appInfo.appName)\n", source: CurrentPage.updater.title)
+        guard app.isIOSApp else {
+            printOS("❌ Not an iOS app")
+            GlobalConsoleManager.shared.appendOutput("✗ Not an iOS app: \(app.appInfo.appName)\n", source: CurrentPage.updater.title)
             return
         }
 
-        GlobalConsoleManager.shared.appendOutput("Starting iOS app update for \(app.appInfo.appName) (adamID: \(adamID))...\n", source: CurrentPage.updater.title)
-
-        // Update status
-        if var apps = updatesBySource[.appStore],
-           let index = apps.firstIndex(where: { $0.id == app.id }) {
-            apps[index].status = .downloading
-            apps[index].progress = 0.0
-            updatesBySource[.appStore] = apps
-        }
-
-        // Call AppStoreUpdater to download (which will trigger our observer)
-        do {
-            try await AppStoreUpdater.shared.updateApp(
-                adamID: adamID,
-                appPath: app.appInfo.path,
-                isIOSApp: true,
-                progress: { [weak self] progress, status in
-                    Task { @MainActor in
-                        guard let self = self else { return }
-                        if var apps = self.updatesBySource[.appStore],
-                           let index = apps.firstIndex(where: { $0.id == app.id }) {
-                            apps[index].progress = progress
-
-                            // Update status based on App Store phase (match real updateApp logic)
-                            if status.contains("Downloading") || status.contains("Preparing") {
-                                // Phase 0 or 4: Downloading or preparing
-                                apps[index].status = .downloading
-                                self.updatesBySource[.appStore] = apps
-                            } else if status.contains("Installing") {
-                                // Phase 1: Installing
-                                apps[index].status = .installing
-                                self.updatesBySource[.appStore] = apps
-                            } else if status.contains("Completed") || status.contains("Already up to date") {
-                                // Phase 5 or no download needed: Complete - remove from list and refresh
-                                Task {
-                                    await self.removeFromUpdatesList(appID: app.id, source: .appStore)
-                                    await self.refreshApps(updatedApp: app.appInfo)
-                                }
-                            } else {
-                                // Other phases: Keep updating progress but maintain current status
-                                self.updatesBySource[.appStore] = apps
-                            }
-                        }
-                    }
-                }
-            )
-            GlobalConsoleManager.shared.appendOutput("✓ Successfully updated iOS app \(app.appInfo.appName)\n", source: CurrentPage.updater.title)
-        } catch {
-            printOS("❌ iOS app update failed: \(error)")
-            GlobalConsoleManager.shared.appendOutput("✗ Failed to update iOS app \(app.appInfo.appName): \(error.localizedDescription)\n", source: CurrentPage.updater.title)
+        if let urlString = app.appStoreURL, let url = URL(string: urlString) {
+            GlobalConsoleManager.shared.appendOutput("Opening App Store for iOS app \(app.appInfo.appName)...\n", source: CurrentPage.updater.title)
+            
+            // Open the App Store page
+            let workspace = NSWorkspace.shared
+            workspace.open(url)
+            
+            // Update the app status to indicate user action is needed
             if var apps = updatesBySource[.appStore],
                let index = apps.firstIndex(where: { $0.id == app.id }) {
-                apps[index].status = .failed("Open in App Store to update using the App Store button to the left.")
+                apps[index].status = .failed("Please update directly in the App Store window.")
+                apps[index].progress = 0.0
+                updatesBySource[.appStore] = apps
+            }
+        } else {
+            let msg = "No App Store URL found."
+            printOS("❌ iOS app update failed for \(app.appInfo.appName): \(msg)")
+            GlobalConsoleManager.shared.appendOutput("✗ Failed to open App Store for iOS app \(app.appInfo.appName): \(msg)\n", source: CurrentPage.updater.title)
+            
+            if var apps = updatesBySource[.appStore],
+               let index = apps.firstIndex(where: { $0.id == app.id }) {
+                apps[index].status = .failed(msg)
+                apps[index].progress = 0.0
                 updatesBySource[.appStore] = apps
             }
         }
