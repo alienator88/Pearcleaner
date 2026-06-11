@@ -648,8 +648,14 @@ struct ifGlassAvailableMain: ViewModifier {
 
     func body(content: Content) -> some View {
         if #available(macOS 26.0, *) {
-            content
-                .glassEffect(glassEffect == "Regular" ? .regular : .clear, in: .rect(cornerRadius: 20))
+            if glassEffect == "Regular" {
+                content
+                    .glassEffect(.regular, in: .rect(cornerRadius: 20))
+            } else {
+                content
+                    .background(GlassEffect(material: .sidebar, blendingMode: .behindWindow))
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+            }
         }
         else {
             content
@@ -676,14 +682,23 @@ struct ifGlassAvailableSidebar: ViewModifier {
 
     func body(content: Content) -> some View {
         if #available(macOS 26.0, *) {
-            content
-                .background(.ultraThinMaterial.opacity(glassEffect == "Regular" ? 0 : 0.7))
-                .glassEffect(glassEffect == "Regular" ? .regular : .clear, in: .rect(cornerRadius: 20))
-                .clipShape(RoundedRectangle(cornerRadius: 20))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 20)
-                        .strokeBorder(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.2), lineWidth: colorScheme == .light ? 1 : 0)
-                }
+            if glassEffect == "Regular" {
+                content
+                    .glassEffect(.regular, in: .rect(cornerRadius: 20))
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 20)
+                            .strokeBorder(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.2), lineWidth: colorScheme == .light ? 1 : 0)
+                    }
+            } else {
+                content
+                    .background(GlassEffect(material: .sidebar, blendingMode: .behindWindow))
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 20)
+                            .strokeBorder(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.2), lineWidth: colorScheme == .light ? 1 : 0)
+                    }
+            }
         }
         else {
             content
