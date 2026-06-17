@@ -1040,7 +1040,7 @@ class HomebrewController: ObservableObject {
         var arguments = ["install"]
         if cask {
             arguments.append("--cask")
-            arguments.append("--no-quarantine")
+            arguments.append(contentsOf: await caskQuarantineArguments())
             if force {
                 arguments.append("--force")
             }
@@ -1082,7 +1082,9 @@ class HomebrewController: ObservableObject {
     func adoptCask(token: String) async throws {
         logger.log(.homebrew, "🔄 Adopting cask: \(token)")
 
-        let arguments = ["install", "--cask", "--adopt", "--no-quarantine", token]
+        var arguments = ["install", "--cask", "--adopt"]
+        arguments.append(contentsOf: await caskQuarantineArguments())
+        arguments.append(token)
 
         do {
             let result = try await runBrewCommand(arguments)
@@ -1623,6 +1625,47 @@ class HomebrewController: ObservableObject {
     }
 
     // MARK: - Maintenance
+
+    // Cached parsed Homebrew version components to avoid repeated process spawns
+    private var cachedBrewVersionComponents: [Int]?
+
+    /// Returns the quarantine-related arguments appropriate for the installed Homebrew version.
+    ///
+    /// Homebrew 4.7.0 deprecated/removed the `--no-quarantine` cask flag (Homebrew/brew#20973);
+    /// passing it on newer versions causes the command to fail with an "invalid option" error.
+    /// We therefore only include the flag on Homebrew versions older than 4.7.0. On 4.7.0+ casks
+    /// are quarantined per Homebrew's default behavior.
+    func caskQuarantineArguments() async -> [String] {
+        let components = await brewVersionComponents()
+        if isVersion(components, lessThan: [4, 7, 0]) {
+            return ["--no-quarantine"]
+        }
+        return []
+    }
+
+    /// Parses and caches the installed Homebrew version as integer components (e.g. [4, 6, 19]).
+    private func brewVersionComponents() async -> [Int] {
+        if let cached = cachedBrewVersionComponents { return cached }
+        let versionString = (try? await getBrewVersion()) ?? ""
+        let components = versionString.split(separator: ".").compactMap { Int($0) }
+        if !components.isEmpty {
+            cachedBrewVersionComponents = components
+        }
+        return components
+    }
+
+    /// Compares two version component arrays. Returns true if `lhs` < `rhs`.
+    /// If the version is unknown (empty), assumes a modern Homebrew and returns false.
+    private func isVersion(_ lhs: [Int], lessThan rhs: [Int]) -> Bool {
+        guard !lhs.isEmpty else { return false }
+        let count = max(lhs.count, rhs.count)
+        for i in 0..<count {
+            let l = i < lhs.count ? lhs[i] : 0
+            let r = i < rhs.count ? rhs[i] : 0
+            if l != r { return l < r }
+        }
+        return false
+    }
 
     func getBrewVersion() async throws -> String {
         await MainActor.run {
