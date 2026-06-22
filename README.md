@@ -1,5 +1,9 @@
 # Pearcleaner
 
+### Website
+The only legitimate website owned by me is https://itsalin.com. Anything else offering Pearcleaner downloads is either a scam or not affiliated with me.
+More details [HERE](https://www.reddit.com/r/macapps/comments/1ucstzy/psa_pearcleanercom_is_a_fake_site_pushing_macos/).
+
 ### Project Status: On Hold
 > As you may have noticed, development on the app has basically stopped since end of 2025, so I wanted to provide some context.
 >
