@@ -1040,7 +1040,6 @@ class HomebrewController: ObservableObject {
         var arguments = ["install"]
         if cask {
             arguments.append("--cask")
-            arguments.append("--no-quarantine")
             if force {
                 arguments.append("--force")
             }
@@ -1082,7 +1081,7 @@ class HomebrewController: ObservableObject {
     func adoptCask(token: String) async throws {
         logger.log(.homebrew, "🔄 Adopting cask: \(token)")
 
-        let arguments = ["install", "--cask", "--adopt", "--no-quarantine", token]
+        let arguments = ["install", "--cask", "--adopt", token]
 
         do {
             let result = try await runBrewCommand(arguments)
