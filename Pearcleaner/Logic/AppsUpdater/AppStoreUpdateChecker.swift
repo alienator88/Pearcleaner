@@ -140,7 +140,7 @@ class AppStoreUpdateChecker {
                 appStoreURL: appStoreInfo.appStoreURL,
                 status: .idle,
                 progress: 0.0,
-                isSelectedForUpdate: true,
+                isSelectedForUpdate: false,
                 releaseTitle: nil,
                 releaseDescription: appStoreInfo.releaseNotes,
                 releaseNotesLink: nil,
