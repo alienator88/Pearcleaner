@@ -3,16 +3,34 @@
   "strings" : {
     "Pearcleaner Uninstall" : {
       "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odinstalovat Pearcleaner"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pearcleaner Deinstallation"
           }
         },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Απεγκατάσταση Pearcleaner"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Desinstalar Pearcleaner"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner Poista asennus"
           }
         },
         "fr" : {
@@ -27,10 +45,34 @@
             "value" : "Hapus Instalasi Pearlcleaner"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disinstallazione di Pearcleaner"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pearcleanerでアンインストール"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner 제거"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner Avinstaller"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner verwijderen"
           }
         },
         "pl" : {
@@ -40,6 +82,12 @@
           }
         },
         "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desinstalar o Pearcleaner"
+          }
+        },
+        "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Desinstalar o Pearcleaner"
@@ -55,6 +103,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Odinštalovať Pearcleanerom"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner Odstrani"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner Avinstallera"
           }
         },
         "tr" : {
