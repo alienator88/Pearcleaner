@@ -2157,25 +2157,23 @@ class HomebrewController: ObservableObject {
         var formulae: [String] = []
         var casks: [String] = []
 
-        // Load formulae - read directly from filesystem
-        let formulaPath = "\(tapPath)/Formula"
-        if FileManager.default.fileExists(atPath: formulaPath) {
-            if let files = try? FileManager.default.contentsOfDirectory(atPath: formulaPath) {
-                for file in files where file.hasSuffix(".rb") {
-                    let name = file.replacingOccurrences(of: ".rb", with: "")
-                    formulae.append(name)
-                }
-            }
+        // Load formulae - read directly from filesystem.
+        // Mirrors Homebrew's Tap#formula_dir: official taps always use Formula/, third-party
+        // taps use the first of Formula/, HomebrewFormula/ or the tap root that exists.
+        let formulaPath = tapName.hasPrefix("homebrew/")
+            ? "\(tapPath)/Formula"
+            : ["\(tapPath)/Formula", "\(tapPath)/HomebrewFormula", tapPath].first(where: isDirectory)
+        if let formulaPath, isDirectory(formulaPath) {
+            // Sharding (Formula/<letter>/name.rb) is only supported in Formula/ and
+            // HomebrewFormula/. At the tap root only top level .rb files are formulae, so
+            // commands and casks aren't picked up. Matches Homebrew's Tap#formula_files.
+            formulae = try findRubyFiles(in: formulaPath, recursive: formulaPath != tapPath)
         }
 
         // Load casks - read directly from filesystem (recursively, since they're nested in letter directories)
         let caskPath = "\(tapPath)/Casks"
-        if FileManager.default.fileExists(atPath: caskPath) {
-            let caskFiles = try recursivelyFindCasks(in: caskPath)
-            for file in caskFiles {
-                let name = file.replacingOccurrences(of: ".rb", with: "")
-                casks.append(name)
-            }
+        if isDirectory(caskPath) {
+            casks = try findRubyFiles(in: caskPath, recursive: true)
         }
 
         // Sort alphabetically
@@ -2185,25 +2183,34 @@ class HomebrewController: ObservableObject {
         return (formulae, casks)
     }
 
-    // Helper to recursively find cask files
-    private func recursivelyFindCasks(in directory: String) throws -> [String] {
-        var caskNames: [String] = []
+    private func isDirectory(_ path: String) -> Bool {
+        var isDir: ObjCBool = false
+        return FileManager.default.fileExists(atPath: path, isDirectory: &isDir) && isDir.boolValue
+    }
 
-        guard let enumerator = FileManager.default.enumerator(atPath: directory) else {
-            return []
-        }
+    // Helper to find formula/cask files, optionally descending into letter directories
+    private func findRubyFiles(in directory: String, recursive: Bool) throws -> [String] {
+        var names: [String] = []
 
-        for case let file as String in enumerator {
-            if file.hasSuffix(".rb") {
-                // Remove .rb extension and any parent directories (like "b/")
-                let name = file.replacingOccurrences(of: ".rb", with: "")
-                               .components(separatedBy: "/")
-                               .last ?? file.replacingOccurrences(of: ".rb", with: "")
-                caskNames.append(name)
+        let files: [String]
+        if recursive {
+            guard let enumerator = FileManager.default.enumerator(atPath: directory) else {
+                return []
             }
+            files = enumerator.compactMap { $0 as? String }
+        } else {
+            files = (try? FileManager.default.contentsOfDirectory(atPath: directory)) ?? []
         }
 
-        return caskNames
+        for file in files where file.hasSuffix(".rb") {
+            // Remove .rb extension and any parent directories (like "b/")
+            let name = file.replacingOccurrences(of: ".rb", with: "")
+                           .components(separatedBy: "/")
+                           .last ?? file.replacingOccurrences(of: ".rb", with: "")
+            names.append(name)
+        }
+
+        return names
     }
 
     // Get full package info from brew info
