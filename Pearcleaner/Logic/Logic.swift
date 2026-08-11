@@ -582,11 +582,29 @@ func reloadAppsList(
 
 // Process CLI // ========================================================================================================
 
-func handleLaunchMode() {
-    var arguments = CommandLine.arguments
+enum LaunchMode: Equatable {
+    case gui
+    case cli
+}
+
+private let pearCLIExecutablePath = "/usr/local/bin/pear"
+private let pearCLISubcommands: Set<String> = [
+    "list",
+    "list-orphaned",
+    "uninstall",
+    "uninstall-all",
+    "remove-orphaned",
+    "helper",
+    "ask-password",
+]
+private let pearCLIOptions: Set<String> = ["--help", "-h", "--version"]
+
+private func normalizedLaunchArguments(_ arguments: [String]) -> [String] {
+    var arguments = arguments
     // Filter out arguments that break CLI commands on startup
     arguments = arguments.filter {
-        !["-NSDocumentRevisionsDebugMode", "YES", "-AppleTextDirection", "NO"].contains($0)
+        !["-NSDocumentRevisionsDebugMode", "YES", "-AppleTextDirection", "NO"].contains($0) &&
+        !$0.hasPrefix("-psn_")
     }
 
     if let langIndex = arguments.firstIndex(of: "-AppleLanguages"), langIndex + 1 < arguments.count {
@@ -594,17 +612,30 @@ func handleLaunchMode() {
         arguments.remove(at: langIndex)
     }
 
-    let termType = ProcessInfo.processInfo.environment["TERM"]
-    let isRunningInTerminal = termType != nil && termType != "dumb"
+    return arguments
+}
 
-    // Check if any CLI command arguments are present (even if not in terminal)
-    // This handles cases like SUDO_ASKPASS where the app is launched without a terminal
-    let cliCommands = ["uninstall", "list", "search", "help", "ask-password"]
-    let hasCLICommand = arguments.dropFirst().contains { arg in
-        cliCommands.contains(arg) || arg.hasPrefix("--")
+func launchMode(arguments: [String], environment _: [String: String]) -> LaunchMode {
+    let arguments = normalizedLaunchArguments(arguments)
+    guard let executablePath = arguments.first else { return .gui }
+
+    let executableURL = URL(fileURLWithPath: executablePath)
+    let cliExecutableURL = URL(fileURLWithPath: pearCLIExecutablePath)
+    if executableURL.standardizedFileURL.path == cliExecutableURL.path ||
+        executableURL.lastPathComponent == cliExecutableURL.lastPathComponent {
+        return .cli
     }
 
-    if isRunningInTerminal || hasCLICommand {
+    guard let firstArgument = arguments.dropFirst().first else { return .gui }
+    let hasCLIArgument = pearCLISubcommands.contains(firstArgument) || pearCLIOptions.contains(firstArgument)
+
+    return hasCLIArgument ? .cli : .gui
+}
+
+func handleLaunchMode() {
+    let arguments = normalizedLaunchArguments(CommandLine.arguments)
+
+    if launchMode(arguments: arguments, environment: ProcessInfo.processInfo.environment) == .cli {
         let locations = Locations()
         let fsm = FolderSettingsManager()
         PearCLI.setupDependencies(locations: locations, fsm: fsm)
