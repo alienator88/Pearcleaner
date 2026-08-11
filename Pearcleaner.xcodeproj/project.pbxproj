@@ -58,6 +58,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		589000022F00000100000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C77B8FF82AF18E2E009CC655 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C77B8FFF2AF18E2E009CC655;
+			remoteInfo = Pearcleaner;
+		};
 		C78121692BC892A000BE06BD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C77B8FF82AF18E2E009CC655 /* Project object */;
@@ -130,6 +137,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		589000012F00000100000001 /* PearcleanerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PearcleanerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7149E782E68DE7E00A15356 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		C72893042AFD42E600C8C1CD /* DeepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLink.swift; sourceTree = "<group>"; };
 		C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PearcleanerSentinel; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -234,6 +242,7 @@
 /* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		589000042F00000100000001 /* PearcleanerTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = PearcleanerTests; sourceTree = "<group>"; };
 		C71B87562EF49C58009C5B07 /* TCC */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TCC; sourceTree = "<group>"; };
 		C71DC3392EAAAFF000503474 /* Components */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Components; sourceTree = "<group>"; };
 		C73545F12D849A1B00A3DC0C /* PearcleanerHelper */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (C73545FC2D849B7E00A3DC0C /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = PearcleanerHelper; sourceTree = "<group>"; };
@@ -253,6 +262,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		589000072F00000100000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C728930C2AFD51EA00C8C1CD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -358,6 +374,7 @@
 			children = (
 				C75E82DD2E8C58380090C3B1 /* Shared */,
 				C77B90022AF18E2E009CC655 /* Pearcleaner */,
+				589000042F00000100000001 /* PearcleanerTests */,
 				C72893102AFD51EA00C8C1CD /* PearcleanerSentinel */,
 				C78121642BC892A000BE06BD /* FinderOpen */,
 				C73545F12D849A1B00A3DC0C /* PearcleanerHelper */,
@@ -370,6 +387,7 @@
 			isa = PBXGroup;
 			children = (
 				C77B90002AF18E2E009CC655 /* Pearcleaner.app */,
+				589000012F00000100000001 /* PearcleanerTests.xctest */,
 				C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */,
 				C78121632BC892A000BE06BD /* FinderOpen.appex */,
 				C73545F02D849A1B00A3DC0C /* PearcleanerHelper */,
@@ -428,6 +446,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		589000052F00000100000001 /* PearcleanerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 589000092F00000100000001 /* Build configuration list for PBXNativeTarget "PearcleanerTests" */;
+			buildPhases = (
+				589000062F00000100000001 /* Sources */,
+				589000072F00000100000001 /* Frameworks */,
+				589000082F00000100000001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				589000032F00000100000001 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				589000042F00000100000001 /* PearcleanerTests */,
+			);
+			name = PearcleanerTests;
+			packageProductDependencies = (
+			);
+			productName = PearcleanerTests;
+			productReference = 589000012F00000100000001 /* PearcleanerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		C728930E2AFD51EA00C8C1CD /* PearcleanerSentinel */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C72893132AFD51EA00C8C1CD /* Build configuration list for PBXNativeTarget "PearcleanerSentinel" */;
@@ -542,6 +583,10 @@
 				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
+					589000052F00000100000001 = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = C77B8FFF2AF18E2E009CC655;
+					};
 					C728930E2AFD51EA00C8C1CD = {
 						CreatedOnToolsVersion = 15.0.1;
 					};
@@ -595,6 +640,7 @@
 			projectRoot = "";
 			targets = (
 				C77B8FFF2AF18E2E009CC655 /* Pearcleaner */,
+				589000052F00000100000001 /* PearcleanerTests */,
 				C728930E2AFD51EA00C8C1CD /* PearcleanerSentinel */,
 				C78121622BC892A000BE06BD /* FinderOpen */,
 				C73545EF2D849A1B00A3DC0C /* PearcleanerHelper */,
@@ -603,6 +649,13 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		589000082F00000100000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C77B8FFE2AF18E2E009CC655 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -647,6 +700,13 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		589000062F00000100000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C728930B2AFD51EA00C8C1CD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -710,6 +770,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		589000032F00000100000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C77B8FFF2AF18E2E009CC655 /* Pearcleaner */;
+			targetProxy = 589000022F00000100000001 /* PBXContainerItemProxy */;
+		};
 		C781216A2BC892A000BE06BD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C78121622BC892A000BE06BD /* FinderOpen */;
@@ -718,6 +783,40 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		5890000A2F00000100000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BK8443AXLU;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.PearcleanerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Pearcleaner.app/Contents/MacOS/Pearcleaner";
+			};
+			name = Debug;
+		};
+		5890000B2F00000100000001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BK8443AXLU;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.PearcleanerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Pearcleaner.app/Contents/MacOS/Pearcleaner";
+			};
+			name = Release;
+		};
 		C72893142AFD51EA00C8C1CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1145,6 +1244,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		589000092F00000100000001 /* Build configuration list for PBXNativeTarget "PearcleanerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5890000A2F00000100000001 /* Debug */,
+				5890000B2F00000100000001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		C72893132AFD51EA00C8C1CD /* Build configuration list for PBXNativeTarget "PearcleanerSentinel" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
