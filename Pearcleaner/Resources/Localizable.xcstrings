@@ -2982,6 +2982,7 @@
       }
     },
     "%lld/%lld file%@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3101,6 +3102,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$lld/%2$lld 檔案%3$@"
+          }
+        }
+      }
+    },
+    "%lld/%lld file%@ found" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld/%2$lld file%3$@ found"
           }
         }
       }

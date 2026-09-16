@@ -336,7 +336,10 @@ struct ZombieView: View {
                 VStack(alignment: .leading){
                     Text("Orphaned Files").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2).fontWeight(.bold)
                     Text("Remaining files and folders from previous applications")
-                        .font(.callout).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        .font(.callout)
+                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
 
