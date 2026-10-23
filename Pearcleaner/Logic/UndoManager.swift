@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Security
 import AlinFoundation
 
 class FileManagerUndo {
@@ -246,8 +247,13 @@ class FileManagerUndo {
                     AppState.shared.trashError = true
                 }
 
+                // A cancelled password prompt is an explicit request to stop, not a reason to retry.
+                let authorizationWasCancelled = result.1.contains(
+                    "Authorization copy rights failed with code \(errAuthorizationCanceled)"
+                )
+
                 // Fallback to direct shell if appropriate
-                if isCLI || !hasProtectedFiles {
+                if !authorizationWasCancelled && (isCLI || !hasProtectedFiles) {
                     let shellResult = runDirectShellCommand(command: commands)
                     status = shellResult.0
                     if !status {
