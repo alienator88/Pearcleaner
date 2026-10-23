@@ -416,6 +416,7 @@ class FolderSettingsManager: ObservableObject {
     private let appsKey = "settings.folders.apps"
     private let zombieKey = "settings.folders.zombie"
     private let appsExclusionKey = "settings.folders.appsExclusion"
+    private let preferences = UserDefaults(suiteName: "com.alienator88.Pearcleaner") ?? .standard
     let defaultPaths = ["/Applications", "\(NSHomeDirectory())/Applications"]
 
     init() {
@@ -426,13 +427,13 @@ class FolderSettingsManager: ObservableObject {
 
     // Application folders //////////////////////////////////////////////////////////////////////////////////
     private func loadDefaultPathsIfNeeded() {
-        var appsPaths = UserDefaults.standard.stringArray(forKey: appsKey) ?? defaultPaths
-        let zombiePaths = UserDefaults.standard.stringArray(forKey: zombieKey) ?? []
-        let appsExclusionPaths = UserDefaults.standard.stringArray(forKey: appsExclusionKey) ?? []
+        var appsPaths = preferences.stringArray(forKey: appsKey) ?? defaultPaths
+        let zombiePaths = preferences.stringArray(forKey: zombieKey) ?? []
+        let appsExclusionPaths = preferences.stringArray(forKey: appsExclusionKey) ?? []
         if appsPaths.count < 2 {
             appsPaths = defaultPaths
         }
-        UserDefaults.standard.set(appsPaths, forKey: appsKey)
+        preferences.set(appsPaths, forKey: appsKey)
         self.folderPaths = appsPaths
         self.fileFolderPathsZ = zombiePaths
         self.fileFolderPathsApps = appsExclusionPaths
@@ -441,29 +442,29 @@ class FolderSettingsManager: ObservableObject {
     func addPath(_ path: String) {
         if !self.folderPaths.contains(path) {
             self.folderPaths.append(path)
-            UserDefaults.standard.set(self.folderPaths, forKey: appsKey)
+            preferences.set(self.folderPaths, forKey: appsKey)
         }
     }
 
     func removePath(at index: Int) {
         guard self.folderPaths.indices.contains(index) else { return }
         self.folderPaths.remove(at: index) // Update local state
-        UserDefaults.standard.set(self.folderPaths, forKey: appsKey)
+        preferences.set(self.folderPaths, forKey: appsKey)
     }
 
     func removePath(_ path: String) {
         if let index = self.folderPaths.firstIndex(of: path) {
             self.folderPaths.remove(at: index) // Update local state
-            UserDefaults.standard.set(self.folderPaths, forKey: appsKey)
+            preferences.set(self.folderPaths, forKey: appsKey)
         }
     }
 
     func refreshPaths() {
-        self.folderPaths = UserDefaults.standard.stringArray(forKey: appsKey) ?? defaultPaths
+        self.folderPaths = preferences.stringArray(forKey: appsKey) ?? defaultPaths
     }
 
     func getPaths() -> [String] {
-        return UserDefaults.standard.stringArray(forKey: appsKey) ?? defaultPaths
+        return preferences.stringArray(forKey: appsKey) ?? defaultPaths
     }
 
 
@@ -474,41 +475,41 @@ class FolderSettingsManager: ObservableObject {
 
         if !self.fileFolderPathsZ.contains(sanitizedPath) {
             self.fileFolderPathsZ.append(sanitizedPath)
-            UserDefaults.standard.set(self.fileFolderPathsZ, forKey: zombieKey)
+            preferences.set(self.fileFolderPathsZ, forKey: zombieKey)
         }
     }
 
     func addKeywordZ(_ keyword: String) {
         if !self.fileFolderPathsZ.contains(keyword) {
             self.fileFolderPathsZ.append(keyword)
-            UserDefaults.standard.set(self.fileFolderPathsZ, forKey: zombieKey)
+            preferences.set(self.fileFolderPathsZ, forKey: zombieKey)
         }
     }
 
     func removePathZ(at index: Int) {
         guard self.fileFolderPathsZ.indices.contains(index) else { return }
         self.fileFolderPathsZ.remove(at: index) // Update local state
-        UserDefaults.standard.set(self.fileFolderPathsZ, forKey: zombieKey)
+        preferences.set(self.fileFolderPathsZ, forKey: zombieKey)
     }
 
     func removePathZ(_ path: String) {
         if let index = self.fileFolderPathsZ.firstIndex(of: path) {
             self.fileFolderPathsZ.remove(at: index) // Update local state
-            UserDefaults.standard.set(self.fileFolderPathsZ, forKey: zombieKey)
+            preferences.set(self.fileFolderPathsZ, forKey: zombieKey)
         }
     }
 
     func removeAllPathsZ() {
         self.fileFolderPathsZ.removeAll()
-        UserDefaults.standard.set([], forKey: zombieKey)
+        preferences.set([], forKey: zombieKey)
     }
 
     func refreshPathsZ() {
-        self.fileFolderPathsZ = UserDefaults.standard.stringArray(forKey: zombieKey) ?? []
+        self.fileFolderPathsZ = preferences.stringArray(forKey: zombieKey) ?? []
     }
 
     func getPathsZ() -> [String] {
-        return UserDefaults.standard.stringArray(forKey: zombieKey) ?? []
+        return preferences.stringArray(forKey: zombieKey) ?? []
     }
 
 
@@ -525,41 +526,41 @@ class FolderSettingsManager: ObservableObject {
 
         if !self.fileFolderPathsApps.contains(sanitizedPath) {
             self.fileFolderPathsApps.append(sanitizedPath)
-            UserDefaults.standard.set(self.fileFolderPathsApps, forKey: appsExclusionKey)
+            preferences.set(self.fileFolderPathsApps, forKey: appsExclusionKey)
         }
     }
 
     func addKeywordApps(_ keyword: String) {
         if !self.fileFolderPathsApps.contains(keyword) {
             self.fileFolderPathsApps.append(keyword)
-            UserDefaults.standard.set(self.fileFolderPathsApps, forKey: appsExclusionKey)
+            preferences.set(self.fileFolderPathsApps, forKey: appsExclusionKey)
         }
     }
 
     func removePathApps(at index: Int) {
         guard self.fileFolderPathsApps.indices.contains(index) else { return }
         self.fileFolderPathsApps.remove(at: index)
-        UserDefaults.standard.set(self.fileFolderPathsApps, forKey: appsExclusionKey)
+        preferences.set(self.fileFolderPathsApps, forKey: appsExclusionKey)
     }
 
     func removePathApps(_ path: String) {
         if let index = self.fileFolderPathsApps.firstIndex(of: path) {
             self.fileFolderPathsApps.remove(at: index)
-            UserDefaults.standard.set(self.fileFolderPathsApps, forKey: appsExclusionKey)
+            preferences.set(self.fileFolderPathsApps, forKey: appsExclusionKey)
         }
     }
 
     func removeAllPathsApps() {
         self.fileFolderPathsApps.removeAll()
-        UserDefaults.standard.set([], forKey: appsExclusionKey)
+        preferences.set([], forKey: appsExclusionKey)
     }
 
     func refreshPathsApps() {
-        self.fileFolderPathsApps = UserDefaults.standard.stringArray(forKey: appsExclusionKey) ?? []
+        self.fileFolderPathsApps = preferences.stringArray(forKey: appsExclusionKey) ?? []
     }
 
     func getPathsApps() -> [String] {
-        return UserDefaults.standard.stringArray(forKey: appsExclusionKey) ?? []
+        return preferences.stringArray(forKey: appsExclusionKey) ?? []
     }
 
 
