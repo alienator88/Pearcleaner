@@ -13,7 +13,7 @@ More details [HERE](https://www.reddit.com/r/macapps/comments/1ucstzy/psa_pearcl
 >
 > Because of that, issue responses, feature work, PR reviews, and new releases are effectively on hold indefinitely for now.
 >
-> The project is not abandoned entirely, and I’d still like to return to it someday if circumstances change. For now though, I want to be transparent that active development is no longer possible on my end.
+> The project is not abandoned entirely, and I’d still like to return to it someday if circumstances change. For now though, I want to be transparent that active development is no longer possible on my end. If you need to utilize a similar project, there are alternatives available, such as [Peel](https://github.com/TuguiDragos/Peel), which is also free and open-source software with more features than PearCleaner ever had.
 >
 > Thank you to everyone who has used the app, reported issues, submitted ideas, or contributed. I genuinely appreciate all of the support the project has received.
 
