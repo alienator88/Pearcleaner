@@ -22,6 +22,10 @@ class ReversePathsSearcher {
     private let sortedApps: [AppInfo]
     private let streamingMode: Bool
     private var shouldStop = false
+    // InstallHistory + installed identities, shared by every score call in one scan
+    private lazy var scoreContext: UsageScoreContext = {
+        UsageScoreContext(installedApps: sortedApps)
+    }()
 
     // Cached formatted data to avoid repeated .pearFormat() calls
     private lazy var formattedExclusionList: [String] = {
@@ -306,12 +310,13 @@ class ReversePathsSearcher {
 
     /// Compute the 0-100 orphan confidence score for one candidate.
     /// Candidates already passed the "not related to installed apps" filter, so
-    /// here the interesting signals are provenance (quarantine agent uninstalled)
-    /// and staleness. Runs on the scan queue: MDItem lookups are cheap but not free.
+    /// here the interesting signals are provenance (container metadata owner
+    /// gone, quarantine agent uninstalled) and staleness. Runs on the scan
+    /// queue: MDItem lookups are cheap but not free.
     private func orphanScoreForItem(at url: URL) -> Int {
         guard let signals = UsageScoreEngine.signals(for: url) else { return 50 }
         let owner = UsageScoreEngine.owningApp(for: url, signals: signals, installedApps: sortedApps)
-        return UsageScoreEngine.orphanScore(for: url, signals: signals, owner: owner)
+        return UsageScoreEngine.orphanScore(for: url, signals: signals, owner: owner, context: scoreContext)
     }
 
     private func calculateFileDetails() {
