@@ -278,12 +278,13 @@ struct FileListView: View {
                                         Image(systemName: "trash")
                                     }
                                 }
-                                .buttonStyle(ControlGroupButtonStyle(
+                                .adaptiveGlassProminentButton(fallback: ControlGroupButtonStyle(
                                     foregroundColor: ThemeColors.shared(for: colorScheme).accent,
                                     shape: Capsule(style: .continuous),
                                     level: .primary,
                                     skipControlGroup: true
                                 ))
+                                .tint(ThemeColors.shared(for: colorScheme).accent)
                             }
                             .controlGroup(Capsule(style: .continuous), level: .primary)
 
