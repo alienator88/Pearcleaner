@@ -34,6 +34,34 @@ struct PearCLI: ParsableCommand {
         Self.fsm = fsm
     }
 
+    /// Reject protected paths before a CLI mutation when no approved elevated
+    /// path is available. The decision itself lives in the fixture-tested core;
+    /// this layer only supplies the CLI-specific remediation text.
+    static func hasRequiredDeletionAuthorization(
+        for paths: [URL],
+        sudoCommand: String,
+        helperInstalled: Bool = HelperToolManager.shared.isHelperToolInstalled
+    ) -> Bool {
+        switch DestructiveOperationAuthorization.evaluate(
+            paths: paths,
+            acknowledged: true,
+            hasPrivilegedAuthorization: helperInstalled,
+            isWritable: { FileManager.default.isWritableFile(atPath: $0.path) }
+        ) {
+        case .authorized:
+            return true
+        case .privilegedAuthorizationRequired(let protectedPaths):
+            printOS("Protected files detected. Please run this command with sudo:\n")
+            printOS("sudo \(sudoCommand)")
+            printOS("\nProtected files:\n")
+            protectedPaths.forEach { printOS($0) }
+            return false
+        case .confirmationRequired:
+            assertionFailure("A confirmed deletion preflight must not require confirmation")
+            return false
+        }
+    }
+
 //    struct Run: ParsableCommand {
 //        static var configuration = CommandConfiguration(
 //            commandName: "run",
@@ -169,19 +197,12 @@ struct PearCLI: ParsableCommand {
             // Call findPaths to get the Set of URLs
             let foundPaths = appPathFinder.findPathsCLI()
 
-            // Check if any file is protected (non-writable)
-            let protectedFiles = foundPaths.filter {
-                !FileManager.default.isWritableFile(atPath: $0.path)
-            }
-
-            // If protected files are found, echo message and exit
-            if !protectedFiles.isEmpty && !HelperToolManager.shared.isHelperToolInstalled {
-                printOS("Protected files detected. Please run this command with sudo:\n")
-                printOS("sudo pearcleaner uninstall-all \(path)")
-                printOS("\nProtected files:\n")
-                for file in protectedFiles {
-                    printOS(file.path)
-                }
+            // Reject protected paths before mutating anything when no approved
+            // elevated path is available.
+            if !PearCLI.hasRequiredDeletionAuthorization(
+                for: foundPaths,
+                sudoCommand: "pearcleaner uninstall-all \(path)"
+            ) {
                 Foundation.exit(1)
             }
 
@@ -222,19 +243,12 @@ struct PearCLI: ParsableCommand {
             )
                 .reversePathsSearchCLI()
 
-            // Check if any file is protected (non-writable)
-            let protectedFiles = foundPaths.filter {
-                !FileManager.default.isWritableFile(atPath: $0.path)
-            }
-
-            // If protected files are found, echo message and exit
-            if !protectedFiles.isEmpty && !HelperToolManager.shared.isHelperToolInstalled {
-                printOS("Protected files detected. Please run this command with sudo:\n")
-                printOS("sudo pearcleaner remove-orphaned")
-                printOS("\nProtected files:\n")
-                for file in protectedFiles {
-                    printOS(file.path)
-                }
+            // Reject protected paths before mutating anything when no approved
+            // elevated path is available.
+            if !PearCLI.hasRequiredDeletionAuthorization(
+                for: foundPaths,
+                sudoCommand: "pearcleaner remove-orphaned"
+            ) {
                 Foundation.exit(1)
             }
 
