@@ -164,12 +164,14 @@ final class SpaceLensViewModel: ObservableObject {
 
 struct SpaceLensView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject private var viewModel: SpaceLensViewModel
     @Environment(\.colorScheme) var colorScheme
     @ObservedObject private var helperManager = HelperToolManager.shared
-    @AppStorage("settings.spacelens.displayMode") private var displayModeRaw = SpaceLensDisplayMode.treemap.rawValue
+    // First launch or whenever the user has never switched modes: open with the
+    // style picked in Settings. After a manual switch the per-session choice wins.
+    @AppStorage("settings.spacelens.displayMode") private var displayModeRaw = UserDefaults.standard.object(forKey: "settings.spacelens.displayMode") as? String ?? UserDefaults.standard.string(forKey: "settings.spacelens.defaultMode") ?? SpaceLensDisplayMode.treemap.rawValue
     @AppStorage("settings.spacelens.lastPath") private var lastPath = ""
     @AppStorage("settings.spacelens.levels") private var levels = 3
-    @StateObject private var viewModel = SpaceLensViewModel()
     @State private var pendingTrashNode: SpaceLensNode?
     @State private var pendingLevels: Int?
     @State private var keyMonitor: Any?

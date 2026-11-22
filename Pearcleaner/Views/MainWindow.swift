@@ -15,6 +15,9 @@ struct MainWindow: View {
     @ObservedObject private var consoleManager = GlobalConsoleManager.shared
     @StateObject private var brewManager = HomebrewManager()
     @StateObject private var updateManager = UpdateManager.shared
+    // Survives page switches so a Space Lens scan is computed once and both
+    // treemap and sunburst keep reading the same tree
+    @StateObject private var spaceLensViewModel = SpaceLensViewModel()
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
     @EnvironmentObject var fsm: FolderSettingsManager
@@ -83,6 +86,7 @@ struct MainWindow: View {
                         case .spaceLens:
                             withConsole {
                                 SpaceLensView()
+                                    .environmentObject(spaceLensViewModel)
                             }
 
                         case .packages:

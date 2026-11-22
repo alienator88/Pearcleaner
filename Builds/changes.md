@@ -6,6 +6,7 @@
 - [x] Partial results stream in while scanning, with cancel; treemap rebalances in place after trashing items
 - [x] Treemap tiles nest inside a parent band so containment reads visually; children inherit the parent hue, and .app-style packages stay single atomic tiles at any depth
 - [x] Backspace (delete) steps back one level from the focused folder
+- [x] Setting for the default Space Lens chart style (Settings > Interface), and the scan runs once and survives page switches; both treemap and sunburst read the same tree
 - [x] Development Environments catalog now covers 50+ tools with kind tags (cache, logs, sessions, packages, VM disks, toolchains) and composable rule filters
 - [x] Sort path rows in the Development view by name, size, age or folder; sort VM/container rows by size, name or status
 - [x] Age sorting for Leftover and Orphaned lists (oldest first)
