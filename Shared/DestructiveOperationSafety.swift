@@ -41,7 +41,7 @@ enum DestructiveOperationAuthorization: Equatable {
 enum DestructiveOperationPreview {
     static func message(for paths: [URL]) -> String {
         let sortedPaths = paths.map(\.path).sorted()
-        let heading = "Preview — the following \(sortedPaths.count) item(s) would be moved to the Trash:"
+        let heading = "Preview: the following \(sortedPaths.count) item(s) would be moved to the Trash:"
         return ([heading] + sortedPaths + ["Re-run this command with --yes to confirm."]).joined(separator: "\n")
     }
 }
