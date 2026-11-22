@@ -1692,6 +1692,12 @@ struct PathLibrary {
                 "~/Library/Caches/deno",
                 "~/.deno/"
             ]),
+            PathEnv(name: "Docker Desktop", paths: [
+                "~/Library/Containers/com.docker.docker/Data/log/",
+                "~/Library/Caches/com.docker.docker/",
+                "~/Library/Application Support/Docker Desktop/",
+                "~/Library/Logs/Docker Desktop/"
+            ]),
             PathEnv(name: "Docker", paths: [
                 "~/.docker/cli-plugins/",
                 "~/.docker/buildx/",
@@ -1713,6 +1719,10 @@ struct PathLibrary {
                 "~/Library/Caches/go-build/",
                 "~/go/pkg/mod/"
             ]),
+            PathEnv(name: "Godot", paths: [
+                "~/Library/Caches/Godot/",
+                "~/Library/Application Support/Godot/export_templates/"
+            ]),
             PathEnv(name: "Gradle", paths: [
                 "~/.gradle/caches/",
                 "~/.gradle/wrapper/dists/",
@@ -1726,6 +1736,10 @@ struct PathLibrary {
             ]),
             PathEnv(name: "Homebrew", paths: [
                 "~/Library/Caches/Homebrew/"
+            ]),
+            PathEnv(name: "JetBrains Toolbox", paths: [
+                "~/Library/Caches/JetBrains/Toolbox/",
+                "~/Library/Logs/JetBrains/Toolbox/"
             ]),
             PathEnv(name: "IntelliJ IDEA", paths: [
                 "~/Library/Caches/JetBrains/",
@@ -1776,6 +1790,10 @@ struct PathLibrary {
                 "~/Library/Caches/pre-commit/",
                 "~/.cache/pre-commit/"
             ]),
+            PathEnv(name: "OrbStack", paths: [
+                "~/.orbstack/cache/",
+                "~/.orbstack/backup/"
+            ]),
             PathEnv(name: "Pub", paths: [
                 "~/.pub-cache/hosted/",
                 "~/Library/Caches/flutter_engine/"
@@ -1783,11 +1801,23 @@ struct PathLibrary {
             PathEnv(name: "Pyenv", paths: [
                 "~/.pyenv/cache/"
             ]),
+            PathEnv(name: "Qt", paths: [
+                "~/Library/Caches/QtProject/"
+            ]),
+            PathEnv(name: "Rancher Desktop", paths: [
+                "~/Library/Caches/rancher-desktop/",
+                "~/Library/Logs/rancher-desktop/",
+                "~/.rd/cache/"
+            ]),
             PathEnv(name: "Ruby Gems", paths: [
                 "~/.gem/ruby/*/cache/"
             ]),
             PathEnv(name: "Rust", paths: [
                 "~/Library/Caches/Mozilla.sccache/"
+            ]),
+            PathEnv(name: "Sublime Text", paths: [
+                "~/Library/Caches/Sublime Text/",
+                "~/Library/Application Support/Sublime Text/Cache/"
             ]),
             PathEnv(name: "Swift", paths: [
                 "~/Library/Caches/org.swift.swiftpm/",
@@ -1808,6 +1838,10 @@ struct PathLibrary {
             PathEnv(name: "Uv", paths: [
                 "~/.cache/uv/"
             ]),
+            PathEnv(name: "VirtualBox", paths: [
+                "~/Library/Caches/VirtualBox/",
+                "~/Library/VirtualBox/Logs/"
+            ]),
             PathEnv(name: "VS Code", paths: [
                 "~/Library/Application Support/Code/Cache",
                 "~/Library/Application Support/Code/GPUCache",
@@ -1820,6 +1854,11 @@ struct PathLibrary {
                 "~/Library/Application Support/Code/Crashpad/",
                 "~/Library/Application Support/Code/component_crx_cache/",
                 "~/Library/Application Support/Code/User/workspaceStorage/"
+            ]),
+            PathEnv(name: "Unity", paths: [
+                "~/Library/Unity/cache/",
+                "~/Library/Application Support/UnityHub/cache/",
+                "~/Library/Application Support/UnityHub/logs/"
             ]),
             PathEnv(name: "Vagrant", paths: [
                 "~/.vagrant.d/boxes/"

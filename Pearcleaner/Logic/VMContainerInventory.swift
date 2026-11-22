@@ -75,6 +75,7 @@ enum VMContainerScanner {
         let home = NSHomeDirectory()
 
         groups.append(contentsOf: scanDocker(home: home))
+        if let group = scanDockerDesktop(home: home) { groups.append(group) }
         groups.append(contentsOf: scanColima(home: home))
         groups.append(contentsOf: scanLima(home: home))
         if let group = scanOrbStack(home: home) { groups.append(group) }
@@ -213,6 +214,44 @@ enum VMContainerScanner {
         if items.isEmpty { note = "no docker content on this machine" }
 
         return [VMContainerGroup(tool: "Docker", toolIcon: "docker", backend: backend, items: items, note: note)]
+    }
+
+    // MARK: - Docker Desktop (the .app VM disk; images live inside it)
+
+    private static func scanDockerDesktop(home: String) -> VMContainerGroup? {
+        // Only meaningful when the app is actually installed; without it the
+        // sparse bundle below is leftover data, which still shows for cleanup.
+        let appPath = "/Applications/Docker.app"
+        let dataDir = "\(home)/Library/Containers/com.docker.docker/Data/vms/0/data"
+        let diskPath = "\(dataDir)/Docker.raw"
+        guard FileManager.default.fileExists(atPath: diskPath) else { return nil }
+
+        let running = DevEnvProcess.run("/usr/bin/pgrep", ["-x", "Docker Desktop"], timeout: 5) != nil
+            || FileManager.default.fileExists(atPath: "\(dataDir)/Docker.raw.sqsh")
+
+        // Quitting the app is the only stop command; Docker.raw must not be
+        // deleted through this row, the app manages it.
+        let stopCommand: [String]? = running ? ["/usr/bin/osascript", "-e", "tell application id \"com.docker.docker\" to quit"] : nil
+
+        return VMContainerGroup(
+            tool: "Docker Desktop",
+            toolIcon: "docker",
+            backend: FileManager.default.fileExists(atPath: appPath) ? "Docker.app VM" : "Docker.app removed, disk left behind",
+            items: [VMContainerGroup.Item(
+                kind: .machines,
+                name: "Docker.raw",
+                detail: "VM disk, holds all images and volumes",
+                sizeBytes: sparseFileSize(at: diskPath),
+                provisionedBytes: fileSize(at: diskPath),
+                isRunning: running,
+                safety: .destructive,
+                tool: "docker",
+                deleteCommand: nil,
+                stopCommand: stopCommand,
+                hostPath: nil
+            )],
+            note: nil
+        )
     }
 
     // MARK: - Colima
