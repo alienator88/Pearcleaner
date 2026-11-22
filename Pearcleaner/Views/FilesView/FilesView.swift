@@ -448,6 +448,13 @@ struct FilesView: View {
             }
         }
 
+        let sortedFilesByScore = appState.appInfo.fileSize.keys.sorted { firstURL, secondURL in
+            let firstScore = appState.zombieFile.fileScore[firstURL] ?? 0
+            let secondScore = appState.zombieFile.fileScore[secondURL] ?? 0
+            if firstScore != secondScore { return firstScore > secondScore }
+            return appState.appInfo.fileSize[firstURL, default: 0] > appState.appInfo.fileSize[secondURL, default: 0]
+        }
+
         switch selectedSort {
         case .size:
             sortedFiles = sortedFilesSize
@@ -455,6 +462,8 @@ struct FilesView: View {
             sortedFiles = sortedFilesAlpha
         case .path:
             sortedFiles = sortedFilesByPath
+        case .score:
+            sortedFiles = sortedFilesByScore
         }
         //        sortedFiles = selectedSortAlpha ? sortedFilesAlpha : sortedFilesSize
     }

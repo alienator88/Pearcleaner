@@ -556,6 +556,13 @@ struct ZombieView: View {
                 return left.value > right.value
             case .path:
                 return left.key.path.localizedCaseInsensitiveCompare(right.key.path) == .orderedAscending
+            case .score:
+                // Highest orphan confidence first; size breaks ties so the
+                // top of the list is the most certain and biggest wins.
+                let leftScore = appState.zombieFile.fileScore[left.key] ?? 0
+                let rightScore = appState.zombieFile.fileScore[right.key] ?? 0
+                if leftScore != rightScore { return leftScore > rightScore }
+                return left.value > right.value
             }
         }.map(\.key)
 
