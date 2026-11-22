@@ -208,7 +208,7 @@ struct PearCLI: ParsableCommand {
             // Reject protected paths before mutating anything when no approved
             // elevated path is available.
             if !PearCLI.hasRequiredDeletionAuthorization(
-                for: foundPaths,
+                for: Array(foundPaths),
                 sudoCommand: "pearcleaner uninstall-all \(path)"
             ) {
                 Foundation.exit(1)
@@ -254,7 +254,7 @@ struct PearCLI: ParsableCommand {
             // Reject protected paths before mutating anything when no approved
             // elevated path is available.
             if !PearCLI.hasRequiredDeletionAuthorization(
-                for: foundPaths,
+                for: Array(foundPaths),
                 sudoCommand: "pearcleaner remove-orphaned"
             ) {
                 Foundation.exit(1)
