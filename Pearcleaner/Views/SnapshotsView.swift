@@ -37,6 +37,10 @@ struct SnapshotsView: View {
     @State private var deleteError: String?
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
 
+    private var deletableSnapshots: [TMSnapshot] {
+        snapshots.filter { !$0.isSystemOwned }
+    }
+
     var body: some View {
         HStack(spacing: 0) {
             VStack(alignment: .leading, spacing: 0) {
@@ -89,6 +93,19 @@ struct SnapshotsView: View {
             Spacer()
 
             Button {
+                withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                    consoleManager.showConsole.toggle()
+                }
+            } label: {
+                Image(systemName: consoleManager.showConsole ? "terminal.fill" : "terminal")
+                    .symbolRenderingMode(.palette)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+            }
+            .buttonStyle(.borderless)
+            .help(String(localized: "Toggle console output"))
+            .padding(.trailing, 10)
+
+            Button {
                 refreshSnapshots()
             } label: {
                 Image(systemName: "arrow.clockwise")
@@ -102,8 +119,10 @@ struct SnapshotsView: View {
 
             if helperManager.isHelperToolInstalled {
                 Button {
-                    selectedSnapshot = snapshots.first(where: { !$0.isSystemOwned })
-                    if !snapshots.filter({ !$0.isSystemOwned }).isEmpty {
+                    selectedSnapshot = deletableSnapshots.min { a, b in
+                        (a.date ?? .distantPast) < (b.date ?? .distantPast)
+                    }
+                    if selectedSnapshot != nil {
                         showDeleteConfirm = true
                     }
                 } label: {
@@ -118,7 +137,7 @@ struct SnapshotsView: View {
                     }
                 }
                 .buttonStyle(.borderedProminent)
-                .disabled(isLoading || isDeleting || snapshots.filter { !$0.isSystemOwned }.isEmpty)
+                .disabled(isLoading || isDeleting || deletableSnapshots.isEmpty)
                 .help(String(localized: "Delete the oldest non-system snapshot"))
             } else {
                 Button {
@@ -228,6 +247,7 @@ struct SnapshotsView: View {
                 .padding(.horizontal)
                 .padding(.bottom, 12)
             }
+            .scrollIndicators(scrollIndicators ? .automatic : .never)
         }
     }
 
