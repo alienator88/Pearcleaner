@@ -6071,6 +6071,11 @@
         }
       }
     },
+    "Add another filter" : {
+      "localizations" : {
+
+      }
+    },
     "Add Comment Filter" : {
       "localizations" : {
         "de" : {
@@ -7016,6 +7021,11 @@
             "value" : "加入資料夾"
           }
         }
+      }
+    },
+    "Add name filter" : {
+      "localizations" : {
+
       }
     },
     "Add Name Filter" : {
@@ -30774,6 +30784,11 @@
         }
       }
     },
+    "Filter by name..." : {
+      "localizations" : {
+
+      }
+    },
     "Filter files..." : {
       "localizations" : {
         "de" : {
@@ -46146,6 +46161,11 @@
             "value" : "名稱"
           }
         }
+      }
+    },
+    "Name filter" : {
+      "localizations" : {
+
       }
     },
     "Name: %@" : {

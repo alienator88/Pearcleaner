@@ -147,7 +147,9 @@ func openTrash() {
 
 // Check if restricted app
 func isRestricted(atPath path: URL) -> Bool {
-    if path.path.contains("/Applications/Safari") || path.path.contains(Bundle.main.name) || path.path.contains("/Applications/Utilities") {
+    if path.path.contains("/Applications/Safari")
+        || path.standardizedFileURL == Bundle.main.bundleURL.standardizedFileURL
+        || path.path.contains("/Applications/Utilities") {
         return true
     } else {
         return false
