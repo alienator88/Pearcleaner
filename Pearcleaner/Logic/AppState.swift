@@ -41,6 +41,7 @@ class AppState: ObservableObject {
     @Published var externalPaths: [URL] = []  // for handling multiple app from drops or deeplinks
     @Published var selectedEnvironment: PathEnv?  // for handling dev environments
     @Published var trashError: Bool = false
+    @Published var trashErrorMessage: String?
     @Published var isGridMode: Bool = false
 
     // Volume information

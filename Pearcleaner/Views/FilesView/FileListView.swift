@@ -225,7 +225,7 @@ struct FileListView: View {
                         HStack {
                             Spacer()
                             InfoButton(
-                                text:
+                                text: appState.trashErrorMessage ??
                                     "A trash error has occurred, please open the debug window(⌘+D) to see what went wrong or try again",
                                 color: .orange, label: "View Error", warning: true,
                                 extraView: {
@@ -237,6 +237,7 @@ struct FileListView: View {
                             )
                             .onDisappear {
                                 appState.trashError = false
+                                appState.trashErrorMessage = nil
                             }
                             .padding(.bottom)
                         }

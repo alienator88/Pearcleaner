@@ -187,13 +187,14 @@ struct ZombieView: View {
                         }
 
                         if appState.trashError {
-                            InfoButton(text: "A trash error has occurred, please open the debug window(⌘+D) to see what went wrong or try again", color: .orange, label: "View Error", warning: true, extraView: {
+                            InfoButton(text: appState.trashErrorMessage ?? "A trash error has occurred, please open the debug window(⌘+D) to see what went wrong or try again", color: .orange, label: "View Error", warning: true, extraView: {
                                 Button("View Debug Window") {
                                     windowController.open(with: ConsoleView(), width: 600, height: 400)
                                 }
                             })
                             .onDisappear {
                                 appState.trashError = false
+                                appState.trashErrorMessage = nil
                             }
                             .padding(.bottom)
                         }
