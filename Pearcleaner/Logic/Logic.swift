@@ -606,7 +606,7 @@ func handleLaunchMode() {
 
     if isRunningInTerminal || hasCLICommand {
         let locations = Locations()
-        let fsm = FolderSettingsManager()
+        let fsm = FolderSettingsManager(preferences: PearcleanerPreferencesStore.shared)
         PearCLI.setupDependencies(locations: locations, fsm: fsm)
         do {
             // Drop the program name as to not interfere with argument parsing

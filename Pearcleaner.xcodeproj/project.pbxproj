@@ -54,6 +54,7 @@
 		C7DD49EA2BAB4D8100CCBA16 /* AppInfoFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */; };
 		C7DD49EE2BAB7F6000CCBA16 /* ReversePathsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */; };
 		C7AA00012E71000100A1B2C3 /* UsageScoreEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA00002E71000100A1B2C3 /* UsageScoreEngine.swift */; };
+		C7AA00022E71000200A1B2C3 /* PearcleanerPreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA00032E71000300A1B2C3 /* PearcleanerPreferencesStore.swift */; };
 		C7F539382AF60865007DF1B2 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F539372AF60865007DF1B2 /* Utilities.swift */; };
 		C7F8436B2CBF066F00E3E30A /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C7F8436A2CBF066F00E3E30A /* Localizable.xcstrings */; };
 		C7FBD9DF2DAD66D500151934 /* AlinFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = C7C90DDD2DA8221B0056769A /* AlinFoundation */; };
@@ -181,6 +182,7 @@
 		C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfoFetch.swift; sourceTree = "<group>"; };
 		C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReversePathsFetch.swift; sourceTree = "<group>"; };
 		C7AA00002E71000100A1B2C3 /* UsageScoreEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageScoreEngine.swift; sourceTree = "<group>"; };
+		C7AA00032E71000300A1B2C3 /* PearcleanerPreferencesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PearcleanerPreferencesStore.swift; sourceTree = "<group>"; };
 		C7F539372AF60865007DF1B2 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		C7F8436A2CBF066F00E3E30A /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -315,6 +317,7 @@
 				C7CC10E32E9473480057B7E2 /* ProcessEnv.swift */,
 				C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */,
 				C7AA00002E71000100A1B2C3 /* UsageScoreEngine.swift */,
+				C7AA00032E71000300A1B2C3 /* PearcleanerPreferencesStore.swift */,
 				C75AED0F2EC259C800824CCD /* UndoHistoryManager.swift */,
 				C72FDCB82D6D088A00DE7D56 /* UndoManager.swift */,
 				C7F539372AF60865007DF1B2 /* Utilities.swift */,
@@ -682,6 +685,7 @@
 				C77B90162AF19377009CC655 /* AppState.swift in Sources */,
 				C7DD49EE2BAB7F6000CCBA16 /* ReversePathsFetch.swift in Sources */,
 				C7AA00012E71000100A1B2C3 /* UsageScoreEngine.swift in Sources */,
+				C7AA00022E71000200A1B2C3 /* PearcleanerPreferencesStore.swift in Sources */,
 				C72D03B52E4D3FB900ADC1B4 /* MainWindow.swift in Sources */,
 				C77020292EA94D0A00240D58 /* FuzzySearch.swift in Sources */,
 				C7BB99292E8AF1CB007BBB81 /* PluginsView.swift in Sources */,

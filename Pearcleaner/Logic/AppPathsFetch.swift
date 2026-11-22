@@ -27,6 +27,7 @@ class AppPathFinder {
     // Shared properties
     private var appInfo: AppInfo
     private var locations: Locations
+    private let folderSettingsManager: FolderSettingsManager
     private var containerCollection: [URL] = []
     private let collectionAccessQueue = DispatchQueue(label: "com.alienator88.Pearcleaner.appPathFinder.collectionAccess")
     @AppStorage("settings.general.searchSensitivity") private var sensitivityLevel: SearchSensitivityLevel = .strict
@@ -56,7 +57,7 @@ class AppPathFinder {
 
     // Exclusion list for app file search (computed property to always get current list)
     private var formattedAppExclusionList: [String] {
-        return FolderSettingsManager.shared.fileFolderPathsApps.map { $0.pearFormat() }
+        return folderSettingsManager.fileFolderPathsApps.map { $0.pearFormat() }
     }
 
     // Computed property to get the effective sensitivity level
@@ -65,9 +66,10 @@ class AppPathFinder {
     }
 
     // Initializer for both CLI and GUI
-    init(appInfo: AppInfo, locations: Locations, appState: AppState? = nil, undo: Bool = false, sensitivityOverride: SearchSensitivityLevel? = nil, completion: (() -> Void)? = nil) {
+    init(appInfo: AppInfo, locations: Locations, appState: AppState? = nil, undo: Bool = false, sensitivityOverride: SearchSensitivityLevel? = nil, completion: (() -> Void)? = nil, folderSettingsManager: FolderSettingsManager = .shared) {
         self.appInfo = appInfo
         self.locations = locations
+        self.folderSettingsManager = folderSettingsManager
         self.appState = appState
         self.undo = undo
         self.overrideSensitivityLevel = sensitivityOverride
