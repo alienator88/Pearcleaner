@@ -555,11 +555,12 @@ struct ZombieFile: Identifiable, Equatable, Hashable {
     let id: UUID
     var fileSize: [URL: Int64]  // Logical file sizes (matches Finder)
     var fileIcon: [URL: NSImage?]
+    var fileScore: [URL: Int]  // 0-100 orphan confidence from UsageScoreEngine
     var totalSize: Int64 {
         return fileSize.values.reduce(0, +)
     }
 
-    static let empty = ZombieFile(id: UUID(), fileSize: [:], fileIcon: [:])
+    static let empty = ZombieFile(id: UUID(), fileSize: [:], fileIcon: [:], fileScore: [:])
 
 }
 
@@ -686,6 +687,7 @@ enum CurrentPage: Int, CaseIterable, Identifiable {
     case packages
     case plugins
     case services
+    case snapshots
     case updater
 
     var id: Int { rawValue }
@@ -728,6 +730,8 @@ enum CurrentPage: Int, CaseIterable, Identifiable {
             return (String(localized: "Plugins"), "puzzlepiece")
         case .services:
             return (String(localized: "Services"), "gearshape.2")
+        case .snapshots:
+            return (String(localized: "Snapshots"), "clock.arrow.circlepath")
         case .updater:
             return (String(localized: "Updater"), "arrow.down.circle")
         }

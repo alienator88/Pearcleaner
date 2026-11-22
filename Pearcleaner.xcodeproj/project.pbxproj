@@ -21,6 +21,7 @@
 		C73AE1922EC69A81009CAC42 /* GlobalConsoleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C73AE1912EC69A81009CAC42 /* GlobalConsoleManager.swift */; };
 		C74206E52E79E47400BDDB6A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C74206E42E79E47400BDDB6A /* Assets.xcassets */; };
 		C74422412E4936750002D277 /* DaemonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74422402E4936700002D277 /* DaemonView.swift */; };
+		C7AA00032E71000100A1B2C3 /* SnapshotsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA00042E71000100A1B2C3 /* SnapshotsView.swift */; };
 		C74422432E494D830002D277 /* PackageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74422422E494D7E0002D277 /* PackageView.swift */; };
 		C74FDC632BCD833D00B8960F /* Conditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74FDC622BCD833D00B8960F /* Conditions.swift */; };
 		C7575D392B0182DE006A600A /* PearcleanerSentinel in CopyFiles */ = {isa = PBXBuildFile; fileRef = C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -52,6 +53,7 @@
 		C7D31D512AFF00F300C7ED9E /* Locations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D502AFF00F300C7ED9E /* Locations.swift */; };
 		C7DD49EA2BAB4D8100CCBA16 /* AppInfoFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */; };
 		C7DD49EE2BAB7F6000CCBA16 /* ReversePathsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */; };
+		C7AA00012E71000100A1B2C3 /* UsageScoreEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA00002E71000100A1B2C3 /* UsageScoreEngine.swift */; };
 		C7F539382AF60865007DF1B2 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F539372AF60865007DF1B2 /* Utilities.swift */; };
 		C7F8436B2CBF066F00E3E30A /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C7F8436A2CBF066F00E3E30A /* Localizable.xcstrings */; };
 		C7FBD9DF2DAD66D500151934 /* AlinFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = C7C90DDD2DA8221B0056769A /* AlinFoundation */; };
@@ -142,6 +144,7 @@
 		C73AE1912EC69A81009CAC42 /* GlobalConsoleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalConsoleManager.swift; sourceTree = "<group>"; };
 		C74206E42E79E47400BDDB6A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C74422402E4936700002D277 /* DaemonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaemonView.swift; sourceTree = "<group>"; };
+		C7AA00042E71000100A1B2C3 /* SnapshotsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotsView.swift; sourceTree = "<group>"; };
 		C74422422E494D7E0002D277 /* PackageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageView.swift; sourceTree = "<group>"; };
 		C74451F62D93774700146AF8 /* announcements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = announcements.json; sourceTree = "<group>"; };
 		C74FDC622BCD833D00B8960F /* Conditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conditions.swift; sourceTree = "<group>"; };
@@ -177,6 +180,7 @@
 		C7D31D502AFF00F300C7ED9E /* Locations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locations.swift; sourceTree = "<group>"; };
 		C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfoFetch.swift; sourceTree = "<group>"; };
 		C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReversePathsFetch.swift; sourceTree = "<group>"; };
+		C7AA00002E71000100A1B2C3 /* UsageScoreEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageScoreEngine.swift; sourceTree = "<group>"; };
 		C7F539372AF60865007DF1B2 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		C7F8436A2CBF066F00E3E30A /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -310,6 +314,7 @@
 				C78FF5E02EC1A3B400FC610A /* PasswordRequestHandler.swift */,
 				C7CC10E32E9473480057B7E2 /* ProcessEnv.swift */,
 				C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */,
+				C7AA00002E71000100A1B2C3 /* UsageScoreEngine.swift */,
 				C75AED0F2EC259C800824CCD /* UndoHistoryManager.swift */,
 				C72FDCB82D6D088A00DE7D56 /* UndoManager.swift */,
 				C7F539372AF60865007DF1B2 /* Utilities.swift */,
@@ -395,6 +400,7 @@
 			isa = PBXGroup;
 			children = (
 				C74422402E4936700002D277 /* DaemonView.swift */,
+				C7AA00042E71000100A1B2C3 /* SnapshotsView.swift */,
 				C75AED0D2EC259A900824CCD /* DeleteHistoryView.swift */,
 				C770D7DA2CE7C9A100B3492A /* DevelopmentView.swift */,
 				C7BB992E2E8B225F007BBB81 /* FileSearchView.swift */,
@@ -675,6 +681,7 @@
 				C74422432E494D830002D277 /* PackageView.swift in Sources */,
 				C77B90162AF19377009CC655 /* AppState.swift in Sources */,
 				C7DD49EE2BAB7F6000CCBA16 /* ReversePathsFetch.swift in Sources */,
+				C7AA00012E71000100A1B2C3 /* UsageScoreEngine.swift in Sources */,
 				C72D03B52E4D3FB900ADC1B4 /* MainWindow.swift in Sources */,
 				C77020292EA94D0A00240D58 /* FuzzySearch.swift in Sources */,
 				C7BB99292E8AF1CB007BBB81 /* PluginsView.swift in Sources */,
@@ -686,6 +693,7 @@
 				C78D7B212D556F1A003DD49F /* AppPathsFetch.swift in Sources */,
 				C770D7DB2CE7C9AD00B3492A /* DevelopmentView.swift in Sources */,
 				C74422412E4936750002D277 /* DaemonView.swift in Sources */,
+				C7AA00032E71000100A1B2C3 /* SnapshotsView.swift in Sources */,
 				C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */,
 				C73545EB2D8496E000A3DC0C /* HelperToolManager.swift in Sources */,
 				C72FDCB92D6D089100DE7D56 /* UndoManager.swift in Sources */,

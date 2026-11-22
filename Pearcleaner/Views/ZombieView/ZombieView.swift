@@ -148,7 +148,7 @@ struct ZombieView: View {
                                         ForEach(Array(memoizedFiles.enumerated()), id: \.element) { index, file in
                                             if let fileSize = appState.zombieFile.fileSize[file], let fileIcon = appState.zombieFile.fileIcon[file], let iconImage = fileIcon.map(Image.init(nsImage:)) {
                                                 VStack(spacing: 0) {
-                                                    ZombieFileDetailsItem(size: fileSize, icon: iconImage, path: file, memoizedFiles: $memoizedFiles, isSelected: self.binding(for: file))
+                                                    ZombieFileDetailsItem(size: fileSize, icon: iconImage, path: file, score: appState.zombieFile.fileScore[file] ?? 50, memoizedFiles: $memoizedFiles, isSelected: self.binding(for: file))
 
                                                     if index < memoizedFiles.count - 1 {
                                                         Divider()
@@ -691,9 +691,33 @@ struct ZombieFileDetailsItem: View {
     let size: Int64?
     let icon: Image?
     let path: URL
+    var score: Int = 50
     @Binding var memoizedFiles: [URL]
 
     @Binding var isSelected: Bool
+
+    private var scoreText: String {
+        String(localized: "\(score)% orphan")
+    }
+
+    private var scoreHelp: String {
+        switch score {
+        case 90...:
+            return String(localized: "High confidence: the app that created this file is no longer installed")
+        case 60..<90:
+            return String(localized: "Good confidence: file looks stale and no installed app claims it")
+        default:
+            return String(localized: "Uncertain: only staleness signals matched. Review before removing")
+        }
+    }
+
+    private var badgeColor: Color {
+        switch score {
+        case 90...: return .red
+        case 60..<90: return .orange
+        default: return .yellow
+        }
+    }
 
     var body: some View {
         HStack(alignment: .center, spacing: 15) {
@@ -751,6 +775,17 @@ struct ZombieFileDetailsItem: View {
             }
 
             Spacer()
+
+            // Orphan confidence badge: 0-100 from provenance + usage signals
+            if score >= 50 {
+                Text(verbatim: scoreText)
+                    .font(.caption)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 3)
+                    .background(Capsule().fill(badgeColor.opacity(0.2)))
+                    .foregroundStyle(badgeColor)
+                    .help(scoreHelp)
+            }
 
             Text(verbatim: "\(formatByte(size: size!).human)")
                 .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
