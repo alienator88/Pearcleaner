@@ -46,6 +46,7 @@ struct VMContainerGroup: Identifiable {
         let safety: Safety
         let tool: String
         let deleteCommand: [String]?     // CLI path + args, nil = not supported
+        let stopCommand: [String]?        // CLI to stop a running item, nil = not supported
         let hostPath: String?            // on-disk artifact backing this item
 
         var badge: String {
@@ -132,6 +133,13 @@ enum VMContainerScanner {
 
         var items: [VMContainerGroup.Item] = []
 
+        // `system df` does not report container state; `docker ps` lists only
+        // running containers, so a hit means the container is up.
+        var runningContainers: Set<String> = []
+        if let psOut = DevEnvProcess.run(docker, ["ps", "--format", "{{.Names}}"], timeout: 10) {
+            runningContainers = Set(psOut.split(separator: "\n").map { $0.trimmingCharacters(in: .whitespaces) })
+        }
+
         for image in decoded.Images ?? [] {
             let name = [image.Repository ?? "<none>", image.Tag ?? "<none>"].joined(separator: ":")
             items.append(VMContainerGroup.Item(
@@ -144,21 +152,25 @@ enum VMContainerScanner {
                 safety: .cache,
                 tool: "docker",
                 deleteCommand: [docker, "rmi", name],
+                stopCommand: nil,
                 hostPath: nil
             ))
         }
 
         for container in decoded.Containers ?? [] {
+            let containerName = container.Names?.trimmingCharacters(in: CharacterSet(charactersIn: "/")) ?? "container"
+            let isRunning = runningContainers.contains(containerName)
             items.append(VMContainerGroup.Item(
                 kind: .containers,
-                name: container.Names?.trimmingCharacters(in: CharacterSet(charactersIn: "/")) ?? "container",
+                name: containerName,
                 detail: container.Image,
                 sizeBytes: DevEnvProcess.parseSizeString(container.Size ?? "") ?? 0,
                 provisionedBytes: nil,
-                isRunning: false,
+                isRunning: isRunning,
                 safety: .destructive,
                 tool: "docker",
                 deleteCommand: [docker, "rm", "-f", container.Names ?? ""],
+                stopCommand: isRunning ? [docker, "stop", containerName] : nil,
                 hostPath: nil
             ))
         }
@@ -174,6 +186,7 @@ enum VMContainerScanner {
                 safety: .destructive,
                 tool: "docker",
                 deleteCommand: [docker, "volume", "rm", volume.Name ?? ""],
+                stopCommand: nil,
                 hostPath: nil
             ))
         }
@@ -189,6 +202,7 @@ enum VMContainerScanner {
                 safety: .cache,
                 tool: "docker",
                 deleteCommand: [docker, "builder", "prune", "-f"],
+                stopCommand: nil,
                 hostPath: nil
             ))
         }
@@ -240,6 +254,7 @@ enum VMContainerScanner {
                 safety: .destructive,
                 tool: "colima",
                 deleteCommand: [colima, "delete", name, "--force"],
+                stopCommand: (vm.status?.lowercased() == "running") ? [colima, "stop", name] : nil,
                 hostPath: diskPath
             ))
         }
@@ -274,6 +289,7 @@ enum VMContainerScanner {
                         safety: .destructive,
                         tool: "colima",
                         deleteCommand: nil,
+                        stopCommand: nil,
                         hostPath: diskPath
                     ))
                 }
@@ -317,6 +333,7 @@ enum VMContainerScanner {
                 safety: .destructive,
                 tool: "lima",
                 deleteCommand: [limactl, "delete", name, "--force"],
+                stopCommand: (vm.status?.lowercased() == "running") ? [limactl, "stop", name] : nil,
                 hostPath: diskPath
             ))
         }
@@ -341,6 +358,7 @@ enum VMContainerScanner {
                         safety: .destructive,
                         tool: "lima",
                         deleteCommand: nil,
+                        stopCommand: nil,
                         hostPath: diskPath
                     ))
                 }
@@ -373,6 +391,7 @@ enum VMContainerScanner {
                     safety: .destructive,
                     tool: "orbstack",
                     deleteCommand: [orbctl, "delete", "-f", trimmed],
+                    stopCommand: [orbctl, "stop", trimmed],
                     hostPath: nil
                 ))
             }
@@ -405,6 +424,7 @@ enum VMContainerScanner {
                     safety: .destructive,
                     tool: "utm",
                     deleteCommand: nil,   // utmctl needs the app running; the UI offers a Trash action instead
+                    stopCommand: nil,
                     hostPath: bundlePath
                 ))
             }
@@ -445,6 +465,7 @@ enum VMContainerScanner {
                         safety: .destructive,
                         tool: "minikube",
                         deleteCommand: [minikube, "delete", "-p", name],
+                        stopCommand: (profile.Status?.lowercased() == "running") ? [minikube, "stop", "-p", name] : nil,
                         hostPath: profilePath
                     ))
                 }
@@ -466,6 +487,7 @@ enum VMContainerScanner {
                     safety: .cache,
                     tool: "minikube",
                     deleteCommand: nil,
+                    stopCommand: nil,
                     hostPath: cachePath
                 ))
             }

@@ -237,6 +237,17 @@ private struct VMContainerItemRow: View {
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
             }
 
+            if let stopCommand = item.stopCommand, item.isRunning {
+                Button("Stop") {
+                    runStop(stopCommand)
+                }
+                .buttonStyle(.borderless)
+                .controlSize(.mini)
+                .foregroundStyle(.orange)
+                .disabled(working)
+                .help("Stop \(item.name) through \(item.tool); nothing is deleted")
+            }
+
             if item.hostPath != nil, item.deleteCommand == nil {
                 Button("Trash") {
                     trashHostArtifact()
@@ -290,6 +301,28 @@ private struct VMContainerItemRow: View {
             return "Remove \(item.name) through \(item.tool); it can be re-pulled later"
         case .destructive:
             return "Delete \(item.name) through \(item.tool); irreversible"
+        }
+    }
+
+    private func runStop(_ command: [String]) {
+        guard !command.isEmpty else { return }
+        working = true
+        let itemName = item.name
+        let tool = item.tool
+        DispatchQueue.global(qos: .userInitiated).async {
+            let cli = command[0]
+            let args = Array(command.dropFirst())
+            // Stopping a VM can take a while to unmount and shut down cleanly.
+            let ok = DevEnvProcess.run(cli, args, timeout: 120) != nil
+            DispatchQueue.main.async {
+                self.working = false
+                if ok {
+                    GlobalConsoleManager.shared.appendOutput("✓ Stopped \(itemName) via \(tool)\n", source: CurrentPage.development.title)
+                    onDeleted()
+                } else {
+                    GlobalConsoleManager.shared.appendOutput("Failed to stop \(itemName) via \(tool); the CLI exited non-zero or timed out\n", source: CurrentPage.development.title)
+                }
+            }
         }
     }
 
