@@ -654,6 +654,18 @@ class AppPathFinder {
 
             tempCollection.append(contentsOf: spotlightOnly)
 
+            // Merge zap paths declared by the installed Homebrew cask (if the app is a cask)
+            let zapPaths = CaskZapHarvester.zapPaths(for: self.appInfo)
+            let zapOnly = zapPaths.filter { !tempCollection.contains($0) }
+
+            if zapOnly.count > 0 {
+                Task { @MainActor in
+                    GlobalConsoleManager.shared.appendOutput("Homebrew zap list found \(zapOnly.count) additional files\n", source: CurrentPage.applications.title)
+                }
+            }
+
+            tempCollection.append(contentsOf: zapOnly)
+
             let excludePaths = outliersEx.map { $0.path }
             tempCollection.removeAll { url in
                 excludePaths.contains(url.path)
@@ -701,6 +713,10 @@ class AppPathFinder {
         let spotlightOnly = spotlightResults.filter { !self.collectionSet.contains($0) }
         //        printOS("Spotlight index found: \(spotlightOnly.count)")
         tempCollection.append(contentsOf: spotlightOnly)
+
+        // Merge zap paths declared by the installed Homebrew cask (if the app is a cask)
+        let zapPaths = CaskZapHarvester.zapPaths(for: self.appInfo)
+        tempCollection.append(contentsOf: zapPaths.filter { !tempCollection.contains($0) })
 
         let excludePaths = outliersEx.map { $0.path }
         tempCollection.removeAll { url in

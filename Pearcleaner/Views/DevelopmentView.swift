@@ -1645,7 +1645,15 @@ struct PathLibrary {
                 "~/.cursor/extensions/"
             ]),
             PathEnv(name: "Deno", paths: [
-                "~/Library/Caches/deno"
+                "~/Library/Caches/deno",
+                "~/.deno/"
+            ]),
+            PathEnv(name: "Docker", paths: [
+                "~/Library/Containers/com.docker.docker/",
+                "~/.docker/",
+                "~/.colima/",
+                "~/.lima/",
+                "~/Library/Group Containers/group.com.docker/settings-store.json"
             ]),
             PathEnv(name: "Go Modules", paths: [
                 "~/go/bin/",
@@ -1668,6 +1676,11 @@ struct PathLibrary {
             PathEnv(name: "Maven", paths: [
                 "~/.m2/"
             ]),
+            PathEnv(name: "Mise", paths: [
+                "~/.local/share/mise/",
+                "~/.cache/mise/",
+                "~/.config/mise/"
+            ]),
             PathEnv(name: "Nix", paths: [
                 "/nix/store/",
                 "~/.cache/nix/"
@@ -1679,6 +1692,12 @@ struct PathLibrary {
                 "~/.nvm/",
                 "~/Library/pnpm/store",
                 "~/.bun/install/cache"
+            ]),
+            PathEnv(name: "Pnpm", paths: [
+                "~/Library/pnpm/store/",
+                "~/Library/Caches/pnpm/",
+                "~/.local/share/pnpm/",
+                "~/.pnpm-store/"
             ]),
             PathEnv(name: "Pip", paths: [
                 "~/Library/Caches/pip/"
