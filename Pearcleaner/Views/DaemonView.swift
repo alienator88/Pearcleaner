@@ -8,7 +8,7 @@
 import SwiftUI
 import AlinFoundation
 
-struct LaunchItem: Identifiable, Hashable, Equatable {
+struct LaunchItem: Identifiable, Hashable, Equatable, Sendable {
     let id = UUID()
     let label: String
     let path: String
@@ -19,7 +19,7 @@ struct LaunchItem: Identifiable, Hashable, Equatable {
     let bundlePath: String?
     let embeddedPlistPaths: [String] // Additional embedded plist locations
     
-    enum LaunchItemType: String, CaseIterable {
+    enum LaunchItemType: String, CaseIterable, Sendable {
         case agent = "Launch Agent"
         case daemon = "Launch Daemon"
         case service = "XPC Service"
@@ -1071,9 +1071,10 @@ private func runDirectShellCommand(command: String) -> (Bool, String) {
     task.standardError = pipe
     
     task.launch()
-    task.waitUntilExit()
     
     let data = pipe.fileHandleForReading.readDataToEndOfFile()
+    task.waitUntilExit()
+    
     let output = String(data: data, encoding: .utf8) ?? ""
     
     return (task.terminationStatus == 0, output)

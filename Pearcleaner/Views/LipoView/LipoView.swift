@@ -23,6 +23,7 @@ struct LipoView: View {
     @State private var searchText: String = ""
     @State private var lastRefreshDate: Date?
     @State private var isRefreshing: Bool = false
+    @State private var pendingPaths: Set<String> = []
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.lipo.pruneTranslations") private var prune = false
     @AppStorage("settings.lipo.filterMinSavings") private var filterMinSavings = false
@@ -74,11 +75,13 @@ struct LipoView: View {
         // Sizes will be recalculated per-app on-demand
     }
 
-    // Filter and sort the apps (Note: "universalApps" name is legacy - now includes all apps)
+    // Apps that actually contain more than one architecture slice. This is the
+    // same signal the rest of the app uses (`arch == .universal`), so apps that
+    // are already thinned or were never universal stay out of the list.
     var universalApps: [AppInfo] {
-        // Show all apps since our new bundle thinning can find savings even in apps
-        // whose main executable isn't universal (frameworks, plugins, etc. might be)
-        var filtered = appState.sortedApps.filter { !excludedApps.contains($0.path.path) }
+        var filtered = appState.sortedApps.filter { app in
+            app.arch == .universal && !excludedApps.contains(app.path.path)
+        }
 
         // Apply search filter
         if !searchText.isEmpty {
@@ -90,29 +93,19 @@ struct LipoView: View {
 
         var result = filtered
 
-        // Hide apps with 0% savings unless user chooses to show them
-        if !showZeroPercentSavings && !sliceSizesByPath.isEmpty {
+        // Hide apps once we know they have no removable architectures.
+        if !showZeroPercentSavings {
             result = result.filter { app in
-                if let sizes = sliceSizesByPath[app.path.path] {
-                    // Calculate percentage savings like in the UI
-                    let percentSavings =
-                        app.bundleSize > 0
-                        ? Int((Double(sizes.savings) / Double(app.bundleSize)) * 100) : 0
-                    return percentSavings > 0
-                }
-                return true  // Show uncalculated apps
+                guard let savings = knownSavings(for: app) else { return true }
+                return savings > 0
             }
         }
 
         if filterMinSavings {
             // Only apply the 1MB+ filter if we have size data calculated
-            if !sliceSizesByPath.isEmpty {
-                result = result.filter { app in
-                    if let sizes = sliceSizesByPath[app.path.path] {
-                        return sizes.savings >= 1024 * 1024  // 1MB in bytes
-                    }
-                    return false
-                }
+            result = result.filter { app in
+                guard let savings = knownSavings(for: app) else { return false }
+                return savings >= 1024 * 1024  // 1MB in bytes
             }
         }
 
@@ -123,8 +116,8 @@ struct LipoView: View {
                 return app1.appName.localizedCaseInsensitiveCompare(app2.appName)
                     == .orderedAscending
             case .savings:
-                let savings1 = sliceSizesByPath[app1.path.path]?.savings ?? 0
-                let savings2 = sliceSizesByPath[app2.path.path]?.savings ?? 0
+                let savings1 = knownSavings(for: app1) ?? 0
+                let savings2 = knownSavings(for: app2) ?? 0
                 return savings1 > savings2  // Descending order for savings
             case .binary:
                 let bundle1 = UInt64(app1.bundleSize)
@@ -132,6 +125,17 @@ struct LipoView: View {
                 return bundle1 > bundle2  // Descending order for bundle size
             }
         }
+    }
+
+    /// Returns nil while an app has not been analyzed yet.
+    private func knownSavings(for app: AppInfo) -> UInt64? {
+        if let sizes = sliceSizesByPath[app.path.path] {
+            return sizes.savings
+        }
+        if let cached = app.lipoSavings {
+            return UInt64(max(0, cached))
+        }
+        return nil
     }
 
     var body: some View {
@@ -211,10 +215,9 @@ struct LipoView: View {
                                 ForEach(universalApps, id: \.path) { app in
                                     LipoAppRowView(
                                         app: app,
-                                        selectedApps: $selectedApps,
-                                        sliceSizesByPath: $sliceSizesByPath,
-                                        savingsAllApps: $savingsAllApps,
-                                        bundleAllApps: $bundleAllApps
+                                        savings: knownSavings(for: app),
+                                        isCalculating: pendingPaths.contains(app.path.path),
+                                        selectedApps: $selectedApps
                                     )
                                 }
                             }
@@ -312,7 +315,10 @@ struct LipoView: View {
             if lastRefreshDate == nil {
                 lastRefreshDate = Date()
             }
-            // Sizes will be calculated per-app on-demand
+            analyzeAppsIfNeeded()
+        }
+        .onChange(of: appState.sortedApps.filter { $0.arch == .universal }.count) { _ in
+            analyzeAppsIfNeeded()
         }
         .onDisappear {
             // No background tasks to cancel with per-app calculation
@@ -418,8 +424,15 @@ struct LipoView: View {
             // Clear the cached sizes to force recalculation
             await MainActor.run {
                 sliceSizesByPath.removeAll()
+                pendingPaths.removeAll()
                 savingsAllApps = 0
                 bundleAllApps = 0
+
+                // Force a fresh analysis of every universal app, including ones
+                // that were already lipo'd since the last refresh.
+                for index in AppState.shared.sortedApps.indices {
+                    AppState.shared.sortedApps[index].lipoSavings = nil
+                }
             }
 
             // Wait a bit for the UI to update
@@ -428,6 +441,7 @@ struct LipoView: View {
             await MainActor.run {
                 lastRefreshDate = Date()
                 isRefreshing = false
+                analyzeAppsIfNeeded()
                 GlobalConsoleManager.shared.appendOutput("✓ Refreshed app list\n", source: CurrentPage.lipo.title)
             }
         }
@@ -508,35 +522,83 @@ struct LipoView: View {
         // Recalculate savings for each processed app in the background
         Task {
             for appPath in processedAppPaths {
-                // Find the app info
-                if let app = appState.sortedApps.first(where: { $0.path.path == appPath }) {
-                    let savings = await calculateBundleSavings(for: app)
+                let savings = await Self.calculateBundleSavings(
+                    at: URL(fileURLWithPath: appPath))
 
-                    await MainActor.run {
-                        // Update the shared state with new (likely 0) savings
-                        sliceSizesByPath[appPath] = (
-                            bundle: UInt64(app.bundleSize), savings: savings
-                        )
-
-                        // Update totals - subtract old savings and add new (likely 0)
-                        if savings == 0 {
-                            // App was successfully processed and now has 0 savings - it will be filtered out
-                            savingsAllApps = sliceSizesByPath.values.reduce(0) { $0 + $1.savings }
-                            bundleAllApps = sliceSizesByPath.values.reduce(0) { $0 + $1.bundle }
-                        }
-                    }
+                await MainActor.run {
+                    applySavings(savings, forPath: appPath)
                 }
             }
         }
     }
 
-    private func calculateBundleSavings(for app: AppInfo) async -> UInt64 {
+    /// Methodically analyze every universal app in the background so the list
+    /// does not keep showing uncalculated or already-thinned apps. Work is
+    /// deduplicated per path and limited to a few bundles at a time.
+    private func analyzeAppsIfNeeded() {
+        let candidates = appState.sortedApps.filter { app in
+            app.arch == .universal
+                && app.lipoSavings == nil
+                && !pendingPaths.contains(app.path.path)
+                && !excludedApps.contains(app.path.path)
+        }
+        guard !candidates.isEmpty else { return }
+
+        for app in candidates {
+            pendingPaths.insert(app.path.path)
+        }
+
+        let batch = candidates.map { ($0.path.path, $0.path) }
+        let maxConcurrent = 4
+
+        Task {
+            await withTaskGroup(of: (String, UInt64).self) { group in
+                var nextIndex = 0
+
+                func addNext() {
+                    guard nextIndex < batch.count else { return }
+                    let (path, url) = batch[nextIndex]
+                    nextIndex += 1
+                    group.addTask {
+                        let savings = await Self.calculateBundleSavings(at: url)
+                        return (path, savings)
+                    }
+                }
+
+                for _ in 0..<min(maxConcurrent, batch.count) {
+                    addNext()
+                }
+
+                while let (path, savings) = await group.next() {
+                    await MainActor.run {
+                        applySavings(savings, forPath: path)
+                        pendingPaths.remove(path)
+                    }
+                    addNext()
+                }
+            }
+        }
+    }
+
+    private func applySavings(_ savings: UInt64, forPath path: String) {
+        guard let index = appState.sortedApps.firstIndex(where: { $0.path.path == path }) else {
+            pendingPaths.remove(path)
+            return
+        }
+
+        let bundleSize = UInt64(max(0, appState.sortedApps[index].bundleSize))
+        appState.sortedApps[index].lipoSavings = Int64(savings)
+        sliceSizesByPath[path] = (bundle: bundleSize, savings: savings)
+
+        savingsAllApps = sliceSizesByPath.values.reduce(0) { $0 + $1.savings }
+        bundleAllApps = sliceSizesByPath.values.reduce(0) { $0 + $1.bundle }
+    }
+
+    private static func calculateBundleSavings(at appPath: URL) async -> UInt64 {
         return await withCheckedContinuation { continuation in
-            let appPath = app.path
-            let appArch = app.arch
             DispatchQueue.global(qos: .utility).async {
                 let (success, sizes) = thinAppBundleArchitecture(
-                    at: appPath, of: appArch, multi: true, dryRun: true)
+                    at: appPath, of: .universal, multi: true, dryRun: true, showAlert: false)
 
                 if success, let sizes = sizes {
                     let preSize = sizes["pre"] ?? 0
@@ -549,40 +611,21 @@ struct LipoView: View {
             }
         }
     }
-
-    // Old bulk calculation function removed - now using per-app calculation
 }
 
-// New per-app row view that calculates bundle savings on-demand
+// Per-app row view. Savings are calculated by LipoView in the background so
+// rows stay in sync and do not restart calculations when they are recycled.
 struct LipoAppRowView: View {
     @Environment(\.colorScheme) var colorScheme
     let app: AppInfo
+    let savings: UInt64?
+    let isCalculating: Bool
     @Binding var selectedApps: Set<String>
-    @Binding var sliceSizesByPath: [String: (bundle: UInt64, savings: UInt64)]
-    @Binding var savingsAllApps: UInt64
-    @Binding var bundleAllApps: UInt64
-    @State private var isCalculating: Bool = false
-    @State private var calculatedSavings: UInt64?
 
     var body: some View {
         HStack(spacing: 15) {
             appToggle
             appContentView
-        }
-        .onAppear {
-            // Priority 1: Check AppInfo cache (from SwiftData background pre-calculation)
-            if let cachedSavings = app.lipoSavings {
-                calculatedSavings = UInt64(cachedSavings)
-                sliceSizesByPath[app.path.path] = (bundle: UInt64(app.bundleSize), savings: UInt64(cachedSavings))
-            }
-            // Priority 2: Check local session cache
-            else if let existingSizes = sliceSizesByPath[app.path.path] {
-                calculatedSavings = existingSizes.savings
-            }
-            // Priority 3: Calculate on-demand (fallback for apps not yet pre-calculated)
-            else if !isCalculating {
-                calculateBundleSavings()
-            }
         }
     }
 
@@ -636,83 +679,28 @@ struct LipoAppRowView: View {
 
     @ViewBuilder
     private var savingsPercentage: some View {
-        if let savings = calculatedSavings {
-            if app.bundleSize > 0 && savings > 0 {
-                Text("**\(Int((Double(savings) / Double(app.bundleSize)) * 100))%** savings")
-                    .font(.footnote)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-            }
+        if let savings, savings > 0, app.bundleSize > 0 {
+            Text("**\(Int((Double(savings) / Double(app.bundleSize)) * 100))%** savings")
+                .font(.footnote)
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
         }
     }
 
     @ViewBuilder
     private var sizesDisplay: some View {
         HStack {
-            if let savings = calculatedSavings {
+            if let savings {
                 Text(verbatim: "\(formatByte(size: Int64(savings)).human)")
                     .foregroundStyle(.green)
-                    //                    .frame(minWidth: 100, alignment: .leading)
                     .help("Potential savings from bundle thinning")
             } else if isCalculating {
                 Text("Calculating...")
                     .font(.caption)
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                //                    .frame(minWidth: 100, alignment: .leading)
             } else {
-                Text("0 bytes")
-                    .foregroundStyle(.green)
-                    //                    .frame(minWidth: 100, alignment: .leading)
-                    .help("No savings available from bundle thinning")
-            }
-        }
-    }
-
-    private func calculateBundleSavings() {
-        isCalculating = true
-
-        Task {
-            // Use our new bundle thinning approach to calculate potential savings
-            let bundlePath = app.path
-            let savings = await calculateBundleSavings(at: bundlePath)
-
-            await MainActor.run {
-                let wasAlreadyCalculated = calculatedSavings != nil
-                calculatedSavings = savings
-
-                // Update the shared state (always, even for 0 savings)
-                sliceSizesByPath[app.path.path] = (bundle: UInt64(app.bundleSize), savings: savings)
-
-                // Update totals (only add if not already counted)
-                if !wasAlreadyCalculated {
-                    savingsAllApps += savings
-                    bundleAllApps += UInt64(app.bundleSize)
-                }
-
-                // Persist to AppState.sortedApps (in-memory only, no cache)
-                if let index = AppState.shared.sortedApps.firstIndex(where: { $0.path == app.path }) {
-                    AppState.shared.sortedApps[index].lipoSavings = Int64(savings)
-                }
-
-                isCalculating = false
-            }
-        }
-    }
-
-    private func calculateBundleSavings(at bundlePath: URL) async -> UInt64 {
-        return await withCheckedContinuation { continuation in
-            DispatchQueue.global(qos: .utility).async {
-                // Use the same function as actual lipo operation, but in dry-run mode
-                let (success, sizes) = thinAppBundleArchitecture(
-                    at: bundlePath, of: app.arch, multi: true, dryRun: true)
-
-                if success, let sizes = sizes {
-                    let preSize = sizes["pre"] ?? 0
-                    let postSize = sizes["post"] ?? 0
-                    let savings = preSize > postSize ? preSize - postSize : 0
-                    continuation.resume(returning: savings)
-                } else {
-                    continuation.resume(returning: 0)
-                }
+                Text("—")
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                    .help("Not analyzed")
             }
         }
     }

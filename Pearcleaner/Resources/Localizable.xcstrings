@@ -5,6 +5,9 @@
       "comment" : "Do not translate",
       "shouldTranslate" : false
     },
+    "—" : {
+
+    },
     "(Build %@)" : {
       "localizations" : {
         "de" : {
@@ -4286,6 +4289,7 @@
       }
     },
     "0 bytes" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -49680,6 +49684,7 @@
       }
     },
     "No savings available from bundle thinning" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -50269,6 +50274,9 @@
           }
         }
       }
+    },
+    "Not analyzed" : {
+
     },
     "Not available" : {
       "extractionState" : "manual",

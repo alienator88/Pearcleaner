@@ -220,7 +220,16 @@ func checkAppBundleArchitecture(at appBundlePath: String) -> Arch {
                 else if archData.cpuType == 0x01000007 { archs.append(.intel) }
                 offset += 20
             }
-            return archs.count == 1 ? archs.first! : .universal
+
+            // A universal app has slices from both CPU families. Fat binaries
+            // that only contain ARM variants (for example arm64e + arm64e.x1)
+            // are not universal and cannot be thinned.
+            let hasArm = archs.contains(.arm)
+            let hasIntel = archs.contains(.intel)
+            if hasArm && hasIntel { return .universal }
+            if hasArm { return .arm }
+            if hasIntel { return .intel }
+            return .empty
         } else {
             // Single architecture Mach-O binary: read cpu type from header
             guard headerData.count >= 8 else { return .empty }
