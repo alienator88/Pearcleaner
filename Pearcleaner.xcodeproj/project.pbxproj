@@ -31,6 +31,9 @@
 		C77020292EA94D0A00240D58 /* FuzzySearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77020282EA94D0A00240D58 /* FuzzySearch.swift */; };
 		C770B6ED2E78DF9D005A0ABD /* Glass.icon in Resources */ = {isa = PBXBuildFile; fileRef = C770B6EC2E78DF9D005A0ABD /* Glass.icon */; };
 		C770D7DB2CE7C9AD00B3492A /* DevelopmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C770D7DA2CE7C9A100B3492A /* DevelopmentView.swift */; };
+		C7DD000BDE00000100000002 /* DevEnvProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD000ADE00000100000001 /* DevEnvProcess.swift */; };
+		C7DD000BDE00000200000004 /* VMContainerInventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD0000ADE00000200000003 /* VMContainerInventory.swift */; };
+		C7DD000BDE00000300000006 /* VMContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD0000ADE00000300000005 /* VMContainerView.swift */; };
 		C7736E4F2C49A44200917293 /* AlinFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = C7736E4E2C49A44200917293 /* AlinFoundation */; };
 		C77B90042AF18E2E009CC655 /* PearcleanerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90032AF18E2E009CC655 /* PearcleanerApp.swift */; };
 		C77B90162AF19377009CC655 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90152AF19377009CC655 /* AppState.swift */; };
@@ -154,6 +157,9 @@
 		C77020282EA94D0A00240D58 /* FuzzySearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuzzySearch.swift; sourceTree = "<group>"; };
 		C770B6EC2E78DF9D005A0ABD /* Glass.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Glass.icon; sourceTree = "<group>"; };
 		C770D7DA2CE7C9A100B3492A /* DevelopmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevelopmentView.swift; sourceTree = "<group>"; };
+		C7DD000ADE00000100000001 /* DevEnvProcess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevEnvProcess.swift; sourceTree = "<group>"; };
+		C7DD0000ADE00000200000003 /* VMContainerInventory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VMContainerInventory.swift; sourceTree = "<group>"; };
+		C7DD0000ADE00000300000005 /* VMContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VMContainerView.swift; sourceTree = "<group>"; };
 		C77B90002AF18E2E009CC655 /* Pearcleaner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pearcleaner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C77B90032AF18E2E009CC655 /* PearcleanerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PearcleanerApp.swift; sourceTree = "<group>"; };
 		C77B90142AF18E7C009CC655 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -410,6 +416,7 @@
 				C72D03B22E4D3FB900ADC1B4 /* MainWindow.swift */,
 				C74422422E494D7E0002D277 /* PackageView.swift */,
 				C7BB99282E8AF1CB007BBB81 /* PluginsView.swift */,
+				C7DD0000ADE00000300000005 /* VMContainerView.swift */,
 				C7C693FC2E9D74D50081CF25 /* AppsUpdaterView */,
 				C74649EE2E4800BB002D1C63 /* AppsView */,
 				C7C05FD72E8DA12C006D0476 /* Brew */,
@@ -696,6 +703,9 @@
 				C77B901A2AF1938F009CC655 /* Logic.swift in Sources */,
 				C78D7B212D556F1A003DD49F /* AppPathsFetch.swift in Sources */,
 				C770D7DB2CE7C9AD00B3492A /* DevelopmentView.swift in Sources */,
+				C7DD000BDE00000100000002 /* DevEnvProcess.swift in Sources */,
+				C7DD000BDE00000200000004 /* VMContainerInventory.swift in Sources */,
+				C7DD000BDE00000300000006 /* VMContainerView.swift in Sources */,
 				C74422412E4936750002D277 /* DaemonView.swift in Sources */,
 				C7AA00032E71000100A1B2C3 /* SnapshotsView.swift in Sources */,
 				C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */,

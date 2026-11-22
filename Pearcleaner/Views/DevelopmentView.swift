@@ -142,6 +142,12 @@ struct EnvironmentCleanerView: View {
             .controlGroup(Capsule(style: .continuous), level: .primary)
             .padding(.top, 5)
 
+            // VM and container runtimes: real image/VM names and sizes, independent
+            // of the selected environment
+            VMContainerView()
+                .padding(.top, 10)
+                .padding(.bottom, 10)
+
             if let selectedEnvironment = appState.selectedEnvironment, filteredPaths.count > 0 {
 
                 // Stats header
@@ -1603,16 +1609,52 @@ struct PipPackageCleanerView: View {
 struct PathLibrary {
     static func getPaths() -> [PathEnv] {
         return [
+            PathEnv(name: "AI Agents", paths: [
+                "~/.codex/sessions/",
+                "~/.codex/.tmp/",
+                "~/.codex/log/",
+                "~/.claude/projects/",
+                "~/.claude/todos/",
+                "~/.claude/shell-snapshots/",
+                "~/.claude/statsig/",
+                "~/.claude/file-history/",
+                "~/.cache/claude/",
+                "~/.cache/opencode/",
+                "~/.local/share/opencode/log/",
+                "~/.jcode/scratch/",
+                "~/.jcode/tmp/",
+                "~/.jcode/builds/",
+                "~/.jcode/logs/",
+                "~/.jcode/cache/",
+                "~/.jcode/reload-traces/",
+                "~/.cache/huggingface/hub/",
+                "~/Library/Application Support/Codex/component_crx_cache/",
+                "~/Library/Application Support/Codex/extensions_crx_cache/",
+                "~/Library/Application Support/Codex/GraphiteDawnCache/",
+                "~/Library/Application Support/Codex/Crashpad/",
+                "~/Library/Caches/Codex/",
+                "~/Library/Caches/com.openai.codex/",
+                "~/.gemini/tmp/"
+            ]),
+            PathEnv(name: "Android SDK", paths: [
+                "~/Library/Android/sdk/system-images/",
+                "~/Library/Android/sdk/build-tools/",
+                "~/Library/Android/sdk/platforms/",
+                "~/Library/Android/sdk/ndk/",
+                "~/Library/Android/sdk/temp/"
+            ]),
             PathEnv(name: "Android Studio", paths: [
-                "~/.android/",
-                "~/Library/Application Support/Google/AndroidStudio*/",
+                "~/.android/build-cache/",
                 "~/Library/Logs/AndroidStudio/",
                 "~/Library/Caches/Google/AndroidStudio*/"
             ]),
+            PathEnv(name: "Bazel", paths: [
+                "~/.cache/bazel/",
+                "~/.bazelcache/"
+            ]),
             PathEnv(name: "Cargo", paths: [
-                "~/.cargo/",
-                "~/.cargo/git/",
-                "~/.cargo/registry/"
+                "~/.cargo/registry/",
+                "~/.cargo/git/"
             ]),
             PathEnv(name: "Carthage", paths: [
                 "~/Carthage/",
@@ -1626,12 +1668,14 @@ struct PathLibrary {
                 "~/.composer/cache/"
             ]),
             PathEnv(name: "Conda", paths: [
-                "~/.conda/",
-                "~/anaconda3/",
-                "~/miniconda3/"
+                "~/anaconda3/pkgs/",
+                "~/miniconda3/pkgs/"
+            ]),
+            PathEnv(name: "Coursier", paths: [
+                "~/.cache/coursier/",
+                "~/.ivy2/cache/"
             ]),
             PathEnv(name: "Cursor", paths: [
-                "~/Library/Application Support/Cursor/",
                 "~/Library/Application Support/Cursor/Cache",
                 "~/Library/Application Support/Cursor/GPUCache",
                 "~/Library/Application Support/Cursor/CachedConfigurations",
@@ -1640,64 +1684,86 @@ struct PathLibrary {
                 "~/Library/Application Support/Cursor/CachedExtensions",
                 "~/Library/Application Support/Cursor/CachedProfilesData",
                 "~/Library/Application Support/Cursor/Code Cache",
-                "~/Library/Application Support/Cursor/User",
-                "~/.cursor/",
-                "~/.cursor/extensions/"
+                "~/Library/Application Support/Cursor/Crashpad/",
+                "~/Library/Application Support/Cursor/component_crx_cache/",
+                "~/Library/Application Support/Cursor/User/workspaceStorage/"
             ]),
             PathEnv(name: "Deno", paths: [
                 "~/Library/Caches/deno",
                 "~/.deno/"
             ]),
             PathEnv(name: "Docker", paths: [
-                "~/Library/Containers/com.docker.docker/",
-                "~/.docker/",
-                "~/.colima/",
-                "~/.lima/",
-                "~/Library/Group Containers/group.com.docker/settings-store.json"
+                "~/.docker/cli-plugins/",
+                "~/.docker/buildx/",
+                "~/.colima/_store/",
+                "~/.colima/_templates/"
             ]),
-            PathEnv(name: "Go Modules", paths: [
-                "~/go/bin/",
+            PathEnv(name: "Electron", paths: [
+                "~/Library/Caches/electron/",
+                "~/Library/Caches/electron-builder/",
+                "~/Library/Caches/node-gyp/",
+                "~/.electron-gyp/"
+            ]),
+            PathEnv(name: "Elixir", paths: [
+                "~/.mix/archives/",
+                "~/.cache/rebar3/",
+                "~/.cache/hex/"
+            ]),
+            PathEnv(name: "Go", paths: [
+                "~/Library/Caches/go-build/",
                 "~/go/pkg/mod/"
             ]),
             PathEnv(name: "Gradle", paths: [
                 "~/.gradle/caches/",
-                "~/.gradle/wrapper/"
+                "~/.gradle/wrapper/dists/",
+                "~/.gradle/daemon/"
             ]),
             PathEnv(name: "Haskell Stack", paths: [
-                "~/.stack/",
-                "~/.stack/global-project/",
                 "~/.stack/snapshots/"
             ]),
+            PathEnv(name: "Helm", paths: [
+                "~/Library/Caches/helm/"
+            ]),
+            PathEnv(name: "Homebrew", paths: [
+                "~/Library/Caches/Homebrew/"
+            ]),
             PathEnv(name: "IntelliJ IDEA", paths: [
-                "~/Library/Application Support/JetBrains/",
                 "~/Library/Caches/JetBrains/",
                 "~/Library/Logs/JetBrains/"
             ]),
+            PathEnv(name: "Julia", paths: [
+                "~/.julia/compiled/"
+            ]),
+            PathEnv(name: "LLM Models", paths: [
+                "~/.ollama/models/",
+                "~/.cache/lm-studio/"
+            ]),
             PathEnv(name: "Maven", paths: [
-                "~/.m2/"
+                "~/.m2/repository/"
             ]),
             PathEnv(name: "Mise", paths: [
-                "~/.local/share/mise/",
-                "~/.cache/mise/",
-                "~/.config/mise/"
+                "~/.cache/mise/"
             ]),
             PathEnv(name: "Nix", paths: [
-                "/nix/store/",
                 "~/.cache/nix/"
             ]),
-            PathEnv(name: "Npm", paths: [
-                "/usr/local/lib/node_modules/",
-                "~/.nvm/versions/node/*/",
+            PathEnv(name: "Node", paths: [
                 "~/.npm/",
-                "~/.nvm/",
-                "~/Library/pnpm/store",
-                "~/.bun/install/cache"
+                "~/Library/Caches/node/"
+            ]),
+            PathEnv(name: "NuGet", paths: [
+                "~/.nuget/packages/"
+            ]),
+            PathEnv(name: "Playwright", paths: [
+                "~/Library/Caches/ms-playwright/",
+                "~/.cache/ms-playwright-go/"
             ]),
             PathEnv(name: "Pnpm", paths: [
                 "~/Library/pnpm/store/",
-                "~/Library/Caches/pnpm/",
-                "~/.local/share/pnpm/",
-                "~/.pnpm-store/"
+                "~/Library/Caches/pnpm/"
+            ]),
+            PathEnv(name: "Puppeteer", paths: [
+                "~/.cache/puppeteer/"
             ]),
             PathEnv(name: "Pip", paths: [
                 "~/Library/Caches/pip/"
@@ -1706,28 +1772,43 @@ struct PathLibrary {
                 "~/Library/Caches/pypoetry/",
                 "~/Library/Application Support/pypoetry/"
             ]),
+            PathEnv(name: "Pre-commit", paths: [
+                "~/Library/Caches/pre-commit/",
+                "~/.cache/pre-commit/"
+            ]),
             PathEnv(name: "Pub", paths: [
-                "~/.pub-cache/",
+                "~/.pub-cache/hosted/",
                 "~/Library/Caches/flutter_engine/"
             ]),
             PathEnv(name: "Pyenv", paths: [
-                "~/.pyenv/",
                 "~/.pyenv/cache/"
             ]),
             PathEnv(name: "Ruby Gems", paths: [
-                "~/.gem/",
-                "~/.gem/ruby/*/"
+                "~/.gem/ruby/*/cache/"
+            ]),
+            PathEnv(name: "Rust", paths: [
+                "~/Library/Caches/Mozilla.sccache/"
             ]),
             PathEnv(name: "Swift", paths: [
-                "~/.swiftpm/"
+                "~/Library/Caches/org.swift.swiftpm/",
+                "~/Library/Caches/swift-build/",
+                "~/Library/org.swift.swiftpm/"
+            ]),
+            PathEnv(name: "Terraform", paths: [
+                "~/.terraform.d/plugin-cache/",
+                "~/Library/Caches/terraform/"
+            ]),
+            PathEnv(name: "Toolchains", paths: [
+                "~/.rustup/toolchains/",
+                "~/.pyenv/versions/",
+                "~/.nvm/versions/node/",
+                "~/.local/share/mise/",
+                "~/.asdf/"
             ]),
             PathEnv(name: "Uv", paths: [
-                "~/.cache/uv/",
-                "~/.config/uv/",
-                "~/.local/share/uv/"
+                "~/.cache/uv/"
             ]),
             PathEnv(name: "VS Code", paths: [
-                "~/Library/Application Support/Code/",
                 "~/Library/Application Support/Code/Cache",
                 "~/Library/Application Support/Code/GPUCache",
                 "~/Library/Application Support/Code/CachedConfigurations",
@@ -1736,10 +1817,12 @@ struct PathLibrary {
                 "~/Library/Application Support/Code/CachedExtensions",
                 "~/Library/Application Support/Code/CachedProfilesData",
                 "~/Library/Application Support/Code/Code Cache",
-                "~/Library/Application Support/Code/User",
-                "~/.vscode/",
-                "~/.vscode/extensions/",
-                "~/.vscode/cli/"
+                "~/Library/Application Support/Code/Crashpad/",
+                "~/Library/Application Support/Code/component_crx_cache/",
+                "~/Library/Application Support/Code/User/workspaceStorage/"
+            ]),
+            PathEnv(name: "Vagrant", paths: [
+                "~/.vagrant.d/boxes/"
             ]),
             PathEnv(name: "Xcode", paths: [
                 "~/Library/Caches/com.apple.dt.xcodebuild/",
@@ -1753,7 +1836,7 @@ struct PathLibrary {
                 "~/Library/Developer/Xcode/tvOS DeviceSupport/",
                 "~/Library/Developer/Xcode/watchOS DeviceSupport/",
                 "~/Library/Developer/Xcode/macOS DeviceSupport/",
-                "~/Library/Developer/Xcode/UserData/"
+                "~/Library/Developer/Xcode/Products/"
             ]),
             PathEnv(name: "Yarn", paths: [
                 "~/.cache/yarn/",
@@ -1761,10 +1844,11 @@ struct PathLibrary {
                 "~/.yarn/global/"
             ]),
             PathEnv(name: "Zed", paths: [
-                "~/.config/zed/",
                 "~/Library/Caches/Zed/",
-                "~/Library/Application Support/Zed/",
                 "~/Library/Application Support/Zed/node/cache/"
+            ]),
+            PathEnv(name: "Zig", paths: [
+                "~/.cache/zig/"
             ])
         ]
             .map { PathEnv(name: $0.name, paths: $0.paths.sorted()) } // Sort paths within each environment
