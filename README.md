@@ -90,12 +90,12 @@ This project was born out of wanting to learn more on how macOS deals with app i
 
 | macOS Version | Codename | Supported |
 |---------------|----------|-----------|
-| 13.x          | Ventura  | ✅        |
 | 14.x          | Sonoma   | ✅        |
 | 15.x          | Sequoia  | ✅        |
 | 26.x          | Tahoe    | ✅        |
+| 27.x          | TBD      | ✅        |
 | TBD           | Beta     | ❌        |
-> Versions prior to macOS 13.0 are not supported due to missing Swift/SwiftUI APIs required by the app.
+> Versions prior to macOS 14.0 are not supported due to missing Swift/SwiftUI APIs required by the app.
 
 ## Getting Pearcleaner
 
