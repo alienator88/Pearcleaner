@@ -1338,30 +1338,272 @@ func removeApp(appState: AppState, withPath path: URL) async {
 //}
 
 // --- Pearcleaner Uninstall ---
-func uninstallPearcleaner(appState: AppState, locations: Locations) {
+func uninstallPearcleaner(appState: AppState, locations: Locations) async {
+    let bundleURL = Bundle.main.bundleURL.standardizedFileURL
+    let installDirectory = bundleURL.deletingLastPathComponent()
 
-    // Unload Sentinel Monitor if running
-    launchctl(load: false)
+    // Bail out before touching any service registrations when the app cannot
+    // actually remove itself. Otherwise a failed uninstall leaves the helper,
+    // Sentinel and Finder extension unregistered with the app still installed.
+    if bundleURL.path.contains("/AppTranslocation/") {
+        showCustomAlert(
+            title: "Uninstall Failed",
+            message:
+                "Pearcleaner is running from a temporary location. Move it to the Applications folder and try again.",
+            style: .warning)
+        return
+    }
 
-    // Get app info for Pearcleaner
-    let appInfo = AppInfoFetcher.getAppInfo(atPath: Bundle.main.bundleURL)
+    guard FileManager.default.isWritableFile(atPath: installDirectory.path) else {
+        showCustomAlert(
+            title: "Uninstall Failed",
+            message:
+                "Pearcleaner cannot remove itself from \(installDirectory.path). Quit Pearcleaner and drag it to the Trash instead.",
+            style: .warning)
+        return
+    }
 
-    // Find application files for Pearcleaner
+    guard let appInfo = AppInfoFetcher.getAppInfo(atPath: bundleURL) else {
+        showCustomAlert(
+            title: "Uninstall Failed",
+            message: "Unable to identify the running Pearcleaner application.",
+            style: .warning)
+        return
+    }
+
+    // Locate related files first. If nothing can be found, leave the helper and
+    // login items alone instead of half uninstalling the app.
     AppPathFinder(
-        appInfo: appInfo!, locations: locations, appState: appState,
+        appInfo: appInfo, locations: locations, appState: appState,
         completion: {
-            // Kill Pearcleaner and tell Finder to trash the files
-            let selectedItemsArray = Array(appState.selectedItems).filter {
+            var selectedItemsArray = Array(appState.selectedItems).filter {
                 !$0.path.contains(".Trash")
             }
-            let result = FileManagerUndo.shared.deleteFiles(at: selectedItemsArray)
 
-            if result {
-                playTrashSound()
+            // The running bundle is always part of the uninstall, even if the
+            // path scan somehow missed it.
+            if !selectedItemsArray.contains(where: {
+                $0.standardizedFileURL.path == bundleURL.path
+            }) {
+                selectedItemsArray.insert(bundleURL, at: 0)
             }
-            exit(0)
+
+            // The Finder extension gets its own container and scripts folder.
+            // The scanner normally finds these, but add them explicitly so the
+            // extension never survives as an orphaned hidden file.
+            for fallbackPath in pearcleanerExtensionPaths()
+            where FileManager.default.fileExists(atPath: fallbackPath.path)
+                && !selectedItemsArray.contains(where: {
+                    $0.standardizedFileURL.path == fallbackPath.path
+                })
+            {
+                selectedItemsArray.append(fallbackPath)
+            }
+
+            if selectedItemsArray.count == 1 {
+                printOS("Uninstall: No related files were found, removing only the app bundle.")
+            }
+
+            Task {
+                await finishPearcleanerUninstall(items: selectedItemsArray)
+            }
         }
     ).findPaths()
+}
+
+private func finishPearcleanerUninstall(items: [URL]) async {
+    // Clear privileged leftovers while the helper is still registered so no
+    // authorization prompt is needed.
+    await removeLegacyHelperArtifacts()
+    await removeCLISymlinkForUninstall()
+
+    // The daemon must be unregistered before its host bundle is moved.
+    do {
+        try await HelperToolManager.shared.unregisterForSelfUninstall()
+    } catch {
+        showCustomAlert(
+            title: "Uninstall Failed",
+            message: error.localizedDescription,
+            style: .warning)
+        return
+    }
+
+    // Login item and Finder extension cleanup is best effort. A failure here
+    // should not stop the app bundle from being removed.
+    do {
+        let sentinel = SMAppService.agent(
+            plistName: "com.alienator88.PearcleanerSentinel.plist")
+        if sentinel.status != .notRegistered {
+            try await sentinel.unregister()
+        }
+    } catch {
+        printOS("Uninstall: Failed to unregister Sentinel: \(error.localizedDescription)")
+    }
+
+    if !unregisterFinderPluginForSelfUninstall() {
+        printOS("Uninstall: Failed to unregister the Finder extension.")
+    }
+
+    // Everything left is owned by the user, so move it to the Trash directly.
+    // The privileged wrapper would prompt for an admin password even though no
+    // elevation is required.
+    let result = FileManagerUndo.shared.deleteFiles(
+        at: items, bundleName: "Pearcleaner", direct: true)
+
+    if result {
+        exit(0)
+    } else {
+        showCustomAlert(
+            title: "Uninstall Incomplete",
+            message:
+                "Some Pearcleaner files could not be removed. Quit Pearcleaner and drag it from the Applications folder to the Trash.",
+            style: .warning)
+    }
+}
+
+/// Removes helper files left behind by older helper tool installs. SMAppService
+/// keeps the daemon inside the app bundle, so these paths normally do not exist.
+private func removeLegacyHelperArtifacts() async {
+    let paths = [
+        "/Library/PrivilegedHelperTools/com.alienator88.Pearcleaner.PearcleanerHelper",
+        "/Library/LaunchDaemons/com.alienator88.Pearcleaner.PearcleanerHelper.plist",
+    ].filter { FileManager.default.fileExists(atPath: $0) }
+
+    guard !paths.isEmpty else { return }
+
+    let command = "/bin/rm -f " + paths.map { "'\($0)'" }.joined(separator: " ")
+    let result = try? await runSUCommand(
+        command,
+        errorContext: "Failed to remove legacy helper files",
+        throwOnFailure: false)
+
+    if result?.success != true {
+        printOS("Uninstall: Failed to remove legacy helper files.")
+    }
+}
+
+/// Removes the optional /usr/local/bin/pear CLI symlink when it belongs to
+/// Pearcleaner, so it does not dangle after the bundle moves to the Trash.
+private func removeCLISymlinkForUninstall() async {
+    let symlinkPath = "/usr/local/bin/pear"
+    let legacyPath = "/usr/local/bin/pearcleaner"
+    let fileManager = FileManager.default
+
+    // Only touch symlinks that point at Pearcleaner, never a user's own file.
+    for path in [symlinkPath, legacyPath] {
+        guard let destination = try? fileManager.destinationOfSymbolicLink(atPath: path),
+              destination == Bundle.main.executablePath || destination.contains("Pearcleaner.app")
+        else { continue }
+
+        if HelperToolManager.shared.isHelperToolInstalled {
+            let result = await HelperToolManager.shared.runCommand("/bin/rm -f '\(path)'")
+            if !result.0 {
+                printOS("Uninstall: Failed to remove CLI symlink: \(result.1)")
+            }
+        } else {
+            do {
+                try fileManager.removeItem(atPath: path)
+            } catch {
+                printOS("Uninstall: Failed to remove CLI symlink: \(error.localizedDescription)")
+            }
+        }
+    }
+}
+
+private let finderExtensionBundleIdentifier = "com.alienator88.Pearcleaner.FinderOpen"
+
+/// Per-user locations the Finder extension may create outside the app bundle.
+private func pearcleanerExtensionPaths() -> [URL] {
+    let home = FileManager.default.homeDirectoryForCurrentUser
+    return [
+        home.appendingPathComponent(
+            "Library/Containers/\(finderExtensionBundleIdentifier)"),
+        home.appendingPathComponent(
+            "Library/Application Scripts/\(finderExtensionBundleIdentifier)"),
+        home.appendingPathComponent(
+            "Library/Group Containers/group.com.alienator88.Pearcleaner"),
+    ]
+}
+
+/// Runs a command and returns its exit status and standard output.
+private func runUninstallCommand(
+    _ executable: String, _ arguments: [String]
+) -> (status: Int32, output: String) {
+    let process = Process()
+    process.executableURL = URL(fileURLWithPath: executable)
+    process.arguments = arguments
+
+    let pipe = Pipe()
+    process.standardOutput = pipe
+    process.standardError = FileHandle.nullDevice
+
+    do {
+        try process.run()
+    } catch {
+        return (-1, "")
+    }
+
+    // Drain the pipe before waiting so a large result cannot deadlock the child.
+    let data = pipe.fileHandleForReading.readDataToEndOfFile()
+    process.waitUntilExit()
+    return (process.terminationStatus, String(data: data, encoding: .utf8) ?? "")
+}
+
+/// Returns every registered copy of the Finder extension, including stale ones
+/// from previous builds and installs.
+private func registeredFinderExtensionPaths() -> [String] {
+    let result = runUninstallCommand(
+        "/usr/bin/pluginkit",
+        ["-m", "-A", "-D", "-v", "-i", finderExtensionBundleIdentifier])
+    guard result.status == 0 else { return [] }
+
+    return result.output
+        .split(separator: "\n")
+        .compactMap { line in
+            guard let path = line.split(separator: "\t").last else { return nil }
+            let trimmed = path.trimmingCharacters(in: .whitespaces)
+            return trimmed.hasSuffix(".appex") ? trimmed : nil
+        }
+}
+
+@discardableResult
+private func unregisterFinderPluginForSelfUninstall() -> Bool {
+    let pluginPath = Bundle.main.bundleURL
+        .appendingPathComponent("Contents/PlugIns/FinderOpen.appex").path
+
+    // Stop the running extension first so Finder releases the bundle before it
+    // is moved to the Trash.
+    _ = runUninstallCommand("/usr/bin/pkill", ["-f", pluginPath])
+
+    // Remove every registered copy of the extension, not just the one inside the
+    // running app. Registrations from older builds used to survive uninstall and
+    // kept the extension listed in System Settings.
+    var removed = false
+    var pathsToRemove = registeredFinderExtensionPaths()
+    if FileManager.default.fileExists(atPath: pluginPath) {
+        pathsToRemove.append(pluginPath)
+    }
+
+    for path in Set(pathsToRemove) {
+        let result = runUninstallCommand("/usr/bin/pluginkit", ["-r", path])
+        if result.status == 0 {
+            removed = true
+        } else {
+            printOS("Uninstall: Failed to remove Finder extension at \(path).")
+        }
+    }
+
+    // An ignored election would keep a disabled entry around after uninstall
+    // and would also disable the extension after reinstalling. Clear it instead.
+    let election = runUninstallCommand(
+        "/usr/bin/pluginkit", ["-e", "default", "-i", finderExtensionBundleIdentifier])
+    if election.status != 0 {
+        printOS("Uninstall: Failed to reset the Finder extension state.")
+    }
+
+    // Report success when the extension is no longer registered. If pluginkit
+    // had nothing to remove, the uninstall is still fine.
+    return removed || registeredFinderExtensionPaths().isEmpty
 }
 
 // --- Load Plist file with SMAppService ---

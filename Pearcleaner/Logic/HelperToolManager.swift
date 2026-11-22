@@ -166,6 +166,17 @@ class HelperToolManager: ObservableObject {
         SMAppService.openSystemSettingsLoginItems()
     }
 
+    func unregisterForSelfUninstall() async throws {
+        let service = SMAppService.daemon(plistName: "\(helperToolIdentifier).plist")
+        if service.status != .notRegistered {
+            try await service.unregister()
+        }
+        updateOnMain {
+            self.isHelperToolInstalled = false
+            self.message = String(localized: "Service is not installed.")
+        }
+    }
+
     // Function to run privileged commands
     func runCommand(_ command: String, skipHelperCheck: Bool = false) async -> (Bool, String) {
         if !skipHelperCheck && !isHelperToolInstalled {

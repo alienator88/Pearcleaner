@@ -221,14 +221,17 @@ class FileManagerUndo {
         return true
     }
 
-    func deleteFiles(at urls: [URL], isCLI: Bool = false, bundleName: String? = nil) -> Bool {
-        deleteFilesWithResult(at: urls, isCLI: isCLI, bundleName: bundleName).allSucceeded
+    func deleteFiles(
+        at urls: [URL], isCLI: Bool = false, bundleName: String? = nil, direct: Bool = false
+    ) -> Bool {
+        deleteFilesWithResult(at: urls, isCLI: isCLI, bundleName: bundleName, direct: direct).allSucceeded
     }
 
     func deleteFilesWithResult(
         at urls: [URL],
         isCLI: Bool = false,
-        bundleName: String? = nil
+        bundleName: String? = nil,
+        direct: Bool = false
     ) -> FileDeletionResult {
         var seenPaths = Set<String>()
         let requestedURLs = urls.filter {
@@ -380,10 +383,9 @@ class FileManagerUndo {
         let finalCommands = "\(createFolderCommand) && \(mvCommands)"
         let filePairs = tempFilePairs
 
-        let commandSucceeded = executeFileCommands(
-            finalCommands,
-            isRestore: false
-        )
+        let commandSucceeded = direct
+            ? runDirectShellCommand(command: finalCommands).0
+            : executeFileCommands(finalCommands, isRestore: false)
         let movedPairs = filePairs.filter {
             pathExistsWithoutFollowingSymlinks($0.trashURL) &&
             !pathExistsWithoutFollowingSymlinks($0.originalURL)
@@ -414,18 +416,20 @@ class FileManagerUndo {
         )
 
         if !movedPairs.isEmpty {
-            registerDeletionUndo(
-                filePairs: movedPairs,
-                restoredRequestedURLs: movedURLs
-            )
-
-            // Record in persistent history
-            Task { @MainActor in
-                UndoHistoryManager.shared.addRecord(
-                    appName: folderName,
-                    bundleFolderPath: bundleFolderPath,
-                    filePairs: movedPairs.map { ($0.originalURL.path, $0.trashURL.path) }
+            if !direct {
+                registerDeletionUndo(
+                    filePairs: movedPairs,
+                    restoredRequestedURLs: movedURLs
                 )
+
+                // Record in persistent history
+                Task { @MainActor in
+                    UndoHistoryManager.shared.addRecord(
+                        appName: folderName,
+                        bundleFolderPath: bundleFolderPath,
+                        filePairs: movedPairs.map { ($0.originalURL.path, $0.trashURL.path) }
+                    )
+                }
             }
 
             // Play the sound only when at least one item actually moved.
@@ -700,7 +704,13 @@ class FileManagerUndo {
         task.waitUntilExit()
         let output = String(data: data, encoding: .utf8) ?? ""
 
-        if output.lowercased().contains("permission denied") {
+        let lowercasedOutput = output.lowercased()
+        let failureMarkers = [
+            "permission denied",
+            "operation not permitted",
+            "read-only file system",
+        ]
+        if failureMarkers.contains(where: { lowercasedOutput.contains($0) }) {
             return (false, output)
         }
 

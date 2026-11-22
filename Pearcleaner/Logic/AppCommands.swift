@@ -60,7 +60,9 @@ struct AppCommands: Commands {
                     okText: "Uninstall",
                     style: .warning,
                     onOk: {
-                        uninstallPearcleaner(appState: appState, locations: locations)
+                        Task {
+                            await uninstallPearcleaner(appState: appState, locations: locations)
+                        }
                     }
                 )
             } label: {
