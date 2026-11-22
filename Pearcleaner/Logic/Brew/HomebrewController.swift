@@ -455,27 +455,7 @@ class HomebrewController: ObservableObject {
             GlobalConsoleManager.shared.appendOutput("Loading available \(cask ? "casks" : "formulae") metadata...\n", source: CurrentPage.homebrew.title)
         }
 
-        let fileName = cask ? "cask.jws.json" : "formula.jws.json"
-        let apiCachePath = FileManager.default.homeDirectoryForCurrentUser
-            .appendingPathComponent("Library/Caches/Homebrew/api")
-        let jwsFilePath = apiCachePath.appendingPathComponent(fileName).path
-
-        guard FileManager.default.fileExists(atPath: jwsFilePath) else {
-            throw HomebrewError.commandFailed("JWS file not found: \(fileName). Run 'brew update' first.")
-        }
-
-        // Read JWS file
-        let jwsContent = try String(contentsOfFile: jwsFilePath, encoding: .utf8)
-
-        // Parse JWS structure: {"payload": "json-string-array", "signatures": [...]}
-        // Note: payload is NOT base64-encoded, it's a plain JSON string
-        guard let jwsData = jwsContent.data(using: .utf8),
-              let jwsJson = try JSONSerialization.jsonObject(with: jwsData) as? [String: Any],
-              let payloadString = jwsJson["payload"] as? String,
-              let payloadData = payloadString.data(using: .utf8),
-              let payloadArray = try JSONSerialization.jsonObject(with: payloadData) as? [[String: Any]] else {
-            throw HomebrewError.jsonParseError
-        }
+        let payloadArray = try loadPackagePayloadArray(cask: cask)
 
         var results: [(name: String, displayName: String?, description: String?, version: String?, bundleVersion: String?)] = []
 
@@ -530,6 +510,76 @@ class HomebrewController: ObservableObject {
         }
 
         return results
+    }
+
+    /// Resolve the package metadata payload as a flat array of dicts.
+    private func loadPackagePayloadArray(cask: Bool) throws -> [[String: Any]] {
+        let apiCachePath = FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent("Library/Caches/Homebrew/api")
+
+        // Legacy per-kind files (Homebrew <= 5)
+        let legacyFileName = cask ? "cask.jws.json" : "formula.jws.json"
+        let legacyPath = apiCachePath.appendingPathComponent(legacyFileName).path
+        if FileManager.default.fileExists(atPath: legacyPath) {
+            let jwsContent = try String(contentsOfFile: legacyPath, encoding: .utf8)
+            guard let jwsData = jwsContent.data(using: .utf8),
+                  let jwsJson = try JSONSerialization.jsonObject(with: jwsData) as? [String: Any],
+                  let payloadString = jwsJson["payload"] as? String,
+                  let payloadData = payloadString.data(using: .utf8),
+                  let payloadArray = try JSONSerialization.jsonObject(with: payloadData) as? [[String: Any]] else {
+                throw HomebrewError.jsonParseError
+            }
+            return payloadArray
+        }
+
+        // Homebrew >= 6: single package archive under api/internal/.
+        guard let archive = try findPackageArchive(in: apiCachePath),
+              let jwsJson = try JSONSerialization.jsonObject(with: Data(contentsOf: archive)) as? [String: Any],
+              let payloadString = jwsJson["payload"] as? String,
+              let payloadData = payloadString.data(using: .utf8),
+              let payloadObject = try JSONSerialization.jsonObject(with: payloadData) as? [String: Any] else {
+            throw HomebrewError.commandFailed("Package metadata not found in Homebrew cache. Run 'brew update' first.")
+        }
+
+        let kind = cask ? "casks" : "formulae"
+        guard let packages = payloadObject[kind] as? [String: [String: Any]] else {
+            throw HomebrewError.jsonParseError
+        }
+
+        return packages.map { token, dict in
+            var normalized: [String: Any] = dict
+            if cask {
+                normalized["token"] = token
+                if let names = dict["names"] as? [String] {
+                    normalized["name"] = names
+                }
+            } else {
+                normalized["name"] = token
+                if let stable = dict["stable_version"] as? String {
+                    normalized["versions"] = ["stable": stable]
+                }
+            }
+            return normalized
+        }
+    }
+
+    /// Locate the newest `internal/packages.<bottle>.jws.json` archive.
+    private func findPackageArchive(in apiCachePath: URL) throws -> URL? {
+        let internalDir = apiCachePath.appendingPathComponent("internal", isDirectory: true)
+        guard FileManager.default.fileExists(atPath: internalDir.path) else { return nil }
+        let contents = try FileManager.default.contentsOfDirectory(
+            at: internalDir,
+            includingPropertiesForKeys: [.contentModificationDateKey],
+            options: [.skipsHiddenFiles]
+        )
+        return contents
+            .filter { $0.lastPathComponent.hasPrefix("packages.") && $0.lastPathComponent.hasSuffix(".jws.json") }
+            .sorted { lhs, rhs in
+                let lhsDate = (try? lhs.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate) ?? .distantPast
+                let rhsDate = (try? rhs.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate) ?? .distantPast
+                return lhsDate > rhsDate
+            }
+            .first
     }
 
     /// Load package names from text files (formula_names.txt or cask_names.txt)
@@ -988,16 +1038,19 @@ class HomebrewController: ObservableObject {
 
         let data: Data
 
-        // Check local cache first (Homebrew's cache)
-        if FileManager.default.fileExists(atPath: cacheFile.path) {
-            data = try Data(contentsOf: cacheFile)
-        } else {
-            // Fetch from API (Homebrew will cache it automatically)
+        // Prefer official API for up-to-date analytics; fall back to cache only if needed.
+        do {
             let url = cask ?
                 URL(string: "https://formulae.brew.sh/api/cask/\(name).json")! :
                 URL(string: "https://formulae.brew.sh/api/formula/\(name).json")!
 
             (data, _) = try await URLSession.shared.data(from: url)
+        } catch {
+            if FileManager.default.fileExists(atPath: cacheFile.path) {
+                data = try Data(contentsOf: cacheFile)
+            } else {
+                throw error
+            }
         }
 
         guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
@@ -1008,9 +1061,9 @@ class HomebrewController: ObservableObject {
         if cask {
             // Cask: simpler structure {"install": {"30d": {"name": 123}}}
             let install = analytics["install"] as? [String: Any]
-            let install30d = (install?["30d"] as? [String: Int])?.values.first
-            let install90d = (install?["90d"] as? [String: Int])?.values.first
-            let install365d = (install?["365d"] as? [String: Int])?.values.first
+            let install30d = (install?["30d"] as? [String: Int])?[name] ?? (install?["30d"] as? [String: Int])?.values.first
+            let install90d = (install?["90d"] as? [String: Int])?[name] ?? (install?["90d"] as? [String: Int])?.values.first
+            let install365d = (install?["365d"] as? [String: Int])?[name] ?? (install?["365d"] as? [String: Int])?.values.first
 
             return HomebrewAnalytics(
                 install30d: install30d,
@@ -1020,9 +1073,9 @@ class HomebrewController: ObservableObject {
         } else {
             // Formula: only fetch install counts (not install_on_request or build_error)
             let install = analytics["install"] as? [String: Any]
-            let install30d = (install?["30d"] as? [String: Int])?.values.reduce(0, +)
-            let install90d = (install?["90d"] as? [String: Int])?.values.reduce(0, +)
-            let install365d = (install?["365d"] as? [String: Int])?.values.reduce(0, +)
+            let install30d = (install?["30d"] as? [String: Int])?[name] ?? (install?["30d"] as? [String: Int])?.values.reduce(0, +)
+            let install90d = (install?["90d"] as? [String: Int])?[name] ?? (install?["90d"] as? [String: Int])?.values.reduce(0, +)
+            let install365d = (install?["365d"] as? [String: Int])?[name] ?? (install?["365d"] as? [String: Int])?.values.reduce(0, +)
 
             return HomebrewAnalytics(
                 install30d: install30d,
@@ -1040,7 +1093,7 @@ class HomebrewController: ObservableObject {
         var arguments = ["install"]
         if cask {
             arguments.append("--cask")
-            arguments.append("--no-quarantine")
+            arguments.append(contentsOf: await caskQuarantineArguments())
             if force {
                 arguments.append("--force")
             }
@@ -1082,7 +1135,9 @@ class HomebrewController: ObservableObject {
     func adoptCask(token: String) async throws {
         logger.log(.homebrew, "🔄 Adopting cask: \(token)")
 
-        let arguments = ["install", "--cask", "--adopt", "--no-quarantine", token]
+        var arguments = ["install", "--cask", "--adopt"]
+        arguments.append(contentsOf: await caskQuarantineArguments())
+        arguments.append(token)
 
         do {
             let result = try await runBrewCommand(arguments)
@@ -1623,6 +1678,47 @@ class HomebrewController: ObservableObject {
     }
 
     // MARK: - Maintenance
+
+    // Cached parsed Homebrew version components to avoid repeated process spawns
+    private var cachedBrewVersionComponents: [Int]?
+
+    /// Returns the quarantine-related arguments appropriate for the installed Homebrew version.
+    ///
+    /// Homebrew 4.7.0 deprecated/removed the `--no-quarantine` cask flag (Homebrew/brew#20973);
+    /// passing it on newer versions causes the command to fail with an "invalid option" error.
+    /// We therefore only include the flag on Homebrew versions older than 4.7.0. On 4.7.0+ casks
+    /// are quarantined per Homebrew's default behavior.
+    func caskQuarantineArguments() async -> [String] {
+        let components = await brewVersionComponents()
+        if isVersion(components, lessThan: [4, 7, 0]) {
+            return ["--no-quarantine"]
+        }
+        return []
+    }
+
+    /// Parses and caches the installed Homebrew version as integer components (e.g. [4, 6, 19]).
+    private func brewVersionComponents() async -> [Int] {
+        if let cached = cachedBrewVersionComponents { return cached }
+        let versionString = (try? await getBrewVersion()) ?? ""
+        let components = versionString.split(separator: ".").compactMap { Int($0) }
+        if !components.isEmpty {
+            cachedBrewVersionComponents = components
+        }
+        return components
+    }
+
+    /// Compares two version component arrays. Returns true if `lhs` < `rhs`.
+    /// If the version is unknown (empty), assumes a modern Homebrew and returns false.
+    private func isVersion(_ lhs: [Int], lessThan rhs: [Int]) -> Bool {
+        guard !lhs.isEmpty else { return false }
+        let count = max(lhs.count, rhs.count)
+        for i in 0..<count {
+            let l = i < lhs.count ? lhs[i] : 0
+            let r = i < rhs.count ? rhs[i] : 0
+            if l != r { return l < r }
+        }
+        return false
+    }
 
     func getBrewVersion() async throws -> String {
         await MainActor.run {
