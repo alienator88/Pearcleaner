@@ -17,6 +17,7 @@ struct VMContainerView: View {
     @State private var inventory: VMContainerInventory?
     @State private var isScanning = false
     @State private var lastScan: Date?
+    @AppStorage("settings.development.vmSortOption") private var vmSortOption: VMSortOption = .size
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -36,6 +37,23 @@ struct VMContainerView: View {
                 }
 
                 Spacer()
+
+                Menu {
+                    ForEach(VMSortOption.allCases, id: \.self) { option in
+                        Button {
+                            vmSortOption = option
+                        } label: {
+                            Label(option.title, systemImage: option.systemImage)
+                        }
+                    }
+                } label: {
+                    Label(vmSortOption.title, systemImage: "arrow.up.arrow.down")
+                        .font(.caption)
+                }
+                .controlSize(.small)
+                .menuStyle(.borderlessButton)
+                .fixedSize()
+                .help("Sort rows by size, name or status")
 
                 if let total = inventory?.totalBytes, total > 0 {
                     Text("\(formatBytes(total)) on disk")
@@ -137,6 +155,24 @@ private struct VMContainerGroupView: View {
     @Environment(\.colorScheme) var colorScheme
     let group: VMContainerGroup
     let onItemDeleted: () -> Void
+    @AppStorage("settings.development.vmSortOption") private var vmSortOption: VMSortOption = .size
+
+    /// Sorting for VM and container rows within each group.
+    private func sortedItems(_ items: [VMContainerGroup.Item]) -> [VMContainerGroup.Item] {
+        items.sorted { left, right in
+            switch vmSortOption {
+            case .size:
+                if left.sizeBytes != right.sizeBytes { return left.sizeBytes > right.sizeBytes }
+            case .name:
+                return left.name.localizedCaseInsensitiveCompare(right.name) == .orderedAscending
+            case .status:
+                // Running first, then rest alphabetically.
+                if left.isRunning != right.isRunning { return left.isRunning }
+                return left.name.localizedCaseInsensitiveCompare(right.name) == .orderedAscending
+            }
+            return left.name.localizedCaseInsensitiveCompare(right.name) == .orderedAscending
+        }
+    }
     @State private var isCollapsed = false
 
     var body: some View {
@@ -144,7 +180,7 @@ private struct VMContainerGroupView: View {
             if !isCollapsed {
                 VStack(alignment: .leading, spacing: 8) {
                     ForEach(VMContainerGroup.Section.allCases) { section in
-                        let sectionItems = group.items.filter { $0.kind == section }
+                        let sectionItems = sortedItems(group.items.filter { $0.kind == section })
                         if !sectionItems.isEmpty {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(section.rawValue)

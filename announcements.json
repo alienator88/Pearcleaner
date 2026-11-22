@@ -1,4 +1,17 @@
 {
+  "5.5.0": {
+    "features": [
+      "Development Environments: A new catalog knows cache, log, session, package, VM disk and toolchain locations for 50+ tools including AI agents (Codex, Claude, opencode, jcode, Gemini), Docker Desktop, OrbStack, Rancher Desktop, Godot, JetBrains Toolbox, Qt, Sublime Text, Unity, VirtualBox and more. Locations that do not exist on your Mac never show up.",
+      "VM and Container Storage: The Development view lists real images, containers, volumes, build cache and VM disks from Docker, Colima, Lima, OrbStack, UTM, minikube and Docker Desktop, with sparse disk sizes and provisioned limits.",
+      "Stop Action: Running containers and VMs can be stopped right from the list without deleting anything; a rescan follows automatically.",
+      "Orphan Score Sorting: Leftover and Orphaned lists can sort by confidence score so the most certain wins come first.",
+      "Rule-Based Filters: Development paths are now tagged by kind (cache, logs, sessions, packages, VM disks, toolchains) and filtered through composable rules, ready for future filter toggles.",
+      "macOS Support: Minimum system raised to macOS 14.0 Sonoma; 26.x Tahoe and 27.x supported."
+    ],
+    "caveats": [
+      "macOS 13 Ventura is no longer supported."
+    ]
+  },
   "4.4.0": {
     "features": [
       "Privileged Helper Service: Pearcleaner now supports using a privileged helper service to perform operations that require administrative permissions. This will eventually replace the current mechanism which uses Authorization Services as it's deprecated by Apple. More information in Settings > Helper tab.",

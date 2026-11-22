@@ -773,6 +773,7 @@ enum SortOptionList: String, CaseIterable {
     case path = "path"
     case size = "size"
     case score = "score"
+    case age = "age"
 
     var title: String {
         switch self {
@@ -780,6 +781,7 @@ enum SortOptionList: String, CaseIterable {
         case .path: return String(localized: "Path")
         case .size: return String(localized: "Size")
         case .score: return String(localized: "Score")
+        case .age: return String(localized: "Age")
         }
     }
 
@@ -789,6 +791,7 @@ enum SortOptionList: String, CaseIterable {
         case .path: return "folder"
         case .size: return "number"
         case .score: return "chart.bar"
+        case .age: return "clock"
         }
     }
 }

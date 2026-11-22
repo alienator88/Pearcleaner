@@ -34,6 +34,7 @@
 		C7DD000BDE00000100000002 /* DevEnvProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD000ADE00000100000001 /* DevEnvProcess.swift */; };
 		C7DD000BDE00000200000004 /* VMContainerInventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD0000ADE00000200000003 /* VMContainerInventory.swift */; };
 		C7DD000BDE00000300000006 /* VMContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD0000ADE00000300000005 /* VMContainerView.swift */; };
+		C7DD000BDE00000400000008 /* DevPathCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD0000ADE00000400000007 /* DevPathCatalog.swift */; };
 		C7736E4F2C49A44200917293 /* AlinFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = C7736E4E2C49A44200917293 /* AlinFoundation */; };
 		C77B90042AF18E2E009CC655 /* PearcleanerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90032AF18E2E009CC655 /* PearcleanerApp.swift */; };
 		C77B90162AF19377009CC655 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90152AF19377009CC655 /* AppState.swift */; };
@@ -160,6 +161,7 @@
 		C7DD000ADE00000100000001 /* DevEnvProcess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevEnvProcess.swift; sourceTree = "<group>"; };
 		C7DD0000ADE00000200000003 /* VMContainerInventory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VMContainerInventory.swift; sourceTree = "<group>"; };
 		C7DD0000ADE00000300000005 /* VMContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VMContainerView.swift; sourceTree = "<group>"; };
+		C7DD0000ADE00000400000007 /* DevPathCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevPathCatalog.swift; sourceTree = "<group>"; };
 		C77B90002AF18E2E009CC655 /* Pearcleaner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pearcleaner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C77B90032AF18E2E009CC655 /* PearcleanerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PearcleanerApp.swift; sourceTree = "<group>"; };
 		C77B90142AF18E7C009CC655 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -706,6 +708,7 @@
 				C7DD000BDE00000100000002 /* DevEnvProcess.swift in Sources */,
 				C7DD000BDE00000200000004 /* VMContainerInventory.swift in Sources */,
 				C7DD000BDE00000300000006 /* VMContainerView.swift in Sources */,
+				C7DD000BDE00000400000008 /* DevPathCatalog.swift in Sources */,
 				C74422412E4936750002D277 /* DaemonView.swift in Sources */,
 				C7AA00032E71000100A1B2C3 /* SnapshotsView.swift in Sources */,
 				C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */,
@@ -838,8 +841,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 121;
-				APP_VERSION = 5.4.3;
+				APP_BUILD = 122;
+				APP_VERSION = 5.5.0;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -911,8 +914,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 121;
-				APP_VERSION = 5.4.3;
+				APP_BUILD = 122;
+				APP_VERSION = 5.5.0;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;

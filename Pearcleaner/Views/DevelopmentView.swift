@@ -13,6 +13,32 @@ struct PathEnv: Identifiable, Hashable, Equatable {
     let paths: [String]
 }
 
+/// Sorting for the Development view path rows.
+enum DevSortOption: String, CaseIterable {
+    case name
+    case size
+    case age
+    case folder
+
+    var title: String {
+        switch self {
+        case .name: return String(localized: "Name")
+        case .size: return String(localized: "Size")
+        case .age: return String(localized: "Age")
+        case .folder: return String(localized: "Folder")
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .name: return "textformat"
+        case .size: return "number"
+        case .age: return "clock"
+        case .folder: return "folder"
+        }
+    }
+}
+
 struct EnvironmentCleanerView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.colorScheme) var colorScheme
@@ -25,12 +51,57 @@ struct EnvironmentCleanerView: View {
     @State private var collapsedCategories: Set<String> = []
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
+    @AppStorage("settings.development.sortOption") private var devSortOption: DevSortOption = .name
+    @State private var pathMetrics: [String: (size: Int64, modified: Date?)] = [:]
 
     // Store all paths, including "All" and each environment
     private var allPaths: [PathEnv] {
         let realPaths = PathLibrary.getPaths()
         let combined = realPaths.flatMap { $0.paths }
         return [PathEnv(name: "All", paths: combined)] + realPaths
+    }
+
+    /// Size and modification date for a catalog path. Wildcard entries
+    /// return zero metrics and sort neutrally; PathRowView still resolves
+    /// them for display and deletion.
+    private func devPathMetrics(_ path: String) -> (size: Int64, modified: Date?) {
+        let expanded = NSString(string: path).expandingTildeInPath
+        var isDir: ObjCBool = false
+        guard FileManager.default.fileExists(atPath: expanded, isDirectory: &isDir), isDir.boolValue else {
+            return (0, nil)
+        }
+        let url = URL(fileURLWithPath: expanded)
+        let size = totalSizeOnDisk(for: url)
+        let modified = (try? url.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate
+        return (size, modified)
+    }
+
+    /// Sort keys shared by every sort option: bigger and older first where
+    /// relevant, path as the stable tie breaker.
+    private func sortedPaths(_ paths: [String]) -> [String] {
+        paths.sorted { left, right in
+            switch devSortOption {
+            case .name:
+                return left.localizedCaseInsensitiveCompare(right) == .orderedAscending
+            case .size:
+                let leftSize = pathMetrics[left]?.size ?? 0
+                let rightSize = pathMetrics[right]?.size ?? 0
+                if leftSize != rightSize { return leftSize > rightSize }
+            case .age:
+                // Oldest first; missing dates sort as newest so unknowns sink.
+                let leftDate = pathMetrics[left]?.modified ?? .distantFuture
+                let rightDate = pathMetrics[right]?.modified ?? .distantFuture
+                if leftDate != rightDate { return leftDate < rightDate }
+            case .folder:
+                let leftFolder = (left as NSString).deletingLastPathComponent
+                let rightFolder = (right as NSString).deletingLastPathComponent
+                if leftFolder != rightFolder {
+                    return leftFolder.localizedCaseInsensitiveCompare(rightFolder) == .orderedAscending
+                }
+                return left.localizedCaseInsensitiveCompare(right) == .orderedAscending
+            }
+            return left.localizedCaseInsensitiveCompare(right) == .orderedAscending
+        }
     }
 
     private func refreshPaths() {
@@ -62,8 +133,19 @@ struct EnvironmentCleanerView: View {
             return PathEnv(name: env.name, paths: validPaths)
         }
 
+        // Sort keys for the path rows, computed once per refresh so the
+        // sort menu does not stat the disk on every render.
+        var metrics: [String: (size: Int64, modified: Date?)] = [:]
+        for env in refreshedPaths {
+            for path in env.paths {
+                guard metrics[path] == nil else { continue }
+                metrics[path] = devPathMetrics(path)
+            }
+        }
+
         await MainActor.run {
             self.paths = refreshedPaths
+            self.pathMetrics = metrics
             self.lastRefreshDate = Date()
             self.isLoading = false
             GlobalConsoleManager.shared.appendOutput("✓ Refreshed development paths\n", source: CurrentPage.development.title)
@@ -166,6 +248,23 @@ struct EnvironmentCleanerView: View {
 
                     Spacer()
 
+                    Menu {
+                        ForEach(DevSortOption.allCases, id: \.self) { option in
+                            Button {
+                                devSortOption = option
+                            } label: {
+                                Label(option.title, systemImage: option.systemImage)
+                            }
+                        }
+                    } label: {
+                        Label(devSortOption.title, systemImage: "arrow.up.arrow.down")
+                            .font(.caption)
+                    }
+                    .controlSize(.small)
+                    .menuStyle(.borderlessButton)
+                    .fixedSize()
+                    .help("Sort paths by name, size, age or folder")
+
                     if let lastRefresh = lastRefreshDate {
                         TimelineView(.periodic(from: lastRefresh, by: 1.0)) { _ in
                             Text("Updated \(formatRelativeTime(lastRefresh))")
@@ -196,9 +295,9 @@ struct EnvironmentCleanerView: View {
                         if selectedEnvironment.name == "All" {
                             // Show categorized view for "All" environment
                             ForEach(paths.filter { !$0.paths.isEmpty && $0.name != "All" }, id: \.name) { environment in
-                                let environmentPaths = environment.paths.filter { path in
+                                let environmentPaths = sortedPaths(environment.paths.filter { path in
                                     searchText.isEmpty || path.localizedCaseInsensitiveContains(searchText)
-                                }
+                                })
 
                                 if !environmentPaths.isEmpty {
                                     let isCollapsed = environmentPaths.isEmpty || collapsedCategories.contains(environment.name)
@@ -243,7 +342,7 @@ struct EnvironmentCleanerView: View {
                         } else {
                             // Show regular path list for specific environments
                             if let filteredEnvironment = filteredPaths.first {
-                                ForEach(filteredEnvironment.paths, id: \.self) { path in
+                                ForEach(sortedPaths(filteredEnvironment.paths), id: \.self) { path in
                                     PathRowView(
                                         path: path,
                                         isSelected: Binding(
@@ -1606,291 +1705,3 @@ struct PipPackageCleanerView: View {
     }
 }
 
-struct PathLibrary {
-    static func getPaths() -> [PathEnv] {
-        return [
-            PathEnv(name: "AI Agents", paths: [
-                "~/.codex/sessions/",
-                "~/.codex/.tmp/",
-                "~/.codex/log/",
-                "~/.claude/projects/",
-                "~/.claude/todos/",
-                "~/.claude/shell-snapshots/",
-                "~/.claude/statsig/",
-                "~/.claude/file-history/",
-                "~/.cache/claude/",
-                "~/.cache/opencode/",
-                "~/.local/share/opencode/log/",
-                "~/.jcode/scratch/",
-                "~/.jcode/tmp/",
-                "~/.jcode/builds/",
-                "~/.jcode/logs/",
-                "~/.jcode/cache/",
-                "~/.jcode/reload-traces/",
-                "~/.cache/huggingface/hub/",
-                "~/Library/Application Support/Codex/component_crx_cache/",
-                "~/Library/Application Support/Codex/extensions_crx_cache/",
-                "~/Library/Application Support/Codex/GraphiteDawnCache/",
-                "~/Library/Application Support/Codex/Crashpad/",
-                "~/Library/Caches/Codex/",
-                "~/Library/Caches/com.openai.codex/",
-                "~/.gemini/tmp/"
-            ]),
-            PathEnv(name: "Android SDK", paths: [
-                "~/Library/Android/sdk/system-images/",
-                "~/Library/Android/sdk/build-tools/",
-                "~/Library/Android/sdk/platforms/",
-                "~/Library/Android/sdk/ndk/",
-                "~/Library/Android/sdk/temp/"
-            ]),
-            PathEnv(name: "Android Studio", paths: [
-                "~/.android/build-cache/",
-                "~/Library/Logs/AndroidStudio/",
-                "~/Library/Caches/Google/AndroidStudio*/"
-            ]),
-            PathEnv(name: "Bazel", paths: [
-                "~/.cache/bazel/",
-                "~/.bazelcache/"
-            ]),
-            PathEnv(name: "Cargo", paths: [
-                "~/.cargo/registry/",
-                "~/.cargo/git/"
-            ]),
-            PathEnv(name: "Carthage", paths: [
-                "~/Carthage/",
-                "~/Library/Caches/org.carthage.CarthageKit/"
-            ]),
-            PathEnv(name: "CocoaPods", paths: [
-                "~/Library/Caches/CocoaPods/",
-                "~/.cocoapods/repos/"
-            ]),
-            PathEnv(name: "Composer", paths: [
-                "~/.composer/cache/"
-            ]),
-            PathEnv(name: "Conda", paths: [
-                "~/anaconda3/pkgs/",
-                "~/miniconda3/pkgs/"
-            ]),
-            PathEnv(name: "Coursier", paths: [
-                "~/.cache/coursier/",
-                "~/.ivy2/cache/"
-            ]),
-            PathEnv(name: "Cursor", paths: [
-                "~/Library/Application Support/Cursor/Cache",
-                "~/Library/Application Support/Cursor/GPUCache",
-                "~/Library/Application Support/Cursor/CachedConfigurations",
-                "~/Library/Application Support/Cursor/CachedData",
-                "~/Library/Application Support/Cursor/CachedExtensionVSIXs",
-                "~/Library/Application Support/Cursor/CachedExtensions",
-                "~/Library/Application Support/Cursor/CachedProfilesData",
-                "~/Library/Application Support/Cursor/Code Cache",
-                "~/Library/Application Support/Cursor/Crashpad/",
-                "~/Library/Application Support/Cursor/component_crx_cache/",
-                "~/Library/Application Support/Cursor/User/workspaceStorage/"
-            ]),
-            PathEnv(name: "Deno", paths: [
-                "~/Library/Caches/deno",
-                "~/.deno/"
-            ]),
-            PathEnv(name: "Docker Desktop", paths: [
-                "~/Library/Containers/com.docker.docker/Data/log/",
-                "~/Library/Caches/com.docker.docker/",
-                "~/Library/Application Support/Docker Desktop/",
-                "~/Library/Logs/Docker Desktop/"
-            ]),
-            PathEnv(name: "Docker", paths: [
-                "~/.docker/cli-plugins/",
-                "~/.docker/buildx/",
-                "~/.colima/_store/",
-                "~/.colima/_templates/"
-            ]),
-            PathEnv(name: "Electron", paths: [
-                "~/Library/Caches/electron/",
-                "~/Library/Caches/electron-builder/",
-                "~/Library/Caches/node-gyp/",
-                "~/.electron-gyp/"
-            ]),
-            PathEnv(name: "Elixir", paths: [
-                "~/.mix/archives/",
-                "~/.cache/rebar3/",
-                "~/.cache/hex/"
-            ]),
-            PathEnv(name: "Go", paths: [
-                "~/Library/Caches/go-build/",
-                "~/go/pkg/mod/"
-            ]),
-            PathEnv(name: "Godot", paths: [
-                "~/Library/Caches/Godot/",
-                "~/Library/Application Support/Godot/export_templates/"
-            ]),
-            PathEnv(name: "Gradle", paths: [
-                "~/.gradle/caches/",
-                "~/.gradle/wrapper/dists/",
-                "~/.gradle/daemon/"
-            ]),
-            PathEnv(name: "Haskell Stack", paths: [
-                "~/.stack/snapshots/"
-            ]),
-            PathEnv(name: "Helm", paths: [
-                "~/Library/Caches/helm/"
-            ]),
-            PathEnv(name: "Homebrew", paths: [
-                "~/Library/Caches/Homebrew/"
-            ]),
-            PathEnv(name: "JetBrains Toolbox", paths: [
-                "~/Library/Caches/JetBrains/Toolbox/",
-                "~/Library/Logs/JetBrains/Toolbox/"
-            ]),
-            PathEnv(name: "IntelliJ IDEA", paths: [
-                "~/Library/Caches/JetBrains/",
-                "~/Library/Logs/JetBrains/"
-            ]),
-            PathEnv(name: "Julia", paths: [
-                "~/.julia/compiled/"
-            ]),
-            PathEnv(name: "LLM Models", paths: [
-                "~/.ollama/models/",
-                "~/.cache/lm-studio/"
-            ]),
-            PathEnv(name: "Maven", paths: [
-                "~/.m2/repository/"
-            ]),
-            PathEnv(name: "Mise", paths: [
-                "~/.cache/mise/"
-            ]),
-            PathEnv(name: "Nix", paths: [
-                "~/.cache/nix/"
-            ]),
-            PathEnv(name: "Node", paths: [
-                "~/.npm/",
-                "~/Library/Caches/node/"
-            ]),
-            PathEnv(name: "NuGet", paths: [
-                "~/.nuget/packages/"
-            ]),
-            PathEnv(name: "Playwright", paths: [
-                "~/Library/Caches/ms-playwright/",
-                "~/.cache/ms-playwright-go/"
-            ]),
-            PathEnv(name: "Pnpm", paths: [
-                "~/Library/pnpm/store/",
-                "~/Library/Caches/pnpm/"
-            ]),
-            PathEnv(name: "Puppeteer", paths: [
-                "~/.cache/puppeteer/"
-            ]),
-            PathEnv(name: "Pip", paths: [
-                "~/Library/Caches/pip/"
-            ]),
-            PathEnv(name: "Poetry", paths: [
-                "~/Library/Caches/pypoetry/",
-                "~/Library/Application Support/pypoetry/"
-            ]),
-            PathEnv(name: "Pre-commit", paths: [
-                "~/Library/Caches/pre-commit/",
-                "~/.cache/pre-commit/"
-            ]),
-            PathEnv(name: "OrbStack", paths: [
-                "~/.orbstack/cache/",
-                "~/.orbstack/backup/"
-            ]),
-            PathEnv(name: "Pub", paths: [
-                "~/.pub-cache/hosted/",
-                "~/Library/Caches/flutter_engine/"
-            ]),
-            PathEnv(name: "Pyenv", paths: [
-                "~/.pyenv/cache/"
-            ]),
-            PathEnv(name: "Qt", paths: [
-                "~/Library/Caches/QtProject/"
-            ]),
-            PathEnv(name: "Rancher Desktop", paths: [
-                "~/Library/Caches/rancher-desktop/",
-                "~/Library/Logs/rancher-desktop/",
-                "~/.rd/cache/"
-            ]),
-            PathEnv(name: "Ruby Gems", paths: [
-                "~/.gem/ruby/*/cache/"
-            ]),
-            PathEnv(name: "Rust", paths: [
-                "~/Library/Caches/Mozilla.sccache/"
-            ]),
-            PathEnv(name: "Sublime Text", paths: [
-                "~/Library/Caches/Sublime Text/",
-                "~/Library/Application Support/Sublime Text/Cache/"
-            ]),
-            PathEnv(name: "Swift", paths: [
-                "~/Library/Caches/org.swift.swiftpm/",
-                "~/Library/Caches/swift-build/",
-                "~/Library/org.swift.swiftpm/"
-            ]),
-            PathEnv(name: "Terraform", paths: [
-                "~/.terraform.d/plugin-cache/",
-                "~/Library/Caches/terraform/"
-            ]),
-            PathEnv(name: "Toolchains", paths: [
-                "~/.rustup/toolchains/",
-                "~/.pyenv/versions/",
-                "~/.nvm/versions/node/",
-                "~/.local/share/mise/",
-                "~/.asdf/"
-            ]),
-            PathEnv(name: "Uv", paths: [
-                "~/.cache/uv/"
-            ]),
-            PathEnv(name: "VirtualBox", paths: [
-                "~/Library/Caches/VirtualBox/",
-                "~/Library/VirtualBox/Logs/"
-            ]),
-            PathEnv(name: "VS Code", paths: [
-                "~/Library/Application Support/Code/Cache",
-                "~/Library/Application Support/Code/GPUCache",
-                "~/Library/Application Support/Code/CachedConfigurations",
-                "~/Library/Application Support/Code/CachedData",
-                "~/Library/Application Support/Code/CachedExtensionVSIXs",
-                "~/Library/Application Support/Code/CachedExtensions",
-                "~/Library/Application Support/Code/CachedProfilesData",
-                "~/Library/Application Support/Code/Code Cache",
-                "~/Library/Application Support/Code/Crashpad/",
-                "~/Library/Application Support/Code/component_crx_cache/",
-                "~/Library/Application Support/Code/User/workspaceStorage/"
-            ]),
-            PathEnv(name: "Unity", paths: [
-                "~/Library/Unity/cache/",
-                "~/Library/Application Support/UnityHub/cache/",
-                "~/Library/Application Support/UnityHub/logs/"
-            ]),
-            PathEnv(name: "Vagrant", paths: [
-                "~/.vagrant.d/boxes/"
-            ]),
-            PathEnv(name: "Xcode", paths: [
-                "~/Library/Caches/com.apple.dt.xcodebuild/",
-                "~/Library/Caches/com.apple.dt.Xcode.sourcecontrol.Git/",
-                "~/Library/Developer/CoreSimulator/Devices/",
-                "~/Library/Developer/DeveloperDiskImages/",
-                "~/Library/Developer/Xcode/Archives/",
-                "~/Library/Developer/Xcode/DerivedData/",
-                "~/Library/Developer/Xcode/DocumentationCache/",
-                "~/Library/Developer/Xcode/iOS DeviceSupport/",
-                "~/Library/Developer/Xcode/tvOS DeviceSupport/",
-                "~/Library/Developer/Xcode/watchOS DeviceSupport/",
-                "~/Library/Developer/Xcode/macOS DeviceSupport/",
-                "~/Library/Developer/Xcode/Products/"
-            ]),
-            PathEnv(name: "Yarn", paths: [
-                "~/.cache/yarn/",
-                "~/.yarn-cache/",
-                "~/.yarn/global/"
-            ]),
-            PathEnv(name: "Zed", paths: [
-                "~/Library/Caches/Zed/",
-                "~/Library/Application Support/Zed/node/cache/"
-            ]),
-            PathEnv(name: "Zig", paths: [
-                "~/.cache/zig/"
-            ])
-        ]
-            .map { PathEnv(name: $0.name, paths: $0.paths.sorted()) } // Sort paths within each environment
-            .sorted { $0.name < $1.name } // Sort environments by name
-    }
-}

@@ -10,6 +10,29 @@
 
 import Foundation
 
+/// Sorting for the VM and container rows.
+enum VMSortOption: String, CaseIterable {
+    case size
+    case name
+    case status
+
+    var title: String {
+        switch self {
+        case .size: return String(localized: "Size")
+        case .name: return String(localized: "Name")
+        case .status: return String(localized: "Status")
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .size: return "number"
+        case .name: return "textformat"
+        case .status: return "power"
+        }
+    }
+}
+
 struct VMContainerGroup: Identifiable {
     enum Section: String, CaseIterable, Identifiable {
         case images = "Images"
@@ -129,7 +152,7 @@ enum VMContainerScanner {
         guard let json = DevEnvProcess.run(docker, ["system", "df", "-v", "--format", "json"], timeout: 15),
               let data = json.data(using: .utf8),
               let decoded = try? JSONDecoder().decode(DockerDfJSON.self, from: data) else {
-            return [VMContainerGroup(tool: "Docker", toolIcon: "docker", backend: backend, items: [], note: "daemon not running or not installed")]
+            return [VMContainerGroup(tool: "Docker", toolIcon: "cube.transparent", backend: backend, items: [], note: "daemon not running or not installed")]
         }
 
         var items: [VMContainerGroup.Item] = []
@@ -213,7 +236,7 @@ enum VMContainerScanner {
         var note: String?
         if items.isEmpty { note = "no docker content on this machine" }
 
-        return [VMContainerGroup(tool: "Docker", toolIcon: "docker", backend: backend, items: items, note: note)]
+        return [VMContainerGroup(tool: "Docker", toolIcon: "cube.transparent", backend: backend, items: items, note: note)]
     }
 
     // MARK: - Docker Desktop (the .app VM disk; images live inside it)
@@ -235,7 +258,7 @@ enum VMContainerScanner {
 
         return VMContainerGroup(
             tool: "Docker Desktop",
-            toolIcon: "docker",
+            toolIcon: "cube.transparent",
             backend: FileManager.default.fileExists(atPath: appPath) ? "Docker.app VM" : "Docker.app removed, disk left behind",
             items: [VMContainerGroup.Item(
                 kind: .machines,

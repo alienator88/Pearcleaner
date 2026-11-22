@@ -563,12 +563,24 @@ struct ZombieView: View {
                 let rightScore = appState.zombieFile.fileScore[right.key] ?? 0
                 if leftScore != rightScore { return leftScore > rightScore }
                 return left.value > right.value
+            case .age:
+                // Oldest leftovers first; missing dates sort as newest.
+                let leftDate = zombieFileAge(left.key) ?? .distantFuture
+                let rightDate = zombieFileAge(right.key) ?? .distantFuture
+                if leftDate != rightDate { return leftDate < rightDate }
+                return left.value > right.value
             }
         }.map(\.key)
 
         let totalSize = filteredFiles.values.reduce(0, +)
 
         return (sortedFilteredFiles, totalSize)
+    }
+
+    /// Modification date ranks stale leftovers; falls back to creation date.
+    private func zombieFileAge(_ url: URL) -> Date? {
+        let values = try? url.resourceValues(forKeys: [.contentModificationDateKey, .creationDateKey])
+        return values?.contentModificationDate ?? values?.creationDate
     }
 
     func calculateTotalSelectedZombieSize() -> String {
