@@ -1,5 +1,11 @@
 ### What's New
 
+- [x] Space Lens: disk usage map (treemap and sunburst) for any folder or the whole disk, with breadcrumb drill-down, hover tooltips, and Move to Trash from the map
+- [x] Protected system paths (System, Library, Applications, usr, private) render view-only, never deletable from Space Lens
+- [x] Rescan through the privileged helper when a scan hits unreadable folders; falls back to the existing Enable Helper flow when the helper is not installed
+- [x] Partial results stream in while scanning, with cancel; treemap rebalances in place after trashing items
+- [x] Treemap tiles nest inside a parent band so containment reads visually; children inherit the parent hue, and .app-style packages stay single atomic tiles at any depth
+- [x] Backspace (delete) steps back one level from the focused folder
 - [x] Development Environments catalog now covers 50+ tools with kind tags (cache, logs, sessions, packages, VM disks, toolchains) and composable rule filters
 - [x] Sort path rows in the Development view by name, size, age or folder; sort VM/container rows by size, name or status
 - [x] Age sorting for Leftover and Orphaned lists (oldest first)

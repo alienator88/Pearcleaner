@@ -264,6 +264,8 @@
 		C7C05FD72E8DA12C006D0476 /* Brew */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Brew; sourceTree = "<group>"; };
 		C7C693E92E9D73DD0081CF25 /* AppsUpdater */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = AppsUpdater; sourceTree = "<group>"; };
 		C7C693FC2E9D74D50081CF25 /* AppsUpdaterView */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = AppsUpdaterView; sourceTree = "<group>"; };
+		C7E1A5B22F0C3D1100B4A771 /* SpaceLens */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = SpaceLens; sourceTree = "<group>"; };
+		C7E1A5B32F0C3D1200B4A771 /* SpaceLens */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = SpaceLens; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -334,6 +336,7 @@
 				C783F8FD2E903707003450E7 /* FileSearch */,
 				C783F9492E903B53003450E7 /* PKG */,
 				C71B87562EF49C58009C5B07 /* TCC */,
+				C7E1A5B22F0C3D1100B4A771 /* SpaceLens */,
 			);
 			path = Logic;
 			sourceTree = "<group>";
@@ -427,6 +430,7 @@
 				C74649E62E48000C002D1C63 /* LipoView */,
 				C74649FA2E48076B002D1C63 /* Settings */,
 				C74649EA2E48008A002D1C63 /* ZombieView */,
+				C7E1A5B32F0C3D1200B4A771 /* SpaceLens */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -521,6 +525,8 @@
 				C7C05FD72E8DA12C006D0476 /* Brew */,
 				C7C693E92E9D73DD0081CF25 /* AppsUpdater */,
 				C7C693FC2E9D74D50081CF25 /* AppsUpdaterView */,
+				C7E1A5B22F0C3D1100B4A771 /* SpaceLens */,
+				C7E1A5B32F0C3D1200B4A771 /* SpaceLens */,
 			);
 			name = Pearcleaner;
 			packageProductDependencies = (
@@ -841,8 +847,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 122;
-				APP_VERSION = 5.5.0;
+				APP_BUILD = 123;
+				APP_VERSION = 5.6.0;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -914,8 +920,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 122;
-				APP_VERSION = 5.5.0;
+				APP_BUILD = 123;
+				APP_VERSION = 5.6.0;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;

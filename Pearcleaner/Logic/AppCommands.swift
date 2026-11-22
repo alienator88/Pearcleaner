@@ -220,6 +220,14 @@ struct AppCommands: Commands {
                 }
                 .keyboardShortcut("0", modifiers: .command)
 
+                Button
+                {
+                    appState.currentPage = .spaceLens
+
+                } label: {
+                    Text("Space Lens")
+                }
+
             } label: {
                 Label("Navigate To", systemImage: "location.north.fill")
             }
@@ -269,6 +277,8 @@ struct AppCommands: Commands {
                         NotificationCenter.default.post(name: NSNotification.Name("DaemonViewShouldRefresh"), object: nil)
                     case .snapshots:
                         NotificationCenter.default.post(name: NSNotification.Name("SnapshotsViewShouldRefresh"), object: nil)
+                    case .spaceLens:
+                        NotificationCenter.default.post(name: NSNotification.Name("SpaceLensViewShouldRefresh"), object: nil)
                     case .updater:
                         NotificationCenter.default.post(name: NSNotification.Name("UpdaterViewShouldRefresh"), object: nil)
                     }

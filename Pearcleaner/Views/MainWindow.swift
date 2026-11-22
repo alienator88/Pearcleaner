@@ -80,6 +80,11 @@ struct MainWindow: View {
                                 SnapshotsView()
                             }
 
+                        case .spaceLens:
+                            withConsole {
+                                SpaceLensView()
+                            }
+
                         case .packages:
                             withConsole {
                                 PackageView()

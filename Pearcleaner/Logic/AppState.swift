@@ -691,6 +691,7 @@ enum CurrentPage: Int, CaseIterable, Identifiable {
     case services
     case snapshots
     case updater
+    case spaceLens
 
     var id: Int { rawValue }
 
@@ -734,6 +735,8 @@ enum CurrentPage: Int, CaseIterable, Identifiable {
             return (String(localized: "Services"), "gearshape.2")
         case .snapshots:
             return (String(localized: "Snapshots"), "clock.arrow.circlepath")
+        case .spaceLens:
+            return (String(localized: "Space Lens"), "circle.grid.cross")
         case .updater:
             return (String(localized: "Updater"), "arrow.down.circle")
         }
