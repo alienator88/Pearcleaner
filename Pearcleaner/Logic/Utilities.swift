@@ -517,6 +517,12 @@ extension URL {
 }
 
 extension String {
+    var shellQuoted: String {
+        "'\(replacingOccurrences(of: "'", with: "'\\''"))'"
+    }
+}
+
+extension String {
     func localizedName() -> String {
         let url = URL(fileURLWithPath: self)
         do {
