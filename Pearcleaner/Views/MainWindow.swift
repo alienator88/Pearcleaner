@@ -74,6 +74,11 @@ struct MainWindow: View {
                             DaemonView()
                         }
 
+                    case .snapshots:
+                        withConsole {
+                            SnapshotsView()
+                        }
+
                     case .packages:
                         withConsole {
                             PackageView()
