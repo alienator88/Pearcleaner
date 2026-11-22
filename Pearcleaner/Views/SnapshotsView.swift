@@ -55,6 +55,9 @@ struct SnapshotsView: View {
                 refreshSnapshots()
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("SnapshotsViewShouldRefresh"))) { _ in
+            refreshSnapshots()
+        }
         .confirmationDialog(
             String(localized: "Delete the selected snapshot?"),
             isPresented: $showDeleteConfirm,

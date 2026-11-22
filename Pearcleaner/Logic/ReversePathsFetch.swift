@@ -125,7 +125,7 @@ class ReversePathsSearcher {
         }
     }
 
-    private func processItemStreaming(_ scannedItemName: String, scannedItemURL: URL, batch: inout [(url: URL, size: Int64, icon: NSImage?)], batchSize: Int) async {
+    private func processItemStreaming(_ scannedItemName: String, scannedItemURL: URL, batch: inout [(url: URL, size: Int64, icon: NSImage?, score: Int)], batchSize: Int) async {
         let normalizedItemPath = scannedItemURL.standardizedFileURL.path.pearFormat()
 
         if formattedExclusionList.contains(normalizedItemPath) || normalizedItemPath.contains("dsstore") || normalizedItemPath.contains("daemonnameoridentifierhere") || formattedExclusionList.first(where: { normalizedItemPath.contains($0) }) != nil {

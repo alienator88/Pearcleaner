@@ -8,7 +8,7 @@
 //  file is orphaned (owner gone or file unused). Signals, strongest first:
 //    - quarantine xattr agent bundle id (who downloaded it)
 //    - owner app installed? (bundle id / name / team id match)
-//    - Spotlight usage metadata (kMDItemLastUsedDate / UseCount)
+//    - Spotlight usage metadata (kMDItemLastUsedDate)
 //    - filesystem dates (creation / content change)
 //  Score is 0-100: 100 = certainly orphaned, 0 = certainly in use.
 
@@ -19,7 +19,6 @@ struct UsageSignals {
     var quarantineAgentBundleId: String?
     var quarantineDate: Date?
     var lastUsedDate: Date?
-    var useCount: Int?
     var creationDate: Date?
     var contentChangeDate: Date?
 }
@@ -43,9 +42,6 @@ enum UsageScoreEngine {
         if let item = MDItemCreate(nil, url.path as CFString) {
             if let used = MDItemCopyAttribute(item, kMDItemLastUsedDate) as? Date {
                 signals.lastUsedDate = used
-            }
-            if let count = MDItemCopyAttribute(item, kMDItemUseCount as CFString) as? NSNumber {
-                signals.useCount = count.intValue
             }
         }
 
@@ -135,10 +131,6 @@ enum UsageScoreEngine {
             if days > 365 { staleness += 15 }
             else if days > 180 { staleness += 8 }
             else if days < 30 { staleness -= 15 }
-        }
-
-        if let count = signals.useCount, count == 0 {
-            staleness += 5
         }
 
         score += staleness

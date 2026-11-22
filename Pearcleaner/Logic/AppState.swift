@@ -126,7 +126,8 @@ class AppState: ObservableObject {
         self.zombieFile = ZombieFile(
             id: UUID(),
             fileSize: [:],
-            fileIcon: [:]
+            fileIcon: [:],
+            fileScore: [:]
         )
 
         updateExtensionStatus()
