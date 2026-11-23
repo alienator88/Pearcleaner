@@ -28,10 +28,12 @@ jobs:
           # CI_BUILD grows with every run; Sparkle compares CFBundleVersion
           # to decide whether an update is offered, so each fork build must
           # produce a strictly larger build number than the last installed one.
-          # The 1000 offset lifts fork builds above the upstream build number
-          # (123 at the fork point) so a fork update always sorts newer.
-          CI_BUILD: ${{ 1000 + github.run_number }}
+          # The 1000 offset (applied below) lifts fork builds above the
+          # upstream build number (123 at the fork point) so a fork update
+          # always sorts newer.
+          CI_BUILD: ${{ github.run_number }}
         run: |
+          APP_BUILD="$((1000 + CI_BUILD))"
           xcodebuild -project Pearcleaner.xcodeproj \
             -scheme "Pearcleaner Release" \
             -configuration Release \
