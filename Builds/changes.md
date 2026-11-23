@@ -4,6 +4,8 @@
 - [x] Protected system paths (System, Library, Applications, usr, private) render view-only, never deletable from Space Lens
 - [x] Rescan through the privileged helper when a scan hits unreadable folders; falls back to the existing Enable Helper flow when the helper is not installed
 - [x] Partial results stream in while scanning, with cancel; treemap rebalances in place after trashing items
+- [x] Scans of TCC-protected folders (root, home, Desktop, Documents, Downloads) without Full Disk Access show a permission wait with Ask Again instead of silently blocking on the OS consent dialog
+- [x] Space Lens shows a scanning banner while lazy drill-down or post-trash rescans run, and Cancel stops every running scan
 - [x] Treemap tiles nest inside a parent band so containment reads visually; children inherit the parent hue, and .app-style packages stay single atomic tiles at any depth
 - [x] Backspace (delete) steps back one level from the focused folder
 - [x] Setting for the default Space Lens chart style (Settings > Interface), and the scan runs once and survives page switches; both treemap and sunburst read the same tree

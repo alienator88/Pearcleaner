@@ -14,9 +14,14 @@ final class SpaceLensViewModel: ObservableObject {
     @Published var lastTarget: URL?
     @Published var lastTargetWasFullDisk = false
     @Published var trashError: String?
+    // Live child scans (lazy drill-down, post-trash rescans). The indicator stays
+    // on while any of them runs even though the main scan phase is already complete
+    @Published private(set) var runningChildScanCount = 0
 
     private let scanner = SpaceLensScanner()
     private var scanTask: Task<Void, Never>?
+    private var childScanTasks: [UUID: Task<Void, Never>] = [:]
+    private var permissionRetryTask: Task<Void, Never>?
     private(set) var lastTargetUsedHelper = false
     private(set) var scanDepth = 1
 
@@ -37,7 +42,18 @@ final class SpaceLensViewModel: ObservableObject {
         lastTargetUsedHelper = usingHelper
         scanDepth = maxDepth
         focusedNodeID = nil
-        phase = .scanning(target.path)
+
+        // A TCC-protected target without Full Disk Access parks the walker on the
+        // OS consent dialog with nothing to show for it; gate the scan behind the
+        // grant and surface the wait instead. Targets that can never reach a
+        // protected folder scan normally without FDA
+        if usingHelper || !FullDiskAccessProbe.targetMayHitTCC(target.path)
+            || FullDiskAccessProbe.isGranted() {
+            phase = .scanning(target.path)
+        } else {
+            phase = .waitingForPermissions(target.path)
+            return
+        }
 
         scanTask = Task { [weak self] in
             guard let self else { return }
@@ -71,15 +87,57 @@ final class SpaceLensViewModel: ObservableObject {
         }
     }
 
+    // Re-arms the scan parked in waitingForPermissions: opens the FDA pane, then
+    // polls the probe and restarts the scan with the remembered settings once the
+    // grant lands. A repeated press replaces the pending poll.
+    func retryAfterPermissions() {
+        guard case .waitingForPermissions = phase, let target = lastTarget else { return }
+        permissionRetryTask?.cancel()
+        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles") {
+            NSWorkspace.shared.open(url)
+        }
+        permissionRetryTask = Task { [weak self] in
+            // Short bursts: TCC grants only register system-wide on a fresh read,
+            // and polling forever after a refusal would spin the CPU for nothing
+            for _ in 0..<600 {
+                guard let self, !Task.isCancelled else { return }
+                if FullDiskAccessProbe.isGranted() {
+                    await MainActor.run {
+                        guard case .waitingForPermissions = self.phase else { return }
+                        self.startScan(target: target,
+                                       isFullDisk: self.lastTargetWasFullDisk,
+                                       usingHelper: self.lastTargetUsedHelper,
+                                       maxDepth: self.scanDepth)
+                    }
+                    return
+                }
+                try? await Task.sleep(nanoseconds: 1_000_000_000)
+            }
+        }
+    }
+
     func cancelScan() {
         scanTask?.cancel()
+        permissionRetryTask?.cancel()
+        permissionRetryTask = nil
         Task { [scanner] in
             await scanner.cancel()
         }
         if case .scanning = phase {
             phase = .cancelled
+        } else if case .waitingForPermissions = phase {
+            phase = .cancelled
         }
         scanTask = nil
+    }
+
+    // Cancels the main scan and every running child scan together; the cancel
+    // button must mean "stop everything this view is measuring"
+    func cancelAllScans() {
+        cancelScan()
+        for task in childScanTasks.values {
+            task.cancel()
+        }
     }
 
     func drill(to node: SpaceLensNode) {
@@ -101,16 +159,14 @@ final class SpaceLensViewModel: ObservableObject {
         guard FileManager.default.fileExists(atPath: node.url.path, isDirectory: &isDir), isDir.boolValue else { return }
         focusedNodeID = node.id
         let skipFirmlinks = node.url.path == "/" || node.url.path == "/System"
-        scanTask = Task { [weak self] in
+        runChildScan {
+            try? await self.scanner.rescanSubtree(at: node.url, skipFirmlinks: skipFirmlinks, maxDepth: self.scanDepth)
+        } onSuccess: { [weak self] replacement in
             guard let self else { return }
-            if let replacement = await self.scanner.rescanSubtree(at: node.url, skipFirmlinks: skipFirmlinks, maxDepth: self.scanDepth) {
-                await MainActor.run {
-                    let root = self.rootNode?.replacing(nodeID: node.id, with: replacement) ?? replacement
-                    self.rootNode = root.sortedBySize()
-                    self.focusedNodeID = replacement.id
-                    self.clearStaleFocus()
-                }
-            }
+            let root = self.rootNode?.replacing(nodeID: node.id, with: replacement) ?? replacement
+            self.rootNode = root.sortedBySize()
+            self.focusedNodeID = replacement.id
+            self.clearStaleFocus()
         }
     }
 
@@ -130,6 +186,35 @@ final class SpaceLensViewModel: ObservableObject {
         }
     }
 
+    // Child scans must not clobber the main scan task slot: a lazy drill-down
+    // starting mid-main-scan used to overwrite scanTask, leaving the original
+    // scan running with no handle to cancel it.
+    private func runChildScan(operation: @escaping () async throws -> SpaceLensNode?,
+                              onSuccess: @escaping (SpaceLensNode) -> Void,
+                              onMissingPath: (() -> Void)? = nil) {
+        let key = UUID()
+        let task = Task { [weak self, key] in
+            guard let self else { return }
+            await MainActor.run {
+                self.runningChildScanCount += 1
+            }
+            let replacement = try? await operation()
+            await MainActor.run {
+                self.runningChildScanCount = max(0, self.runningChildScanCount - 1)
+                self.childScanTasks.removeValue(forKey: key)
+                // A cancelled child scan leaves half-walked results behind; applying
+                // them would clobber the tree with wrong sizes right after Cancel
+                guard !Task.isCancelled else { return }
+                if let replacement {
+                    onSuccess(replacement)
+                } else {
+                    onMissingPath?()
+                }
+            }
+        }
+        childScanTasks[key] = task
+    }
+
     private func clearStaleFocus() {
         if let id = focusedNodeID, rootNode?.child(withID: id) == nil {
             focusedNodeID = nil
@@ -138,26 +223,23 @@ final class SpaceLensViewModel: ObservableObject {
 
     func rescanSubtree(node: SpaceLensNode) {
         guard let parent = rootNode?.parent(ofID: node.id) ?? rootNode else { return }
-        scanTask = Task { [weak self] in
+        runChildScan {
+            try? await self.scanner.rescanSubtree(at: node.url, maxDepth: self.scanDepth)
+        } onSuccess: { [weak self] replacement in
             guard let self else { return }
-            if let replacement = await self.scanner.rescanSubtree(at: node.url, maxDepth: self.scanDepth) {
-                await MainActor.run {
-                    let root = self.rootNode?.replacing(nodeID: node.id, with: replacement) ?? replacement
-                    self.rootNode = root.sortedBySize()
-                    self.clearStaleFocus()
-                }
-            } else {
-                await MainActor.run {
-                    // Path is gone: drop the stale child and recompute the parent so
-                    // ancestors rebalance through the replacing() delta
-                    var parentCopy = parent
-                    parentCopy.children.removeAll { $0.id == node.id }
-                    parentCopy.size = parentCopy.children.reduce(Int64(0)) { $0 + $1.size }
-                    let root = self.rootNode?.replacing(nodeID: parent.id, with: parentCopy) ?? parentCopy
-                    self.rootNode = root.sortedBySize()
-                    self.clearStaleFocus()
-                }
-            }
+            let root = self.rootNode?.replacing(nodeID: node.id, with: replacement) ?? replacement
+            self.rootNode = root.sortedBySize()
+            self.clearStaleFocus()
+        } onMissingPath: { [weak self] in
+            // Path is gone: drop the stale child and recompute the parent so
+            // ancestors rebalance through the replacing() delta
+            guard let self else { return }
+            var parentCopy = parent
+            parentCopy.children.removeAll { $0.id == node.id }
+            parentCopy.size = parentCopy.children.reduce(Int64(0)) { $0 + $1.size }
+            let root = self.rootNode?.replacing(nodeID: parent.id, with: parentCopy) ?? parentCopy
+            self.rootNode = root.sortedBySize()
+            self.clearStaleFocus()
         }
     }
 }
@@ -188,6 +270,8 @@ struct SpaceLensView: View {
                 Divider()
                 if case .scanning(let path) = viewModel.phase {
                     scanProgress(path: path)
+                } else if case .waitingForPermissions(let path) = viewModel.phase {
+                    waitingForPermissions(path: path)
                 } else if viewModel.rootNode != nil {
                     chart
                 } else {
@@ -389,7 +473,7 @@ struct SpaceLensView: View {
             }
             Spacer()
             Button {
-                viewModel.cancelScan()
+                viewModel.cancelAllScans()
             } label: {
                 Text(String(localized: "Cancel"))
             }
@@ -405,12 +489,79 @@ struct SpaceLensView: View {
         }
     }
 
+    // MARK: Waiting for permission
+
+    // Shown when the scan target needs Full Disk Access the app does not hold: the
+    // walker would block on the OS consent dialog. Ask Again reopens the pane and
+    // auto-restarts the scan on grant.
+    @ViewBuilder
+    private func waitingForPermissions(path: String) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: "lock.shield")
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(String(localized: "Waiting for permission to scan \(path)"))
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                Text(String(localized: "Grant Full Disk Access to Pearcleaner to continue. Ask Again rechecks and resumes the scan."))
+                    .font(.system(size: 11))
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+            }
+            Spacer()
+            Button {
+                viewModel.retryAfterPermissions()
+            } label: {
+                Label(String(localized: "Ask Again"), systemImage: "arrow.clockwise")
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+            .help(String(localized: "Open System Settings > Privacy & Security > Full Disk Access, then recheck"))
+            Button {
+                viewModel.cancelScan()
+            } label: {
+                Text(String(localized: "Cancel"))
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+        }
+        .padding()
+        Divider()
+        Spacer()
+    }
+
+    // Child scans (lazy drill-down, post-trash rescans) run with the main phase
+    // already complete; without this banner the chart silently updates and the
+    // user has no signal anything is still being measured
+    private var childScanBanner: some View {
+        HStack(spacing: 8) {
+            ProgressView()
+                .controlSize(.small)
+            Text(String(localized: "Scanning subfolders (\(viewModel.runningChildScanCount))"))
+                .font(.system(size: 11))
+                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+            Spacer()
+            Button {
+                viewModel.cancelAllScans()
+            } label: {
+                Text(String(localized: "Cancel"))
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 8)
+    }
+
     // MARK: Chart
 
     private var chart: some View {
         VStack(alignment: .leading, spacing: 0) {
             if viewModel.focusedNodeID != nil {
                 breadcrumb
+                Divider()
+            }
+            if viewModel.runningChildScanCount > 0 {
+                childScanBanner
                 Divider()
             }
             if case .cancelled = viewModel.phase {

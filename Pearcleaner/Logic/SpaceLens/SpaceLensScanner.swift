@@ -14,8 +14,38 @@ enum SpaceLensDisplayMode: String, CaseIterable {
 enum SpaceLensScanPhase: Equatable {
     case idle
     case scanning(String)
+    // Scan target needs a TCC grant the app does not hold yet; the walker would
+    // block on the OS consent dialog, so the scan never started
+    case waitingForPermissions(String)
     case complete
     case cancelled
+}
+
+// Reading the system TCC.db requires Full Disk Access itself, so a readable db
+// doubles as the standard FDA probe used across the app
+enum FullDiskAccessProbe {
+    static func isGranted() -> Bool {
+        FileManager.default.isReadableFile(atPath: "/Library/Application Support/com.apple.TCC/TCC.db")
+    }
+
+    // True when a walk of this target can reach a TCC-protected folder, where the
+    // OS consent dialog would block the walker mid-scan. The root and any ancestor
+    // of home cover Desktop, Documents and Downloads as descendants; anything
+    // else (an app bundle, /Applications, ~/Projects) walks fine without FDA and
+    // must not be parked behind a permission wait it never triggers.
+    static func targetMayHitTCC(_ path: String) -> Bool {
+        var normalized = path
+        while normalized.count > 1, normalized.hasSuffix("/") { normalized.removeLast() }
+        if normalized == "/" { return true }
+        let home = NSHomeDirectory()
+        if home.hasPrefix(normalized + "/") { return true }
+        if normalized == home { return true }
+        for protected in ["Desktop", "Documents", "Downloads"] {
+            let prefix = home + "/" + protected
+            if normalized == prefix || normalized.hasPrefix(prefix + "/") { return true }
+        }
+        return false
+    }
 }
 
 // Root system locations are measured but never deletable from tiles
