@@ -220,6 +220,8 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				AppGroupDefaults.swift,
+				DestructiveOperationSafety.swift,
+				UserProcessEnvironment.swift,
 			);
 			target = C77B8FFF2AF18E2E009CC655 /* Pearcleaner */;
 		};
@@ -313,6 +315,7 @@
 				C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */,
 				C78D7B202D556F16003DD49F /* AppPathsFetch.swift */,
 				C77B90152AF19377009CC655 /* AppState.swift */,
+				C7DD0000ADE00000400000007 /* DevPathCatalog.swift */,
 				C7A2A4D52DDB957D006E05E4 /* CLI.swift */,
 				C74FDC622BCD833D00B8960F /* Conditions.swift */,
 				C72893042AFD42E600C8C1CD /* DeepLink.swift */,
@@ -331,6 +334,8 @@
 				C75AED0F2EC259C800824CCD /* UndoHistoryManager.swift */,
 				C72FDCB82D6D088A00DE7D56 /* UndoManager.swift */,
 				C7F539372AF60865007DF1B2 /* Utilities.swift */,
+				C7DD000ADE00000100000001 /* DevEnvProcess.swift */,
+				C7DD0000ADE00000200000003 /* VMContainerInventory.swift */,
 				C7C693E92E9D73DD0081CF25 /* AppsUpdater */,
 				C7923DCC2E90807F005C5632 /* Brew */,
 				C783F8FD2E903707003450E7 /* FileSearch */,
