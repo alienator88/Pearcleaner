@@ -5,130 +5,6 @@
       "comment" : "Do not translate",
       "shouldTranslate" : false
     },
-    "**whoami** command should return 'root' when the session authorization is working." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Der Befehl **whoami** sollte 'root' zurückgeben, wenn die Sitzungsautorisierung funktioniert."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "**whoami** command should return 'root' when the session authorization is working."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El comando **whoami** debería devolver 'root' cuando la autorización de sesión funciona."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La commande **whoami** devrait renvoyer 'root' lorsque l'autorisation de session fonctionne."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Perintah **whoami** seharusnya mengembalikan 'root' saat otorisasi sesi berfungsi."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Il comando **whoami** dovrebbe restituire 'root' quando l'autorizzazione della sessione funziona."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "セッション認証が機能している場合、**whoami** コマンドは「root」を返すはずです。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "세션 권한 부여가 작동하면 **whoami** 명령은 'root'를 반환해야 합니다."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Polecenie **whoami** powinno zwrócić 'root', gdy autoryzacja sesji działa."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O comando **whoami** deve retornar 'root' quando a autorização de sessão está funcionando."
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O comando **whoami** deve devolver 'root' quando a autorização de sessão está a funcionar."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Команда **whoami** должна возвращать «root», если авторизация сессии работает."
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Príkaz **whoami** by mal vrátiť 'root', keď autorizácia relácie funguje."
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ukaz **whoami** mora vrniti 'root', kadar deluje pooblastilo seje."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oturum yetkilendirmesi çalışırken **whoami** komutu 'root' döndürmelidir."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Команда **whoami** має повертати «root», коли авторизація сесії працює."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lệnh **whoami** sẽ trả về 'root' khi ủy quyền phiên đang hoạt động."
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "當作業階段授權正常運作時，**whoami** 指令應回傳「root」。"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "当会话授权正常工作时，**whoami** 命令应返回“root”。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "當作業階段授權正常運作時，**whoami** 指令應回傳「root」。"
-          }
-        }
-      }
-    },
     "Asks for your administrator password once per session, then rescans with full read access." : {
       "localizations" : {
         "de" : {
@@ -253,130 +129,6 @@
         }
       }
     },
-    "Command output will display here" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hier wird die Befehlsausgabe angezeigt"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Command output will display here"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La salida del comando se mostrará aquí"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La sortie de la commande s'affichera ici"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Keluaran perintah akan ditampilkan di sini"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "L'output del comando verrà mostrato qui"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "コマンドの出力はここに表示されます"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "명령 출력이 여기에 표시됩니다"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tutaj pojawi się wynik polecenia"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A saída do comando será exibida aqui"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A saída do comando será mostrada aqui"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Здесь будет показан вывод команды"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Výstup príkazu sa zobrazí tu"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Izhod ukaza se bo prikazal tukaj"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Komut çıktısı burada görünecek"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Тут буде показано вивід команди"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kết quả lệnh sẽ hiển thị ở đây"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "指令輸出將顯示在這裡"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "命令输出将显示在这里"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "指令輸出將顯示在這裡"
-          }
-        }
-      }
-    },
     "Pearcleaner asks for your administrator password the first time a task needs elevated permissions, and keeps that authorization for the rest of the session while it stays open. No privileged helper is installed, nothing appears in Settings > Login Items, and when Pearcleaner quits the authorization is gone." : {
       "localizations" : {
         "de" : {
@@ -497,130 +249,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pearcleaner會在任務首次需要較高權限時要求你的管理員密碼，並在應用程式開啟期間為該作業階段保留此授權。不會安裝任何特權輔助程式，設定 > 登入項目中不會出現任何項目，而當Pearcleaner結束時授權即消失。"
-          }
-        }
-      }
-    },
-    "Privileged tasks ask for your password once per session." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Privilegierte Aufgaben fragen einmal pro Sitzung nach Ihrem Passwort."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Privileged tasks ask for your password once per session."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Las tareas privilegiadas piden tu contraseña una vez por sesión."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Les tâches privilégiées demandent votre mot de passe une fois par session."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tugas istimewa meminta kata sandi Anda sekali per sesi."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Le attività privilegiate chiedono la password una volta per sessione."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "特権タスクはセッションごとに1回だけパスワードを要求します。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "권한이 필요한 작업은 세션당 한 번만 비밀번호를 요청합니다."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uprzywilejowane zadania pytają o hasło raz na sesję."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tarefas privilegiadas pedem sua senha uma vez por sessão."
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tarefas privilegiadas pedem a sua palavra-passe uma vez por sessão."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Привилегированные задачи запрашивают пароль один раз за сессию."
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Privilegované úlohy sa pýtajú na heslo raz za reláciu."
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Privilegirana opravila zahtevajo geslo enkrat na sejo."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ayrıcalıklı görevler oturum başına bir kez parolanızı ister."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Привілейовані завдання запитують пароль один раз за сесію."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Các tác vụ đặc quyền yêu cầu mật khẩu của bạn một lần cho mỗi phiên."
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "特權工作每個作業階段只會要求你輸入一次密碼。"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "特权任务每个会话只会要求你输入一次密码。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "特權工作每個作業階段只會要求你輸入一次密碼。"
           }
         }
       }
@@ -869,130 +497,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "無需安裝任何元件即可執行特權工作"
-          }
-        }
-      }
-    },
-    "Session Playground" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sitzungs-Playground"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Session Playground"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Área de pruebas de sesión"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bac à sable de session"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Taman uji sesi"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Area prove di sessione"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "セッション・プレイグラウンド"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "세션 플레이그라운드"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Plac zabaw sesji"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ambiente de testes de sessão"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Área de testes de sessão"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Песочница сессии"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pieskovisko relácie"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Igralni polji seje"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oturum deneme alanı"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Пісочниця сесії"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Khu thử nghiệm phiên"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "作業階段試驗區"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "会话试验场"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "作業階段試驗區"
           }
         }
       }
@@ -2233,130 +1737,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "繼續"
-          }
-        }
-      }
-    },
-    "Rescan with Helper" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mit Helper neu scannen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rescan with Helper"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reescanear con Helper"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Réanalyser avec l'assistant"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pindai ulang dengan Helper"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ripeti scansione con Helper"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ヘルパーで再スキャン"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "헬퍼로 다시 스캔"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skanuj ponownie z pomocnikiem"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verificar novamente com o Helper"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Analisar novamente com o Helper"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Пересканировать с помощником"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skenovať znova s Helperom"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Znova optično preberi s pomočnikom"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Helper ile yeniden tara"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Сканувати знову з Helper"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quét lại với Helper"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "使用輔助程式重新掃描"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "使用帮助程序重新扫描"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "使用輔助程式重新掃描"
           }
         }
       }
@@ -17643,124 +17023,6 @@
         }
       }
     },
-    "BTM reset complete. Please reinstall helper." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BTM-Reset abgeschlossen. Bitte installieren Sie den Helfer neu."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Restablecimiento de BTM completo. Por favor, reinstale el asistente."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Réinitialisation de BTM terminée. Veuillez réinstaller l'assistant."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reset BTM selesai. Silakan instal ulang pembantu."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reimpostazione BTM completata. Si prega di reinstallare l'assistente."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BTMのリセットが完了しました。ヘルパーを再インストールしてください。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BTM 재설정 완료. 도우미를 다시 설치하세요."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reset BTM zakończony. Proszę ponownie zainstalować pomocnika."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Redefinição do BTM concluída. Por favor, reinstale o assistente."
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reinicialização do BTM concluída. Por favor, reinstale o assistente."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Сброс BTM завершен. Пожалуйста, переустановите помощник."
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reset BTM dokončený. Prosím, preinštalujte pomocníka."
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ponastavitev BTM je končana. Prosimo, ponovno namestite pomočnika."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BTM sıfırlama tamamlandı. Lütfen yardımcıyı yeniden yükleyin."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Скидання BTM завершено. Будь ласка, перевстановіть помічник."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đặt lại BTM hoàn tất. Vui lòng cài đặt lại trình trợ giúp."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BTM 重置完成。请重新安装助手。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BTM重置完成。請重新安裝助手。"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BTM 重置完成。請重新安裝助手。"
-          }
-        }
-      }
-    },
     "BTM reset failed: %@" : {
       "localizations" : {
         "de" : {
@@ -30646,124 +29908,6 @@
         }
       }
     },
-    "Enable Helper" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Helfer aktivieren"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Habilitar Asistente"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activer l'assistant"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aktifkan Pembantu"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abilita Assistente"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ヘルパーを有効にする"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "도우미 활성화"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Włącz Pomocnika"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ativar Assistente"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ativar Assistente"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Включить помощника"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Povoliť Pomocníka"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Omogoči Pomočnika"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yardımcıyı Etkinleştir"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Увімкнути Помічника"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bật Trợ lý"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "启用助手"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "啟用助手"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "啟用助手"
-          }
-        }
-      }
-    },
     "Enable icon for Finder extension" : {
       "localizations" : {
         "de" : {
@@ -31827,124 +30971,6 @@
         }
       }
     },
-    "Enter manual command here, Enter to run" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Geben Sie hier manuelle Befehle ein, drücken Sie die Eingabetaste, um diese auszuführen."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ingrese comando manual aquí, Enter para ejecutar"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Entrez la commande manuelle ici, Entrée pour exécuter"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Masukkan perintah manual di sini, tekan Enter untuk menjalankan"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inserisci qui il comando manuale, premi Invio per eseguire"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ここに手動コマンドを入力し、Enter キーを押して実行"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "여기에 명령 입력, 실행하려면 Enter"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wpisz polecenie ręczne, naciśnij Enter, aby uruchomić"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Digite o comando manual aqui, Enter para executar"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Introduza o comando manual aqui, Enter para executar"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Введите команду вручную, нажмите Enter для выполнения"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zadajte príkaz ručne, stlačením Enter ho spustíte"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tukaj vnesite ročni ukaz, Enter za zagon"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Buraya manuel komutu girin, çalıştırmak için Enter'a basın"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Введіть ручну команду тут, Enter для запуску"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nhập lệnh thủ công ở đây, nhấn Enter để chạy"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在此处输入手动命令，按回车键运行"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在此處輸入手動命令，按一下 Enter 以執行"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在此處輸入手動命令，按一下 Enter 以執行"
-          }
-        }
-      }
-    },
     "Enter the tap name to add" : {
       "localizations" : {
         "de" : {
@@ -32531,124 +31557,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "僅適用於應用程式名稱、套件 ID 和權限的精確字串匹配。最保守，建議作為預設選擇。"
-          }
-        }
-      }
-    },
-    "Example privileged commands" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Beispiel für privilegierte Befehle"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ejemplo de comandos privilegiados"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Exemples de commandes avec priviléges"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Contoh perintah istimewa"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Esempio di comandi privilegiati"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "特権コマンドの例"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "권한 상승 예제 명령어"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Przykładowe polecenia uprzywilejowane"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Exemplo de comandos privilegiados"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Exemplo de comandos privilegiados"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Примеры привилегированных команд"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Príklady privilegovaných príkazov"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Primer privilegiranih ukazov"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Örnek ayrıcalıklı komutlar"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Приклади привілейованих команд"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ví dụ về các lệnh yêu cầu quyền cao"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "特权命令示例"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "特殊權限命令範例"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "特殊權限命令範例"
           }
         }
       }
@@ -38579,360 +37487,6 @@
         }
       }
     },
-    "Helper" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Helper"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Asistente"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Assistant"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pembantu"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Assistente"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ヘルパー"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "도우미"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Narzędzie pomocnicze"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Assistente"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Assistente"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Помощник"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pomocník"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pomočnik"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yardımcı"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Помічник"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Phụ trợ"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "辅助服务"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "輔助應用程式"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "輔助應用程式"
-          }
-        }
-      }
-    },
-    "Helper Playground" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Helfer-Spielplatz"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Área de Pruebas del Asistente"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Terrain de Jeu de l'Assistant"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Taman Bermain Pembantu"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Area di gioco dell'assistente"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ヘルパーの遊び場"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "도우미 놀이터"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Plac Zabaw Pomocnika"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Playground do Assistente"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Área de Testes do Assistente"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Площадка помощника"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ihrisko pomocníka"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Igralnica Pomočnika"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yardımcı Oyun Alanı"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Майданчик помічника"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sân chơi Trợ lý"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "助手游乐场"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "助手遊樂場"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "助手遊樂場"
-          }
-        }
-      }
-    },
-    "Helper tool needs to be enabled" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hilfswerkzeug muss aktiviert werden"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La herramienta de ayuda debe estar habilitada"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "L'outil d'assistance doit être activé"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alat bantu perlu diaktifkan"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lo strumento di supporto deve essere abilitato"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ヘルパーツールを有効にする必要があります"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "도우미 도구를 활성화해야 합니다"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Narzędzie pomocnicze musi być włączone"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A ferramenta auxiliar precisa ser ativada"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A ferramenta auxiliar precisa ser ativada"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Необходимо включить вспомогательный инструмент"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pomocný nástroj musí byť povolený"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pomožno orodje mora biti omogočeno"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yardımcı aracın etkinleştirilmesi gerekiyor"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Потрібно увімкнути допоміжний інструмент"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Công cụ trợ giúp cần được kích hoạt"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "需要启用辅助工具"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "需要啟用輔助工具"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "需要啟用輔助工具"
-          }
-        }
-      }
-    },
     "Hidden" : {
       "localizations" : {
         "de" : {
@@ -43535,124 +42089,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "介面"
-          }
-        }
-      }
-    },
-    "Invalid signature, ensure proper signing on the application and helper tool." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ungültige Signatur, stellen Sie sicher, dass die Anwendung und das Hilfsprogramm ordnungsgemäß signiert sind."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Firma no válida, asegúrese de firmar correctamente en la aplicación y la herramienta auxiliar."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Signature invalide. Vérifiez que l’application  porte votre signature correcte  et l'outil d'aide."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tanda tangan tidak valid, pastikan penandatanganan yang benar pada aplikasi dan alat bantu."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Firma non valida, assicurati che l'applicazione e lo strumento di supporto siano firmati correttamente."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "無効な署名です。アプリケーションとヘルパーツールの適切な署名を確認してください。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "잘못된 서명입니다. 애플리케이션과 도우미 도구에 올바른 서명이 있는지 확인하십시오."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nieprawidłowy podpis, upewnij się, że aplikacja i narzędzie pomocnicze zostały poprawnie podpisane."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Assinatura inválida, certifique-se de assinar corretamente o aplicativo e a ferramenta auxiliar."
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Assinatura inválida, certifique-se de que a aplicação e a ferramenta auxiliar estão devidamente assinadas."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Недействительная подпись, убедитесь, что приложение и вспомогательный инструмент правильно подписаны."
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Neplatný podpis, uistite sa, že aplikácia a pomocný nástroj sú riadne podpísané."
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Neveljaven podpis, zagotovite pravilno podpisovanje aplikacije in pomožnega orodja."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Geçersiz imza, uygulamada ve yardımcı araçta doğru imzalamayı sağlayın."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Недійсний підпис, переконайтесь у правильності підписання програми та допоміжного інструменту."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chữ ký không hợp lệ, đảm bảo rằng ứng dụng và công cụ hỗ trợ đã được sử dụng đúng cách."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "无效签名，确保应用程序和辅助工具正确签名。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "無效的簽名。確保應用程式與輔助應用程式工具已正確簽署。"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "無效的簽名。確保應用程式與輔助應用程式工具已正確簽署。"
           }
         }
       }
@@ -55376,124 +53812,6 @@
         }
       }
     },
-    "Nuclear Reset" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nuklearer Reset"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reinicio Nuclear"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Réinitialisation Nucléaire"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reset Nuklir"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ripristino Nucleare"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "核リセット"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "핵 재설정"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reset Nuklearny"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reinicialização Nuclear"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reinicialização Nuclear"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ядерный Сброс"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nukleárny Reset"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jedrski Ponastavitev"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nükleer Sıfırlama"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ядерне Скидання"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thiết Lập Lại Hạt Nhân"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "核重置"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "核重置"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "核重置"
-          }
-        }
-      }
-    },
     "of" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -56319,124 +54637,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在 Finder 中開啟"
-          }
-        }
-      }
-    },
-    "Open Settings to enable the Privileged Helper" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Öffnen Sie die Einstellungen, um den privilegierten Helfer zu aktivieren"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abra Configuración para habilitar el Asistente Privilegiado"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ouvrez les Paramètres pour activer l'Assistant Privilégié"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Buka Pengaturan untuk mengaktifkan Pembantu Istimewa"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apri Impostazioni per abilitare l'Assistente Privilegiato"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "特権ヘルパーを有効にするには設定を開いてください"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "권한 상승 도우미를 활성화하려면 설정을 엽니다"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Otwórz Ustawienia, aby włączyć Pomocnika z uprawnieniami"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abra as Configurações para ativar o Assistente Privilegiado"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abra as Definições para ativar o Assistente Privilegiado"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Откройте настройки, чтобы включить привилегированного помощника"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Otvorte Nastavenia, aby ste povolili Privilegovaného Pomocníka"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Odprite nastavitve, da omogočite privilegiranega pomočnika"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ayrıcalıklı Yardımcıyı etkinleştirmek için Ayarları açın"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Відкрийте Налаштування, щоб увімкнути Привілейованого Помічника"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mở Cài đặt để bật Trợ lý Đặc quyền"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "打开设置以启用特权助手"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開啟設定以啟用特權助手"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開啟設定以啟用特權助手"
           }
         }
       }
@@ -59168,124 +57368,6 @@
         }
       }
     },
-    "Perform privileged operations seamlessly without password prompts" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Führt privilegierte Vorgänge nahtlos und ohne Passwortabfrage aus."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Realiza operaciones privilegiadas sin interrupciones y sin solicitudes de contraseña"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Effectuez des opérations nessécitant les privilégiées admin de manière transparente sans invite de mot de passe"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lakukan operasi istimewa tanpa hambatan tanpa permintaan kata sandi"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Esegui operazioni privilegiate senza interruzioni senza richieste di password"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "パスワード入力なしでシームレスに特権操作を実行"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "비밀번호 입력 없이 원활하게 권한 있는 작업 수행"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Płynne wykonywanie operacji uprzywilejowanych bez komunikatów o podanie hasła"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Realize operações privilegiadas de forma tranquila sem solicitações de senha"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Realize operações privilegiadas sem interrupções e sem solicitações de senha"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Выполняйте привилегированные операции без запросов пароля"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vykonávajte privilégiované operácie plynulo bez výziev na zadanie hesla"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Izvajajte privilegirane operacije brez pozivov za geslo"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Parola istemleri olmadan ayrıcalıklı işlemleri sorunsuz bir şekilde gerçekleştirin"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Виконуйте привілейовані операції без запитів на введення пароля"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thực hiện các thao tác cần thẩm quyền mà không cần yêu cầu mật khẩu"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "无缝执行带权限的操作，无需密码提示"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在沒有密碼的提示下流暢地執行特殊權限操作"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在沒有密碼的提示下流暢地執行特殊權限操作"
-          }
-        }
-      }
-    },
     "Perform updates on 3rd party apps, and more" : {
       "localizations" : {
         "de" : {
@@ -60351,124 +58433,6 @@
         }
       }
     },
-    "Please install the helper service" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bitte installieren Sie den Hilfsdienst"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Instale el servicio auxiliar"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Veuillez installer le service d'autorisation"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Silakan pasang layanan pembantu"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Si prega di installare il servizio di supporto"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ヘルパーサービスをインストールしてください"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "도우미 서비스를 설치하세요"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Proszę zainstalować narzędzie pomocnicze"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Por favor, instale o serviço auxiliar"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Por favor, instale o serviço auxiliar"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Пожалуйста, установите вспомогательную службу"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nainštalujte prosím pomocnú službu"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prosimo, namestite pomožno storitev"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lütfen yardımcı servisi yükleyin"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Будь ласка, встановіть допоміжний сервіс"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vui lòng cài đặt dịch vụ phụ trợ"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "请安装辅助服务"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "請安裝輔助應用程式服務"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "請安裝輔助應用程式服務"
-          }
-        }
-      }
-    },
     "Plist File" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -61298,124 +59262,6 @@
     },
     "Previous action: %@" : {
 
-    },
-    "Privileged Helper Not Installed!" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Privilegierter Helfer nicht installiert!"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¡Asistente privilegiado no instalado!"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Assistant privilégié non installé !"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pembantu Istimewa Belum Terpasang!"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Assistente privilegiato non installato!"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "特権ヘルパーがインストールされていません！"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "권한 상승 도우미가 설치되지 않았습니다!"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nie zainstalowano uprzywilejowanego pomocnika!"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Assistente privilegiado não instalado!"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Assistente Privilegiado Não Instalado!"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Привилегированный помощник не установлен!"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Privilegovaný pomocník nie je nainštalovaný!"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Privilegirani pomočnik ni nameščen!"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ayrıcalıklı Yardımcı Yüklenmedi!"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Привілейований помічник не встановлено!"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trình trợ giúp đặc quyền chưa được cài đặt!"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "特权助手未安装！"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未安裝特權助手！"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "特權助手未安裝！"
-          }
-        }
-      }
     },
     "Prune Translations" : {
       "comment" : "Prune alert title",
@@ -67208,124 +65054,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "重置 App Store？"
-          }
-        }
-      }
-    },
-    "Reset Background Task Management database" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Datenbank für Hintergrundaufgabenverwaltung zurücksetzen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Restablecer la base de datos de gestión de tareas en segundo plano"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Réinitialiser la base de données de gestion des tâches en arrière-plan"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Atur Ulang basis data Manajemen Tugas Latar Belakang"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reimposta il database di gestione delle attività in background"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "バックグラウンドタスク管理データベースをリセット"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "백그라운드 작업 관리 데이터베이스 재설정"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zresetuj bazę danych Zarządzania Zadaniami w Tle"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Redefinir banco de dados de Gerenciamento de Tarefas em Segundo Plano"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reiniciar a base de dados de Gestão de Tarefas em Segundo Plano"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Сбросить базу данных управления фоновыми задачами"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Obnoviť databázu Správy úloh na pozadí"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ponastavi bazo podatkov za upravljanje opravil v ozadju"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Arka Plan Görev Yönetimi veritabanını sıfırla"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Скинути базу даних управління фоновими завданнями"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đặt lại cơ sở dữ liệu Quản lý Nhiệm vụ Nền"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重置后台任务管理数据库"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重置背景任務管理資料庫"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重置背景任務管理數據庫"
           }
         }
       }
@@ -78321,124 +76049,6 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Snapshots"
-          }
-        }
-      }
-    },
-    "Some of the features that require the helper:" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Einige der Funktionen, die den Helfer erfordern:"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Algunas de las funciones que requieren el asistente:"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Certaines des fonctionnalités nécessitant l'assistant :"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Beberapa fitur yang memerlukan pembantu:"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alcune delle funzionalità che richiedono l'assistente:"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ヘルパーが必要な機能の一部:"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "도우미가 필요한 기능 중 일부:"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Niektóre funkcje wymagające pomocnika:"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Algumas das funcionalidades que requerem o assistente:"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Algumas das funcionalidades que requerem o assistente:"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Некоторые функции, требующие помощника:"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Niektoré z funkcií, ktoré vyžadujú pomocníka:"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nekatere funkcije, ki zahtevajo pomočnika:"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yardımcı gerektiren bazı özellikler:"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Деякі функції, які потребують помічника:"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Một số tính năng cần trình trợ giúp:"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "需要助手的某些功能："
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "需要助手的某些功能："
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "需要助手的某些功能："
           }
         }
       }
@@ -89449,124 +87059,6 @@
         }
       }
     },
-    "Unregister Service" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nicht registrierter Dienst"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cancelar registro de servicio"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Désinscrire le service"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Batalkan Pendaftaran Layanan"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Deregistra servizio"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サービスの登録解除"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "서비스 등록 취소"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wyrejestruj usługę"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cancelar Registro do Serviço"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cancelar registo do serviço"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Отменить регистрацию службы"
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zrušiť registráciu služby"
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Odregistriraj storitev"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Servisin Kaydını Sil"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Скасувати Реєстрацію Сервіса"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hủy đăng ký dịch vụ"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "注销服务"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "取消註冊服務"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "取消註冊服務"
-          }
-        }
-      }
-    },
     "Unsigned" : {
       "localizations" : {
         "de" : {
@@ -97029,124 +94521,6 @@
         }
       }
     },
-    "When running privileged Homebrew operations, Pearcleaner caches your password in the macOS Keychain for this duration to avoid repeated password prompts. Homebrew commands cannot be executed with the privileged helper tool Pearcleaner offers." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bei der Ausführung privilegierter Homebrew-Operationen speichert Pearcleaner Ihr Passwort für diesen Zeitraum im macOS-Schlüsselbund, um wiederholte Passwortabfragen zu vermeiden. Homebrew-Befehle können nicht mit dem von Pearcleaner angebotenen privilegierten Hilfsprogramm ausgeführt werden."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Al ejecutar operaciones de Homebrew con privilegios, Pearcleaner guarda su contraseña en el llavero de macOS durante este tiempo para evitar solicitudes repetidas de contraseña. Los comandos de Homebrew no se pueden ejecutar con la herramienta auxiliar privilegiada que ofrece Pearcleaner."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lors de l'exécution d'opérations Homebrew avec privilèges, Pearcleaner met en cache votre mot de passe dans le trousseau macOS pour cette durée afin d'éviter les demandes répétées de mot de passe. Les commandes Homebrew ne peuvent pas être exécutées avec l'outil d'assistance privilégié proposé par Pearcleaner."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Saat menjalankan operasi Homebrew dengan hak istimewa, Pearcleaner menyimpan kata sandi Anda di macOS Keychain untuk durasi ini guna menghindari permintaan kata sandi berulang. Perintah Homebrew tidak dapat dijalankan dengan alat bantu istimewa yang ditawarkan Pearcleaner."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quando si eseguono operazioni Homebrew privilegiate, Pearcleaner memorizza la tua password nel Portachiavi di macOS per questa durata per evitare ripetute richieste di password. I comandi Homebrew non possono essere eseguiti con lo strumento di supporto privilegiato offerto da Pearcleaner."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "特権を持つHomebrew操作を実行する際、Pearcleanerはこの期間中、macOSキーチェーンにパスワードをキャッシュして、繰り返しパスワードを求められるのを避けます。Homebrewコマンドは、Pearcleanerが提供する特権ヘルパーツールでは実行できません。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "권한이 있는 Homebrew 작업을 실행할 때 Pearcleaner는 반복적인 비밀번호 입력을 피하기 위해 이 기간 동안 macOS 키체인에 비밀번호를 캐시합니다. Homebrew 명령은 Pearcleaner가 제공하는 권한 있는 도우미 도구로 실행할 수 없습니다."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Podczas uruchamiania uprzywilejowanych operacji Homebrew, Pearcleaner przechowuje twoje hasło w pęku kluczy macOS przez ten czas, aby uniknąć powtarzających się monitów o hasło. Polecenia Homebrew nie mogą być wykonywane za pomocą uprzywilejowanego narzędzia pomocniczego oferowanego przez Pearcleaner."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ao executar operações privilegiadas do Homebrew, o Pearcleaner armazena sua senha no Chaveiro do macOS por este período para evitar solicitações repetidas de senha. Os comandos do Homebrew não podem ser executados com a ferramenta auxiliar privilegiada oferecida pelo Pearcleaner."
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ao executar operações privilegiadas do Homebrew, o Pearcleaner armazena sua senha no Chaveiro do macOS por este período para evitar solicitações de senha repetidas. Os comandos do Homebrew não podem ser executados com a ferramenta auxiliar privilegiada que o Pearcleaner oferece."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "При выполнении привилегированных операций Homebrew, Pearcleaner кэширует ваш пароль в связке ключей macOS на этот период, чтобы избежать повторных запросов пароля. Команды Homebrew не могут быть выполнены с помощью привилегированного инструмента, предлагаемого Pearcleaner."
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pri spustení privilegovaných operácií Homebrew, Pearcleaner ukladá vaše heslo do kľúčenky macOS na toto obdobie, aby sa predišlo opakovaným výzvam na zadanie hesla. Príkazy Homebrew nemožno vykonať s privilegovaným pomocným nástrojom, ktorý ponúka Pearcleaner."
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ko izvajate privilegirane operacije Homebrew, Pearcleaner za to obdobje shrani vaše geslo v macOS Keychain, da se izognete ponavljajočim se pozivom za geslo. Homebrew ukazov ni mogoče izvesti s privilegiranim orodjem, ki ga ponuja Pearcleaner."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ayrıcalıklı Homebrew işlemleri çalıştırılırken, Pearcleaner şifrenizi bu süre boyunca macOS Anahtar Zinciri'nde önbelleğe alır, böylece tekrar eden şifre istemlerinden kaçınılır. Homebrew komutları, Pearcleaner'ın sunduğu ayrıcalıklı yardımcı araçla çalıştırılamaz."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Під час виконання привілейованих операцій Homebrew, Pearcleaner кешує ваш пароль у macOS Keychain на цей період, щоб уникнути повторних запитів пароля. Команди Homebrew не можуть бути виконані за допомогою привілейованого інструменту, який пропонує Pearcleaner."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Khi chạy các thao tác Homebrew có quyền ưu tiên, Pearcleaner lưu mật khẩu của bạn trong macOS Keychain trong thời gian này để tránh các yêu cầu nhập mật khẩu lặp lại. Các lệnh Homebrew không thể được thực thi với công cụ trợ giúp có quyền ưu tiên mà Pearcleaner cung cấp."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在运行需要权限的 Homebrew 操作时，Pearcleaner 会在此期间将您的密码缓存到 macOS 钥匙串中，以避免重复的密码提示。Homebrew 命令无法使用 Pearcleaner 提供的特权辅助工具执行。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "當運行需要特權的 Homebrew 操作時，Pearcleaner 會在此期間將您的密碼緩存到 macOS 鑰匙串中，以避免重複的密碼提示。Homebrew 命令無法使用 Pearcleaner 提供的特權輔助工具執行。"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "當運行需要特權的 Homebrew 操作時，Pearcleaner 會在此期間將您的密碼緩存到 macOS 鑰匙串中，以避免重複的密碼提示。Homebrew 命令無法使用 Pearcleaner 提供的特權輔助工具執行。"
-          }
-        }
-      }
-    },
     "When the helper tool was introduced March 2025, it was said that AuthorizationExecuteWithPrivileges (granting authentication via password prompt popup) would eventually be removed as it has already been deprecated by Apple. Some functionality will stop working in Pearcleaner if the helper isn't enabled going forward." : {
       "localizations" : {
         "de" : {
@@ -97970,6 +95344,248 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "您的 Homebrew 安裝運行正常！"
+          }
+        }
+      }
+    },
+    "Privilege" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privilegien"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privilegios"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privilèges"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hak akses"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privilegi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "権限"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "권한"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uprawnienia"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privilégios"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privilégios"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Права доступа"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oprávnenia"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privilege"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privilege"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Права доступу"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privilege"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "权限"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "權限"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privilege"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privilege"
+          }
+        }
+      }
+    },
+    "When running privileged Homebrew operations, Pearcleaner caches your password in the macOS Keychain for this duration to avoid repeated password prompts." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bei der Ausführung privilegierter Homebrew-Operationen speichert Pearcleaner Ihr Passwort für diesen Zeitraum im macOS-Schlüsselbund, um wiederholte Passwortabfragen zu vermeiden. Homebrew-Befehle können nicht mit dem von Pearcleaner angebotenen privilegierten Hilfsprogramm ausgeführt werden."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Al ejecutar operaciones de Homebrew con privilegios, Pearcleaner guarda su contraseña en el llavero de macOS durante este tiempo para evitar solicitudes repetidas de contraseña. Los comandos de Homebrew no se pueden ejecutar con la herramienta auxiliar privilegiada que ofrece Pearcleaner."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lors de l'exécution d'opérations Homebrew avec privilèges, Pearcleaner met en cache votre mot de passe dans le trousseau macOS pour cette durée afin d'éviter les demandes répétées de mot de passe. Les commandes Homebrew ne peuvent pas être exécutées avec l'outil d'assistance privilégié proposé par Pearcleaner."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saat menjalankan operasi Homebrew dengan hak istimewa, Pearcleaner menyimpan kata sandi Anda di macOS Keychain untuk durasi ini guna menghindari permintaan kata sandi berulang. Perintah Homebrew tidak dapat dijalankan dengan alat bantu istimewa yang ditawarkan Pearcleaner."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando si eseguono operazioni Homebrew privilegiate, Pearcleaner memorizza la tua password nel Portachiavi di macOS per questa durata per evitare ripetute richieste di password. I comandi Homebrew non possono essere eseguiti con lo strumento di supporto privilegiato offerto da Pearcleaner."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "特権を持つHomebrew操作を実行する際、Pearcleanerはこの期間中、macOSキーチェーンにパスワードをキャッシュして、繰り返しパスワードを求められるのを避けます。Homebrewコマンドは、Pearcleanerが提供する特権ヘルパーツールでは実行できません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "권한이 있는 Homebrew 작업을 실행할 때 Pearcleaner는 반복적인 비밀번호 입력을 피하기 위해 이 기간 동안 macOS 키체인에 비밀번호를 캐시합니다. Homebrew 명령은 Pearcleaner가 제공하는 권한 있는 도우미 도구로 실행할 수 없습니다."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podczas uruchamiania uprzywilejowanych operacji Homebrew, Pearcleaner przechowuje twoje hasło w pęku kluczy macOS przez ten czas, aby uniknąć powtarzających się monitów o hasło. Polecenia Homebrew nie mogą być wykonywane za pomocą uprzywilejowanego narzędzia pomocniczego oferowanego przez Pearcleaner."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ao executar operações privilegiadas do Homebrew, o Pearcleaner armazena sua senha no Chaveiro do macOS por este período para evitar solicitações repetidas de senha. Os comandos do Homebrew não podem ser executados com a ferramenta auxiliar privilegiada oferecida pelo Pearcleaner."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ao executar operações privilegiadas do Homebrew, o Pearcleaner armazena sua senha no Chaveiro do macOS por este período para evitar solicitações de senha repetidas. Os comandos do Homebrew não podem ser executados com a ferramenta auxiliar privilegiada que o Pearcleaner oferece."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "При выполнении привилегированных операций Homebrew, Pearcleaner кэширует ваш пароль в связке ключей macOS на этот период, чтобы избежать повторных запросов пароля. Команды Homebrew не могут быть выполнены с помощью привилегированного инструмента, предлагаемого Pearcleaner."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pri spustení privilegovaných operácií Homebrew, Pearcleaner ukladá vaše heslo do kľúčenky macOS na toto obdobie, aby sa predišlo opakovaným výzvam na zadanie hesla. Príkazy Homebrew nemožno vykonať s privilegovaným pomocným nástrojom, ktorý ponúka Pearcleaner."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ko izvajate privilegirane operacije Homebrew, Pearcleaner za to obdobje shrani vaše geslo v macOS Keychain, da se izognete ponavljajočim se pozivom za geslo. Homebrew ukazov ni mogoče izvesti s privilegiranim orodjem, ki ga ponuja Pearcleaner."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayrıcalıklı Homebrew işlemleri çalıştırılırken, Pearcleaner şifrenizi bu süre boyunca macOS Anahtar Zinciri'nde önbelleğe alır, böylece tekrar eden şifre istemlerinden kaçınılır. Homebrew komutları, Pearcleaner'ın sunduğu ayrıcalıklı yardımcı araçla çalıştırılamaz."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Під час виконання привілейованих операцій Homebrew, Pearcleaner кешує ваш пароль у macOS Keychain на цей період, щоб уникнути повторних запитів пароля. Команди Homebrew не можуть бути виконані за допомогою привілейованого інструменту, який пропонує Pearcleaner."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Khi chạy các thao tác Homebrew có quyền ưu tiên, Pearcleaner lưu mật khẩu của bạn trong macOS Keychain trong thời gian này để tránh các yêu cầu nhập mật khẩu lặp lại. Các lệnh Homebrew không thể được thực thi với công cụ trợ giúp có quyền ưu tiên mà Pearcleaner cung cấp."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在运行需要权限的 Homebrew 操作时，Pearcleaner 会在此期间将您的密码缓存到 macOS 钥匙串中，以避免重复的密码提示。Homebrew 命令无法使用 Pearcleaner 提供的特权辅助工具执行。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當運行需要特權的 Homebrew 操作時，Pearcleaner 會在此期間將您的密碼緩存到 macOS 鑰匙串中，以避免重複的密碼提示。Homebrew 命令無法使用 Pearcleaner 提供的特權輔助工具執行。"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當運行需要特權的 Homebrew 操作時，Pearcleaner 會在此期間將您的密碼緩存到 macOS 鑰匙串中，以避免重複的密碼提示。Homebrew 命令無法使用 Pearcleaner 提供的特權輔助工具執行。"
           }
         }
       }

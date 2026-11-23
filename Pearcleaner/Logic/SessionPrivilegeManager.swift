@@ -2,8 +2,8 @@
 //  SessionPrivilegeManager.swift
 //  Pearcleaner
 //
-//  Session-scoped privilege: Pearcleaner no longer installs a launchd daemon
-//  and no longer ships a helper binary. Live probing on macOS 26 showed the
+//  Session-scoped privilege: Pearcleaner never installs a launchd daemon and
+//  never ships a helper binary. Live probing on macOS 26 showed the
 //  authorization trampoline only elevates Apple-signed binaries: a bundled
 //  helper runs uid=502 even after the user approves. So privileged work runs
 //  through /bin/sh (Apple-signed, verifiably elevated) via
@@ -276,5 +276,35 @@ final class SessionPrivilegeManager {
         for path in legacy where FileManager.default.fileExists(atPath: path) {
             try? FileManager.default.removeItem(atPath: path)
         }
+    }
+}
+
+// MARK: - Async wrappers
+
+/// Call-site convenience: the manager API is synchronous (it blocks on the
+/// shell and the Authorization dialog); these wrappers move that blocking
+/// work off the caller's task so UI code can await it directly.
+extension SessionPrivilegeManager {
+
+    /// Runs a fixed-shape shell command as root, off the current task.
+    static func runPrivilegedShell(_ command: String) async -> (Bool, String) {
+        await Task.detached(priority: .userInitiated) {
+            shared.run(command: command)
+        }.value
+    }
+
+    /// Thins a single root-owned Mach-O binary as root, off the current task.
+    static func thinPrivileged(binaryAt path: String) async -> (Bool, String) {
+        await Task.detached(priority: .userInitiated) {
+            shared.thin(binaryAt: path)
+        }.value
+    }
+
+    /// Thins a whole root-owned .app bundle as root, validating in-process
+    /// first, off the current task.
+    static func thinPrivilegedBundle(at path: String) async -> (Bool, String, [String: UInt64]) {
+        await Task.detached(priority: .userInitiated) {
+            shared.thinBundle(at: path)
+        }.value
     }
 }

@@ -10,10 +10,6 @@ import Foundation
 
 struct HelperSettingsTab: View {
     @Environment(\.colorScheme) var colorScheme
-    @ObservedObject private var helperToolManager = HelperToolManager.shared
-    @State private var commandOutput: String = String(localized: "Command output will display here")
-    @State private var commandToRun: String = "whoami"
-    @State private var commandToRunManual: String = ""
 
     var body: some View {
         VStack(spacing: 20) {
@@ -44,22 +40,10 @@ struct HelperSettingsTab: View {
 
                             Button {
                                 SessionPrivilegeManager.shared.invalidateSession()
-                                commandOutput = String(localized: "Command output will display here")
                             } label: {
                                 Text("Forget")
                             }
                             .buttonStyle(.borderless)
-
-                        }
-
-                        Divider()
-                            .padding(.vertical, 5)
-
-                        HStack {
-                            Text(helperToolManager.message)
-                                .font(.footnote)
-                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                            Spacer()
 
                         }
                     }
@@ -82,69 +66,7 @@ struct HelperSettingsTab: View {
 
             })
 
-            PearGroupBox(header: {
-                Text("Session Playground").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2)
-            }, content: {
-                VStack {
-
-                    Picker("Example privileged commands", selection: $commandToRun) {
-                        Text(verbatim: "whoami").tag("whoami")
-                        Text(verbatim: "systemsetup -getsleep").tag("systemsetup -getsleep")
-                        Text(verbatim: "systemsetup -getcomputername").tag("systemsetup -getcomputername")
-                    }
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                    .pickerStyle(MenuPickerStyle())
-                    .onChange(of: commandToRun) { newValue in
-                        Task {
-                            let (success, output) = await helperToolManager.runCommand(commandToRun)
-                            if success {
-                                commandOutput = output
-                            } else {
-                                commandOutput = "Error: \(output)"
-                            }
-                        }
-                    }
-
-                    TextField("Enter manual command here, Enter to run", text: $commandToRunManual)
-                        .padding(8)
-                        .background(RoundedRectangle(cornerRadius: 8).strokeBorder(ThemeColors.shared(for: colorScheme).secondaryText.opacity(0.2), lineWidth: 1))
-                        .textFieldStyle(.plain)
-                        .onSubmit {
-                            Task {
-                                let (success, output) = await helperToolManager.runCommand(commandToRunManual)
-                                if success {
-                                    commandOutput = output
-                                } else {
-                                    commandOutput = "Error: \(output)"
-                                }
-                            }
-                        }
-
-                    ScrollView {
-                        Text(commandOutput)
-                            .font(.system(.body, design: .monospaced))
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-                            .padding()
-                    }
-                    .frame(height: 150)
-                    .frame(maxWidth: .infinity)
-                    .background(.tertiary.opacity(0.1))
-                    .cornerRadius(8)
-
-                    Text("**whoami** command should return 'root' when the session authorization is working.").font(.footnote).foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                        .padding(.top, 5)
-                }
-                .padding(5)
-            })
-
         }
-        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
-            Task {
-                await helperToolManager.manageHelperTool()
-            }
-        }
-
     }
 
 }

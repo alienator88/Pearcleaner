@@ -2,6 +2,8 @@
 
 - [x] Session elevation: privileged tasks (root scans, snapshots, leftover removal, root thinning, brew uninstall) ask for your password once per session and never install a privileged helper; nothing appears in Login Items and nothing is left behind when Pearcleaner quits
 - [x] The old privileged helper daemon is unregistered and removed on first launch of the new version
+- [x] Settings shows a Privilege tab describing the session credential, with a Forget button to drop it immediately
+- [x] Removed every trace of the old helper: no HelperToolManager, no Session Playground command runner, no pear helper CLI subcommand (now pear privilege), dead helper strings pruned from all translations
 - [x] Bundle thinning under /Applications validates every request in-process (location allowlist, symlink and traversal checks) before any elevated write
 - [x] Space Lens: disk usage map (treemap and sunburst) for any folder or the whole disk, with breadcrumb drill-down, hover tooltips, and Move to Trash from the map
 - [x] Protected system paths (System, Library, Applications, usr, private) render view-only, never deletable from Space Lens

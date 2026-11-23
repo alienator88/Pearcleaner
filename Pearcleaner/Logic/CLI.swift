@@ -17,7 +17,7 @@ struct PearCLI: ParsableCommand {
             Uninstall.self,
             UninstallAll.self,
             RemoveOrphaned.self,
-            Helper.self,
+            Privilege.self,
             AskPassword.self,
         ]
     )
@@ -271,21 +271,18 @@ struct PearCLI: ParsableCommand {
         }
     }
 
-    struct Helper: ParsableCommand {
+    struct Privilege: ParsableCommand {
         static var configuration = CommandConfiguration(
-            commandName: "helper",
-            abstract: "Check privileged session status. The installed helper is gone; privileged tasks now ask for the admin password once per session."
+            commandName: "privilege",
+            abstract: "Show how privileged tasks work. Nothing is installed; the admin password is asked once per session."
         )
 
         @Argument(help: "Ignored. Kept so old scripts do not break.")
         var action: String?
 
         func run() throws {
-            // The installed helper no longer exists. Any argument that used to
-            // enable/disable it now just reports the new reality.
-            let installed = false
             printOS("Session-based privilege: privileged commands prompt for the administrator password once per session. Nothing is installed.\n")
-            Foundation.exit(installed ? 0 : 0)
+            Foundation.exit(0)
         }
     }
 

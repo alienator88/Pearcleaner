@@ -15,7 +15,6 @@ struct PearcleanerApp: App {
     //MARK: ObservedObjects
     @ObservedObject var appState = AppState.shared
     @ObservedObject private var permissionManager = PermissionManagerLocal.shared
-    @ObservedObject private var helperToolManager = HelperToolManager.shared
     //MARK: StateObjects
     @StateObject var locations = Locations()
     @StateObject var fsm = FolderSettingsManager.shared

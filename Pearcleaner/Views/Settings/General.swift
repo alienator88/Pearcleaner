@@ -154,7 +154,7 @@ struct GeneralSettingsTab: View {
                                     Text("Password cache timeout")
                                         .font(.callout)
                                         .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-                                    InfoButton(text: String(localized: "When running privileged Homebrew operations, Pearcleaner caches your password in the macOS Keychain for this duration to avoid repeated password prompts. Homebrew commands cannot be executed with the privileged helper tool Pearcleaner offers."))
+                                    InfoButton(text: String(localized: "When running privileged Homebrew operations, Pearcleaner caches your password in the macOS Keychain for this duration to avoid repeated password prompts."))
                                 }
                             }
 

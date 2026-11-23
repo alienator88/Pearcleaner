@@ -18,7 +18,6 @@ struct SettingsView: View {
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @State private var showPerms = false
     @State private var toolbarRefreshTrigger = false
-    @ObservedObject private var helperToolManager = HelperToolManager.shared
 
     var body: some View {
 

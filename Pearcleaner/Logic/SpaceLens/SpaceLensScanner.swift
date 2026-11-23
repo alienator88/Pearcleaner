@@ -191,20 +191,20 @@ actor SpaceLensScanner {
     // MARK: Privileged scan (du -k -x)
 
     // Session-elevated scan: runs du as root through the session credential
-    // held by SessionPrivilegeManager (one password per session). The root scan needs the
-    // /System/Volumes subtree pruned at parse time because du reaches the Data
-    // volume both through the root firmlinks and through /System/Volumes/Data,
-    // which would double the real usage.
-    func helperScan(duPath: String, rootName: String,
-                    onPartialTree: ((SpaceLensNode) async -> Void)? = nil) async -> SpaceLensNode? {
+    // held by SessionPrivilegeManager (one password per session). The root scan
+    // needs the /System/Volumes subtree pruned at parse time because du reaches
+    // the Data volume both through the root firmlinks and through
+    // /System/Volumes/Data, which would double the real usage.
+    func privilegedScan(duPath: String, rootName: String,
+                        onPartialTree: ((SpaceLensNode) async -> Void)? = nil) async -> SpaceLensNode? {
         shouldStop = false
         let tempFile = NSTemporaryDirectory() + "spacelens-du-\(UUID().uuidString).txt"
-        // Escaping neutralizes quotes in folder names; the helper runs this as root
+        // Escaping neutralizes quotes in folder names before the root shell runs
         let escaped = duPath.replacingOccurrences(of: "'", with: "'\\''")
         let command = "du -k -x '\(escaped)' > '\(tempFile)' 2>/dev/null"
         defer { try? FileManager.default.removeItem(atPath: tempFile) }
 
-        let (ok, _) = await HelperToolManager.shared.runCommand(command)
+        let (ok, _) = await SessionPrivilegeManager.runPrivilegedShell(command)
         guard ok, !shouldStop else { return nil }
 
         return await parseDuOutput(atPath: tempFile, rootName: rootName,

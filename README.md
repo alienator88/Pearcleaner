@@ -86,7 +86,7 @@ This project was born out of wanting to learn more on how macOS deals with app i
 ## Requirements
 > [!NOTE]
 > - Full Disk permission to search for files
-> - Privileged Helper to perform actions on system folders
+> - Administrator password (asked once per session) to perform actions on system folders
 
 | macOS Version | Codename | Supported |
 |---------------|----------|-----------|
