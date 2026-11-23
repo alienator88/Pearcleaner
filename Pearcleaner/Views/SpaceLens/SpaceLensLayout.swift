@@ -212,6 +212,10 @@ enum SpaceLensLayout {
             guard r >= seg.innerR, r < seg.outerR else { return false }
             let start = normalize(seg.start.radians)
             let end = normalize(seg.end.radians)
+            // A span of a full turn normalizes to start == end; the sector covers everything
+            if abs(end - start) < 1e-9 {
+                return true
+            }
             if start <= end {
                 return theta >= start && theta < end
             }
@@ -253,13 +257,19 @@ enum SpaceLensLayout {
         return Color(hue: hue, saturation: saturation, brightness: brightness)
     }
 
-    private static func tileValueSaturation(depth: Int, isDark: Bool) -> (Double, Double) {
+    // HSV of the tile fill at (hue, depth, scheme). labelColor consumes it to compute
+    // WCAG luminance; tests use it to verify the contrast decision per hue sector.
+    static func tileHSV(hue: Double, depth: Int, isDark: Bool) -> (v: Double, s: Double) {
         let step = Double(depth)
         let lightness = isDark
             ? 0.60 - step * 0.05
             : 0.52 - step * 0.05
         let saturation = isDark ? 0.42 - step * 0.04 : 0.52 - step * 0.04
         return (min(max(lightness + 0.25, 0.35), 0.85), max(saturation, 0.18))
+    }
+
+    private static func tileValueSaturation(depth: Int, isDark: Bool) -> (Double, Double) {
+        tileHSV(hue: 0, depth: depth, isDark: isDark)
     }
 
     // Label color picked from the tile's own WCAG luminance: black on light tiles,

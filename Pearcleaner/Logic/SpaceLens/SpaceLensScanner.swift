@@ -102,7 +102,7 @@ actor SpaceLensScanner {
     }
 
     // Thread-safe accumulation of walker results shared by the parallel group tasks
-    private final class PartialState: @unchecked Sendable {
+    final class PartialState: @unchecked Sendable {
         private let lock = NSLock()
         private var completed: [SpaceLensNode] = []
         private var running: [String: SpaceLensNode] = [:]
@@ -188,7 +188,7 @@ actor SpaceLensScanner {
         let isPackage: Bool
     }
 
-    private static func topLevelEntries(of directory: URL, fm: FileManager) -> [TopEntry] {
+    static func topLevelEntries(of directory: URL, fm: FileManager) -> [TopEntry] {
         var entries: [TopEntry] = []
         guard let names = try? fm.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil, options: []) else {
             return entries
@@ -228,6 +228,16 @@ actor SpaceLensScanner {
         path == firmlinkRoot || path.hasPrefix(firmlinkRoot + "/")
     }
 
+    // Canonical form of a walked directory's path for prefix matching against
+    // enumerator output. The root keeps an empty prefix so "/System" splits as "System".
+    nonisolated static func canonicalParentPath(_ url: URL) -> String {
+        if url.path == "/" {
+            return ""
+        }
+        var buf = [CChar](repeating: 0, count: Int(PATH_MAX) + 1)
+        return realpath(url.path, &buf).map { String(cString: $0) } ?? url.path
+    }
+
     // The enumerator returns the whole subtree flat. Each item adds its allocated size to
     // the subtree total and to its chain of ancestor nodes down to maxDepth, so one pass
     // yields a real multi-level tree instead of single-level children with sums inside.
@@ -258,7 +268,11 @@ actor SpaceLensScanner {
             return node
         }
 
-        let parentPath = url.path == "/" ? "" : url.path
+        // The enumerator reports canonicalized paths (/tmp -> /private/tmp), so a
+        // parent given through a symlink never matches its children's prefixes.
+        // realpath crosses firmlink-style links that resolvingSymlinksInPath leaves
+        // alone (/tmp, /var); fall back to the original if the path vanished meanwhile
+        let parentPath = Self.canonicalParentPath(url)
         var subtreeSize: Int64 = 0
         var childTrees: [String: ChildTree] = [:]
         // Paths of package bundles seen so far; the enumerator visits parents before
@@ -317,6 +331,20 @@ actor SpaceLensScanner {
         }
 
         node.size = subtreeSize
+        // A cancel landing between the entry check and the first enumerated item leaves
+        // an empty tree indistinguishable from a completed one; mark it so the scan
+        // wave loop drops the subtree instead of recording a phantom zero-size child
+        if itemCount == 0, Task.isCancelled {
+            node.accessError = "cancelled"
+            return node
+        }
+        // The enumerator is created lazily and silently yields nothing for unreadable
+        // folders (chmod 000), so creation never fails there; flag it directly or
+        // the tile reads as an empty folder
+        if itemCount == 0, !fm.isReadableFile(atPath: url.path) {
+            node.accessError = String(localized: "Access denied")
+            return node
+        }
         // maxDepth 0 callers (package bundles) get one atomic node: the walk measures
         // everything below, the package's own top-level children never become tiles
         if maxDepth >= 1 {
@@ -427,7 +455,7 @@ actor SpaceLensScanner {
 
     // MARK: du parsing
 
-    private struct DuLine {
+    struct DuLine {
         let id: UUID
         let path: String
         let depth: Int
@@ -436,7 +464,7 @@ actor SpaceLensScanner {
 
     // du -k lines: "size_in_kb<TAB>path". Sizes are KB, the path prefix order gives the tree.
     // du finishes each subtree before its parent, so reversed order is parents-first.
-    private func parseDuOutput(atPath path: String, rootName: String, pruneSystemVolumes: Bool,
+    func parseDuOutput(atPath path: String, rootName: String, pruneSystemVolumes: Bool,
                                onPartialTree: ((SpaceLensNode) async -> Void)?) async -> SpaceLensNode? {
         guard let content = try? String(contentsOfFile: path, encoding: .utf8) else { return nil }
 
@@ -475,8 +503,8 @@ actor SpaceLensScanner {
                               pruneSystemVolumes: pruneSystemVolumes)
     }
 
-    private static func buildTree(from lines: [DuLine], rootName: String?,
-                                  pruneSystemVolumes: Bool) -> SpaceLensNode? {
+    static func buildTree(from lines: [DuLine], rootName: String?,
+                          pruneSystemVolumes: Bool) -> SpaceLensNode? {
         guard let first = lines.first else { return nil }
 
         var prunedTotal: Int64 = 0

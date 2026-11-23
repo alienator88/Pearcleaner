@@ -60,17 +60,18 @@ struct SpaceLensNode: Identifiable, Sendable {
         return children.contains { $0.hasAccessErrors() }
     }
 
-    // Replaces the subtree under nodeID and rebalances ancestor sizes by the delta
+    // Replaces the subtree under nodeID and rebalances ancestor sizes by the delta.
+    // The delta only flows through nodes that actually contain the old subtree;
+    // siblings keep their size.
     func replacing(nodeID: UUID, with replacement: SpaceLensNode) -> SpaceLensNode {
-        var node = self
-        if node.id == nodeID {
+        if id == nodeID {
             return replacement
         }
-        let delta = replacement.size - (child(withID: nodeID)?.size ?? 0)
-        if delta != 0 {
-            node.size += delta
+        var node = self
+        if let oldChild = child(withID: nodeID) {
+            node.size += replacement.size - oldChild.size
+            node.children = node.children.map { $0.replacing(nodeID: nodeID, with: replacement) }
         }
-        node.children = node.children.map { $0.replacing(nodeID: nodeID, with: replacement) }
         return node
     }
 
