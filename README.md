@@ -114,6 +114,12 @@ brew install --cask pearcleaner
 ```
 </details>
 
+<details>
+  <summary>Fork self-updates</summary>
+
+This fork publishes its own releases. The app checks the [fork appcast](https://github.com/alecuba16/Pearcleaner/releases/latest/download/appcast.xml) from the Check for Updates menu item. Automatic checks on launch are opt-in from Settings, Update. Updates are EdDSA-signed (Sparkle 2) so no Developer ID certificate is needed. The upstream [release notes](https://github.com/alienator88/Pearcleaner/releases) still show in the Update tab.
+</details>
+
 ## Translations
 If you are able to contribute to translations for the app, please see this discussion: https://github.com/alienator88/Pearcleaner/discussions/137
 

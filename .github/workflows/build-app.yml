@@ -24,12 +24,20 @@ jobs:
         run: xcodebuild -project Pearcleaner.xcodeproj -resolvePackageDependencies
 
       - name: Build Release app
+        env:
+          # CI_BUILD grows with every run; Sparkle compares CFBundleVersion
+          # to decide whether an update is offered, so each fork build must
+          # produce a strictly larger build number than the last installed one.
+          # The 1000 offset lifts fork builds above the upstream build number
+          # (123 at the fork point) so a fork update always sorts newer.
+          CI_BUILD: ${{ 1000 + github.run_number }}
         run: |
           xcodebuild -project Pearcleaner.xcodeproj \
             -scheme "Pearcleaner Release" \
             -configuration Release \
             -destination "generic/platform=macOS" \
             -derivedDataPath "$RUNNER_TEMP/derived" \
+            APP_BUILD="$CI_BUILD" \
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build
 
       - name: Ad-hoc sign the app
@@ -48,6 +56,7 @@ jobs:
           BUILD="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$APP/Contents/Info.plist")"
           STAMP="$(date -u +%Y%m%d%H%M)"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "build=$BUILD" >> "$GITHUB_OUTPUT"
           echo "tag=fork-v$VERSION-b$BUILD-$STAMP" >> "$GITHUB_OUTPUT"
           echo "name=Pearcleaner v$VERSION (build $BUILD) fork build" >> "$GITHUB_OUTPUT"
 
@@ -69,10 +78,47 @@ jobs:
         run: |
           TAG="${{ steps.ver.outputs.tag }}"
           NAME="${{ steps.ver.outputs.name }}"
-          # Fork releases are rolling builds: the previous fork build release
-          # is deleted so each run leaves exactly one fresh prerelease
-          gh release delete "$TAG" --cleanup-tag --yes 2>/dev/null || true
+          # Fork releases are rolling builds: all previous fork build
+          # releases are deleted so each run leaves exactly one fresh release
+          # (the tag carries a fresh timestamp, so deleting by the new tag
+          # alone would be a no-op). It must be a stable latest release, not a
+          # prerelease: GitHub's releases/latest/download/* links (the Sparkle
+          # feed) only resolve for stable releases marked latest.
+          for OLD in $(gh release list --json tagName --jq '.[].tagName' | grep '^fork-v' || true); do
+            gh release delete "$OLD" --cleanup-tag --yes 2>/dev/null || true
+          done
           gh release create "$TAG" "$dmg" \
             --title "$NAME" \
             --notes "Automated build of this fork's main branch. Ad-hoc signed: on first open, right-click the app and choose Open, or run \`xattr -dr com.apple.quarantine /Applications/Pearcleaner.app\` after copying it out of the DMG." \
-            --prerelease
+            --latest
+
+      - name: Generate Sparkle appcast
+        # Signs the DMG with the fork EdDSA key so the in-app updater can
+        # verify and install it; appcast.xml rides on the same rolling release
+        env:
+          SPARKLE_EDDSA_SEED_B64: ${{ secrets.SPARKLE_EDDSA_SEED_B64 }}
+        run: |
+          if [ -z "$SPARKLE_EDDSA_SEED_B64" ]; then
+            echo "SPARKLE_EDDSA_SEED_B64 secret not set, skipping appcast"
+            exit 0
+          fi
+          VERSION="${{ steps.ver.outputs.version }}"
+          BUILD="${{ steps.ver.outputs.build }}"
+          TAG="${{ steps.ver.outputs.tag }}"
+          DMG_URL="https://github.com/${{ github.repository }}/releases/download/$TAG/Pearcleaner.dmg"
+          # Sign the local DMG, publish the release URL as the Sparkle enclosure
+          swift Scripts/appcast/generate_appcast.swift "$RUNNER_TEMP/appcast.xml" \
+            "https://github.com/${{ github.repository }}/releases/latest/download/appcast.xml" \
+            "$SPARKLE_EDDSA_SEED_B64" \
+            "$DMG|$DMG_URL|$VERSION|$BUILD"
+
+      - name: Upload appcast to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ ! -f "$RUNNER_TEMP/appcast.xml" ]; then
+            echo "no appcast generated, skipping upload"
+            exit 0
+          fi
+          TAG="${{ steps.ver.outputs.tag }}"
+          gh release upload "$TAG" "$RUNNER_TEMP/appcast.xml" --clobber
