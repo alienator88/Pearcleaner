@@ -1,0 +1,78 @@
+name: Build app
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-app-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build and attach DMG to latest release
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve SwiftPM dependencies
+        run: xcodebuild -project Pearcleaner.xcodeproj -resolvePackageDependencies
+
+      - name: Build Release app
+        run: |
+          xcodebuild -project Pearcleaner.xcodeproj \
+            -scheme "Pearcleaner Release" \
+            -configuration Release \
+            -destination "generic/platform=macOS" \
+            -derivedDataPath "$RUNNER_TEMP/derived" \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build
+
+      - name: Ad-hoc sign the app
+        # The fork has no Developer ID certificate in CI, so releases are
+        # ad-hoc signed: macOS Gatekeeper shows the same open-anyway flow as
+        # an unsigned build and self-signing on the user side stays possible.
+        run: |
+          APP="$RUNNER_TEMP/derived/Build/Products/Release/Pearcleaner.app"
+          codesign --force --deep --sign - "$APP"
+
+      - name: Read version
+        id: ver
+        run: |
+          APP="$RUNNER_TEMP/derived/Build/Products/Release/Pearcleaner.app"
+          VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$APP/Contents/Info.plist")"
+          BUILD="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$APP/Contents/Info.plist")"
+          STAMP="$(date -u +%Y%m%d%H%M)"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=fork-v$VERSION-b$BUILD-$STAMP" >> "$GITHUB_OUTPUT"
+          echo "name=Pearcleaner v$VERSION (build $BUILD) fork build" >> "$GITHUB_OUTPUT"
+
+      - name: Create DMG
+        run: |
+          APP="$RUNNER_TEMP/derived/Build/Products/Release/Pearcleaner.app"
+          STAGING="$(mktemp -d)"
+          ditto "$APP" "$STAGING/Pearcleaner.app"
+          ln -s /Applications "$STAGING/Applications"
+          DMG="$RUNNER_TEMP/Pearcleaner.dmg"
+          hdiutil create -volname "Pearcleaner" \
+            -srcfolder "$STAGING" \
+            -ov -format UDZO "$DMG"
+          echo "dmg=$DMG" >> "$GITHUB_ENV"
+
+      - name: Create release and upload DMG
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${{ steps.ver.outputs.tag }}"
+          NAME="${{ steps.ver.outputs.name }}"
+          # Fork releases are rolling builds: the previous fork build release
+          # is deleted so each run leaves exactly one fresh prerelease
+          gh release delete "$TAG" --cleanup-tag --yes 2>/dev/null || true
+          gh release create "$TAG" "$dmg" \
+            --title "$NAME" \
+            --notes "Automated build of this fork's main branch. Ad-hoc signed: on first open, right-click the app and choose Open, or run \`xattr -dr com.apple.quarantine /Applications/Pearcleaner.app\` after copying it out of the DMG." \
+            --prerelease
