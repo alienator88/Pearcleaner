@@ -295,7 +295,7 @@ class FileManagerUndo {
         )
         guard dispatchDecision == .direct else {
             let message =
-                "Protected paths were skipped. Pearcleaner does not send user-controlled Trash paths to its privileged helper."
+                "Protected paths were skipped. Pearcleaner does not send user-controlled Trash paths to elevated commands."
             printOS("Trash Error: \(message)")
             updateOnMain {
                 AppState.shared.trashError = true

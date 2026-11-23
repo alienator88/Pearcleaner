@@ -2,7 +2,7 @@
   "5.6.0": {
     "features": [
       "Space Lens: A new view maps disk usage from any folder down to the whole disk as a treemap or sunburst. Scan any path or the full disk, drill into folders with breadcrumbs, and move what you no longer need to Trash right from the map. System locations are measured but protected, so tiles under /System, /Library and friends stay view-only.",
-      "Root Scan with Helper: When a scan hits folders your user cannot read, Space Lens offers a rescan through the privileged helper (once installed) to fill in the gaps; without the helper the existing Enable Helper flow is one click away.",
+      "Session Elevation: Privileged tasks (root scans, snapshot deletion, root thinning) ask for your administrator password once per session and nothing is installed; the old privileged helper, if present from a previous version, is removed automatically on first launch.",
       "Live Scanning: Partial results appear while the scan runs, cancellable at any time, and the map rebalances after you move something to Trash without a full rescan.",
       "One Scan, Two Charts: The scan runs once, only when you open Space Lens, and both the treemap and sunburst read the same tree; Settings > Interface picks which chart the page opens with."
     ],

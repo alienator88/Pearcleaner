@@ -285,17 +285,17 @@ func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool
         }
     }
     
-    // Use privileged helper if installed and needed, otherwise fallback to bundle thinning
+    // Privileged bundle thinning through the session credential, with the
+    // unprivileged path as fallback when elevation is refused
     var success: Bool
     var sizes: [String: UInt64]?
     
     if dryRun {
-        // For dry run, always use direct calculation without helper tools
+        // For dry run, always use direct calculation without elevation
         let result = thinAppBundle(at: appBundlePath, dryRun: true)
         success = result.0
         sizes = result.1
-    } else if HelperToolManager.shared.isHelperToolInstalled {
-        // Use privileged bundle thinning - helper handles the entire bundle with elevated privileges
+    } else {
         let semaphore = DispatchSemaphore(value: 0)
         success = false
         sizes = nil
@@ -311,16 +311,11 @@ func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool
         semaphore.wait()
         
         if !success {
-            // Helper tool failed, fallback to bundle thinning
+            // Elevation refused or bundle rejected, fallback to bundle thinning
             let result = thinAppBundle(at: appBundlePath)
             success = result.0
             sizes = result.1
         }
-    } else {
-        // No helper tool installed, use comprehensive bundle thinning
-        let result = thinAppBundle(at: appBundlePath)
-        success = result.0
-        sizes = result.1
     }
 
     // Update the app bundle timestamp to refresh Finder (only for real thinning)
@@ -854,8 +849,9 @@ func formatBytes(_ bytes: Int64) -> String {
 }
 
 // MARK: - Unified Privileged Command Execution
-/// Unified wrapper for executing privileged commands with automatic fallback
-/// Tries helper tool first if installed, falls back to Authorization Services (password prompt)
+/// Unified wrapper for executing privileged commands. All privileged work now
+/// goes through the session credential: one password prompt per app session,
+/// every command run by the Apple-signed shell launched through Authorization Services.
 func runSUCommand(
     _ command: String,
     errorContext: String? = nil,
@@ -863,27 +859,9 @@ func runSUCommand(
     throwOnFailure: Bool = false
 ) async throws -> (success: Bool, output: String) {
 
-    // Pattern 1: Skip helper check (for CLI diagnostics)
-    if skipHelperCheck {
-        let result = await HelperToolManager.shared.runCommand(command, skipHelperCheck: true)
-        return result
-    }
-    
-    // Pattern 2: Try helper if installed
-    if HelperToolManager.shared.isHelperToolInstalled {
-        let result = await HelperToolManager.shared.runCommand(command)
-        if result.0 {
-            return result
-        }
-
-        // Helper failed, log if errorContext provided
-        if let context = errorContext {
-            printOS("\(context): \(result.1)")
-        }
-    }
-
-    // Pattern 3: Fallback to Authorization Services (prompts for password)
-    let (success, output) = performPrivilegedCommands(commands: command)
+    let (success, output) = await Task.detached(priority: .userInitiated) {
+        SessionPrivilegeManager.shared.run(command: command)
+    }.value
 
     // Log custom error if provided and command failed
     if !success, let context = errorContext {

@@ -734,7 +734,7 @@ func pruneLanguagesManual(languagesToRemove: [LanguageInfo]) async throws {
     let appName = AppState.shared.appInfo.appName
 
     // Use FileManagerUndo which automatically handles:
-    // - Protected/system-owned files via privileged helper
+    // - Protected/system-owned files via session elevation
     // - Bundled trash organization
     // - Undo support
     let bundleName = "\(appName) - Translations"
@@ -1343,8 +1343,8 @@ func uninstallPearcleaner(appState: AppState, locations: Locations) async {
     let installDirectory = bundleURL.deletingLastPathComponent()
 
     // Bail out before touching any service registrations when the app cannot
-    // actually remove itself. Otherwise a failed uninstall leaves the helper,
-    // Sentinel and Finder extension unregistered with the app still installed.
+    // actually remove itself. Otherwise a failed uninstall leaves the Sentinel
+    // and Finder extension unregistered with the app still installed.
     if bundleURL.path.contains("/AppTranslocation/") {
         showCustomAlert(
             title: "Uninstall Failed",
@@ -1412,21 +1412,13 @@ func uninstallPearcleaner(appState: AppState, locations: Locations) async {
 }
 
 private func finishPearcleanerUninstall(items: [URL]) async {
-    // Clear privileged leftovers while the helper is still registered so no
-    // authorization prompt is needed.
+    // Clear privileged leftovers with the session credential while the app is
+    // still alive; nothing stays registered after this.
     await removeLegacyHelperArtifacts()
     await removeCLISymlinkForUninstall()
 
-    // The daemon must be unregistered before its host bundle is moved.
-    do {
-        try await HelperToolManager.shared.unregisterForSelfUninstall()
-    } catch {
-        showCustomAlert(
-            title: "Uninstall Failed",
-            message: error.localizedDescription,
-            style: .warning)
-        return
-    }
+    // Belt and braces: unregister any daemon a previous version installed.
+    await SessionPrivilegeManager.removeInstalledHelper()
 
     // Login item and Finder extension cleanup is best effort. A failure here
     // should not stop the app bundle from being removed.
@@ -1495,17 +1487,11 @@ private func removeCLISymlinkForUninstall() async {
               destination == Bundle.main.executablePath || destination.contains("Pearcleaner.app")
         else { continue }
 
-        if HelperToolManager.shared.isHelperToolInstalled {
-            let result = await HelperToolManager.shared.runCommand("/bin/rm -f '\(path)'")
-            if !result.0 {
-                printOS("Uninstall: Failed to remove CLI symlink: \(result.1)")
-            }
-        } else {
-            do {
-                try fileManager.removeItem(atPath: path)
-            } catch {
-                printOS("Uninstall: Failed to remove CLI symlink: \(error.localizedDescription)")
-            }
+        // /usr/local/bin is root-owned; removing the symlink needs the session
+        // credential. Best effort: a failure here only leaves a symlink behind.
+        let result = await HelperToolManager.shared.runCommand("/bin/rm -f '\(path)'")
+        if !result.0 {
+            printOS("Uninstall: Failed to remove CLI symlink: \(result.1)")
         }
     }
 }

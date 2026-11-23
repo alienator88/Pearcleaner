@@ -1,8 +1,11 @@
 ### What's New
 
+- [x] Session elevation: privileged tasks (root scans, snapshots, leftover removal, root thinning, brew uninstall) ask for your password once per session and never install a privileged helper; nothing appears in Login Items and nothing is left behind when Pearcleaner quits
+- [x] The old privileged helper daemon is unregistered and removed on first launch of the new version
+- [x] Bundle thinning under /Applications validates every request in-process (location allowlist, symlink and traversal checks) before any elevated write
 - [x] Space Lens: disk usage map (treemap and sunburst) for any folder or the whole disk, with breadcrumb drill-down, hover tooltips, and Move to Trash from the map
 - [x] Protected system paths (System, Library, Applications, usr, private) render view-only, never deletable from Space Lens
-- [x] Rescan through the privileged helper when a scan hits unreadable folders; falls back to the existing Enable Helper flow when the helper is not installed
+- [x] Rescan with admin authorization when a scan hits unreadable folders; one password covers the whole session
 - [x] Partial results stream in while scanning, with cancel; treemap rebalances in place after trashing items
 - [x] Scans of TCC-protected folders (root, home, Desktop, Documents, Downloads) without Full Disk Access show a permission wait with Ask Again instead of silently blocking on the OS consent dialog
 - [x] Space Lens shows a scanning banner while lazy drill-down or post-trash rescans run, and Cancel stops every running scan

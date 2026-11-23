@@ -40,12 +40,12 @@ struct PearCLI: ParsableCommand {
     static func hasRequiredDeletionAuthorization(
         for paths: [URL],
         sudoCommand: String,
-        helperInstalled: Bool = HelperToolManager.shared.isHelperToolInstalled
+        sessionPrivilegeAvailable: Bool = true
     ) -> Bool {
         switch DestructiveOperationAuthorization.evaluate(
             paths: paths,
             acknowledged: true,
-            hasPrivilegedAuthorization: helperInstalled,
+            hasPrivilegedAuthorization: sessionPrivilegeAvailable,
             isWritable: { FileManager.default.isWritableFile(atPath: $0.path) }
         ) {
         case .authorized:
@@ -274,104 +274,18 @@ struct PearCLI: ParsableCommand {
     struct Helper: ParsableCommand {
         static var configuration = CommandConfiguration(
             commandName: "helper",
-            abstract: "Manage privileged helper tool status"
+            abstract: "Check privileged session status. The installed helper is gone; privileged tasks now ask for the admin password once per session."
         )
 
-        @Argument(help: "Action: 'enable' or 'disable'. Omit to check status.")
+        @Argument(help: "Ignored. Kept so old scripts do not break.")
         var action: String?
 
         func run() throws {
-            // If no action provided, return status
-            guard let action = action else {
-                let semaphore = DispatchSemaphore(value: 0)
-                var isEnabled = false
-
-                Task {
-                    isEnabled = await isHelperEnabled()
-                    semaphore.signal()
-                }
-
-                semaphore.wait()
-
-                let status = isEnabled ? "Enabled" : "Disabled"
-                printOS(status)
-                Foundation.exit(0)
-            }
-
-            // Validate action
-            guard ["enable", "disable"].contains(action.lowercased()) else {
-                printOS("Error: Invalid action. Use 'enable', 'disable', or omit for status.\n")
-                Foundation.exit(1)
-            }
-
-            // Check current status first
-            let semaphore1 = DispatchSemaphore(value: 0)
-            var currentlyEnabled = false
-
-            Task {
-                currentlyEnabled = await isHelperEnabled()
-                semaphore1.signal()
-            }
-
-            semaphore1.wait()
-
-            // Pre-check before attempting operation
-            if action.lowercased() == "enable" {
-                if currentlyEnabled {
-                    printOS("Privileged helper is already enabled.\n")
-                    Foundation.exit(0)
-                }
-            } else {
-                if !currentlyEnabled {
-                    printOS("Privileged helper is already disabled.\n")
-                    Foundation.exit(0)
-                }
-            }
-
-            // Proceed with enable/disable operation
-            let semaphore2 = DispatchSemaphore(value: 0)
-            var operationSuccess = false
-            var errorMessage: String?
-
-            Task {
-                if action.lowercased() == "enable" {
-                    await HelperToolManager.shared.manageHelperTool(action: .install)
-                    operationSuccess = await isHelperEnabled()
-
-                    if !operationSuccess {
-                        errorMessage = "Failed to enable privileged helper"
-                    }
-                } else {
-                    await HelperToolManager.shared.manageHelperTool(action: .uninstall)
-                    operationSuccess = !(await isHelperEnabled())
-
-                    if !operationSuccess {
-                        errorMessage = "Failed to disable privileged helper"
-                    }
-                }
-                semaphore2.signal()
-            }
-
-            // Wait for async operation to complete
-            semaphore2.wait()
-
-            if operationSuccess {
-                if action.lowercased() == "enable" {
-                    printOS("Privileged helper enabled successfully.\n")
-                } else {
-                    printOS("Privileged helper disabled successfully.\n")
-                }
-                Foundation.exit(0)
-            } else {
-                printOS("Error: \(errorMessage ?? "Unknown error occurred")\n")
-                Foundation.exit(1)
-            }
-        }
-
-        // Helper function to check if privileged helper is enabled
-        private func isHelperEnabled() async -> Bool {
-            let result = try! await runSUCommand("whoami", skipHelperCheck: true)
-            return result.0 && result.1.trimmingCharacters(in: .whitespacesAndNewlines) == "root"
+            // The installed helper no longer exists. Any argument that used to
+            // enable/disable it now just reports the new reality.
+            let installed = false
+            printOS("Session-based privilege: privileged commands prompt for the administrator password once per session. Nothing is installed.\n")
+            Foundation.exit(installed ? 0 : 0)
         }
     }
 

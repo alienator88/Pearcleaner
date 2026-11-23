@@ -120,37 +120,27 @@ struct SnapshotsView: View {
             .help(String(localized: "Refresh snapshots"))
             .padding(.trailing, 10)
 
-            if helperManager.isHelperToolInstalled {
-                Button {
-                    selectedSnapshot = deletableSnapshots.min { a, b in
-                        (a.date ?? .distantPast) < (b.date ?? .distantPast)
-                    }
-                    if selectedSnapshot != nil {
-                        showDeleteConfirm = true
-                    }
-                } label: {
-                    HStack(spacing: 4) {
-                        if isDeleting {
-                            ProgressView()
-                                .controlSize(.small)
-                        } else {
-                            Image(systemName: "trash")
-                        }
-                        Text(String(localized: "Delete"))
-                    }
+            Button {
+                selectedSnapshot = deletableSnapshots.min { a, b in
+                    (a.date ?? .distantPast) < (b.date ?? .distantPast)
                 }
-                .buttonStyle(.borderedProminent)
-                .disabled(isLoading || isDeleting || deletableSnapshots.isEmpty)
-                .help(String(localized: "Delete the oldest non-system snapshot"))
-            } else {
-                Button {
-                    openAppSettingsWindow(tab: .helper, updater: Updater(owner: "alienator88", repo: "Pearcleaner"))
-                } label: {
-                    Label(String(localized: "Install Helper"), systemImage: "gear")
+                if selectedSnapshot != nil {
+                    showDeleteConfirm = true
                 }
-                .buttonStyle(.bordered)
-                .help(String(localized: "The helper tool is required to manage snapshots"))
+            } label: {
+                HStack(spacing: 4) {
+                    if isDeleting {
+                        ProgressView()
+                            .controlSize(.small)
+                    } else {
+                        Image(systemName: "trash")
+                    }
+                    Text(String(localized: "Delete"))
+                }
             }
+            .buttonStyle(.borderedProminent)
+            .disabled(isLoading || isDeleting || deletableSnapshots.isEmpty)
+            .help(String(localized: "Delete the oldest non-system snapshot"))
         }
         .padding()
     }
@@ -167,27 +157,6 @@ struct SnapshotsView: View {
                 Text(String(localized: "Loading snapshots..."))
                     .font(.title2)
                     .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                Spacer()
-            }
-            .frame(maxWidth: .infinity)
-        } else if !helperManager.isHelperToolInstalled {
-            VStack(alignment: .center, spacing: 12) {
-                Spacer()
-                Image(systemName: "lock.shield")
-                    .font(.system(size: 48))
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                Text(String(localized: "Helper tool required"))
-                    .font(.title2)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                Text(String(localized: "Listing and deleting Time Machine local snapshots needs root privileges. Install the Pearcleaner helper tool from Settings."))
-                    .font(.callout)
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    .padding(.horizontal, 40)
-                Button(String(localized: "Open Settings")) {
-                    openAppSettingsWindow(tab: .helper, updater: Updater(owner: "alienator88", repo: "Pearcleaner"))
-                }
-                .buttonStyle(.borderedProminent)
                 Spacer()
             }
             .frame(maxWidth: .infinity)

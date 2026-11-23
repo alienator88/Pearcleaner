@@ -10,7 +10,6 @@ import SwiftUI
 import AlinFoundation
 
 enum OverlayType {
-    case helper
     case permissions
     case update
     case announcement
@@ -18,7 +17,6 @@ enum OverlayType {
 
 struct BadgeOverlay: View {
     @EnvironmentObject var updater: Updater
-    @ObservedObject var helperManager = HelperToolManager.shared
     @ObservedObject var permissionManager = PermissionManagerLocal.shared
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
@@ -30,16 +28,9 @@ struct BadgeOverlay: View {
     @State private var showFeatureView: Bool = false
     @State private var dismissedOverlays: Set<OverlayType> = []
 
-    // Determine which overlay to show based on priority (helper → permissions → update → announcement)
+    // Determine which overlay to show based on priority (permissions → update → announcement)
     private var currentOverlay: OverlayType? {
-        // Helper: highest priority
-        if helperManager.shouldShowHelperBadge {
-            if !dismissedOverlays.contains(.helper) {
-                return .helper
-            }
-        }
-
-        // Permissions: second priority
+        // Permissions: highest priority
         if permissionManager.shouldShowPermissionWarning {
             if !dismissedOverlays.contains(.permissions) {
                 return .permissions
@@ -74,8 +65,6 @@ struct BadgeOverlay: View {
                         // Header + Content determined by enum switch
                         if let overlay = currentOverlay {
                             switch overlay {
-                            case .helper:
-                                helperContent
                             case .permissions:
                                 permissionsContent
                             case .update:
@@ -103,18 +92,8 @@ struct BadgeOverlay: View {
                 withAnimation(animationEnabled ? .spring(response: 0.4, dampingFraction: 0.8) : .none) {
                     isVisible = true
                 }
-
-                // Listen for helper required notifications to re-show helper overlay
-                NotificationCenter.default.addObserver(
-                    forName: .helperRequired,
-                    object: nil,
-                    queue: .main
-                ) { [self] _ in
-                    dismissedOverlays.remove(.helper)
-                }
             }
             .onDisappear {
-                NotificationCenter.default.removeObserver(self, name: .helperRequired, object: nil)
             }
             .onChange(of: currentOverlay) { newValue in
                 // Animate when switching between overlay types or showing/hiding
@@ -126,109 +105,6 @@ struct BadgeOverlay: View {
                     isExpanded = false
                 }
             }
-        }
-    }
-
-    // MARK: - Helper Content
-
-    @ViewBuilder
-    private var helperContent: some View {
-        HStack(alignment: .top) {
-            Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundColor(.orange)
-                .font(.title3)
-
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Privileged Helper Not Installed!")
-                    .font(.headline)
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
-
-                // Expanded content
-                if isExpanded {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Divider()
-
-                        Text("When the helper tool was introduced March 2025, it was said that AuthorizationExecuteWithPrivileges (granting authentication via password prompt popup) would eventually be removed as it has already been deprecated by Apple. Some functionality will stop working in Pearcleaner if the helper isn't enabled going forward.")
-                            .font(.caption)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                            .fixedSize(horizontal: false, vertical: true)
-
-                        Text("Some of the features that require the helper:")
-                            .font(.caption)
-                            .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-
-                        VStack(alignment: .leading, spacing: 4) {
-                            HStack(alignment: .top, spacing: 6) {
-                                Text(verbatim: "•")
-                                Text("Delete system-protected files and folders")
-                            }
-                            HStack(alignment: .top, spacing: 6) {
-                                Text(verbatim: "•")
-                                Text("Unload launch daemons and agents")
-                            }
-                            HStack(alignment: .top, spacing: 6) {
-                                Text(verbatim: "•")
-                                Text("Manage PKG receipts and installations")
-                            }
-                            HStack(alignment: .top, spacing: 6) {
-                                Text(verbatim: "•")
-                                Text("Perform updates on 3rd party apps, and more")
-                            }
-                        }
-                        .font(.caption)
-                        .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    }
-                    .transition(.opacity.combined(with: .move(edge: .bottom)))
-                }
-            }
-
-            Spacer()
-
-            Button {
-                dismissOverlay()
-            } label: {
-                Image(systemName: "xmark.circle.fill")
-                    .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
-                    .font(.title3)
-            }
-            .buttonStyle(.plain)
-        }
-
-        Divider()
-
-        HStack {
-            Button {
-                openAppSettingsWindow(tab: .helper, updater: updater)
-            } label: {
-                HStack {
-                    Image(systemName: "gear")
-                    Text("Enable Helper")
-                }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(ThemeColors.shared(for: colorScheme).accent)
-                .foregroundColor(.white)
-                .cornerRadius(6)
-            }
-            .buttonStyle(.plain)
-            .help("Open Settings to enable the Privileged Helper")
-
-            Spacer()
-
-            Button {
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    isExpanded.toggle()
-                }
-            } label: {
-                HStack(spacing: 4) {
-                    Text(isExpanded ? "See less" : "See more")
-                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                }
-                .font(.caption)
-                .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
         }
     }
 

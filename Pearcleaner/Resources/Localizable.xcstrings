@@ -5,6 +5,1122 @@
       "comment" : "Do not translate",
       "shouldTranslate" : false
     },
+    "**whoami** command should return 'root' when the session authorization is working." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Befehl **whoami** sollte 'root' zurückgeben, wenn die Sitzungsautorisierung funktioniert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**whoami** command should return 'root' when the session authorization is working."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El comando **whoami** debería devolver 'root' cuando la autorización de sesión funciona."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La commande **whoami** devrait renvoyer 'root' lorsque l'autorisation de session fonctionne."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perintah **whoami** seharusnya mengembalikan 'root' saat otorisasi sesi berfungsi."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il comando **whoami** dovrebbe restituire 'root' quando l'autorizzazione della sessione funziona."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "セッション認証が機能している場合、**whoami** コマンドは「root」を返すはずです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "세션 권한 부여가 작동하면 **whoami** 명령은 'root'를 반환해야 합니다."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Polecenie **whoami** powinno zwrócić 'root', gdy autoryzacja sesji działa."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O comando **whoami** deve retornar 'root' quando a autorização de sessão está funcionando."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O comando **whoami** deve devolver 'root' quando a autorização de sessão está a funcionar."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Команда **whoami** должна возвращать «root», если авторизация сессии работает."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Príkaz **whoami** by mal vrátiť 'root', keď autorizácia relácie funguje."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ukaz **whoami** mora vrniti 'root', kadar deluje pooblastilo seje."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oturum yetkilendirmesi çalışırken **whoami** komutu 'root' döndürmelidir."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Команда **whoami** має повертати «root», коли авторизація сесії працює."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lệnh **whoami** sẽ trả về 'root' khi ủy quyền phiên đang hoạt động."
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當作業階段授權正常運作時，**whoami** 指令應回傳「root」。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当会话授权正常工作时，**whoami** 命令应返回“root”。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當作業階段授權正常運作時，**whoami** 指令應回傳「root」。"
+          }
+        }
+      }
+    },
+    "Asks for your administrator password once per session, then rescans with full read access." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fragt einmal pro Sitzung nach Ihrem Administrator-Passwort und scannt dann mit vollem Lesezugriff neu."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Asks for your administrator password once per session, then rescans with full read access."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pide tu contraseña de administrador una vez por sesión y luego reescanea con acceso de lectura completo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demande votre mot de passe administrateur une fois par session, puis rescanne avec un accès complet en lecture."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meminta kata sandi administrator Anda sekali per sesi, lalu memindai ulang dengan akses baca penuh."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chiede la password dell'amministratore una volta per sessione, poi riscansiona con accesso completo in lettura."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "セッションごとに1回管理者パスワードを要求し、その後完全な読み取り権限で再スキャンします。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "세션당 한 번 관리자 비밀번호를 요청한 후 전체 읽기 권한으로 다시 스캔합니다."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prosi o hasło administratora raz na sesję, a następnie skanuje ponownie z pełnym dostępem do odczytu."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pede sua senha de administrador uma vez por sessão e então rescanneia com acesso total de leitura."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pede a sua palavra-passe de administrador uma vez por sessão e depois rescania com acesso total de leitura."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запрашивает пароль администратора один раз за сессию, затем пересканирует с полным доступом на чтение."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vypýta si heslo správcu raz za reláciu a potom preskenuje znova s plným prístupom na čítanie."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enkrat na sejo zahteva skrbniško geslo, nato ponovno pregleje s polnim dostopom za branje."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oturum başına bir kez yönetici parolanızı ister, ardından tam okuma erişimiyle yeniden tarar."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запитує пароль адміністратора один раз за сесію, потім повторно сканує з повним доступом на читання."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yêu cầu mật khẩu quản trị viên của bạn một lần mỗi phiên, sau đó quét lại với quyền đọc đầy đủ."
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每個作業階段要求一次管理員密碼，然後以完整讀取權限重新掃描。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每个会话要求一次管理员密码，然后以完整读取权限重新扫描。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每個作業階段要求一次管理員密碼，然後以完整讀取權限重新掃描。"
+          }
+        }
+      }
+    },
+    "Command output will display here" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hier wird die Befehlsausgabe angezeigt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Command output will display here"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La salida del comando se mostrará aquí"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La sortie de la commande s'affichera ici"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keluaran perintah akan ditampilkan di sini"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'output del comando verrà mostrato qui"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コマンドの出力はここに表示されます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "명령 출력이 여기에 표시됩니다"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tutaj pojawi się wynik polecenia"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A saída do comando será exibida aqui"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A saída do comando será mostrada aqui"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Здесь будет показан вывод команды"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Výstup príkazu sa zobrazí tu"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Izhod ukaza se bo prikazal tukaj"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Komut çıktısı burada görünecek"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тут буде показано вивід команди"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kết quả lệnh sẽ hiển thị ở đây"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "指令輸出將顯示在這裡"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "命令输出将显示在这里"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "指令輸出將顯示在這裡"
+          }
+        }
+      }
+    },
+    "Pearcleaner asks for your administrator password the first time a task needs elevated permissions, and keeps that authorization for the rest of the session while it stays open. No privileged helper is installed, nothing appears in Settings > Login Items, and when Pearcleaner quits the authorization is gone." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner fragt beim ersten Mal, wenn eine Aufgabe erweiterte Berechtigungen braucht, nach Ihrem Administrator-Passwort und behält diese Autorisierung für den Rest der Sitzung, solange es geöffnet ist. Es wird kein privilegierter Helper installiert, es erscheint nichts in Einstellungen > Anmeldeobjekte, und wenn Pearcleaner beendet wird, ist die Autorisierung weg."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner asks for your administrator password the first time a task needs elevated permissions, and keeps that authorization for the rest of the session while it stays open. No privileged helper is installed, nothing appears in Settings > Login Items, and when Pearcleaner quits the authorization is gone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner pide tu contraseña de administrador la primera vez que una tarea necesita permisos elevados, y mantiene esa autorización el resto de la sesión mientras siga abierta. No se instala ningún helper privilegiado, no aparece nada en Ajustes > Elementos de inicio de sesión, y al salir de Pearcleaner la autorización desaparece."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner demande votre mot de passe administrateur la première fois qu'une tâche nécessite des permissions élevées, et conserve cette autorisation pour le reste de la session tant qu'elle reste ouverte. Aucun helper privilégié n'est installé, rien n'apparaît dans Réglages > Ouverture, et quand Pearcleaner quitte, l'autorisation disparaît."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner meminta kata sandi administrator Anda saat pertama kali sebuah tugas memerlukan izin yang lebih tinggi, dan menyimpan otorisasi itu selama sisa sesi selama aplikasi tetap terbuka. Tidak ada helper istimewa yang dipasang, tidak ada yang muncul di Pengaturan > Item Masuk, dan saat Pearcleaner ditutup, otorisasi tersebut hilang."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner chiede la password dell'amministratore la prima volta che un'attività richiede permessi elevati e conserva tale autorizzazione per il resto della sessione finché resta aperta. Non viene installato alcun helper privilegiato, non appare nulla in Impostazioni > Elementi login, e quando Pearcleaner viene chiuso l'autorizzazione scompare."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleanerは、タスクが初めて高い権限を必要とするときに管理者パスワードを要求し、アプリが開いている限りその認証をセッションの残りの間保持します。特権ヘルパーはインストールされず、設定 > ログイン項目には何も表示されず、Pearcleanerを終了すると認証は消えます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner는 작업에 상승된 권한이 처음 필요할 때 관리자 비밀번호를 요청하며, 앱이 열려 있는 동안 해당 권한을 세션 동안 유지합니다. 권한 있는 헬퍼는 설치되지 않고, 설정 > 로그인 항목에는 아무것도 나타나지 않으며, Pearcleaner를 종료하면 권한이 사라집니다."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner prosi o hasło administratora za pierwszym razem, gdy zadanie wymaga podwyższonych uprawnień, i zachowuje tę autoryzację do końca sesji, dopóki pozostaje otwarty. Żaden uprzywilejowany helper nie jest instalowany, nic nie pojawia się w Ustawieniach > Elementy logowania, a po zamknięciu Pearcleaner autoryzacja znika."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Pearcleaner pede sua senha de administrador na primeira vez que uma tarefa precisa de permissões elevadas, e mantém essa autorização pelo resto da sessão enquanto estiver aberto. Nenhum helper privilegiado é instalado, nada aparece em Ajustes > Itens de Início de Sessão, e quando o Pearcleaner encerra, a autorização se vai."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Pearcleaner pede a sua palavra-passe de administrador na primeira vez que uma tarefa precisa de permissões elevadas, e mantém essa autorização pelo resto da sessão enquanto estiver aberto. Nenhum helper privilegiado é instalado, nada aparece em Ajustes > Itens de Início de Sessão, e quando o Pearcleaner sai, a autorização desaparece."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner запрашивает пароль администратора при первом же обращении задачи за повышенными правами и сохраняет эту авторизацию до конца сессии, пока приложение открыто. Привилегированный помощник не устанавливается, в Настройках > Объекты входа ничего не появляется, а при выходе из Pearcleaner авторизация исчезает."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner si vypýta heslo správcu pri prvom úkone, ktorý vyžaduje zvýšené oprávnenia, a toto oprávnenie si ponechá po zvyšok relácie, kým zostáva otvorený. Žiadny privilegovaný helper sa neinštaluje, v Nastavenia > Prihlasovacie položky sa nič nezobrazí a po ukončení Pearcleaneru oprávnenie zmizne."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner prvič vpraša za skrbniško geslo, ko opravilo potrebuje povišana dovoljenja, in to pooblastilo obdrži do konca seje, dokler ostane odprt. Privilegirani pomočnik ni nameščen, v Nastavitve > Prijavni predmeti se nič ne prikaže, ob izhodu iz Pearcleanerja pa pooblastilo izgine."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner, bir görev ilk kez yükseltilmiş izinler gerektirdiğinde yönetici parolanızı ister ve uygulama açık kaldığı sürece bu yetkiyi oturumun geri kalanı için tutar. Hiçbir ayrıcalıklı yardımcı yüklenmez, Ayarlar > Giriş Öğeleri'nde hiçbir şey görünmez ve Pearcleaner'dan çıkıldığında yetki gider."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner запитує пароль адміністратора при першому ж завданні, що потребує підвищених прав, і зберігає цю авторизацію до кінця сесії, доки додаток відкритий. Жоден привілейований помічник не встановлюється, у Налаштування > Об'єкти входу нічого не з'являється, а після виходу з Pearcleaner авторизація зникає."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner sẽ yêu cầu mật khẩu quản trị viên của bạn lần đầu tiên một tác vụ cần quyền nâng cao, và giữ ủy quyền đó cho phần còn lại của phiên khi ứng dụng còn mở. Không có trình hỗ trợ đặc quyền nào được cài đặt, không có gì xuất hiện trong Cài đặt > Mục Đăng nhập, và khi Pearcleaner thoát, ủy quyền sẽ biến mất."
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner會在任務首次需要較高權限時要求你的管理員密碼，並在應用程式開啟期間為該作業階段保留此授權。不會安裝任何特權輔助程式，設定 > 登入項目中不會出現任何項目，而當Pearcleaner結束時授權即消失。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner会在任务首次需要提升权限时要求输入管理员密码，并在应用保持打开期间为该会话保留此授权。不会安装任何特权辅助程序，设置 > 登录项目中不会出现任何条目，而当Pearcleaner退出时授权即消失。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pearcleaner會在任務首次需要較高權限時要求你的管理員密碼，並在應用程式開啟期間為該作業階段保留此授權。不會安裝任何特權輔助程式，設定 > 登入項目中不會出現任何項目，而當Pearcleaner結束時授權即消失。"
+          }
+        }
+      }
+    },
+    "Privileged tasks ask for your password once per session." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privilegierte Aufgaben fragen einmal pro Sitzung nach Ihrem Passwort."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privileged tasks ask for your password once per session."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las tareas privilegiadas piden tu contraseña una vez por sesión."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les tâches privilégiées demandent votre mot de passe une fois par session."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tugas istimewa meminta kata sandi Anda sekali per sesi."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le attività privilegiate chiedono la password una volta per sessione."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "特権タスクはセッションごとに1回だけパスワードを要求します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "권한이 필요한 작업은 세션당 한 번만 비밀번호를 요청합니다."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uprzywilejowane zadania pytają o hasło raz na sesję."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tarefas privilegiadas pedem sua senha uma vez por sessão."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tarefas privilegiadas pedem a sua palavra-passe uma vez por sessão."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Привилегированные задачи запрашивают пароль один раз за сессию."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privilegované úlohy sa pýtajú na heslo raz za reláciu."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privilegirana opravila zahtevajo geslo enkrat na sejo."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayrıcalıklı görevler oturum başına bir kez parolanızı ister."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Привілейовані завдання запитують пароль один раз за сесію."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Các tác vụ đặc quyền yêu cầu mật khẩu của bạn một lần cho mỗi phiên."
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "特權工作每個作業階段只會要求你輸入一次密碼。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "特权任务每个会话只会要求你输入一次密码。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "特權工作每個作業階段只會要求你輸入一次密碼。"
+          }
+        }
+      }
+    },
+    "Rescan with admin authorization" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit Administrator-Autorisierung neu scannen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rescan with admin authorization"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reescanear con autorización de administrador"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rescanner avec autorisation d'administrateur"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindai ulang dengan otorisasi admin"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riscansiona con autorizzazione amministratore"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "管理者認証で再スキャン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "관리자 권한으로 다시 스캔"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponownie skanuj z autoryzacją administratora"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rescanear com autorização de administrador"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rescanear com autorização de administrador"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пересканировать с авторизацией администратора"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preskenovať znova s oprávnením správcu"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponovno preglej s skrbniškim pooblastilom"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yönetici yetkilendirmesiyle yeniden tara"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Повторно сканувати з авторизацією адміністратора"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quét lại với ủy quyền quản trị viên"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以管理員授權重新掃描"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以管理员授权重新扫描"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以管理員授權重新掃描"
+          }
+        }
+      }
+    },
+    "Run privileged tasks without installing anything" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privilegierte Aufgaben ausführen, ohne etwas zu installieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Run privileged tasks without installing anything"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ejecutar tareas privilegiadas sin instalar nada"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exécuter des tâches privilégiées sans rien installer"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jalankan tugas istimewa tanpa memasang apa pun"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esegui attività privilegiate senza installare nulla"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "何もインストールせずに特権タスクを実行"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아무것도 설치하지 않고 권한이 필요한 작업 실행"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uruchamiaj uprzywilejowane zadania bez instalowania czegokolwiek"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Executar tarefas privilegiadas sem instalar nada"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Executar tarefas privilegiadas sem instalar nada"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выполнять привилегированные задачи без установки чего-либо"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spúšťajte privilegované úlohy bez inštalácie čohokoľvek"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Izvajajte privilegirana opravila brez namestitve česar koli"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hiçbir şey yüklemeden ayrıcalıklı görevleri çalıştır"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виконуйте привілейовані завдання без встановлення чого-небудь"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chạy các tác vụ đặc quyền mà không cần cài đặt gì"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無需安裝任何元件即可執行特權工作"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无需安装任何组件即可执行特权任务"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無需安裝任何元件即可執行特權工作"
+          }
+        }
+      }
+    },
+    "Session Playground" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sitzungs-Playground"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session Playground"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Área de pruebas de sesión"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bac à sable de session"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taman uji sesi"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Area prove di sessione"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "セッション・プレイグラウンド"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "세션 플레이그라운드"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plac zabaw sesji"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ambiente de testes de sessão"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Área de testes de sessão"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Песочница сессии"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pieskovisko relácie"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Igralni polji seje"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oturum deneme alanı"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пісочниця сесії"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Khu thử nghiệm phiên"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "作業階段試驗區"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "会话试验场"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "作業階段試驗區"
+          }
+        }
+      }
+    },
+    "The password prompt is the standard macOS administrator dialog, the same one installers use. Each prompt covers one session; locking the screen or quitting Pearcleaner ends it." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Passwortabfrage ist der Standarddialog für macOS-Administratoren, derselbe, den auch Installer verwenden. Jede Abfrage gilt für eine Sitzung; das Sperren des Bildschirms oder das Beenden von Pearcleaner beendet sie."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The password prompt is the standard macOS administrator dialog, the same one installers use. Each prompt covers one session; locking the screen or quitting Pearcleaner ends it."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La solicitud de contraseña es el diálogo estándar de administrador de macOS, el mismo que usan los instaladores. Cada solicitud cubre una sesión; bloquear la pantalla o salir de Pearcleaner la finaliza."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'invite de mot de passe est la boîte de dialogue standard d'administrateur macOS, la même que celle utilisée par les installateurs. Chaque invite couvre une session ; verrouiller l'écran ou quitter Pearcleaner y met fin."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permintaan kata sandi adalah dialog standar administrator macOS, sama seperti yang digunakan penginstal. Setiap permintaan berlaku untuk satu sesi; mengunci layar atau keluar dari Pearcleaner mengakhiringnya."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La richiesta della password è la finestra di dialogo standard dell'amministratore macOS, la stessa usata dagli installer. Ogni richiesta copre una sessione; bloccare lo schermo o uscire da Pearcleaner la termina."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パスワードの入力を求めるのは、インストーラーでも使われるmacOS標準の管理者ダイアログです。1回の入力で1セッション有効で、画面をロックするかPearcleanerを終了すると失効します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비밀번호 요청은 설치 프로그램에서 사용하는 것과 동일한 macOS 표준 관리자 대화상자입니다. 각 요청은 세션 하나에만 적용되며, 화면을 잠그거나 Pearcleaner를 종료하면 끝납니다."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monit o hasło to standardowe okno administratora macOS, to samo, którego używają instalatory. Każdy monit obejmuje jedną sesję; zablokowanie ekranu lub zamknięcie Pearcleaner kończy ją."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O pedido de senha é o diálogo padrão de administrador do macOS, o mesmo que os instaladores usam. Cada pedido vale por uma sessão; bloquear a tela ou encerrar o Pearcleaner encerra."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O pedido de palavra-passe é a caixa de diálogo padrão de administrador do macOS, a mesma que os instaladores usam. Cada pedido abrange uma sessão; bloquear o ecrã ou sair do Pearcleaner termina-a."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запрос пароля — это стандартное диалоговое окно администратора macOS, то же, что используют установщики. Каждый запрос действует одну сессию; блокировка экрана или выход из Pearcleaner завершает его."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Výzva na heslo je štandardné dialógové okno správcu macOS, rovnaké ako v inštalátoroch. Každá výzva platí pre jednu reláciu; uzamknutie obrazovky alebo ukončenie Pearcleaner ju končí."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zahtevek za geslo je standardno skrbniško pogovorno okno macOS, enako tistemu, ki ga uporabljajo namestilniki. Vsak zahtevek velja za eno sejo; zaklenitev zaslona ali izhod iz Pearcleanerja jo konča."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parola istemi, yükleyicilerin de kullandığı standart macOS yönetici penceresidir. Her istem bir oturumu kapsar; ekranı kilitlemek veya Pearcleaner'dan çıkmak sonlandırır."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запит пароля — це стандартний діалог адміністратора macOS, той самий, що використовують інсталятори. Кожен запит діє одну сесію; блокування екрана або вихід із Pearcleaner завершує його."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yêu cầu mật khẩu là hộp thoại quản trị viên chuẩn của macOS, giống hệt hộp thoại mà trình cài đặt dùng. Mỗi yêu cầu có hiệu lực cho một phiên; khóa màn hình hoặc thoát Pearcleaner sẽ kết thúc nó."
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "密碼提示是macOS標準的管理員對話框，與安裝程式使用的相同。每次提示僅涵蓋一個作業階段；鎖定螢幕或結束Pearcleaner即會失效。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "密码提示是macOS标准的管理员对话框，与安装程序使用的相同。每次提示仅覆盖一个会话；锁定屏幕或退出Pearcleaner即会失效。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "密碼提示是macOS標準的管理員對話框，與安裝程式使用的相同。每次提示僅涵蓋一個作業階段；鎖定螢幕或結束Pearcleaner即會失效。"
+          }
+        }
+      }
+    },
     "Treemap" : {
       "localizations" : {
         "de" : {
