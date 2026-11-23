@@ -301,7 +301,7 @@ func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool
         sizes = nil
         
         Task {
-            let result = await HelperToolManager.shared.runBundleThinning(bundlePath: appBundlePath.path)
+            let result = await SessionPrivilegeManager.thinPrivilegedBundle(at: appBundlePath.path)
             success = result.0
             if result.0, !result.2.isEmpty {
                 sizes = result.2
@@ -855,7 +855,6 @@ func formatBytes(_ bytes: Int64) -> String {
 func runSUCommand(
     _ command: String,
     errorContext: String? = nil,
-    skipHelperCheck: Bool = false,
     throwOnFailure: Bool = false
 ) async throws -> (success: Bool, output: String) {
 

@@ -13,7 +13,6 @@
 		C72893122AFD51EA00C8C1CD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72893112AFD51EA00C8C1CD /* main.swift */; };
 		C72D03B52E4D3FB900ADC1B4 /* MainWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72D03B22E4D3FB900ADC1B4 /* MainWindow.swift */; };
 		C72FDCB92D6D089100DE7D56 /* UndoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72FDCB82D6D088A00DE7D56 /* UndoManager.swift */; };
-		C73545EB2D8496E000A3DC0C /* HelperToolManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C73545EA2D8496DA00A3DC0C /* HelperToolManager.swift */; };
 		C73545FD2D84E5DD00A3DC0C /* com.alienator88.PearcleanerSentinel.plist in CopyFiles */ = {isa = PBXBuildFile; fileRef = C7B3AB072D83900B00D829C5 /* com.alienator88.PearcleanerSentinel.plist */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C739C3382EB027A9003639C6 /* askpass.sh in Resources */ = {isa = PBXBuildFile; fileRef = C739C3372EB027A9003639C6 /* askpass.sh */; };
 		C73AE1922EC69A81009CAC42 /* GlobalConsoleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C73AE1912EC69A81009CAC42 /* GlobalConsoleManager.swift */; };
@@ -122,14 +121,12 @@
 		C72893112AFD51EA00C8C1CD /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		C72D03B22E4D3FB900ADC1B4 /* MainWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindow.swift; sourceTree = "<group>"; };
 		C72FDCB82D6D088A00DE7D56 /* UndoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoManager.swift; sourceTree = "<group>"; };
-		C73545EA2D8496DA00A3DC0C /* HelperToolManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelperToolManager.swift; sourceTree = "<group>"; };
 		C739C3372EB027A9003639C6 /* askpass.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = askpass.sh; sourceTree = "<group>"; };
 		C73AE1912EC69A81009CAC42 /* GlobalConsoleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalConsoleManager.swift; sourceTree = "<group>"; };
 		C74206E42E79E47400BDDB6A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C74422402E4936700002D277 /* DaemonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaemonView.swift; sourceTree = "<group>"; };
 		C7AA00042E71000100A1B2C3 /* SnapshotsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotsView.swift; sourceTree = "<group>"; };
 		C74422422E494D7E0002D277 /* PackageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageView.swift; sourceTree = "<group>"; };
-		C74451F62D93774700146AF8 /* announcements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = announcements.json; sourceTree = "<group>"; };
 		C74FDC622BCD833D00B8960F /* Conditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conditions.swift; sourceTree = "<group>"; };
 		C75AED0D2EC259A900824CCD /* DeleteHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteHistoryView.swift; sourceTree = "<group>"; };
 		C75AED0F2EC259C800824CCD /* UndoHistoryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoHistoryManager.swift; sourceTree = "<group>"; };
@@ -263,7 +260,6 @@
 				C72893042AFD42E600C8C1CD /* DeepLink.swift */,
 				C77020282EA94D0A00240D58 /* FuzzySearch.swift */,
 				C73AE1912EC69A81009CAC42 /* GlobalConsoleManager.swift */,
-				C73545EA2D8496DA00A3DC0C /* HelperToolManager.swift */,
 				C78FF5E22EC1B1E100FC610A /* KeychainPasswordManager.swift */,
 				C75E83002E8C60000090C3B1 /* SessionPrivilegeManager.swift */,
 				C7C90DD22DA81C590056769A /* Lipo.swift */,
@@ -346,7 +342,6 @@
 			isa = PBXGroup;
 			children = (
 				C77B90032AF18E2E009CC655 /* PearcleanerApp.swift */,
-				C74451F62D93774700146AF8 /* announcements.json */,
 				C786F1A72C29E599001B3800 /* Builds */,
 				C76D084F2AF84E0100D07867 /* Resources */,
 				C77B901F2AF1B390009CC655 /* Views */,
@@ -628,7 +623,6 @@
 				C74422412E4936750002D277 /* DaemonView.swift in Sources */,
 				C7AA00032E71000100A1B2C3 /* SnapshotsView.swift in Sources */,
 				C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */,
-				C73545EB2D8496E000A3DC0C /* HelperToolManager.swift in Sources */,
 				C72FDCB92D6D089100DE7D56 /* UndoManager.swift in Sources */,
 				C7BB992F2E8B225F007BBB81 /* FileSearchView.swift in Sources */,
 				C75AED0E2EC259A900824CCD /* DeleteHistoryView.swift in Sources */,

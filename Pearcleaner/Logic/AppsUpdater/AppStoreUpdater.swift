@@ -425,7 +425,7 @@ private final class IOSDownloadObserver: NSObject, CKDownloadQueueObserver {
 // MARK: - MacOSDownloadObserverWithWorkaround
 
 /// Special observer for macOS versions affected by installd bug
-/// Downloads PKG, hard links it, then manually installs via HelperToolManager
+/// Downloads PKG, hard links it, then manually installs via session elevation
 /// Used only for macOS apps on affected OS versions
 private final class MacOSDownloadObserverWithWorkaround: NSObject, CKDownloadQueueObserver {
     private let adamID: UInt64

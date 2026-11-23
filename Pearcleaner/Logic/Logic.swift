@@ -1489,7 +1489,7 @@ private func removeCLISymlinkForUninstall() async {
 
         // /usr/local/bin is root-owned; removing the symlink needs the session
         // credential. Best effort: a failure here only leaves a symlink behind.
-        let result = await HelperToolManager.shared.runCommand("/bin/rm -f '\(path)'")
+        let result = await SessionPrivilegeManager.runPrivilegedShell("/bin/rm -f '\(path)'")
         if !result.0 {
             printOS("Uninstall: Failed to remove CLI symlink: \(result.1)")
         }

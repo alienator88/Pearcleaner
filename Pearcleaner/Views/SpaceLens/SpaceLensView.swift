@@ -22,7 +22,7 @@ final class SpaceLensViewModel: ObservableObject {
     private var scanTask: Task<Void, Never>?
     private var childScanTasks: [UUID: Task<Void, Never>] = [:]
     private var permissionRetryTask: Task<Void, Never>?
-    private(set) var lastTargetUsedHelper = false
+    private(set) var lastTargetUsedPrivilege = false
     private(set) var scanDepth = 1
 
     var focusedNode: SpaceLensNode? {
@@ -35,11 +35,11 @@ final class SpaceLensViewModel: ObservableObject {
         rootNode?.hasAccessErrors() ?? false
     }
 
-    func startScan(target: URL, isFullDisk: Bool, usingHelper: Bool = false, maxDepth: Int = 1) {
+    func startScan(target: URL, isFullDisk: Bool, withPrivilege: Bool = false, maxDepth: Int = 1) {
         cancelScan()
         lastTarget = target
         lastTargetWasFullDisk = isFullDisk
-        lastTargetUsedHelper = usingHelper
+        lastTargetUsedPrivilege = withPrivilege
         scanDepth = maxDepth
         focusedNodeID = nil
 
@@ -47,7 +47,7 @@ final class SpaceLensViewModel: ObservableObject {
         // OS consent dialog with nothing to show for it; gate the scan behind the
         // grant and surface the wait instead. Targets that can never reach a
         // protected folder scan normally without FDA
-        if usingHelper || !FullDiskAccessProbe.targetMayHitTCC(target.path)
+        if withPrivilege || !FullDiskAccessProbe.targetMayHitTCC(target.path)
             || FullDiskAccessProbe.isGranted() {
             phase = .scanning(target.path)
         } else {
@@ -65,8 +65,8 @@ final class SpaceLensViewModel: ObservableObject {
             }
 
             var tree: SpaceLensNode?
-            if usingHelper {
-                tree = await self.scanner.helperScan(duPath: target.path, rootName: target.lastPathComponent, onPartialTree: partial)
+            if withPrivilege {
+                tree = await self.scanner.privilegedScan(duPath: target.path, rootName: target.lastPathComponent, onPartialTree: partial)
             } else {
                 tree = await self.scanner.scan(target: target, isFullDisk: isFullDisk, maxDepth: maxDepth, onPartialTree: partial)
             }
@@ -106,7 +106,7 @@ final class SpaceLensViewModel: ObservableObject {
                         guard case .waitingForPermissions = self.phase else { return }
                         self.startScan(target: target,
                                        isFullDisk: self.lastTargetWasFullDisk,
-                                       usingHelper: self.lastTargetUsedHelper,
+                                       withPrivilege: self.lastTargetUsedPrivilege,
                                        maxDepth: self.scanDepth)
                     }
                     return
@@ -248,7 +248,6 @@ struct SpaceLensView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject private var viewModel: SpaceLensViewModel
     @Environment(\.colorScheme) var colorScheme
-    @ObservedObject private var helperManager = HelperToolManager.shared
     // First launch or whenever the user has never switched modes: open with the
     // style picked in Settings. After a manual switch the per-session choice wins.
     @AppStorage("settings.spacelens.displayMode") private var displayModeRaw = UserDefaults.standard.object(forKey: "settings.spacelens.displayMode") as? String ?? UserDefaults.standard.string(forKey: "settings.spacelens.defaultMode") ?? SpaceLensDisplayMode.treemap.rawValue
@@ -288,7 +287,7 @@ struct SpaceLensView: View {
         .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("SpaceLensViewShouldRefresh"))) { _ in
             if let target = viewModel.lastTarget {
                 viewModel.startScan(target: target, isFullDisk: viewModel.lastTargetWasFullDisk,
-                                     usingHelper: viewModel.lastTargetUsedHelper, maxDepth: levels)
+                                     withPrivilege: viewModel.lastTargetUsedPrivilege, maxDepth: levels)
             }
         }
         // Delete (backspace) goes up one focus level, like Finder's cmd+up in
@@ -432,16 +431,16 @@ struct SpaceLensView: View {
             .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
 
             if viewModel.hasAccessErrors, case .complete = viewModel.phase {
-                rescanWithHelperButton
+                rescanWithPrivilegeButton
             }
         }
         .padding()
     }
 
-    private var rescanWithHelperButton: some View {
+    private var rescanWithPrivilegeButton: some View {
         VStack(spacing: 2) {
             Button {
-                startHelperScan()
+                startPrivilegedScan()
             } label: {
                 Label(String(localized: "Rescan with admin authorization"), systemImage: "lock.open")
             }
@@ -584,7 +583,7 @@ struct SpaceLensView: View {
             Button {
                 if let target = viewModel.lastTarget {
                     viewModel.startScan(target: target, isFullDisk: viewModel.lastTargetWasFullDisk,
-                                         usingHelper: viewModel.lastTargetUsedHelper, maxDepth: levels)
+                                         withPrivilege: viewModel.lastTargetUsedPrivilege, maxDepth: levels)
                 }
             } label: {
                 Text(String(localized: "Resume"))
@@ -714,16 +713,16 @@ struct SpaceLensView: View {
         viewModel.startScan(target: URL(fileURLWithPath: "/"), isFullDisk: true, maxDepth: levels)
     }
 
-    private func startHelperScan() {
+    private func startPrivilegedScan() {
         guard let target = viewModel.lastTarget else { return }
         viewModel.startScan(target: target, isFullDisk: viewModel.lastTargetWasFullDisk,
-                             usingHelper: true, maxDepth: levels)
+                             withPrivilege: true, maxDepth: levels)
     }
 
     private func applyLevels(_ value: Int) {
         levels = value
         guard let target = viewModel.lastTarget else { return }
         viewModel.startScan(target: target, isFullDisk: viewModel.lastTargetWasFullDisk,
-                             usingHelper: viewModel.lastTargetUsedHelper, maxDepth: value)
+                             withPrivilege: viewModel.lastTargetUsedPrivilege, maxDepth: value)
     }
 }

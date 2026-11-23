@@ -27,7 +27,6 @@ struct SnapshotsView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.colorScheme) var colorScheme
     @ObservedObject private var consoleManager = GlobalConsoleManager.shared
-    @ObservedObject private var helperManager = HelperToolManager.shared
     @State private var snapshots: [TMSnapshot] = []
     @State private var selectedSnapshot: TMSnapshot?
     @State private var isLoading: Bool = false
@@ -230,7 +229,7 @@ struct SnapshotsView: View {
         isLoading = true
 
         Task {
-            let (success, output) = await HelperToolManager.shared.runCommand("diskutil apfs listSnapshots /")
+            let (success, output) = await SessionPrivilegeManager.runPrivilegedShell("diskutil apfs listSnapshots /")
 
             let parsed = success ? parseSnapshots(output: output) : []
 
@@ -253,7 +252,7 @@ struct SnapshotsView: View {
         GlobalConsoleManager.shared.appendOutput("Deleting snapshot \(snapshot.name)...\n", source: CurrentPage.snapshots.title)
 
         Task {
-            let (success, output) = await HelperToolManager.shared.runCommand("diskutil apfs deleteSnapshot / -name \(quoted(snapshot.name))")
+            let (success, output) = await SessionPrivilegeManager.runPrivilegedShell("diskutil apfs deleteSnapshot / -name \(quoted(snapshot.name))")
 
             await MainActor.run {
                 self.isDeleting = false
