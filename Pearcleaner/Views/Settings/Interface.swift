@@ -248,7 +248,7 @@ struct InterfaceSettingsTab: View {
             PearGroupBox(header: { Text("Space Lens").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2) }, content: {
                 VStack {
                     HStack(spacing: 0) {
-                        Image(systemName: "circle.grid.cross")
+                        Image(systemName: "chart.pie.fill")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 15, height: 15)

@@ -736,7 +736,7 @@ enum CurrentPage: Int, CaseIterable, Identifiable {
         case .snapshots:
             return (String(localized: "Snapshots"), "clock.arrow.circlepath")
         case .spaceLens:
-            return (String(localized: "Space Lens"), "circle.grid.cross")
+            return (String(localized: "Space Lens"), "chart.pie.fill")
         case .updater:
             return (String(localized: "Updater"), "arrow.down.circle")
         }

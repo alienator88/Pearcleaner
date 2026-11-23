@@ -70,8 +70,9 @@ struct SpaceLensSunburstView: View {
                         .background(ThemeColors.shared(for: colorScheme).secondaryBG)
                         .cornerRadius(6)
                         .shadow(color: .black.opacity(0.2), radius: 3)
-                        .position(x: min(point.x + 14, geo.size.width - 80),
-                                  y: min(max(point.y, 24), geo.size.height - 24))
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                        .offset(x: min(point.x + 16, geo.size.width - 200),
+                                y: min(point.y + 20, geo.size.height - 64))
                         .allowsHitTesting(false)
                 }
             }

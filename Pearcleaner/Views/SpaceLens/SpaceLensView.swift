@@ -328,6 +328,7 @@ struct SpaceLensView: View {
                 }
             }
             .pickerStyle(.segmented)
+            .labelsHidden()
             .frame(width: 190)
 
             Button {
