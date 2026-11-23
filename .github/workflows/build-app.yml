@@ -39,7 +39,7 @@ jobs:
             -configuration Release \
             -destination "generic/platform=macOS" \
             -derivedDataPath "$RUNNER_TEMP/derived" \
-            APP_BUILD="$CI_BUILD" \
+            APP_BUILD="$APP_BUILD" \
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build
 
       - name: Ad-hoc sign the app
@@ -112,7 +112,7 @@ jobs:
           swift Scripts/appcast/generate_appcast.swift "$RUNNER_TEMP/appcast.xml" \
             "https://github.com/${{ github.repository }}/releases/latest/download/appcast.xml" \
             "$SPARKLE_EDDSA_SEED_B64" \
-            "$DMG|$DMG_URL|$VERSION|$BUILD"
+            "$dmg|$DMG_URL|$VERSION|$BUILD"
 
       - name: Upload appcast to release
         env:
