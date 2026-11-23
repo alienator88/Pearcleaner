@@ -21,7 +21,7 @@ class HomebrewUninstaller {
     // MARK: - Main Entry Point
 
     /// Uninstalls a Homebrew package directly without calling brew uninstall
-    /// This replicates Homebrew's uninstall behavior using privileged helper for root operations
+    /// This replicates Homebrew's uninstall behavior using session elevation for root operations
     func uninstallPackage(name: String, cask: Bool, zap: Bool = true) async throws {
         UpdaterDebugLogger.shared.log(.homebrew, "🗑️ Starting uninstall for \(name) (type: \(cask ? "cask" : "formula"), zap: \(zap))")
 

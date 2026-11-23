@@ -188,11 +188,13 @@ actor SpaceLensScanner {
         return await Self.walkDirectory(url: url, skipFirmlinks: skipFirmlinks, maxDepth: maxDepth)
     }
 
-    // MARK: Helper scan (du -k -x)
+    // MARK: Privileged scan (du -k -x)
 
-    // Privileged scan through the helper. The root scan needs the /System/Volumes subtree pruned
-    // at parse time because du reaches the Data volume both through the root firmlinks and
-    // through /System/Volumes/Data, which would double the real usage.
+    // Session-elevated scan: runs du as root through the session credential
+    // held by SessionPrivilegeManager (one password per session). The root scan needs the
+    // /System/Volumes subtree pruned at parse time because du reaches the Data
+    // volume both through the root firmlinks and through /System/Volumes/Data,
+    // which would double the real usage.
     func helperScan(duPath: String, rootName: String,
                     onPartialTree: ((SpaceLensNode) async -> Void)? = nil) async -> SpaceLensNode? {
         shouldStop = false

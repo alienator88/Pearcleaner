@@ -57,7 +57,7 @@ struct LipoDescriptionSection: View {
     private let shortDescription =
         "App lipo targets the Mach-O binaries inside your universal app bundles and removes any unused architectures..."
     private let fullDescription =
-        "App lipo targets the Mach-O binaries inside your universal app bundles and removes any unused architectures, such as x86_64 or arm64, leaving only the architectures your computer actually supports. The list shows only universal type apps, not your full app list. After lipo, the green portion will be removed from your app's binary. It's recommended to open an app at least once before lipo to make sure macOS has cached the signature. Privileged Helper is required to perform this action on certain applications."
+        "App lipo targets the Mach-O binaries inside your universal app bundles and removes any unused architectures, such as x86_64 or arm64, leaving only the architectures your computer actually supports. The list shows only universal type apps, not your full app list. After lipo, the green portion will be removed from your app's binary. It's recommended to open an app at least once before lipo to make sure macOS has cached the signature. Your administrator password may be asked once per session to perform this action on certain applications."
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {

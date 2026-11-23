@@ -431,16 +431,6 @@ struct GeneralSettingsTab: View {
                                     Spacer()
                                 }
 
-
-                                if !HelperToolManager.shared.isHelperToolInstalled {
-                                    HStack {
-                                        Text("Helper tool needs to be enabled")
-                                            .foregroundStyle(Color.red)
-                                            .font(.footnote)
-                                        Spacer()
-                                    }
-
-                                }
                             }
 
 

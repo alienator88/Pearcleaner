@@ -322,14 +322,6 @@ struct MainWindow: View {
                     .sheet(isPresented: $showPermissionList) {
                         PermissionsSheetView()
                     }
-                } else if HelperToolManager.shared.shouldShowHelperBadge {
-                    noticeButton(
-                        image: "gear",
-                        color: .orange,
-                        help: "Helper Not Installed"
-                    ) {
-                        openAppSettingsWindow(tab: .helper, updater: updater)
-                    }
                 }
 
             }

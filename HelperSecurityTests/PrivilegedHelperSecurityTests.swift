@@ -1,7 +1,8 @@
 import Foundation
 import ObjectiveC
+import Security
 import XCTest
-@testable import PearcleanerHelper
+@testable import PearcleanerSharedSecurity
 
 final class PrivilegedHelperSecurityTests: XCTestCase {
     func testTraversalAndMalformedPathsAreRejectedBeforeFilesystemAccess() {
@@ -45,20 +46,22 @@ final class PrivilegedHelperSecurityTests: XCTestCase {
         XCTAssertTrue(PrivilegedBundleThinner.hasNoSymlinkComponents(atPath: target.path))
     }
 
-    func testRequirementRejectsInvalidBundleOrTeamComponents() {
-        XCTAssertThrowsError(try CodesignCheck.clientRequirement(bundleIdentifier: "com.example.\"injected", teamIdentifier: "TEAMID"))
-        XCTAssertThrowsError(try CodesignCheck.clientRequirement(bundleIdentifier: "com.example.app", teamIdentifier: "TEAM ID"))
-        XCTAssertNoThrow(try CodesignCheck.clientRequirement(bundleIdentifier: "com.example.app", teamIdentifier: "TEAMID1234"))
-    }
-
-    func testUnpairedTestProcessFailsClosedAsAHelperClient() {
-        let authorized: Bool
+    func testCodesignCertificateLookupFailsClosedForUnknownPID() {
+        // A PID that does not exist must throw or return no certificates, so a
+        // one-shot helper never trusts an unpaired caller based on lookup
+        // success alone.
+        let outcome: Result<[SecCertificate], Error>
         do {
-            authorized = try CodesignCheck.isAuthorizedClient(pid: getpid())
+            outcome = .success(try CodesignCheck.codeSigningCertificates(forPID: -1))
         } catch {
-            authorized = false
+            outcome = .failure(error)
         }
-        XCTAssertFalse(authorized)
+        switch outcome {
+        case .success(let certs):
+            XCTAssertTrue(certs.isEmpty)
+        case .failure:
+            break
+        }
     }
 
     func testHelperOperationsAreSerialized() {

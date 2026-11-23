@@ -441,16 +441,13 @@ struct SpaceLensView: View {
     private var rescanWithHelperButton: some View {
         VStack(spacing: 2) {
             Button {
-                if helperManager.isHelperToolInstalled {
-                    startHelperScan()
-                } else {
-                    NotificationCenter.default.post(name: .helperRequired, object: nil)
-                }
+                startHelperScan()
             } label: {
-                Label(String(localized: "Rescan with Helper"), systemImage: "lock.open")
+                Label(String(localized: "Rescan with admin authorization"), systemImage: "lock.open")
             }
             .buttonStyle(.plain)
             .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
+            .help(String(localized: "Asks for your administrator password once per session, then rescans with full read access."))
         }
     }
 
