@@ -44,6 +44,7 @@
 		C78FF5E12EC1A3B400FC610A /* PasswordRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78FF5E02EC1A3B400FC610A /* PasswordRequestHandler.swift */; };
 		C78FF5E32EC1B1E100FC610A /* KeychainPasswordManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78FF5E22EC1B1E100FC610A /* KeychainPasswordManager.swift */; };
 		C75E83012E8C60000090C3B1 /* SessionPrivilegeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C75E83002E8C60000090C3B1 /* SessionPrivilegeManager.swift */; };
+		C7E1F1002F11000100A1B2C4 /* SparkleSelfUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E1F1012F11000100A1B2C4 /* SparkleSelfUpdater.swift */; };
 		C7A2A4D62DDB957D006E05E4 /* CLI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A2A4D52DDB957D006E05E4 /* CLI.swift */; };
 		C7A2A4D92DDB95C4006E05E4 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = C7A2A4D82DDB95C4006E05E4 /* ArgumentParser */; };
 		C7A6DBF12C9DD27200CFA042 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7A6DBF02C9DD27200CFA042 /* Assets.xcassets */; };
@@ -155,6 +156,7 @@
 		C78FF5E02EC1A3B400FC610A /* PasswordRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordRequestHandler.swift; sourceTree = "<group>"; };
 		C78FF5E22EC1B1E100FC610A /* KeychainPasswordManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainPasswordManager.swift; sourceTree = "<group>"; };
 		C75E83002E8C60000090C3B1 /* SessionPrivilegeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionPrivilegeManager.swift; sourceTree = "<group>"; };
+		C7E1F1012F11000100A1B2C4 /* SparkleSelfUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleSelfUpdater.swift; sourceTree = "<group>"; };
 		C7A2A4D52DDB957D006E05E4 /* CLI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLI.swift; sourceTree = "<group>"; };
 		C7A6DBF02C9DD27200CFA042 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C7B3AB072D83900B00D829C5 /* com.alienator88.PearcleanerSentinel.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = com.alienator88.PearcleanerSentinel.plist; sourceTree = "<group>"; };
@@ -262,6 +264,7 @@
 				C73AE1912EC69A81009CAC42 /* GlobalConsoleManager.swift */,
 				C78FF5E22EC1B1E100FC610A /* KeychainPasswordManager.swift */,
 				C75E83002E8C60000090C3B1 /* SessionPrivilegeManager.swift */,
+				C7E1F1012F11000100A1B2C4 /* SparkleSelfUpdater.swift */,
 				C7C90DD22DA81C590056769A /* Lipo.swift */,
 				C7D31D502AFF00F300C7ED9E /* Locations.swift */,
 				C77B90192AF1938F009CC655 /* Logic.swift */,
@@ -611,6 +614,7 @@
 				C7C90DD32DA81C5D0056769A /* Lipo.swift in Sources */,
 				C78FF5E32EC1B1E100FC610A /* KeychainPasswordManager.swift in Sources */,
 				C75E83012E8C60000090C3B1 /* SessionPrivilegeManager.swift in Sources */,
+				C7E1F1002F11000100A1B2C4 /* SparkleSelfUpdater.swift in Sources */,
 				C7A2A4D62DDB957D006E05E4 /* CLI.swift in Sources */,
 				C7D31D512AFF00F300C7ED9E /* Locations.swift in Sources */,
 				C77B901A2AF1938F009CC655 /* Logic.swift in Sources */,

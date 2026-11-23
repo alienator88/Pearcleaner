@@ -14,9 +14,27 @@ struct UpdateSettingsTab: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var updater: Updater
     @Environment(\.colorScheme) var colorScheme
+    @StateObject private var selfUpdater = SparkleSelfUpdater()
 
     var body: some View {
         VStack(spacing: 20) {
+
+            // === Automatic checks ======================================================================================
+            PearGroupBox(header: { Text("Automatic Updates").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2) }, content: {
+                HStack {
+                    Toggle(isOn: $selfUpdater.automaticallyChecksForUpdates) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Check for Pearcleaner updates automatically")
+                            Text("Checks the fork release feed in the background. The manual check below always works.")
+                                .font(.caption)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        }
+                    }
+                    .toggleStyle(.switch)
+                    Spacer()
+                }
+                .padding(.vertical, 4)
+            })
 
             // === Frequency ============================================================================================
             PearGroupBox(header: { Text("Update Frequency").foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText).font(.title2) }, content: {

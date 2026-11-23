@@ -7,8 +7,8 @@ import Foundation
 import AppKit
 
 enum SpaceLensDisplayMode: String, CaseIterable {
-    case treemap
     case sunburst
+    case treemap
 }
 
 enum SpaceLensScanPhase: Equatable {
@@ -60,10 +60,19 @@ private let rootSkipNames: Set<String> = [".nofollow", "Volumes"]
 
 actor SpaceLensScanner {
 
-    private var shouldStop = false
+    // Generation counter instead of a stop Bool: cancel() must invalidate every
+    // walk started before it while sparing walks started after. A Bool flag races
+    // with a restart: cancel() landing after the new scan already reset the flag
+    // would kill the new scan instead of the old one.
+    private var generation = 0
+    private var cancelledThrough = 0
 
     func cancel() {
-        shouldStop = true
+        cancelledThrough = generation
+    }
+
+    private func isCancelled(_ gen: Int) -> Bool {
+        gen <= cancelledThrough
     }
 
     // MARK: Unprivileged scan
@@ -73,7 +82,8 @@ actor SpaceLensScanner {
     // first levels fill in before the deep ones finish.
     func scan(target: URL, isFullDisk: Bool, maxDepth: Int = 1,
               onPartialTree: ((SpaceLensNode) async -> Void)? = nil) async -> SpaceLensNode {
-        shouldStop = false
+        generation += 1
+        let gen = generation
         let skipFirmlinks = isFullDisk || target.path == "/"
         let fm = FileManager.default
 
@@ -97,7 +107,7 @@ actor SpaceLensScanner {
         var index = 0
         let waveSize = 8
 
-        while index < entries.count, !Task.isCancelled, !shouldStop {
+        while index < entries.count, !Task.isCancelled, !isCancelled(gen) {
             let wave = entries[index..<min(index + waveSize, entries.count)]
             index += wave.count
 
@@ -178,7 +188,6 @@ actor SpaceLensScanner {
     // Rescans a single subtree. Returns nil only when the path is gone; files come
     // back as leaf nodes so lazy drill-down never deletes live tiles.
     func rescanSubtree(at url: URL, skipFirmlinks: Bool = false, maxDepth: Int = 1) async -> SpaceLensNode? {
-        shouldStop = false
         let fm = FileManager.default
         var isDir: ObjCBool = false
         guard fm.fileExists(atPath: url.path, isDirectory: &isDir) else { return nil }
@@ -197,7 +206,8 @@ actor SpaceLensScanner {
     // /System/Volumes/Data, which would double the real usage.
     func privilegedScan(duPath: String, rootName: String,
                         onPartialTree: ((SpaceLensNode) async -> Void)? = nil) async -> SpaceLensNode? {
-        shouldStop = false
+        generation += 1
+        let gen = generation
         let tempFile = NSTemporaryDirectory() + "spacelens-du-\(UUID().uuidString).txt"
         // Escaping neutralizes quotes in folder names before the root shell runs
         let escaped = duPath.replacingOccurrences(of: "'", with: "'\\''")
@@ -205,10 +215,11 @@ actor SpaceLensScanner {
         defer { try? FileManager.default.removeItem(atPath: tempFile) }
 
         let (ok, _) = await SessionPrivilegeManager.runPrivilegedShell(command)
-        guard ok, !shouldStop else { return nil }
+        guard ok, !isCancelled(gen) else { return nil }
 
         return await parseDuOutput(atPath: tempFile, rootName: rootName,
                                     pruneSystemVolumes: duPath == "/",
+                                    gen: gen,
                                     onPartialTree: onPartialTree)
     }
 
@@ -496,19 +507,19 @@ actor SpaceLensScanner {
 
     // du -k lines: "size_in_kb<TAB>path". Sizes are KB, the path prefix order gives the tree.
     // du finishes each subtree before its parent, so reversed order is parents-first.
-    func parseDuOutput(atPath path: String, rootName: String, pruneSystemVolumes: Bool,
+    func parseDuOutput(atPath path: String, rootName: String, pruneSystemVolumes: Bool, gen: Int,
                                onPartialTree: ((SpaceLensNode) async -> Void)?) async -> SpaceLensNode? {
         guard let content = try? String(contentsOfFile: path, encoding: .utf8) else { return nil }
 
         var lines: [DuLine] = []
         for line in content.split(separator: "\n") {
-            if shouldStop { return nil }
+            if isCancelled(gen) { return nil }
             let parts = line.split(separator: "\t", maxSplits: 1)
             guard parts.count == 2,
                   let kb = Int64(parts[0].trimmingCharacters(in: .whitespaces)) else { continue }
             let rawPath = String(parts[1])
             guard !rawPath.hasSuffix("[") && !rawPath.hasSuffix("]") else { continue }
-            lines.append(DuLine(id: UUID(), path: rawPath,
+            lines.append(DuLine(id: SpaceLensNode.stableID(forPath: rawPath), path: rawPath,
                                 depth: rawPath.split(separator: "/").count,
                                 size: kb * 1024))
         }
@@ -523,7 +534,7 @@ actor SpaceLensScanner {
             let step = max(20000, ordered.count / 10)
             var index = step
             while index < ordered.count {
-                if shouldStop { return nil }
+                if isCancelled(gen) { return nil }
                 await onPartialTree(Self.buildTree(from: Array(ordered[..<index]), rootName: nil,
                                                    pruneSystemVolumes: pruneSystemVolumes)
                                     ?? SpaceLensNode(url: URL(fileURLWithPath: rootLine.path), name: rootName))
