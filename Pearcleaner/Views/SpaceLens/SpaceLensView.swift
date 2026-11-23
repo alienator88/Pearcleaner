@@ -20,6 +20,10 @@ final class SpaceLensViewModel: ObservableObject {
 
     private let scanner = SpaceLensScanner()
     private var scanTask: Task<Void, Never>?
+    // Bumps on every startScan; a completion handler that lands after a restart
+    // must not publish its stale tree or touch the new scan's phase. UUID() is
+    // fine here, it only needs to differ across restarts of the same session.
+    private var scanGeneration = UUID()
     private var childScanTasks: [UUID: Task<Void, Never>] = [:]
     private var permissionRetryTask: Task<Void, Never>?
     private(set) var lastTargetUsedPrivilege = false
@@ -35,8 +39,20 @@ final class SpaceLensViewModel: ObservableObject {
         rootNode?.hasAccessErrors() ?? false
     }
 
+    var isScanning: Bool {
+        if case .scanning = phase { return true }
+        return false
+    }
+
+    var scanningPath: String? {
+        if case .scanning(let path) = phase { return path }
+        return nil
+    }
+
     func startScan(target: URL, isFullDisk: Bool, withPrivilege: Bool = false, maxDepth: Int = 1) {
         cancelScan()
+        let generation = UUID()
+        scanGeneration = generation
         lastTarget = target
         lastTargetWasFullDisk = isFullDisk
         lastTargetUsedPrivilege = withPrivilege
@@ -60,6 +76,9 @@ final class SpaceLensViewModel: ObservableObject {
 
             let partial: (SpaceLensNode) async -> Void = { tree in
                 await MainActor.run {
+                    // Partial publishes of an aborted scan must not overwrite the
+                    // newer scan's tree, and must never flip the new scan's phase
+                    guard self.scanGeneration == generation else { return }
                     self.rootNode = tree
                 }
             }
@@ -72,6 +91,7 @@ final class SpaceLensViewModel: ObservableObject {
             }
 
             await MainActor.run {
+                guard self.scanGeneration == generation else { return }
                 if let tree {
                     self.rootNode = tree
                     if case .scanning = self.phase {
@@ -252,7 +272,9 @@ struct SpaceLensView: View {
     // style picked in Settings. After a manual switch the per-session choice wins.
     @AppStorage("settings.spacelens.displayMode") private var displayModeRaw = UserDefaults.standard.object(forKey: "settings.spacelens.displayMode") as? String ?? UserDefaults.standard.string(forKey: "settings.spacelens.defaultMode") ?? SpaceLensDisplayMode.treemap.rawValue
     @AppStorage("settings.spacelens.lastPath") private var lastPath = ""
-    @AppStorage("settings.spacelens.levels") private var levels = 3
+    // First open or whenever the user has never changed levels in-session: start
+    // from the Settings default. After a manual change the per-session choice wins.
+    @AppStorage("settings.spacelens.levels") private var levels = UserDefaults.standard.object(forKey: "settings.spacelens.levels") as? Int ?? UserDefaults.standard.object(forKey: "settings.spacelens.defaultLevels") as? Int ?? 3
     @State private var pendingTrashNode: SpaceLensNode?
     @State private var pendingLevels: Int?
     @State private var keyMonitor: Any?
@@ -267,12 +289,10 @@ struct SpaceLensView: View {
             VStack(alignment: .leading, spacing: 0) {
                 header
                 Divider()
-                if case .scanning(let path) = viewModel.phase {
-                    scanProgress(path: path)
-                } else if case .waitingForPermissions(let path) = viewModel.phase {
+                if case .waitingForPermissions(let path) = viewModel.phase {
                     waitingForPermissions(path: path)
-                } else if viewModel.rootNode != nil {
-                    chart
+                } else if viewModel.rootNode != nil || viewModel.isScanning {
+                    chartArea
                 } else {
                     emptyState
                 }
@@ -452,8 +472,10 @@ struct SpaceLensView: View {
 
     // MARK: Scan progress
 
+    // Scan banner row shown above a live chart; the chart itself lives in
+    // chartArea and stays mounted through the whole scan
     @ViewBuilder
-    private func scanProgress(path: String) -> some View {
+    private func scanBanner(path: String) -> some View {
         HStack(spacing: 12) {
             ProgressView()
                 .controlSize(.small)
@@ -477,12 +499,6 @@ struct SpaceLensView: View {
             .foregroundStyle(ThemeColors.shared(for: colorScheme).accent)
         }
         .padding()
-        Divider()
-        if let node = viewModel.rootNode {
-            chartBody(for: node)
-        } else {
-            Spacer()
-        }
     }
 
     // MARK: Waiting for permission
@@ -550,19 +566,27 @@ struct SpaceLensView: View {
 
     // MARK: Chart
 
-    private var chart: some View {
+    // One stable home for the chart across every phase change: banners and
+    // breadcrumbs come and go above it, the chart itself never remounts, so a
+    // completing scan cannot dismiss an open context menu
+    private var chartArea: some View {
         VStack(alignment: .leading, spacing: 0) {
-            if viewModel.focusedNodeID != nil {
-                breadcrumb
+            if let path = viewModel.scanningPath {
+                scanBanner(path: path)
                 Divider()
-            }
-            if viewModel.runningChildScanCount > 0 {
-                childScanBanner
-                Divider()
-            }
-            if case .cancelled = viewModel.phase {
-                cancelledBanner
-                Divider()
+            } else {
+                if viewModel.focusedNodeID != nil {
+                    breadcrumb
+                    Divider()
+                }
+                if viewModel.runningChildScanCount > 0 {
+                    childScanBanner
+                    Divider()
+                }
+                if case .cancelled = viewModel.phase {
+                    cancelledBanner
+                    Divider()
+                }
             }
             if let node = viewModel.focusedNode {
                 chartBody(for: node)

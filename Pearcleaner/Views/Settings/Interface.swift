@@ -28,6 +28,7 @@ struct InterfaceSettingsTab: View {
     @AppStorage("settings.interface.badgeOverlaysEnabled") private var badgeOverlaysEnabled: Bool = true
     @AppStorage("settings.interface.startupView") private var startupView: Int = CurrentPage.applications.rawValue
     @AppStorage("settings.spacelens.defaultMode") private var spaceLensMode: String = SpaceLensDisplayMode.treemap.rawValue
+    @AppStorage("settings.spacelens.defaultLevels") private var spaceLensDefaultLevels: Int = 3
     @State private var showPagePopover: Bool = false
     @State private var hiddenPages: Set<Int> = AppState.loadHiddenPages()
 
@@ -276,6 +277,36 @@ struct InterfaceSettingsTab: View {
                         .frame(width: 140)
                     }
                     .padding(5)
+
+                    HStack(spacing: 0) {
+                        Image(systemName: "arrow.down.right.and.arrow.up.left")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 15, height: 15)
+                            .padding(.trailing)
+                            .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text(String(localized: "Default levels"))
+                                .font(.callout)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                            Text(String(localized: "Levels Space Lens opens with"))
+                                .font(.caption)
+                                .foregroundStyle(ThemeColors.shared(for: colorScheme).secondaryText)
+                        }
+                        Spacer()
+                        Picker(selection: $spaceLensDefaultLevels) {
+                            ForEach(2...6, id: \.self) { level in
+                                Text("\(level)")
+                                    .tag(level)
+                            }
+                        } label: {
+                            EmptyView()
+                        }
+                        .labelsHidden()
+                        .pickerStyle(.menu)
+                        .frame(width: 140)
+                    }
+                    .padding(5)
                 }
             })
 
@@ -354,4 +385,3 @@ struct PageVisibilityPopover: View {
         .padding(.vertical, 8)
     }
 }
-

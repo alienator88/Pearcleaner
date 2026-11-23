@@ -19,8 +19,11 @@ enum SpaceLensLayout {
         let top = Array(children.prefix(aggregationLimit))
         let rest = children.dropFirst(aggregationLimit)
         let restSize = rest.reduce(Int64(0)) { $0 + $1.size }
-        // Virtual node: parent URL + isAggregated so it reveals and never trashes a real path
-        return top + [SpaceLensNode(url: top[0].url.deletingLastPathComponent(),
+        // Virtual node: parent URL + isAggregated so it reveals and never trashes a real path.
+        // Its ID appends a marker so it never collides with the parent's path-derived ID
+        let parentURL = top[0].url.deletingLastPathComponent()
+        return top + [SpaceLensNode(id: SpaceLensNode.stableID(forPath: parentURL.path + "\u{0}aggregated"),
+                                    url: parentURL,
                                     name: otherLabel,
                                     size: restSize,
                                     isAggregated: true)]
