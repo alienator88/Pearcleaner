@@ -111,9 +111,10 @@ Pre-compiled, always up-to-date versions are available from my [releases](https:
 <details>
   <summary>Homebrew</summary>
 
-You can add the app via Homebrew:
+You can add the app via my Homebrew tap:
 ```
-brew install --cask pearcleaner
+brew tap alecuba16/tap https://github.com/alecuba16/homebrew-tap
+brew install --cask pearcleaner-fork
 ```
 </details>
 
