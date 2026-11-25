@@ -27,11 +27,11 @@ More details [HERE](https://www.reddit.com/r/macapps/comments/1ucstzy/psa_pearcl
    <br />
    <strong>Status: </strong>On Hold
    <br />
-   <strong>Version: </strong>5.4.3
+   <strong>Version: </strong>5.6.0
    <br />
-   <a href="https://github.com/alienator88/Pearcleaner/releases"><strong>Download</strong></a>
+   <a href="https://github.com/alecuba16/Pearcleaner/releases"><strong>Download</strong></a>
     · 
-   <a href="https://github.com/alienator88/Pearcleaner/commits">Commits</a>
+   <a href="https://github.com/alecuba16/Pearcleaner/commits">Commits</a>
   </p>
 </p>
 </br>
@@ -105,7 +105,7 @@ This project was born out of wanting to learn more on how macOS deals with app i
 <details>
   <summary>Releases</summary>
 
-Pre-compiled, always up-to-date versions are available from my [releases](https://github.com/alienator88/Pearcleaner/releases) page.
+Pre-compiled, always up-to-date versions are available from my [releases](https://github.com/alecuba16/Pearcleaner/releases) page.
 </details>
 
 <details>
