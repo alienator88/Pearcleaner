@@ -70,11 +70,14 @@ This project was born out of wanting to learn more on how macOS deals with app i
 
 ## Screenshots
 
-<img src="https://github.com/user-attachments/assets/5095d30c-3665-4b24-bf00-756baac59026" align="left" width="400" />
-<img src="https://github.com/user-attachments/assets/e9841914-613e-4206-b0bd-07963bf27507" align="center" width="400" />
+<img src="Screenshots/apps-list.png" align="left" width="400" />
+<img src="Screenshots/uninstall-iina.png" align="center" width="400" />
 <p></p>
-<img src="https://github.com/user-attachments/assets/c35258c2-2886-412c-a4c4-3c5e343e7a2c" align="left" width="400" />
-<img src="https://github.com/user-attachments/assets/e6253ce4-b1e4-4851-a2c2-46b1f1e128cb" align="center" width="400" />
+<img src="Screenshots/orphans-final.png" align="left" width="400" />
+<img src="Screenshots/dev-final.png" align="center" width="400" />
+<p></p>
+<img src="Screenshots/spacelens-sunburst-repo.png" align="left" width="400" />
+<img src="Screenshots/spacelens-treemap-2levels.png" align="center" width="400" />
 
 
 ## Issues
