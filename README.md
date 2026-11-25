@@ -4,6 +4,9 @@
 The only legitimate website owned by me is https://itsalin.com. Anything else offering Pearcleaner downloads is either a scam or not affiliated with me.
 More details [HERE](https://www.reddit.com/r/macapps/comments/1ucstzy/psa_pearcleanercom_is_a_fake_site_pushing_macos/).
 
+### Fork Status: Actively Maintained
+While the original project is on hold (see below), this fork keeps moving: updates, fixes, and new functionality are published here. Fork-only work so far includes session elevation without a privileged helper, Space Lens, development environments with Docker and Colima control, orphan confidence scores, and Sparkle self-updates. Releases are published from this repo and the app self-updates through the fork appcast.
+
 ### Project Status: On Hold
 > As you may have noticed, development on the app has basically stopped since end of 2025, so I wanted to provide some context.
 >
