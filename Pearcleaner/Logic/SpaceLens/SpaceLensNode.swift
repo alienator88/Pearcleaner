@@ -34,6 +34,13 @@ struct SpaceLensNode: Identifiable, Sendable {
         self.accessError = accessError
     }
 
+    // Live disk probe, not stored state: tiles are snapshots and the filesystem
+    // moves under them, so callers check the real path at interaction time.
+    var isDirectoryOnDisk: Bool {
+        var isDir: ObjCBool = false
+        return FileManager.default.fileExists(atPath: url.path, isDirectory: &isDir) && isDir.boolValue
+    }
+
     func child(withID id: UUID) -> SpaceLensNode? {
         if self.id == id { return self }
         for child in children {

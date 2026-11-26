@@ -10,6 +10,7 @@ struct SpaceLensTreemapView: View {
     var maxDepth: Int = 3
     let onDrill: (SpaceLensNode) -> Void
     let onTrash: (SpaceLensNode) -> Void
+    var onRefresh: (SpaceLensNode) -> Void = { _ in }
 
     @Environment(\.colorScheme) private var colorScheme
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled = true
@@ -122,6 +123,13 @@ struct SpaceLensTreemapView: View {
             NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: node.url.path)
         } label: {
             Label(String(localized: "Reveal in Finder"), systemImage: "folder")
+        }
+        if !node.isAggregated, node.isDirectoryOnDisk {
+            Button {
+                onRefresh(node)
+            } label: {
+                Label(String(localized: "Rescan This Folder"), systemImage: "arrow.clockwise")
+            }
         }
         if !node.isProtected && !node.isAggregated && node.accessError == nil {
             Button(role: .destructive) {
