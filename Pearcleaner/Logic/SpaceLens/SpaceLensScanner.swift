@@ -186,7 +186,9 @@ actor SpaceLensScanner {
     }
 
     // Rescans a single subtree. Returns nil only when the path is gone; files come
-    // back as leaf nodes so lazy drill-down never deletes live tiles.
+    // back as leaf nodes so lazy drill-down never deletes live tiles. Packages keep
+    // the atomic-tile contract of the main scan: measured recursively but never
+    // split into children, so a refreshed .app tile does not suddenly grow levels.
     func rescanSubtree(at url: URL, skipFirmlinks: Bool = false, maxDepth: Int = 1) async -> SpaceLensNode? {
         let fm = FileManager.default
         var isDir: ObjCBool = false
@@ -194,7 +196,8 @@ actor SpaceLensScanner {
         guard isDir.boolValue else {
             return SpaceLensNode(url: url, size: await Self.allocatedSize(url: url) ?? 0)
         }
-        return await Self.walkDirectory(url: url, skipFirmlinks: skipFirmlinks, maxDepth: maxDepth)
+        let depth = Self.isPackageAtPath(url.path) ? 0 : maxDepth
+        return await Self.walkDirectory(url: url, skipFirmlinks: skipFirmlinks, maxDepth: depth)
     }
 
     // MARK: Privileged scan (du -k -x)

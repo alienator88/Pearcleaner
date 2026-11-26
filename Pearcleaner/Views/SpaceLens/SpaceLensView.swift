@@ -243,8 +243,12 @@ final class SpaceLensViewModel: ObservableObject {
 
     func rescanSubtree(node: SpaceLensNode) {
         guard let parent = rootNode?.parent(ofID: node.id) ?? rootNode else { return }
+        // Full-disk trees must prune the firmlink mirror below /System, or the
+        // refresh walks the Data volume a second time
+        let skipFirmlinks = lastTargetUsedPrivilege || lastTargetWasFullDisk
+            || node.url.path == "/" || node.url.path == "/System"
         runChildScan {
-            try? await self.scanner.rescanSubtree(at: node.url, maxDepth: self.scanDepth)
+            try? await self.scanner.rescanSubtree(at: node.url, skipFirmlinks: skipFirmlinks, maxDepth: self.scanDepth)
         } onSuccess: { [weak self] replacement in
             guard let self else { return }
             let root = self.rootNode?.replacing(nodeID: node.id, with: replacement) ?? replacement
@@ -631,12 +635,14 @@ struct SpaceLensView: View {
                 SpaceLensTreemapView(focusedNode: node,
                                      maxDepth: levels,
                                      onDrill: { viewModel.drill(to: $0) },
-                                     onTrash: { pendingTrashNode = $0 })
+                                     onTrash: { pendingTrashNode = $0 },
+                                     onRefresh: { viewModel.rescanSubtree(node: $0) })
             } else {
                 SpaceLensSunburstView(focusedNode: node,
                                       maxRings: levels,
                                       onDrill: { viewModel.drill(to: $0) },
-                                      onTrash: { pendingTrashNode = $0 })
+                                      onTrash: { pendingTrashNode = $0 },
+                                      onRefresh: { viewModel.rescanSubtree(node: $0) })
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

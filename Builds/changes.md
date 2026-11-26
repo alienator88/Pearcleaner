@@ -1,5 +1,6 @@
 ### What's New
 
+- [x] Space Lens: right-click a folder tile to rescan just that subtree. The fresh figure replaces the old one and ancestors rebalance without a full re-measure
 - [x] Session elevation: privileged tasks (root scans, snapshots, leftover removal, root thinning, brew uninstall) ask for your password once per session and never install a privileged helper; nothing appears in Login Items and nothing is left behind when Pearcleaner quits
 - [x] The old privileged helper daemon is unregistered and removed on first launch of the new version
 - [x] Settings shows a Privilege tab describing the session credential, with a Forget button to drop it immediately
