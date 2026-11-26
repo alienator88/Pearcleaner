@@ -64,6 +64,7 @@ struct AppsListView: View {
             }
         }
         .scrollIndicators(scrollIndicators ? .automatic : .never)
+        .tahoeSoftScrollEdge()
     }
 }
 

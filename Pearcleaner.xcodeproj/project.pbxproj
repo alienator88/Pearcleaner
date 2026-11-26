@@ -8,19 +8,17 @@
 
 /* Begin PBXBuildFile section */
 		C707E2942EAF217200AAD817 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = C707E2932EAF217200AAD817 /* Sparkle */; };
-		C71449E52DA826610032B295 /* Lipo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C90DD22DA81C590056769A /* Lipo.swift */; };
 		C7149E792E68DE7E00A15356 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C7149E782E68DE7E00A15356 /* Localizable.xcstrings */; };
 		C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72893042AFD42E600C8C1CD /* DeepLink.swift */; };
 		C72893122AFD51EA00C8C1CD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72893112AFD51EA00C8C1CD /* main.swift */; };
 		C72D03B52E4D3FB900ADC1B4 /* MainWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72D03B22E4D3FB900ADC1B4 /* MainWindow.swift */; };
 		C72FDCB92D6D089100DE7D56 /* UndoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72FDCB82D6D088A00DE7D56 /* UndoManager.swift */; };
-		C73545EB2D8496E000A3DC0C /* HelperToolManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C73545EA2D8496DA00A3DC0C /* HelperToolManager.swift */; };
-		C73545F92D849B5700A3DC0C /* PearcleanerHelper in CopyFiles */ = {isa = PBXBuildFile; fileRef = C73545F02D849A1B00A3DC0C /* PearcleanerHelper */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C73545FD2D84E5DD00A3DC0C /* com.alienator88.PearcleanerSentinel.plist in CopyFiles */ = {isa = PBXBuildFile; fileRef = C7B3AB072D83900B00D829C5 /* com.alienator88.PearcleanerSentinel.plist */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C739C3382EB027A9003639C6 /* askpass.sh in Resources */ = {isa = PBXBuildFile; fileRef = C739C3372EB027A9003639C6 /* askpass.sh */; };
 		C73AE1922EC69A81009CAC42 /* GlobalConsoleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C73AE1912EC69A81009CAC42 /* GlobalConsoleManager.swift */; };
 		C74206E52E79E47400BDDB6A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C74206E42E79E47400BDDB6A /* Assets.xcassets */; };
 		C74422412E4936750002D277 /* DaemonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74422402E4936700002D277 /* DaemonView.swift */; };
+		C7AA00032E71000100A1B2C3 /* SnapshotsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA00042E71000100A1B2C3 /* SnapshotsView.swift */; };
 		C74422432E494D830002D277 /* PackageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74422422E494D7E0002D277 /* PackageView.swift */; };
 		C74FDC632BCD833D00B8960F /* Conditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74FDC622BCD833D00B8960F /* Conditions.swift */; };
 		C7575D392B0182DE006A600A /* PearcleanerSentinel in CopyFiles */ = {isa = PBXBuildFile; fileRef = C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -30,6 +28,10 @@
 		C77020292EA94D0A00240D58 /* FuzzySearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77020282EA94D0A00240D58 /* FuzzySearch.swift */; };
 		C770B6ED2E78DF9D005A0ABD /* Glass.icon in Resources */ = {isa = PBXBuildFile; fileRef = C770B6EC2E78DF9D005A0ABD /* Glass.icon */; };
 		C770D7DB2CE7C9AD00B3492A /* DevelopmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C770D7DA2CE7C9A100B3492A /* DevelopmentView.swift */; };
+		C7DD000BDE00000100000002 /* DevEnvProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD000ADE00000100000001 /* DevEnvProcess.swift */; };
+		C7DD000BDE00000200000004 /* VMContainerInventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD0000ADE00000200000003 /* VMContainerInventory.swift */; };
+		C7DD000BDE00000300000006 /* VMContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD0000ADE00000300000005 /* VMContainerView.swift */; };
+		C7DD000BDE00000400000008 /* DevPathCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD0000ADE00000400000007 /* DevPathCatalog.swift */; };
 		C7736E4F2C49A44200917293 /* AlinFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = C7736E4E2C49A44200917293 /* AlinFoundation */; };
 		C77B90042AF18E2E009CC655 /* PearcleanerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90032AF18E2E009CC655 /* PearcleanerApp.swift */; };
 		C77B90162AF19377009CC655 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B90152AF19377009CC655 /* AppState.swift */; };
@@ -41,6 +43,8 @@
 		C78D7B212D556F1A003DD49F /* AppPathsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78D7B202D556F16003DD49F /* AppPathsFetch.swift */; };
 		C78FF5E12EC1A3B400FC610A /* PasswordRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78FF5E02EC1A3B400FC610A /* PasswordRequestHandler.swift */; };
 		C78FF5E32EC1B1E100FC610A /* KeychainPasswordManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78FF5E22EC1B1E100FC610A /* KeychainPasswordManager.swift */; };
+		C75E83012E8C60000090C3B1 /* SessionPrivilegeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C75E83002E8C60000090C3B1 /* SessionPrivilegeManager.swift */; };
+		C7E1F1002F11000100A1B2C4 /* SparkleSelfUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E1F1012F11000100A1B2C4 /* SparkleSelfUpdater.swift */; };
 		C7A2A4D62DDB957D006E05E4 /* CLI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A2A4D52DDB957D006E05E4 /* CLI.swift */; };
 		C7A2A4D92DDB95C4006E05E4 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = C7A2A4D82DDB95C4006E05E4 /* ArgumentParser */; };
 		C7A6DBF12C9DD27200CFA042 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7A6DBF02C9DD27200CFA042 /* Assets.xcassets */; };
@@ -52,9 +56,10 @@
 		C7D31D512AFF00F300C7ED9E /* Locations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D31D502AFF00F300C7ED9E /* Locations.swift */; };
 		C7DD49EA2BAB4D8100CCBA16 /* AppInfoFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */; };
 		C7DD49EE2BAB7F6000CCBA16 /* ReversePathsFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */; };
+		C7AA00012E71000100A1B2C3 /* UsageScoreEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA00002E71000100A1B2C3 /* UsageScoreEngine.swift */; };
+		C7AA00022E71000200A1B2C3 /* PearcleanerPreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA00032E71000300A1B2C3 /* PearcleanerPreferencesStore.swift */; };
 		C7F539382AF60865007DF1B2 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F539372AF60865007DF1B2 /* Utilities.swift */; };
 		C7F8436B2CBF066F00E3E30A /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C7F8436A2CBF066F00E3E30A /* Localizable.xcstrings */; };
-		C7FBD9DF2DAD66D500151934 /* AlinFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = C7C90DDD2DA8221B0056769A /* AlinFoundation */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,24 +82,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
-		C73545EE2D849A1B00A3DC0C /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-		};
-		C73545FA2D849B6900A3DC0C /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = Contents/Library/LaunchDaemons;
-			dstSubfolderSpec = 1;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		C781216C2BC892A000BE06BD /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -112,7 +99,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 6;
 			files = (
-				C73545F92D849B5700A3DC0C /* PearcleanerHelper in CopyFiles */,
 				C7575D392B0182DE006A600A /* PearcleanerSentinel in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -136,20 +122,22 @@
 		C72893112AFD51EA00C8C1CD /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		C72D03B22E4D3FB900ADC1B4 /* MainWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindow.swift; sourceTree = "<group>"; };
 		C72FDCB82D6D088A00DE7D56 /* UndoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoManager.swift; sourceTree = "<group>"; };
-		C73545EA2D8496DA00A3DC0C /* HelperToolManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelperToolManager.swift; sourceTree = "<group>"; };
-		C73545F02D849A1B00A3DC0C /* PearcleanerHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PearcleanerHelper; sourceTree = BUILT_PRODUCTS_DIR; };
 		C739C3372EB027A9003639C6 /* askpass.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = askpass.sh; sourceTree = "<group>"; };
 		C73AE1912EC69A81009CAC42 /* GlobalConsoleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalConsoleManager.swift; sourceTree = "<group>"; };
 		C74206E42E79E47400BDDB6A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C74422402E4936700002D277 /* DaemonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaemonView.swift; sourceTree = "<group>"; };
+		C7AA00042E71000100A1B2C3 /* SnapshotsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotsView.swift; sourceTree = "<group>"; };
 		C74422422E494D7E0002D277 /* PackageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageView.swift; sourceTree = "<group>"; };
-		C74451F62D93774700146AF8 /* announcements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = announcements.json; sourceTree = "<group>"; };
 		C74FDC622BCD833D00B8960F /* Conditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conditions.swift; sourceTree = "<group>"; };
 		C75AED0D2EC259A900824CCD /* DeleteHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteHistoryView.swift; sourceTree = "<group>"; };
 		C75AED0F2EC259C800824CCD /* UndoHistoryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoHistoryManager.swift; sourceTree = "<group>"; };
 		C77020282EA94D0A00240D58 /* FuzzySearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuzzySearch.swift; sourceTree = "<group>"; };
 		C770B6EC2E78DF9D005A0ABD /* Glass.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Glass.icon; sourceTree = "<group>"; };
 		C770D7DA2CE7C9A100B3492A /* DevelopmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevelopmentView.swift; sourceTree = "<group>"; };
+		C7DD000ADE00000100000001 /* DevEnvProcess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevEnvProcess.swift; sourceTree = "<group>"; };
+		C7DD0000ADE00000200000003 /* VMContainerInventory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VMContainerInventory.swift; sourceTree = "<group>"; };
+		C7DD0000ADE00000300000005 /* VMContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VMContainerView.swift; sourceTree = "<group>"; };
+		C7DD0000ADE00000400000007 /* DevPathCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevPathCatalog.swift; sourceTree = "<group>"; };
 		C77B90002AF18E2E009CC655 /* Pearcleaner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pearcleaner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C77B90032AF18E2E009CC655 /* PearcleanerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PearcleanerApp.swift; sourceTree = "<group>"; };
 		C77B90142AF18E7C009CC655 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -167,6 +155,8 @@
 		C78D7B202D556F16003DD49F /* AppPathsFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPathsFetch.swift; sourceTree = "<group>"; };
 		C78FF5E02EC1A3B400FC610A /* PasswordRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordRequestHandler.swift; sourceTree = "<group>"; };
 		C78FF5E22EC1B1E100FC610A /* KeychainPasswordManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainPasswordManager.swift; sourceTree = "<group>"; };
+		C75E83002E8C60000090C3B1 /* SessionPrivilegeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionPrivilegeManager.swift; sourceTree = "<group>"; };
+		C7E1F1012F11000100A1B2C4 /* SparkleSelfUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleSelfUpdater.swift; sourceTree = "<group>"; };
 		C7A2A4D52DDB957D006E05E4 /* CLI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLI.swift; sourceTree = "<group>"; };
 		C7A6DBF02C9DD27200CFA042 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C7B3AB072D83900B00D829C5 /* com.alienator88.PearcleanerSentinel.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = com.alienator88.PearcleanerSentinel.plist; sourceTree = "<group>"; };
@@ -177,6 +167,8 @@
 		C7D31D502AFF00F300C7ED9E /* Locations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locations.swift; sourceTree = "<group>"; };
 		C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfoFetch.swift; sourceTree = "<group>"; };
 		C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReversePathsFetch.swift; sourceTree = "<group>"; };
+		C7AA00002E71000100A1B2C3 /* UsageScoreEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageScoreEngine.swift; sourceTree = "<group>"; };
+		C7AA00032E71000300A1B2C3 /* PearcleanerPreferencesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PearcleanerPreferencesStore.swift; sourceTree = "<group>"; };
 		C7F539372AF60865007DF1B2 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		C7F8436A2CBF066F00E3E30A /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -195,20 +187,6 @@
 			);
 			target = C77B8FFF2AF18E2E009CC655 /* Pearcleaner */;
 		};
-		C75E82E12E8C585D0090C3B1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				AppGroupDefaults.swift,
-			);
-			target = C73545EF2D849A1B00A3DC0C /* PearcleanerHelper */;
-		};
-		C75E82E42E8C58620090C3B1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				AppGroupDefaults.swift,
-			);
-			target = C77B8FFF2AF18E2E009CC655 /* Pearcleaner */;
-		};
 		C75E82E52E8C58620090C3B1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -219,30 +197,17 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		C73545FC2D849B7E00A3DC0C /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			attributesByRelativePath = {
-				com.alienator88.Pearcleaner.PearcleanerHelper.plist = (
-					CodeSignOnCopy,
-				);
-			};
-			buildPhase = C73545FA2D849B6900A3DC0C /* CopyFiles */;
-			membershipExceptions = (
-				com.alienator88.Pearcleaner.PearcleanerHelper.plist,
-			);
-		};
 /* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		C71B87562EF49C58009C5B07 /* TCC */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TCC; sourceTree = "<group>"; };
 		C71DC3392EAAAFF000503474 /* Components */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Components; sourceTree = "<group>"; };
-		C73545F12D849A1B00A3DC0C /* PearcleanerHelper */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (C73545FC2D849B7E00A3DC0C /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = PearcleanerHelper; sourceTree = "<group>"; };
 		C74649E62E48000C002D1C63 /* LipoView */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = LipoView; sourceTree = "<group>"; };
 		C74649EA2E48008A002D1C63 /* ZombieView */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ZombieView; sourceTree = "<group>"; };
 		C74649EE2E4800BB002D1C63 /* AppsView */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = AppsView; sourceTree = "<group>"; };
 		C74649EF2E480111002D1C63 /* Style */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (C74649F02E480128002D1C63 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Style; sourceTree = "<group>"; };
 		C74649FA2E48076B002D1C63 /* Settings */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Settings; sourceTree = "<group>"; };
-		C75E82DD2E8C58380090C3B1 /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (C75E82E42E8C58620090C3B1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, C75E82E52E8C58620090C3B1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, C75E82E12E8C585D0090C3B1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Shared; sourceTree = "<group>"; };
+		C75E82DD2E8C58380090C3B1 /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (C75E82E52E8C58620090C3B1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Shared; sourceTree = "<group>"; };
 		C76073F32E3C1C2C003957A7 /* FilesView */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = FilesView; sourceTree = "<group>"; };
 		C783F8FD2E903707003450E7 /* FileSearch */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = FileSearch; sourceTree = "<group>"; };
 		C783F9492E903B53003450E7 /* PKG */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = PKG; sourceTree = "<group>"; };
@@ -250,6 +215,8 @@
 		C7C05FD72E8DA12C006D0476 /* Brew */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Brew; sourceTree = "<group>"; };
 		C7C693E92E9D73DD0081CF25 /* AppsUpdater */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = AppsUpdater; sourceTree = "<group>"; };
 		C7C693FC2E9D74D50081CF25 /* AppsUpdaterView */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = AppsUpdaterView; sourceTree = "<group>"; };
+		C7E1A5B22F0C3D1100B4A771 /* SpaceLens */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = SpaceLens; sourceTree = "<group>"; };
+		C7E1A5B32F0C3D1200B4A771 /* SpaceLens */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = SpaceLens; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -257,14 +224,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C73545ED2D849A1B00A3DC0C /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C7FBD9DF2DAD66D500151934 /* AlinFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -297,27 +256,34 @@
 				C7DD49E92BAB4D8100CCBA16 /* AppInfoFetch.swift */,
 				C78D7B202D556F16003DD49F /* AppPathsFetch.swift */,
 				C77B90152AF19377009CC655 /* AppState.swift */,
+				C7DD0000ADE00000400000007 /* DevPathCatalog.swift */,
 				C7A2A4D52DDB957D006E05E4 /* CLI.swift */,
 				C74FDC622BCD833D00B8960F /* Conditions.swift */,
 				C72893042AFD42E600C8C1CD /* DeepLink.swift */,
 				C77020282EA94D0A00240D58 /* FuzzySearch.swift */,
 				C73AE1912EC69A81009CAC42 /* GlobalConsoleManager.swift */,
-				C73545EA2D8496DA00A3DC0C /* HelperToolManager.swift */,
 				C78FF5E22EC1B1E100FC610A /* KeychainPasswordManager.swift */,
+				C75E83002E8C60000090C3B1 /* SessionPrivilegeManager.swift */,
+				C7E1F1012F11000100A1B2C4 /* SparkleSelfUpdater.swift */,
 				C7C90DD22DA81C590056769A /* Lipo.swift */,
 				C7D31D502AFF00F300C7ED9E /* Locations.swift */,
 				C77B90192AF1938F009CC655 /* Logic.swift */,
 				C78FF5E02EC1A3B400FC610A /* PasswordRequestHandler.swift */,
 				C7CC10E32E9473480057B7E2 /* ProcessEnv.swift */,
 				C7DD49ED2BAB7F6000CCBA16 /* ReversePathsFetch.swift */,
+				C7AA00002E71000100A1B2C3 /* UsageScoreEngine.swift */,
+				C7AA00032E71000300A1B2C3 /* PearcleanerPreferencesStore.swift */,
 				C75AED0F2EC259C800824CCD /* UndoHistoryManager.swift */,
 				C72FDCB82D6D088A00DE7D56 /* UndoManager.swift */,
 				C7F539372AF60865007DF1B2 /* Utilities.swift */,
+				C7DD000ADE00000100000001 /* DevEnvProcess.swift */,
+				C7DD0000ADE00000200000003 /* VMContainerInventory.swift */,
 				C7C693E92E9D73DD0081CF25 /* AppsUpdater */,
 				C7923DCC2E90807F005C5632 /* Brew */,
 				C783F8FD2E903707003450E7 /* FileSearch */,
 				C783F9492E903B53003450E7 /* PKG */,
 				C71B87562EF49C58009C5B07 /* TCC */,
+				C7E1A5B22F0C3D1100B4A771 /* SpaceLens */,
 			);
 			path = Logic;
 			sourceTree = "<group>";
@@ -360,7 +326,6 @@
 				C77B90022AF18E2E009CC655 /* Pearcleaner */,
 				C72893102AFD51EA00C8C1CD /* PearcleanerSentinel */,
 				C78121642BC892A000BE06BD /* FinderOpen */,
-				C73545F12D849A1B00A3DC0C /* PearcleanerHelper */,
 				C77B90012AF18E2E009CC655 /* Products */,
 				C72893162AFD531500C8C1CD /* Frameworks */,
 			);
@@ -372,7 +337,6 @@
 				C77B90002AF18E2E009CC655 /* Pearcleaner.app */,
 				C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */,
 				C78121632BC892A000BE06BD /* FinderOpen.appex */,
-				C73545F02D849A1B00A3DC0C /* PearcleanerHelper */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -381,7 +345,6 @@
 			isa = PBXGroup;
 			children = (
 				C77B90032AF18E2E009CC655 /* PearcleanerApp.swift */,
-				C74451F62D93774700146AF8 /* announcements.json */,
 				C786F1A72C29E599001B3800 /* Builds */,
 				C76D084F2AF84E0100D07867 /* Resources */,
 				C77B901F2AF1B390009CC655 /* Views */,
@@ -395,12 +358,14 @@
 			isa = PBXGroup;
 			children = (
 				C74422402E4936700002D277 /* DaemonView.swift */,
+				C7AA00042E71000100A1B2C3 /* SnapshotsView.swift */,
 				C75AED0D2EC259A900824CCD /* DeleteHistoryView.swift */,
 				C770D7DA2CE7C9A100B3492A /* DevelopmentView.swift */,
 				C7BB992E2E8B225F007BBB81 /* FileSearchView.swift */,
 				C72D03B22E4D3FB900ADC1B4 /* MainWindow.swift */,
 				C74422422E494D7E0002D277 /* PackageView.swift */,
 				C7BB99282E8AF1CB007BBB81 /* PluginsView.swift */,
+				C7DD0000ADE00000300000005 /* VMContainerView.swift */,
 				C7C693FC2E9D74D50081CF25 /* AppsUpdaterView */,
 				C74649EE2E4800BB002D1C63 /* AppsView */,
 				C7C05FD72E8DA12C006D0476 /* Brew */,
@@ -409,6 +374,7 @@
 				C74649E62E48000C002D1C63 /* LipoView */,
 				C74649FA2E48076B002D1C63 /* Settings */,
 				C74649EA2E48008A002D1C63 /* ZombieView */,
+				C7E1A5B32F0C3D1200B4A771 /* SpaceLens */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -447,30 +413,6 @@
 			productReference = C728930F2AFD51EA00C8C1CD /* PearcleanerSentinel */;
 			productType = "com.apple.product-type.tool";
 		};
-		C73545EF2D849A1B00A3DC0C /* PearcleanerHelper */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = C73545F42D849A1B00A3DC0C /* Build configuration list for PBXNativeTarget "PearcleanerHelper" */;
-			buildPhases = (
-				C73545EC2D849A1B00A3DC0C /* Sources */,
-				C73545ED2D849A1B00A3DC0C /* Frameworks */,
-				C73545EE2D849A1B00A3DC0C /* CopyFiles */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				C73545F12D849A1B00A3DC0C /* PearcleanerHelper */,
-				C75E82DD2E8C58380090C3B1 /* Shared */,
-			);
-			name = PearcleanerHelper;
-			packageProductDependencies = (
-				C7C90DDD2DA8221B0056769A /* AlinFoundation */,
-			);
-			productName = PearcleanerHelper;
-			productReference = C73545F02D849A1B00A3DC0C /* PearcleanerHelper */;
-			productType = "com.apple.product-type.tool";
-		};
 		C77B8FFF2AF18E2E009CC655 /* Pearcleaner */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C77B900F2AF18E2F009CC655 /* Build configuration list for PBXNativeTarget "Pearcleaner" */;
@@ -481,7 +423,6 @@
 				C7A27E7D2AFD65C400166168 /* CopyFiles */,
 				C781216C2BC892A000BE06BD /* Embed Foundation Extensions */,
 				C7B3AB0B2D83910400D829C5 /* CopyFiles */,
-				C73545FA2D849B6900A3DC0C /* CopyFiles */,
 				C739C33B2EB0280F003639C6 /* ShellScript */,
 			);
 			buildRules = (
@@ -503,6 +444,9 @@
 				C7C05FD72E8DA12C006D0476 /* Brew */,
 				C7C693E92E9D73DD0081CF25 /* AppsUpdater */,
 				C7C693FC2E9D74D50081CF25 /* AppsUpdaterView */,
+				C7E1A5B22F0C3D1100B4A771 /* SpaceLens */,
+				C7E1A5B32F0C3D1200B4A771 /* SpaceLens */,
+				C75E82DD2E8C58380090C3B1 /* Shared */,
 			);
 			name = Pearcleaner;
 			packageProductDependencies = (
@@ -544,10 +488,6 @@
 				TargetAttributes = {
 					C728930E2AFD51EA00C8C1CD = {
 						CreatedOnToolsVersion = 15.0.1;
-					};
-					C73545EF2D849A1B00A3DC0C = {
-						CreatedOnToolsVersion = 16.2;
-						LastSwiftMigration = 1640;
 					};
 					C77B8FFF2AF18E2E009CC655 = {
 						CreatedOnToolsVersion = 15.0.1;
@@ -597,7 +537,6 @@
 				C77B8FFF2AF18E2E009CC655 /* Pearcleaner */,
 				C728930E2AFD51EA00C8C1CD /* PearcleanerSentinel */,
 				C78121622BC892A000BE06BD /* FinderOpen */,
-				C73545EF2D849A1B00A3DC0C /* PearcleanerHelper */,
 			);
 		};
 /* End PBXProject section */
@@ -656,14 +595,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C73545EC2D849A1B00A3DC0C /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C71449E52DA826610032B295 /* Lipo.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		C77B8FFC2AF18E2E009CC655 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -675,19 +606,27 @@
 				C74422432E494D830002D277 /* PackageView.swift in Sources */,
 				C77B90162AF19377009CC655 /* AppState.swift in Sources */,
 				C7DD49EE2BAB7F6000CCBA16 /* ReversePathsFetch.swift in Sources */,
+				C7AA00012E71000100A1B2C3 /* UsageScoreEngine.swift in Sources */,
+				C7AA00022E71000200A1B2C3 /* PearcleanerPreferencesStore.swift in Sources */,
 				C72D03B52E4D3FB900ADC1B4 /* MainWindow.swift in Sources */,
 				C77020292EA94D0A00240D58 /* FuzzySearch.swift in Sources */,
 				C7BB99292E8AF1CB007BBB81 /* PluginsView.swift in Sources */,
 				C7C90DD32DA81C5D0056769A /* Lipo.swift in Sources */,
 				C78FF5E32EC1B1E100FC610A /* KeychainPasswordManager.swift in Sources */,
+				C75E83012E8C60000090C3B1 /* SessionPrivilegeManager.swift in Sources */,
+				C7E1F1002F11000100A1B2C4 /* SparkleSelfUpdater.swift in Sources */,
 				C7A2A4D62DDB957D006E05E4 /* CLI.swift in Sources */,
 				C7D31D512AFF00F300C7ED9E /* Locations.swift in Sources */,
 				C77B901A2AF1938F009CC655 /* Logic.swift in Sources */,
 				C78D7B212D556F1A003DD49F /* AppPathsFetch.swift in Sources */,
 				C770D7DB2CE7C9AD00B3492A /* DevelopmentView.swift in Sources */,
+				C7DD000BDE00000100000002 /* DevEnvProcess.swift in Sources */,
+				C7DD000BDE00000200000004 /* VMContainerInventory.swift in Sources */,
+				C7DD000BDE00000300000006 /* VMContainerView.swift in Sources */,
+				C7DD000BDE00000400000008 /* DevPathCatalog.swift in Sources */,
 				C74422412E4936750002D277 /* DaemonView.swift in Sources */,
+				C7AA00032E71000100A1B2C3 /* SnapshotsView.swift in Sources */,
 				C72893052AFD42E600C8C1CD /* DeepLink.swift in Sources */,
-				C73545EB2D8496E000A3DC0C /* HelperToolManager.swift in Sources */,
 				C72FDCB92D6D089100DE7D56 /* UndoManager.swift in Sources */,
 				C7BB992F2E8B225F007BBB81 /* FileSearchView.swift in Sources */,
 				C75AED0E2EC259A900824CCD /* DeleteHistoryView.swift in Sources */,
@@ -733,7 +672,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = "";
 				INSTALL_PATH = "";
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = "$(APP_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.PearcleanerSentinel;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -758,7 +697,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = "";
 				INSTALL_PATH = "";
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = "$(APP_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.PearcleanerSentinel;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -768,56 +707,12 @@
 			};
 			name = Release;
 		};
-		C73545F52D849A1B00A3DC0C /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = "$(APP_BUILD)";
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = BK8443AXLU;
-				ENABLE_HARDENED_RUNTIME = YES;
-				INSTALL_PATH = "";
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = "$(APP_VERSION)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.Pearcleaner.PearcleanerHelper;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-			};
-			name = Debug;
-		};
-		C73545F62D849A1B00A3DC0C /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = "$(APP_BUILD)";
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = BK8443AXLU;
-				ENABLE_HARDENED_RUNTIME = YES;
-				INSTALL_PATH = "";
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = "$(APP_VERSION)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.Pearcleaner.PearcleanerHelper;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "";
-				SWIFT_VERSION = 5.0;
-			};
-			name = Release;
-		};
 		C77B900D2AF18E2F009CC655 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 121;
-				APP_VERSION = 5.4.3;
+				APP_BUILD = 123;
+				APP_VERSION = 5.6.0;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -872,7 +767,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 4.4.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -889,8 +784,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 121;
-				APP_VERSION = 5.4.3;
+				APP_BUILD = 123;
+				APP_VERSION = 5.6.0;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -939,7 +834,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 4.4.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -989,11 +884,11 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = "$(APP_VERSION)";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
-				OTHER_SWIFT_FLAGS = "-Xcc -fmodule-map-file=/Users/alin/GitHub/PearcleanerGH/Pearcleaner/Logic/AppsUpdater/PrivateFrameworks/CommerceKit/module.modulemap -Xcc -fmodule-map-file=/Users/alin/GitHub/PearcleanerGH/Pearcleaner/Logic/AppsUpdater/PrivateFrameworks/StoreFoundation/module.modulemap";
+				OTHER_SWIFT_FLAGS = "-Xcc -fmodule-map-file=$(SRCROOT)/Pearcleaner/Logic/AppsUpdater/PrivateFrameworks/CommerceKit/module.modulemap -Xcc -fmodule-map-file=$(SRCROOT)/Pearcleaner/Logic/AppsUpdater/PrivateFrameworks/StoreFoundation/module.modulemap";
 				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.Pearcleaner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1047,10 +942,10 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = "$(APP_VERSION)";
 				OTHER_LDFLAGS = "";
-				OTHER_SWIFT_FLAGS = "-Xcc -fmodule-map-file=/Users/alin/GitHub/PearcleanerGH/Pearcleaner/Logic/AppsUpdater/PrivateFrameworks/CommerceKit/module.modulemap -Xcc -fmodule-map-file=/Users/alin/GitHub/PearcleanerGH/Pearcleaner/Logic/AppsUpdater/PrivateFrameworks/StoreFoundation/module.modulemap";
+				OTHER_SWIFT_FLAGS = "-Xcc -fmodule-map-file=$(SRCROOT)/Pearcleaner/Logic/AppsUpdater/PrivateFrameworks/CommerceKit/module.modulemap -Xcc -fmodule-map-file=$(SRCROOT)/Pearcleaner/Logic/AppsUpdater/PrivateFrameworks/StoreFoundation/module.modulemap";
 				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.Pearcleaner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1091,7 +986,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = "$(APP_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.Pearcleaner.FinderOpen;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1129,7 +1024,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = "$(APP_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.alienator88.Pearcleaner.FinderOpen;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1150,15 +1045,6 @@
 			buildConfigurations = (
 				C72893142AFD51EA00C8C1CD /* Debug */,
 				C72893152AFD51EA00C8C1CD /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		C73545F42D849A1B00A3DC0C /* Build configuration list for PBXNativeTarget "PearcleanerHelper" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C73545F52D849A1B00A3DC0C /* Debug */,
-				C73545F62D849A1B00A3DC0C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1238,11 +1124,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C7A2A4D72DDB95C4006E05E4 /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
 			productName = ArgumentParser;
-		};
-		C7C90DDD2DA8221B0056769A /* AlinFoundation */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C7736E4D2C49A44200917293 /* XCRemoteSwiftPackageReference "AlinFoundation" */;
-			productName = AlinFoundation;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

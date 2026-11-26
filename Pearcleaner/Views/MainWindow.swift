@@ -15,6 +15,9 @@ struct MainWindow: View {
     @ObservedObject private var consoleManager = GlobalConsoleManager.shared
     @StateObject private var brewManager = HomebrewManager()
     @StateObject private var updateManager = UpdateManager.shared
+    // Survives page switches so a Space Lens scan is computed once and both
+    // treemap and sunburst keep reading the same tree
+    @StateObject private var spaceLensViewModel = SpaceLensViewModel()
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locations: Locations
     @EnvironmentObject var fsm: FolderSettingsManager
@@ -45,63 +48,76 @@ struct MainWindow: View {
         // Main App Window
         ZStack {
 
-            HStack(alignment: .center, spacing: 0) {
+            TahoeGlassContainer {
+                HStack(alignment: .center, spacing: 0) {
 
-                Group {
-                    switch appState.currentPage {
-                    case .applications:
-                        withConsole {
-                            applicationsView
-                        }
+                    Group {
+                        switch appState.currentPage {
+                        case .applications:
+                            withConsole {
+                                applicationsView
+                            }
 
-                    case .orphans:
-                        withConsole {
-                            ZombieView()
-                        }
+                        case .orphans:
+                            withConsole {
+                                ZombieView()
+                            }
 
-                    case .development:
-                        withConsole {
-                            EnvironmentCleanerView()
-                        }
+                        case .development:
+                            withConsole {
+                                EnvironmentCleanerView()
+                            }
 
-                    case .lipo:
-                        withConsole {
-                            LipoView()
-                        }
+                        case .lipo:
+                            withConsole {
+                                LipoView()
+                            }
 
-                    case .services:
-                        withConsole {
-                            DaemonView()
-                        }
+                        case .services:
+                            withConsole {
+                                DaemonView()
+                            }
 
-                    case .packages:
-                        withConsole {
-                            PackageView()
-                        }
+                        case .snapshots:
+                            withConsole {
+                                SnapshotsView()
+                            }
 
-                    case .plugins:
-                        withConsole {
-                            PluginsView()
-                        }
+                        case .spaceLens:
+                            withConsole {
+                                SpaceLensView()
+                                    .environmentObject(spaceLensViewModel)
+                            }
 
-                    case .fileSearch:
-                        withConsole {
-                            FileSearchView()
-                        }
+                        case .packages:
+                            withConsole {
+                                PackageView()
+                            }
 
-                    case .homebrew:
-                        HomebrewView()
-                            .environmentObject(brewManager)
+                        case .plugins:
+                            withConsole {
+                                PluginsView()
+                            }
 
-                    case .updater:
-                        withConsole {
-                            AppsUpdaterView()
+                        case .fileSearch:
+                            withConsole {
+                                FileSearchView()
+                            }
+
+                        case .homebrew:
+                            HomebrewView()
                                 .environmentObject(brewManager)
-                                .environmentObject(updateManager)
+
+                        case .updater:
+                            withConsole {
+                                AppsUpdaterView()
+                                    .environmentObject(brewManager)
+                                    .environmentObject(updateManager)
+                            }
                         }
                     }
-                }
 
+                }
             }
 
             // Drop overlay
@@ -194,7 +210,7 @@ struct MainWindow: View {
             }
         }
         .toolbar {
-            TahoeToolbarItem(placement: .navigation, isGroup: true) {
+            TahoeToolbarItem(placement: .navigation, isGroup: true, hidesSharedBackground: false) {
 
                 // Page Selector
                 Menu {
@@ -305,14 +321,6 @@ struct MainWindow: View {
                     }
                     .sheet(isPresented: $showPermissionList) {
                         PermissionsSheetView()
-                    }
-                } else if HelperToolManager.shared.shouldShowHelperBadge {
-                    noticeButton(
-                        image: "gear",
-                        color: .orange,
-                        help: "Helper Not Installed"
-                    ) {
-                        openAppSettingsWindow(tab: .helper, updater: updater)
                     }
                 }
 

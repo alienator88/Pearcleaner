@@ -84,13 +84,22 @@ private struct ControlGroupChrome<Shape: InsettableShape>: ViewModifier {
     }
 
     func body(content: Content) -> some View {
-        content
-            .background(material, in: shape)
-            .clipShape(shape)
-            .shadow(color: Color.black.opacity(outerRimOpacity), radius: 1, x: 0, y: 0)
-            .shadow(color: Color.black.opacity(shadowOpacity), radius: dark ? 8 : 10, x: 0, y: 0)
-            .chromeBorder(shape: shape, highlightEnabled: true, rimEnabled: false, shadowEnabled: false, highlightIntensity: innerRimOpacity)
-            .containerShape(shape)
+        if #available(macOS 26.0, *) {
+            content
+                .background(material, in: shape)
+                .clipShape(shape)
+                .shadow(color: Color.black.opacity(shadowOpacity / 2), radius: dark ? 8 : 10, x: 0, y: 0)
+                .chromeBorder(shape: shape, highlightEnabled: true, rimEnabled: false, shadowEnabled: false, highlightIntensity: innerRimOpacity)
+                .containerShape(shape)
+        } else {
+            content
+                .background(material, in: shape)
+                .clipShape(shape)
+                .shadow(color: Color.black.opacity(outerRimOpacity), radius: 1, x: 0, y: 0)
+                .shadow(color: Color.black.opacity(shadowOpacity), radius: dark ? 8 : 10, x: 0, y: 0)
+                .chromeBorder(shape: shape, highlightEnabled: true, rimEnabled: false, shadowEnabled: false, highlightIntensity: innerRimOpacity)
+                .containerShape(shape)
+        }
     }
 
     private var shape: Shape {

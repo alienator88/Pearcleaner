@@ -14,6 +14,47 @@ struct ExpandableActionButton: View {
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
+        if #available(macOS 26.0, *) {
+            tahoeBody
+        } else {
+            legacyBody
+        }
+    }
+
+    @available(macOS 26.0, *)
+    private var tahoeBody: some View {
+        TahoeGlassContainer(spacing: 8) {
+            HStack(spacing: 6) {
+                Button(action: primaryAction.action) {
+                    Text(primaryAction.title)
+                        .foregroundStyle(primaryAction.foregroundColor)
+                }
+                .buttonStyle(.glassProminent)
+                .tint(primaryAction.backgroundColor)
+                .disabled(primaryAction.isDisabled)
+
+                if !secondaryActions.isEmpty {
+                    Menu {
+                        ForEach(secondaryActions.indices, id: \.self) { index in
+                            let item = secondaryActions[index]
+                            Button(item.title) {
+                                item.action()
+                            }
+                            .disabled(item.isDisabled)
+                        }
+                    } label: {
+                        Image(systemName: "chevron.down")
+                            .font(.system(size: 10, weight: .regular))
+                    }
+                    .buttonStyle(.glass)
+                    .foregroundStyle(ThemeColors.shared(for: colorScheme).primaryText)
+                }
+            }
+        }
+        .opacity(primaryAction.isDisabled ? 0.5 : 1.0)
+    }
+
+    private var legacyBody: some View {
         HStack(spacing: 0) {
             // Primary action button
             Button(action: primaryAction.action) {

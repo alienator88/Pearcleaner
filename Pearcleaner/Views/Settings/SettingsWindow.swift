@@ -18,15 +18,16 @@ struct SettingsView: View {
     @AppStorage("settings.interface.scrollIndicators") private var scrollIndicators: Bool = false
     @State private var showPerms = false
     @State private var toolbarRefreshTrigger = false
-    @ObservedObject private var helperToolManager = HelperToolManager.shared
 
     var body: some View {
 
-        HStack(spacing: 0) {
-            sidebarView
-                .padding(8)
-            detailView
-                .padding(.top)
+        TahoeGlassContainer {
+            HStack(spacing: 0) {
+                sidebarView
+                    .padding(8)
+                detailView
+                    .padding(.top)
+            }
         }
         .ignoresSafeArea(edges: .top)
         .background(backgroundView(color: ThemeColors.shared(for: colorScheme).primaryBG))
@@ -45,59 +46,8 @@ struct SettingsView: View {
                 Group {
                     switch selectedTab {
                     case .helper:
-                        // Helper tab toolbar items
-                        Button {
-                            helperToolManager.openSMSettings()
-                        } label: {
-                            Label("Login Items", systemImage: "gear")
-                                .labelStyle(.iconOnly)
-                                .help("Login Items")
-                        }
-
-                        Button {
-                            Task {
-                                await helperToolManager.manageHelperTool(action: .uninstall)
-                            }
-                        } label: {
-                            Label("Unregister Service", systemImage: "trash")
-                                .labelStyle(.iconOnly)
-                                .help("Unregister Service")
-                        }
-
-                        Button {
-                            showCustomAlert(title: "Reset BTM", message: "This resets the whole Background Task Management database and will clear your 'Open at Login' and 'App Background Activity' list.", style: .warning, onOk: {
-                                Task {
-                                    let _ = await helperToolManager.nuclearResetHelper()
-                                }
-                            })
-
-                        } label: {
-                            Label("Nuclear Reset", systemImage: "exclamationmark.triangle")
-                                .labelStyle(.iconOnly)
-                                .help("Reset Background Task Management database")
-                        }
-//                        Button {
-//                            Task {
-//                                await helperToolManager.manageHelperTool(action: .reinstall)
-//                            }
-//                        } label: {
-//                            Label("Reinstall Service", systemImage: "arrow.clockwise")
-//                                .labelStyle(.iconOnly)
-//                                .help("Force Reinstall Service (fixes desync)")
-//                        }
-
-//                        #if DEBUG
-//                        Button {
-//                            Task {
-//                                let _ = await helperToolManager.nuclearResetHelper()
-//                            }
-//                        } label: {
-//                            Label("Nuclear Reset", systemImage: "exclamationmark.triangle")
-//                                .labelStyle(.iconOnly)
-//                                .help("Nuclear Reset (last resort - clears ALL helper instances)")
-//                        }
-//                        .foregroundStyle(.red)
-//                        #endif
+                        // Session privilege tab: no installed service to manage
+                        EmptyView()
 
                     case .about:
                         // About tab toolbar item
@@ -222,6 +172,7 @@ struct SettingsView: View {
             }
         }
         .scrollIndicators(scrollIndicators ? .automatic : .never)
+        .tahoeSoftScrollEdge()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding()
 
@@ -247,14 +198,6 @@ struct SidebarItemView: View {
             Text(title)
                 .font(.system(size: 14, weight: .regular))
                 .foregroundStyle(isSelected ? ThemeColors.shared(for: colorScheme).primaryText : ThemeColors.shared(for: colorScheme).secondaryText)
-            if !HelperToolManager.shared.isHelperToolInstalled && title.lowercased().contains("helper") {
-                Image(systemName: "exclamationmark.triangle")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .foregroundStyle(.orange)
-                    .frame(width: 14, height: 14)
-                    .help("Please install the helper service")
-            }
             Spacer()
         }
         .padding(.vertical, 8)

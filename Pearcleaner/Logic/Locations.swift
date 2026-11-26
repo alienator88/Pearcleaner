@@ -134,9 +134,12 @@ class Locations: ObservableObject {
             "\(home)/Library/Application Scripts",
             "\(home)/Library/Application Support",
             "\(home)/Library/Application Support/Caches",
+            "\(home)/Library/Application Support/CrashReporter",
             "\(home)/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.ApplicationRecentDocuments",
             "\(home)/Library/Containers",
             "\(home)/Library/Caches",
+            "\(home)/Library/Extensions",
+            "\(home)/Library/Group Containers",
             "\(home)/Library/HTTPStorages",
             "\(home)/Library/Internet Plug-Ins",
             "\(home)/Library/LaunchAgents",
@@ -149,10 +152,13 @@ class Locations: ObservableObject {
             "/Users/Shared/Library/Application Support",
             "/Library/Application Support",
             "/Library/Application Support/CrashReporter",
+            "/Library/Caches",
+            "/Library/Extensions",
             "/Library/Internet Plug-Ins",
             "/Library/LaunchAgents",
             "/Library/LaunchDaemons",
             "/Library/PrivilegedHelperTools",
+            "/private/var/db/receipts",
         ])
 
         self.plugins = PluginCategory(name: "Plugins", subcategories: [

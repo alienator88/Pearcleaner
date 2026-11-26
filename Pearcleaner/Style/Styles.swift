@@ -589,13 +589,14 @@ struct TahoeToolbarItem<Content: View>: ToolbarContent {
     var id: String? = nil
     var placement: ToolbarItemPlacement = .automatic
     var isGroup: Bool = false
+    var hidesSharedBackground: Bool = true
     @ViewBuilder let content: () -> Content
 
     var body: some ToolbarContent {
         if isGroup {
             if #available(macOS 26.0, *) {
                 ToolbarItemGroup(placement: placement) { content() }
-                    .sharedBackgroundVisibility(.hidden)
+                    .sharedBackgroundVisibility(hidesSharedBackground ? .hidden : .visible)
             } else {
                 ToolbarItemGroup(placement: placement) { content() }
             }
@@ -603,10 +604,10 @@ struct TahoeToolbarItem<Content: View>: ToolbarContent {
             if #available(macOS 26.0, *) {
                 if let id {
                     ToolbarItem(id: id, placement: placement) { content() }
-                        .sharedBackgroundVisibility(.hidden)
+                        .sharedBackgroundVisibility(hidesSharedBackground ? .hidden : .visible)
                 } else {
                     ToolbarItem(placement: placement) { content() }
-                        .sharedBackgroundVisibility(.hidden)
+                        .sharedBackgroundVisibility(hidesSharedBackground ? .hidden : .visible)
                 }
             } else {
                 if let id {
@@ -648,8 +649,14 @@ struct ifGlassAvailableMain: ViewModifier {
 
     func body(content: Content) -> some View {
         if #available(macOS 26.0, *) {
-            content
-                .glassEffect(glassEffect == "Regular" ? .regular : .clear, in: .rect(cornerRadius: 20))
+            if glassEffect == "Regular" {
+                content
+                    .glassEffect(.regular, in: .rect(cornerRadius: 20))
+            } else {
+                content
+                    .background(GlassEffect(material: .sidebar, blendingMode: .behindWindow))
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+            }
         }
         else {
             content
@@ -676,14 +683,23 @@ struct ifGlassAvailableSidebar: ViewModifier {
 
     func body(content: Content) -> some View {
         if #available(macOS 26.0, *) {
-            content
-                .background(.ultraThinMaterial.opacity(glassEffect == "Regular" ? 0 : 0.7))
-                .glassEffect(glassEffect == "Regular" ? .regular : .clear, in: .rect(cornerRadius: 20))
-                .clipShape(RoundedRectangle(cornerRadius: 20))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 20)
-                        .strokeBorder(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.2), lineWidth: colorScheme == .light ? 1 : 0)
-                }
+            if glassEffect == "Regular" {
+                content
+                    .glassEffect(.regular, in: .rect(cornerRadius: 20))
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 20)
+                            .strokeBorder(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.2), lineWidth: colorScheme == .light ? 1 : 0)
+                    }
+            } else {
+                content
+                    .background(GlassEffect(material: .sidebar, blendingMode: .behindWindow))
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 20)
+                            .strokeBorder(ThemeColors.shared(for: colorScheme).primaryText.opacity(0.2), lineWidth: colorScheme == .light ? 1 : 0)
+                    }
+            }
         }
         else {
             content
@@ -700,6 +716,24 @@ struct ifGlassAvailableSidebar: ViewModifier {
 extension View {
     func ifGlassSidebar() -> some View {
         self.modifier(ifGlassAvailableSidebar())
+    }
+}
+
+/// Wraps content in a GlassEffectContainer on macOS 26+ so sibling
+/// glassEffect shapes sample together and can morph/blend correctly.
+/// On earlier systems the content renders unchanged.
+struct TahoeGlassContainer<Content: View>: View {
+    var spacing: CGFloat = 20.0
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        if #available(macOS 26.0, *) {
+            GlassEffectContainer(spacing: spacing) {
+                content()
+            }
+        } else {
+            content()
+        }
     }
 }
 
@@ -1083,5 +1117,47 @@ extension GroupBoxStyle where Self == CollapsibleGroupBoxStyle {
             isLoading: isLoading,
             onToggle: onToggle
         )
+    }
+}
+
+extension View {
+    /// .glass on macOS 26+, .bordered earlier.
+    @ViewBuilder
+    func adaptiveGlassButton() -> some View {
+        if #available(macOS 26.0, *) {
+            self.buttonStyle(.glass)
+        } else {
+            self.buttonStyle(.bordered)
+        }
+    }
+
+    /// .glassProminent on macOS 26+, .borderedProminent earlier.
+    @ViewBuilder
+    func adaptiveGlassProminentButton() -> some View {
+        if #available(macOS 26.0, *) {
+            self.buttonStyle(.glassProminent)
+        } else {
+            self.buttonStyle(.borderedProminent)
+        }
+    }
+
+    /// .glassProminent on macOS 26+ while preserving a custom legacy style earlier.
+    @ViewBuilder
+    func adaptiveGlassProminentButton<LegacyStyle: ButtonStyle>(fallback legacyStyle: LegacyStyle) -> some View {
+        if #available(macOS 26.0, *) {
+            self.buttonStyle(.glassProminent)
+        } else {
+            self.buttonStyle(legacyStyle)
+        }
+    }
+
+    /// Soft scroll-edge blur on macOS 26+; no-op earlier.
+    @ViewBuilder
+    func tahoeSoftScrollEdge() -> some View {
+        if #available(macOS 26.0, *) {
+            self.scrollEdgeEffectStyle(.soft, for: .all)
+        } else {
+            self
+        }
     }
 }

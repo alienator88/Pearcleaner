@@ -26,8 +26,9 @@ struct FileSearchView: View {
     @State private var currentSearcher: FileSearchEngine?
     @State private var sortOrder: [KeyPathComparator<FileSearchResult>] = [.init(\.name, order: .forward)]
     @State private var calculatedFolderSizes: [URL: Int64] = [:]
+    @State private var nameFilterType: NameFilterType = .contains
+    @State private var nameFilterText: String = ""
     @State private var showAddFilterMenu: Bool = false
-    @State private var showNameFilterDialog: Bool = false
     @State private var showExtensionFilterDialog: Bool = false
     @State private var showSizeFilterDialog: Bool = false
     @State private var showDateFilterDialog: Bool = false
@@ -57,6 +58,100 @@ struct FileSearchView: View {
                 result.url.path.localizedCaseInsensitiveContains(filterText)
             }
         }
+    }
+
+    private var nameFilterControl: some View {
+        HStack(spacing: 8) {
+            Menu {
+                ForEach(NameFilterType.allCases, id: \.self) { type in
+                    Button(type.displayName) {
+                        nameFilterType = type
+                    }
+                }
+            } label: {
+                HStack(spacing: 5) {
+                    Text(nameFilterType.displayName)
+                        .lineLimit(1)
+                    Image(systemName: "chevron.down")
+                        .font(.caption2)
+                }
+            }
+            .menuIndicator(.hidden)
+            .buttonStyle(ControlGroupButtonStyle(
+                foregroundColor: ThemeColors.shared(for: colorScheme).primaryText,
+                shape: Capsule(style: .continuous),
+                level: .primary,
+                verticalPadding: 6,
+                horizontalPadding: 9,
+                skipControlGroup: true
+            ))
+
+            TextField("Filter by name...", text: $nameFilterText)
+                .textFieldStyle(.plain)
+                .onSubmit(addNameFilter)
+
+            Button(action: addNameFilter) {
+                Image(systemName: "plus")
+                    .font(.system(size: 12, weight: .semibold))
+            }
+            .buttonStyle(ControlGroupButtonStyle(
+                foregroundColor: ThemeColors.shared(for: colorScheme).accent,
+                shape: Capsule(style: .continuous),
+                level: .primary,
+                verticalPadding: 6,
+                horizontalPadding: 9,
+                skipControlGroup: true
+            ))
+            .disabled(nameFilterText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            .help("Add name filter")
+
+            Divider()
+                .frame(height: 18)
+
+            Menu {
+                Button("Extension") {
+                    showExtensionFilterDialog = true
+                }
+                Button("Size") {
+                    showSizeFilterDialog = true
+                }
+                Button("Date") {
+                    showDateFilterDialog = true
+                }
+                Button("Tags") {
+                    showTagsFilterDialog = true
+                }
+                Button("Comment") {
+                    showCommentFilterDialog = true
+                }
+                Menu("Kind") {
+                    ForEach(KindFilterType.allCases, id: \.self) { kind in
+                        Button(kind.displayName) {
+                            addFilter(.kind(kind))
+                        }
+                    }
+                }
+            } label: {
+                Image(systemName: "line.3.horizontal.decrease")
+                    .font(.system(size: 14, weight: .medium))
+                    .frame(width: 24, height: 24)
+            }
+            .menuIndicator(.hidden)
+            .buttonStyle(ControlGroupButtonStyle(
+                foregroundColor: ThemeColors.shared(for: colorScheme).primaryText,
+                shape: Capsule(style: .continuous),
+                level: .primary,
+                verticalPadding: 6,
+                horizontalPadding: 7,
+                skipControlGroup: true
+            ))
+            .help("Add another filter")
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 5)
+        .controlGroup(Capsule(style: .continuous), level: .primary)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityLabel("Name filter")
     }
 
     var body: some View {
@@ -158,6 +253,8 @@ struct FileSearchView: View {
 
                     Spacer()
                 }
+
+                nameFilterControl
 
                 // Active filters
                 if !activeFilters.isEmpty {
@@ -491,9 +588,6 @@ struct FileSearchView: View {
                 .help("Toggle console output")
                 
                 Menu {
-                    Button("Name") {
-                        showNameFilterDialog = true
-                    }
                     Button("Extension") {
                         showExtensionFilterDialog = true
                     }
@@ -550,14 +644,6 @@ struct FileSearchView: View {
                 }
             }
         }
-        .sheet(isPresented: $showNameFilterDialog) {
-            NameFilterDialog { type, value in
-                addFilter(.name(type, value))
-                showNameFilterDialog = false
-            } onCancel: {
-                showNameFilterDialog = false
-            }
-        }
         .sheet(isPresented: $showExtensionFilterDialog) {
             ExtensionFilterDialog { type, value in
                 addFilter(.fileExtension(type, value))
@@ -612,6 +698,13 @@ struct FileSearchView: View {
 
     private func addFilter(_ filter: FilterType) {
         activeFilters.append(filter)
+    }
+
+    private func addNameFilter() {
+        let value = nameFilterText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !value.isEmpty else { return }
+        addFilter(.name(nameFilterType, value))
+        nameFilterText = ""
     }
 
     private func removeFilter(_ filter: FilterType) {
@@ -862,47 +955,6 @@ struct FilterChip: View {
 }
 
 // MARK: - Filter Dialog Views
-
-struct NameFilterDialog: View {
-    let onAdd: (NameFilterType, String) -> Void
-    let onCancel: () -> Void
-    @State private var selectedType: NameFilterType = .contains
-    @State private var value: String = ""
-    @Environment(\.colorScheme) var colorScheme
-
-    var body: some View {
-        VStack(spacing: 20) {
-            Text("Add Name Filter")
-                .font(.headline)
-
-            Picker("Filter Type", selection: $selectedType) {
-                ForEach(NameFilterType.allCases, id: \.self) { type in
-                    Text(type.displayName).tag(type)
-                }
-            }
-
-            TextField("Value", text: $value)
-                .textFieldStyle(.roundedBorder)
-
-            HStack {
-                Button("Cancel") {
-                    onCancel()
-                }
-                .keyboardShortcut(.cancelAction)
-
-                Button("Add") {
-                    if !value.isEmpty {
-                        onAdd(selectedType, value)
-                    }
-                }
-                .keyboardShortcut(.defaultAction)
-                .disabled(value.isEmpty)
-            }
-        }
-        .padding()
-        .frame(width: 300)
-    }
-}
 
 struct ExtensionFilterDialog: View {
     let onAdd: (ExtensionFilterType, String) -> Void

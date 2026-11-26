@@ -1,7 +1,29 @@
 {
+  "5.6.0": {
+    "features": [
+      "Space Lens: A new view maps disk usage from any folder down to the whole disk as a treemap or sunburst. Scan any path or the full disk, drill into folders with breadcrumbs, and move what you no longer need to Trash right from the map. System locations are measured but protected, so tiles under /System, /Library and friends stay view-only.",
+      "Session Elevation: Privileged tasks (root scans, snapshot deletion, root thinning) ask for your administrator password once per session and nothing is installed; the old privileged helper, if present from a previous version, is removed automatically on first launch.",
+      "Live Scanning: Partial results appear while the scan runs, cancellable at any time, and the map rebalances after you move something to Trash without a full rescan.",
+      "One Scan, Two Charts: The scan runs once, only when you open Space Lens, and both the treemap and sunburst read the same tree; Settings > Interface picks which chart the page opens with."
+    ],
+    "caveats": []
+  },
+  "5.5.0": {
+    "features": [
+      "Development Environments: A new catalog knows cache, log, session, package, VM disk and toolchain locations for 50+ tools including AI agents (Codex, Claude, opencode, jcode, Gemini), Docker Desktop, OrbStack, Rancher Desktop, Godot, JetBrains Toolbox, Qt, Sublime Text, Unity, VirtualBox and more. Locations that do not exist on your Mac never show up.",
+      "VM and Container Storage: The Development view lists real images, containers, volumes, build cache and VM disks from Docker, Colima, Lima, OrbStack, UTM, minikube and Docker Desktop, with sparse disk sizes and provisioned limits.",
+      "Stop Action: Running containers and VMs can be stopped right from the list without deleting anything; a rescan follows automatically.",
+      "Orphan Score Sorting: Leftover and Orphaned lists can sort by confidence score so the most certain wins come first.",
+      "Rule-Based Filters: Development paths are now tagged by kind (cache, logs, sessions, packages, VM disks, toolchains) and filtered through composable rules, ready for future filter toggles.",
+      "macOS Support: Minimum system raised to macOS 14.0 Sonoma; 26.x Tahoe and 27.x supported."
+    ],
+    "caveats": [
+      "macOS 13 Ventura is no longer supported."
+    ]
+  },
   "4.4.0": {
     "features": [
-      "Privileged Helper Service: Pearcleaner now supports using a privileged helper service to perform operations that require administrative permissions. This will eventually replace the current mechanism which uses Authorization Services as it's deprecated by Apple. More information in Settings > Helper tab.",
+      "Privileged Helper Service (now retired): Version 4.4.0 introduced an installable privileged helper service for admin operations. The current version no longer installs anything; privileged tasks ask for your administrator password once per session and leave nothing behind.",
       "App Lipo: There's a new Lipo(beta) view available in the menu which will show all universal apps and strip the app binary of the unused architectures to save some space. Universal apps will also show a Lipo button on the App Details view next to the Uninstall button to perform the same procedure on each app individually."
     ],
     "caveats": []

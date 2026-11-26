@@ -448,15 +448,41 @@ struct FilesView: View {
             }
         }
 
+        let sortedFilesByScore = appState.appInfo.fileSize.keys.sorted { firstURL, secondURL in
+            let firstScore = appState.zombieFile.fileScore[firstURL] ?? 0
+            let secondScore = appState.zombieFile.fileScore[secondURL] ?? 0
+            if firstScore != secondScore { return firstScore > secondScore }
+            return appState.appInfo.fileSize[firstURL, default: 0] > appState.appInfo.fileSize[secondURL, default: 0]
+        }
+
+        // Oldest files first; missing dates sort as newest so unknowns sink.
+        let sortedFilesByAge = appState.appInfo.fileSize.keys.sorted { firstURL, secondURL in
+            let firstDate = fileAge(firstURL) ?? .distantFuture
+            let secondDate = fileAge(secondURL) ?? .distantFuture
+            if firstDate != secondDate { return firstDate < secondDate }
+            return appState.appInfo.fileSize[firstURL, default: 0] > appState.appInfo.fileSize[secondURL, default: 0]
+        }
+
         switch selectedSort {
         case .size:
             sortedFiles = sortedFilesSize
+        case .age:
+            sortedFiles = sortedFilesByAge
         case .name:
             sortedFiles = sortedFilesAlpha
         case .path:
             sortedFiles = sortedFilesByPath
+        case .score:
+            sortedFiles = sortedFilesByScore
         }
         //        sortedFiles = selectedSortAlpha ? sortedFilesAlpha : sortedFilesSize
+    }
+
+    /// Modification date ranks stale leftovers; falls back to creation date
+    /// when the file has never been written after creation.
+    private func fileAge(_ url: URL) -> Date? {
+        let values = try? url.resourceValues(forKeys: [.contentModificationDateKey, .creationDateKey])
+        return values?.contentModificationDate ?? values?.creationDate
     }
 
     private func removeZombieAssociations() {

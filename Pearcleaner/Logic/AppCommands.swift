@@ -14,6 +14,9 @@ struct AppCommands: Commands {
     let locations: Locations
     let fsm: FolderSettingsManager
     let updater: Updater
+    // Fork builds self-update through Sparkle against the fork appcast; the
+    // AlinFoundation updater stays for release notes from the upstream repo
+    let selfUpdater = SparkleSelfUpdater()
     @AppStorage("settings.interface.animationEnabled") private var animationEnabled: Bool = true
     @AppStorage("settings.general.selectedTab") private var selectedTab: CurrentTabView = .general
     @State private var windowController = WindowManager()
@@ -47,11 +50,12 @@ struct AppCommands: Commands {
             .keyboardShortcut(",", modifiers: .command)
 
             Button {
-                updater.checkForUpdates(sheet: true, force: true)
+                selfUpdater.checkForUpdates()
             } label: {
                 Label("Check for Updates", systemImage: "tray.and.arrow.down.fill")
             }
             .keyboardShortcut("u", modifiers: .command)
+            .disabled(!selfUpdater.canCheckForUpdates)
 
             Button {
                 showCustomAlert(
@@ -60,7 +64,9 @@ struct AppCommands: Commands {
                     okText: "Uninstall",
                     style: .warning,
                     onOk: {
-                        uninstallPearcleaner(appState: appState, locations: locations)
+                        Task {
+                            await uninstallPearcleaner(appState: appState, locations: locations)
+                        }
                     }
                 )
             } label: {
@@ -218,6 +224,14 @@ struct AppCommands: Commands {
                 }
                 .keyboardShortcut("0", modifiers: .command)
 
+                Button
+                {
+                    appState.currentPage = .spaceLens
+
+                } label: {
+                    Text("Space Lens")
+                }
+
             } label: {
                 Label("Navigate To", systemImage: "location.north.fill")
             }
@@ -265,6 +279,10 @@ struct AppCommands: Commands {
                         NotificationCenter.default.post(name: NSNotification.Name("PluginsViewShouldRefresh"), object: nil)
                     case .services:
                         NotificationCenter.default.post(name: NSNotification.Name("DaemonViewShouldRefresh"), object: nil)
+                    case .snapshots:
+                        NotificationCenter.default.post(name: NSNotification.Name("SnapshotsViewShouldRefresh"), object: nil)
+                    case .spaceLens:
+                        NotificationCenter.default.post(name: NSNotification.Name("SpaceLensViewShouldRefresh"), object: nil)
                     case .updater:
                         NotificationCenter.default.post(name: NSNotification.Name("UpdaterViewShouldRefresh"), object: nil)
                     }

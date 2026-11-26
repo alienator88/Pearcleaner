@@ -17,7 +17,7 @@ struct PearCLI: ParsableCommand {
             Uninstall.self,
             UninstallAll.self,
             RemoveOrphaned.self,
-            Helper.self,
+            Privilege.self,
             AskPassword.self,
         ]
     )
@@ -32,6 +32,34 @@ struct PearCLI: ParsableCommand {
     ) {
         Self.locations = locations
         Self.fsm = fsm
+    }
+
+    /// Reject protected paths before a CLI mutation when no approved elevated
+    /// path is available. The decision itself lives in the fixture-tested core;
+    /// this layer only supplies the CLI-specific remediation text.
+    static func hasRequiredDeletionAuthorization(
+        for paths: [URL],
+        sudoCommand: String,
+        sessionPrivilegeAvailable: Bool = true
+    ) -> Bool {
+        switch DestructiveOperationAuthorization.evaluate(
+            paths: paths,
+            acknowledged: true,
+            hasPrivilegedAuthorization: sessionPrivilegeAvailable,
+            isWritable: { FileManager.default.isWritableFile(atPath: $0.path) }
+        ) {
+        case .authorized:
+            return true
+        case .privilegedAuthorizationRequired(let protectedPaths):
+            printOS("Protected files detected. Please run this command with sudo:\n")
+            printOS("sudo \(sudoCommand)")
+            printOS("\nProtected files:\n")
+            protectedPaths.forEach { printOS($0) }
+            return false
+        case .confirmationRequired:
+            assertionFailure("A confirmed deletion preflight must not require confirmation")
+            return false
+        }
     }
 
 //    struct Run: ParsableCommand {
@@ -65,7 +93,11 @@ struct PearCLI: ParsableCommand {
             }
 
             // Use the AppPathFinder to find paths synchronously
-            let appPathFinder = AppPathFinder(appInfo: appInfo, locations: PearCLI.locations)
+            let appPathFinder = AppPathFinder(
+                appInfo: appInfo,
+                locations: PearCLI.locations,
+                folderSettingsManager: PearCLI.fsm
+            )
 
             // Call findPaths to get the Set of URLs
             let foundPaths = appPathFinder.findPathsCLI()
@@ -164,24 +196,21 @@ struct PearCLI: ParsableCommand {
             }
 
             // Use the AppPathFinder to find paths synchronously
-            let appPathFinder = AppPathFinder(appInfo: appInfo, locations: PearCLI.locations)
+            let appPathFinder = AppPathFinder(
+                appInfo: appInfo,
+                locations: PearCLI.locations,
+                folderSettingsManager: PearCLI.fsm
+            )
 
             // Call findPaths to get the Set of URLs
             let foundPaths = appPathFinder.findPathsCLI()
 
-            // Check if any file is protected (non-writable)
-            let protectedFiles = foundPaths.filter {
-                !FileManager.default.isWritableFile(atPath: $0.path)
-            }
-
-            // If protected files are found, echo message and exit
-            if !protectedFiles.isEmpty && !HelperToolManager.shared.isHelperToolInstalled {
-                printOS("Protected files detected. Please run this command with sudo:\n")
-                printOS("sudo pearcleaner uninstall-all \(path)")
-                printOS("\nProtected files:\n")
-                for file in protectedFiles {
-                    printOS(file.path)
-                }
+            // Reject protected paths before mutating anything when no approved
+            // elevated path is available.
+            if !PearCLI.hasRequiredDeletionAuthorization(
+                for: Array(foundPaths),
+                sudoCommand: "pearcleaner uninstall-all \(path)"
+            ) {
                 Foundation.exit(1)
             }
 
@@ -222,19 +251,12 @@ struct PearCLI: ParsableCommand {
             )
                 .reversePathsSearchCLI()
 
-            // Check if any file is protected (non-writable)
-            let protectedFiles = foundPaths.filter {
-                !FileManager.default.isWritableFile(atPath: $0.path)
-            }
-
-            // If protected files are found, echo message and exit
-            if !protectedFiles.isEmpty && !HelperToolManager.shared.isHelperToolInstalled {
-                printOS("Protected files detected. Please run this command with sudo:\n")
-                printOS("sudo pearcleaner remove-orphaned")
-                printOS("\nProtected files:\n")
-                for file in protectedFiles {
-                    printOS(file.path)
-                }
+            // Reject protected paths before mutating anything when no approved
+            // elevated path is available.
+            if !PearCLI.hasRequiredDeletionAuthorization(
+                for: Array(foundPaths),
+                sudoCommand: "pearcleaner remove-orphaned"
+            ) {
                 Foundation.exit(1)
             }
 
@@ -249,107 +271,18 @@ struct PearCLI: ParsableCommand {
         }
     }
 
-    struct Helper: ParsableCommand {
+    struct Privilege: ParsableCommand {
         static var configuration = CommandConfiguration(
-            commandName: "helper",
-            abstract: "Manage privileged helper tool status"
+            commandName: "privilege",
+            abstract: "Show how privileged tasks work. Nothing is installed; the admin password is asked once per session."
         )
 
-        @Argument(help: "Action: 'enable' or 'disable'. Omit to check status.")
+        @Argument(help: "Ignored. Kept so old scripts do not break.")
         var action: String?
 
         func run() throws {
-            // If no action provided, return status
-            guard let action = action else {
-                let semaphore = DispatchSemaphore(value: 0)
-                var isEnabled = false
-
-                Task {
-                    isEnabled = await isHelperEnabled()
-                    semaphore.signal()
-                }
-
-                semaphore.wait()
-
-                let status = isEnabled ? "Enabled" : "Disabled"
-                printOS(status)
-                Foundation.exit(0)
-            }
-
-            // Validate action
-            guard ["enable", "disable"].contains(action.lowercased()) else {
-                printOS("Error: Invalid action. Use 'enable', 'disable', or omit for status.\n")
-                Foundation.exit(1)
-            }
-
-            // Check current status first
-            let semaphore1 = DispatchSemaphore(value: 0)
-            var currentlyEnabled = false
-
-            Task {
-                currentlyEnabled = await isHelperEnabled()
-                semaphore1.signal()
-            }
-
-            semaphore1.wait()
-
-            // Pre-check before attempting operation
-            if action.lowercased() == "enable" {
-                if currentlyEnabled {
-                    printOS("Privileged helper is already enabled.\n")
-                    Foundation.exit(0)
-                }
-            } else {
-                if !currentlyEnabled {
-                    printOS("Privileged helper is already disabled.\n")
-                    Foundation.exit(0)
-                }
-            }
-
-            // Proceed with enable/disable operation
-            let semaphore2 = DispatchSemaphore(value: 0)
-            var operationSuccess = false
-            var errorMessage: String?
-
-            Task {
-                if action.lowercased() == "enable" {
-                    await HelperToolManager.shared.manageHelperTool(action: .install)
-                    operationSuccess = await isHelperEnabled()
-
-                    if !operationSuccess {
-                        errorMessage = "Failed to enable privileged helper"
-                    }
-                } else {
-                    await HelperToolManager.shared.manageHelperTool(action: .uninstall)
-                    operationSuccess = !(await isHelperEnabled())
-
-                    if !operationSuccess {
-                        errorMessage = "Failed to disable privileged helper"
-                    }
-                }
-                semaphore2.signal()
-            }
-
-            // Wait for async operation to complete
-            semaphore2.wait()
-
-            if operationSuccess {
-                if action.lowercased() == "enable" {
-                    printOS("Privileged helper enabled successfully.\n")
-                } else {
-                    printOS("Privileged helper disabled successfully.\n")
-                }
-                Foundation.exit(0)
-            } else {
-                printOS("Error: \(errorMessage ?? "Unknown error occurred")\n")
-                Foundation.exit(1)
-            }
-        }
-
-        // Helper function to check if privileged helper is enabled
-        private func isHelperEnabled() async -> Bool {
-            let result = try! await runSUCommand("whoami", skipHelperCheck: true)
-            return result.0 && result.1.trimmingCharacters(in: .whitespacesAndNewlines) == "root"
+            printOS("Session-based privilege: privileged commands prompt for the administrator password once per session. Nothing is installed.\n")
+            Foundation.exit(0)
         }
     }
 

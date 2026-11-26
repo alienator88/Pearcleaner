@@ -147,7 +147,9 @@ func openTrash() {
 
 // Check if restricted app
 func isRestricted(atPath path: URL) -> Bool {
-    if path.path.contains("/Applications/Safari") || path.path.contains(Bundle.main.name) || path.path.contains("/Applications/Utilities") {
+    if path.path.contains("/Applications/Safari")
+        || path.standardizedFileURL == Bundle.main.bundleURL.standardizedFileURL
+        || path.path.contains("/Applications/Utilities") {
         return true
     } else {
         return false
@@ -220,7 +222,16 @@ func checkAppBundleArchitecture(at appBundlePath: String) -> Arch {
                 else if archData.cpuType == 0x01000007 { archs.append(.intel) }
                 offset += 20
             }
-            return archs.count == 1 ? archs.first! : .universal
+
+            // A universal app has slices from both CPU families. Fat binaries
+            // that only contain ARM variants (for example arm64e + arm64e.x1)
+            // are not universal and cannot be thinned.
+            let hasArm = archs.contains(.arm)
+            let hasIntel = archs.contains(.intel)
+            if hasArm && hasIntel { return .universal }
+            if hasArm { return .arm }
+            if hasIntel { return .intel }
+            return .empty
         } else {
             // Single architecture Mach-O binary: read cpu type from header
             guard headerData.count >= 8 else { return .empty }
@@ -274,23 +285,23 @@ func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool
         }
     }
     
-    // Use privileged helper if installed and needed, otherwise fallback to bundle thinning
+    // Privileged bundle thinning through the session credential, with the
+    // unprivileged path as fallback when elevation is refused
     var success: Bool
     var sizes: [String: UInt64]?
     
     if dryRun {
-        // For dry run, always use direct calculation without helper tools
+        // For dry run, always use direct calculation without elevation
         let result = thinAppBundle(at: appBundlePath, dryRun: true)
         success = result.0
         sizes = result.1
-    } else if HelperToolManager.shared.isHelperToolInstalled {
-        // Use privileged bundle thinning - helper handles the entire bundle with elevated privileges
+    } else {
         let semaphore = DispatchSemaphore(value: 0)
         success = false
         sizes = nil
         
         Task {
-            let result = await HelperToolManager.shared.runBundleThinning(bundlePath: appBundlePath.path)
+            let result = await SessionPrivilegeManager.thinPrivilegedBundle(at: appBundlePath.path)
             success = result.0
             if result.0, !result.2.isEmpty {
                 sizes = result.2
@@ -300,16 +311,11 @@ func thinAppBundleArchitecture(at appBundlePath: URL, of arch: Arch, multi: Bool
         semaphore.wait()
         
         if !success {
-            // Helper tool failed, fallback to bundle thinning
+            // Elevation refused or bundle rejected, fallback to bundle thinning
             let result = thinAppBundle(at: appBundlePath)
             success = result.0
             sizes = result.1
         }
-    } else {
-        // No helper tool installed, use comprehensive bundle thinning
-        let result = thinAppBundle(at: appBundlePath)
-        success = result.0
-        sizes = result.1
     }
 
     // Update the app bundle timestamp to refresh Finder (only for real thinning)
@@ -504,6 +510,12 @@ extension URL {
             printOS("Error getting localized name: \(error)")
             return self.lastPathComponent.replacingOccurrences(of: ".app", with: "")
         }
+    }
+}
+
+extension String {
+    var shellQuoted: String {
+        "'\(replacingOccurrences(of: "'", with: "'\\''"))'"
     }
 }
 
@@ -837,36 +849,18 @@ func formatBytes(_ bytes: Int64) -> String {
 }
 
 // MARK: - Unified Privileged Command Execution
-/// Unified wrapper for executing privileged commands with automatic fallback
-/// Tries helper tool first if installed, falls back to Authorization Services (password prompt)
+/// Unified wrapper for executing privileged commands. All privileged work now
+/// goes through the session credential: one password prompt per app session,
+/// every command run by the Apple-signed shell launched through Authorization Services.
 func runSUCommand(
     _ command: String,
     errorContext: String? = nil,
-    skipHelperCheck: Bool = false,
     throwOnFailure: Bool = false
 ) async throws -> (success: Bool, output: String) {
 
-    // Pattern 1: Skip helper check (for CLI diagnostics)
-    if skipHelperCheck {
-        let result = await HelperToolManager.shared.runCommand(command, skipHelperCheck: true)
-        return result
-    }
-    
-    // Pattern 2: Try helper if installed
-    if HelperToolManager.shared.isHelperToolInstalled {
-        let result = await HelperToolManager.shared.runCommand(command)
-        if result.0 {
-            return result
-        }
-
-        // Helper failed, log if errorContext provided
-        if let context = errorContext {
-            printOS("\(context): \(result.1)")
-        }
-    }
-
-    // Pattern 3: Fallback to Authorization Services (prompts for password)
-    let (success, output) = performPrivilegedCommands(commands: command)
+    let (success, output) = await Task.detached(priority: .userInitiated) {
+        SessionPrivilegeManager.shared.run(command: command)
+    }.value
 
     // Log custom error if provided and command failed
     if !success, let context = errorContext {

@@ -1,5 +1,8 @@
 # Pearcleaner
 
+### Fork Status: Actively Maintained
+While the original project is on hold (see below), this fork keeps moving: updates, fixes, and new functionality are published here. Fork-only work so far includes session elevation without a privileged helper, Space Lens, development environments with Docker and Colima control, orphan confidence scores, and Sparkle self-updates. Releases are published from this repo and the app self-updates through the fork appcast.
+
 ### Website
 The only legitimate website owned by me is https://itsalin.com. Anything else offering Pearcleaner downloads is either a scam or not affiliated with me.
 More details [HERE](https://www.reddit.com/r/macapps/comments/1ucstzy/psa_pearcleanercom_is_a_fake_site_pushing_macos/).
@@ -27,11 +30,11 @@ More details [HERE](https://www.reddit.com/r/macapps/comments/1ucstzy/psa_pearcl
    <br />
    <strong>Status: </strong>On Hold
    <br />
-   <strong>Version: </strong>5.4.3
+   <strong>Version: </strong>5.6.0
    <br />
-   <a href="https://github.com/alienator88/Pearcleaner/releases"><strong>Download</strong></a>
+   <a href="https://github.com/alecuba16/Pearcleaner/releases"><strong>Download</strong></a>
     · 
-   <a href="https://github.com/alienator88/Pearcleaner/commits">Commits</a>
+   <a href="https://github.com/alecuba16/Pearcleaner/commits">Commits</a>
   </p>
 </p>
 </br>
@@ -50,7 +53,7 @@ This project was born out of wanting to learn more on how macOS deals with app i
 
 ## Features
 ### Core
-- **App Uninstall • Orphaned File Search • Development Environment Manager • File Search • Homebrew Manager • App Lipo • PKG Manager • Plugin Manager • Services Manager • Apps Updater** 
+- **App Uninstall • Orphaned File Search • Development Environment Manager • File Search • Homebrew Manager • App Lipo • PKG Manager • Plugin Manager • Services Manager • Apps Updater • Space Lens** 
 - Drag/drop apps, CLI support, and deep link automation [view](https://github.com/alienator88/Pearcleaner/wiki/Deep-Link-Guide)
 - List or Grid view with badges for web/iOS apps
 - Finder Extension for right-click uninstall
@@ -70,11 +73,14 @@ This project was born out of wanting to learn more on how macOS deals with app i
 
 ## Screenshots
 
-<img src="https://github.com/user-attachments/assets/5095d30c-3665-4b24-bf00-756baac59026" align="left" width="400" />
-<img src="https://github.com/user-attachments/assets/e9841914-613e-4206-b0bd-07963bf27507" align="center" width="400" />
+<img src="Screenshots/apps-list.png" align="left" width="400" />
+<img src="Screenshots/uninstall-iina.png" align="center" width="400" />
 <p></p>
-<img src="https://github.com/user-attachments/assets/c35258c2-2886-412c-a4c4-3c5e343e7a2c" align="left" width="400" />
-<img src="https://github.com/user-attachments/assets/e6253ce4-b1e4-4851-a2c2-46b1f1e128cb" align="center" width="400" />
+<img src="Screenshots/orphans-final.png" align="left" width="400" />
+<img src="Screenshots/dev-final.png" align="center" width="400" />
+<p></p>
+<img src="Screenshots/spacelens-sunburst-repo.png" align="left" width="400" />
+<img src="Screenshots/spacelens-treemap-2levels.png" align="center" width="400" />
 
 
 ## Issues
@@ -86,32 +92,39 @@ This project was born out of wanting to learn more on how macOS deals with app i
 ## Requirements
 > [!NOTE]
 > - Full Disk permission to search for files
-> - Privileged Helper to perform actions on system folders
+> - Administrator password (asked once per session) to perform actions on system folders
 
 | macOS Version | Codename | Supported |
 |---------------|----------|-----------|
-| 13.x          | Ventura  | ✅        |
 | 14.x          | Sonoma   | ✅        |
 | 15.x          | Sequoia  | ✅        |
 | 26.x          | Tahoe    | ✅        |
+| 27.x          | TBD      | ✅        |
 | TBD           | Beta     | ❌        |
-> Versions prior to macOS 13.0 are not supported due to missing Swift/SwiftUI APIs required by the app.
+> Versions prior to macOS 14.0 are not supported due to missing Swift/SwiftUI APIs required by the app.
 
 ## Getting Pearcleaner
 
 <details>
   <summary>Releases</summary>
 
-Pre-compiled, always up-to-date versions are available from my [releases](https://github.com/alienator88/Pearcleaner/releases) page.
+Pre-compiled, always up-to-date versions are available from my [releases](https://github.com/alecuba16/Pearcleaner/releases) page.
 </details>
 
 <details>
   <summary>Homebrew</summary>
 
-You can add the app via Homebrew:
+You can add the app via my Homebrew tap:
 ```
-brew install --cask pearcleaner
+brew tap alecuba16/tap https://github.com/alecuba16/homebrew-tap
+brew install --cask pearcleaner-fork
 ```
+</details>
+
+<details>
+  <summary>Fork self-updates</summary>
+
+This fork publishes its own releases. The app checks the [fork appcast](https://github.com/alecuba16/Pearcleaner/releases/latest/download/appcast.xml) from the Check for Updates menu item. Automatic checks on launch are opt-in from Settings, Update. Updates are EdDSA-signed (Sparkle 2) so no Developer ID certificate is needed. The upstream [release notes](https://github.com/alienator88/Pearcleaner/releases) still show in the Update tab.
 </details>
 
 ## Translations

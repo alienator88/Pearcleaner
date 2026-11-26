@@ -17,6 +17,10 @@
 			</array>
 		</dict>
 	</array>
+	<key>SUFeedURL</key>
+	<string>https://github.com/alecuba16/Pearcleaner/releases/latest/download/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>Nmp+C09n6wYKpzwNaFK2QupluIoWXMirt5sdOJi/RIc=</string>
 	<key>CFBundleGetInfoString</key>
 	<string></string>
 	<key>CFBundleURLTypes</key>

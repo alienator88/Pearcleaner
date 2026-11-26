@@ -312,6 +312,7 @@ struct ZombieFileCategoryView: View {
                                     size: fileSize,
                                     icon: iconImage,
                                     path: path,
+                                    score: appState.zombieFile.fileScore[path] ?? 50,
                                     memoizedFiles: $memoizedFiles,
                                     isSelected: fileItemBinding(path)
                                 )

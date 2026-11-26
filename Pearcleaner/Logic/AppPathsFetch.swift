@@ -27,6 +27,7 @@ class AppPathFinder {
     // Shared properties
     private var appInfo: AppInfo
     private var locations: Locations
+    private let folderSettingsManager: FolderSettingsManager
     private var containerCollection: [URL] = []
     private let collectionAccessQueue = DispatchQueue(label: "com.alienator88.Pearcleaner.appPathFinder.collectionAccess")
     @AppStorage("settings.general.searchSensitivity") private var sensitivityLevel: SearchSensitivityLevel = .strict
@@ -56,7 +57,7 @@ class AppPathFinder {
 
     // Exclusion list for app file search (computed property to always get current list)
     private var formattedAppExclusionList: [String] {
-        return FolderSettingsManager.shared.fileFolderPathsApps.map { $0.pearFormat() }
+        return folderSettingsManager.fileFolderPathsApps.map { $0.pearFormat() }
     }
 
     // Computed property to get the effective sensitivity level
@@ -65,9 +66,10 @@ class AppPathFinder {
     }
 
     // Initializer for both CLI and GUI
-    init(appInfo: AppInfo, locations: Locations, appState: AppState? = nil, undo: Bool = false, sensitivityOverride: SearchSensitivityLevel? = nil, completion: (() -> Void)? = nil) {
+    init(appInfo: AppInfo, locations: Locations, appState: AppState? = nil, undo: Bool = false, sensitivityOverride: SearchSensitivityLevel? = nil, completion: (() -> Void)? = nil, folderSettingsManager: FolderSettingsManager = .shared) {
         self.appInfo = appInfo
         self.locations = locations
+        self.folderSettingsManager = folderSettingsManager
         self.appState = appState
         self.undo = undo
         self.overrideSensitivityLevel = sensitivityOverride
@@ -163,7 +165,7 @@ class AppPathFinder {
                 for directory in containerDirectories {
                     let directoryName = directory.lastPathComponent
                     if AppPathFinder.uuidRegex.firstMatch(in: directoryName, options: [], range: NSRange(location: 0, length: directoryName.utf16.count)) != nil {
-                        let metadataPlistURL = directory.appendingPathComponent(".com.apple.containermanagerd.metadata.plist")
+                        let metadataPlistURL = directory.appending(path: ".com.apple.containermanagerd.metadata.plist", directoryHint: .notDirectory)
                         if let metadataDict = NSDictionary(contentsOf: metadataPlistURL),
                            let applicationBundleID = metadataDict["MCMMetadataIdentifier"] as? String {
                             if applicationBundleID == self.appInfo.bundleIdentifier {
@@ -192,8 +194,13 @@ class AppPathFinder {
             var localResults: [URL] = []
             var subdirectoriesToSearch: [URL] = []
 
+            // directoryHint: .notDirectory skips the implicit lstat that SwiftURL's default .inferFromPath
+            // performs on every appendingPathComponent call on macOS 26+. With thousands of entries to scan,
+            // those probe stats dominate runtime; the explicit hint is harmless since fileExists below
+            // performs the real directory check.
+            let locationURL = URL(fileURLWithPath: location)
             for scannedItem in contents {
-                let scannedItemURL = URL(fileURLWithPath: location).appendingPathComponent(scannedItem)
+                let scannedItemURL = locationURL.appending(path: scannedItem, directoryHint: .notDirectory)
                 let normalizedItemName: String
                 if scannedItemURL.hasDirectoryPath || scannedItemURL.pathExtension.isEmpty {
                     // It's a directory or has no extension - don't remove anything
@@ -654,6 +661,18 @@ class AppPathFinder {
 
             tempCollection.append(contentsOf: spotlightOnly)
 
+            // Merge zap paths declared by the installed Homebrew cask (if the app is a cask)
+            let zapPaths = CaskZapHarvester.zapPaths(for: self.appInfo)
+            let zapOnly = zapPaths.filter { !tempCollection.contains($0) }
+
+            if zapOnly.count > 0 {
+                Task { @MainActor in
+                    GlobalConsoleManager.shared.appendOutput("Homebrew zap list found \(zapOnly.count) additional files\n", source: CurrentPage.applications.title)
+                }
+            }
+
+            tempCollection.append(contentsOf: zapOnly)
+
             let excludePaths = outliersEx.map { $0.path }
             tempCollection.removeAll { url in
                 excludePaths.contains(url.path)
@@ -701,6 +720,10 @@ class AppPathFinder {
         let spotlightOnly = spotlightResults.filter { !self.collectionSet.contains($0) }
         //        printOS("Spotlight index found: \(spotlightOnly.count)")
         tempCollection.append(contentsOf: spotlightOnly)
+
+        // Merge zap paths declared by the installed Homebrew cask (if the app is a cask)
+        let zapPaths = CaskZapHarvester.zapPaths(for: self.appInfo)
+        tempCollection.append(contentsOf: zapPaths.filter { !tempCollection.contains($0) })
 
         let excludePaths = outliersEx.map { $0.path }
         tempCollection.removeAll { url in

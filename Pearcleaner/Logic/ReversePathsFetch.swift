@@ -17,10 +17,15 @@ class ReversePathsSearcher {
     private var collection: [URL] = []
     private var fileSize: [URL: Int64] = [:]
     private var fileIcon: [URL: NSImage?] = [:]
+    private var fileScore: [URL: Int] = [:]
     private let dispatchGroup = DispatchGroup()
     private let sortedApps: [AppInfo]
     private let streamingMode: Bool
     private var shouldStop = false
+    // InstallHistory + installed identities, shared by every score call in one scan
+    private lazy var scoreContext: UsageScoreContext = {
+        UsageScoreContext(installedApps: sortedApps)
+    }()
 
     // Cached formatted data to avoid repeated .pearFormat() calls
     private lazy var formattedExclusionList: [String] = {
@@ -31,6 +36,7 @@ class ReversePathsSearcher {
         let formattedBundleId: String
         let formattedAppName: String
         let formattedEntitlements: [String]
+        let teamIdentifier: String?
     }
 
     private lazy var cachedAppIdentifiers: [CachedAppIdentifiers] = {
@@ -41,7 +47,8 @@ class ReversePathsSearcher {
                 formattedEntitlements: app.entitlements?.compactMap { entitlement in
                     let formatted = entitlement.pearFormat()
                     return formatted.isEmpty ? nil : formatted
-                } ?? []
+                } ?? [],
+                teamIdentifier: app.teamIdentifier
             )
         }
     }()
@@ -74,7 +81,7 @@ class ReversePathsSearcher {
     }
 
     private func processLocationsStreaming() async {
-        var batch: [(url: URL, size: Int64, icon: NSImage?)] = []
+        var batch: [(url: URL, size: Int64, icon: NSImage?, score: Int)] = []
         let batchSize = 10
         var totalFound = 0
 
@@ -107,14 +114,17 @@ class ReversePathsSearcher {
         }
     }
 
-    private func processLocationStreaming(_ location: String, batch: inout [(url: URL, size: Int64, icon: NSImage?)], batchSize: Int) async {
+    private func processLocationStreaming(_ location: String, batch: inout [(url: URL, size: Int64, icon: NSImage?, score: Int)], batchSize: Int) async {
         do {
             let contents = try fileManager.contentsOfDirectory(atPath: location)
+            // directoryHint: .notDirectory skips the implicit lstat that SwiftURL's default
+            // .inferFromPath performs on every appendingPathComponent call on macOS 26+.
+            let locationURL = URL(fileURLWithPath: location)
             for scannedItemName in contents {
                 if shouldStop {
                     return
                 }
-                let scannedItemURL = URL(fileURLWithPath: location).appendingPathComponent(scannedItemName)
+                let scannedItemURL = locationURL.appending(path: scannedItemName, directoryHint: .notDirectory)
                 await processItemStreaming(scannedItemName, scannedItemURL: scannedItemURL, batch: &batch, batchSize: batchSize)
             }
         } catch {
@@ -122,7 +132,7 @@ class ReversePathsSearcher {
         }
     }
 
-    private func processItemStreaming(_ scannedItemName: String, scannedItemURL: URL, batch: inout [(url: URL, size: Int64, icon: NSImage?)], batchSize: Int) async {
+    private func processItemStreaming(_ scannedItemName: String, scannedItemURL: URL, batch: inout [(url: URL, size: Int64, icon: NSImage?, score: Int)], batchSize: Int) async {
         let normalizedItemPath = scannedItemURL.standardizedFileURL.path.pearFormat()
 
         if formattedExclusionList.contains(normalizedItemPath) || normalizedItemPath.contains("dsstore") || normalizedItemPath.contains("daemonnameoridentifierhere") || formattedExclusionList.first(where: { normalizedItemPath.contains($0) }) != nil {
@@ -142,8 +152,11 @@ class ReversePathsSearcher {
         let size = totalSizeOnDisk(for: scannedItemURL)
         let icon = getIconForFileOrFolderNS(atPath: scannedItemURL)
 
+        // Score orphan confidence from provenance + usage signals
+        let score = orphanScoreForItem(at: scannedItemURL)
+
         // Add to batch
-        batch.append((url: scannedItemURL, size: size, icon: icon))
+        batch.append((url: scannedItemURL, size: size, icon: icon, score: score))
 
         // Flush batch when it reaches the batch size
         if batch.count >= batchSize {
@@ -151,7 +164,7 @@ class ReversePathsSearcher {
         }
     }
 
-    private func flushBatch(_ batch: inout [(url: URL, size: Int64, icon: NSImage?)]) async {
+    private func flushBatch(_ batch: inout [(url: URL, size: Int64, icon: NSImage?, score: Int)]) async {
         let batchCopy = batch
         batch.removeAll()
 
@@ -160,6 +173,7 @@ class ReversePathsSearcher {
             for item in batchCopy {
                 updatedZombieFile.fileSize[item.url] = item.size
                 updatedZombieFile.fileIcon[item.url] = item.icon
+                updatedZombieFile.fileScore[item.url] = item.score
             }
 
             // Log progress periodically (every 50 files)
@@ -195,8 +209,11 @@ class ReversePathsSearcher {
 
         do {
             let contents = try fileManager.contentsOfDirectory(atPath: location)
+            // directoryHint: .notDirectory skips the implicit lstat that SwiftURL's default
+            // .inferFromPath performs on every appendingPathComponent call on macOS 26+.
+            let locationURL = URL(fileURLWithPath: location)
             contents.forEach { scannedItemName in
-                let scannedItemURL = URL(fileURLWithPath: location).appendingPathComponent(scannedItemName)
+                let scannedItemURL = locationURL.appending(path: scannedItemName, directoryHint: .notDirectory)
                 processItem(scannedItemName, scannedItemURL: scannedItemURL)
             }
         } catch {
@@ -226,6 +243,7 @@ class ReversePathsSearcher {
 
     private func isRelatedToInstalledApp(scannedItemURL: URL) -> Bool {
         let normalizedItemPath = scannedItemURL.path.pearFormat()
+        let rawPath = scannedItemURL.path
 
         for (_, cached) in cachedAppIdentifiers.enumerated() {
             // Only match if bundle ID or app name is at least 5 characters (avoids false positives from short words like "test", "alin", etc.)
@@ -241,6 +259,12 @@ class ReversePathsSearcher {
                 if !entitlementFormatted.isEmpty && entitlementFormatted.count >= 5 && normalizedItemPath.contains(entitlementFormatted) {
                     return true
                 }
+            }
+
+            // TeamID-prefixed container names (TEAMID.com.vendor.app) belong to
+            // installed apps even when the bundle id after the prefix is unusual
+            if let teamId = cached.teamIdentifier, teamId.count >= 5, rawPath.contains(teamId) {
+                return true
             }
 
             // Check if the path contains /Containers or /Group Containers
@@ -284,11 +308,23 @@ class ReversePathsSearcher {
         return regex?.firstMatch(in: fileName, options: [], range: range) != nil
     }
 
+    /// Compute the 0-100 orphan confidence score for one candidate.
+    /// Candidates already passed the "not related to installed apps" filter, so
+    /// here the interesting signals are provenance (container metadata owner
+    /// gone, quarantine agent uninstalled) and staleness. Runs on the scan
+    /// queue: MDItem lookups are cheap but not free.
+    private func orphanScoreForItem(at url: URL) -> Int {
+        guard let signals = UsageScoreEngine.signals(for: url) else { return 50 }
+        let owner = UsageScoreEngine.owningApp(for: url, signals: signals, installedApps: sortedApps)
+        return UsageScoreEngine.orphanScore(for: url, signals: signals, owner: owner, context: scoreContext)
+    }
+
     private func calculateFileDetails() {
         collection.forEach { path in
             let size = totalSizeOnDisk(for: path)
             fileSize[path] = size
             fileIcon[path] = getIconForFileOrFolderNS(atPath: path)
+            fileScore[path] = orphanScoreForItem(at: path)
         }
     }
 
@@ -297,6 +333,7 @@ class ReversePathsSearcher {
             var updatedZombieFile = ZombieFile.empty
             updatedZombieFile.fileSize = self.fileSize
             updatedZombieFile.fileIcon = self.fileIcon
+            updatedZombieFile.fileScore = self.fileScore
 
             let totalSize = self.fileSize.values.reduce(0, +)
             let sizeString = ByteCountFormatter.string(fromByteCount: totalSize, countStyle: .file)

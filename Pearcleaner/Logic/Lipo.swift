@@ -9,16 +9,6 @@ import Foundation
 
 
 // Helper structs for Mach-O parsing
-public struct FatHeader {
-    public let magic: UInt32
-    public let numArchitectures: UInt32
-    
-    public init(magic: UInt32, numArchitectures: UInt32) {
-        self.magic = magic
-        self.numArchitectures = numArchitectures
-    }
-}
-
 public struct FatArch {
     public let cpuType: UInt32
     public let cpuSubtype: UInt32
@@ -33,6 +23,181 @@ public struct FatArch {
         self.size = size
         self.align = align
     }
+}
+
+// MARK: - Mach-O inspection
+
+private let machoCPUTypeX86: UInt32 = 7
+private let machoCPUTypeX8664: UInt32 = 0x0100_0007
+private let machoCPUTypeARM: UInt32 = 12
+private let machoCPUTypeARM64: UInt32 = 0x0100_000C
+
+/// One architecture slice of a Mach-O file.
+struct MachOSliceInfo {
+    let cpuType: UInt32
+    let cpuSubtype: UInt32
+    let offset: UInt64
+    let size: UInt64
+}
+
+/// Result of inspecting a file for Mach-O content. Both thin and fat binaries
+/// are represented as a list of slices, so callers do not have to special-case
+/// byte order or 32/64-bit fat headers.
+struct MachOInfo {
+    let isFat: Bool
+    let slices: [MachOSliceInfo]
+    let fileSize: UInt64
+
+    /// Bytes that can be removed on the current machine: every slice that is
+    /// not the architecture the host CPU runs. A thin binary has no savings.
+    func removableBytes(forHostCPU hostCPU: UInt32) -> UInt64 {
+        guard isFat, slices.count > 1 else { return 0 }
+        return slices.reduce(0) { total, slice in
+            slice.cpuType == hostCPU ? total : total + slice.size
+        }
+    }
+}
+
+func machoHostCPUType() -> UInt32 {
+#if arch(arm64)
+    return machoCPUTypeARM64
+#else
+    return machoCPUTypeX8664
+#endif
+}
+
+private func machoReadUInt32(_ bytes: [UInt8], at offset: Int, bigEndian: Bool) -> UInt32? {
+    guard offset >= 0, offset + 4 <= bytes.count else { return nil }
+    let b0 = UInt32(bytes[offset])
+    let b1 = UInt32(bytes[offset + 1])
+    let b2 = UInt32(bytes[offset + 2])
+    let b3 = UInt32(bytes[offset + 3])
+    if bigEndian {
+        return (b0 << 24) | (b1 << 16) | (b2 << 8) | b3
+    }
+    return (b3 << 24) | (b2 << 16) | (b1 << 8) | b0
+}
+
+private func machoReadUInt64(_ bytes: [UInt8], at offset: Int, bigEndian: Bool) -> UInt64? {
+    guard offset >= 0, offset + 8 <= bytes.count else { return nil }
+    let parts = (0..<8).map { UInt64(bytes[offset + $0]) }
+    if bigEndian {
+        return parts.reduce(0) { ($0 << 8) | $1 }
+    }
+    return parts.reversed().reduce(0) { ($0 << 8) | $1 }
+}
+
+/// Reads the Mach-O headers of a file without loading the whole file. Returns
+/// nil for anything that is not a valid thin or fat Mach-O binary, which makes
+/// this safe to call for every file in an app bundle.
+func inspectMachO(at url: URL) -> MachOInfo? {
+    guard let handle = try? FileHandle(forReadingFrom: url) else { return nil }
+    defer { try? handle.close() }
+
+    let fileSize = handle.seekToEndOfFile()
+    guard fileSize >= 8 else { return nil }
+
+    try? handle.seek(toOffset: 0)
+    guard let headerData = try? handle.read(upToCount: 8), headerData.count == 8 else {
+        return nil
+    }
+    let header = [UInt8](headerData)
+
+    // Fat headers are always written big-endian, but accept the byte-swapped
+    // variants as well. 64-bit fat headers use 32-byte entries.
+    let fat32Big = header[0] == 0xCA && header[1] == 0xFE && header[2] == 0xBA && header[3] == 0xBE
+    let fat32Little = header[0] == 0xBE && header[1] == 0xBA && header[2] == 0xFE && header[3] == 0xCA
+    let fat64Big = header[0] == 0xCA && header[1] == 0xFE && header[2] == 0xBA && header[3] == 0xBF
+    let fat64Little = header[0] == 0xBF && header[1] == 0xBA && header[2] == 0xFE && header[3] == 0xCA
+
+    if fat32Big || fat32Little || fat64Big || fat64Little {
+        let isFat64 = fat64Big || fat64Little
+        let bigEndian = fat32Big || fat64Big
+
+        guard let count = machoReadUInt32(header, at: 4, bigEndian: bigEndian),
+              count > 0, count < 100 else {
+            return nil
+        }
+
+        let entrySize = isFat64 ? 32 : 20
+        let tableSize = Int(count) * entrySize
+        try? handle.seek(toOffset: 8)
+        guard let tableData = try? handle.read(upToCount: tableSize),
+              tableData.count == tableSize else {
+            return nil
+        }
+        let table = [UInt8](tableData)
+
+        var slices: [MachOSliceInfo] = []
+        slices.reserveCapacity(Int(count))
+
+        for index in 0..<Int(count) {
+            let base = index * entrySize
+            guard let cpuType = machoReadUInt32(table, at: base, bigEndian: bigEndian),
+                  let cpuSubtype = machoReadUInt32(table, at: base + 4, bigEndian: bigEndian) else {
+                continue
+            }
+
+            let offset: UInt64
+            let size: UInt64
+            if isFat64 {
+                guard let parsedOffset = machoReadUInt64(table, at: base + 8, bigEndian: bigEndian),
+                      let parsedSize = machoReadUInt64(table, at: base + 16, bigEndian: bigEndian) else {
+                    continue
+                }
+                offset = parsedOffset
+                size = parsedSize
+            } else {
+                guard let parsedOffset = machoReadUInt32(table, at: base + 8, bigEndian: bigEndian),
+                      let parsedSize = machoReadUInt32(table, at: base + 12, bigEndian: bigEndian) else {
+                    continue
+                }
+                offset = UInt64(parsedOffset)
+                size = UInt64(parsedSize)
+            }
+
+            // Ignore slices that point outside the file. Malformed headers
+            // should not make an app look lipoable.
+            guard size > 0, offset < fileSize else { continue }
+            slices.append(
+                MachOSliceInfo(
+                    cpuType: cpuType,
+                    cpuSubtype: cpuSubtype,
+                    offset: offset,
+                    size: min(size, fileSize - offset)
+                ))
+        }
+
+        guard !slices.isEmpty else { return nil }
+        return MachOInfo(isFat: true, slices: slices, fileSize: fileSize)
+    }
+
+    // Thin Mach-O files. The magic tells us the byte order of the header.
+    let thin64Little = header[0] == 0xCF && header[1] == 0xFA && header[2] == 0xED && header[3] == 0xFE
+    let thin64Big = header[0] == 0xFE && header[1] == 0xED && header[2] == 0xFA && header[3] == 0xCF
+    let thin32Little = header[0] == 0xCE && header[1] == 0xFA && header[2] == 0xED && header[3] == 0xFE
+    let thin32Big = header[0] == 0xFE && header[1] == 0xED && header[2] == 0xFA && header[3] == 0xCE
+
+    guard thin64Little || thin64Big || thin32Little || thin32Big else { return nil }
+
+    let bigEndian = thin64Big || thin32Big
+    guard let cpuType = machoReadUInt32(header, at: 4, bigEndian: bigEndian) else {
+        return nil
+    }
+
+    let isFat = false
+    return MachOInfo(
+        isFat: isFat,
+        slices: [
+            MachOSliceInfo(
+                cpuType: cpuType,
+                cpuSubtype: 0,
+                offset: 0,
+                size: fileSize
+            )
+        ],
+        fileSize: fileSize
+    )
 }
 
 // Function to thin an entire app bundle with size tracking
@@ -72,7 +237,6 @@ func recursivelyThinBundle(at path: URL, dryRun: Bool = false) -> (success: Bool
     }
 
     var processedFiles: [String] = []
-    var skippedFiles: [String] = []
     var totalPreSize: UInt64 = 0
     var totalPostSize: UInt64 = 0
 
@@ -92,6 +256,7 @@ func recursivelyThinBundle(at path: URL, dryRun: Bool = false) -> (success: Bool
     }
 
     // Process files in batches to limit memory and file descriptor usage
+    let hostCPU = machoHostCPUType()
     let batchSize = 50
     for batchStart in stride(from: 0, to: candidateFiles.count, by: batchSize) {
         autoreleasepool {
@@ -100,46 +265,31 @@ func recursivelyThinBundle(at path: URL, dryRun: Bool = false) -> (success: Bool
 
             for fileURL in batch {
                 autoreleasepool {
-                    if shouldThinFile(fileURL) {
-                        // Get file size before thinning
-                        if let preAttributes = try? fileManager.attributesOfItem(atPath: fileURL.path),
-                           let preSize = preAttributes[.size] as? UInt64 {
+                    // Parse the Mach-O header once. Files that are not Mach-O,
+                    // or that only contain the architecture we are running,
+                    // cannot be thinned.
+                    guard let info = inspectMachO(at: fileURL) else { return }
+                    let removableSize = info.removableBytes(forHostCPU: hostCPU)
+                    guard removableSize > 0 else { return }
 
-                            if dryRun {
-                                // For dry run, calculate potential savings without modifying files
-                                do {
-                                    if let sizes = try getArchitectureSliceSizes(from: fileURL.path) {
-                                        totalPreSize += preSize
-#if arch(arm64)
-                                        let removedSize = UInt64(sizes.intel)
-#else
-                                        let removedSize = UInt64(sizes.arm)
-#endif
-                                        let estimatedPostSize = preSize > removedSize ? preSize - removedSize : preSize
-                                        totalPostSize += estimatedPostSize
-                                        processedFiles.append(fileURL.path)
-                                    } else {
-                                        skippedFiles.append(fileURL.path)
-                                    }
-                                } catch {
-                                    skippedFiles.append(fileURL.path)
-                                }
-                            } else {
-                                // Real thinning
-                                if thinBinaryUsingMachO(executablePath: fileURL.path) {
-                                    // Get file size after thinning
-                                    if let postAttributes = try? fileManager.attributesOfItem(atPath: fileURL.path),
-                                       let postSize = postAttributes[.size] as? UInt64 {
-                                        totalPreSize += preSize
-                                        totalPostSize += postSize
-                                    }
-                                    processedFiles.append(fileURL.path)
-                                } else {
-                                    skippedFiles.append(fileURL.path)
-                                }
-                            }
-                        } else {
-                            skippedFiles.append(fileURL.path)
+                    let preSize = info.fileSize
+
+                    if dryRun {
+                        // Calculate potential savings without modifying files.
+                        let postSize = preSize > removableSize ? preSize - removableSize : 0
+                        totalPreSize += preSize
+                        totalPostSize += postSize
+                        processedFiles.append(fileURL.path)
+                    } else {
+                        // Real thinning
+                        if thinBinaryUsingMachO(executablePath: fileURL.path) {
+                            let postSize =
+                                (try? fileManager.attributesOfItem(atPath: fileURL.path))?[.size]
+                                as? UInt64
+                                ?? (preSize > removableSize ? preSize - removableSize : 0)
+                            totalPreSize += preSize
+                            totalPostSize += postSize
+                            processedFiles.append(fileURL.path)
                         }
                     }
                 }
@@ -147,7 +297,10 @@ func recursivelyThinBundle(at path: URL, dryRun: Bool = false) -> (success: Bool
         }
     }
 
-    let success = processedFiles.count > 0 || (processedFiles.count == 0 && skippedFiles.count >= 0)
+    // Only report success when at least one binary actually had an architecture
+    // to remove. Previously this was always true, which made apps that were
+    // already lipo'd (or never lipoable) look like valid candidates.
+    let success = !processedFiles.isEmpty
     var sizes: [String: UInt64]? = nil
 
     if totalPreSize > 0 {
@@ -162,12 +315,6 @@ func recursivelyThinBundle(at path: URL, dryRun: Bool = false) -> (success: Bool
     }
 
     return (success, sizes)
-}
-
-// Determine if a file should be thinned
-func shouldThinFile(_ url: URL) -> Bool {
-    // Check if it's an executable binary
-    return isExecutableBinary(url)
 }
 
 // Find the app bundle path by traversing up the directory tree
@@ -191,143 +338,46 @@ func findAppBundlePath(from url: URL) -> URL {
     return fallbackURL
 }
 
-// Check if a file is an executable binary
+// Check if a file is a Mach-O executable binary (thin or universal)
 public func isExecutableBinary(_ url: URL) -> Bool {
-    // First check file extension for known binary types
-    let pathExtension = url.pathExtension.lowercased()
-    let knownBinaryExtensions = ["dylib", "so", "bundle"]
-
-    // If it's a known binary extension, assume it's a binary (faster than reading file)
-    if knownBinaryExtensions.contains(pathExtension) {
-        return true
-    }
-
-    // Special handling for bundle structures that might contain binaries
-    // (.appex, .xpc, .framework are bundles, but we want to check their executables inside)
-    let bundleExtensions = ["appex", "xpc", "framework"]
-    if bundleExtensions.contains(pathExtension) {
-        // These are bundles - the enumerator will traverse into them
-        // and find the actual executable inside
-        return false
-    }
-
-    // For other files, check magic numbers - use FileHandle to read only 4 bytes
-    guard let fileHandle = try? FileHandle(forReadingFrom: url) else {
-        return false
-    }
-
-    defer {
-        try? fileHandle.close()
-    }
-
-    guard let magicData = try? fileHandle.read(upToCount: 4), magicData.count == 4 else {
-        return false
-    }
-
-    let magic = magicData.withUnsafeBytes { $0.load(as: UInt32.self) }
-    let FAT_MAGIC: UInt32 = 0xcafebabe
-    let FAT_MAGIC_SWAPPED: UInt32 = 0xbebafeca // Little-endian version
-    let MH_MAGIC_64: UInt32 = 0xfeedfacf
-    let MH_CIGAM_64: UInt32 = 0xcffaedfe
-    let MH_MAGIC: UInt32 = 0xfeedface
-    let MH_CIGAM: UInt32 = 0xcefaedfe
-
-    return magic == FAT_MAGIC || magic == FAT_MAGIC_SWAPPED ||
-           magic == MH_MAGIC_64 || magic == MH_CIGAM_64 ||
-           magic == MH_MAGIC || magic == MH_CIGAM
+    inspectMachO(at: url) != nil
 }
 
 // Helper function to thin a binary using Mach-O APIs
 public func thinBinaryUsingMachO(executablePath: String) -> Bool {
     // Determine the target architecture based on the current OS
-    var targetArch: String
-#if arch(arm64)
-    targetArch = "arm64"
-#else
-    targetArch = "x86_64"
-#endif
+    let targetCPU = machoHostCPUType()
 
     // Find the app bundle path by searching up the directory tree
     let executableURL = URL(fileURLWithPath: executablePath)
     let appBundlePath = findAppBundlePath(from: executableURL)
 
     return autoreleasepool {
+        guard let info = inspectMachO(at: executableURL), info.isFat,
+              let targetSlice = info.slices.first(where: { $0.cpuType == targetCPU }) else {
+            return false
+        }
+
         do {
-            // Use FileHandle instead of loading entire file into memory
-            guard let fileHandle = try? FileHandle(forReadingFrom: URL(fileURLWithPath: executablePath)) else {
-                return false
-            }
-            defer {
-                try? fileHandle.close()
-            }
+            let fileHandle = try FileHandle(forReadingFrom: executableURL)
+            defer { try? fileHandle.close() }
 
-            // Read just the header to check if it's a fat binary
-            guard let headerData = try? fileHandle.read(upToCount: 8), headerData.count == 8 else {
+            try fileHandle.seek(toOffset: targetSlice.offset)
+            guard let extractedData = try fileHandle.read(upToCount: Int(targetSlice.size)),
+                  extractedData.count == Int(targetSlice.size) else {
                 return false
             }
 
-            let FAT_MAGIC: UInt32 = 0xcafebabe
-            let fatHeader = headerData.withUnsafeBytes { ptr in
-                FatHeader(
-                    magic: ptr.load(fromByteOffset: 0, as: UInt32.self).bigEndian,
-                    numArchitectures: ptr.load(fromByteOffset: 4, as: UInt32.self).bigEndian
-                )
-            }
-
-            guard fatHeader.magic == FAT_MAGIC else {
-    //            printOS("Mach-O Error: Not a universal binary, skipping thinning.")
-                return false
-            }
-
-            var offset = 8
-            var foundArch: FatArch?
-
-            for _ in 0..<fatHeader.numArchitectures {
-                guard let archData = try? fileHandle.read(upToCount: 20), archData.count == 20 else {
-                    return false
-                }
-
-                let arch = archData.withUnsafeBytes { ptr in
-                    FatArch(
-                        cpuType: ptr.load(fromByteOffset: 0, as: UInt32.self).bigEndian,
-                        cpuSubtype: ptr.load(fromByteOffset: 4, as: UInt32.self).bigEndian,
-                        offset: ptr.load(fromByteOffset: 8, as: UInt32.self).bigEndian,
-                        size: ptr.load(fromByteOffset: 12, as: UInt32.self).bigEndian,
-                        align: ptr.load(fromByteOffset: 16, as: UInt32.self).bigEndian
-                    )
-                }
-
-                let cpuType = arch.cpuType
-                if (targetArch == "arm64" && cpuType == 0x100000C) || (targetArch == "x86_64" && cpuType == 0x01000007) {
-                    foundArch = arch
-                    break
-                }
-
-                offset += 20
-            }
-
-            guard let targetArchData = foundArch else {
-    //            printOS("Mach-O Error: Target architecture \(targetArch) not found in binary.")
-                return false
-            }
-
-            // Now read the entire file to extract the target slice
-            // We need to do this to get the complete architecture slice
-            try? fileHandle.seek(toOffset: 0)
-            guard let fileData = try? fileHandle.readToEnd() else {
-                return false
-            }
-
-            let extractedData = fileData.subdata(in: Int(targetArchData.offset)..<Int(targetArchData.offset + targetArchData.size))
-            try extractedData.write(to: URL(fileURLWithPath: executablePath))
+            // Overwrite in place so ownership and permissions are preserved.
+            try extractedData.write(to: executableURL)
 
             // Update file timestamp to refresh Finder bundle size right away
             if !appBundlePath.path.isEmpty && appBundlePath.path != "/" {
-                try FileManager.default.setAttributes([.modificationDate: Date()], ofItemAtPath: appBundlePath.path)
+                try? FileManager.default.setAttributes(
+                    [.modificationDate: Date()], ofItemAtPath: appBundlePath.path)
             }
 
             return true
-
         } catch {
             print("Mach-O Error: \(error)")
             return false
@@ -336,99 +386,34 @@ public func thinBinaryUsingMachO(executablePath: String) -> Bool {
 }
 
 // Get the size of different architecture slices in a Mach-O binary
-public func getArchitectureSliceSizes(from executablePath: String) throws -> (arm: UInt32, intel: UInt32, full: UInt32)? {
+public func getArchitectureSliceSizes(from executablePath: String) throws -> (
+    arm: UInt32, intel: UInt32, full: UInt32
+)? {
     guard !executablePath.isEmpty else {
-        throw NSError(domain: "LipoError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Empty executable path"])
+        throw NSError(
+            domain: "LipoError", code: 1,
+            userInfo: [NSLocalizedDescriptionKey: "Empty executable path"])
     }
 
-    return try autoreleasepool {
-        let fileURL = URL(fileURLWithPath: executablePath)
-
-        // Use FileHandle to read only necessary bytes
-        guard let fileHandle = try? FileHandle(forReadingFrom: fileURL) else {
-            throw NSError(domain: "LipoError", code: 2, userInfo: [NSLocalizedDescriptionKey: "Could not open file"])
-        }
-        defer {
-            try? fileHandle.close()
-        }
-
-        // Get file size efficiently using FileHandle
-        let fileSize = fileHandle.seekToEndOfFile()
-        let fullSize = UInt32(min(fileSize, UInt64(UInt32.max)))
-
-        // Seek back to beginning to read header
-        try fileHandle.seek(toOffset: 0)
-
-        guard let headerData = try? fileHandle.read(upToCount: 8), headerData.count >= 8 else {
-            throw NSError(domain: "LipoError", code: 3, userInfo: [NSLocalizedDescriptionKey: "File too small to contain valid header"])
-        }
-
-        let FAT_MAGIC: UInt32 = 0xcafebabe
-
-        let header = try headerData.withUnsafeBytes { ptr -> FatHeader in
-            guard ptr.count >= 8 else {
-                throw NSError(domain: "LipoError", code: 4, userInfo: [NSLocalizedDescriptionKey: "Insufficient data for header"])
-            }
-            return FatHeader(
-                magic: ptr.load(fromByteOffset: 0, as: UInt32.self).bigEndian,
-                numArchitectures: ptr.load(fromByteOffset: 4, as: UInt32.self).bigEndian
-            )
-        }
-
-        var armSize: UInt32 = 0
-        var intelSize: UInt32 = 0
-
-        if header.magic == FAT_MAGIC {
-            guard header.numArchitectures > 0 && header.numArchitectures < 100 else {
-                throw NSError(domain: "LipoError", code: 5, userInfo: [NSLocalizedDescriptionKey: "Invalid number of architectures"])
-            }
-
-            // Read all architecture headers at once (20 bytes each)
-            let archDataSize = Int(header.numArchitectures) * 20
-            guard let allArchData = try? fileHandle.read(upToCount: archDataSize),
-                  allArchData.count == archDataSize else {
-                throw NSError(domain: "LipoError", code: 6, userInfo: [NSLocalizedDescriptionKey: "Could not read architecture headers"])
-            }
-
-            var offset = 0
-            for _ in 0..<header.numArchitectures {
-                let arch = allArchData[offset..<(offset + 20)].withUnsafeBytes { ptr -> FatArch in
-                    FatArch(
-                        cpuType: ptr.load(fromByteOffset: 0, as: UInt32.self).bigEndian,
-                        cpuSubtype: ptr.load(fromByteOffset: 4, as: UInt32.self).bigEndian,
-                        offset: ptr.load(fromByteOffset: 8, as: UInt32.self).bigEndian,
-                        size: ptr.load(fromByteOffset: 12, as: UInt32.self).bigEndian,
-                        align: ptr.load(fromByteOffset: 16, as: UInt32.self).bigEndian
-                    )
-                }
-
-                if arch.cpuType == 0x100000C {
-                    armSize = arch.size
-                } else if arch.cpuType == 0x01000007 {
-                    intelSize = arch.size
-                }
-                offset += 20
-            }
-        } else {
-            // For a lipo'd binary, assume the whole file is the slice.
-            // Read bytes 4-8 to check CPU type
-            try? fileHandle.seek(toOffset: 4)
-            guard let cpuTypeData = try? fileHandle.read(upToCount: 4), cpuTypeData.count == 4 else {
-                return (arm: 0, intel: 0, full: fullSize)
-            }
-
-            let cpuType = cpuTypeData.withUnsafeBytes {
-                $0.load(as: UInt32.self).bigEndian
-            }
-            if cpuType == 0x100000C {
-                armSize = fullSize
-            } else if cpuType == 0x01000007 {
-                intelSize = fullSize
-            }
-        }
-
-        return (arm: armSize, intel: intelSize, full: fullSize)
+    guard let info = inspectMachO(at: URL(fileURLWithPath: executablePath)) else {
+        throw NSError(
+            domain: "LipoError", code: 2,
+            userInfo: [NSLocalizedDescriptionKey: "Not a Mach-O binary"])
     }
+
+    let armSize = info.slices
+        .filter { $0.cpuType == machoCPUTypeARM64 }
+        .reduce(UInt64(0)) { $0 + $1.size }
+    let intelSize = info.slices
+        .filter { $0.cpuType == machoCPUTypeX8664 || $0.cpuType == machoCPUTypeX86 }
+        .reduce(UInt64(0)) { $0 + $1.size }
+    let fullSize = min(info.fileSize, UInt64(UInt32.max))
+
+    return (
+        arm: UInt32(clamping: armSize),
+        intel: UInt32(clamping: intelSize),
+        full: UInt32(clamping: fullSize)
+    )
 }
 
 
