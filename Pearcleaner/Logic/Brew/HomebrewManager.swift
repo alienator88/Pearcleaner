@@ -182,12 +182,17 @@ class HomebrewManager: ObservableObject {
                 )
 
                 await MainActor.run {
-                    outdatedPackagesMap = Dictionary(uniqueKeysWithValues: packages.map {
+                    // Key by package name. A cask and a formula can share the same name
+                    // (e.g. cask "codexbar" + formula "steipete/tap/codexbar"), which would
+                    // crash Dictionary(uniqueKeysWith:) with a fatal duplicate-key error.
+                    // Prefer the cask entry (the app itself) when both are outdated.
+                    let sorted = packages.sorted { $0.isCask && !$1.isCask }
+                    outdatedPackagesMap = Dictionary(sorted.map {
                         // Strip revision suffix for casks (Sparkle updates), keep for formulae (revision tracking)
                         let installedDisplay = $0.isCask ? $0.installedVersion.stripBrewRevisionSuffix() : $0.installedVersion
                         let availableDisplay = $0.isCask ? $0.availableVersion.stripBrewRevisionSuffix() : $0.availableVersion
                         return ($0.name, OutdatedVersionInfo(installed: installedDisplay, available: availableDisplay))
-                    })
+                    }, uniquingKeysWith: { first, _ in first })
                     isLoadingOutdated = false
                     // Update categories now that we have outdated info
                     updateInstalledCategories()
