@@ -24,7 +24,27 @@ class ReversePathsSearcher {
 
     // Cached formatted data to avoid repeated .pearFormat() calls
     private lazy var formattedExclusionList: [String] = {
-        fsm.fileFolderPathsZ.map { $0.pearFormat() }
+        var exclusions = fsm.fileFolderPathsZ.map { $0.pearFormat() }
+        exclusions.append(contentsOf: formattedProtectedPaths)
+        return exclusions
+    }()
+
+    // Hardcoded protected paths: never offered by the orphaned-file scan, even when they
+    // appear unrelated to installed apps. These hold irreplaceable multi-GB data that the
+    // scan has historically matched with false positives (local model weights, browser
+    // profiles, sandboxed containers).
+    private lazy var formattedProtectedPaths: [String] = {
+        let home = NSHomeDirectory()
+        let protected = [
+            "\(home)/.ollama",                          // local LLM model weights (Ollama)
+            "\(home)/.cache/huggingface",              // downloaded model weights
+            "\(home)/.cache/lm-studio",
+            "\(home)/Library/Caches/ollama",
+            "\(home)/Library/Application Support/Google/Chrome",        // browser profiles
+            "\(home)/Library/Application Support/Firefox",
+            "\(home)/Library/Containers"              // sandboxed app data
+        ]
+        return protected.map { $0.pearFormat() }
     }()
 
     private struct CachedAppIdentifiers {
